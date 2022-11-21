@@ -28,7 +28,10 @@
       "types": "./types/cli.d.ts",
       "default": "./dist/cli.js"
     },
-    "./dist/*": "./dist/*.js",
+    "./dist/*": {
+      "types": "./types/*.d.ts",
+      "default": "./dist/*.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
