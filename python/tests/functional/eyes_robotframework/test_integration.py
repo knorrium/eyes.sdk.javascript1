@@ -65,7 +65,7 @@ def send_test_report(suite, **kwargs):
         ],
     }
     r = requests.post(
-        "http://sdk-test-results.herokuapp.com/result", data=json.dumps(report_data)
+        "http://applitools-quality-server.herokuapp.com/result", data=json.dumps(report_data)
     )
     r.raise_for_status()
     print("Result report send: {} - {}".format(r.status_code, r.text))

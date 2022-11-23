@@ -25,4 +25,4 @@ payload='{
 }'
 echo $payload
 
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data "$payload" "http://sdk-test-results.herokuapp.com/result"
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data "$payload" "http://applitools-quality-server.herokuapp.com/result"
