@@ -285,6 +285,11 @@ export class CheckSettingsBaseFluent<TRegion = never> {
     this._settings.matchLevel = MatchLevelEnum.Strict
     return this
   }
+  ignoreColors(): this {
+    this._settings.matchLevel = MatchLevelEnum.IgnoreColors
+    return this
+  }
+  /** @deprecated */
   content(): this {
     this._settings.matchLevel = MatchLevelEnum.Content
     return this
