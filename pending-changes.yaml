@@ -173,6 +173,7 @@ eyes-browser-extension:
     - Migrate to manifest V3
     - Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
     - Use user agent metadata to improve browser environment detection logic
+    - Add Test result readme
   bug-fix:
     - |
       `extractText` now supports regions that don't use hints while using `x`/`y` coordinates

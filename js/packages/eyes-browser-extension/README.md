@@ -21,7 +21,7 @@ Headless Chrome does not support browser extensions, therefore the Eyes SDK brow
 
 ![](https://i.imgur.com/dmsNNRB.gif)
 
-1. Download the `.zip` file under GitHub releases: https://github.com/applitools/eyes.sdk.javascript1/releases/tag/%40applitools%2Feyes-browser-extension%400.2.0
+1. Download the `.zip` file under GitHub releases: https://github.com/applitools/eyes.sdk.javascript1/releases/tag/%40applitools%2Feyes-browser-extension%400.3.3
 2. Navigate to [chrome://extensions]() in your browser
 3. Switch on **Developer mode** on the top right
 4. Drag the zip file into the browser
@@ -139,6 +139,63 @@ await driver.executeAsyncScript(`return __applitools.eyes.check({}).then(argumen
 
 await driver.executeAsyncScript(`return __applitools.eyes.close().then(arguments[arguments.length-1])`)
 ```
+
+### Manage tests across multiple `eyes` instances
+
+If you decide to create more than one instance of `eyes` in your tests the `__applitools.manager` provides collecting test results across all eyes instances.
+
+Consider the following:
+
+```js
+const manager = await __applitools.makeManager() // need to call once per suite
+
+async function runTest(testName) {
+  const eyes = await __applitools.manager.openEyes({config: {appName: 'My App', testName, apiKey: '<your API key>'}})
+  await eyes.check({})
+  await eyes.close()
+}
+
+await runTest('My test 1')
+await runTest('My test 2')
+
+const testResultsSummary = await __applitools.manager.closeManager();
+for (const testResultContainer of testResultsSummary.results) {
+  console.log(formatTestResults(testResultContainer.testResults)) // see the Recipes section below for the implementation of this function
+}
+
+function formatTestResults(testResults) {
+  return `
+Test name                 : ${testResults.name}
+Test status               : ${testResults.status}
+URL to results            : ${testResults.url}
+Total number of steps     : ${testResults.steps}
+Number of matching steps  : ${testResults.matches}
+Number of visual diffs    : ${testResults.mismatches}
+Number of missing steps   : ${testResults.missing}
+Display size              : ${testResults.hostDisplaySize.height} X ${testResults.hostDisplaySize.width}
+Steps                     :
+${testResults
+  .stepsInfo
+  .map(step => {
+    return `  ${step.name} - ${getStepStatus(step)}`
+  })
+  .join('\n')}`
+}
+
+function getStepStatus(step) {
+  if (step.isDifferent) {
+    return 'Diff'
+  } else if (!step.hasBaselineImage) {
+    return 'New'
+  } else if (!step.hasCurrentImage) {
+    return 'Missing'
+  } else {
+    return 'Passed'
+  }
+}
+```
+
+This snippet of code runs two tests with two `eyes` instances. We then call `await __applitools.manager.closeManager()` and then iterate through the results and print out a formatted summary.
 
 ### Script timeout and polling
 
