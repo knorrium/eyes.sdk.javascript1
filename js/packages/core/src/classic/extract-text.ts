@@ -53,6 +53,7 @@ export function makeExtractText<TDriver, TContext, TElement, TSelector>({
       }
       if (driver.isWeb) {
         if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
+        else screenshot.element?.setAttribute('data-applitools-scroll', 'true')
         baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
       }
       delete settings.region
