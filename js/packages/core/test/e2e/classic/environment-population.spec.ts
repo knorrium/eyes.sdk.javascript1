@@ -40,6 +40,9 @@ describe('chrome 107 on window 8', () => {
         apiKey: process.env.APPLITOOLS_API_KEY,
         appName: 'test',
         testName: 'test environment',
+        environment: {
+          viewportSize: {width: 700, height: 460},
+        },
       },
     })
     await eyes.check()
@@ -86,6 +89,9 @@ describe('chrome 107 on mac os 12', () => {
         apiKey: process.env.APPLITOOLS_API_KEY,
         appName: 'test',
         testName: 'test environment',
+        environment: {
+          viewportSize: {width: 700, height: 460},
+        },
       },
     })
     await eyes.check()
