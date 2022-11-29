@@ -63,6 +63,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
     const baseSettings = getBaseCheckSettings({calculatedRegions: screenshot.calculatedRegions})
     if (driver.isWeb && settings.sendDom) {
       if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
+      else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
       baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
     }
     if (settings.pageId) {

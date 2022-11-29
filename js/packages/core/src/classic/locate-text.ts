@@ -3,7 +3,7 @@ import type {Eyes as BaseEyes, Target as BaseTarget, LocateTextSettings as BaseL
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from '../automation/utils/take-screenshot'
-import {takeDomCapture} from './utils/take-dom-capture'
+// import {takeDomCapture} from './utils/take-dom-capture'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -40,8 +40,9 @@ export function makeLocateText<TDriver, TContext, TElement, TSelector>({
       locationInViewport: utils.geometry.location(screenshot.region),
     }
     if (driver.isWeb) {
-      if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
-      baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
+      // if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
+      // else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
+      // baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
     }
     const results = await eyes.locateText({target: baseTarget, settings: settings as BaseLocateTextSettings<TPattern>, logger})
     return results
