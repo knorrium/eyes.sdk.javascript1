@@ -26,10 +26,10 @@
     "@applitools/req" "1.1.16"
     "@applitools/utils" "1.3.16"
 
-"@applitools/core@1.2.12":
-  version "1.2.12"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.2.12.tgz#4cca6ea35ab580252a17d8ddd670689ebc3c1787"
-  integrity sha512-dHQL9P/TdC4J+rnbOsMuIaJfgGK1b8rr3PZyuUWwZR1g5gWW96vx9kpx3y8HGrUjfLPimtkzWzY7RMBglJaFtA==
+"@applitools/core@1.2.14":
+  version "1.2.14"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.2.14.tgz#7faaf5dc80130d5e58d3f0419a9b2a7b570bb9b1"
+  integrity sha512-0YJuCeCzBivDSGdrv+H59395ttiNht6n2EscxTls9MEaNXuQ/u1DH5VQR5ECboQXDuAPZrQBzGyGHxhFBSBs/g==
   dependencies:
     "@applitools/core-base" "1.1.14"
     "@applitools/dom-capture" "11.2.0"
@@ -93,10 +93,10 @@
     "@applitools/utils" "1.3.16"
     semver "7.3.7"
 
-"@applitools/execution-grid-client@1.1.33":
-  version "1.1.33"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.1.33.tgz#5cbd7cd1af3b09ee48d4fde8ec1300962f30f83f"
-  integrity sha512-YOd7n65XvDXvzDyFlKowAkOy8EAvNt+BmMHH3J2E9l3w6p/jRxI4ftKSx00pIJE2VwilPoUQFR1MHXwHBL+SxQ==
+"@applitools/execution-grid-client@1.1.35":
+  version "1.1.35"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.1.35.tgz#067f663c6e9e5056b8e8b526d8c897cdd18ca655"
+  integrity sha512-C5F7u0feVoQ9kncFiVSM2jqNHjAmz+VUdY55TfZuchq1CzSQv34pxhra5OlU62TZ74Cs4Uz0gv+tJYeGb6oeYA==
   dependencies:
     "@applitools/logger" "1.1.30"
     "@applitools/utils" "1.3.16"
