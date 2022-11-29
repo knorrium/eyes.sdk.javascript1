@@ -27,7 +27,7 @@ Apollo SDK:
     - Fixed issue when current context is not being preserved in ufg mode
 "@applitools/eyes-webdriverio":
   feature:
-    - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - 
   bug-fix:
     - 
 "@applitools/eyes-playwright":
