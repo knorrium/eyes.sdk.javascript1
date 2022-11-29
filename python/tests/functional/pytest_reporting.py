@@ -41,7 +41,7 @@ def send_result_report(test_name, passed, parameters=None, group="selenium"):
     report_data["results"] = [prepare_result_data(test_name, passed, parameters)]
     report_data["group"] = group
     r = requests.post(
-        "http://sdk-test-results.herokuapp.com/result", data=json.dumps(report_data)
+        "http://applitools-quality-server.herokuapp.com/result", data=json.dumps(report_data)
     )
     r.raise_for_status()
     print("Result report send: {} - {}".format(r.status_code, r.text))

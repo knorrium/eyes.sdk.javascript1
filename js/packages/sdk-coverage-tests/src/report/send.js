@@ -12,11 +12,11 @@ async function _send({uri, payload}) {
 }
 
 async function sendReport(payload) {
-  return _send({uri: 'http://sdk-test-results.herokuapp.com/result', payload})
+  return _send({uri: 'http://applitools-quality-server.herokuapp.com/result', payload})
 }
 
 async function sendNotification(payload) {
-  return _send({uri: 'http://sdk-test-results.herokuapp.com/send_mail/sdks', payload})
+  return _send({uri: 'http://applitools-quality-server.herokuapp.com/send_mail/sdks', payload})
 }
 
 module.exports = {sendReport, sendNotification}
