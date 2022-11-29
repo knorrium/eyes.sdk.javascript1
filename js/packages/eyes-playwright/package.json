@@ -58,8 +58,8 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.2.12",
-    "@applitools/eyes-api": "1.10.4",
+    "@applitools/core": "1.2.14",
+    "@applitools/eyes-api": "1.10.6",
     "@applitools/spec-driver-playwright": "1.3.4"
   },
   "devDependencies": {
@@ -84,7 +84,7 @@
     "prettier": "^2.6.2",
     "spec-xunit-file": "0.0.1-3",
     "ts-node": "^10.2.1",
-    "ttypescript": "^1.5.12",
+    "ttypescript": "^1.5.13",
     "typescript": "^4.9.3"
   },
   "peerDependencies": {
