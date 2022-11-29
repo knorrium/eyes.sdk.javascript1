@@ -11,6 +11,12 @@
 
 
 
+## 2.17.3 - 2022/11/29
+
+### Features
+### Bug fixes
+- Fixed OCR functionality with latest Eyes server
+
 ## 2.17.2 - 2022/11/16
 
 ### Features

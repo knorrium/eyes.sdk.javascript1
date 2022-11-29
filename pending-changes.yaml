@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed OCR functionality with latest Eyes server
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Added new selector extensions `child` and `fallback`
