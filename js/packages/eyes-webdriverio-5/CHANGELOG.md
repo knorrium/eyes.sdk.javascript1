@@ -10,6 +10,12 @@
 
 
 
+## 5.38.1 - 2022/11/29
+
+### Features
+- Added `ignoreColors` method to `CheckSettings` to set a match level
+### Bug fixes
+
 ## 5.38.0 - 2022/11/17
 
 ### Features
