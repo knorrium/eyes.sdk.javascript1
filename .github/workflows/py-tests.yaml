@@ -130,7 +130,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: packages
-      - run: apk add gcc libffi-dev make musl-dev py3-pip python3-dev && ln -s /usr/bin/python3 /usr/bin/python
+      - run: apk add gcc libffi-dev make musl-dev py3-pip python3-dev
       - run: make eyes_selenium_unit_tests
         working-directory: python
         env:
