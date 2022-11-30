@@ -245,8 +245,8 @@ export async function req(input: string | URL | Request, options?: Options): Pro
   let request = new Request(url, {
     method: options?.method ?? (input as Request).method,
     headers: {
-      ...Object.fromEntries(new Headers(options?.headers).entries()),
       ...Object.fromEntries((input as Request).headers?.entries() ?? []),
+      ...Object.fromEntries(new Headers(options?.headers).entries()),
     },
     body:
       utils.types.isPlainObject(options?.body) || utils.types.isArray(options?.body)

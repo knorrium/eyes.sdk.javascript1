@@ -1,5 +1,6 @@
 import assert from 'assert'
 import nock from 'nock'
+import {Request} from 'node-fetch'
 import {req} from '../../src/req'
 
 describe('req', () => {
@@ -24,6 +25,17 @@ describe('req', () => {
     nock('https://eyesapi.applitools.com').get('/api/hello?init=true&hello=world').reply(200, {hello: 'world'})
 
     const response = await req('https://eyesapi.applitools.com/api/hello?init=true', {query: {hello: 'world'}})
+
+    assert.strictEqual(response.status, 200)
+    assert.deepStrictEqual(await response.json(), {hello: 'world'})
+  })
+
+  it('merges headers', async () => {
+    nock('https://eyesapi.applitools.com').get('/api/hello').matchHeader('Custom-Header', 'true').reply(200, {hello: 'world'})
+
+    const response = await req(new Request('https://eyesapi.applitools.com/api/hello', {headers: {'Custom-Header': 'false'}}), {
+      headers: {'custom-header': 'true'},
+    })
 
     assert.strictEqual(response.status, 200)
     assert.deepStrictEqual(await response.json(), {hello: 'world'})
