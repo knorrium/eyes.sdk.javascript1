@@ -58,3 +58,14 @@ def test_demarshal_usdk_error():
         }
     )
     assert str(exc) == "Message.\n  stack trace line 1\n  stack trace line 2"
+
+
+def test_demarshal_usdk_empty_error():
+    exc = demarshal_error(
+        {
+            "message": "",
+            "reason": "internal",
+            "stack": "TestError\n    stack trace line 1",
+        }
+    )
+    assert str(exc) == "\nTestError\n    stack trace line 1"

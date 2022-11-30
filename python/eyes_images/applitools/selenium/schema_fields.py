@@ -235,8 +235,10 @@ def demarshal_error(error_dict):
     elif error_dict.get("reason") in _matching_failures:
         return _matching_failures[error_dict["reason"]](message)
     else:
-        # There is usually a copy of message in stack trace too, remove it
-        stack = error_dict["stack"].split(message)[-1].strip("\n")
+        stack = error_dict["stack"]
+        if message:  # Sometimes when internal error occurs the message is empty
+            # There is usually a copy of message in stack trace too, remove it
+            stack = stack.split(message)[-1].strip("\n")
         return USDKFailure(message, stack)
 
 
