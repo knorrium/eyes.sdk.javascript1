@@ -72,10 +72,6 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   }
 
   private async _command(command: string): Promise<string> {
-    // clean the input before passing value there could
-    // be a left over from previous async calls
-    await this._input.type('')
-
     await this._input.type(command)
     await this._input.click()
     let text = await this._input.getText()
@@ -95,8 +91,6 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
       this._logger.warn(`Helper library didn't provide a response for async command (${command}) during ${timeout}ms`)
       text = null
     }
-
-    await this._input.type('')
     return text
   }
 

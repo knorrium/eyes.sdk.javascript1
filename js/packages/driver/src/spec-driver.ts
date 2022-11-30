@@ -72,6 +72,8 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
     parent?: TElement,
     options?: WaitOptions,
   ): Promise<TElement | null>
+  setElementText?(context: TContext, element: TElement, text: string): Promise<void>
+  getElementText?(context: TContext, element: TElement): Promise<string>
   setWindowSize?(driver: TDriver, size: Size): Promise<void>
   getWindowSize?(driver: TDriver): Promise<Size>
   setViewportSize?(driver: TDriver, size: Size): Promise<void>
@@ -83,7 +85,6 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
   getUrl(driver: TDriver): Promise<string>
   takeScreenshot(driver: TDriver): Promise<Buffer | string>
   click?(context: TContext, element: TElement | TSelector): Promise<void>
-  type?(context: TContext, element: TElement, value: string): Promise<void>
   visit?(driver: TDriver, url: string): Promise<void>
   // #endregion
 
@@ -96,7 +97,6 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
   }>
   getElementRegion?(driver: TDriver, element: TElement): Promise<Region>
   getElementAttribute?(driver: TDriver, element: TElement, attr: string): Promise<string>
-  getElementText?(driver: TDriver, element: TElement): Promise<string>
   performAction?(driver: TDriver, steps: any[]): Promise<void>
   getCurrentWorld?(driver: TDriver): Promise<string>
   getWorlds?(driver: TDriver): Promise<string[]>

@@ -163,6 +163,14 @@ export async function waitForSelector(
     return driver.wait(Selenium.until.elementIsVisible(element), options?.timeout)
   }
 }
+export async function setElementText(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
+  if (isSelector(element)) element = await findElement(driver, element)
+  await element.clear()
+  await element.sendKeys(keys)
+}
+export async function getElementText(_driver: Driver, element: Element): Promise<string> {
+  return element.getText()
+}
 export async function getWindowSize(driver: Driver): Promise<Size> {
   try {
     const rect = await driver.manage().window().getRect()
@@ -249,10 +257,6 @@ export async function hover(driver: Driver, element: Element | Selector) {
     await driver.actions().move({origin: element}).perform()
   }
 }
-export async function type(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(driver, element)
-  await element.sendKeys(keys)
-}
 export async function scrollIntoView(driver: Driver, element: Element | Selector, align = false): Promise<void> {
   if (isSelector(element)) element = await findElement(driver, element)
   await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
@@ -291,9 +295,6 @@ export async function getElementRegion(_driver: Driver, element: Element): Promi
 }
 export async function getElementAttribute(_driver: Driver, element: Element, attr: string): Promise<string> {
   return element.getAttribute(attr)
-}
-export async function getElementText(_driver: Driver, element: Element): Promise<string> {
-  return element.getText()
 }
 export async function performAction(driver: Driver, steps: any[]): Promise<void> {
   await executeCustomCommand(

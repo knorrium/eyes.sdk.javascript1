@@ -1,4 +1,4 @@
-import {type Size} from '@applitools/driver'
+import type {Size} from '@applitools/utils'
 import assert from 'assert'
 import {By, locateWith} from 'selenium-webdriver'
 import * as spec from '../../src'
@@ -114,6 +114,9 @@ describe('spec driver', async () => {
     })
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: {css: 'non-existent'}}, expected: []})
+    })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: await driver.findElement({css: 'input'}), text: 'Ad multos annos'}})
     })
     it('getWindowSize()', async () => {
       await getWindowSize()
@@ -346,6 +349,12 @@ describe('spec driver', async () => {
     for (const [index, element] of elements.entries()) {
       assert.ok(await spec.isEqualElements(driver, element, expected[index]))
     }
+  }
+  async function setElementText({input}: {input: {element: spec.Element; text: string}}) {
+    await input.element.sendKeys('bla bla')
+    await spec.setElementText(driver, input.element, input.text)
+    const text = await input.element.getAttribute('value')
+    assert.strictEqual(text, input.text)
   }
   async function getWindowSize() {
     let expected

@@ -5,7 +5,7 @@ import * as utils from '@applitools/utils'
 
 export type Driver = Puppeteer.Page & {__applitoolsBrand?: never}
 export type Context = Puppeteer.Frame & {__applitoolsBrand?: never}
-export type Element = Puppeteer.ElementHandle & {__applitoolsBrand?: never}
+export type Element<T extends Node = globalThis.Element> = Puppeteer.ElementHandle<T> & {__applitoolsBrand?: never}
 export type Selector = string & {__applitoolsBrand?: never}
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
@@ -156,6 +156,11 @@ export async function findElements(frame: Context, selector: Selector, parent?: 
   const root = parent ?? frame
   return (isXpathSelector(selector) ? root.$x(selector) : root.$$(selector)) as Promise<Element[]>
 }
+export async function setElementText(frame: Context, element: Element | Selector, text: string): Promise<void> {
+  if (isSelector(element)) element = await findElement(frame, element)
+  await element.evaluate((element: HTMLInputElement) => (element.value = ''))
+  await element.type(text)
+}
 export async function getViewportSize(page: Driver): Promise<Size> {
   return page.viewport()
 }
@@ -198,10 +203,6 @@ export async function takeScreenshot(page: Driver): Promise<Buffer> {
 export async function click(frame: Context, element: Element | Selector): Promise<void> {
   if (isSelector(element)) element = await findElement(frame, element)
   await element.click()
-}
-export async function type(frame: Context, element: Element | Selector, keys: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  return element.type(keys)
 }
 export async function hover(frame: Context, element: Element | Selector): Promise<void> {
   if (isSelector(element)) element = await findElement(frame, element)

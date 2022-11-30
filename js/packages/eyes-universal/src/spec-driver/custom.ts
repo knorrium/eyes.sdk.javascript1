@@ -78,6 +78,12 @@ export function makeSpec(options: {
     async findElements(context: Context, selector: Selector, parent?: Element): Promise<Element[]> {
       return socket.request('Driver.findElements', {context, selector, parent})
     },
+    async getElementText(context: Context, element: Element): Promise<string> {
+      return socket.request('Driver.getElementText', {context, element})
+    },
+    async setElementText(context: Context, element: Element, text: string): Promise<void> {
+      return socket.request('Driver.setElementText', {context, element, text})
+    },
     async getWindowSize(driver: Driver): Promise<Size> {
       return socket.request('Driver.getWindowSize', {driver})
     },
@@ -110,9 +116,6 @@ export function makeSpec(options: {
     },
     async click(context: Context, element: Element | Selector): Promise<void> {
       return socket.request('Driver.click', {context, element})
-    },
-    async type(context: Context, element: Element, value: string): Promise<void> {
-      return socket.request('Driver.type', {context, element, value})
     },
     async visit(driver: Driver, url: string): Promise<void> {
       return socket.request('Driver.visit', {driver, url})
@@ -148,9 +151,6 @@ export function makeSpec(options: {
     },
     async getElementAttribute(driver: Driver, element: Element, attr: string): Promise<string> {
       return socket.request('Driver.getElementAttribute', {driver, element, attr})
-    },
-    async getElementText(driver: Driver, element: Element): Promise<string> {
-      return socket.request('Driver.getElementText', {driver, element})
     },
     async performAction(driver: Driver, steps: any[]): Promise<void> {
       return socket.request('Driver.performAction', {driver, steps})

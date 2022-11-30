@@ -1,4 +1,5 @@
-import {type Size, type Cookie} from '@applitools/driver'
+import type {Size} from '@applitools/utils'
+import {type Cookie} from '@applitools/driver'
 import assert from 'assert'
 import * as spec from '../../src'
 import * as utils from '@applitools/utils'
@@ -145,7 +146,10 @@ describe('spec driver', async () => {
       await findElements({input: {selector: 'non-existent'}, expected: []})
     })
     it('findElements(within-element)', async () => {
-      findElements({input: {selector: 'div', parent: await browser.$('#stretched')}})
+      await findElements({input: {selector: 'div', parent: await browser.$('#stretched')}})
+    })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: await browser.$('input'), text: 'Ad multos annos'}})
     })
     it('getWindowSize()', async () => {
       await getWindowSize()
@@ -306,10 +310,13 @@ describe('spec driver', async () => {
       await findElements({input: {selector}})
     })
     it('findElements(within-element)', async () => {
-      findElements({input: {selector: 'div', parent: await browser.$('#stretched')}})
+      await findElements({input: {selector: 'div', parent: await browser.$('#stretched')}})
     })
     it('findElements(non-existent)', async () => {
-      findElements({input: {selector: 'non-existent'}, expected: []})
+      await findElements({input: {selector: 'non-existent'}, expected: []})
+    })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: await browser.$('input'), text: 'Ad multos annos'}})
     })
     it('getWindowSize()', async () => {
       await getWindowSize()
@@ -561,6 +568,13 @@ describe('spec driver', async () => {
     for (const [index, element] of elements.entries()) {
       assert.ok(await equalElements(browser, element, (expected as any)[index]))
     }
+  }
+  async function setElementText({input}: {input: {element: Applitools.WebdriverIO.Element; text: string}}) {
+    const element = await browser.$(input.element)
+    await element.setValue('bla bla')
+    await spec.setElementText(browser, input.element, input.text)
+    const text = await element.getValue()
+    assert.strictEqual(text, input.text)
   }
   async function getWindowSize({legacy = false} = {}) {
     let size

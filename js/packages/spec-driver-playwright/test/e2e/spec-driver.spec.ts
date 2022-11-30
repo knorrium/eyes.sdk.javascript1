@@ -1,4 +1,5 @@
-import {type Size, type Cookie} from '@applitools/driver'
+import type {Size} from '@applitools/utils'
+import {type Cookie} from '@applitools/driver'
 import assert from 'assert'
 import * as spec from '../../src'
 
@@ -79,6 +80,9 @@ describe('spec driver', async () => {
     })
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: 'non-existent'}, expected: []})
+    })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: (await page.$('input'))!, text: 'Ad multos annos'}})
     })
     it('getViewportSize()', async () => {
       await getViewportSize()
@@ -170,6 +174,9 @@ describe('spec driver', async () => {
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: 'non-existent'}, expected: []})
     })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: (await page.$('input'))!, text: 'Ad multos annos'}})
+    })
     it('getViewportSize()', async () => {
       await getViewportSize()
     })
@@ -190,8 +197,7 @@ describe('spec driver', async () => {
     })
   })
 
-  // TODO unskip once playwright 1.17 released https://github.com/microsoft/playwright/issues/9811
-  describe.skip('headless desktop (@webkit)', async () => {
+  describe('headless desktop (@webkit)', async () => {
     before(async () => {
       ;[page, destroyPage] = await spec.build({browser: 'webkit', headless: true})
       await page.goto(url)
@@ -260,6 +266,9 @@ describe('spec driver', async () => {
     })
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: 'non-existent'}, expected: []})
+    })
+    it('setElementText(element, text)', async () => {
+      await setElementText({input: {element: (await page.$('input'))!, text: 'Ad multos annos'}})
     })
     it('getViewportSize()', async () => {
       await getViewportSize()
@@ -384,6 +393,12 @@ describe('spec driver', async () => {
     for (const [index, element] of elements.entries()) {
       assert.ok(await isEqualElements(page, element, expected[index]))
     }
+  }
+  async function setElementText({input}: {input: {element: spec.Element; text: string}}) {
+    await input.element.type('bla bla')
+    await spec.setElementText(page.mainFrame(), input.element, input.text)
+    const text = await page.evaluate(element => element.value, input.element as spec.Element<HTMLInputElement>)
+    assert.strictEqual(text, input.text)
   }
   async function getViewportSize() {
     const expected = await page.viewportSize()

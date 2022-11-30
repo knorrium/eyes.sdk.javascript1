@@ -132,6 +132,11 @@ describe('webdriver spec driver', async () => {
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: {using: 'css selector', value: 'non-existent'}}})
     })
+    it('setElementText(element, text)', async () => {
+      await setElementText({
+        input: {element: await driver.findElement('css selector', 'input'), text: 'Ad multos annos'},
+      })
+    })
     it('getCookies()', async () => {
       await getCookies()
     })
@@ -419,6 +424,12 @@ describe('webdriver spec driver', async () => {
     for (const [index, element] of elements.entries()) {
       assert.ok(await equalElements(driver, element, expected[index]))
     }
+  }
+  async function setElementText({input}: {input: {element: spec.Element; text: string}}) {
+    await driver.elementSendKeys(extractElementId(input.element), 'bla bla')
+    await spec.setElementText(driver, input.element, input.text)
+    const text = await driver.getElementProperty(extractElementId(input.element), 'value')
+    assert.strictEqual(text, input.text)
   }
   async function getWindowSize({legacy = false} = {}) {
     let size

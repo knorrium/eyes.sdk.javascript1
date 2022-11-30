@@ -79,6 +79,8 @@ export interface UniversalSpecDriver<TDriver, TContext, TElement, TSelector> {
   executeScript(options: {context: TContext; script: string; arg?: any}): Promise<any>
   findElement(options: {context: TContext; selector: TSelector; parent?: TElement}): Promise<TElement | null>
   findElements(options: {context: TContext; selector: TSelector; parent?: TElement}): Promise<TElement[]>
+  setElementText?(options: {context: TContext; element: TElement; text: string}): Promise<void>
+  getElementText?(options: {context: TContext; element: TElement}): Promise<string>
   setWindowSize?(options: {driver: TDriver; size: Size}): Promise<void>
   getWindowSize?(options: {driver: TDriver}): Promise<Size>
   setViewportSize?(options: {driver: TDriver; size: Size}): Promise<void>
@@ -90,7 +92,6 @@ export interface UniversalSpecDriver<TDriver, TContext, TElement, TSelector> {
   getUrl(options: {driver: TDriver}): Promise<string>
   takeScreenshot(options: {driver: TDriver}): Promise<string>
   click?(options: {context: TContext; element: TElement | TSelector}): Promise<void>
-  type?(options: {context: TContext; element: TElement; value: string}): Promise<void>
   visit?(options: {driver: TDriver; url: string}): Promise<void>
   // #endregion
 
@@ -108,7 +109,6 @@ export interface UniversalSpecDriver<TDriver, TContext, TElement, TSelector> {
   }>
   getElementRegion?(options: {driver: TDriver; element: TElement}): Promise<Region>
   getElementAttribute?(options: {driver: TDriver; element: TElement; attr: string}): Promise<string>
-  getElementText?(options: {driver: TDriver; element: TElement}): Promise<string>
   performAction?(options: {driver: TDriver; steps: any[]}): Promise<void>
   getCurrentWorld?(options: {driver: TDriver}): Promise<string>
   getWorlds?(options: {driver: TDriver}): Promise<string[]>

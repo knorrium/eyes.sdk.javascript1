@@ -21,22 +21,22 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.0.tgz#1276e2a099253c07696fb834fe1c9f1e9c44624a"
-  integrity sha512-yNo4ljkk5C2wJ7foqENoIgtlbW3/RpDYBT5UCjq5yTK/xfnvAlh+zUmnqGJ43w8PZj4IH7E8xLRVBVIq2Mv9oQ==
+"@applitools/driver@1.11.8":
+  version "1.11.8"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.8.tgz#7bf4788f23f2bb1e8074240fb9322f04ce52dd33"
+  integrity sha512-f47g1LHTkhITKls5MilMWeyUENNSECK8TL4Z6z1rLRyMwYaF5Spir0lh2QIARt7mzCbF80o7omLtnRwZOPfTSA==
   dependencies:
-    "@applitools/logger" "1.1.27"
-    "@applitools/snippets" "2.4.5"
-    "@applitools/utils" "1.3.13"
+    "@applitools/logger" "1.1.30"
+    "@applitools/snippets" "2.4.8"
+    "@applitools/utils" "1.3.16"
     semver "7.3.7"
 
-"@applitools/logger@1.1.27":
-  version "1.1.27"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.27.tgz#afeea769200349a6c4172291e98dde99bbd03301"
-  integrity sha512-lwKCNhuMfLkqxfwYhLalDg2JZNgNj6rEgD8LnozsQdfxqVXThrJb/fkdSaSeUwnF+ljJyR7fnPy+p742p66U0Q==
+"@applitools/logger@1.1.30":
+  version "1.1.30"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.30.tgz#18ec7149f1e4141fb1cf98595fc6d671d481fd06"
+  integrity sha512-dp73z6EwIfA9UkEI9Xwpwxl0blVFkPFJ+JjhYHsMZSMvvfUPSosW70bTblEbSesmsH/GcPIerNyzOdWsMIXejg==
   dependencies:
-    "@applitools/utils" "1.3.13"
+    "@applitools/utils" "1.3.16"
     chalk "4.1.2"
 
 "@applitools/scripts@1.2.0":
@@ -49,10 +49,10 @@
     cli-table3 "0.6.0"
     yargs "15.3.1"
 
-"@applitools/snippets@2.4.5":
-  version "2.4.5"
-  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.5.tgz#4adcbea245b5c4d0b40413670fb709ffcf607ffa"
-  integrity sha512-GoLN1wu8u5/qwdk1ozEElqmr4y7AoMQl0Ka0OzisGdx9/L7R0RzSWQCErjkf4LgKiWKK8j7lde3JT9yjxfritQ==
+"@applitools/snippets@2.4.8":
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.8.tgz#21295baef3951a934c59e8e0cbd7a92eca94b2d5"
+  integrity sha512-YjwI0GIXy53vz+bOXd4GwHXYjrsfkyY1JX3u3wH6OblAIRANYsgNWmNVaAPubktr8f5d78fdm1sA2SD9k4G6Fg==
 
 "@applitools/test-utils@1.5.1":
   version "1.5.1"
@@ -73,10 +73,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.10.tgz#307359d6f668c5fe6b3a7d213405ebe3bf2235b6"
   integrity sha512-CI/5BLB0D/aZn6uL8JJmsErI+TOHCa4Gz5Wi8sJknuPz/V9Ws6jIh9ZCTzvOCDUIp99qLJwD6TSA2BY9aMhCNw==
 
-"@applitools/utils@1.3.13":
-  version "1.3.13"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.13.tgz#21bc8d1211ce9a72b47364e1131d89d51c557e87"
-  integrity sha512-UwA1skl9kzK+WrXu7WyX6A4K4TdIFZbDAcFJq2PA5fhmbviAlk4iFJtQjyopYTdY0sSh3VRSsCPr3DsbFa79AA==
+"@applitools/utils@1.3.16":
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.16.tgz#6d6a67cdfd57731c6393145e66f53a6cc8f72175"
+  integrity sha512-VvBI5iF1OadOpoIKMuocE479tPmxJ7Af80v5zXDAxsqyEdEk3ZDYeDRb6W+SCiN1Uiur6j1iW0OxQ5JAQ/nIAQ==
 
 "@babel/code-frame@^7.0.0":
   version "7.15.8"

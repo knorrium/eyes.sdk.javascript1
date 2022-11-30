@@ -8,7 +8,7 @@ import * as utils from '@applitools/utils'
 
 export type Driver = Playwright.Page & {__applitoolsBrand?: never}
 export type Context = Playwright.Frame & {__applitoolsBrand?: never}
-export type Element = Playwright.ElementHandle & {__applitoolsBrand?: never}
+export type Element<T = Node> = Playwright.ElementHandle<T> & {__applitoolsBrand?: never}
 export type Selector = (string | Playwright.Locator) & {__applitoolsBrand?: never}
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
@@ -112,6 +112,10 @@ export async function findElements(frame: Context, selector: Selector, parent?: 
   const root = parent ?? frame
   return root.$$(selector)
 }
+export async function setElementText(frame: Context, element: Element | Selector, text: string): Promise<void> {
+  if (isSelector(element)) element = await findElement(frame, element)
+  await element.fill(text)
+}
 export async function getViewportSize(page: Driver): Promise<Size> {
   return page.viewportSize()
 }
@@ -144,10 +148,6 @@ export async function takeScreenshot(page: Driver): Promise<Buffer> {
 export async function click(frame: Context, element: Element | Selector): Promise<void> {
   if (isSelector(element)) element = await findElement(frame, element)
   await element.click()
-}
-export async function type(frame: Context, element: Element | Selector, keys: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.type(keys)
 }
 export async function hover(frame: Context, element: Element | Selector): Promise<void> {
   if (isSelector(element)) element = await findElement(frame, element)

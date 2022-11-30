@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue when helper lib inputs were not cleaned up before calling new command
 "@applitools/eyes-selenium":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -25,6 +25,7 @@ Apollo SDK:
     - Fixed bug that caused `extractText` to throw, due to fractional size of the target region
     - Fix dontCloseBatches mapping
     - Fixed issue when current context is not being preserved in ufg mode
+    - Fixed issue when helper lib inputs were not cleaned up before calling new command
 "@applitools/eyes-webdriverio":
   feature:
     - 

@@ -289,11 +289,6 @@ export async function click(browser: Driver, element: Element | Selector): Promi
   const extendedElement = await browser.$(element as any)
   await extendedElement.click()
 }
-export async function type(browser: Driver, element: Element | Selector, keys: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(browser, element)
-  const extendedElement = await browser.$(element as any)
-  await extendedElement.setValue(keys)
-}
 export async function hover(browser: Driver, element: Element | Selector): Promise<any> {
   if (isSelector(element)) element = await findElement(browser, element)
 
@@ -368,6 +363,11 @@ export async function getElementAttribute(browser: Driver, element: Element, att
 export async function getElementText(browser: Driver, element: Element): Promise<string> {
   const extendedElement = await browser.$(element as any)
   return extendedElement.getText()
+}
+export async function setElementText(browser: Driver, element: Element | Selector, text: string): Promise<void> {
+  if (isSelector(element)) element = await findElement(browser, element)
+  const extendedElement = await browser.$(element as any)
+  await extendedElement.setValue(text)
 }
 export async function performAction(browser: Driver, steps: any[]): Promise<void> {
   return browser.touchAction(steps as any)

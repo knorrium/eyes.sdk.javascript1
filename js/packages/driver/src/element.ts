@@ -353,7 +353,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         return ''
       } else {
         this._logger.log('Extracting text of native element with selector', this.selector)
-        return this._spec.getElementText(this.driver.target, this.target)
+        return this._spec.getElementText(this.context.target, this.target)
       }
     })
     this._logger.log('Extracted element text', text)
@@ -612,7 +612,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
 
   async type(value: string): Promise<void> {
     this._logger.log(`Typing text "${value}" in element with selector`, this.selector)
-    await this._spec.type(this.context.target, this.target, value)
+    await this._spec.setElementText(this.context.target, this.target, value)
   }
 
   async preserveState(): Promise<ElementState<TElement>> {
