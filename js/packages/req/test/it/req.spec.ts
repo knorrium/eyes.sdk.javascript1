@@ -33,8 +33,8 @@ describe('req', () => {
   it('merges headers', async () => {
     nock('https://eyesapi.applitools.com').get('/api/hello').matchHeader('Custom-Header', 'true').reply(200, {hello: 'world'})
 
-    const response = await req(new Request('https://eyesapi.applitools.com/api/hello', {headers: {'Custom-Header': 'false'}}), {
-      headers: {'custom-header': 'true'},
+    const response = await req(new Request('https://eyesapi.applitools.com/api/hello', {headers: {'custom-header': 'false'}}), {
+      headers: {'Custom-Header': 'true'},
     })
 
     assert.strictEqual(response.status, 200)
