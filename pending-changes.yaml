@@ -32,7 +32,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 
