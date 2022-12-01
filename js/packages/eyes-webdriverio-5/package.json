@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.38.1",
+  "version": "5.38.2",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -116,9 +116,9 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.2.14",
-    "@applitools/eyes-api": "1.10.6",
-    "@applitools/spec-driver-webdriverio": "1.4.6"
+    "@applitools/core": "1.2.15",
+    "@applitools/eyes-api": "1.10.7",
+    "@applitools/spec-driver-webdriverio": "1.4.7"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",

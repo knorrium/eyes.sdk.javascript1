@@ -10,6 +10,12 @@
 
 
 
+## 5.38.2 - 2022/12/1
+
+### Features
+### Bug fixes
+- Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+
 ## 5.38.1 - 2022/11/29
 
 ### Features
