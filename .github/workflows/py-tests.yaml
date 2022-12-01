@@ -70,7 +70,7 @@ on:
 
 jobs:
   dist-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -95,7 +95,7 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.unit_tests }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu-20.04, macos-latest, windows-latest ]
         python-version: [ '2.7', '3.6', '3.11' ]
         exclude:
           - os: macos-latest
@@ -121,7 +121,7 @@ jobs:
   unit-tests-alpine:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.unit_tests }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     container: "alpine:latest"
     steps:
       - uses: actions/checkout@v3
@@ -141,7 +141,7 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.installation_tests }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu-20.04, macos-latest, windows-latest ]
         python-version: [ '2.7', '3.11' ]
         exclude:
           - os: macos-latest
@@ -168,7 +168,7 @@ jobs:
       max-parallel: 1
       matrix:
         python-version: [ '3.6', '3.11' ]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -201,7 +201,7 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.functional_tests }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-20.04, windows-latest ]
         python-version: [ '2.7', '3.6', '3.11' ]
         exclude:
           - os: windows-latest
@@ -232,7 +232,7 @@ jobs:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.functional_tests }}
     concurrency: sauce_group_2
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -254,7 +254,7 @@ jobs:
   robot-framework-tests:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.robotframework_tests }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -277,7 +277,7 @@ jobs:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.robotframework_tests }}
     concurrency: sauce_group_2
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -307,7 +307,7 @@ jobs:
       - robot-framework-tests
       - sauce-robot-framework-tests
     if: ${{ always() && github.event_name == 'schedule' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: slackapi/slack-github-action@v1.21.0
         env:
