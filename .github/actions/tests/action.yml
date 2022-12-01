@@ -97,8 +97,6 @@ runs:
         fi
         echo "::endgroup::"
 
-        openssl version
-
         echo "::group::Running tests"
         if [ ! -z "${{inputs.test-type}}" ]; then npm run test:${{inputs.test-type}}; else npm run test --if-present; fi
         echo "::endgroup::"
