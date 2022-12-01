@@ -63,7 +63,7 @@ describe('client', () => {
         }
       })
 
-      it.only(`${platform} works with a proxy server`, async () => {
+      it(`${platform} works with a proxy server`, async () => {
         let proxyServer
         const [driver, destroyDriver] = await spec.build(env[platform])
         try {
