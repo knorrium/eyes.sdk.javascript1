@@ -1,15 +1,14 @@
 import {makeLogger, type Logger} from '@applitools/logger'
+import {generateCertificate} from './generate-certificate'
 import * as http from 'http'
 import * as https from 'https'
 import * as net from 'net'
-import * as pem from 'pem'
 
 export type ProxyServerOptions = {
   agentId?: string
   logger?: Logger
 }
 
-// This should eventually go to `test-server` package
 export async function makeProxyServer({agentId = 'TestProxy', logger}: ProxyServerOptions = {}) {
   logger = logger?.extend({label: 'proxy-server'}) ?? makeLogger({label: 'proxy-server'})
 
@@ -19,7 +18,7 @@ export async function makeProxyServer({agentId = 'TestProxy', logger}: ProxyServ
     const proxyRequest = https.request(request.url, {
       method: request.method,
       headers: {...request.headers, 'x-proxy-agent': agentId},
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
     })
 
     proxyRequest.on('response', proxyResponse => {
@@ -51,11 +50,8 @@ export async function makeProxyServer({agentId = 'TestProxy', logger}: ProxyServ
     })
   })
 
-  const authority = await makeCertificate({days: 1, selfSigned: true})
-  const spoofingServer = await makeServer({
-    key: authority.serviceKey,
-    cert: authority.certificate,
-  })
+  const authority = await generateCertificate({days: 1})
+  const spoofingServer = await makeServer(authority)
 
   spoofingServer.on('request', (request, response) => {
     const proxyRequest = http.request({
@@ -86,15 +82,6 @@ export async function makeProxyServer({agentId = 'TestProxy', logger}: ProxyServ
       spoofingServer.close()
     },
   }
-}
-
-async function makeCertificate(options?: pem.CertificateCreationOptions): Promise<pem.CertificateCreationResult> {
-  return new Promise((resolve, reject) => {
-    pem.createCertificate(options, (error, result) => {
-      if (error) reject(error)
-      else resolve(result)
-    })
-  })
 }
 
 async function makeServer<TOptions extends Record<string, any>>(

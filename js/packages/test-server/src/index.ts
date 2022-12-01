@@ -1,5 +1,6 @@
 export * from './proxy-server'
 export * from './restrict-network'
+export * from './generate-certificate'
 
 export {makeProxyServer as testProxyServer} from './proxy-server'
 
