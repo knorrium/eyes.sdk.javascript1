@@ -404,6 +404,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
 
   async scrollTo(offset: Location, options?: {force: boolean}): Promise<Location> {
     return this.withRefresh(async () => {
+      this._logger.log(`Scrolling to offset (${offset.x}, ${offset.y}) element with selector`, this.selector)
       offset = utils.geometry.round({x: Math.max(offset.x, 0), y: Math.max(offset.y, 0)})
       if (this.driver.isWeb) {
         let actualOffset = await this.context.execute(snippets.scrollTo, [this, offset])
@@ -499,7 +500,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         }
 
         // vertical scrolling
-        const yPadding = Math.max(Math.floor(effectiveRegion.height * 0.05), touchPadding + 3)
+        const yPadding = Math.max(Math.floor(effectiveRegion.height * 0.08), touchPadding + 3)
         const xTrack = Math.floor(effectiveRegion.x + 5) // a little bit off left border
         const yBottom = effectiveRegion.y + effectiveRegion.height - yPadding
         const yDirection = remainingOffset.y > 0 ? 'down' : 'up'
@@ -559,7 +560,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
             await this._spec.performAction(this.driver.target, action)
           }
         } else if (actions.length > 0) {
-          await this._spec.performAction(this.driver.target, [].concat(...actions))
+          await this._spec.performAction(this.driver.target, actions.flat())
         }
 
         const actualScrollableRegion = await this.getClientRegion()
@@ -616,13 +617,10 @@ export class Element<TDriver, TContext, TElement, TSelector> {
   }
 
   async preserveState(): Promise<ElementState<TElement>> {
-    if (this.driver.isNative) return
-    // TODO create single js snippet
     const scrollOffset = await this.getScrollOffset()
-    const transforms = await this.context.execute(snippets.getElementStyleProperties, [
-      this,
-      ['transform', '-webkit-transform'],
-    ])
+    const transforms = this.driver.isWeb
+      ? await this.context.execute(snippets.getElementStyleProperties, [this, ['transform', '-webkit-transform']])
+      : null
     if (!utils.types.has(this._state, ['scrollOffset', 'transforms'])) {
       this._state.scrollOffset = scrollOffset
       this._state.transforms = transforms
@@ -631,7 +629,6 @@ export class Element<TDriver, TContext, TElement, TSelector> {
   }
 
   async restoreState(state: ElementState<TElement> = this._state): Promise<void> {
-    if (this.driver.isNative) return
     if (state.scrollOffset) await this.scrollTo(state.scrollOffset)
     if (state.transforms) await this.context.execute(snippets.setElementStyleProperties, [this, state.transforms])
     if (state === this._state) {

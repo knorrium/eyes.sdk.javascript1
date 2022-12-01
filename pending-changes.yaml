@@ -13,6 +13,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
+    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
 "@applitools/eyes-selenium":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -26,11 +27,12 @@ Apollo SDK:
     - Fix dontCloseBatches mapping
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
+    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
 "@applitools/eyes-playwright":
   feature:
     - 
@@ -54,6 +56,7 @@ Apollo SDK:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices
     - Fixed issue when current context is not being preserved in ufg mode
+    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
 "@applitools/eyes-puppeteer":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -98,6 +101,7 @@ Apollo SDK:
     - Fixed bug that caused `extractText` to throw, due to fractional size of the target region
     - Fix dontCloseBatches mapping
     - Fixed issue when current context is not being preserved in ufg mode
+    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
 "@applitools/eyes-cypress":
   feature:
     - 

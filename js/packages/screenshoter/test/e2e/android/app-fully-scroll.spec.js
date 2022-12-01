@@ -28,5 +28,13 @@ describe('screenshoter android app', () => {
       driver,
       logger,
     })
+
+    await test({
+      type: 'android',
+      tag: 'app-fully-scroll-after',
+      wait: 1500,
+      driver,
+      logger,
+    })
   })
 })

@@ -29,5 +29,13 @@ describe('screenshoter ios app', () => {
       driver,
       logger,
     })
+
+    await test({
+      type: 'ios',
+      tag: 'app-fully-scroll-after',
+      wait: 1500,
+      driver,
+      logger,
+    })
   })
 })
