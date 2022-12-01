@@ -27,11 +27,13 @@ export class Configuration extends api.Configuration<Element, Selector> {
 
 export type OCRRegion = api.OCRRegion<Element, Selector>
 
-export type CheckSettingsPlain = api.CheckSettingsAutomationPlain<Element, Selector>
+export type CheckSettingsAutomationPlain = api.CheckSettingsAutomationPlain<Element, Selector>
 
-export class CheckSettings extends api.CheckSettingsAutomation<Element, Selector> {
+export class CheckSettingsAutomation extends api.CheckSettingsAutomation<Element, Selector> {
   protected static readonly _spec = sdk
 }
+
+export class CheckSettings extends CheckSettingsAutomation {}
 
 export const Target = {...api.Target, spec: sdk} as api.Target<Element, Selector>
 

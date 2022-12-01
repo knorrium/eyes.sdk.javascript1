@@ -17,7 +17,7 @@ export class Configuration extends api.Configuration<never, never> {}
 
 export type OCRRegion = api.OCRRegion<never, never>
 
-export const CheckSettings = api.CheckSettingsImage
+export class CheckSettings extends api.CheckSettingsImage {}
 
 export const Target: api.TargetImage = api.CheckSettingsImage as any
 

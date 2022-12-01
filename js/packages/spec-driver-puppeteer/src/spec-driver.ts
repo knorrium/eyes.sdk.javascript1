@@ -5,7 +5,9 @@ import * as utils from '@applitools/utils'
 
 export type Driver = Puppeteer.Page & {__applitoolsBrand?: never}
 export type Context = Puppeteer.Frame & {__applitoolsBrand?: never}
-export type Element<T extends Node = globalThis.Element> = Puppeteer.ElementHandle<T> & {__applitoolsBrand?: never}
+export type Element<T extends globalThis.Element = globalThis.Element> = Puppeteer.ElementHandle<T> & {
+  __applitoolsBrand?: never
+}
 export type Selector = string & {__applitoolsBrand?: never}
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
