@@ -402,12 +402,13 @@ def test_enabled_batch_close_marshal():
         .set_batch_ids("batch id")
         .set_url("https://server.url")
     )
+    settings.batch_id = "batch id"
 
     result, errors = serializer.dump(settings)
     assert errors == {}
     assert result == {
         "apiKey": "api key",
-        "batchIds": ["batch id"],
+        "batchId": "batch id",
         "proxy": {
             "password": "pass",
             "url": "http://user:pass@host:80",

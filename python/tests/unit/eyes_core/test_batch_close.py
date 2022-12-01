@@ -11,10 +11,16 @@ def test_pass_multiple_batches_ids(monkeypatch):
         assert commands.mock_calls == [
             call.get_instance("eyes.sdk.python", ANY),
             call.get_instance().core_close_batch(
-                {
-                    "batchIds": ["test batch-id", "test-batch-second"],
-                    "apiKey": "abc",
-                }
+                [
+                    {
+                        "batchId": "test batch-id",
+                        "apiKey": "abc",
+                    },
+                    {
+                        "batchId": "test-batch-second",
+                        "apiKey": "abc",
+                    },
+                ]
             ),
         ]
 
@@ -27,10 +33,12 @@ def test_batch_close_uses_proxy():
         assert commands.mock_calls == [
             call.get_instance("eyes.sdk.python", ANY),
             call.get_instance().core_close_batch(
-                {
-                    "batchIds": ["test-id"],
-                    "apiKey": ANY,
-                    "proxy": {"url": "http://localhost:80"},
-                }
+                [
+                    {
+                        "batchId": "test-id",
+                        "apiKey": ANY,
+                        "proxy": {"url": "http://localhost:80"},
+                    }
+                ]
             ),
         ]

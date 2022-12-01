@@ -13,6 +13,7 @@ class _EnabledBatchClose(object):
     server_url = attr.ib()  # type: Text
     api_key = attr.ib()  # type: Text
     proxy = attr.ib(default=None)  # type: Optional[ProxySettings]
+    batch_id = attr.ib(default=None)  # type: Text
 
     def set_url(self, url):
         # type: (Text) -> _EnabledBatchClose
@@ -37,7 +38,10 @@ class _EnabledBatchClose(object):
         from applitools.selenium.schema import marshal_enabled_batch_close
 
         cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
-        marshaled = marshal_enabled_batch_close(self)
+        marshaled = []
+        for batch_id in self._ids:
+            self.batch_id = batch_id
+            marshaled.append(marshal_enabled_batch_close(self))
         cmd.core_close_batch(marshaled)
 
 

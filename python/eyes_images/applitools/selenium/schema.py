@@ -406,7 +406,7 @@ class CloseSettings(USDKSchema):
 
 
 class CloseBatchSettings(USDKSchema):
-    _ids = List(String(), dump_to="batchIds")
+    batch_id = String(dump_to="batchId")
     server_url = String(dump_to="serverUrl")
     api_key = String(dump_to="apiKey")
     proxy = Nested(Proxy)

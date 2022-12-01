@@ -71,7 +71,7 @@ class CommandExecutor(object):
         self._checked_command("Core.setViewportSize", {"target": target, "size": size})
 
     def core_close_batch(self, close_batch_settings):
-        # type: (dict) -> None
+        # type: (list) -> None
         self._checked_command("Core.closeBatch", {"settings": close_batch_settings})
 
     def core_delete_test(self, close_test_settings):
