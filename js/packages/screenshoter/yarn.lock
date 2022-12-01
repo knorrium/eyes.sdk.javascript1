@@ -16,20 +16,10 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.7":
-  version "1.11.7"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.7.tgz#43ba9d2abfd4c03f0668f590dbc8d4d88a38b2a7"
-  integrity sha512-8tRq49oaGRK1HkyAPN6gLyGZ59rtnlmEKtbQXs7CpSCMOYzhKNnEjJgG1NZbnsTU/1F5zErfC5AGa2851XdLqw==
-  dependencies:
-    "@applitools/logger" "1.1.30"
-    "@applitools/snippets" "2.4.8"
-    "@applitools/utils" "1.3.16"
-    semver "7.3.7"
-
-"@applitools/driver@^1.11.8":
-  version "1.11.8"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.8.tgz#7bf4788f23f2bb1e8074240fb9322f04ce52dd33"
-  integrity sha512-f47g1LHTkhITKls5MilMWeyUENNSECK8TL4Z6z1rLRyMwYaF5Spir0lh2QIARt7mzCbF80o7omLtnRwZOPfTSA==
+"@applitools/driver@1.11.9", "@applitools/driver@^1.11.9":
+  version "1.11.9"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.9.tgz#cebe7f618af024de2ee796c07e0397a0216adacf"
+  integrity sha512-midFcdOdSh+u97dBzbMsDwJ4k99iBYlG81NhOfMv2clU95ZbWUo1jz36bj6jN3pBHgSJ5bwHNL0TkvaxBqtJ0Q==
   dependencies:
     "@applitools/logger" "1.1.30"
     "@applitools/snippets" "2.4.8"
@@ -69,12 +59,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.8.tgz#21295baef3951a934c59e8e0cbd7a92eca94b2d5"
   integrity sha512-YjwI0GIXy53vz+bOXd4GwHXYjrsfkyY1JX3u3wH6OblAIRANYsgNWmNVaAPubktr8f5d78fdm1sA2SD9k4G6Fg==
 
-"@applitools/spec-driver-webdriverio@^1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.6.tgz#09cd83f9973db8dd9c7f02b8b8699259d8d3a1f8"
-  integrity sha512-djwpu3GXAj7K8mASQaeXEmnbh0JZsIAEoduJemv5be0YczT7liu9WCYAHUjHqRZm5XgerNUiIn7nFD4g4hX3Sw==
+"@applitools/spec-driver-webdriverio@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.7.tgz#da1ca0c2386de630e6189990282f2ef0666021a5"
+  integrity sha512-ZVjOZnc0y7mql/+tMLQK54OmE8Zw9SmAfVOZt5svC1s3SsEXD9dvugbz3Ubr+yQctj6jmRweMlqgALNoEv7m3Q==
   dependencies:
-    "@applitools/driver" "1.11.7"
+    "@applitools/driver" "1.11.9"
     "@applitools/utils" "1.3.16"
 
 "@applitools/test-utils@1.5.1":
