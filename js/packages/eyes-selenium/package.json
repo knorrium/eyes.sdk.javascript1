@@ -65,9 +65,9 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.2.14",
-    "@applitools/eyes-api": "1.10.6",
-    "@applitools/spec-driver-selenium": "1.5.8"
+    "@applitools/core": "1.2.15",
+    "@applitools/eyes-api": "1.10.7",
+    "@applitools/spec-driver-selenium": "1.5.9"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
