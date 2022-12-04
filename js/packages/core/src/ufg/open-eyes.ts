@@ -38,10 +38,12 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
 
     if (spec?.isDriver(target)) {
       const driver = await makeDriver({spec, driver: target, logger, customConfig: {disableHelper: true}})
+      const currentContext = driver.currentContext
 
       if (settings.environment?.viewportSize) {
         await driver.setViewportSize(settings.environment.viewportSize)
       }
+      await currentContext.focus()
     }
 
     const account = await core.getAccountInfo({settings, logger})

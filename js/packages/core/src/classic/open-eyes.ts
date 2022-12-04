@@ -36,6 +36,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       : null
 
     if (driver) {
+      const currentContext = driver.currentContext
       settings.environment ??= {}
       if (!settings.environment.viewportSize || driver.isMobile) {
         const size = await driver.getViewportSize()
@@ -74,6 +75,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
           settings.environment.os += ` ${driver.platformVersion}`
         }
       }
+      await currentContext.focus()
     }
 
     const eyes = await core.openEyes({settings, logger})
