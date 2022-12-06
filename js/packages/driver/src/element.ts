@@ -209,7 +209,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
       if (!attrContentRegion && this.driver.isIOS) {
         try {
           const type = await this.getAttribute('type')
-          if (type !== 'XCUIElementTypeScrollView') {
+          if (type === 'XCUIElementTypeScrollView') {
             const [child] = await this.driver.elements({
               type: 'xpath',
               selector: '//XCUIElementTypeScrollView[1]/*', // We cannot be sure that our element is the first one
