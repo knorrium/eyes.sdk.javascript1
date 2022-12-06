@@ -14,6 +14,7 @@ Apollo SDK:
   bug-fix:
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-selenium":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -28,16 +29,17 @@ Apollo SDK:
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
-    - 
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-protractor":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -57,11 +59,12 @@ Apollo SDK:
     - Fixed the issue with screenshots being taken on chrome-emulated devices
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
-    - 
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -75,6 +78,7 @@ Apollo SDK:
     - Added `ignoreColors` method to `CheckSettings` to set a match level
   bug-fix:
     - Fixed incorrect calculation of the target element position.
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-nightwatch":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -93,16 +97,17 @@ Apollo SDK:
     - Fix dontCloseBatches mapping
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-cypress":
   feature:
     - 
   bug-fix:
-    - 
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-storybook":
   feature:
     - Deprecated "Content" match level value in favor of "IgnoreColors"
   bug-fix:
-    - 
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -148,6 +153,7 @@ Apollo SDK:
     - Better support in DOM slot element
     - Fixed some issues with helper library usage
     - Fixed the issue with screenshots being taken on chrome-emulated devices
+    - Handle fake shadowRoot with UFG
 eyes-browser-extension:
   feature:
     - Added new selector extensions `child` and `fallback`

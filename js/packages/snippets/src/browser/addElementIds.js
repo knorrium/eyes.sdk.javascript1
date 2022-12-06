@@ -2,7 +2,11 @@ function addElementIds([elements, ids]) {
   return elements.map((element, index) => {
     const path = [element]
     if (element.getRootNode) {
-      for (let root = element.getRootNode(); root !== document; root = root.host.getRootNode()) {
+      for (
+        let root = element.getRootNode();
+        root !== document && root.constructor && root.constructor.name === 'ShadowRoot';
+        root = root.host.getRootNode()
+      ) {
         path.push(root.host)
       }
     }
