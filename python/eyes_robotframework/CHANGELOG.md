@@ -1,4 +1,4 @@
-## [vNext]
+## [5.10.0] - 2022-12-06
 ### Added
 - `Create Batch Info` keyword now accepts optional notify_on_completion argument [Trello 3084](https://trello.com/c/YkjxDWWz)
 - notify_on_completion can be specified in batch section of config [Trello 3084](https://trello.com/c/YkjxDWWz)
