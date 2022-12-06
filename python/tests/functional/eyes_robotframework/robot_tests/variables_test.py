@@ -41,7 +41,7 @@ def get_variables(
                 desired_caps.update(
                     {
                         "automationName": "UiAutomator2",
-                        "app": "storage:filename=eyes-android-hello-world-nmg.apk",
+                        "app": "storage:filename=e2e_applitoolsify_test.apk",
                         "clearSystemFiles": True,
                         "noReset": True,
                     }

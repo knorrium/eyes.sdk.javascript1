@@ -23,6 +23,7 @@ class ConfigurationKeywords(LibraryComponent):
             "started_at": (datetime, str, None),
             "batch_sequence_name": (str, None),
             "batch_id": (str, None),
+            "notify_on_completion": (bool, None),
         },
     )
     def create_batch_info(
@@ -31,6 +32,7 @@ class ConfigurationKeywords(LibraryComponent):
         started_at=None,  # type: Optional[Union[datetime,Text]]
         batch_sequence_name=None,  # type: Optional[Text]
         batch_id=None,  # type: Optional[Text]
+        notify_on_completion=None,  # type: Optional[bool]
     ):
         # type: (...) -> Text
         """
@@ -46,7 +48,7 @@ class ConfigurationKeywords(LibraryComponent):
         - Datetime variable: See [https://robotframework.org/robotframework/latest/libraries/DateTime.html|DateTime library]
 
         *Example:*
-            | ${batch_id}= | Create Eyes Batch |
+            | ${batch_id}= | Create Batch Info |
         """
 
         if started_at:
@@ -59,6 +61,8 @@ class ConfigurationKeywords(LibraryComponent):
         )
         if batch_id:
             batch = batch.with_batch_id(batch_id)
+        if notify_on_completion is not None:
+            batch.notify_on_completion = notify_on_completion
         self.ctx.register_or_get_batch(batch)
         return batch.id
 

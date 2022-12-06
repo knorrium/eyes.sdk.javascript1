@@ -91,6 +91,7 @@ class BatchInfoTrafaret(trf.Trafaret):
         {
             trf.Key("id", optional=True): trf.String,
             trf.Key("name", optional=True): trf.String,
+            trf.Key("notify_on_completion", optional=True): trf.Bool,
             trf.Key("batch_sequence_name", optional=True)
             >> "sequence_name": trf.String,
             trf.Key("started_at", optional=True): trf.DateTime,

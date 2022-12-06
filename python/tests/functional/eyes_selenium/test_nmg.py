@@ -43,7 +43,7 @@ def test_nmg_ios_basic(sauce_driver_url):
 @pytest.mark.sauce
 def test_nmg_android_basic(sauce_driver_url):
     caps = {
-        "app": "storage:filename=eyes-android-hello-world-nmg.apk",
+        "app": "storage:filename=e2e_applitoolsify_test.apk",
         "platformName": "Android",
         "platformVersion": "11.0",
         "deviceName": "Android GoogleAPI Emulator",

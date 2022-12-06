@@ -37,6 +37,7 @@ app_name: YOUR_APP_NAME
 #batch:  #optional
 #  id: YOUR_BATCH_ID  #optional
 #  name: YOUR_BATCH_NAME
+#  notify_on_completion: true
 #  batch_sequence_name: YOUR_BATCH_SEQUENCE_NAME  #optional
 #  properties:    #optional
 #    - name: YOUR_BATCH_PROPERTY_NAME
