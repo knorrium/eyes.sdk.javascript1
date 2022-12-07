@@ -16,13 +16,23 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.9", "@applitools/driver@^1.11.9":
-  version "1.11.9"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.9.tgz#cebe7f618af024de2ee796c07e0397a0216adacf"
-  integrity sha512-midFcdOdSh+u97dBzbMsDwJ4k99iBYlG81NhOfMv2clU95ZbWUo1jz36bj6jN3pBHgSJ5bwHNL0TkvaxBqtJ0Q==
+"@applitools/driver@1.11.10":
+  version "1.11.10"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.10.tgz#17cc1a876a0720bdc02f8337073075c59a605ca2"
+  integrity sha512-nJSepWewnY1dcTrigjMvgXbU0SmO94xIqKdCN27yALjJatSbi7t1T44F/wexkzwocJvNqlwP4uT6s4+aiLtvfw==
   dependencies:
     "@applitools/logger" "1.1.30"
-    "@applitools/snippets" "2.4.8"
+    "@applitools/snippets" "2.4.9"
+    "@applitools/utils" "1.3.16"
+    semver "7.3.7"
+
+"@applitools/driver@^1.11.11":
+  version "1.11.11"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.11.tgz#705ab3d43bdd0cbded416c0c2f08022a1919e1c4"
+  integrity sha512-/Z5bMebXHtDMWn3Z5VjcxYomp6BPbXASbngzpRXd6CvnWNG48MufOtP7uinYtjZCmbysp0uTRK/0OpzQSI1bSQ==
+  dependencies:
+    "@applitools/logger" "1.1.30"
+    "@applitools/snippets" "2.4.9"
     "@applitools/utils" "1.3.16"
     semver "7.3.7"
 
@@ -54,17 +64,17 @@
     cli-table3 "0.6.0"
     yargs "15.3.1"
 
-"@applitools/snippets@2.4.8":
-  version "2.4.8"
-  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.8.tgz#21295baef3951a934c59e8e0cbd7a92eca94b2d5"
-  integrity sha512-YjwI0GIXy53vz+bOXd4GwHXYjrsfkyY1JX3u3wH6OblAIRANYsgNWmNVaAPubktr8f5d78fdm1sA2SD9k4G6Fg==
+"@applitools/snippets@2.4.9":
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.9.tgz#9029bcfd78c21fcc776a2e7a7a27e37eaa961453"
+  integrity sha512-5pz6OUk69Nu2rff0Bzoy5Qri8Kn35sqzY5iBpmaeNYpoLE/jMmf5Q5GpibqucwBMMTcigmOaaqVWlgO3wo4o3g==
 
-"@applitools/spec-driver-webdriverio@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.7.tgz#da1ca0c2386de630e6189990282f2ef0666021a5"
-  integrity sha512-ZVjOZnc0y7mql/+tMLQK54OmE8Zw9SmAfVOZt5svC1s3SsEXD9dvugbz3Ubr+yQctj6jmRweMlqgALNoEv7m3Q==
+"@applitools/spec-driver-webdriverio@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.8.tgz#36603a7ccf7b9d1ca90fb2c2214b2deca780f4d5"
+  integrity sha512-oCwkN5IbT40lwPWCN9vRfchokcSjRlXq+HXCvHtzaRqrJtnPqu78DPJ8isegC+n56UKaMD4TdQlGqrm2MguxNg==
   dependencies:
-    "@applitools/driver" "1.11.9"
+    "@applitools/driver" "1.11.10"
     "@applitools/utils" "1.3.16"
 
 "@applitools/test-utils@1.5.1":
