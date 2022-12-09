@@ -1,6 +1,7 @@
 from base64 import b64encode
 from hashlib import md5
 from os import chmod, path, remove
+from shutil import copy
 from sys import platform
 
 from setuptools import setup
@@ -96,8 +97,22 @@ def download(executable, version, dry_run):
     return package_bin_name
 
 
+def copy_built(build_dir, executable, dry_run):
+    ext = ".exe" if executable == "win" else ""
+    package_bin_name = "bin/eyes-universal" + ext
+    if not dry_run:
+        relative_bin_name = "applitools/eyes_universal/" + package_bin_name
+        built_file_name = "{build_dir}/eyes-universal-{exe}{ext}".format(
+            build_dir=build_dir, exe=executable, ext=ext
+        )
+        copy(built_file_name, relative_bin_name)
+        chmod(relative_bin_name, 0o755)
+    return package_bin_name
+
+
 # By default all commands download current platform executable
 selected_executable = current_platform_executable()
+usdk_build_dir = None
 commands = set()
 
 
@@ -116,8 +131,16 @@ if _bdist_wheel:
     # target platform instead of current one.
     @commands.add
     class bdist_wheel(_bdist_wheel):  # noqa
+        user_options = _bdist_wheel.user_options + [
+            ("usdk-build-dir=", None, "directory with pre-built Universal SDK bins"),
+        ]
+
+        def initialize_options(self):
+            _bdist_wheel.initialize_options(self)
+            self.usdk_build_dir = None  # noqa
+
         def finalize_options(self):
-            global selected_executable
+            global selected_executable, usdk_build_dir
             _bdist_wheel.finalize_options(self)
             # When plat-name argument is *not* provided to bdist_wheel, wheel is marked
             # with 'any' platform tag because it is also marked as "universal".
@@ -125,6 +148,7 @@ if _bdist_wheel:
             # packaged is not cross-platform, so mark it with current platform's name.
             self.plat_name_supplied = True  # noqa
             selected_executable = platform_executable(self.plat_name)
+            usdk_build_dir = self.usdk_build_dir
 
 
 # Download previously selected executable.
@@ -137,9 +161,17 @@ class build_py(_build_py):  # noqa
             version = self.distribution.get_version()
             version = ".".join(version.split(".")[:3])  # drop post-build number
             self.mkpath("applitools/eyes_universal/bin")
-            self.announce("downloading %s executable" % selected_executable, 2)
-            downloaded_bin = download(selected_executable, version, self.dry_run)
-            self.package_data[""].append(downloaded_bin)
+            if usdk_build_dir:
+                self.announce(
+                    "copying %s executable from %s"
+                    % (selected_executable, usdk_build_dir),
+                    2,
+                )
+                binary = copy_built(usdk_build_dir, selected_executable, self.dry_run)
+            else:
+                self.announce("downloading %s executable" % selected_executable, 2)
+                binary = download(selected_executable, version, self.dry_run)
+            self.package_data[""].append(binary)
         return _build_py.get_data_files(self)
 
 
