@@ -38,6 +38,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-var-requires": "off",
-    "no-only-tests/no-only-tests": ["error", {"fix": true}]
+    "no-only-tests/no-only-tests": ["error", {"fix": true}],
+    "node/no-extraneous-import": "error"
   }
 }
