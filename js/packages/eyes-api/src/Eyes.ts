@@ -291,7 +291,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     config.screenshot.fully ??= false
 
     let type: 'classic' | 'ufg'
-    if (settings.nmgOptions.nonNMGCheck === 'addToAllDevices') {
+    if (settings?.nmgOptions?.nonNMGCheck === 'addToAllDevices') {
       type = this._runner.config.type === 'ufg' ? 'classic' : 'ufg'
     }
 
