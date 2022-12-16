@@ -41,4 +41,22 @@ describe('check', () => {
     await check({settings: {matchLevel: 'Strict'}})
     await assert.rejects(check({settings: {sendDom: false}}))
   })
+
+  it('should merge default overlap with provided overlap', async () => {
+    const defaultOverlap = {top: 10, bottom: 50}
+    const overlaps = [undefined, {}, {bottom: 0}, {bottom: 0, top: 0}]
+
+    const fakeCore = makeFakeCore({
+      hooks: {
+        check: ({settings}) => {
+          assert.deepStrictEqual(settings.overlap, {...defaultOverlap, ...overlaps[settings.stepIndex]})
+        },
+      },
+    })
+    const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
+    const check = makeCheck({eyes: fakeEyes as any})
+    for (const [stepIndex, overlap] of overlaps.entries()) {
+      await check({settings: {stepIndex, overlap}})
+    }
+  })
 })

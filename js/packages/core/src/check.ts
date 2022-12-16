@@ -38,7 +38,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
     settings.stitchMode ??= 'Scroll'
     settings.hideScrollbars ??= true
     settings.hideCaret ??= true
-    settings.overlap ??= {top: 10, bottom: 50}
+    settings.overlap = {top: 10, bottom: 50, ...settings?.overlap}
     settings.matchLevel ??= 'Strict'
     settings.ignoreCaret ??= true
     settings.sendDom ??=
