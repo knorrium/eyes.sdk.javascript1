@@ -5,7 +5,7 @@ const {presult} = require('@applitools/functional-commons');
 const makeGetStoryData = require('../../src/getStoryData');
 const renderStoryWithClientAPI = require('../../dist/renderStoryWithClientAPI');
 const logger = require('../util/testLogger');
-const {deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core');
+const {deserializeDomSnapshotResult} = require('../fixtures/deserializeDomSnapshotResult');
 
 describe('getStoryData', () => {
   const pageFunctions = {
@@ -155,7 +155,7 @@ describe('getStoryData', () => {
     } catch (e) {
       err = e;
     }
-    expect(err.message).to.eql('IllegalArgument: waitBeforeCapture < 0');
+    expect(err.message).to.eql('IllegalArgument: waitBeforeCapture must be >= 0. Received -5');
   });
 
   it('throws when getting a negative waitBeforeCapture', async () => {
@@ -184,7 +184,7 @@ describe('getStoryData', () => {
     } catch (e) {
       err = e;
     }
-    expect(err.message).to.eql('IllegalArgument: waitBeforeCapture < 0');
+    expect(err.message).to.eql('IllegalArgument: waitBeforeCapture must be >= 0. Received -50');
   });
 
   it('throws when fails to render a story with api', async () => {

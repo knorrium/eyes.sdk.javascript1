@@ -399,6 +399,9 @@ export function makeEyesRequests({
           updateBaselineIfDifferent: settings.updateBaselineIfDifferent,
         },
       },
+      query: {
+        updateBaseline: test.isNew ? settings?.updateBaselineIfNew : settings?.updateBaselineIfDifferent,
+      },
       hooks: {
         beforeRetry({response, stop}) {
           if (response.status === 404) return stop

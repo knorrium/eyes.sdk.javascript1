@@ -1,8 +1,8 @@
 const getStoryByIndex = require('./getStoryByIndex');
 
-function runRunBeforeScript(index) {
+async function runRunBeforeScript(index) {
   try {
-    const story = getStoryByIndex(index);
+    const story = await getStoryByIndex(index);
     if (!story) return;
     return story.parameters.eyes.runBefore({rootEl: document.getElementById('root'), story: story});
   } catch (ex) {

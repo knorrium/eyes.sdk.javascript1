@@ -65,9 +65,10 @@ function fakeEyesServer({
             status: 'rendered',
             imageLocation: `imageLoc_${renderId}`,
             domLocation: `domLoc_${renderId}`,
+            imagePositionInActiveFrame: {x: 0, y: 0},
             selectorRegions: regions.map(region => {
               try {
-                return [JSON.parse(region)];
+                return [JSON.parse(region.selector)];
               } catch (ex) {}
               return [{x: 1, y: 2, width: 3, height: 4}];
             }),
@@ -85,6 +86,9 @@ function fakeEyesServer({
   // put resource
   app.put('/resources/sha256/:hash', (_req, res) => {
     res.send({success: true});
+  });
+  app.put('/results', (_req, res) => {
+    res.status(201).send({success: true});
   });
 
   app.post('/job-info', (req, res) => {

@@ -3,7 +3,16 @@ const {describe, it, beforeEach, afterEach} = require('mocha');
 const {expect} = require('chai');
 const generateConfig = require('../../src/generateConfig');
 
-const sideEffectConfig = {testConcurrency: 5, storyDataGap: 5};
+const sideEffectConfig = {
+  testConcurrency: 5,
+  storyDataGap: 10,
+  serverUrl: 'https://eyesapi.applitools.com',
+  viewportSize: {width: 1024, height: 600},
+  renderers: [{name: 'chrome', width: 1024, height: 768}],
+  saveNewTests: true,
+  keepBatchOpen: undefined,
+  fully: true,
+};
 
 describe('generateConfig', function() {
   let env;
@@ -20,8 +29,7 @@ describe('generateConfig', function() {
     const config = generateConfig({
       defaultConfig: {bla: 1},
     });
-
-    expect(config).to.eql({bla: 1, ...sideEffectConfig});
+    expect(config).to.deep.eql({bla: 1, ...sideEffectConfig});
   });
 
   it('handles argv', () => {

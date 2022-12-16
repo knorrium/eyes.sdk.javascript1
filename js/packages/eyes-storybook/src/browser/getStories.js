@@ -104,9 +104,10 @@ async function getStories({timeout = DEFAULT_TIMEOUT} = {timeout: DEFAULT_TIMEOU
     }
   }
 
-  function getStoriesThroughClientAPI(clientApi) {
-    return clientApi.getStories().map((story, index) => {
-      const {name, kind, parameters} = story;
+  async function getStoriesThroughClientAPI(clientApi) {
+    const stories = await clientApi.getStories();
+    return stories.map((story, index) => {
+      const {name, kind, parameters, id} = story;
       const hasEyesParameters =
         parameters && parameters.eyes && typeof parameters.eyes === 'object';
       let parametersIfSerialized, error;
@@ -136,6 +137,7 @@ async function getStories({timeout = DEFAULT_TIMEOUT} = {timeout: DEFAULT_TIMEOU
         index,
         name,
         kind,
+        id,
         parameters: parametersIfSerialized,
         error,
       };

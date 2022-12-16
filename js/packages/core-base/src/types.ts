@@ -74,7 +74,7 @@ type CustomProperty = {
   name: string
   value: string
 }
-type Batch = {
+export type Batch = {
   id?: string
   name?: string
   sequenceName?: string

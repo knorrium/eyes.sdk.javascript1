@@ -108,6 +108,7 @@ Apollo SDK:
 "@applitools/eyes-storybook":
   feature:
     - Deprecated "Content" match level value in favor of "IgnoreColors"
+    - Add Support for storyStoreV7 flag
   bug-fix:
     - Handle fake shadowRoot with UFG
 "@applitools/eyes-webdriverio5-service":

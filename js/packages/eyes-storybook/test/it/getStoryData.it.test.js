@@ -6,7 +6,7 @@ const makeGetStoryData = require('../../src/getStoryData');
 const {ptimeoutWithError} = require('@applitools/functional-commons');
 const browserLog = require('../../src/browserLog');
 const logger = require('../util/testLogger');
-const {deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core');
+const {deserializeDomSnapshotResult} = require('../fixtures/deserializeDomSnapshotResult');
 
 describe('getStoryData', () => {
   let browser, page, closeTestServer;
@@ -24,14 +24,17 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeCapture as a number', async () => {
-    const takeDomSnapshots = async () => [
-      deserializeDomSnapshotResult({
-        resourceUrls: ['url1', await page.evaluate('window.timeout')],
-        blobs: [{url: 'url2', type: 'type', value: 'ss'}],
-        cdt: 'cdt',
-        frames: [],
-      }),
-    ];
+    const takeDomSnapshots = async ({waitBeforeCapture}) => {
+      await waitBeforeCapture();
+      return [
+        deserializeDomSnapshotResult({
+          resourceUrls: ['url1', await page.evaluate('window.timeout')],
+          blobs: [{url: 'url2', type: 'type', value: 'ss'}],
+          cdt: 'cdt',
+          frames: [],
+        }),
+      ];
+    };
 
     const getStoryData = makeGetStoryData({
       logger,
@@ -49,7 +52,6 @@ describe('getStoryData', () => {
       3000,
       'timeout',
     );
-
     expect(resourceUrls).to.eql(['url1', 1500]);
     expect(resourceContents).to.eql({
       url2: {url: 'url2', type: 'type', value: Buffer.from('ss', 'base64')},
@@ -58,19 +60,22 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeCapture as a css selector', async () => {
-    const takeDomSnapshots = async () => [
-      deserializeDomSnapshotResult({
-        resourceUrls: [
-          'url1',
-          await page.evaluate(
-            "document.getElementById('newDiv') && document.getElementById('newDiv').innerText",
-          ),
-        ],
-        blobs: [{url: 'url2', type: 'type', value: 'ss'}],
-        cdt: 'cdt',
-        frames: [],
-      }),
-    ];
+    const takeDomSnapshots = async ({waitBeforeCapture}) => {
+      await waitBeforeCapture();
+      return [
+        deserializeDomSnapshotResult({
+          resourceUrls: [
+            'url1',
+            await page.evaluate(
+              "document.getElementById('newDiv') && document.getElementById('newDiv').innerText",
+            ),
+          ],
+          blobs: [{url: 'url2', type: 'type', value: 'ss'}],
+          cdt: 'cdt',
+          frames: [],
+        }),
+      ];
+    };
 
     const getStoryData = makeGetStoryData({
       logger,
@@ -97,17 +102,20 @@ describe('getStoryData', () => {
   });
 
   it('works with waitBeforeCapture as a function', async () => {
-    const takeDomSnapshots = async () => [
-      deserializeDomSnapshotResult({
-        resourceUrls: [
-          'url1',
-          await page.evaluate("document.getElementById('changeME').innerText"),
-        ],
-        blobs: [{url: 'url2', type: 'type', value: 'ss'}],
-        cdt: 'cdt',
-        frames: [],
-      }),
-    ];
+    const takeDomSnapshots = async ({waitBeforeCapture}) => {
+      await waitBeforeCapture();
+      return [
+        deserializeDomSnapshotResult({
+          resourceUrls: [
+            'url1',
+            await page.evaluate("document.getElementById('changeME').innerText"),
+          ],
+          blobs: [{url: 'url2', type: 'type', value: 'ss'}],
+          cdt: 'cdt',
+          frames: [],
+        }),
+      ];
+    };
 
     const getStoryData = makeGetStoryData({
       logger,

@@ -132,7 +132,6 @@ describe('renderStories', () => {
 
     const renderStories = makeRenderStories({
       getStoryData,
-      waitForQueuedRenders,
       renderStory,
       storybookUrl,
       logger,
@@ -151,27 +150,28 @@ describe('renderStories', () => {
     ];
 
     const results = await renderStories(stories, {bla: true});
-
     const expectedResults = await Promise.all(
       stories.map(async (story, i) => {
         const storyUrl = `http://something/iframe.html?eyes-storybook=true&selectedKind=${story.kind}&selectedStory=${story.name}`;
         const page = i % 3 === 0 ? 1 : i % 3 === 1 ? 2 : 3;
         return {
           config: {bla: true},
-          snapshot: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
-          cookies: [],
+          snapshots: {
+              snapshots: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
+              cookies: [],
+          }, 
           story,
           url: storyUrl,
         };
       }),
     );
     const expectedTitles = ['k1: s1', 'k2: s2', 'k3: s3', 'k4: s4', 'k5: s5', 'k6: s6', 'k7: s7'];
-
+    
     expect(results.map(r => r.title).sort()).to.eql(expectedTitles.sort());
     expect(
       results
         .map(({resultsOrErr}) => resultsOrErr[0].arg)
-        .sort((a, b) => a.snapshot.localeCompare(b.snapshot)),
+        .sort((a, b) => a.snapshots.snapshots.localeCompare(b.snapshots.snapshots)),
     ).to.eql(expectedResults);
 
     await snap(getEvents().join(''), 'results');
@@ -379,9 +379,10 @@ describe('renderStories', () => {
             config: {hello: 'world'},
             story,
             url: storyUrl,
-            snapshot:
-              'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
-            cookies: [],
+            snapshots:{
+              snapshots: 'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
+              cookies: [],
+            }
           },
         ]);
 
@@ -455,9 +456,11 @@ describe('renderStories', () => {
           config: {},
           story,
           url: storyUrl,
-          snapshot:
-            'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
-          cookies: [],
+          snapshots:{
+            snapshots:  'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
+            cookies: [],
+          }
+            
         };
 
         const resultsOrErr0 = results[0].resultsOrErr;

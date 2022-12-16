@@ -8,7 +8,7 @@ const fakeEyesServer = require('../util/fakeEyesServer');
 const eyesStorybook = require('../../src/eyesStorybook');
 const generateConfig = require('../../src/generateConfig');
 const defaultConfig = require('../../src/defaultConfig');
-const {configParams: externalConfigParams} = require('@applitools/visual-grid-client');
+const {configParams: externalConfigParams} = require('../../src/configParams');
 const {makeTiming} = require('@applitools/monitoring-commons');
 const logger = require('../util/testLogger');
 const testStream = require('../util/testStream');
@@ -45,9 +45,9 @@ describe('eyesStorybook', () => {
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
     let results = await eyesStorybook({
       config: {
+        ...config,
         serverUrl,
         storybookUrl: 'http://localhost:9001',
-        ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
         // puppeteerOptions: {headless: false, devtools: true},
         // include: (() => {
@@ -99,15 +99,45 @@ describe('eyesStorybook', () => {
       globalConfig.floatingRegions,
       globalConfig.accessibilityRegions,
     ].map(([{selector}]) => {
-      const {x, y, width, height} = JSON.parse(selector);
-      return [
-        {
-          left: x,
-          top: y,
-          width,
-          height,
-        },
-      ];
+      const {
+        x,
+        y,
+        width,
+        height,
+        maxDownOffset,
+        maxUpOffset,
+        maxLeftOffset,
+        maxRightOffset,
+      } = JSON.parse(selector);
+      const res = {
+        left: x,
+        top: y,
+        width,
+        height,
+      };
+      if (maxDownOffset != undefined) {
+        return [
+          {
+            ...res,
+            maxDownOffset,
+            maxLeftOffset,
+            maxRightOffset,
+            maxUpOffset,
+            regionId: JSON.stringify({
+              x,
+              y,
+              width,
+              height,
+              maxDownOffset,
+              maxLeftOffset,
+              maxRightOffset,
+              maxUpOffset,
+            }),
+          },
+        ];
+      } else {
+        return [{...res, regionId: JSON.stringify({x, y, width, height})}];
+      }
     });
 
     const expectedTitles = [
@@ -135,21 +165,22 @@ describe('eyesStorybook', () => {
       'Theme: local theme config [theme=light]',
     ];
 
-    expect(results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
-    results = flatten(results.map(r => r.resultsOrErr));
+    expect(results.results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
+    results = results.results.flatMap(r => r.resultsOrErr);
 
     expect(results.some(x => x instanceof Error)).to.be.false;
     expect(results).to.have.length(expectedResults.length);
     for (const testResults of results) {
+      const id = `${testResults.appName}__${testResults.name}`;
       const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
-        testResults.getBatchId(),
-      )}/${encodeURIComponent(testResults.getId())}`;
+        testResults.eyes.test.batchId,
+      )}/${encodeURIComponent(id)}`;
 
       const session = await fetch(sessionUrl).then(r => r.json());
       const {scenarioIdOrName} = session.startInfo;
       const [componentName, state] = scenarioIdOrName.split(':').map(s => s.trim());
 
-      expect(session.startInfo.defaultMatchSettings.ignoreDisplacements).to.be.true;
+      expect(session.steps[0].options.imageMatchSettings.ignoreDisplacements).to.be.true;
 
       const expectedProperties = [
         {name: 'Component name', value: componentName},
@@ -183,10 +214,9 @@ describe('eyesStorybook', () => {
       expect(imageMatchSettings.floating).to.eql(floating);
       expect(imageMatchSettings.accessibility).to.eql(accessibility);
     }
-
     expect(
       results
-        .map(r => ({name: r.getName(), isPassed: r.isPassed()}))
+        .map(r => ({name: r.name, isPassed: r.status === 'Passed'}))
         .sort((a, b) => (a.name < b.name ? -1 : 1)),
     ).to.eql(expectedResults);
 
@@ -194,7 +224,8 @@ describe('eyesStorybook', () => {
   });
 
   it('enforces default concurrency', async () => {
-    const {port, close} = await fakeEyesServer();
+    // adding renderDelay to reach max concurrency
+    const {port, close} = await fakeEyesServer({renderDelay: 500});
     closeEyesServer = close;
     serverUrl = `http://localhost:${port}`;
     const {stream} = testStream();
@@ -269,7 +300,7 @@ describe('eyesStorybook', () => {
   });
 
   it('enforces legacy concurrency', async () => {
-    const {port, close} = await fakeEyesServer({renderDelay: 1000});
+    const {port, close} = await fakeEyesServer({renderDelay: 2500});
     closeEyesServer = close;
     serverUrl = `http://localhost:${port}`;
     const {stream} = testStream();
@@ -350,21 +381,22 @@ describe('eyesStorybook', () => {
 
     let results = await eyesStorybook({
       config: {
+        ...config,
         serverUrl,
         browser: [{name: 'chrome', width: 800, height: 600}],
         storybookUrl: 'http://localhost:9001',
-        ...config,
       },
       logger,
       performance,
       timeItAsync,
       outputStream: stream,
     });
-    results = flatten(results.map(r => r.resultsOrErr));
+    results = results.results.flatMap(r => r.resultsOrErr);
     for (const testResults of results) {
+      const id = `${testResults.appName}__${testResults.name}`;
       const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
-        testResults.getBatchId(),
-      )}/${encodeURIComponent(testResults.getId())}`;
+        testResults.eyes.test.batchId,
+      )}/${encodeURIComponent(id)}`;
 
       const session = await fetch(sessionUrl).then(r => r.json());
       expect(session.startInfo.parentBranchBaselineSavedBefore).to.be.undefined;
@@ -381,9 +413,9 @@ describe('eyesStorybook', () => {
     try {
       await eyesStorybook({
         config: {
+          ...config,
           serverUrl,
           storybookUrl: 'http://localhost:9001',
-          ...config,
           appName: 'bla',
           browser: [{name: 'chrome', width: 800, height: 600}],
         },

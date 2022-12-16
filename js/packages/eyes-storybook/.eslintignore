@@ -14,3 +14,7 @@ test/fixtures/globalQueryParams
 test/fixtures/zeroStoriesRetry
 dist
 logs
+test/fixtures/storybookCSFV7
+test/fixtures/floatingRegionStorybook
+test/e2e/latest
+test/e2e/undefined

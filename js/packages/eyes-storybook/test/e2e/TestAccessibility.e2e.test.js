@@ -1,14 +1,13 @@
 'use strict';
 
 const {describe, it, before, after} = require('mocha');
-const flatten = require('lodash.flatten');
 const {expect} = require('chai');
 const testStorybook = require('../util/testStorybook');
 const path = require('path');
 const {testServerInProcess} = require('@applitools/test-server');
 const eyesStorybook = require('../../src/eyesStorybook');
 const generateConfig = require('../../src/generateConfig');
-const {configParams: externalConfigParams} = require('@applitools/visual-grid-client');
+const {configParams: externalConfigParams} = require('../../src/configParams');
 const {makeTiming} = require('@applitools/monitoring-commons');
 const logger = require('../util/testLogger');
 const testStream = require('../util/testStream');
@@ -53,17 +52,12 @@ describe('eyes-storybook accessibility', () => {
     });
 
     const expectedTitles = ['Single category: Story with local accessibility region'];
-    expect(results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
-    results = flatten(results.map(r => r.resultsOrErr));
+    expect(results.results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
+    results = results.results.flatMap(r => r.resultsOrErr);
     expect(results.some(x => x instanceof Error)).to.be.false;
     expect(results).to.have.length(1);
-
     for (const testResults of results) {
-      const sessionUrl = `${testResults
-        .getApiUrls()
-        .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${
-        process.env.APPLITOOLS_API_KEY
-      }`;
+      const sessionUrl = `${testResults.apiUrls.session}?format=json&AccessToken=${testResults.secretToken}&apiKey=${process.env.APPLITOOLS_API_KEY}`;
 
       const session = await fetch(sessionUrl).then(r => r.json());
       const [actualAppOutput] = session.actualAppOutput;
@@ -72,7 +66,15 @@ describe('eyes-storybook accessibility', () => {
         version: globalConfig.accessibilityValidation.guidelinesVersion,
       });
       expect(actualAppOutput.imageMatchSettings.accessibility).to.eql([
-        {type: 'LargeText', isDisabled: false, left: 16, top: 16, width: 50, height: 50},
+        {
+          type: 'LargeText',
+          isDisabled: false,
+          left: 16,
+          top: 16,
+          width: 50,
+          height: 50,
+          regionId: '.accessibility-element',
+        },
       ]);
     }
 

@@ -12,8 +12,6 @@ function makeRenderStories({
   storybookUrl,
   logger,
   stream,
-  waitForQueuedRenders,
-  storyDataGap,
   getClientAPI,
   maxPageTTL = 60000,
 }) {
@@ -39,7 +37,6 @@ function makeRenderStories({
 
     async function processStoryLoop() {
       if (currIndex === stories.length) return;
-
       const {page, pageId, markPageAsFree, removePage, getCreatedAt} = await pagePool.getFreePage();
       const livedTime = Date.now() - getCreatedAt();
       logger.log(`[prepareNewPage] got free page: ${pageId}, lived time: ${livedTime}`);
@@ -52,7 +49,7 @@ function makeRenderStories({
         return processStoryLoop();
       }
       logger.log(`[page ${pageId}] waiting for queued renders`);
-      await waitForQueuedRenders(storyDataGap);
+      // await waitForQueuedRenders(storyDataGap);
       logger.log(`[page ${pageId}] done waiting for queued renders`);
       const storyPromise = processStory();
       allStoriesPromise = allStoriesPromise.then(() => storyPromise);
@@ -112,15 +109,12 @@ function makeRenderStories({
             logger.log(errMsg);
             throw new Error(errMsg);
           }
-
           const testResults = await renderStory({
-            snapshot: storyData.snapshots,
-            cookies: storyData.cookies,
+            snapshots: storyData,
             url: storyUrl,
             story,
             config,
           });
-
           return onDoneStory(testResults, story);
         } catch (ex) {
           return onDoneStory(ex, story);
@@ -130,10 +124,8 @@ function makeRenderStories({
 
     function didTestPass({resultsOrErr}) {
       return (
-        resultsOrErr.constructor.name !== 'Error' &&
-        resultsOrErr.every(
-          r => r.constructor.name !== 'Error' && r.getStatus && r.getStatus() === 'Passed',
-        )
+        resultsOrErr.constructor?.name !== 'Error' &&
+        resultsOrErr.every(r => !r.isDifferent && !r.isAborted && !r.isNew)
       );
     }
 

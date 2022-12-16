@@ -37,9 +37,18 @@ function refineErrorMessage({prefix, error}) {
   return `${prefix} ${error.message.replace('Evaluation failed: ', '')}`;
 }
 
+function deprecationWarning({deprecatedThing, newThing, isDead}) {
+  const msg = isDead
+    ? `Notice: ${deprecatedThing} is no longer supported.`
+    : `Notice: ${deprecatedThing} has been renamed. Please use ${newThing} instead.\n`;
+
+  chalk.yellow(msg);
+}
+
 module.exports = {
   missingApiKeyFailMsg,
   missingAppNameAndPackageJsonFailMsg,
   missingAppNameInPackageJsonFailMsg,
   refineErrorMessage,
+  deprecationWarning,
 };

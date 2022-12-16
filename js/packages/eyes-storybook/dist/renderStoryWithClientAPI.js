@@ -98,12 +98,20 @@ function __renderStoryWithClientAPI(...args) {
 
           case API_VERSIONS.v6_4: {
             api = {
-              getStories: () => {
+              getStories: async () => {
+                if (clientAPI.storyStore.cacheAllCSFFiles) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                }
                 return clientAPI.raw();
               },
-              selectStory: async i => {
+              selectStory: async (i, id) => {
+                let storyId = !clientAPI.storyStore.cacheAllCSFFiles ? clientAPI.raw()[i].id : id;
+                if (!storyId) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                  storyId = clientAPI.raw()[i].id;
+                }
                 frameWindow.__STORYBOOK_PREVIEW__.urlStore.setSelection({
-                  storyId: clientAPI.raw()[i].id,
+                  storyId,
                 });
                 await frameWindow.__STORYBOOK_PREVIEW__.renderSelection();
               },
@@ -142,12 +150,12 @@ function __renderStoryWithClientAPI(...args) {
 
   var getClientAPI_1 = getClientAPI;
 
-  function renderStoryWithClientAPI(index) {
+  function renderStoryWithClientAPI(index, id) {
     return new Promise(resolve => {
       let api;
       try {
         api = getClientAPI_1();
-        api.selectStory(index);
+        api.selectStory(index, id);
         api.onStoryRendered(resolve);
       } catch (ex) {
         resolve({message: ex.message, version: api ? api.version : undefined});

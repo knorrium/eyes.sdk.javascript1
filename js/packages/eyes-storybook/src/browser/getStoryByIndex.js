@@ -1,14 +1,14 @@
 const getClientAPI = require('./getClientAPI');
 
-function getStoryByIndex(index) {
+async function getStoryByIndex(index) {
   let api;
   try {
     api = getClientAPI();
-    const story = api.getStories()[index];
-    if (!story) {
+    const stories = await api.getStories();
+    if (!stories[index]) {
       console.log('error cannot get story', index);
     }
-    return story;
+    return stories[index];
   } catch (ex) {
     throw new Error(JSON.stringify({message: ex.message, version: api ? api.version : undefined}));
   }

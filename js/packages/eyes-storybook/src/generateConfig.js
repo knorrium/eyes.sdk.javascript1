@@ -1,10 +1,10 @@
 'use strict';
 const pick = require('lodash.pick');
 const utils = require('@applitools/utils');
-const {GeneralUtils} = require('@applitools/eyes-sdk-core');
 const {resolve} = require('path');
-const {deprecationWarning} = GeneralUtils;
+const {deprecationWarning} = require('./errMessages');
 const uniq = require('./uniq');
+const MAX_DATA_GAP = 60;
 
 function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = []}) {
   const defaultConfigParams = Object.keys(defaultConfig);
@@ -44,12 +44,34 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.showLogs = true;
   }
 
-  if (!result.testConcurrency && !result.concurrency) {
-    result.testConcurrency = 5; // TODO require from core
+  result.testConcurrency = utils.types.isInteger(result.testConcurrency)
+    ? result.testConcurrency
+    : utils.types.isInteger(result.concurrency)
+    ? result.concurrency * 5
+    : 5;
+
+  result.serverUrl = result.serverUrl
+    ? result.serverUrl
+    : utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com';
+  result.viewportSize = result.viewportSize ? result.viewportSize : {width: 1024, height: 600};
+  result.renderers = result.browser ? result.browser : [{name: 'chrome', width: 1024, height: 768}];
+  result.saveNewTests = result.saveNewTests === undefined ? true : result.saveNewTests;
+  result.keepBatchOpen = result.dontCloseBatches;
+  result.fully = result.fully === undefined ? true : false;
+
+  if (result.batchName) {
+    result.batch = {name: result.batchName, ...result.batch};
+  }
+
+  if (result.batchId) {
+    result.batch = {id: result.batchId, ...result.batch};
   }
 
   if (result.storyDataGap === undefined) {
-    result.storyDataGap = result.testConcurrency;
+    result.storyDataGap = Math.max(
+      Math.min(result.testConcurrency * 2, MAX_DATA_GAP),
+      result.testConcurrency,
+    );
   }
   return result;
 }

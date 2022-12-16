@@ -98,12 +98,20 @@ function __runRunAfterScript(...args) {
 
           case API_VERSIONS.v6_4: {
             api = {
-              getStories: () => {
+              getStories: async () => {
+                if (clientAPI.storyStore.cacheAllCSFFiles) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                }
                 return clientAPI.raw();
               },
-              selectStory: async i => {
+              selectStory: async (i, id) => {
+                let storyId = !clientAPI.storyStore.cacheAllCSFFiles ? clientAPI.raw()[i].id : id;
+                if (!storyId) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                  storyId = clientAPI.raw()[i].id;
+                }
                 frameWindow.__STORYBOOK_PREVIEW__.urlStore.setSelection({
-                  storyId: clientAPI.raw()[i].id,
+                  storyId,
                 });
                 await frameWindow.__STORYBOOK_PREVIEW__.renderSelection();
               },
@@ -142,15 +150,15 @@ function __runRunAfterScript(...args) {
 
   var getClientAPI_1 = getClientAPI;
 
-  function getStoryByIndex(index) {
+  async function getStoryByIndex(index) {
     let api;
     try {
       api = getClientAPI_1();
-      const story = api.getStories()[index];
-      if (!story) {
+      const stories = await api.getStories();
+      if (!stories[index]) {
         console.log('error cannot get story', index);
       }
-      return story;
+      return stories[index];
     } catch (ex) {
       throw new Error(JSON.stringify({message: ex.message, version: api ? api.version : undefined}));
     }
@@ -158,9 +166,9 @@ function __runRunAfterScript(...args) {
 
   var getStoryByIndex_1 = getStoryByIndex;
 
-  function runRunAfterScript(index) {
+  async function runRunAfterScript(index) {
     try {
-      const story = getStoryByIndex_1(index);
+      const story = await getStoryByIndex_1(index);
       if (!story) return;
       return story.parameters.eyes.runAfter({rootEl: document.getElementById('root'), story});
     } catch (ex) {

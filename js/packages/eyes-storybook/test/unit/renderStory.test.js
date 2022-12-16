@@ -11,6 +11,11 @@ const logger = require('../util/testLogger');
 
 describe('renderStory', () => {
   let performance, timeItAsync;
+  const defaultSettings = {
+    storyDataGap: 10,
+    appName: 'app name',
+    closeSettings: {},
+  };
 
   beforeEach(() => {
     const timing = makeTiming();
@@ -18,51 +23,87 @@ describe('renderStory', () => {
     timeItAsync = timing.timeItAsync;
   });
 
-  it('passes correct parameters to testWindow - basic', async () => {
-    const testWindow = async x => x;
+  it('passes correct parameters to openEyes and checkAndClose - basic', async () => {
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      performance,
+      timeItAsync,
+      openEyes,
+    });
     const story = {name: 'name', kind: 'kind'};
     const title = getStoryTitle(story);
     const baselineName = getStoryBaselineName(story);
+
     const results = await renderStory({
       story,
       config: {
-        browser: [{name: 'chrome', width: 800, height: 600}],
+        renderers: [{name: 'chrome', width: 800, height: 600}],
       },
-      snapshot: 'snapshot',
+      snapshots: 'snapshot',
       url: 'url',
     });
 
     deleteUndefinedPropsRecursive(results);
-
-    expect(results).to.eql({
-      checkParams: {
-        snapshot: 'snapshot',
-        url: 'url',
-      },
+    const expected = {
       openParams: {
-        properties: [
-          {name: 'Component name', value: 'kind'},
-          {name: 'State', value: 'name'},
-        ],
-        browser: [{name: 'chrome', width: 800, height: 600}],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {
+              name: 'Component name',
+              value: 'kind',
+            },
+            {
+              name: 'State',
+              value: 'name',
+            },
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
-      throwEx: false,
-    });
+      checkParams: {
+        settings: {
+          renderers: [{name: 'chrome', width: 800, height: 600}],
+          url: 'url',
+          throwEx: false,
+        },
+        target: 'snapshot',
+      },
+    };
+    expect(results).to.eql(expected);
   });
 
-  it('passes correct parameters to testWindow - local configuration', async () => {
-    const testWindow = async x => x;
+  it('passes correct parameters to openEyes and checkAndClose - local configuration', async () => {
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      openEyes,
+      performance,
+      timeItAsync,
+    });
 
     const eyesOptions = {
       ignoreRegions: 'ignore',
-      floatingRegions: 'floating',
-      accessibilityRegions: 'accessibility',
+      floatingRegions: [{selector: '.floating-region'}],
+      accessibilityRegions: [{selector: '.accessibility-region'}],
       strictRegions: 'strict',
       layoutRegions: 'layout',
       contentRegions: 'content',
@@ -89,53 +130,67 @@ describe('renderStory', () => {
     deleteUndefinedPropsRecursive(results);
 
     const {properties} = eyesOptions;
-    expect(results).to.eql({
-      throwEx: false,
+    const expected = {
       openParams: {
-        properties: [
-          {
-            name: 'Component name',
-            value: 'kind',
-          },
-          {
-            name: 'State',
-            value: 'name',
-          },
-          ...properties,
-        ],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {
+              name: 'Component name',
+              value: 'kind',
+            },
+            {
+              name: 'State',
+              value: 'name',
+            },
+            ...properties,
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
       checkParams: {
-        ignore: 'ignore',
-        floating: 'floating',
-        accessibility: 'accessibility',
-        strict: 'strict',
-        layout: 'layout',
-        content: 'content',
-        scriptHooks: 'scriptHooks',
-        sizeMode: 'sizeMode',
-        target: 'target',
-        fully: 'fully',
-        selector: 'selector',
-        region: 'region',
-        tag: 'tag',
-        sendDom: 'sendDom',
-        visualGridOptions: 'visualGridOptions',
-        useDom: 'useDom',
-        enablePatterns: 'enablePatterns',
-        ignoreDisplacements: 'ignoreDisplacements',
+        settings: {
+          ignoreRegions: 'ignore',
+          floatingRegions: [
+            {region: '.floating-region', offset: {bottom: 0, top: 0, left: 0, right: 0}},
+          ],
+          accessibilityRegions: [{region: '.accessibility-region'}],
+          strictRegions: 'strict',
+          layoutRegions: 'layout',
+          contentRegions: 'content',
+          hooks: 'scriptHooks',
+          sizeMode: 'sizeMode',
+          target: 'target',
+          fully: 'fully',
+          selector: 'selector',
+          region: 'region',
+          tag: 'tag',
+          sendDom: 'sendDom',
+          ufgOptions: 'visualGridOptions',
+          useDom: 'useDom',
+          enablePatterns: 'enablePatterns',
+          ignoreDisplacements: 'ignoreDisplacements',
+          throwEx: false,
+        },
       },
-    });
+    };
+    expect(results).to.eql(expected);
   });
 
-  it('passes correct parameters to testWindow - global configuration', async () => {
-    const testWindow = async x => x;
+  it('passes correct parameters to openEyes and checkAndClose - global configuration', async () => {
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
     const globalConfig = {
       ignoreRegions: 'ignore',
-      floatingRegions: 'floating',
-      accessibilityRegions: 'accessibility',
+      floatingRegions: [{selector: '.floating-region', maxDownOffset: 10, maxLeftOffset: 10}],
+      accessibilityRegions: [{selector: '.accessibility-region'}],
       strictRegions: 'strict',
       layoutRegions: 'layout',
       contentRegions: 'content',
@@ -153,8 +208,9 @@ describe('renderStory', () => {
     };
 
     const renderStory = makeRenderStory({
+      ...defaultSettings,
       logger,
-      testWindow,
+      openEyes,
       performance,
       timeItAsync,
     });
@@ -166,52 +222,69 @@ describe('renderStory', () => {
     const results = await renderStory({story, config: globalConfig});
 
     deleteUndefinedPropsRecursive(results);
-
-    expect(results).to.eql({
-      throwEx: false,
+    const expected = {
       openParams: {
-        properties: [
-          {
-            name: 'Component name',
-            value: 'kind',
-          },
-          {
-            name: 'State',
-            value: 'name',
-          },
-        ],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {
+              name: 'Component name',
+              value: 'kind',
+            },
+            {
+              name: 'State',
+              value: 'name',
+            },
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
       checkParams: {
-        ignore: 'ignore',
-        floating: 'floating',
-        accessibility: 'accessibility',
-        strict: 'strict',
-        layout: 'layout',
-        content: 'content',
-        scriptHooks: 'scriptHooks',
-        sizeMode: 'sizeMode',
-        target: 'target',
-        fully: 'fully',
-        selector: 'selector',
-        region: 'region',
-        tag: 'tag',
-        sendDom: 'sendDom',
-        visualGridOptions: 'visualGridOptions',
-        useDom: 'useDom',
-        enablePatterns: 'enablePatterns',
+        settings: {
+          throwEx: false,
+          ignoreRegions: 'ignore',
+          floatingRegions: [
+            {region: '.floating-region', offset: {bottom: 10, top: 0, left: 10, right: 0}},
+          ],
+          accessibilityRegions: [{region: '.accessibility-region'}],
+          strictRegions: 'strict',
+          layoutRegions: 'layout',
+          contentRegions: 'content',
+          hooks: 'scriptHooks',
+          sizeMode: 'sizeMode',
+          target: 'target',
+          fully: 'fully',
+          selector: 'selector',
+          region: 'region',
+          tag: 'tag',
+          sendDom: 'sendDom',
+          ufgOptions: 'visualGridOptions',
+          useDom: 'useDom',
+          enablePatterns: 'enablePatterns',
+        },
       },
-    });
+    };
+    expect(results).to.eql(expected);
   });
 
-  it('passes correct parameters to testWindow - local configuration overrides global configuration', async () => {
-    const testWindow = async x => x;
+  it('passes correct parameters to openEyes and checkAndClose - local configuration overrides global configuration', async () => {
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
     const globalConfig = {
+      accessibilityValidation: {
+        level: 'AAA',
+        guidelinesVersion: 'WCAG_2_1',
+      },
       ignoreRegions: 'global ignore',
-      floatingRegions: 'global floating',
-      accessibilityRegions: 'global accessibility',
+      floatingRegions: [{selector: '.floating-region2'}],
+      accessibilityRegions: [{selector: '.accessibility-region2', accessibilityType: 'LargeText'}],
       strictRegions: 'global strict',
       layoutRegions: 'global layout',
       contentRegions: 'global content',
@@ -231,16 +304,21 @@ describe('renderStory', () => {
     };
 
     const renderStory = makeRenderStory({
+      ...defaultSettings,
       logger,
-      testWindow,
+      openEyes,
       performance,
       timeItAsync,
     });
 
     const eyesOptions = {
+      accessibilityValidation: {
+        level: 'AA',
+        guidelinesVersion: 'WCAG_2_0',
+      },
       ignoreRegions: 'ignore',
-      floatingRegions: 'floating',
-      accessibilityRegions: 'accessibility',
+      floatingRegions: [{selector: '.floating-region'}],
+      accessibilityRegions: [{selector: '.accessibility-region', accessibilityType: 'XLText'}],
       strictRegions: 'strict',
       layoutRegions: 'layout',
       contentRegions: 'content',
@@ -266,52 +344,72 @@ describe('renderStory', () => {
     const results = await renderStory({story, config: globalConfig});
 
     deleteUndefinedPropsRecursive(results);
-
-    expect(results).to.eql({
-      throwEx: false,
+    const expected = {
       openParams: {
-        properties: [
-          {
-            name: 'Component name',
-            value: 'kind',
-          },
-          {
-            name: 'State',
-            value: 'name',
-          },
-          ...globalConfig.properties,
-          ...eyesOptions.properties,
-        ],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {
+              name: 'Component name',
+              value: 'kind',
+            },
+            {
+              name: 'State',
+              value: 'name',
+            },
+            ...globalConfig.properties,
+            ...eyesOptions.properties,
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
       checkParams: {
-        ignore: 'ignore',
-        floating: 'floating',
-        accessibility: 'accessibility',
-        strict: 'strict',
-        layout: 'layout',
-        content: 'content',
-        scriptHooks: 'scriptHooks',
-        sizeMode: 'sizeMode',
-        target: 'target',
-        fully: 'fully',
-        selector: 'selector',
-        region: 'region',
-        tag: 'tag',
-        sendDom: 'sendDom',
-        visualGridOptions: 'visualGridOptions',
-        useDom: 'useDom',
-        enablePatterns: 'enablePatterns',
-        ignoreDisplacements: 'ignoreDisplacements',
+        settings: {
+          throwEx: false,
+          ignoreRegions: 'ignore',
+          floatingRegions: [
+            {region: '.floating-region', offset: {bottom: 0, top: 0, left: 0, right: 0}},
+          ],
+          accessibilityRegions: [{region: '.accessibility-region', type: 'XLText'}],
+          accessibilitySettings: {level: 'AA', version: 'WCAG_2_0'},
+          strictRegions: 'strict',
+          layoutRegions: 'layout',
+          contentRegions: 'content',
+          hooks: 'scriptHooks',
+          sizeMode: 'sizeMode',
+          target: 'target',
+          fully: 'fully',
+          selector: 'selector',
+          region: 'region',
+          tag: 'tag',
+          sendDom: 'sendDom',
+          ufgOptions: 'visualGridOptions',
+          useDom: 'useDom',
+          enablePatterns: 'enablePatterns',
+          ignoreDisplacements: 'ignoreDisplacements',
+        },
       },
-    });
+    };
+    expect(results).to.eql(expected);
   });
 
   it('sets performance timing', async () => {
-    const testWindow = async x => x;
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      openEyes,
+      performance,
+      timeItAsync,
+    });
 
     const story = {name: 'name', kind: 'kind'};
     const baselineName = getStoryBaselineName(story);
@@ -320,20 +418,42 @@ describe('renderStory', () => {
   });
 
   it('throws error during testWindow', async () => {
-    const testWindow = async () => {
-      await psetTimeout(0);
-      throw new Error('bla');
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          await psetTimeout(0);
+          throw new Error('bla');
+        },
+      };
     };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      openEyes,
+      performance,
+      timeItAsync,
+    });
     const [{message}] = await presult(renderStory({story: {}, config: {}}));
     expect(message).to.equal('bla');
   });
 
   it('passes local ignore param for backward compatibility', async () => {
-    const testWindow = async x => x;
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      openEyes,
+      performance,
+      timeItAsync,
+    });
     const story = {
       name: 'name',
       kind: 'kind',
@@ -348,27 +468,44 @@ describe('renderStory', () => {
     const results = await renderStory({story, config: {}});
 
     deleteUndefinedPropsRecursive(results);
-
-    expect(results).to.eql({
+    const expected = {
       checkParams: {
-        ignore: 'ignore',
+        settings: {
+          ignoreRegions: 'ignore',
+          throwEx: false,
+        },
       },
       openParams: {
-        properties: [
-          {name: 'Component name', value: 'kind'},
-          {name: 'State', value: 'name'},
-        ],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {name: 'Component name', value: 'kind'},
+            {name: 'State', value: 'name'},
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
-      throwEx: false,
-    });
+    };
+    expect(results).to.eql(expected);
   });
 
   it('ignoreRegions take precedence over ignore param', async () => {
-    const testWindow = async x => x;
+    const openEyes = async x => {
+      return {
+        checkAndClose: async y => {
+          return {openParams: x, checkParams: y};
+        },
+      };
+    };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      openEyes,
+      performance,
+      timeItAsync,
+    });
     const story = {
       name: 'name',
       kind: 'kind',
@@ -384,21 +521,26 @@ describe('renderStory', () => {
     const results = await renderStory({story, config: {}});
 
     deleteUndefinedPropsRecursive(results);
-
-    expect(results).to.eql({
+    const expected = {
       checkParams: {
-        ignore: 'ignoreRegions',
+        settings: {
+          throwEx: false,
+          ignoreRegions: 'ignoreRegions',
+        },
       },
       openParams: {
-        properties: [
-          {name: 'Component name', value: 'kind'},
-          {name: 'State', value: 'name'},
-        ],
-        testName: baselineName,
-        displayName: title,
+        settings: {
+          appName: 'app name',
+          properties: [
+            {name: 'Component name', value: 'kind'},
+            {name: 'State', value: 'name'},
+          ],
+          testName: baselineName,
+          displayName: title,
+        },
       },
-      throwEx: false,
-    });
+    };
+    expect(results).to.eql(expected);
   });
 });
 

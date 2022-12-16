@@ -16,7 +16,7 @@ export * from './take-dom-snapshot'
 
 export type DomSnapshotsSettings = DomSnapshotSettings & {
   renderers: Renderer[]
-  waitBeforeCapture?: number
+  waitBeforeCapture?: number | (() => void)
   layoutBreakpoints?: number[] | boolean
 }
 
@@ -37,12 +37,19 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
   logger: Logger
 }): Promise<DomSnapshot[]> {
   const currentContext = driver.currentContext
+  const waitBeforeCapture = async () => {
+    if (typeof settings.waitBeforeCapture === 'function') {
+      await settings.waitBeforeCapture()
+    } else {
+      await utils.general.sleep(settings.waitBeforeCapture)
+    }
+  }
   await hooks?.beforeSnapshots?.()
 
   if (!settings.layoutBreakpoints) {
     logger.log(`taking single dom snapshot`)
     await hooks?.beforeEachSnapshot?.()
-    await utils.general.sleep(settings.waitBeforeCapture)
+    await waitBeforeCapture()
     const snapshot = await takeDomSnapshot({context: currentContext, settings, logger})
     return Array(settings.renderers.length).fill(snapshot)
   }
@@ -81,7 +88,7 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
   if (requiredWidths.has(viewportSize.width)) {
     logger.log(`taking dom snapshot for existing width ${viewportSize.width}`)
     await hooks?.beforeEachSnapshot?.()
-    await utils.general.sleep(settings.waitBeforeCapture)
+    await waitBeforeCapture()
     const snapshot = await takeDomSnapshot({context: currentContext, settings, logger})
     requiredWidths.get(viewportSize.width).forEach(({index}) => (snapshots[index] = snapshot))
   }
@@ -109,7 +116,7 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
       }
     }
     await hooks?.beforeEachSnapshot?.()
-    await utils.general.sleep(settings.waitBeforeCapture)
+    await waitBeforeCapture()
     const snapshot = await takeDomSnapshot({context: currentContext, settings, logger})
     browsersInfo.forEach(({index}) => (snapshots[index] = snapshot))
   }

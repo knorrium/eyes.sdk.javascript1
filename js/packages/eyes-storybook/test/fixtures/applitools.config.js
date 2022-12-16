@@ -16,7 +16,12 @@ module.exports = {
   },
   ignoreRegions: [{selector: '.global-ignore-this'}],
   strictRegions: [{selector: '{"x":5,"y":6,"width":7,"height":8}'}],
-  floatingRegions: [{selector: '{"x":15,"y":16,"width":17,"height":18}'}],
+  floatingRegions: [
+    {
+      selector:
+        '{"x":15,"y":16,"width":17,"height":18,"maxDownOffset":0,"maxLeftOffset":0,"maxRightOffset":0,"maxUpOffset":0}',
+    },
+  ],
   layoutRegions: [{selector: '{"x":25,"y":26,"width":27,"height":28}'}],
   contentRegions: [{selector: '{"x":35,"y":36,"width":37,"height":38}'}],
   accessibilityRegions: [{selector: '{"x":45,"y":46,"width":47,"height":48}'}],

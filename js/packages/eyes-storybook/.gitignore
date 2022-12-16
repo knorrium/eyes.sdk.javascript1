@@ -8,7 +8,10 @@ eyes.tap
 test/fixtures/images/
 test/fixtures/storybook-versions/*/.storybook/
 test/fixtures/storybook-versions/*/stories/
+test/fixtures/storybook-versions/*/src/
 test/fixtures/storybookCSF/.storybook-temp/
+test/e2e/latest/*
 /logs/
 !/dist
 !/bin
+test/e2e/undefined

@@ -20,7 +20,7 @@ async function testStorybook({
     logger: console,
   });
 
-  await storybookConnector.start(30000);
+  await storybookConnector.start(120000);
   return storybookConnector.kill.bind(storybookConnector);
 }
 

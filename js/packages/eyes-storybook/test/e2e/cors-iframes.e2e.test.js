@@ -24,11 +24,11 @@ describe('eyes-storybook', () => {
           allowCors: false,
           middlewares: ['handlebars'],
           hbData: {
-            src: 'http://localhost:7778/cors_frames/frame.html',
+            src: 'http://localhost:7779/cors_frames/frame.html',
           },
         })
       ).close;
-      closeServerB = (await testServerInProcess({port: 7778, staticPath})).close;
+      closeServerB = (await testServerInProcess({port: 7779, staticPath})).close;
       const [err, result] = await presult(
         utils.process.sh(
           `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(

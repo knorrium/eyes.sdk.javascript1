@@ -1,6 +1,5 @@
 'use strict';
 const {presult, ptimeoutWithError} = require('@applitools/functional-commons');
-const {ArgumentGuard} = require('@applitools/eyes-sdk-core');
 const renderStoryWithClientAPI = require('../dist/renderStoryWithClientAPI');
 const runRunBeforeScript = require('../dist/runRunBeforeScript');
 const getStoryBaselineName = require('./getStoryBaselineName');
@@ -9,6 +8,7 @@ const runRunAfterScript = require('../dist/runRunAfterScript');
 const waitFor = require('./waitFor');
 const PAGE_EVALUATE_TIMEOUT = 120000;
 const DOM_SNAPSHOTS_TIMEOUT = 5 * 60 * 1000;
+const utils = require('@applitools/utils');
 
 function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPagePerStory}) {
   return async function getStoryData({story, storyUrl, page, browser, waitBeforeStory}) {
@@ -22,7 +22,7 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
       if (urlQueryParamsEquals(currentUrl, expectedQueryParams)) {
         try {
           const err = await ptimeoutWithError(
-            page.evaluate(renderStoryWithClientAPI, story.index),
+            page.evaluate(renderStoryWithClientAPI, story.index, story.id),
             PAGE_EVALUATE_TIMEOUT,
             new Error('page evaluate timed out!'),
           );
@@ -45,11 +45,7 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
 
     const wait = waitBeforeStory || waitBeforeCapture;
     if (typeof wait === 'number') {
-      ArgumentGuard.greaterThanOrEqualToZero(wait, 'waitBeforeCapture', true);
-    }
-    if (wait) {
-      logger.log(`waiting before screenshot of ${title} ${wait}`);
-      await waitFor(page, wait);
+      utils.guard.isGreaterThenOrEqual(wait, 0, {name: 'waitBeforeCapture'});
     }
 
     if (eyesParameters && eyesParameters.runBefore) {
@@ -59,7 +55,6 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
     }
 
     logger.log(`running takeDomSnapshot(s) for story ${title}`);
-
     const domSnapshotsPromise = takeDomSnapshots({
       page,
       browser,

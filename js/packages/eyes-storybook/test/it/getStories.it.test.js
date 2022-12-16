@@ -38,6 +38,7 @@ describe('getStories', () => {
         [
           {
             name: 'background color',
+            id: 'button--background-color',
             kind: 'Button',
             hasPlayFunction: false,
             parameters: {
@@ -49,6 +50,7 @@ describe('getStories', () => {
           },
           {
             name: 'with text',
+            id: 'button--with-text',
             kind: 'Button',
             hasPlayFunction: false,
             parameters: {
@@ -61,12 +63,14 @@ describe('getStories', () => {
           },
           {
             name: 'with some emoji',
+            id: 'button--with-some-emoji',
             kind: 'Button',
             hasPlayFunction: false,
             error: `Ignoring parameters for story: "with some emoji Button" since they are not serilizable. Error: "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'inner' closes the circle"`,
           },
           {
             name: 'image',
+            id: 'image--image',
             kind: 'Image',
             hasPlayFunction: false,
             parameters: {
@@ -77,6 +81,7 @@ describe('getStories', () => {
           },
           {
             name: 'story 1',
+            id: 'nested--story-1',
             kind: 'Nested',
             hasPlayFunction: false,
             parameters: {
@@ -87,6 +92,7 @@ describe('getStories', () => {
           },
           {
             name: 'story 1.1',
+            id: 'nested-component--story-1-1',
             kind: 'Nested/Component',
             hasPlayFunction: false,
             parameters: {
@@ -97,6 +103,7 @@ describe('getStories', () => {
           },
           {
             name: 'story 1.2',
+            id: 'nested-component--story-1-2',
             kind: 'Nested/Component',
             hasPlayFunction: false,
             parameters: {
@@ -107,6 +114,7 @@ describe('getStories', () => {
           },
           {
             name: 'a yes-a b',
+            id: 'button-with-space-yes-indeed--a-yes-a-b',
             kind: 'Button with-space yes-indeed',
             hasPlayFunction: false,
             parameters: {
@@ -117,6 +125,7 @@ describe('getStories', () => {
           },
           {
             name: 'b yes-a b',
+            id: 'button-with-space-yes-indeed-nested-with-space-yes--b-yes-a-b',
             kind: 'Button with-space yes-indeed/nested with-space yes',
             hasPlayFunction: false,
             parameters: {
@@ -127,6 +136,7 @@ describe('getStories', () => {
           },
           {
             name: 'c yes-a b',
+            id: 'button-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
             kind: 'Button with-space yes-indeed/nested with-space yes/nested again-yes a',
             hasPlayFunction: false,
             parameters: {
@@ -138,6 +148,7 @@ describe('getStories', () => {
           },
           {
             name: 'story 1.1',
+            id: 'some-section-nested-component--story-1-1',
             kind: 'SOME section|Nested/Component',
             hasPlayFunction: false,
             parameters: {
@@ -148,6 +159,7 @@ describe('getStories', () => {
           },
           {
             name: 'story 1.2',
+            id: 'some-section-nested-component--story-1-2',
             kind: 'SOME section|Nested/Component',
             hasPlayFunction: false,
             parameters: {
@@ -158,6 +170,7 @@ describe('getStories', () => {
           },
           {
             name: 'c yes-a b',
+            id: 'wow-one-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
             kind: 'Wow|one with-space yes-indeed/nested with-space yes/nested again-yes a',
             hasPlayFunction: false,
             parameters: {
@@ -169,6 +182,7 @@ describe('getStories', () => {
           },
           {
             name: 'should also do RTL',
+            id: 'rtl--should-also-do-rtl',
             kind: 'RTL',
             hasPlayFunction: false,
             parameters: {
@@ -179,6 +193,7 @@ describe('getStories', () => {
           },
           {
             name: 'local RTL config',
+            id: 'rtl--local-rtl-config',
             kind: 'RTL',
             hasPlayFunction: false,
             parameters: {
@@ -190,6 +205,7 @@ describe('getStories', () => {
           },
           {
             name: 'local theme config',
+            id: 'theme--local-theme-config',
             kind: 'Theme',
             hasPlayFunction: false,
             parameters: {
@@ -204,6 +220,8 @@ describe('getStories', () => {
           {
             name:
               'this story should not be checked visually by eyes-storybook because of local parameter',
+            id:
+              'skipped-tests--this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-local-parameter',
             kind: 'skipped tests',
             hasPlayFunction: false,
             parameters: {
@@ -217,6 +235,8 @@ describe('getStories', () => {
           {
             name:
               '[SKIP] this story should not be checked visually by eyes-storybook because of global config',
+            id:
+              'skipped-tests--skip-this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-global-config',
             kind: 'skipped tests',
             hasPlayFunction: false,
             parameters: {
@@ -228,12 +248,14 @@ describe('getStories', () => {
           },
           {
             name: 'testing circular parameters',
+            id: 'skipped-tests--testing-circular-parameters',
             kind: 'skipped tests',
             hasPlayFunction: false,
             parameters: {eyes: {include: false}}, // note that fileName and framework parameters are not present here because of the circular reference
           },
           {
             kind: 'Text',
+            id: 'text--appears-after-a-delay',
             hasPlayFunction: false,
             name: 'appears after a delay',
             parameters: {
@@ -247,6 +269,7 @@ describe('getStories', () => {
           },
           {
             name: 'Popover',
+            id: 'interaction--popover',
             kind: 'Interaction',
             hasPlayFunction: false,
             parameters: {
@@ -259,6 +282,7 @@ describe('getStories', () => {
           },
           {
             kind: 'Responsive UI',
+            id: 'responsive-ui--red-green',
             hasPlayFunction: false,
             name: 'Red/green',
             parameters: {

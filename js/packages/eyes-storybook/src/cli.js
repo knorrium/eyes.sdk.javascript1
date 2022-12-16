@@ -1,7 +1,7 @@
 'use strict';
 const yargs = require('yargs');
 const {makeLogger} = require('@applitools/logger');
-const {configParams: externalConfigParams} = require('@applitools/visual-grid-client');
+const {configParams: externalConfigParams} = require('./configParams');
 const VERSION = require('../package.json').version;
 const eyesStorybook = require('./eyesStorybook');
 const processResults = require('./processResults');
@@ -30,7 +30,6 @@ const {performance, timeItAsync} = makeTiming();
       .options(yargsOptions).argv;
 
     console.log(`Using @applitools/eyes-storybook version ${VERSION}.\n`);
-
     const config = generateConfig({argv, defaultConfig, externalConfigParams});
     const logger = makeLogger({level: config.showLogs ? 'info' : 'silent', label: 'eyes'});
     await validateAndPopulateConfig({config, logger, packagePath: process.cwd()});
@@ -62,7 +61,7 @@ const {performance, timeItAsync} = makeTiming();
       process.exit(config.exitcode ? exitCode : 0);
     }
   } catch (ex) {
-    console.log(ex.message);
+    console.log(ex);
     process.exit(1);
   }
 })();

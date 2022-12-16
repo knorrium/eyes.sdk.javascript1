@@ -1,12 +1,13 @@
 'use strict';
-const {TypeUtils} = require('@applitools/eyes-sdk-core');
-const prettyValue = val => (!TypeUtils.isObject(val) ? val : JSON.stringify(val));
+const utils = require('@applitools/utils');
+const prettyValue = (key, val) =>
+  !utils.types.isObject(val, {name: key}) ? val : JSON.stringify(val);
 
 function configDigest(config) {
   const maxKeyLen = Object.keys(config).reduce((len, key) => Math.max(len, key.length), 0);
   return (
     Object.entries(config)
-      .map(([key, value]) => `${key.padEnd(maxKeyLen + 1)}: ${prettyValue(value)}`)
+      .map(([key, value]) => `${key.padEnd(maxKeyLen + 1)}: ${prettyValue(key, value)}`)
       .join('\n') + '\n'
   );
 }

@@ -98,12 +98,20 @@ function __getStories(...args) {
 
           case API_VERSIONS.v6_4: {
             api = {
-              getStories: () => {
+              getStories: async () => {
+                if (clientAPI.storyStore.cacheAllCSFFiles) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                }
                 return clientAPI.raw();
               },
-              selectStory: async i => {
+              selectStory: async (i, id) => {
+                let storyId = !clientAPI.storyStore.cacheAllCSFFiles ? clientAPI.raw()[i].id : id;
+                if (!storyId) {
+                  await clientAPI.storyStore.cacheAllCSFFiles();
+                  storyId = clientAPI.raw()[i].id;
+                }
                 frameWindow.__STORYBOOK_PREVIEW__.urlStore.setSelection({
-                  storyId: clientAPI.raw()[i].id,
+                  storyId,
                 });
                 await frameWindow.__STORYBOOK_PREVIEW__.renderSelection();
               },
@@ -246,9 +254,10 @@ function __getStories(...args) {
       }
     }
 
-    function getStoriesThroughClientAPI(clientApi) {
-      return clientApi.getStories().map((story, index) => {
-        const {name, kind, parameters} = story;
+    async function getStoriesThroughClientAPI(clientApi) {
+      const stories = await clientApi.getStories();
+      return stories.map((story, index) => {
+        const {name, kind, parameters, id} = story;
         const hasEyesParameters =
           parameters && parameters.eyes && typeof parameters.eyes === 'object';
         let parametersIfSerialized, error;
@@ -278,6 +287,7 @@ function __getStories(...args) {
           index,
           name,
           kind,
+          id,
           parameters: parametersIfSerialized,
           error,
         };
