@@ -42,6 +42,7 @@ function generateNetworkConfigForPlatform(platform) {
   return platform === 'linux'
     ? {network_mode: 'host'}
     : {
+        extra_hosts: ['host.docker.internal:host-gateway'],
         ports: [
           '4444:4444',
           '9515:9515',

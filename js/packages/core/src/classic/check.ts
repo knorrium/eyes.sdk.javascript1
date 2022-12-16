@@ -41,7 +41,13 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
     await driver.refreshContexts()
     await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
     if (settings.lazyLoad && driver.isWeb) {
-      await waitForLazyLoad({driver, settings: settings.lazyLoad !== true ? settings.lazyLoad : {}, logger})
+      if (settings.lazyLoad) {
+        await waitForLazyLoad({
+          context: driver.currentContext,
+          settings: settings.lazyLoad !== true ? settings.lazyLoad : {},
+          logger,
+        })
+      }
     }
     // TODO it actually could be different per eyes
     const shouldRunOnce = true

@@ -4,6 +4,8 @@ const {lazyLoad} = require('../dist/index')
 describe('lazyLoad', () => {
   const pages = {
     snippetsTestPage: 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/',
+    snippetsTestPageInsideScrollableArea:
+      'https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html',
     cannotScroll: 'data:text/html,%3Ch1%3EHello%2C%20World%21%3C%2Fh1%3E',
     infiniteScroll: 'https://applitools.github.io/demo/TestPages/InfiniteScroll/',
   }
@@ -30,13 +32,12 @@ describe('lazyLoad', () => {
       const scrollableHeight = await page.evaluate(
         () => document.documentElement.scrollHeight - document.documentElement.clientHeight,
       )
-      await page.evaluate(lazyLoad, [options])
+      await page.evaluate(lazyLoad, [null, options])
       let result
       do {
         result = JSON.parse(await page.evaluate(lazyLoad))
       } while (result.status && result.status === 'WIP')
       const transactionHistory = result.value
-      console.log(transactionHistory)
       const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
       const resetScroll = transactionHistory[transactionHistory.length - 1]
       assert.deepStrictEqual(scrolledHeight, scrollableHeight)
@@ -46,13 +47,12 @@ describe('lazyLoad', () => {
 
     it('works on a page that cannot scroll', async () => {
       await page.goto(pages.cannotScroll)
-      await page.evaluate(lazyLoad, [options])
+      await page.evaluate(lazyLoad, [null, options])
       let result
       do {
         result = JSON.parse(await page.evaluate(lazyLoad))
       } while (result.status && result.status === 'WIP')
       const transactionHistory = result.value
-      console.log(transactionHistory)
       const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
       const resetScroll = transactionHistory[transactionHistory.length - 1]
       assert.deepStrictEqual(scrolledHeight, 0)
@@ -62,16 +62,38 @@ describe('lazyLoad', () => {
 
     it('works on a page with infinite scroll', async () => {
       await page.goto(pages.infiniteScroll)
-      await page.evaluate(lazyLoad, [options])
+      await page.evaluate(lazyLoad, [null, options])
       let result
       do {
         result = JSON.parse(await page.evaluate(lazyLoad))
       } while (result.status && result.status === 'WIP')
       const transactionHistory = result.value
-      console.log(transactionHistory)
       const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
       const resetScroll = transactionHistory[transactionHistory.length - 1]
       assert.deepStrictEqual(scrolledHeight, options.maxAmountToScroll)
+      assert.deepStrictEqual(resetScroll.x, 0)
+      assert.deepStrictEqual(resetScroll.y, 0)
+    })
+
+    it('works on a page with a custom scrolling element', async () => {
+      await page.goto(pages.snippetsTestPageInsideScrollableArea)
+      await page.evaluate(
+        `document.querySelector('#sre').scrollTo(${startingPosition.x}, ${startingPosition.y})`,
+      )
+      const scrollableHeight = await page.evaluate(
+        () =>
+          document.querySelector('#sre').scrollHeight - document.querySelector('#sre').clientHeight,
+      )
+      const sre = await page.$('#sre')
+      await page.evaluate(lazyLoad, [sre, options])
+      let result
+      do {
+        result = JSON.parse(await page.evaluate(lazyLoad))
+      } while (result.status && result.status === 'WIP')
+      const transactionHistory = result.value
+      const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
+      const resetScroll = transactionHistory[transactionHistory.length - 1]
+      assert.deepStrictEqual(scrolledHeight, scrollableHeight)
       assert.deepStrictEqual(resetScroll.x, 0)
       assert.deepStrictEqual(resetScroll.y, 0)
     })
@@ -93,13 +115,12 @@ describe('lazyLoad', () => {
         const scrollableHeight = await driver.execute(function() {
           return document.documentElement.scrollHeight - document.documentElement.clientHeight
         })
-        await driver.execute(lazyLoad, [options])
+        await driver.execute(lazyLoad, [null, options])
         let result
         do {
           result = JSON.parse(await driver.execute(lazyLoad))
         } while (result.status && result.status === 'WIP')
         const transactionHistory = result.value
-        console.log(transactionHistory)
         const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
         const resetScroll = transactionHistory[transactionHistory.length - 1]
         assert(scrollableHeight - options.scrollLength <= scrolledHeight <= scrollableHeight)
@@ -113,15 +134,13 @@ describe('lazyLoad', () => {
         // exhaustion. This should be fixed, but it's not a breaking issue. Just a matter of
         // performance. Skipping for now.
         if (name === 'ios safari') this.skip()
-        console.log('url', pages.cannotScroll)
         await driver.url(pages.cannotScroll)
-        await driver.execute(lazyLoad, [options])
+        await driver.execute(lazyLoad, [null, options])
         let result
         do {
           result = JSON.parse(await driver.execute(lazyLoad))
         } while (result.status && result.status === 'WIP')
         const transactionHistory = result.value
-        console.log(transactionHistory)
         const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
         const resetScroll = transactionHistory[transactionHistory.length - 1]
         assert.deepStrictEqual(scrolledHeight, 0)
@@ -131,13 +150,12 @@ describe('lazyLoad', () => {
 
       it('works on a page with infinite scroll', async () => {
         await driver.url(pages.infiniteScroll)
-        await driver.execute(lazyLoad, [options])
+        await driver.execute(lazyLoad, [null, options])
         let result
         do {
           result = JSON.parse(await driver.execute(lazyLoad))
         } while (result.status && result.status === 'WIP')
         const transactionHistory = result.value
-        console.log(transactionHistory)
         const scrolledHeight = transactionHistory[transactionHistory.length - 2].y
         const resetScroll = transactionHistory[transactionHistory.length - 1]
         assert.deepStrictEqual(scrolledHeight, options.maxAmountToScroll)

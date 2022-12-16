@@ -32,8 +32,22 @@ describe('lazy load', () => {
     await eyes.check({
       settings: {fully: true, lazyLoad: true, hideScrollbars: true},
     })
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
 
+    await driver.get('https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html')
+
+    await eyes.check({
+      settings: {
+        name: 'with scroll root element set',
+        fully: true,
+        lazyLoad: true,
+        hideScrollbars: true,
+        scrollRootElement: {type: 'css', selector: '#sre'},
+        stitchMode: 'Scroll',
+        region: '#sre',
+      },
+    })
+
+    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
     assert.strictEqual(result.status, 'Passed')
   })
 })

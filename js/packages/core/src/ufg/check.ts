@@ -56,6 +56,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
       selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
     if (isDriver(target, spec)) {
       const driver = await makeDriver({spec, driver: target, logger})
+      await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
       if (driver.isWeb && (!settings.renderers || settings.renderers.length === 0)) {
         const viewportSize = await driver.getViewportSize()
         settings.renderers = [{name: 'chrome', ...viewportSize}]
@@ -91,8 +92,12 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
         },
         hooks: {
           async beforeSnapshots() {
-            if (driver.isWeb && settings.lazyLoad) {
-              await waitForLazyLoad({driver, settings: settings.lazyLoad !== true ? settings.lazyLoad : {}, logger})
+            if (settings.lazyLoad && driver.isWeb) {
+              await waitForLazyLoad({
+                context: driver.currentContext,
+                settings: settings.lazyLoad !== true ? settings.lazyLoad : {},
+                logger,
+              })
             }
           },
         },

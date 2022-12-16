@@ -39,7 +39,13 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
       ).flat()
     }
     const driver = await makeDriver({spec, driver: target, logger})
-    if (settings.lazyLoad) await waitForLazyLoad({driver, settings: settings.lazyLoad !== true ? settings.lazyLoad : {}, logger})
+    if (settings.lazyLoad && driver.isWeb) {
+      await waitForLazyLoad({
+        context: driver.currentContext,
+        settings: settings.lazyLoad !== true ? settings.lazyLoad : {},
+        logger,
+      })
+    }
     const {elementReferencesToCalculate, getBaseCheckSettings} = toBaseCheckSettings({settings})
     const screenshot = await takeScreenshot({
       driver,

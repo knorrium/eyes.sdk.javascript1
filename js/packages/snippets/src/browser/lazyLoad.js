@@ -7,7 +7,7 @@ const scrollTo = require('./scrollTo')
 // NOTE:
 // This snippet uses `scrollTo`, which sets `scroll-behavior` to `auto`,
 // and is called on each scrolling iteration.
-function lazyLoad([{scrollLength, waitingTime, maxAmountToScroll} = {}] = []) {
+function lazyLoad([rootElement, {scrollLength, waitingTime, maxAmountToScroll} = {}] = []) {
   try {
     if (window[EYES_NAMESPACE][LAZY_LOAD_KEY]) {
       const state = window[EYES_NAMESPACE][LAZY_LOAD_KEY]
@@ -30,7 +30,7 @@ function lazyLoad([{scrollLength, waitingTime, maxAmountToScroll} = {}] = []) {
         setTimeout(() => {
           try {
             if (doneScrolling) {
-              const {x, y} = scrollTo([undefined, startingScrollPosition])
+              const {x, y} = scrollTo([rootElement, startingScrollPosition])
               log.push({
                 x,
                 y,
@@ -40,7 +40,7 @@ function lazyLoad([{scrollLength, waitingTime, maxAmountToScroll} = {}] = []) {
               return
             }
             const {x, y} = scrollTo([
-              undefined,
+              rootElement,
               {
                 x: startingScrollPosition.x,
                 y: previousScrollResult.y + scrollLength,
