@@ -7543,12 +7543,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-replicator@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/replicator/-/replicator-1.0.3.tgz"
-  integrity sha512-WsKsraaM0x0QHy5CtzdgFXUxyowoBhyNkmPqmZShW6h+rOWnyT6Od3zRdTX9r616rAA6kDC9MKQGnSM/CJKfVQ==
-
-replicator@^1.0.5:
+replicator@^1.0.3, replicator@^1.0.5:
   version "1.0.5"
   resolved "https://registry.npmjs.org/replicator/-/replicator-1.0.5.tgz"
   integrity sha512-saxS4y7NFkLMa92BR4bPHR41GD+f/qoDAwD2xZmN+MpDXgibkxwLO2qk7dCHYtskSkd/bWS8Jy6kC5MZUkg1tw==
