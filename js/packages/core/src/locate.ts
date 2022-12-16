@@ -1,7 +1,6 @@
 import type {Region} from '@applitools/utils'
-import type {Config, LocateSettings} from './types'
+import type {DriverTarget, ImageTarget, Config, LocateSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
-import type {Screenshot} from './classic/types'
 import {type Logger} from '@applitools/logger'
 import {type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
@@ -24,7 +23,7 @@ export function makeLocate<TDriver, TContext, TElement, TSelector, TType extends
     config,
     logger = defaultLogger,
   }: {
-    target?: TDriver | Screenshot
+    target?: DriverTarget<TDriver, TContext, TElement, TSelector> | ImageTarget
     settings: LocateSettings<TLocator, TElement, TSelector>
     config?: Config<TElement, TSelector, TType>
     logger?: Logger
@@ -34,7 +33,6 @@ export function makeLocate<TDriver, TContext, TElement, TSelector, TType extends
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')
 
     const classicCore = makeClassicCore({spec, core, logger})
-
     const results = await classicCore.locate({target, settings, logger})
     return results
   }

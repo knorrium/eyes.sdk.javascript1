@@ -1,18 +1,16 @@
-import type {Config, CloseSettings, TestResult} from './types'
-import type {Eyes as ClassicEyes} from './classic/types'
-import type {Eyes as UFGEyes} from './ufg/types'
+import type {Eyes, Config, CloseSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 
-type Options<TDriver, TElement, TSelector> = {
-  eyes: ClassicEyes<TDriver, TElement, TSelector> | UFGEyes<TDriver, TElement, TSelector>
+type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+  eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
   logger: Logger
 }
 
-export function makeClose<TDriver, TElement, TSelector, TType extends 'classic' | 'ufg'>({
+export function makeClose<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'>({
   eyes,
   logger: defaultLogger,
-}: Options<TDriver, TElement, TSelector>) {
+}: Options<TDriver, TContext, TElement, TSelector, TType>) {
   return async function close({
     settings,
     config,
@@ -24,8 +22,8 @@ export function makeClose<TDriver, TElement, TSelector, TType extends 'classic' 
   } = {}): Promise<TestResult<TType>[]> {
     settings = {...config?.close, ...settings}
     settings.updateBaselineIfNew ??= true
-
-    const results = await eyes.close({settings, logger})
+    const typedEyes = await eyes.getTypedEyes({logger})
+    const results = await typedEyes.close({settings, logger})
     if (settings.throwErr) {
       results.forEach(result => {
         if (result.status !== 'Passed') throw new TestError(result)

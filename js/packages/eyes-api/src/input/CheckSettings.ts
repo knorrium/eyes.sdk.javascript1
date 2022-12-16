@@ -66,6 +66,7 @@ export type CheckSettingsAutomation<TElement, TSelector> = CheckSettingsBase<Reg
   disableBrowserFetching?: boolean
   layoutBreakpoints?: boolean | number[]
   visualGridOptions?: {[key: string]: any}
+  nmgOptions?: {[key: string]: any}
   hooks?: {beforeCaptureScreenshot: string}
   renderId?: string
   timeout?: number
@@ -565,6 +566,15 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
     return this.ufgOptions(options)
   }
 
+  nmgOption(key: string, value: any) {
+    this._settings.nmgOptions = {...this._settings.nmgOptions, [key]: value}
+    return this
+  }
+  nmgOptions(options: {[key: string]: any}) {
+    this._settings.nmgOptions = options
+    return this
+  }
+
   renderId(renderId: string): this {
     this._settings.renderId = renderId
     return this
@@ -623,6 +633,7 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
         disableBrowserFetching: this._settings.disableBrowserFetching,
         layoutBreakpoints: this._settings.layoutBreakpoints,
         ufgOptions: this._settings.visualGridOptions,
+        nmgOptions: this._settings.nmgOptions,
         hooks: this._settings.hooks,
         pageId: this._settings.pageId,
         lazyLoad: this._settings.lazyLoad,

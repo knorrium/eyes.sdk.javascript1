@@ -166,6 +166,39 @@ describe('requests', () => {
     })
   })
 
+  it('openEyes with rendererInfo', async () => {
+    const requests = makeCoreRequests({agentId: 'test-core'})
+
+    const {test} = await requests.openEyes({
+      settings: {
+        serverUrl: 'https://localhost:3000',
+        apiKey: 'my0api0key',
+        appName: 'app-name',
+        testName: 'test-name',
+        environment: {
+          os: 'Linux',
+          osInfo: 'Arch Linux',
+          hostingApp: 'Chromium',
+          hostingAppInfo: 'Chromium 105.0',
+          deviceName: 'Desktop',
+          viewportSize: {width: 100.25, height: 200.75},
+          userAgent: 'UserAgent string',
+          rendererInfo: {
+            type: 'web',
+            renderer: {name: 'chrome', width: 100, height: 101},
+            rendererId: 'renderer-id',
+          },
+        },
+      },
+    })
+
+    assert.deepStrictEqual(test.rendererInfo, {
+      type: 'web',
+      renderer: {name: 'chrome', width: 100, height: 101},
+      rendererId: 'renderer-id',
+    })
+  })
+
   it('check', async () => {
     const requests = makeCoreRequests({agentId: 'test-core'})
 

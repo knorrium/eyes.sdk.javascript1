@@ -778,6 +778,13 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
   }
 }
 
+export function isDriver<TDriver>(
+  driver: any,
+  spec?: SpecDriver<TDriver, any, any, any>,
+): driver is Driver<TDriver, any, any, any> | TDriver {
+  return driver instanceof Driver || spec?.isDriver(driver)
+}
+
 export async function makeDriver<TDriver, TContext, TElement, TSelector>(
   options: DriverOptions<TDriver, TContext, TElement, TSelector>,
 ): Promise<Driver<TDriver, TContext, TElement, TSelector>> {

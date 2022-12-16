@@ -55,14 +55,14 @@ interface Server {
   getInfo(): Record<string, any>
 }
 
-type UniversalCore<TDriver, TElement, TSelector> = Omit<
-  Core<TDriver, TElement, TSelector>,
+type UniversalCore<TDriver, TContext, TElement, TSelector> = Omit<
+  Core<TDriver, TContext, TElement, TSelector>,
   'isDriver' | 'isElement' | 'isSelector'
 >
 
-type UniversalEyes<TDriver, TElement, TSelector, TType extends 'classic' | 'ufg'> = Omit<
-  Eyes<TDriver, TElement, TSelector, TType>,
-  'test' | 'running' | 'closed' | 'aborted'
+type UniversalEyes<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = Omit<
+  Eyes<TDriver, TContext, TElement, TSelector, TType>,
+  'type' | 'test' | 'running' | 'closed' | 'aborted'
 >
 
 // Ideally would be transform SpecDriver type to the type with single object argument
@@ -127,17 +127,17 @@ export type Refify<TValue> = TValue extends string | number | boolean | null | u
 /* eslint-enable prettier/prettier */
 
 export type ClientSocket<TDriver, TContext, TElement, TSelector> = unknown &
-  Request<UniversalCore<TDriver, TElement, TSelector>, 'Core'> &
-  Request<EyesManager<TDriver, TElement, TSelector, 'classic' | 'ufg'>, 'EyesManager', 'manager'> &
-  Request<UniversalEyes<TDriver, TElement, TSelector, 'classic' | 'ufg'>, 'Eyes', 'eyes'> &
+  Request<UniversalCore<TDriver, TContext, TElement, TSelector>, 'Core'> &
+  Request<EyesManager<TDriver, TContext, TElement, TSelector, 'classic' | 'ufg'>, 'EyesManager', 'manager'> &
+  Request<UniversalEyes<TDriver, TContext, TElement, TSelector, 'classic' | 'ufg'>, 'Eyes', 'eyes'> &
   Request<Server, 'Server'> &
   Request<Debug<TDriver, TContext, TElement, TSelector>, 'Debug'> &
   Command<UniversalSpecDriver<TDriver, TContext, TElement, TSelector>, 'Driver'>
 
 export type ServerSocket<TDriver, TContext, TElement, TSelector> = unknown &
-  Command<UniversalCore<TDriver, TElement, TSelector>, 'Core'> &
-  Command<EyesManager<TDriver, TElement, TSelector, 'classic' | 'ufg'>, 'EyesManager', 'manager'> &
-  Command<UniversalEyes<TDriver, TElement, TSelector, 'classic' | 'ufg'>, 'Eyes', 'eyes'> &
+  Command<UniversalCore<TDriver, TContext, TElement, TSelector>, 'Core'> &
+  Command<EyesManager<TDriver, TContext, TElement, TSelector, 'classic' | 'ufg'>, 'EyesManager', 'manager'> &
+  Command<UniversalEyes<TDriver, TContext, TElement, TSelector, 'classic' | 'ufg'>, 'Eyes', 'eyes'> &
   Command<Server, 'Server'> &
   Command<Debug<TDriver, TContext, TElement, TSelector>, 'Debug'> &
   Request<UniversalSpecDriver<TDriver, TContext, TElement, TSelector>, 'Driver'>

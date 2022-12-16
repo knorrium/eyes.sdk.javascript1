@@ -28,7 +28,7 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   agentId = 'core',
   cwd = process.cwd(),
   logger,
-}: Options<TDriver, TContext, TElement, TSelector> = {}): Core<TDriver, TElement, TSelector> {
+}: Options<TDriver, TContext, TElement, TSelector> = {}): Core<TDriver, TContext, TElement, TSelector> {
   logger = logger?.extend({label: 'core'}) ?? makeLogger({label: 'core'})
   logger.log(`Core is initialized ${core ? 'with' : 'without'} custom base core`)
   core ??= makeBaseCore({agentId, cwd, logger})

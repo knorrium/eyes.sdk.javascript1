@@ -99,20 +99,36 @@ export function absolutizeUrl(url: string, baseUrl: string): string {
 export function cachify<TFunc extends (...args: any[]) => any>(
   func: TFunc,
   getKey?: (args: Parameters<TFunc>) => any,
-): TFunc & {clearCache(): void; getCachedValues(): ReturnType<TFunc>[]} {
+): TFunc & {
+  getCachedValues(): ReturnType<TFunc>[]
+  setCachedValue(key: any, value: ReturnType<TFunc>): void
+  clearCache(): void
+} {
   const cache = new Map<string, ReturnType<TFunc>>()
   const funcWithCache = ((...args: Parameters<TFunc>) => {
-    const key = JSON.stringify(getKey?.(args) ?? args, (_, t) => (typeof t === 'function' ? t.toString() : t))
+    const key = stringifyKey(getKey?.(args) ?? args)
     let value = cache.get(key)
     if (!value) {
       value = func(...args)
       cache.set(key, value)
     }
     return value
-  }) as TFunc & {clearCache(): void; getCachedValues(): ReturnType<TFunc>[]}
+  }) as TFunc & {
+    getCachedValues(): ReturnType<TFunc>[]
+    setCachedValue(key: any, value: Awaited<ReturnType<TFunc>>): void
+    clearCache(): void
+  }
   funcWithCache.clearCache = () => cache.clear()
   funcWithCache.getCachedValues = () => Array.from(cache.values())
+  funcWithCache.setCachedValue = (key, value) => cache.set(stringifyKey(key), value)
   return funcWithCache
+
+  function stringifyKey(key: any): string {
+    key = types.isPlainObject(key)
+      ? Object.fromEntries(Object.entries(key).sort(([key1], [key2]) => (key1 > key2 ? 1 : -1)))
+      : key
+    return JSON.stringify(key, (_key, value) => (typeof value === 'function' ? value.toString() : value))
+  }
 }
 
 export function batchify<
@@ -146,11 +162,12 @@ export function wrap<TFunc extends (...args: any[]) => any>(
 
 export function extend<TTarget extends Record<PropertyKey, any>, TExtension extends Record<PropertyKey, any>>(
   target: TTarget,
-  extension: TExtension,
+  extension: TExtension | ((result: any) => TExtension),
 ): TTarget & TExtension {
-  return Object.defineProperties({} as any, {
+  const result = {} as any
+  return Object.defineProperties(result, {
     ...Object.getOwnPropertyDescriptors(target),
-    ...Object.getOwnPropertyDescriptors(extension),
+    ...Object.getOwnPropertyDescriptors(types.isFunction(extension) ? extension(result) : extension),
   })
 }
 

@@ -1,4 +1,4 @@
-import type {Target, ExtractTextSettings} from './types'
+import type {ImageTarget, ExtractTextSettings} from './types'
 import {type MaybeArray} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
@@ -16,7 +16,7 @@ export function makeExtractText({requests, logger: defaultLogger}: Options) {
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings?: MaybeArray<ExtractTextSettings>
     logger?: Logger
   }): Promise<string[]> {

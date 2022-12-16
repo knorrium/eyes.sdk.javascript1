@@ -210,7 +210,7 @@ export type Renderer = DesktopBrowserRenderer | ChromeEmulationDeviceRenderer | 
 
 export interface UFGClient {
   createRenderTarget(options: {snapshot: Snapshot; settings?: ProcessResourcesSettings}): Promise<RenderTarget>
-  bookRenderer(options: {settings: RenderSettings}): Promise<BookedRenderer>
+  bookRenderer(options: {settings: RendererSettings}): Promise<RendererEnvironment>
   render(options: {target: RenderTarget; settings: RenderSettings; signal?: AbortSignal}): Promise<RenderResult>
   getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<ChromeEmulationDevice, any>>
   getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
@@ -218,8 +218,9 @@ export interface UFGClient {
   getCachedResourceUrls(): string[]
 }
 
-export type BookedRenderer = {
+export type RendererEnvironment = {
   rendererId: string
+  rendererInfo: {type: 'native' | 'web'; renderer: Renderer}
   rawEnvironment: Record<string, any>
 }
 
@@ -231,10 +232,13 @@ export type RenderTarget = {
   vhsCompatibilityParams?: Record<string, any>
 }
 
-export type RenderSettings = {
+export type RendererSettings = {
   type: 'web' | 'native'
   renderer: Renderer
-  rendererId?: string
+}
+
+export type RenderSettings = RendererSettings & {
+  rendererId: string
   region?: Region | Selector
   fully?: boolean
   selectorsToCalculate?: Selector[]

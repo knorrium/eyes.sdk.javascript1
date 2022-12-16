@@ -9,7 +9,7 @@ import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   core?: BaseCore
   agentId?: string
   cwd?: string
@@ -22,12 +22,10 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   agentId = 'core-classic',
   cwd = process.cwd(),
   logger,
-}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TElement, TSelector> {
+}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TContext, TElement, TSelector> {
   logger = logger?.extend({label: 'core-classic'}) ?? makeLogger({label: 'core-classic'})
   logger.log(`Core classic is initialized ${core ? 'with' : 'without'} custom base core`)
-
   core ??= makeBaseCore({agentId, cwd, logger})
-
   return utils.general.extend(core, {
     type: 'classic' as const,
     isDriver: spec?.isDriver,

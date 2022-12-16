@@ -7,7 +7,6 @@ import {makeRender} from './render'
 import {makeProcessResources} from './resources/process-resources'
 import {makeFetchResource} from './resources/fetch-resource'
 import {makeUploadResource} from './resources/upload-resource'
-import * as utils from '@applitools/utils'
 
 export const defaultResourceCache = new Map<string, any>()
 
@@ -28,11 +27,10 @@ export function makeUFGClient({
   const fetchResource = makeFetchResource({logger})
   const uploadResource = makeUploadResource({requests, logger})
   const processResources = makeProcessResources({fetchResource, uploadResource, cache, logger})
-  const bookRendererWithCache = utils.general.cachify(makeBookRenderer({requests, logger}), ([{settings}]) => settings.renderer)
 
   return {
     createRenderTarget: makeCreateRenderTarget({processResources}),
-    bookRenderer: bookRendererWithCache,
+    bookRenderer: makeBookRenderer({requests, logger}),
     render: makeRender({requests, concurrency, logger}),
     getChromeEmulationDevices: requests.getChromeEmulationDevices,
     getAndroidDevices: requests.getAndroidDevices,

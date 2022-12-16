@@ -2,7 +2,7 @@ import type {
   Core,
   EyesManager,
   Eyes,
-  Target,
+  ImageTarget,
   Config,
   CheckSettings,
   TestResultSummary,
@@ -10,10 +10,16 @@ import type {
   TestResult,
 } from '@applitools/core'
 
-export type CoreSpec<TDriver = unknown, TElement = unknown, TSelector = unknown> = Core<TDriver, TElement, TSelector>
+export type CoreSpec<TDriver = unknown, TElement = unknown, TSelector = unknown> = Core<
+  TDriver,
+  unknown,
+  TElement,
+  TSelector
+>
 
 export type CoreEyes<TDriver = unknown, TElement = unknown, TSelector = unknown> = Eyes<
   TDriver,
+  unknown,
   TElement,
   TSelector,
   'classic' | 'ufg'
@@ -21,12 +27,13 @@ export type CoreEyes<TDriver = unknown, TElement = unknown, TSelector = unknown>
 
 export type CoreEyesManager<TDriver = unknown, TElement = unknown, TSelector = unknown> = EyesManager<
   TDriver,
+  unknown,
   TElement,
   TSelector,
   'classic' | 'ufg'
 >
 
-export type CoreTargetImage = Target<never, 'classic'>
+export type CoreTargetImage = ImageTarget
 
 export type CoreConfig<TElement = unknown, TSelector = unknown> = Config<TElement, TSelector, 'classic'> &
   Config<TElement, TSelector, 'ufg'>

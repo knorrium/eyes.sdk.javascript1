@@ -27,7 +27,7 @@ export function makeMakeManager<TDriver, TContext, TElement, TSelector>({
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function makeManager<TType extends 'classic' | 'ufg' = 'classic'>({
-    type,
+    type = 'classic' as TType,
     concurrency = defaultConcurrency,
     legacyConcurrency,
     agentId = type === 'ufg' ? defaultAgentId?.replace(/(\/\d)/, '.visualgrid$1') : defaultAgentId,
@@ -35,17 +35,21 @@ export function makeMakeManager<TDriver, TContext, TElement, TSelector>({
   }: {
     type?: TType
     concurrency?: number
+    /** @deprecated */
     legacyConcurrency?: number
     agentId?: string
     logger?: Logger
-  } = {}): Promise<EyesManager<TDriver, TElement, TSelector, TType>> {
-    core ??= makeBaseCore({agentId, cwd, logger})
+  } = {}): Promise<EyesManager<TDriver, TContext, TElement, TSelector, TType>> {
     concurrency ??= utils.types.isInteger(legacyConcurrency) ? legacyConcurrency * 5 : 5
-    const typedCore = type === 'ufg' ? makeUFGCore({spec, core, concurrency, logger}) : makeClassicCore({spec, core, logger})
+    core ??= makeBaseCore({agentId, cwd, logger})
+    const cores = {
+      ufg: makeUFGCore({spec, core, concurrency, logger}),
+      classic: makeClassicCore({spec, core, logger}),
+    }
 
-    const storage = [] as {eyes: Eyes<TDriver, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
+    const storage = [] as {eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
     // open eyes with result storage
-    const openEyes = utils.general.wrap(makeOpenEyes({spec, core: typedCore, logger}), async (openEyes, options) => {
+    const openEyes = utils.general.wrap(makeOpenEyes({type, spec, core, cores, logger}), async (openEyes, options) => {
       const eyes = await openEyes(options)
       const item = {eyes} as typeof storage[number]
       storage.push(item)
@@ -65,7 +69,7 @@ export function makeMakeManager<TDriver, TContext, TElement, TSelector>({
 
     return {
       openEyes,
-      closeManager: makeCloseManager({core: typedCore, storage, logger}),
+      closeManager: makeCloseManager({core, storage, logger}),
     }
   }
 }

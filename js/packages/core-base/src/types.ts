@@ -2,7 +2,7 @@ import {type MaybeArray, type Region, type Size, type Location} from '@applitool
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
 
-export type Target = {
+export interface ImageTarget {
   image: Buffer | URL | string
   size?: Size
   name?: string
@@ -18,7 +18,7 @@ export type Target = {
 export interface Core<TEyes = Eyes> {
   openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<TEyes>
   locate<TLocator extends string>(options: {
-    target: Target
+    target: ImageTarget
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>>
@@ -29,7 +29,7 @@ export interface Core<TEyes = Eyes> {
   logEvent(options: {settings: MaybeArray<LogEventSettings>; logger?: Logger}): Promise<void>
 }
 
-export interface Eyes<TTarget = Target> {
+export interface Eyes<TTarget = ImageTarget> {
   readonly test: TestInfo
   readonly running: boolean
   readonly aborted: boolean
@@ -58,6 +58,8 @@ export interface TestInfo {
   keepBatchOpen: boolean
   server: ServerSettings
   account: AccountInfo
+  rendererId?: string
+  rendererInfo?: {type?: 'web' | 'native'; renderer?: Record<string, any>}
 }
 
 export interface ServerSettings {
@@ -89,6 +91,11 @@ type Environment = {
   viewportSize?: Size
   userAgent?: string
   rawEnvironment?: Record<string, any>
+  rendererId?: string
+  rendererInfo?: {
+    type?: 'web' | 'native'
+    renderer?: Record<string, any>
+  }
 }
 export interface OpenSettings extends ServerSettings {
   appName: string
@@ -198,6 +205,8 @@ export interface CheckSettings<TRegion = Region> extends ImageSettings<TRegion> 
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean
   pageId?: string
+  /** @internal */
+  stepIndex?: number
   /** @internal */
   renderId?: string
   /** @internal */

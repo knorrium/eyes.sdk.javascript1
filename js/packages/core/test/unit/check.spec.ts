@@ -13,7 +13,7 @@ describe('check', () => {
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
-    const check = makeCheck({eyes: fakeEyes})
+    const check = makeCheck({eyes: fakeEyes as any})
 
     await check({settings: {enablePatterns: true}})
     await check({settings: {useDom: true}})
@@ -33,7 +33,7 @@ describe('check', () => {
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
-    const check = makeCheck({eyes: fakeEyes})
+    const check = makeCheck({eyes: fakeEyes as any})
 
     await check()
     await check({settings: {enablePatterns: false}})

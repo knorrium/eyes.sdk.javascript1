@@ -23,6 +23,7 @@ Apollo SDK:
     - Use user agent metadata to improve browser environment detection logic
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - Added `nmgOptions` to `CheckSettings`
   bug-fix:
     - Fixed bug that caused `extractText` to throw, due to fractional size of the target region
     - Fix dontCloseBatches mapping
@@ -32,7 +33,7 @@ Apollo SDK:
     - Handle fake shadowRoot with UFG
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Added `nmgOptions` to `CheckSettings`
   bug-fix:
     - Handle fake shadowRoot with UFG
 "@applitools/eyes-playwright":
@@ -54,6 +55,7 @@ Apollo SDK:
     - Use user agent metadata to improve browser environment detection logic
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - Added `nmgOptions` to `CheckSettings`
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices

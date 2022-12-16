@@ -4,17 +4,17 @@ import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 import {InternalError} from './errors/internal-error'
 
-type Options<TDriver, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   core: BaseCore<unknown>
-  storage: {eyes: Eyes<TDriver, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
+  storage: {eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
   logger?: Logger
 }
 
-export function makeCloseManager<TDriver, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
+export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
   core,
   storage,
   logger: defaultLogger,
-}: Options<TDriver, TElement, TSelector, TType>) {
+}: Options<TDriver, TContext, TElement, TSelector, TType>) {
   return async function closeManager({
     settings,
     logger = defaultLogger,

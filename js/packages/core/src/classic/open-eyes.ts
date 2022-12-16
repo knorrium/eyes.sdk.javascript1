@@ -1,7 +1,8 @@
-import type {Eyes, Target, OpenSettings} from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
+import type {DriverTarget, Eyes, OpenSettings} from './types'
+import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecDriver} from '@applitools/driver'
+import {makeGetBaseEyes} from './get-base-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeLocateText} from './locate-text'
@@ -9,33 +10,34 @@ import {makeExtractText} from './extract-text'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
   core: BaseCore
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   logger?: Logger
 }
 
 export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
-  spec,
   core,
+  spec,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function openEyes({
     target,
     settings,
+    eyes,
     logger = defaultLogger,
   }: {
-    target?: Target<TDriver>
+    target?: DriverTarget<TDriver, TContext, TElement, TSelector>
     settings: OpenSettings
+    eyes?: BaseEyes[]
     logger?: Logger
-  }): Promise<Eyes<TDriver, TElement, TSelector>> {
-    logger.log(`Command "openEyes" is called with ${spec?.isDriver(target) ? 'default driver and' : ''} settings`, settings)
-
-    // TODO driver custom config
-    const driver = spec?.isDriver(target)
-      ? await makeDriver({spec, driver: target, logger, customConfig: {useCeilForViewportSize: settings.useCeilForViewportSize}})
-      : null
-
-    if (driver) {
+  }): Promise<Eyes<TDriver, TContext, TElement, TSelector>> {
+    logger.log(
+      `Command "openEyes" is called with ${target ? 'default driver and' : ''}`,
+      ...(settings ? ['settings', settings] : []),
+      eyes ? 'predefined eyes' : '',
+    )
+    const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings}))
+    if (driver && !eyes) {
       const currentContext = driver.currentContext
       settings.environment ??= {}
       if (!settings.environment.viewportSize || driver.isMobile) {
@@ -44,10 +46,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       } else {
         await driver.setViewportSize(settings.environment.viewportSize)
       }
-
       if (driver.isWeb) {
         settings.environment.userAgent ??= driver.userAgent
-
         if (
           driver.isChromium &&
           ((driver.isWindows && Number.parseInt(driver.browserVersion as string) >= 107) ||
@@ -56,11 +56,9 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
           settings.environment.os = `${driver.platformName} ${driver.platformVersion ?? ''}`.trim()
         }
       }
-
       if (!settings.environment.deviceName && driver.deviceName) {
         settings.environment.deviceName = driver.deviceName
       }
-
       if (!settings.environment.os && driver.isNative && driver.platformName) {
         settings.environment.os = driver.platformName
         if (!settings.keepPlatformNameAsIs) {
@@ -77,14 +75,15 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       }
       await currentContext.focus()
     }
-
-    const eyes = await core.openEyes({settings, logger})
-
-    return utils.general.extend(eyes, {
-      check: makeCheck({spec, eyes, target, logger}),
-      checkAndClose: makeCheckAndClose({spec, eyes, target, logger}),
-      locateText: makeLocateText({spec, eyes, target, logger}),
-      extractText: makeExtractText({spec, eyes, target, logger}),
-    })
+    const getBaseEyes = makeGetBaseEyes({settings, core, eyes, logger})
+    const [baseEyes] = await getBaseEyes()
+    return utils.general.extend(baseEyes, eyes => ({
+      type: 'classic' as const,
+      getBaseEyes,
+      check: makeCheck({eyes, target: driver, spec, logger}),
+      checkAndClose: makeCheckAndClose({eyes, target: driver, spec, logger}),
+      locateText: makeLocateText({eyes, target: driver, spec, logger}),
+      extractText: makeExtractText({eyes, target: driver, spec, logger}),
+    }))
   }
 }

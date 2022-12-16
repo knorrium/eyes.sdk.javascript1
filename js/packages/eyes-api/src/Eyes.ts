@@ -290,7 +290,12 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     // TODO remove when major version of sdk should be released
     config.screenshot.fully ??= false
 
-    const [result] = await this._eyes.check({target, settings, config})
+    let type: 'classic' | 'ufg'
+    if (settings.nmgOptions.nonNMGCheck === 'addToAllDevices') {
+      type = this._runner.config.type === 'ufg' ? 'classic' : 'ufg'
+    }
+
+    const [result] = await this._eyes.check({type, target, settings, config})
 
     return new MatchResultData(result)
   }

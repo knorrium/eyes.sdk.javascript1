@@ -1,6 +1,6 @@
 import type {Mutable, MaybeArray, Region} from '@applitools/utils'
 import type {
-  Target,
+  ImageTarget,
   Core,
   Eyes,
   ServerSettings,
@@ -29,7 +29,7 @@ import * as utils from '@applitools/utils'
 export interface CoreRequests extends Core {
   openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
   locate<TLocator extends string>(options: {
-    target: Target
+    target: ImageTarget
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>>
@@ -45,14 +45,14 @@ export interface CoreRequests extends Core {
 
 export interface EyesRequests extends Eyes {
   readonly test: TestInfo
-  check(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
-  checkAndClose(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<TestResult[]>
+  check(options: {target: ImageTarget; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
+  checkAndClose(options: {target: ImageTarget; settings?: CheckSettings; logger?: Logger}): Promise<TestResult[]>
   locateText<TPattern extends string>(options: {
-    target: Target
+    target: ImageTarget
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>>
-  extractText(options: {target: Target; settings: ExtractTextSettings; logger?: Logger}): Promise<string[]>
+  extractText(options: {target: ImageTarget; settings: ExtractTextSettings; logger?: Logger}): Promise<string[]>
   close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<TestResult[]>
   abort(options?: {logger?: Logger}): Promise<TestResult[]>
 }
@@ -68,8 +68,12 @@ export function makeCoreRequests({
 }): CoreRequests {
   defaultLogger ??= makeLogger()
 
-  const getAccountInfoWithCache = utils.general.cachify(getAccountInfo)
-  const getBatchBranchesWithCache = utils.general.cachify(getBatchBranches)
+  const getAccountInfoWithCache = utils.general.cachify(getAccountInfo, ([{settings}]) => {
+    return [settings.serverUrl, settings.apiKey, settings.proxy]
+  })
+  const getBatchBranchesWithCache = utils.general.cachify(getBatchBranches, ([{settings}]) => {
+    return [settings.serverUrl, settings.apiKey, settings.proxy, settings.batchId]
+  })
 
   return {
     getAccountInfo: getAccountInfoWithCache,
@@ -147,6 +151,8 @@ export function makeCoreRequests({
         isNew: result.isNew ?? response.status === 201,
         keepBatchOpen: settings.keepBatchOpen,
         server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
+        rendererId: settings.environment?.rendererId,
+        rendererInfo: settings.environment?.rendererInfo,
         account: null,
       }
       if (result.renderingInfo) {
@@ -169,7 +175,7 @@ export function makeCoreRequests({
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {
@@ -338,7 +344,7 @@ export function makeEyesRequests({
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings: CheckSettings
     logger?: Logger
   }): Promise<CheckResult[]> {
@@ -365,7 +371,7 @@ export function makeEyesRequests({
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {
@@ -416,7 +422,7 @@ export function makeEyesRequests({
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
@@ -452,7 +458,7 @@ export function makeEyesRequests({
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings: ExtractTextSettings
     logger?: Logger
   }): Promise<string[]> {
@@ -538,7 +544,7 @@ export function makeEyesRequests({
   }
 }
 
-function transformCheckOptions({target, settings}: {target: Target; settings: CheckSettings}) {
+function transformCheckOptions({target, settings}: {target: ImageTarget; settings: CheckSettings}) {
   return {
     appOutput: {
       title: target.name,

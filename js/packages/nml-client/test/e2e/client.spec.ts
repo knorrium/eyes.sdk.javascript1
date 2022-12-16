@@ -22,7 +22,7 @@ async function extractBrokerUrl(driver: any): Promise<string> {
   return result.nextPath
 }
 
-describe('client', () => {
+describe.skip('client', () => {
   // TODO: enable and verify when test apps received
   describe.skip('takeScreenshot', () => {
     for (const platform of Object.keys(env)) {

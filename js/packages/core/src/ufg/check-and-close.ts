@@ -1,15 +1,15 @@
-import type {Target, TestInfo} from './types'
-import type {Eyes as BaseEyes} from '@applitools/core-base'
+import type {DriverTarget, Eyes} from './types'
+import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {type SpecDriver} from '@applitools/driver'
 import {type UFGClient} from '@applitools/ufg-client'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
-  getEyes: (options: {rawEnvironment: any}) => Promise<BaseEyes>
+  eyes: Eyes<TDriver, TContext, TElement, TSelector>
   client: UFGClient
-  test: TestInfo
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  target?: Target<TDriver>
+  signal?: AbortSignal
   logger?: Logger
 }
 

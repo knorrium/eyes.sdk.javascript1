@@ -4,9 +4,10 @@ import type {
   IOSDevice,
   ChromeEmulationDevice,
   RenderTarget,
+  RendererSettings,
+  RendererEnvironment,
   RenderSettings,
   RenderResult,
-  BookedRenderer,
 } from '../types'
 import {type ContentfulResource} from '../resources/resource'
 import {makeLogger, type Logger} from '@applitools/logger'
@@ -25,7 +26,7 @@ export type StartedRender = {
 }
 
 export interface UFGRequests {
-  bookRenderers(options: {settings: RenderSettings[]; logger?: Logger}): Promise<BookedRenderer[]>
+  bookRenderers(options: {settings: RendererSettings[]; logger?: Logger}): Promise<RendererEnvironment[]>
   startRenders(options: {requests: RenderRequest[]; logger?: Logger}): Promise<StartedRender[]>
   checkRenderResults(options: {renders: StartedRender[]; logger?: Logger}): Promise<RenderResult[]>
   uploadResource(options: {resource: ContentfulResource; logger?: Logger}): Promise<void>
@@ -60,45 +61,34 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
     settings,
     logger = defaultLogger,
   }: {
-    settings: RenderSettings[]
+    settings: RendererSettings[]
     logger?: Logger
-  }): Promise<BookedRenderer[]> {
+  }): Promise<RendererEnvironment[]> {
     logger.log('Request "bookRenderers" called for with settings', settings)
     const response = await req('./job-info', {
       name: 'bookRenderers',
       method: 'POST',
       body: settings.map(settings => {
         const renderOptions: any = {
-          selectorsToFindRegionsFor: settings.selectorsToCalculate?.map(selector => transformSelector({selector})),
-          options: settings.ufgOptions,
-          scriptHooks: settings.hooks,
-          renderer: settings.rendererId,
           agentId: config.agentId,
           webhook: config.uploadUrl,
           stitchingService: config.stitchingServiceUrl,
-          sendDom: settings.sendDom,
-          includeFullPageSize: settings.includeFullPageSize,
-          enableMultipleResultsPerSelector: true,
           ...extractRenderEnvironment({settings}),
         }
-        if (settings.region) {
-          if (utils.types.has(settings.region, ['x', 'y', 'width', 'height'])) {
-            renderOptions.renderInfo.target = 'region'
-            renderOptions.renderInfo.region = settings.region
-          } else {
-            renderOptions.renderInfo.target = settings.fully ? 'full-selector' : 'selector'
-            renderOptions.renderInfo.selector = transformSelector({selector: settings.region})
-          }
-        } else {
-          renderOptions.renderInfo.target = settings.fully ? 'full-page' : 'viewport'
-        }
+        renderOptions.renderInfo.target = 'viewport'
         return renderOptions
       }),
       expected: 200,
       logger,
     })
     const results = await response.json().then(results => {
-      return results.map(result => ({rendererId: result.renderer, rawEnvironment: result.eyesEnvironment}))
+      return results.map((result, index) => {
+        return {
+          rendererId: result.renderer,
+          rendererInfo: {type: settings[index]?.type, renderer: settings[index]?.renderer},
+          rawEnvironment: result.eyesEnvironment,
+        } as RendererEnvironment
+      })
     })
     logger.log('Request "bookRenderers" finished successfully with body', results)
     return results
@@ -284,7 +274,7 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
   }
 }
 
-function extractRenderEnvironment({settings}: {settings: RenderSettings}) {
+function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
   if (utils.types.has(settings.renderer, ['width', 'height'])) {
     return {
       platform: {name: 'linux', type: 'web'},

@@ -1,4 +1,4 @@
-import type {Target, LocateTextSettings, LocateTextResult} from './types'
+import type {ImageTarget, LocateTextSettings, LocateTextResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
@@ -14,7 +14,7 @@ export function makeLocateText({requests, logger: defaultLogger}: Options) {
     settings,
     logger = defaultLogger,
   }: {
-    target: Target
+    target: ImageTarget
     settings?: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {

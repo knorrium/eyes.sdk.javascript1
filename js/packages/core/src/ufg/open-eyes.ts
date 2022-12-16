@@ -1,14 +1,14 @@
-import type {Eyes, Target, OpenSettings, TestInfo} from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
+import type {DriverTarget, Eyes, OpenSettings, TestInfo} from './types'
+import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
-import {type SpecDriver} from '@applitools/driver'
-import {AbortController} from 'abort-controller'
-import {makeDriver} from '@applitools/driver'
+import {makeDriver, type SpecDriver} from '@applitools/driver'
 import {makeUFGClient, type UFGClient} from '@applitools/ufg-client'
+import {makeGetBaseEyes} from './get-base-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeClose} from './close'
 import {makeAbort} from './abort'
+import {AbortController} from 'abort-controller'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -19,137 +19,93 @@ type Options<TDriver, TContext, TElement, TSelector> = {
 }
 
 export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
-  spec,
   core,
   client,
+  spec,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function openEyes({
     target,
     settings,
+    eyes,
     logger = defaultLogger,
   }: {
-    target?: Target<TDriver>
+    target?: DriverTarget<TDriver, TContext, TElement, TSelector>
     settings: OpenSettings
+    eyes?: BaseEyes[]
     logger?: Logger
-    on?: any
-  }): Promise<Eyes<TDriver, TElement, TSelector>> {
-    logger.log(`Command "openEyes" is called with ${spec?.isDriver(target) ? 'default driver and' : ''} settings`, settings)
-
-    if (spec?.isDriver(target)) {
-      const driver = await makeDriver({spec, driver: target, logger, customConfig: {disableHelper: true}})
+  }): Promise<Eyes<TDriver, TContext, TElement, TSelector>> {
+    logger.log(
+      `Command "openEyes" is called with ${target ? 'default driver and' : ''}`,
+      ...(settings ? ['settings', settings] : []),
+      eyes ? 'predefined eyes' : '',
+    )
+    const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: {disableHelper: true}}))
+    if (driver && !eyes) {
       const currentContext = driver.currentContext
-
       if (settings.environment?.viewportSize) {
         await driver.setViewportSize(settings.environment.viewportSize)
       }
       await currentContext.focus()
     }
-
+    const controller = new AbortController()
     const account = await core.getAccountInfo({settings, logger})
-    const test = {
-      userTestId: settings.userTestId,
-      batchId: settings.batch?.id,
-      keepBatchOpen: settings.keepBatchOpen,
-      server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
-      account,
-    } as TestInfo
     client ??= makeUFGClient({
       config: {...account.ufg, ...account, proxy: settings.proxy},
       concurrency: settings.renderConcurrency ?? 5,
       logger,
     })
 
-    const controller = new AbortController()
+    const getBaseEyes = makeGetBaseEyes({settings, eyes, core, client, logger})
 
-    // get eyes per environment
-    const getEyes = utils.general.cachify(async ({rawEnvironment}) => {
-      const eyes = await core.openEyes({settings: {...settings, environment: {rawEnvironment}}, logger})
-      const aborted = makeHolderPromise()
-      const queue = []
-      eyes.check = utils.general.wrap(eyes.check, async (check, options) => {
-        const index = (options.settings as any).index
-        queue[index] ??= makeHolderPromise()
-        if (index > 0) await Promise.race([(queue[index - 1] ??= makeHolderPromise()), aborted])
-        return check(options).finally(queue[index].resolve)
-      })
-      eyes.abort = utils.general.wrap(eyes.abort, async (abort, options) => {
-        aborted.reject(new Error('Command "check" was aborted due to possible error in previous step'))
-        return abort(options)
-      })
-      return eyes
-    })
+    return utils.general.extend({}, eyes => {
+      const storage = []
+      let stepIndex = 0
+      let closed = false
+      let aborted = false
 
-    const storage = []
-    let index = 0
-    // check with indexing and storage
-    const check = utils.general.wrap(
-      makeCheck({spec, getEyes, client, signal: controller.signal, test, target, logger}),
-      async (check, options = {}) => {
-        options.settings ??= {}
-        ;(options.settings as any).index = index++
-        const results = await check(options)
-        storage.push(...results.map(result => ({promise: result.promise, renderer: result.renderer})))
-        return results
-      },
-    )
-
-    let closed = false
-    // close only once
-    const close = utils.general.wrap(makeClose({storage, logger}), async (close, options) => {
-      if (closed || aborted) return []
-      closed = true
-      return close(options)
-    })
-
-    let aborted = false
-    // abort only once
-    const abort = utils.general.wrap(makeAbort({storage, controller, logger}), async (abort, options) => {
-      if (aborted || closed) return []
-      aborted = true
-      return abort(options)
-    })
-
-    return {
-      test,
-      get running() {
-        return !closed && !aborted
-      },
-      get closed() {
-        return closed
-      },
-      get aborted() {
-        return aborted
-      },
-      check,
-      checkAndClose: makeCheckAndClose({spec, getEyes, client, test, target, logger}),
-      close,
-      abort,
-    }
-  }
-}
-
-function makeHolderPromise(): PromiseLike<void> & {resolve(): void; reject(reason?: any): void} {
-  let promise: Promise<void>
-  let resolve: () => void
-  let reject: (reason: any) => void
-  let result: {status: 'fulfilled'} | {status: 'rejected'; reason: any}
-  return {
-    then(onFulfilled, onRejected) {
-      if (!promise) {
-        promise = new Promise<void>((...args) => ([resolve, reject] = args))
-        if (result?.status === 'fulfilled') resolve()
-        else if (result?.status === 'rejected') reject(result.reason)
+      return {
+        type: 'ufg' as const,
+        test: <TestInfo>{
+          userTestId: settings.userTestId,
+          batchId: settings.batch?.id,
+          keepBatchOpen: settings.keepBatchOpen,
+          server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
+          account,
+        },
+        get running() {
+          return !closed && !aborted
+        },
+        get closed() {
+          return closed
+        },
+        get aborted() {
+          return aborted
+        },
+        getBaseEyes,
+        // check with indexing and storage
+        check: utils.general.wrap(
+          makeCheck({eyes, client, target: driver, spec, signal: controller.signal, logger}),
+          async (check, options = {}) => {
+            const results = await check({...options, settings: {...options.settings, stepIndex: stepIndex++}})
+            storage.push(...results.map(result => ({promise: result.promise, renderer: result.renderer})))
+            return results
+          },
+        ),
+        checkAndClose: makeCheckAndClose({eyes, client, target: driver, spec, signal: controller.signal, logger}),
+        // close only once
+        close: utils.general.wrap(makeClose({storage, logger}), async (close, options) => {
+          if (closed || aborted) return []
+          closed = true
+          return close(options)
+        }),
+        // abort only once
+        abort: utils.general.wrap(makeAbort({storage, controller, logger}), async (abort, options) => {
+          if (aborted || closed) return []
+          aborted = true
+          return abort(options)
+        }),
       }
-      return promise.then(onFulfilled, onRejected)
-    },
-    resolve() {
-      if (resolve) resolve()
-      else result ??= {status: 'fulfilled'}
-    },
-    reject(reason) {
-      if (reject) reject(reason)
-      else result ??= {status: 'rejected', reason}
-    },
+    })
   }
 }

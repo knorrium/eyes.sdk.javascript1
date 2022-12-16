@@ -42,6 +42,9 @@ export function makeFakeCore({hooks, account = {}}: any = {}): BaseCore & EventE
           get aborted() {
             return aborted
           },
+          async getTypedEyes() {
+            return this
+          },
           async check(options) {
             emitter.emit('beforeCheck', options)
             try {

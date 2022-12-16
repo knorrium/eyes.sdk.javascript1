@@ -1,31 +1,30 @@
-import type {Target, Config, LocateTextSettings, LocateTextResult} from './types'
-import type {Eyes as ClassicEyes} from './classic/types'
-import type {Eyes as UFGEyes} from './ufg/types'
+import type {Target, Eyes, Config, LocateTextSettings, LocateTextResult} from './types'
 import {type Logger} from '@applitools/logger'
 
-type Options<TDriver, TElement, TSelector> = {
-  eyes: ClassicEyes<TDriver, TElement, TSelector> | UFGEyes<TDriver, TElement, TSelector>
+type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+  eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
   logger: Logger
 }
 
-export function makeLocateText<TDriver, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic' | 'ufg'>({
+export function makeLocateText<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
   eyes,
   logger: defaultLogger,
-}: Options<TDriver, TElement, TSelector>) {
+}: Options<TDriver, TContext, TElement, TSelector, TType>) {
   return async function locateText<TPattern extends string>({
     target,
     settings,
     config,
     logger = defaultLogger,
   }: {
-    target?: Target<TDriver, TType>
-    settings: LocateTextSettings<TPattern, TElement, TSelector, TType>
-    config?: Config<TElement, TSelector, TType>
+    target?: Target<TDriver, TContext, TElement, TSelector, 'classic'>
+    settings: LocateTextSettings<TPattern, TElement, TSelector, 'classic'>
+    config?: Config<TElement, TSelector, 'classic'>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
     settings = {...config?.screenshot, ...settings}
     settings.autProxy ??= eyes.test.server.proxy
-    const results = await eyes.locateText({target: target as any, settings, logger})
+    const classicEyes = await eyes.getTypedEyes({type: 'classic', logger})
+    const results = await classicEyes.locateText({target: target as any, settings, logger})
     return results
   }
 }

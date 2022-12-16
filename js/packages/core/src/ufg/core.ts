@@ -29,7 +29,7 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   agentId = 'core-ufg',
   cwd = process.cwd(),
   logger,
-}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TElement, TSelector> {
+}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TContext, TElement, TSelector> {
   logger = logger?.extend({label: 'core-ufg'}) ?? makeLogger({label: 'core-ufg'})
   logger.log(`Core ufg is initialized ${core ? 'with' : 'without'} custom base core`)
 

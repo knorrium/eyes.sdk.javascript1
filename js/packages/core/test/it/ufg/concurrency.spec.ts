@@ -16,6 +16,7 @@ describe('concurrency', () => {
         await utils.general.sleep(50)
         counters.baseOpenEyes++
         return {
+          test: {rendererId: 'renderer-id'},
           async check() {
             await utils.general.sleep(50)
             counters.baseCheck++
@@ -88,6 +89,7 @@ describe('concurrency', () => {
       async openEyes({settings}) {
         counters.openEyes[settings.testName] += 1
         return {
+          test: {rendererId: 'renderer-id'},
           async check() {
             return [{}]
           },
@@ -143,6 +145,7 @@ describe('concurrency', () => {
       },
       async openEyes() {
         return {
+          test: {rendererId: 'renderer-id'},
           async check() {
             return [{}]
           },
@@ -196,6 +199,7 @@ describe('concurrency', () => {
       },
       async openEyes() {
         return {
+          test: {rendererId: 'renderer-id'},
           async check() {
             return [{}]
           },

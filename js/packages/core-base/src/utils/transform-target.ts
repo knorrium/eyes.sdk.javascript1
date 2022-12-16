@@ -1,10 +1,10 @@
-import type {Target, ImageSettings} from '../types'
+import type {ImageTarget, ImageSettings} from '../types'
 import {promises as fs} from 'fs'
 import {req} from '@applitools/req'
 import {makeImage} from '@applitools/image'
 import * as utils from '@applitools/utils'
 
-export async function transformTarget({target, settings}: {target: Target; settings?: ImageSettings}): Promise<Target> {
+export async function transformTarget({target, settings}: {target: ImageTarget; settings?: ImageSettings}): Promise<ImageTarget> {
   if (target.image instanceof URL) target.image = target.image.href
   if (utils.types.isString(target.image)) {
     const str = target.image // we need this var because ts-wise all our string formats checkers (isHttpUrl/isBase64) are string type guards

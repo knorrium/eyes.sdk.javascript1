@@ -16,7 +16,7 @@ export abstract class EyesRunner {
   private _eyes: Eyes<unknown, unknown, unknown>[] = []
 
   /** @internal */
-  abstract get config(): any
+  abstract get config(): {type: 'classic' | 'ufg'}
 
   /** @internal */
   attach<TDriver, TElement, TSelector>(
@@ -94,7 +94,7 @@ export class VisualGridRunner extends EyesRunner {
   /** @internal */
   get config() {
     return {
-      type: 'ufg',
+      type: 'ufg' as const,
       concurrency: this._testConcurrency,
       legacyConcurrency: this._legacyConcurrency,
     }
@@ -118,6 +118,6 @@ export class VisualGridRunner extends EyesRunner {
 export class ClassicRunner extends EyesRunner {
   /** @internal */
   get config() {
-    return {type: 'classic'}
+    return {type: 'classic' as const}
   }
 }

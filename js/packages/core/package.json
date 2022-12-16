@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core",
-  "version": "1.2.16",
+  "version": "1.2.17",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -61,17 +61,17 @@
     }
   },
   "dependencies": {
-    "@applitools/core-base": "1.1.15",
+    "@applitools/core-base": "1.1.16",
     "@applitools/dom-capture": "11.2.0",
     "@applitools/dom-snapshot": "4.7.1",
-    "@applitools/driver": "1.11.9",
-    "@applitools/logger": "1.1.30",
-    "@applitools/nml-client": "1.3.12",
-    "@applitools/req": "1.1.17",
-    "@applitools/screenshoter": "3.7.10",
-    "@applitools/snippets": "2.4.8",
-    "@applitools/ufg-client": "1.1.6",
-    "@applitools/utils": "1.3.16",
+    "@applitools/driver": "1.11.12",
+    "@applitools/logger": "1.1.31",
+    "@applitools/nml-client": "1.3.13",
+    "@applitools/req": "1.1.18",
+    "@applitools/screenshoter": "3.7.12",
+    "@applitools/snippets": "2.4.9",
+    "@applitools/ufg-client": "1.1.7",
+    "@applitools/utils": "1.3.17",
     "abort-controller": "3.0.0",
     "chalk": "4.1.2",
     "node-fetch": "2.6.7",
@@ -80,10 +80,10 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
     "@applitools/sdk-fake-eyes-server": "^2.1.3",
-    "@applitools/spec-driver-puppeteer": "^1.1.23",
-    "@applitools/spec-driver-selenium": "^1.5.9",
-    "@applitools/spec-driver-webdriverio": "^1.4.7",
-    "@applitools/test-server": "^1.1.11",
+    "@applitools/spec-driver-puppeteer": "^1.1.25",
+    "@applitools/spec-driver-selenium": "^1.5.11",
+    "@applitools/spec-driver-webdriverio": "^1.4.9",
+    "@applitools/test-server": "^1.1.12",
     "@applitools/test-utils": "^1.5.2",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
@@ -104,7 +104,7 @@
     "puppeteer": "^16.2.0",
     "selenium-webdriver": "4.4",
     "ts-node": "^10.7.0",
-    "typescript": "^4.8.3",
+    "typescript": "^4.9.4",
     "webdriverio": "^7.25.0"
   },
   "engines": {

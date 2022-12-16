@@ -195,59 +195,6 @@ describe('check', () => {
     )
   })
 
-  it('handles rendering error in one of the renderers', async () => {
-    const fakeClient = makeFakeClient({
-      hooks: {
-        render: async ({target, settings}) => {
-          if (settings.renderer.name === 'chrome' && target.id === '1') {
-            await utils.general.sleep(100)
-            throw new Error('chrome render failed')
-          }
-        },
-      },
-    })
-    const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 2, core: fakeCore, client: fakeClient})
-    const eyes = await core.openEyes({
-      settings: {
-        serverUrl: 'server-url',
-        apiKey: 'api-key',
-        appName: 'app-name',
-        testName: 'test-name',
-      },
-    })
-
-    await eyes.check({
-      target: {id: '1', cdt: []},
-      settings: {
-        renderers: [
-          {name: 'chrome', width: 100, height: 100},
-          {name: 'firefox', width: 100, height: 100},
-        ],
-      },
-    })
-    await eyes.check({
-      target: {id: '2', cdt: []},
-      settings: {
-        renderers: [
-          {name: 'chrome', width: 100, height: 100},
-          {name: 'firefox', width: 100, height: 100},
-        ],
-      },
-    })
-
-    let checked = 0
-    fakeCore.on('afterCheck', () => {
-      checked += 1
-    })
-
-    await assert.rejects(eyes.close(), error => {
-      return error.message === 'chrome render failed' && Boolean(error.info)
-    })
-
-    assert.strictEqual(checked, 2)
-  })
-
   it('throws an error when dom snapshot returns an error', async () => {
     const driver = new MockDriver()
     driver.mockScript('dom-snapshot', () => JSON.stringify({status: 'ERROR', error: 'bla'}))
