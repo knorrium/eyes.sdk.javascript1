@@ -612,7 +612,7 @@ function parseEnv(
       env.url = new URL(process.env.CVG_TESTS_EG_REMOTE)
     }
     if (injectUFGLib) {
-      env.capabilities.processArguments = {
+      env.capabilities[legacy ? 'processArguments' : 'appium:processArguments'] = {
         args: [],
         env: {
           DYLD_INSERT_LIBRARIES:
