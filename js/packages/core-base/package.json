@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core-base",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -55,15 +55,15 @@
     }
   },
   "dependencies": {
-    "@applitools/image": "1.0.11",
-    "@applitools/logger": "1.1.31",
-    "@applitools/req": "1.1.18",
-    "@applitools/utils": "1.3.17"
+    "@applitools/image": "1.0.12",
+    "@applitools/logger": "1.1.32",
+    "@applitools/req": "1.1.19",
+    "@applitools/utils": "1.3.18"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
-    "@applitools/test-server": "^1.1.12",
-    "@applitools/test-utils": "^1.5.2",
+    "@applitools/test-server": "^1.1.13",
+    "@applitools/test-utils": "^1.5.3",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
     "@types/node-fetch": "^2.6.2",
