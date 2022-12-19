@@ -225,7 +225,7 @@ describe('eyesStorybook', () => {
 
   it('enforces default concurrency', async () => {
     // adding renderDelay to reach max concurrency
-    const {port, close} = await fakeEyesServer({renderDelay: 500});
+    const {port, close} = await fakeEyesServer({renderDelay: 1500});
     closeEyesServer = close;
     serverUrl = `http://localhost:${port}`;
     const {stream} = testStream();
