@@ -126,8 +126,8 @@ function makeRenderStory({
       matchLevel,
       accessibilitySettings: accessibilityValidation
         ? {
-            level: accessibilityValidation?.level,
-            version: accessibilityValidation?.guidelinesVersion,
+            level: accessibilityValidation ? accessibilityValidation.level: undefined,
+            version: accessibilityValidation ? accessibilityValidation.guidelinesVersion: undefined,
           }
         : undefined,
     };

@@ -84,7 +84,7 @@ async function eyesStorybook({
   };
   const [error, account] = await presult(core.getAccountInfo({settings, logger}));
 
-  if (error?.message?.includes('Unauthorized(401)')) {
+  if (error && error.message && error.message.includes('Unauthorized(401)')) {
     const failMsg = 'Incorrect API Key';
     logger.log(failMsg);
     await browser.close();
