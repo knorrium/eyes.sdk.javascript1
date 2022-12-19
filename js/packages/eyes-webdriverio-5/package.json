@@ -89,7 +89,7 @@
   ],
   "scripts": {
     "lint": "eslint '**/*.ts'",
-    "build": "ttsc --project tsconfig$([ ! -z $APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION ] && echo .v$APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION).json",
+    "build": "ttsc --project tsconfig$([ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ] && echo .v${APPLITOOLS_WEBDRIVERIO_VERSION%%.*}).json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes.webdriverio.javascript5'",
     "test": "yarn test:service && yarn test:coverage",
     "test:sanity": "echo 'create sanity suite'",
@@ -101,7 +101,7 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
+    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='wdio wdio(node:14) wdio(node:12) wdio(protocol:cdp) wdio(framework:6) wdio(framework:5)'",
     "gh:test:links": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='wdio wdio+cdp wdio@6 wdio@5' -f links='types test-utils sdk-shared eyes-sdk-core visual-grid-client eyes-api spec-driver-webdriverio utils driver snippets screenshoter'",

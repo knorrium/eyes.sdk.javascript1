@@ -69,9 +69,9 @@ jobs:
         run: |
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            echo "::set-output name=environments::[{\"framework-version\":7,\"node-version\":16}, {\"framework-version\":6,\"node-version\":16}, {\"framework-version\":5,\"node-version\":16}, {\"framework-version\":7,\"node-version\":14}, {\"framework-version\":7,\"node-version\":12}]"
+            echo "::set-output name=environments::[{\"framework-version\":7.27,\"node-version\":16}, {\"framework-version\":6,\"node-version\":16}, {\"framework-version\":5,\"node-version\":16}, {\"framework-version\":7.27,\"node-version\":14}, {\"framework-version\":7.27,\"node-version\":12}]"
           else
-            echo "::set-output name=environments::[{\"framework-version\":7,\"node-version\":16}]"
+            echo "::set-output name=environments::[{\"framework-version\":7.27,\"node-version\":16}]"
           fi
   test:
     needs: [verify]
@@ -83,7 +83,7 @@ jobs:
     name: 'Test (wdio: ${{matrix.framework-version}}, node: ${{matrix.node-version}})'
     runs-on: ubuntu-latest
     env:
-      APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION: ${{matrix.framework-version}}
+      APPLITOOLS_WEBDRIVERIO_VERSION: ${{matrix.framework-version}}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3

@@ -4,7 +4,7 @@ import {Driver, Element, Eyes, VisualGridRunner, ClassicRunner, ConfigurationPla
 
 if (!process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) {
   try {
-    const {version} = require('webdriverio/package.json')
+    const version = process.env.APPLITOOLS_WEBDRIVERIO_VERSION ?? require('webdriverio/package.json').version
     const [major] = version.split('.', 1)
     process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION = major
   } catch {
