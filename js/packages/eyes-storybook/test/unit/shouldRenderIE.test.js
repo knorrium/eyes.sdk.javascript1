@@ -8,56 +8,55 @@ describe('shouldRenderIE', () => {
     it('should work with standard config', () => {
       const config = {
         hello: true,
-        browser: [{name: 'chrome'}, {name: 'firefox'}, {name: 'ie'}],
+        renderers: [{name: 'chrome'}, {name: 'firefox'}, {name: 'ie'}],
       };
-
       expect(splitConfigsByBrowser(config)).to.deep.eql([
         {
           hello: true,
-          browser: [{name: 'chrome'}, {name: 'firefox'}],
+          renderers: [{name: 'chrome'}, {name: 'firefox'}],
         },
         {
           hello: true,
-          browser: [{name: 'ie'}],
+          renderers: [{name: 'ie'}],
         },
       ]);
     });
 
     it('should work without ie', () => {
       const config = {
-        browser: [{name: 'chrome'}, {name: 'firefox'}, {name: 'safari'}],
+        renderers: [{name: 'chrome'}, {name: 'firefox'}, {name: 'safari'}],
       };
       expect(splitConfigsByBrowser(config)).to.eql([
         {
-          browser: [{name: 'chrome'}, {name: 'firefox'}, {name: 'safari'}],
+          renderers: [{name: 'chrome'}, {name: 'firefox'}, {name: 'safari'}],
         },
       ]);
     });
 
     it('should work only with ie', () => {
       const config = {
-        browser: [{name: 'ie'}, {name: 'ie'}],
+        renderers: [{name: 'ie'}, {name: 'ie'}],
       };
       expect(splitConfigsByBrowser(config)).to.eql([
         {
-          browser: [{name: 'ie'}, {name: 'ie'}],
+          renderers: [{name: 'ie'}, {name: 'ie'}],
         },
       ]);
     });
 
     it('should work with object', () => {
       const config = {
-        browser: {name: 'chrome'},
+        renderers: {name: 'chrome'},
       };
 
-      expect(splitConfigsByBrowser(config)).to.eql([{browser: [{name: 'chrome'}]}]);
+      expect(splitConfigsByBrowser(config)).to.eql([{renderers: [{name: 'chrome'}]}]);
     });
   });
 
   describe('shouldRenderIE', () => {
     it('should return true if IE browsers exist and flag is on', () => {
       const browser = [{name: 'ie'}, {name: 'ie'}];
-      const results = shouldRenderIE({browser, fakeIE: true});
+      const results = shouldRenderIE({renderers: browser, fakeIE: true});
       expect(results).to.be.true;
     });
 
