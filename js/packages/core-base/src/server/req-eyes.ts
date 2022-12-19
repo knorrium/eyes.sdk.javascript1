@@ -141,7 +141,7 @@ function handleLongRequests({req}: {req: Req}): Hooks {
             },
             hooks: {
               beforeRetry({request, response}) {
-                if (response.status === 200 && response.headers.has('Location')) {
+                if (response && response.status === 200 && response.headers.has('Location')) {
                   return new Request(response.headers.get('Location'), request)
                 }
               },

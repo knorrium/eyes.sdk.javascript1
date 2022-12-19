@@ -67,6 +67,10 @@ describe('req-eyes', () => {
     nock('https://eyesapi.applitools.com')
       .get('/poll')
       .query({apiKey: 'api-key', index: /\d+/})
+      .replyWithError({code: 'ECONNRESET', message: 'read ECONNRESET'})
+    nock('https://eyesapi.applitools.com')
+      .get('/poll')
+      .query({apiKey: 'api-key', index: /\d+/})
       .times(3)
       .reply(url => {
         const index = Number(new URL(url, 'https://eyesapi.applitools.com').searchParams.get('index'))

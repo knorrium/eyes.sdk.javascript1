@@ -15,6 +15,7 @@ Apollo SDK:
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-selenium":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -31,16 +32,19 @@ Apollo SDK:
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-webdriverio":
   feature:
     - Added `nmgOptions` to `CheckSettings`
   bug-fix:
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-protractor":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -62,11 +66,13 @@ Apollo SDK:
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -81,6 +87,7 @@ Apollo SDK:
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-nightwatch":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -100,6 +107,7 @@ Apollo SDK:
     - Fixed issue when current context is not being preserved in ufg mode
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-cypress":
   feature:
     - 
@@ -111,6 +119,7 @@ Apollo SDK:
     - Add Support for storyStoreV7 flag
   bug-fix:
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
