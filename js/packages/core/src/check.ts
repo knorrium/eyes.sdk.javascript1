@@ -19,6 +19,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
   spec,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
+  let stepIndex = 0
   return async function check<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as any,
     target = defaultTarget as any,
@@ -52,6 +53,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
       settings.lazyLoad.waitingTime ??= 2000
       settings.lazyLoad.maxAmountToScroll ??= 15000
     }
+    settings.stepIndex = stepIndex++
     settings.waitBetweenStitches ??= utils.types.isObject(settings.lazyLoad) ? settings.lazyLoad.waitingTime : 100
 
     if (settings.matchLevel === 'Content') {

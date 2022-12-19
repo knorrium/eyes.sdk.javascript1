@@ -22,7 +22,6 @@ export function makeClose({storage, logger: defaultLogger}: Options) {
       promises.push(promise)
       return tests.set(key, promises)
     }, new Map<string, Promise<{eyes: BaseEyes; renderer: Renderer}>[]>())
-
     return Promise.all(
       Array.from(tests.values(), async promises => {
         try {

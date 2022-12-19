@@ -30,6 +30,9 @@ describe('typed check', () => {
           {name: 'chrome', width: 800, height: 600},
           {name: 'safari', width: 800, height: 600},
         ],
+        hooks: {
+          beforeCaptureScreenshot: `document.body.style.background = 'blue'`,
+        },
       },
     })
     await eyes.check({

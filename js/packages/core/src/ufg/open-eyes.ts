@@ -60,7 +60,6 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
 
     return utils.general.extend({}, eyes => {
       const storage = []
-      let stepIndex = 0
       let closed = false
       let aborted = false
 
@@ -87,7 +86,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
         check: utils.general.wrap(
           makeCheck({eyes, client, target: driver, spec, signal: controller.signal, logger}),
           async (check, options = {}) => {
-            const results = await check({...options, settings: {...options.settings, stepIndex: stepIndex++}})
+            const results = await check(options)
             storage.push(...results.map(result => ({promise: result.promise, renderer: result.renderer})))
             return results
           },
