@@ -78,8 +78,8 @@ describe('executeRenders', () => {
     const viewport = {width: 800, height: 600};
     const stories = [{hello: 'world'}];
     const configs = [
-      {browser: [{name: 'chrome', ...viewport}]},
-      {browser: [{name: 'ie', ...viewport}], fakeIE: true},
+      {renderers: [{name: 'chrome', ...viewport}]},
+      {renderers: [{name: 'ie', ...viewport}], fakeIE: true},
     ];
     const [err, result] = await executeRenders({
       timeItAsync: (_a, cb) => cb(),
@@ -111,7 +111,7 @@ describe('executeRenders', () => {
     expect(results).to.deep.equal({
       '1': {
         log: [
-          'executing render story with {"browser":[{"name":"chrome","width":800,"height":600}]}',
+          'executing render story with {"renderers":[{"name":"chrome","width":800,"height":600}]}',
         ],
         stories: [
           {
@@ -119,7 +119,7 @@ describe('executeRenders', () => {
           },
         ],
         config: {
-          browser: [
+          renderers: [
             {
               name: 'chrome',
               width: 800,
@@ -130,7 +130,7 @@ describe('executeRenders', () => {
       },
       '2': {
         log: [
-          'executing render story with {"browser":[{"name":"ie","width":800,"height":600}],"fakeIE":true}',
+          'executing render story with {"renderers":[{"name":"ie","width":800,"height":600}],"fakeIE":true}',
         ],
         stories: [
           {
@@ -138,7 +138,7 @@ describe('executeRenders', () => {
           },
         ],
         config: {
-          browser: [
+          renderers: [
             {
               name: 'ie',
               width: 800,
