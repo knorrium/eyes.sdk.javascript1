@@ -61,10 +61,7 @@ describe('eyes-storybook floating region', () => {
 
     const [actualAppOutput] = await getSession(results[0]);
     const [actualAppOutput2] = await getSession(results[1]);
-    expect([
-      actualAppOutput.imageMatchSettings.floating,
-      actualAppOutput2.imageMatchSettings.floating,
-    ]).to.eql([
+    const expected = [
       [
         {
           maxLeftOffset: 20,
@@ -90,7 +87,11 @@ describe('eyes-storybook floating region', () => {
           regionId: '.floating-region',
         },
       ],
-    ]);
+    ];
+    expect([
+      actualAppOutput.imageMatchSettings.floating,
+      actualAppOutput2.imageMatchSettings.floating,
+    ]).to.have.deep.members(expected);
     await snap(getEvents().join(''), 'floating validation');
   });
 });

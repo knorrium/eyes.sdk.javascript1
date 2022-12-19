@@ -1,7 +1,7 @@
 function splitConfigsByBrowser(config) {
-  const browsers = validateBrowsers(config);
-  if (browsers.length) {
-    const result = browsers.reduce(
+  const renderers = validateBrowsers(config);
+  if (renderers.length) {
+    const result = renderers.reduce(
       ([nonIE, IE], browser) => {
         if (isIE(browser)) {
           IE.push(browser);
@@ -14,7 +14,7 @@ function splitConfigsByBrowser(config) {
     );
 
     return result.reduce(
-      (acc, browser) => (browser.length > 0 ? acc.concat({...config, browser}) : acc),
+      (acc, browser) => (browser.length > 0 ? acc.concat({...config, renderers: browser}) : acc),
       [],
     );
   } else {
@@ -35,8 +35,8 @@ function isIE(browser) {
 }
 
 function validateBrowsers(config) {
-  if (config.browser) {
-    return Array.isArray(config.browser) ? config.browser : [config.browser];
+  if (config.renderers) {
+    return Array.isArray(config.renderers) ? config.renderers : [config.renderers];
   } else {
     return [];
   }
