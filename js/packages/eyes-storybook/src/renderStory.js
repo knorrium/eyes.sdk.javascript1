@@ -59,7 +59,7 @@ function makeRenderStory({
       envName,
       ignoreCaret,
       matchLevel,
-      ignoreBaseline
+      ignoreBaseline,
     } = eyesOptions;
 
     if (sizeMode) {

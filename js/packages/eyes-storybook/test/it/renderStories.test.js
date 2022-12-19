@@ -157,16 +157,16 @@ describe('renderStories', () => {
         return {
           config: {bla: true},
           snapshots: {
-              snapshots: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
-              cookies: [],
-          }, 
+            snapshots: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
+            cookies: [],
+          },
           story,
           url: storyUrl,
         };
       }),
     );
     const expectedTitles = ['k1: s1', 'k2: s2', 'k3: s3', 'k4: s4', 'k5: s5', 'k6: s6', 'k7: s7'];
-    
+
     expect(results.map(r => r.title).sort()).to.eql(expectedTitles.sort());
     expect(
       results
@@ -379,10 +379,11 @@ describe('renderStories', () => {
             config: {hello: 'world'},
             story,
             url: storyUrl,
-            snapshots:{
-              snapshots: 'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
+            snapshots: {
+              snapshots:
+                'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
               cookies: [],
-            }
+            },
           },
         ]);
 
@@ -456,11 +457,11 @@ describe('renderStories', () => {
           config: {},
           story,
           url: storyUrl,
-          snapshots:{
-            snapshots:  'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
+          snapshots: {
+            snapshots:
+              'snapshot_s1_k1_http://something/iframe.html?eyes-storybook=true&selectedKind=k1&selectedStory=s1_about:blank',
             cookies: [],
-          }
-            
+          },
         };
 
         const resultsOrErr0 = results[0].resultsOrErr;
