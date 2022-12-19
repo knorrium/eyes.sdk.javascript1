@@ -65,7 +65,7 @@ describe('renderStories', () => {
     await renderStories(stories, {
       bla: true,
       fakeIE: true,
-      browser: [{name: 'ie'}],
+      renderers: [{name: 'ie'}],
     });
 
     await snap(getEvents().join(''), 'IE rendering msg');
@@ -102,7 +102,7 @@ describe('renderStories', () => {
 
     await renderStories(stories, {
       bla: true,
-      browser: [{name: 'chrome'}, {name: 'ie'}],
+      renderers: [{name: 'chrome'}, {name: 'ie'}],
     });
 
     await snap(getEvents().join(''), 'rendering msg');
