@@ -52,7 +52,9 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
 
   result.serverUrl = result.serverUrl
     ? result.serverUrl
-    : utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com';
+    : utils.general.getEnvValue('SERVER_URL')
+    ? utils.general.getEnvValue('SERVER_URL')
+    : 'https://eyesapi.applitools.com';
   result.viewportSize = result.viewportSize ? result.viewportSize : {width: 1024, height: 600};
   result.renderers = result.browser ? result.browser : [{name: 'chrome', width: 1024, height: 768}];
   result.saveNewTests = result.saveNewTests === undefined ? true : result.saveNewTests;
