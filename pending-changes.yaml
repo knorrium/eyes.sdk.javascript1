@@ -115,11 +115,9 @@ Apollo SDK:
     - Handle fake shadowRoot with UFG
 "@applitools/eyes-storybook":
   feature:
-    - Deprecated "Content" match level value in favor of "IgnoreColors"
-    - Add Support for storyStoreV7 flag
+    - 
   bug-fix:
-    - Handle fake shadowRoot with UFG
-    - Handed error during polling in long requests to eyes server
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

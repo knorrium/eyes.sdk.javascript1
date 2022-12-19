@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+## 3.30.0 - 2022/12/19
+
+### Features
+- Deprecated "Content" match level value in favor of "IgnoreColors"
+- Add Support for storyStoreV7 flag
+### Bug fixes
+- Handle fake shadowRoot with UFG
+- Handed error during polling in long requests to eyes server
+
 ## 3.29.4 - 2022/9/12
 
 ### Features
