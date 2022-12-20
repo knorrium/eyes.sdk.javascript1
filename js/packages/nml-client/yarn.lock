@@ -34,12 +34,20 @@
     "@applitools/utils" "1.3.18"
     chalk "4.1.2"
 
-"@applitools/req@1.1.19":
-  version "1.1.19"
-  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.1.19.tgz#69dd31e254fe2e3428886e7992bd371ef943eb74"
-  integrity sha512-Gq4XK41bbwu3iGOh6owMT3BJ0poGb+vnLFLwiHoGDzW0p61KWcIecdscF4TvbnH0xkfbNnZBzcZDd5rJyHXoNQ==
+"@applitools/logger@1.1.33":
+  version "1.1.33"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.33.tgz#d5e6f0ef22dd7ab0ad645f25eda30756e202b146"
+  integrity sha512-K8X4WVhNX2irhgJbLl0eqnT8N9o0Nsd1lkU2KwG7DWZb2Xy/hPX2yNLm+BY4pqTVUvQBiPbWrdXRL7G5RVvFJg==
   dependencies:
-    "@applitools/utils" "1.3.18"
+    "@applitools/utils" "1.3.19"
+    chalk "4.1.2"
+
+"@applitools/req@1.1.20":
+  version "1.1.20"
+  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.1.20.tgz#cd43d5d267c2536d2efa7233c023691775f2f782"
+  integrity sha512-9Y6hc2yZdeVCm/am0Nf/BSEunbycCaeI09o3LaXXnGycrC7uS8wnlDDy8kElzt28AuZfsW6ELZLnvwtzqfai4w==
+  dependencies:
+    "@applitools/utils" "1.3.19"
     "@types/node-fetch" "2.6.2"
     abort-controller "3.0.0"
     node-fetch "2.6.7"
@@ -68,13 +76,13 @@
     "@applitools/driver" "1.11.14"
     "@applitools/utils" "1.3.18"
 
-"@applitools/test-server@^1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.13.tgz#78ab51391e22bfda1b68d9b11f9654895af0619b"
-  integrity sha512-p2V2MsoR2sF2auHIOl/D/xWrnGECFX3ygII/7hUEno/J3KP4JADzn+mbzRkeK1koC8gA+Xi0kVW+DY5UsODeIQ==
+"@applitools/test-server@^1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.14.tgz#4379aa591ca6978d5d13b805e6f3486a7ae8791f"
+  integrity sha512-5R5u/+5lu89bNG5j4zJFIwiK3W0nwHn+laNCNqWQoXD1JxHJ1jLXnZa75UA4P80lJYDqnohVJauMP7/17UVufA==
   dependencies:
-    "@applitools/logger" "1.1.32"
-    "@applitools/utils" "1.3.18"
+    "@applitools/logger" "1.1.33"
+    "@applitools/utils" "1.3.19"
     body-parser "1.20.0"
     chalk "3.0.0"
     cookie-parser "1.4.5"
@@ -109,6 +117,11 @@
   version "1.3.18"
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.18.tgz#c23c5400515b198447cc8ee3d962c7b323782ee5"
   integrity sha512-p2n6Oit9HUWOvoEQUPePm7CS6niyV+7XK56HJTxZmhy49id65sV/rectvxsuNyte8sSwp3BLBsAg1KGs4RyS4A==
+
+"@applitools/utils@1.3.19":
+  version "1.3.19"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.19.tgz#b03ccb6b392756d6e98fb8e29efc7e6c87e6bc1f"
+  integrity sha512-dkkhI46KWBi3mPgYjp7DmNx5bUPUctti/l2RD0lTPGjZ0hfk5+M/5kvE/zkQJoq0PqsRK/5Qm/rlg8mFHzb6qg==
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
