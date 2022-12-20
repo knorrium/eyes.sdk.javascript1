@@ -1122,7 +1122,7 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
 
   /** @internal */
   toJSON(): CoreConfig<TElement, TSelector> {
-    return {
+    return utils.general.toJSON({
       open: utils.general.removeUndefinedProps({
         serverUrl: this.serverUrl,
         apiKey: this.apiKey,
@@ -1208,7 +1208,7 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
         updateBaselineIfDifferent: this.saveFailedTests,
         updateBaselineIfNew: this.saveNewTests,
       }),
-    }
+    })
   }
 
   /** @internal */

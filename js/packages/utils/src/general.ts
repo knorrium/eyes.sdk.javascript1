@@ -60,12 +60,12 @@ export function toJSON<TObject extends Record<PropertyKey, any>>(
     : TObject[key]
 }
 export function toJSON(object: Record<PropertyKey, any>, props?: string[] | Record<string, PropertyKey>) {
-  if (!types.isObject(object)) return null
+  if (!types.isObject(object)) return object
   const original = props ? Object.values(props) : Object.keys(object)
   const keys = !props || types.isArray(props) ? original : Object.keys(props)
   return keys.reduce((plain: any, key, index) => {
     const value = object[original[index] as string]
-    plain[key] = value && types.isFunction(value.toJSON) ? value.toJSON() : value
+    plain[key] = value && types.isFunction(value.toJSON) ? value.toJSON() : toJSON(value)
     return plain
   }, {})
 }

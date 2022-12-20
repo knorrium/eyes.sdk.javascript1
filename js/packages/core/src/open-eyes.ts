@@ -1,5 +1,5 @@
-import type {TypedCore, Eyes, Config, OpenSettings} from './types'
-import type {Core as BaseCore, Batch} from '@applitools/core-base'
+import type {TypedCore, Batch, Eyes, Config, OpenSettings} from './types'
+import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
@@ -15,21 +15,21 @@ import * as utils from '@applitools/utils'
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type?: TType
   concurrency?: number
+  batch?: Batch
   core: BaseCore
   cores?: {[TKey in 'classic' | 'ufg']: TypedCore<TDriver, TContext, TElement, TSelector, TKey>}
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   logger?: Logger
-  batch?: Batch
 }
 
 export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
   type: defaultType = 'classic' as TDefaultType,
   concurrency,
+  batch,
   core,
   cores,
   spec,
   logger: defaultLogger,
-  batch,
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   return async function openEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as any,
@@ -48,11 +48,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
     settings.userTestId ??= `${settings.testName}--${utils.general.guid()}`
     settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')
-    settings.batch = {
-      ...settings.batch,
-      properties: [...(batch?.properties ?? []), ...(settings.batch?.properties ?? [])],
-      ...batch,
-    }
+    settings.batch = {...batch, ...settings.batch}
     settings.batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
     settings.batch.name ??= utils.general.getEnvValue('BATCH_NAME')
     settings.batch.sequenceName ??= utils.general.getEnvValue('BATCH_SEQUENCE')
