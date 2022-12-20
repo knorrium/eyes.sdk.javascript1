@@ -11,6 +11,13 @@
 
 
 
+## 1.13.0 - 2022/12/20
+
+### Features
+### Bug fixes
+- Handle fake shadowRoot with UFG
+- Handed error during polling in long requests to eyes server
+
 ## 1.12.0 - 2022/12/1
 
 ### Features
