@@ -72,19 +72,19 @@
     }
   },
   "dependencies": {
-    "@applitools/image": "1.0.12",
-    "@applitools/logger": "1.1.32",
-    "@applitools/snippets": "2.4.10",
-    "@applitools/utils": "1.3.18",
+    "@applitools/image": "1.0.15",
+    "@applitools/logger": "1.1.35",
+    "@applitools/snippets": "2.4.11",
+    "@applitools/utils": "1.3.21",
     "jpeg-js": "0.4.4",
     "png-async": "0.9.4"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
-    "@applitools/driver": "^1.11.14",
+    "@applitools/driver": "^1.11.16",
     "@applitools/scripts": "^1.2.0",
-    "@applitools/spec-driver-webdriverio": "^1.4.10",
-    "@applitools/test-utils": "^1.5.3",
+    "@applitools/spec-driver-webdriverio": "^1.4.12",
+    "@applitools/test-utils": "^1.5.4",
     "appium": "^1.22.3",
     "chromedriver": "^101.0.0",
     "eslint": "^8.16.0",
