@@ -1,4 +1,4 @@
-## [vNext]
+## [5.11.0] - 2022-12-21
 ### Added
 - Configuration option dont_close_batches can now be set in yaml config [Trello 3103](https://trello.com/c/kxOBjjCs)
 
