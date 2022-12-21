@@ -7,7 +7,7 @@ export function makeSDK<TDriver, TContext, TElement, TSelector>(options: {
   version: string
   cwd?: string
   spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-}): Core<TDriver, TElement, TSelector>
+}): Core<TDriver, TElement, TSelector, TContext>
 
 export {Core} from '@applitools/core'
 
