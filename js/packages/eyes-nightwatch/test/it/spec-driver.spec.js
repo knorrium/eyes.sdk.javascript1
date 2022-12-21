@@ -167,8 +167,12 @@ describe('spec driver', async () => {
     })
   })
 
-  // nightwatch 2 deosn't work with ie, if needed we'll support it in the future as we do in selenium
-  describe.skip('legacy browser (@webdriver)', async () => {
+  describe('legacy browser (@webdriver)', async () => {
+    // nightwatch 2 doesn't work with ie, if needed we'll support it in the future as we do in selenium
+    before(function () {
+      if (Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) >= 1) this.skip()
+    })
+
     before(async () => {
       ;[driver, destroyDriver] = await spec.build({browser: 'ie-11'})
     })
@@ -177,7 +181,7 @@ describe('spec driver', async () => {
       await destroyDriver()
     })
 
-    it('getWindowSize()', async () => {
+    it.only('getWindowSize()', async () => {
       await getWindowSize({legacy: true})
     })
     it('setWindowSize({width, height})', async () => {
@@ -374,7 +378,7 @@ describe('spec driver', async () => {
       const {x, y} = await driver.getWindowPosition()
       rect = {x, y, width, height}
     } else {
-      const {x, y, width, height} = await driver.getWindowRect()
+      const {x = 0, y = 0, width, height} = await driver.getWindowRect()
       rect = {x, y, width, height}
     }
     assert.deepStrictEqual(rect, {x: 0, y: 0, ...input})
