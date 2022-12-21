@@ -8,6 +8,25 @@
 
 
 
+## 4.62.0 - 2022/12/21
+
+### Features
+- Added new selector extensions `child` and `fallback`
+- Mark target element with `data-applitools-scroll` attribute before capture dom
+- Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
+- Use user agent metadata to improve browser environment detection logic
+- Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
+- Added `ignoreColors` method to `CheckSettings` to set a match level
+- Added `nmgOptions` to `CheckSettings`
+### Bug fixes
+- Fixed bug that caused `extractText` to throw, due to fractional size of the target region
+- Fix dontCloseBatches mapping
+- Fixed issue when current context is not being preserved in ufg mode
+- Fixed issue when helper lib inputs were not cleaned up before calling new command
+- Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+- Handle fake shadowRoot with UFG
+- Handed error during polling in long requests to eyes server
+
 ## 4.61.0 - 2022/10/18
 
 ### Features
