@@ -27,7 +27,8 @@ describe('spec driver', async () => {
     })
 
     after(async () => {
-      await destroyDriver()
+      if (destroyDriver) await destroyDriver()
+      destroyDriver = null
     })
 
     it('isDriver(driver)', async () => {
@@ -178,10 +179,11 @@ describe('spec driver', async () => {
     })
 
     after(async () => {
-      await destroyDriver()
+      if (destroyDriver) await destroyDriver()
+      destroyDriver = null
     })
 
-    it.only('getWindowSize()', async () => {
+    it('getWindowSize()', async () => {
       await getWindowSize({legacy: true})
     })
     it('setWindowSize({width, height})', async () => {
@@ -196,7 +198,8 @@ describe('spec driver', async () => {
     })
 
     after(async () => {
-      await destroyDriver()
+      if (destroyDriver) await destroyDriver()
+      destroyDriver = null
     })
 
     it('getWindowSize()', async () => {
@@ -217,7 +220,8 @@ describe('spec driver', async () => {
     })
 
     after(async () => {
-      await destroyDriver()
+      if (destroyDriver) await destroyDriver()
+      destroyDriver = null
     })
 
     it('getWindowSize()', async () => {
