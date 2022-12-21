@@ -99,6 +99,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Handle fake shadowRoot with UFG
+    - Handed error during polling in long requests to eyes server
 "@applitools/eyes-storybook":
   feature:
     - 
