@@ -254,7 +254,7 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
     args = [],
     headless,
     logLevel = 'silent',
-  } = parseEnv({...env, legacy: process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1'})
+  } = parseEnv({...env, legacy: env.legacy ?? process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1'})
   const options: any = {
     output: logLevel !== 'silent',
     capabilities: {browserName: browser, ...capabilities},

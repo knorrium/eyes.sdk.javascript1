@@ -3,7 +3,6 @@ const {mochaGrep} = require('@applitools/test-utils')
 const tags = [
   'image',
   'headfull',
-  'jsonwire',
   'webdriver',
   'mobile',
   'chrome',
@@ -12,6 +11,10 @@ const tags = [
   'edge',
   'safari',
 ]
+
+if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
+  tags.push('jsonwire')
+}
 
 module.exports = {
   spec: [
