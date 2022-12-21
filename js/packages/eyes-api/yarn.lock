@@ -16,29 +16,29 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.21":
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.21.tgz#856ac631d62f5ae1949065ba8f2aca283af053dc"
-  integrity sha512-olMIxPpIV12W1vuoFoIdTh12oesJZFda/lgLrae+X0MglVRPsSSf5EdN2cVm0N2P+HpAjeyBrYqnNwcIdNhVYw==
+"@applitools/core-base@1.1.22":
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.22.tgz#bcb4123bd2d10512396271625929c223ebd9effd"
+  integrity sha512-iuYzLCbE0DyTeR378T49ZD7LIlinZLicZE3xK/ROyDMoitqvXyA8BXbxkegvQxxBFZzkeeyZ4YExCom01OrKsQ==
   dependencies:
-    "@applitools/image" "1.0.15"
+    "@applitools/image" "1.0.16"
     "@applitools/logger" "1.1.35"
     "@applitools/req" "1.1.22"
     "@applitools/utils" "1.3.21"
 
-"@applitools/core@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.3.3.tgz#3a1b56d9a669293c99c9bf2bdbc20c7e13a5393c"
-  integrity sha512-yfo2XL/icyWWM7qMwoaDuIBAWC6wuJgr+bZvMgGsPVpMxnPXdTUZnOl+gTB/LVKdRtMjBYXdaKGgLDkcbyq6fQ==
+"@applitools/core@1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.3.4.tgz#eab3dd88feda5916c108535ad8c5cea4eee2c385"
+  integrity sha512-4tIEpCU2EbL6FBkqDJbQ8dElGUV72Wog20W9r416WzdVa78nWdiSDBFPCIy14IdEXaOIbsmJEIsDDpHC/hvs/w==
   dependencies:
-    "@applitools/core-base" "1.1.21"
+    "@applitools/core-base" "1.1.22"
     "@applitools/dom-capture" "11.2.0"
     "@applitools/dom-snapshot" "4.7.2"
-    "@applitools/driver" "1.11.16"
+    "@applitools/driver" "1.11.17"
     "@applitools/logger" "1.1.35"
-    "@applitools/nml-client" "1.3.17"
+    "@applitools/nml-client" "1.3.18"
     "@applitools/req" "1.1.22"
-    "@applitools/screenshoter" "3.7.16"
+    "@applitools/screenshoter" "3.7.17"
     "@applitools/snippets" "2.4.11"
     "@applitools/ufg-client" "1.1.10"
     "@applitools/utils" "1.3.21"
@@ -75,10 +75,10 @@
     css-tree "1.0.0-alpha.39"
     pako "1.0.11"
 
-"@applitools/driver@1.11.16":
-  version "1.11.16"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.16.tgz#bc80a107def3136a6fc301c1b5849f29f11a425a"
-  integrity sha512-q69H3IWahCOGpEO+JnLPeFNVTfHl1vDDOqEz23iUHX+XbYqxvSUMtsCCXyQ/6ncZrjHQu2Dqz/PBZN54cTLncg==
+"@applitools/driver@1.11.17":
+  version "1.11.17"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.17.tgz#699e5e5c27d690de604a4491fedd09cf94e304c9"
+  integrity sha512-9A2rRYO+c2GSuhKosACFiUEr/+gfDYXjiIAQxhfVQo0hulvb7rY/ITT7KXuo+acz5SRBhydJqrMCDL2ubiW2pg==
   dependencies:
     "@applitools/logger" "1.1.35"
     "@applitools/snippets" "2.4.11"
@@ -90,10 +90,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/functional-commons/-/functional-commons-1.6.0.tgz#ea850c4f7832fcb6396b79b35faccac69f6482a9"
   integrity sha512-fwiF0CbeYHDEOTD/NKaFgaI8LvRcGYG2GaJJiRwcedKko16sQ8F3TK5wXfj2Ytjf+8gjwHwsEEX550z3yvDWxA==
 
-"@applitools/image@1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@applitools/image/-/image-1.0.15.tgz#6a163263a19a0f339415b46609561e42b0cc2dbe"
-  integrity sha512-NdPVfUS5sQwO3qh1HPAK1PQoaRnbaDNOhWfkfgY3T0xpOxKPB0RWrQxP6mskDdzkFnDHMJ2K5ghA+yxV1pVJCw==
+"@applitools/image@1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@applitools/image/-/image-1.0.16.tgz#7f8e0a79104b5706df1c3729b9fdf3f1041fca49"
+  integrity sha512-JNHy90nBgFCLMwsNNpSTsjrhQeyOVNUixLJq/ReyNetK9PkN86tsNTyT0rOUp5m+PnkyC2hWUP3h/pnhiPRr0g==
   dependencies:
     "@applitools/utils" "1.3.21"
     bmpimagejs "1.0.4"
@@ -141,10 +141,10 @@
     "@applitools/utils" "1.3.21"
     chalk "4.1.2"
 
-"@applitools/nml-client@1.3.17":
-  version "1.3.17"
-  resolved "https://registry.yarnpkg.com/@applitools/nml-client/-/nml-client-1.3.17.tgz#53d7950012a85c718eb7598658204d2b6365f3d1"
-  integrity sha512-xcACBJ97nFDMaDfMafbY5TnMD8PyFeIGCsE93YtPoLB3A/jqTobE/skhmrn9IUUEDy1c2A2Gx6siVpBdvO6gSQ==
+"@applitools/nml-client@1.3.18":
+  version "1.3.18"
+  resolved "https://registry.yarnpkg.com/@applitools/nml-client/-/nml-client-1.3.18.tgz#33d766aa54d1112b53b46188fe8f105879606041"
+  integrity sha512-MF5mVLPI+sDByg8vLhDXkFLWTkSO6Fl87mgI23QnOBXs1L/vUr5ntT0XINlgeIzr8I+u9lemp+8IxYBAtAUDTQ==
   dependencies:
     "@applitools/logger" "1.1.35"
     "@applitools/req" "1.1.22"
@@ -161,12 +161,12 @@
     node-fetch "2.6.7"
     proxy-agent "5.0.0"
 
-"@applitools/screenshoter@3.7.16":
-  version "3.7.16"
-  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.7.16.tgz#765bef626108d6c6d17c5e4c96e4c8bd2b679e01"
-  integrity sha512-ZCo/3wLIl3kUvkQuI+uisJLklZRTgdTFk9ZXLRirVm6UO4ebiyaXRLa+QmZ9APTIxj8tlcaRKPjJyv4y6IGDNA==
+"@applitools/screenshoter@3.7.17":
+  version "3.7.17"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.7.17.tgz#68e7ef1714ad4cfd44f408a61e9c1a79cfcef596"
+  integrity sha512-qIEeUEyyFAbXY2kgLVuWgsYCJJT5V8z+CveSwQfTXleJYy9defhl9XYcn/vhIMK7FEynIl15S3WlW61cqXMLcQ==
   dependencies:
-    "@applitools/image" "1.0.15"
+    "@applitools/image" "1.0.16"
     "@applitools/logger" "1.1.35"
     "@applitools/snippets" "2.4.11"
     "@applitools/utils" "1.3.21"
