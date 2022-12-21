@@ -10,12 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/eyes-universal":
   feature:
-    - Additional internal event logs
+    - 
   bug-fix:
-    - Fixed issue when helper lib inputs were not cleaned up before calling new command
-    - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
-    - Handle fake shadowRoot with UFG
-    - Handed error during polling in long requests to eyes server
+    - 
 "@applitools/eyes-selenium":
   feature:
     - 
