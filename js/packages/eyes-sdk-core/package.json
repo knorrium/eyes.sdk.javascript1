@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "13.11.22",
+  "version": "13.11.23",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -75,7 +75,7 @@
   "dependencies": {
     "@applitools/core": "1.3.4",
     "@applitools/driver": "1.11.17",
-    "@applitools/execution-grid-client": "1.1.37",
+    "@applitools/execution-grid-client": "1.1.38",
     "@applitools/utils": "1.3.21"
   },
   "devDependencies": {
