@@ -10,6 +10,14 @@
 
 
 
+## 5.39.0 - 2022/12/21
+
+### Features
+- Added `nmgOptions` to `CheckSettings`
+### Bug fixes
+- Handle fake shadowRoot with UFG
+- Handed error during polling in long requests to eyes server
+
 ## 5.38.2 - 2022/12/1
 
 ### Features

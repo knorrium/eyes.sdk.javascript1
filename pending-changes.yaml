@@ -23,10 +23,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Added `nmgOptions` to `CheckSettings`
+    - 
   bug-fix:
-    - Handle fake shadowRoot with UFG
-    - Handed error during polling in long requests to eyes server
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 
