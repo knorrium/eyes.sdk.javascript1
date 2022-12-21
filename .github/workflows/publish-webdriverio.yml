@@ -121,7 +121,7 @@ jobs:
       - name: Download testing artifacts
         uses: actions/download-artifact@v2
         with:
-          name: wdio-test-results-framework-7-node-16
+          name: wdio-test-results-framework-7.27-node-16
           path: ./js/packages/eyes-webdriverio-5
       - name: Publish to NPM
         uses: ./.github/actions/publish
