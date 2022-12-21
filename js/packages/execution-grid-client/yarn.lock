@@ -23,10 +23,10 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/eg-tunnel@^1.0.24":
-  version "1.0.24"
-  resolved "https://registry.yarnpkg.com/@applitools/eg-tunnel/-/eg-tunnel-1.0.24.tgz#ecb891a5203de2b9f333dd1f122f0a0be133a777"
-  integrity sha512-WuJEs5gOfsUPHTwwSSGf8f0NO01VG4JjF43RQrdKUHXnH4cgGzZXsuMSpJmPHzp3oQKJds1IxdR6AaMQmDNuIA==
+"@applitools/eg-tunnel@^1.0.25":
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/@applitools/eg-tunnel/-/eg-tunnel-1.0.25.tgz#7e1d1dc9b62740e36b4c1a379b95f9b701c3d223"
+  integrity sha512-OvApF1eX9guX9O7TcHDX9BsR3QFEoPME6gQgpDdFEF4YyEGJMe49aN6kb6NaiQDtjCEtr4fYxYho/0Lz8nccfQ==
   dependencies:
     "@applitools/eg-socks5-proxy-server" "^0.4.1"
     "@applitools/logger" "^1.0.12"
@@ -43,12 +43,12 @@
     teen_process "^1.16.0"
     yargs "^17.5.1"
 
-"@applitools/logger@1.1.32":
-  version "1.1.32"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.32.tgz#190a6702018911317d2e1321a3d60590828dc982"
-  integrity sha512-HnH8PIojjGMDSa2UCNSXRfOx4SFIPKDSgMP6iD5TG12Nckg24Oqnz0QmJioFkUimpwpawyCxhaKNOmEfp9ga9g==
+"@applitools/logger@1.1.35":
+  version "1.1.35"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.35.tgz#f5eec9d238f500548ae381969a4f071e84fd4835"
+  integrity sha512-ZQQV57OTGeH6vH1CxET6XSFkLQh4WtGODVzfvrbeAmaVyGigNIc37j619uXK6wvdglgpq+Y79xyWoe4p+UZrkQ==
   dependencies:
-    "@applitools/utils" "1.3.18"
+    "@applitools/utils" "1.3.21"
     chalk "4.1.2"
 
 "@applitools/logger@^1.0.12":
@@ -81,10 +81,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.10.tgz#307359d6f668c5fe6b3a7d213405ebe3bf2235b6"
   integrity sha512-CI/5BLB0D/aZn6uL8JJmsErI+TOHCa4Gz5Wi8sJknuPz/V9Ws6jIh9ZCTzvOCDUIp99qLJwD6TSA2BY9aMhCNw==
 
-"@applitools/utils@1.3.18":
-  version "1.3.18"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.18.tgz#c23c5400515b198447cc8ee3d962c7b323782ee5"
-  integrity sha512-p2n6Oit9HUWOvoEQUPePm7CS6niyV+7XK56HJTxZmhy49id65sV/rectvxsuNyte8sSwp3BLBsAg1KGs4RyS4A==
+"@applitools/utils@1.3.21":
+  version "1.3.21"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.21.tgz#f94f2aa056ae8d29ff67206a242a164a88ce4ba1"
+  integrity sha512-+bbGl6mqTGTK8QhlTsNs160cGkqz6KCOqu9smJHLF9Qk+C287aG2smgKDKeVt+X+A7Ftg7AqNYtJ1nyf3sbVBw==
 
 "@babel/runtime@^7.0.0":
   version "7.18.6"
