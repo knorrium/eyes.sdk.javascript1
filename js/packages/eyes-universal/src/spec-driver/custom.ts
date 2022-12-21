@@ -23,7 +23,7 @@ export function makeSpec(options: {
   const spec: Required<
     Omit<
       SpecDriver<Driver, Context, Element, Selector>,
-      'transformDriver' | 'transformElement' | 'transformSelector' | 'untransformSelector'
+      'transformDriver' | 'transformElement' | 'transformSelector' | 'untransformSelector' | 'extractHostName'
     >
   > = {
     // #region UTILITY
