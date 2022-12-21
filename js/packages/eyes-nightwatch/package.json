@@ -55,7 +55,7 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
+    "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION @types/nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='nightwatch' -f links='eyes-sdk-core eyes-api types test-utils utils driver snippets screenshoter sdk-shared visual-grid-client'",
     "gh:publish": "gh workflow run publish-nightwatch.yml --ref $(git rev-parse --abbrev-ref HEAD)",

@@ -166,20 +166,10 @@ export async function setWindowSize(driver: Driver, size: Size): Promise<void> {
   // Same deal as with getWindowSize. If running on JWP, need to catch and retry
   // with a different command.
   try {
-    if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
-      await call(driver, 'setWindowRect' as any, size)
-    } else {
-      // calling setWindowRect without a callback above version 1, as the callback is called before the command finishes.
-      await driver.setWindowRect(size as any)
-    }
+    await call(driver, 'setWindowRect' as any, size)
   } catch {
-    if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
-      await call(driver, 'setWindowPosition' as 'windowPosition', 0, 0)
-      await call(driver, 'setWindowSize' as 'windowSize', size.width, size.height)
-    } else {
-      await driver.setWindowPosition(0, 0)
-      await driver.setWindowSize(size.width, size.height)
-    }
+    await call(driver, 'setWindowPosition' as 'windowPosition', 0, 0)
+    await call(driver, 'setWindowSize' as 'windowSize', size.width, size.height)
   }
 }
 export async function getCookies(driver: Driver, context?: boolean): Promise<Cookie[]> {
@@ -229,7 +219,7 @@ export async function hover(driver: Driver, element: Element | Selector): Promis
   if (isSelector(element)) element = await findElement(driver, element)
   await call(driver, 'moveTo', extractElementId(element))
 }
-export async function type(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
+export async function setElementText(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
   if (isSelector(element)) element = await findElement(driver, element)
   await driver.elementIdValue(extractElementId(element), keys)
 }
@@ -272,9 +262,14 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
       host: url.hostname,
       port: url.port || (url.protocol.startsWith('https') ? 443 : undefined),
       default_path_prefix: url.pathname,
+      check_process_delay: 100,
+      max_status_poll_tries: 10,
+      status_poll_interval: 200,
+      process_create_timeout: 120000,
       start_session: true,
       start_process: false,
     },
+    useAsync: true,
   }
   if (configurable) {
     const browserOptionsName = browserOptionsNames[browser || options.capabilities.browserName]
@@ -291,7 +286,7 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
     }
   }
   if (options.capabilities.browserName === '') options.capabilities.browserName = null
-  options.selenium = options.webdriver
+  if (options.capabilities.browserName !== 'firefox') options.selenium = options.webdriver
 
   if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
     options.desiredCapabilities = options.capabilities

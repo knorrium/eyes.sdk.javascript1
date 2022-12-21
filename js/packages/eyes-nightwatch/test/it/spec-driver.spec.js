@@ -382,6 +382,7 @@ describe('spec driver', async () => {
       const {x, y} = await driver.getWindowPosition()
       rect = {x, y, width, height}
     } else {
+      await driver.getWindowRect()
       const {x = 0, y = 0, width, height} = await driver.getWindowRect()
       rect = {x, y, width, height}
     }
