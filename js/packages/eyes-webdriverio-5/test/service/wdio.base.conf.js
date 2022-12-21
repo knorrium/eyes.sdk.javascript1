@@ -1,9 +1,13 @@
 const EyesService = require('../../dist/service')
-const {parseEnv} = require('@applitools/test-utils')
 
 exports.config = {
   runner: 'local',
-  capabilities: [parseEnv({browser: 'chrome'}).capabilities],
+  capabilities: [
+    {
+      browserName: 'chrome',
+      'goog:chromeOptions': {args: ['headless']},
+    },
+  ],
   logLevel: 'error',
   services: [[EyesService]],
   port: 4444,
