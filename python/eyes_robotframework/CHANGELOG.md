@@ -1,3 +1,7 @@
+## [vNext]
+### Added
+- Configuration option dont_close_batches can now be set in yaml config [Trello 3103](https://trello.com/c/kxOBjjCs)
+
 ## [5.10.0] - 2022-12-06
 ### Added
 - `Create Batch Info` keyword now accepts optional notify_on_completion argument [Trello 3084](https://trello.com/c/YkjxDWWz)

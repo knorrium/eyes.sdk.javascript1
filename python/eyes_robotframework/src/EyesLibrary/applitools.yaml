@@ -28,6 +28,7 @@ app_name: YOUR_APP_NAME
 #parent_branch_name: YOUR_PARENT_BRANCH_NAME
 #baseline_branch_name: YOUR_BASELINE_BRANCH_NAME
 #baseline_env_name: YOUR_BASELINE_ENV_NAME
+#dont_close_batches: true
 #save_diffs: false
 #match_timeout: 600
 #save_new_tests: true  #optional

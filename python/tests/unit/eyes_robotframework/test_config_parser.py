@@ -1,12 +1,11 @@
-import sys
-
 import pytest
 import trafaret as t
-import yaml
 
 from applitools.selenium import BrowserType, RectangleSize, StitchMode
+from EyesLibrary import RobotConfiguration
 from EyesLibrary.config_parser import (
     ConfigurationTrafaret,
+    SelectedRunner,
     TextToEnumTrafaret,
     UpperTextToEnumTrafaret,
     ViewPortTrafaret,
@@ -60,6 +59,7 @@ branch_name: YOUR_BRANCH_NAME
 parent_branch_name: YOUR_PARENT_BRANCH_NAME
 baseline_branch_name: YOUR_BASELINE_BRANCH_NAME
 baseline_env_name: YOUR_BASELINE_ENV_NAME
+dont_close_batches: true
 save_diffs: false
 match_timeout: 600
 save_new_tests: true  #optional
@@ -119,3 +119,11 @@ web_ufg:
 @pytest.mark.parametrize("config", [EXAMPLE_CONFIG_YAML])
 def test_all_values_in_example_config(config):
     ConfigurationTrafaret.scheme.check(unicode_yaml_load(config))
+
+
+def test_web_config_options():
+    web_config = ConfigurationTrafaret(SelectedRunner.web, RobotConfiguration()).check(
+        unicode_yaml_load(EXAMPLE_CONFIG_YAML)
+    )
+
+    assert web_config.dont_close_batches

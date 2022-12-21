@@ -266,6 +266,7 @@ class ConfigurationTrafaret(trf.Trafaret):  # typedef
             trf.Key("parent_branch_name", optional=True): trf.String,
             trf.Key("baseline_branch_name", optional=True): trf.String,
             trf.Key("baseline_env_name", optional=True): trf.String,
+            trf.Key("dont_close_batches", optional=True): trf.Bool,
             trf.Key("save_diffs", optional=True): trf.Bool,
             trf.Key("app_name", optional=True): trf.String,
             trf.Key("viewport_size", optional=True): ViewPortTrafaret,
