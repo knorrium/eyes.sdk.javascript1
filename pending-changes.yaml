@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/eyes-universal":
   feature:
-    - 
+    - Additional internal event logs
   bug-fix:
     - Fixed issue when helper lib inputs were not cleaned up before calling new command
     - Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
@@ -20,18 +20,19 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Additional internal event logs
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Additional internal event logs
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
     - Handle fake shadowRoot with UFG
     - Handed error during polling in long requests to eyes server
+    - Additional internal event logs
 "@applitools/eyes-protractor":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -47,6 +48,7 @@ Apollo SDK:
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Added `nmgOptions` to `CheckSettings`
+    - Additional internal event logs
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices
@@ -56,7 +58,7 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-puppeteer":
   feature:
-    - 
+    - Additional internal event logs
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
@@ -70,6 +72,7 @@ Apollo SDK:
     - Use user agent metadata to improve browser environment detection logic
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - Additional internal event logs
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
@@ -84,6 +87,7 @@ Apollo SDK:
     - Use user agent metadata to improve browser environment detection logic
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - Additional internal event logs
   bug-fix:
     - Fixed issue with logs not being saved/written
     - Fixed issue with ufg renders failing intermittently
@@ -96,13 +100,13 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-cypress":
   feature:
-    - 
+    - Additional internal event logs
   bug-fix:
     - Handle fake shadowRoot with UFG
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-storybook":
   feature:
-    - 
+    - Additional internal event logs
   bug-fix:
     - 
 "@applitools/eyes-webdriverio5-service":
@@ -122,6 +126,7 @@ Apollo SDK:
     - Drop support for Android 9 and Android 10 specific devices
     - Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
     - Use user agent metadata to improve browser environment detection logic
+    - Additional internal event logs
   bug-fix:
     - |
       `extractText` now supports regions that don't use hints while using `x`/`y` coordinates
@@ -179,6 +184,7 @@ eyes-browser-extension:
   feature:
     - Added typescript support
     - Added `ignoreColors` method to `CheckSettings` to set a match level
+    - Additional internal event logs
   bug-fix:
     - 
 applitools-for-selenium-ide:

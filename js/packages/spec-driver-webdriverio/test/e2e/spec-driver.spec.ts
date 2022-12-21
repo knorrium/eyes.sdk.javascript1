@@ -429,6 +429,15 @@ describe('spec driver', async () => {
     })
   })
 
+  describe('browser with saucelabs', async () => {
+    it('extractHostName()', async () => {
+      ;[browser, destroyBrowser] = await spec.build({browser: 'chrome-mac', protocol: 'wd'})
+      await browser.url(url)
+
+      extractHostName({expected: 'ondemand.us-west-1.saucelabs.com'})
+    })
+  })
+
   async function isDriver({input, expected}: {input: spec.Driver; expected: boolean}) {
     const result = await spec.isDriver(input)
     assert.strictEqual(result, expected)
@@ -644,5 +653,9 @@ describe('spec driver', async () => {
     const actual = await browser.getUrl()
     assert.deepStrictEqual(actual, blank)
     await browser.url(url)
+  }
+  function extractHostName({expected}: {expected: string}) {
+    const driverUrl = spec.extractHostName(browser)
+    assert.strictEqual(driverUrl, expected)
   }
 })

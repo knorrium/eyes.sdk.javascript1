@@ -57,6 +57,7 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
   extractSelector?(element: TElement): TSelector
   isStaleElementError(error: any, selector?: TSelector): boolean
   isEqualElements?(context: TContext, element1: TElement, element2: TElement): Promise<boolean>
+  extractHostName?(driver: TDriver): string | null
   // #endregion
 
   // #region COMMANDS

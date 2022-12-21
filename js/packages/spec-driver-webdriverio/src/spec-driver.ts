@@ -160,6 +160,9 @@ export async function isEqualElements(_browser: Driver, element1: Element, eleme
   const elementId2 = extractElementId(element2)
   return elementId1 === elementId2
 }
+export function extractHostName(driver: Driver): string {
+  return driver.options?.hostname
+}
 
 // #endregion
 
@@ -383,7 +386,6 @@ export async function getWorlds(driver: Driver): Promise<string[]> {
 export async function switchWorld(driver: Driver, name: string): Promise<void> {
   return driver.switchContext(name)
 }
-
 // #endregion
 
 // #region TESTING

@@ -11,6 +11,7 @@ import {makeLocateText} from './locate-text'
 import {makeExtractText} from './extract-text'
 import {makeClose} from './close'
 import * as utils from '@applitools/utils'
+import {extractCIProvider} from './utils/extract-ci-provider'
 
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type?: TType
@@ -76,6 +77,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
           testConcurrency: concurrency,
           concurrentRendersPerTest: (settings as OpenSettings<'ufg'>).renderConcurrency,
           node: {version: process.version, platform: process.platform, arch: process.arch},
+          driverUrl: target && spec?.extractHostName?.(target),
+          extractedCIProvider: extractCIProvider(),
         },
       },
       logger,

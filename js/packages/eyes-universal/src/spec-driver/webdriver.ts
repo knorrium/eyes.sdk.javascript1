@@ -188,6 +188,10 @@ export function isStaleElementError(error: any): boolean {
   return errOrResult instanceof Error && errOrResult.name === 'stale element reference'
 }
 
+export function extractHostName(driver: Driver): string {
+  return driver.options?.hostname
+}
+
 // #endregion
 
 // #region COMMANDS
