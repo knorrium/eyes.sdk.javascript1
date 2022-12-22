@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "types",
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "plugins": [{
+      "transform": "@applitools/api-extractor",
+      "afterDeclarations": true,
+      "rootFile": "./index.ts",
+      "allowModules": ["@applitools/driver", "webdriver"],
+    }]
+  },
+  "exclude" : ["dist", "types", "test"]
+}
