@@ -16,10 +16,10 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.17", "@applitools/driver@^1.11.17":
-  version "1.11.17"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.17.tgz#699e5e5c27d690de604a4491fedd09cf94e304c9"
-  integrity sha512-9A2rRYO+c2GSuhKosACFiUEr/+gfDYXjiIAQxhfVQo0hulvb7rY/ITT7KXuo+acz5SRBhydJqrMCDL2ubiW2pg==
+"@applitools/driver@1.11.19", "@applitools/driver@^1.11.19":
+  version "1.11.19"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.19.tgz#3f26eb55dd6c91ca5336c6eab342853674a29f8b"
+  integrity sha512-XBkKqnO287ZXi+UTnCtFHZjdoH54kPRTwvYszCNyCv9KykHzUvAUKLVs4pdLImHRBUjZ4RhzWNNOwkOhtti3cA==
   dependencies:
     "@applitools/logger" "1.1.35"
     "@applitools/snippets" "2.4.11"
@@ -59,12 +59,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.11.tgz#1cce35fc311cdd62faf98634f63c14173124ac13"
   integrity sha512-7H4HJMGO1dgluVhB9S5DcsMeIhHBYWheomgF8XkOogZs3nSg54PUFHMB9h41gJnRdlxnLnL6fjqA/D69eMtlHw==
 
-"@applitools/spec-driver-webdriverio@^1.4.13":
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.13.tgz#15612ebdd0f4d5b7b18c729334a4ef846fd3d6de"
-  integrity sha512-hqWUpO+/+PRCNF4HmgcHK+LPuSD2VPFmhYgEIdPRy2l7ADsyELlM3pEN4pqvvlulZqVi532M4CrbP6Kwsuh+HA==
+"@applitools/spec-driver-webdriverio@^1.4.15":
+  version "1.4.15"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.15.tgz#69d40eadb25dfa5f374036771b06001f5afb7a1e"
+  integrity sha512-3QWPpVxula5YrbG/3p+EnjNKddGqxLrvAbuXSJu29fbaLYveYxsdW/YLxxMiEKqxzCbjxQiNIvxUInkUWTZsnA==
   dependencies:
-    "@applitools/driver" "1.11.17"
+    "@applitools/driver" "1.11.19"
     "@applitools/utils" "1.3.21"
 
 "@applitools/test-utils@1.5.1":
@@ -74,10 +74,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/test-utils@^1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.4.tgz#ce3552f4244883c9dbebc664a0f980045522b7a1"
-  integrity sha512-fMqAVrnqiDMxPm6vlIXFYNvBW+IGT8k6Wucxyhz/j/lm/aezjyMAlksvVPQ/7GFNN1rODtWTLdiIXCHP+tyllA==
+"@applitools/test-utils@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.5.tgz#c1b48595e87bd14b2aeb0dba2bacd6f549cfeeff"
+  integrity sha512-+HGaVHiaUHDwM0Tx+z3YkAgqjpuAubgcSOIUo2CgNGsqLq/bATIqAazWlPZIl/2QiMRbKvNYXAQhcBIhWY4HyA==
   dependencies:
     node-fetch "2.6.1"
 
