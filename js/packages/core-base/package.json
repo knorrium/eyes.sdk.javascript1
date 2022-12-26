@@ -63,7 +63,7 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
     "@applitools/test-server": "^1.1.15",
-    "@applitools/test-utils": "^1.5.4",
+    "@applitools/test-utils": "^1.5.5",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
     "@types/node-fetch": "^2.6.2",
