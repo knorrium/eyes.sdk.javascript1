@@ -14,28 +14,28 @@ interface CypressCheckSettings extends api.CheckSettingsAutomationPlain<Element,
   selector?: Selector
   element?: Element
 
-  ignore?: MaybeArray<CypressCheckSettings['ignoreRegions'][number] | LegacyRegion>
-  layout?: MaybeArray<CypressCheckSettings['layoutRegions'][number] | LegacyRegion>
-  content?: MaybeArray<CypressCheckSettings['contentRegions'][number] | LegacyRegion>
-  strict?: MaybeArray<CypressCheckSettings['strictRegions'][number] | LegacyRegion>
-  floating?: MaybeArray<CypressCheckSettings['floatingRegions'][number] | (({element: Element} | Selector | LegacyRegion) & {maxUpOffset?: number; maxDownOffset?: number; maxLeftOffset?: number; maxRightOffset?: number})>
-  accessibility?: MaybeArray<CypressCheckSettings['accessibilityRegions'][number] | (({element: Element} | Selector | LegacyRegion) & {accessibilityType?: api.AccessibilityRegionTypePlain})>
+  ignore?: MaybeArray<NonNullable<CypressCheckSettings['ignoreRegions']>[number] | LegacyRegion>
+  layout?: MaybeArray<NonNullable<CypressCheckSettings['layoutRegions']>[number] | LegacyRegion>
+  content?: MaybeArray<NonNullable<CypressCheckSettings['contentRegions']>[number] | LegacyRegion>
+  strict?: MaybeArray<NonNullable<CypressCheckSettings['strictRegions']>[number] | LegacyRegion>
+  floating?: MaybeArray<NonNullable<CypressCheckSettings['floatingRegions']>[number] | (({element: Element} | Selector | LegacyRegion) & {maxUpOffset?: number; maxDownOffset?: number; maxLeftOffset?: number; maxRightOffset?: number})>
+  accessibility?: MaybeArray<NonNullable<CypressCheckSettings['accessibilityRegions']>[number] | (({element: Element} | Selector | LegacyRegion) & {accessibilityType?: api.AccessibilityRegionTypePlain})>
   scriptHooks?: CypressCheckSettings['hooks']
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean
 }
 
 interface CypressEyesConfig extends api.ConfigurationPlain<Element, Selector> {
-  browser?: MaybeArray<CypressEyesConfig['browsersInfo'][number] | {deviceName: string; screenOrientation?: api.ScreenOrientationPlain; name?: string}>
+  browser?: MaybeArray<NonNullable<CypressEyesConfig['browsersInfo']>[number] | {deviceName: string; screenOrientation?: api.ScreenOrientationPlain; name?: string}>
 
-  batchId?: CypressEyesConfig['batch']['id']
-  batchName?: CypressEyesConfig['batch']['name']
-  batchSequence?: CypressEyesConfig['batch']['sequenceName']
-  notifyOnCompletion?: CypressEyesConfig['batch']['notifyOnCompletion']
+  batchId?:  NonNullable<CypressEyesConfig['batch']>['id']
+  batchName?:  NonNullable<CypressEyesConfig['batch']>['name']
+  batchSequence?:  NonNullable<CypressEyesConfig['batch']>['sequenceName']
+  notifyOnCompletion?:  NonNullable<CypressEyesConfig['batch']>['notifyOnCompletion']
 
   envName?: CypressEyesConfig['environmentName']
 
-  accessibilitySettings?: CypressEyesConfig['defaultMatchSettings']['accessibilitySettings']
+  accessibilitySettings?: NonNullable<CypressEyesConfig['defaultMatchSettings']>['accessibilitySettings']
 }
 
 declare global {
