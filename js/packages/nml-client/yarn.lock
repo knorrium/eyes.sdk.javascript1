@@ -16,10 +16,10 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.17":
-  version "1.11.17"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.17.tgz#699e5e5c27d690de604a4491fedd09cf94e304c9"
-  integrity sha512-9A2rRYO+c2GSuhKosACFiUEr/+gfDYXjiIAQxhfVQo0hulvb7rY/ITT7KXuo+acz5SRBhydJqrMCDL2ubiW2pg==
+"@applitools/driver@1.11.18":
+  version "1.11.18"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.18.tgz#475623bd4b852cea3657a3cbab1b34fc57361732"
+  integrity sha512-SYfPmQgBuHSvZHv0ApEvJduAAPZ6B/sWDwzRXFv7DkWokxZ3Dmndk5Hiifhqi9crMGWnpDf9Jw0ObshxxFAKBg==
   dependencies:
     "@applitools/logger" "1.1.35"
     "@applitools/snippets" "2.4.11"
@@ -60,12 +60,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.11.tgz#1cce35fc311cdd62faf98634f63c14173124ac13"
   integrity sha512-7H4HJMGO1dgluVhB9S5DcsMeIhHBYWheomgF8XkOogZs3nSg54PUFHMB9h41gJnRdlxnLnL6fjqA/D69eMtlHw==
 
-"@applitools/spec-driver-selenium@^1.5.15":
-  version "1.5.15"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-selenium/-/spec-driver-selenium-1.5.15.tgz#99ddeafbb120d0dea226b64a6538b88b16199d3e"
-  integrity sha512-Gy2MV9ExNXaW+y0DmPCvo0umHLKhDuJ1HeVFCKaInVdAOywlJ7i3tNNBKBa0yvX+DPCdbLM193T3N9NXSFZggQ==
+"@applitools/spec-driver-selenium@^1.5.16":
+  version "1.5.16"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-selenium/-/spec-driver-selenium-1.5.16.tgz#0745e3e583a09c7a22675aba4586ad8df3440598"
+  integrity sha512-BdBrYCcH4POo9BmpJ4p0rmcmZuitNDffLd3pLJMPE2dIhm6Bk155yn8haP2fbynlMK7L8qzzqEMCgxFVVL5wMQ==
   dependencies:
-    "@applitools/driver" "1.11.17"
+    "@applitools/driver" "1.11.18"
     "@applitools/utils" "1.3.21"
 
 "@applitools/test-server@^1.1.15":
@@ -93,10 +93,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/test-utils@^1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.4.tgz#ce3552f4244883c9dbebc664a0f980045522b7a1"
-  integrity sha512-fMqAVrnqiDMxPm6vlIXFYNvBW+IGT8k6Wucxyhz/j/lm/aezjyMAlksvVPQ/7GFNN1rODtWTLdiIXCHP+tyllA==
+"@applitools/test-utils@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.5.tgz#c1b48595e87bd14b2aeb0dba2bacd6f549cfeeff"
+  integrity sha512-+HGaVHiaUHDwM0Tx+z3YkAgqjpuAubgcSOIUo2CgNGsqLq/bATIqAazWlPZIl/2QiMRbKvNYXAQhcBIhWY4HyA==
   dependencies:
     node-fetch "2.6.1"
 
