@@ -7,8 +7,6 @@
     "strict": true,
     "esModuleInterop": true,
     "downlevelIteration": true,
-    "stripInternal": false,
-    "removeComments": false,
   },
   "ts-node": {"transpileOnly": true},
   "exclude" : ["dist", "types"],

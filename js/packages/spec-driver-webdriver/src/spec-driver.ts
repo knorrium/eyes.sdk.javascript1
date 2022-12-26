@@ -10,7 +10,7 @@ import https from 'https'
 
 type ApplitoolsBrand = {__applitoolsBrand?: never}
 
-export type Driver = WD.Client & ApplitoolsBrand
+export type Driver = WD.Client & {original?: any} & ApplitoolsBrand
 export type Element = ({'element-6066-11e4-a52e-4f735466cecf': string} | {ELEMENT: string}) & ApplitoolsBrand
 export type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string} & ApplitoolsBrand
 export type Selector = {using: string; value: string} & ApplitoolsBrand
@@ -183,14 +183,14 @@ export function transformSelector(selector: CommonSelector<Selector>): Selector 
     return selector
   }
 }
-export function extractHostName(driver: Driver): string | null {
-  return driver.options?.hostname ?? null
-}
 export function untransformSelector(selector: Selector): CommonSelector {
   if (utils.types.has(selector, ['using', 'value'])) {
     return {type: selector.using === 'css selector' ? 'css' : selector.using, selector: selector.value}
   }
   return selector
+}
+export function extractHostName(driver: Driver): string | null {
+  return driver.options?.hostname ?? null
 }
 export function isStaleElementError(error: any): boolean {
   if (!error) return false
@@ -230,10 +230,14 @@ export async function findElement(
   parent?: Element | ShadowRoot,
 ): Promise<Element | null> {
   const parentId = parent ? (isShadowRoot(parent) ? extractShadowRootId(parent) : extractElementId(parent)) : null
-  const element = parentId
-    ? await driver.findElementFromElement(parentId, selector.using, selector.value)
-    : await driver.findElement(selector.using, selector.value)
-  return isElement(element) ? element : null
+  try {
+    const element = parentId
+      ? await driver.findElementFromElement(parentId, selector.using, selector.value)
+      : await driver.findElement(selector.using, selector.value)
+    return isElement(element) ? element : null
+  } catch {
+    return null
+  }
 }
 export async function findElements(driver: Driver, selector: Selector, parent?: Element): Promise<Element[]> {
   const parentId = parent ? (isShadowRoot(parent) ? extractShadowRootId(parent) : extractElementId(parent)) : null

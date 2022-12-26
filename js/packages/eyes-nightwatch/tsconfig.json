@@ -1,30 +1,14 @@
 {
-  "include": ["src"],
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "types",
-    "declaration": true,
-    "declarationMap": false,
-    "sourceMap": false,
-
     "module": "commonjs",
     "moduleResolution": "node16",
     "target": "es2019",
     "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2020.string", "dom"],
+    "types": ["node"],
+    "strict": true,
     "esModuleInterop": true,
-    "noImplicitAny": true,
     "downlevelIteration": true,
-    "removeComments": true,
-    "plugins": [{
-      "transform": "@applitools/api-extractor",
-      "afterDeclarations": true,
-      "rootFile": "./index.ts",
-      "allowModules": ["nightwatch"],
-      "stripPrivate": true,
-      "stripProtected": true,
-      "stripInternal": true
-    }]
   },
   "ts-node": {"transpileOnly": true},
+  "exclude" : ["dist", "types"],
 }

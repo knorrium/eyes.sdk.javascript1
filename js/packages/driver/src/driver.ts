@@ -46,15 +46,15 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
 
     this._logger = options.logger?.extend({label: 'driver'}) ?? makeLogger({label: 'driver'})
 
-    if (this._spec.isDriver(options.driver)) {
-      this._target = this._spec.transformDriver?.(options.driver) ?? options.driver
-    } else {
+    this._target = this._spec.transformDriver?.(options.driver) ?? options.driver
+
+    if (!this._spec.isDriver(this._target)) {
       throw new TypeError('Driver constructor called with argument of unknown type!')
     }
 
     this._mainContext = new Context({
       spec: this._spec,
-      context: this._spec.extractContext?.(this._target) ?? ((<unknown>this._target) as TContext),
+      context: this._spec.extractContext?.(this._target) ?? (this._target as unknown as TContext),
       driver: this,
       logger: this._logger,
     })

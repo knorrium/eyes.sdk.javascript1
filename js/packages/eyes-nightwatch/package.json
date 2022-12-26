@@ -42,11 +42,11 @@
   ],
   "scripts": {
     "lint": "eslint '**/*.ts' '**/*.js'",
-    "build": "ttsc",
+    "build": "ttsc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-nightwatch'",
     "test": "yarn test:it && yarn test:e2e && yarn test:coverage",
     "test:sanity": "yarn test:it",
-    "test:it": "mocha ./test/it/spec-driver.spec.js --exit --no-timeouts -r @applitools/test-utils/mocha-hooks/docker",
+    "test:it": "mocha ./test/it/*.spec.ts --exit --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
     "test:e2e": "yarn test:e2e:nightwatch && yarn test:e2e:cucumber",
     "test:e2e:cucumber": "cucumber-js test/e2e/cucumber/features/*.feature --require test/e2e/cucumber/cucumber.config.js --require test/e2e/cucumber/step_definitions",
     "test:e2e:nightwatch": "nightwatch --config test/e2e/nightwatch.conf.js --eyes-config applitools.config.js test/e2e/*.spec.js",
@@ -55,7 +55,7 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION @types/nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
+    "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='nightwatch' -f links='eyes-sdk-core eyes-api types test-utils utils driver snippets screenshoter sdk-shared visual-grid-client'",
     "gh:publish": "gh workflow run publish-nightwatch.yml --ref $(git rev-parse --abbrev-ref HEAD)",
@@ -69,10 +69,12 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.3.3",
-    "@applitools/driver": "1.11.16",
-    "@applitools/eyes-api": "1.11.2",
-    "@applitools/utils": "1.3.21"
+    "@applitools/core": "1.3.4",
+    "@applitools/driver": "1.11.17",
+    "@applitools/eyes-api": "1.11.3",
+    "@applitools/spec-driver-webdriver": "1.0.0",
+    "@applitools/utils": "1.3.21",
+    "webdriver": "7.27.0"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
@@ -81,6 +83,7 @@
     "@applitools/sdk-coverage-tests": "2.7.10",
     "@applitools/sdk-shared": "0.9.15",
     "@applitools/test-utils": "1.5.4",
+    "@types/mocha": "^9.1.1",
     "@types/nightwatch": "^2.3.16",
     "@types/node": "12",
     "@typescript-eslint/eslint-plugin": "^5.27.0",

@@ -368,10 +368,10 @@ jobs:
         with:
           workflow: publish-spec-puppeteer.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-puppeteer.version}}"}'
-  spec-selenium:
+  spec-webdriver:
     needs: [ setup, driver, utils, test-utils ]
-    if: ${{fromJSON(needs.setup.outputs.packages).spec-selenium && !failure() && !cancelled()}}
-    name: spec-selenium
+    if: ${{fromJSON(needs.setup.outputs.packages).spec-webdriver && !failure() && !cancelled()}}
+    name: spec-webdriver
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -379,8 +379,8 @@ jobs:
       - name: Run remote workflow
         uses: ./.github/actions/run
         with:
-          workflow: publish-spec-selenium.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-selenium.version}}"}'
+          workflow: publish-spec-webdriver.yml
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriver.version}}"}'
   spec-webdriverio:
     needs: [ setup, driver, utils, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-webdriverio && !failure() && !cancelled()}}
@@ -394,6 +394,19 @@ jobs:
         with:
           workflow: publish-spec-webdriverio.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriverio.version}}"}'
+  spec-selenium:
+    needs: [ setup, driver, utils, test-utils ]
+    if: ${{fromJSON(needs.setup.outputs.packages).spec-selenium && !failure() && !cancelled()}}
+    name: spec-selenium
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Run remote workflow
+        uses: ./.github/actions/run
+        with:
+          workflow: publish-spec-selenium.yml
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-selenium.version}}"}'
 
   # JS SDKS
   images:
@@ -488,7 +501,16 @@ jobs:
           workflow: publish-protractor.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).protractor.version}}"}'
   nightwatch:
-    needs: [ setup, core, driver, api, utils, test-utils ]
+    needs:
+      [
+        setup,
+        core,
+        driver,
+        api,
+        spec-webdriver,
+        utils,
+        test-utils
+      ]
     if: ${{fromJSON(needs.setup.outputs.packages).nightwatch && !failure() && !cancelled()}}
     name: nightwatch
     runs-on: ubuntu-latest
@@ -568,11 +590,12 @@ jobs:
     needs:
       [
         setup,
+        core,
         driver,
-        core-legacy,
         logger,
         spec-puppeteer,
         test-server,
+        ufg-client,
         utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).storybook && !failure() && !cancelled()}}

@@ -13,7 +13,10 @@
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
       "rootFile": "./index.ts",
-      "allowModules": ["@applitools/driver", "webdriver"],
+      "allowModules": ["nightwatch"],
+      "stripPrivate": true,
+      "stripProtected": true,
+      "stripInternal": true
     }]
   },
   "exclude" : ["dist", "types", "test"]

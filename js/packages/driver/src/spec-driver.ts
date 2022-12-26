@@ -52,7 +52,7 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
   transformDriver?(driver: any): TDriver
   transformElement?(element: any): TElement
   transformSelector?(selector: Selector<TSelector>): TSelector
-  untransformSelector?(selector: TSelector | Selector<TSelector>): Selector
+  untransformSelector?(selector: TSelector | Selector<TSelector>): Selector | null
   extractContext?(element: TDriver | TContext): TContext
   extractSelector?(element: TElement): TSelector
   isStaleElementError(error: any, selector?: TSelector): boolean
