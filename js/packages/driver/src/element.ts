@@ -49,7 +49,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
 
     if (this._spec.isElement(this._target)) {
       // Some frameworks contains information about the selector inside an element
-      this._selector = options.selector ?? this._spec.extractSelector?.(this._target)
+      this._selector = options.selector ?? this._spec.extractSelector?.(options.element)
       this._index = options.index
     } else if (specUtils.isSelector(this._spec, options.selector)) {
       this._selector = options.selector
