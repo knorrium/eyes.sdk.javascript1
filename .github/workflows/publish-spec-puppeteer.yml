@@ -31,7 +31,7 @@ jobs:
             framework-version: 13.7
           - node-version: 14
           - node-version: 16
-    name: 'Test (pptr: ${{matrix.framework-version || "latest"}} node: ${{matrix.node-version}})'
+    name: 'Test (pptr: ${{matrix.framework-version || ''latest''}} node: ${{matrix.node-version}})'
     runs-on: ubuntu-latest
     env:
       APPLITOOLS_PUPPETEER_VERSION: ${{matrix.framework-version}}
