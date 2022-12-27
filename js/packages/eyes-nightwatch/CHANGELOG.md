@@ -11,6 +11,29 @@
 
 
 
+## 1.12.0 - 2022/12/27
+
+### Features
+- Added new selector extensions `child` and `fallback`
+- Changed default value of `sendDom` from `true` to dynamically calculated
+- Added new android device `Sony Xperia 10 II`
+- Mark target element with `data-applitools-scroll` attribute before capture dom
+- Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
+- Use user agent metadata to improve browser environment detection logic
+- Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
+- Added `ignoreColors` method to `CheckSettings` to set a match level
+- Additional internal event logs
+### Bug fixes
+- Fixed issue with logs not being saved/written
+- Fixed issue with ufg renders failing intermittently
+- Fixed error that was happening when test results were deleted
+- Fixed bug that caused `extractText` to throw, due to fractional size of the target region
+- Fix dontCloseBatches mapping
+- Fixed issue when current context is not being preserved in ufg mode
+- Fixed issue with element scroll position not being restored after screenshot is taken on native platforms
+- Handle fake shadowRoot with UFG
+- Handed error during polling in long requests to eyes server
+
 ## 1.11.5 - 2022/10/7
 
 ### Features
