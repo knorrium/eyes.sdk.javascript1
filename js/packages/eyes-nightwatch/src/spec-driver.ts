@@ -21,6 +21,7 @@ export type ResponseElement = Nightwatch.NightwatchTypedCallbackResult<WDElement
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
 
+const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
 const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
   return byHash.includes(Object.keys(selector)[0] as typeof byHash[number])
@@ -44,6 +45,7 @@ export function isSelector(selector: any): selector is Selector | WDSelector {
   )
 }
 export function transformDriver(driver: Driver): WDDriver {
+  if (spec.isDriver(driver)) return driver
   const server = (driver.options as any).selenium ?? (driver.options as any).webdriver
   const transformedDriver = spec.transformDriver({
     sessionId: driver.sessionId,
@@ -61,7 +63,12 @@ export function transformElement(element: Element | ResponseElement): Element {
   return utils.types.has(element, 'value') ? spec.transformElement(element.value) : spec.transformElement(element)
 }
 export function transformSelector(selector: CommonSelector<Selector>): Selector {
-  if (utils.types.has(selector, 'selector')) {
+  if (utils.types.isString(selector)) {
+    return {
+      locateStrategy: XPATH_SELECTOR_START.some(start => selector.startsWith(start)) ? 'xpath' : 'css selector',
+      selector: selector,
+    }
+  } else if (utils.types.has(selector, 'selector')) {
     if (!utils.types.isString(selector.selector)) return selector.selector
     if (!utils.types.has(selector, 'type')) return {selector: selector.selector}
     if (selector.type === 'css') return {locateStrategy: 'css selector', selector: selector.selector}
@@ -105,7 +112,7 @@ export async function findElement(
       element = null
     }
   }
-  return spec.isElement(element) ? element : null
+  return spec.isElement(element) ? spec.transformElement(element) : null
 }
 export async function findElements(driver: WDDriver, selector: Selector, parent?: WDElement): Promise<WDElement[]> {
   const originalDriver = driver.original as Driver
@@ -166,7 +173,7 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
       } else {
         options.capabilities[browserOptionsName] = browserOptions
       }
-      if (browser !== 'firefox' && !browserOptions.mobileEmulation) browserOptions.w3c = false
+      // if (browser !== 'firefox' && !browserOptions.mobileEmulation) browserOptions.w3c = false
     }
   }
   if (options.capabilities.browserName === '') options.capabilities.browserName = null
