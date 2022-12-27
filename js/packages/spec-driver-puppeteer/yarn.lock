@@ -21,22 +21,22 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.19":
-  version "1.11.19"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.19.tgz#3f26eb55dd6c91ca5336c6eab342853674a29f8b"
-  integrity sha512-XBkKqnO287ZXi+UTnCtFHZjdoH54kPRTwvYszCNyCv9KykHzUvAUKLVs4pdLImHRBUjZ4RhzWNNOwkOhtti3cA==
+"@applitools/driver@1.11.20":
+  version "1.11.20"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.20.tgz#7c61fd7bca52b1519e1ea8130f576789ed4310e9"
+  integrity sha512-rU9WgUBLEkNKX3fmlHqETlN/pSEOCtkeL0GDtEsZwoGnlh95egKXZr87f2WaPwNN3Em556avB2cpPLoe9kmMsA==
   dependencies:
-    "@applitools/logger" "1.1.35"
+    "@applitools/logger" "1.1.36"
     "@applitools/snippets" "2.4.11"
-    "@applitools/utils" "1.3.21"
+    "@applitools/utils" "1.3.22"
     semver "7.3.7"
 
-"@applitools/logger@1.1.35":
-  version "1.1.35"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.35.tgz#f5eec9d238f500548ae381969a4f071e84fd4835"
-  integrity sha512-ZQQV57OTGeH6vH1CxET6XSFkLQh4WtGODVzfvrbeAmaVyGigNIc37j619uXK6wvdglgpq+Y79xyWoe4p+UZrkQ==
+"@applitools/logger@1.1.36":
+  version "1.1.36"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.36.tgz#eb7afa54060c609eca8c566f39ddbd43a109b0b1"
+  integrity sha512-Ul2b96Cz5XBZa5mZkszRs4WXtfsrXwM4HD0q7BLbBJ91B9gGzZrbn9bI837BlpcHAw0O4h8i+D9migeTmFrxaA==
   dependencies:
-    "@applitools/utils" "1.3.21"
+    "@applitools/utils" "1.3.22"
     chalk "4.1.2"
 
 "@applitools/scripts@1.2.0":
@@ -73,10 +73,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.10.tgz#307359d6f668c5fe6b3a7d213405ebe3bf2235b6"
   integrity sha512-CI/5BLB0D/aZn6uL8JJmsErI+TOHCa4Gz5Wi8sJknuPz/V9Ws6jIh9ZCTzvOCDUIp99qLJwD6TSA2BY9aMhCNw==
 
-"@applitools/utils@1.3.21":
-  version "1.3.21"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.21.tgz#f94f2aa056ae8d29ff67206a242a164a88ce4ba1"
-  integrity sha512-+bbGl6mqTGTK8QhlTsNs160cGkqz6KCOqu9smJHLF9Qk+C287aG2smgKDKeVt+X+A7Ftg7AqNYtJ1nyf3sbVBw==
+"@applitools/utils@1.3.22":
+  version "1.3.22"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.22.tgz#9ced9585d9701297c202afd5dd9bb848405550fe"
+  integrity sha512-2hRcD8YMsiHiN82YWoWHv6Vt0kp0GRaf4+aI+UlUgAfNO5qgJFerXntT499MkulOSUmtd8VnujYk4jqKUEt00g==
 
 "@babel/code-frame@^7.0.0":
   version "7.15.8"
