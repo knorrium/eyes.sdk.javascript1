@@ -21,7 +21,6 @@ export type ResponseElement = Nightwatch.NightwatchTypedCallbackResult<WDElement
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
 
-const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
 const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
   return byHash.includes(Object.keys(selector)[0] as typeof byHash[number])
@@ -34,6 +33,10 @@ function extractShadowRootId(shadowRoot: ShadowRoot): string {
 }
 function transformShadowRoot(shadowRoot: ShadowRoot): WDShadowRoot {
   return {[SHADOW_ROOT_ID]: extractShadowRootId(shadowRoot)}
+}
+const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
+function isXpathSelector(selector: string): boolean {
+  return XPATH_SELECTOR_START.some(start => selector.startsWith(start))
 }
 
 export function isDriver(driver: any): driver is Driver | WDDriver {
@@ -77,13 +80,15 @@ export function transformElement(element: Element | ResponseElement): Element {
 }
 export function transformSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.isString(selector)) {
-    return {
-      locateStrategy: XPATH_SELECTOR_START.some(start => selector.startsWith(start)) ? 'xpath' : 'css selector',
-      selector: selector,
-    }
+    return {locateStrategy: isXpathSelector(selector) ? 'xpath' : 'css selector', selector}
   } else if (utils.types.has(selector, 'selector')) {
     if (!utils.types.isString(selector.selector)) return selector.selector
-    if (!utils.types.has(selector, 'type')) return {selector: selector.selector}
+    if (!utils.types.has(selector, 'type')) {
+      return {
+        locateStrategy: isXpathSelector(selector.selector) ? 'xpath' : 'css selector',
+        selector: selector.selector,
+      }
+    }
     if (selector.type === 'css') return {locateStrategy: 'css selector', selector: selector.selector}
     else return {locateStrategy: selector.type as Nightwatch.LocateStrategy, selector: selector.selector}
   }
@@ -145,7 +150,7 @@ export async function findElements(
       elements = []
     }
   }
-  return elements
+  return utils.types.isArray(elements) ? elements : []
 }
 
 const browserOptionsNames: Record<string, string> = {

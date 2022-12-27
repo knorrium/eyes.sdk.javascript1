@@ -318,6 +318,27 @@ export async function click(driver: Driver, element: Element | Selector): Promis
   const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
   if (resolvedElement) await driver.elementClick(extractElementId(resolvedElement))
 }
+export async function hover(driver: Driver, element: Element): Promise<any> {
+  if (!driver.isW3C) return await driver.moveToElement(extractElementId(element))
+  const {x, y, width, height} = await driver.getElementRect(extractElementId(element))
+  const {scrollX, scrollY} = await driver.executeScript(
+    'return {scrollX:window.pageXOffset,scrollY:window.pageYOffset}',
+    [],
+  )
+  const offsetX = Math.floor(x - scrollX + width / 2)
+  const offsetY = Math.floor(y - scrollY + height / 2)
+  await driver.performActions([
+    {
+      type: 'pointer',
+      id: 'mouse',
+      parameters: {pointerType: 'mouse'},
+      actions: [{type: 'pointerMove', duration: 0, x: offsetX, y: offsetY}],
+    },
+  ])
+}
+export async function scrollIntoView(driver: Driver, element: Element, align = false): Promise<void> {
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', [element, align])
+}
 
 // #endregion
 
