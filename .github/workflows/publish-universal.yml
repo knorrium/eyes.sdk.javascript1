@@ -77,7 +77,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Build x64
-        if: ${{env.name == 'x64'}}
+        if: ${{matrix.arch == 'x64'}}
         shell: bash
         working-directory: ./js/packages/eyes-universal
         run: |
