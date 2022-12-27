@@ -62,7 +62,10 @@
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "deps": "bongo deps",
-    "gh:publish": "gh workflow run publish-universal.yml --ref $(git rev-parse --abbrev-ref HEAD)"
+    "gh:publish": "gh workflow run publish-universal.yml --ref $(git rev-parse --abbrev-ref HEAD)",
+    "preversion": "bongo preversion --verify-pending-changes --skip-deps",
+    "version": "bongo version --with-pending-changes",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "husky": {
     "hooks": {

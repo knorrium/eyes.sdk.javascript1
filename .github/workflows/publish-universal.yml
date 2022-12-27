@@ -301,7 +301,7 @@ jobs:
                         },
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux arm64 🐧 💪"},
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux arm64 🐧💪"},
                           "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/eyes-universal-linux-arm64"
                         },
                         {
