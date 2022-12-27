@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriver",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "webdriver",
     "chrome devtools protocol",
@@ -66,8 +66,8 @@
     }
   },
   "dependencies": {
-    "@applitools/driver": "1.11.19",
-    "@applitools/utils": "1.3.21",
+    "@applitools/driver": "1.11.20",
+    "@applitools/utils": "1.3.22",
     "proxy-agent": "5.0.0"
   },
   "devDependencies": {
