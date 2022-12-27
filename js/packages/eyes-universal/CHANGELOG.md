@@ -11,6 +11,12 @@
 
 
 
+## 2.18.0 - 2022/12/27
+
+### Features
+- add support for "node14-linux-arm64"
+### Bug fixes
+
 ## 2.17.4 - 2022/12/21
 
 ### Features
