@@ -239,7 +239,11 @@ export async function findElement(
     return null
   }
 }
-export async function findElements(driver: Driver, selector: Selector, parent?: Element): Promise<Element[]> {
+export async function findElements(
+  driver: Driver,
+  selector: Selector,
+  parent?: Element | ShadowRoot,
+): Promise<Element[]> {
   const parentId = parent ? (isShadowRoot(parent) ? extractShadowRootId(parent) : extractElementId(parent)) : null
   return parentId
     ? await driver.findElementsFromElement(parentId, selector.using, selector.value)

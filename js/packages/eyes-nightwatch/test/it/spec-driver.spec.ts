@@ -6,7 +6,10 @@ import assert from 'assert'
 
 function extractElementId(element: any) {
   return (
-    element['element-6066-11e4-a52e-4f735466cecf'] || element['shadow-6066-11e4-a52e-4f735466cecf'] || element.ELEMENT
+    element['element-6066-11e4-a52e-4f735466cecf'] ||
+    element.ELEMENT ||
+    element['shadow-6066-11e4-a52e-4f735466cecf'] ||
+    element.id_
   )
 }
 

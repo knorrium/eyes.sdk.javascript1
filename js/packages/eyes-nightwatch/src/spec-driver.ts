@@ -14,7 +14,7 @@ export type WDSelector = spec.Selector
 
 export type Driver = Nightwatch.NightwatchBrowser & ApplitoolsBrand
 export type Element = WDElement & ApplitoolsBrand
-export type ShadowRoot = WDShadowRoot & ApplitoolsBrand
+export type ShadowRoot = ({id_: string} | WDShadowRoot) & ApplitoolsBrand
 export type Selector = (Nightwatch.ElementProperties | string | Selenium.Locator) & ApplitoolsBrand
 
 export type ResponseElement = Nightwatch.NightwatchTypedCallbackResult<WDElement> & ApplitoolsBrand
@@ -26,12 +26,25 @@ const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLink
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
   return byHash.includes(Object.keys(selector)[0] as typeof byHash[number])
 }
+const SHADOW_ROOT_ID = 'shadow-6066-11e4-a52e-4f735466cecf'
+function extractShadowRootId(shadowRoot: ShadowRoot): string {
+  return (
+    (shadowRoot as {'shadow-6066-11e4-a52e-4f735466cecf': string})[SHADOW_ROOT_ID] ?? (shadowRoot as {id_: string}).id_
+  )
+}
+function transformShadowRoot(shadowRoot: ShadowRoot): WDShadowRoot {
+  return {[SHADOW_ROOT_ID]: extractShadowRootId(shadowRoot)}
+}
 
 export function isDriver(driver: any): driver is Driver | WDDriver {
   return spec.isDriver(driver) || utils.types.instanceOf(driver, 'NightwatchAPI')
 }
 export function isElement(element: any): element is Element | WDElement {
   return spec.isElement(element)
+}
+export function isShadowRoot(shadowRoot: any): shadowRoot is ShadowRoot {
+  if (!shadowRoot) return false
+  return spec.isShadowRoot(shadowRoot) || Boolean(extractShadowRootId(shadowRoot))
 }
 export function isSelector(selector: any): selector is Selector | WDSelector {
   if (!selector) return false
@@ -99,11 +112,12 @@ export function untransformSelector(selector: Selector): CommonSelector | null {
 export async function findElement(
   driver: WDDriver,
   selector: Selector,
-  parent?: WDElement | WDShadowRoot,
+  parent?: WDElement | WDShadowRoot | ShadowRoot,
 ): Promise<WDElement | null> {
   const originalDriver = driver.original as Driver
   let element = null as Element | null
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
+    parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
     element = await spec.findElement(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
   } else if (!(Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2)) {
     try {
@@ -114,10 +128,15 @@ export async function findElement(
   }
   return spec.isElement(element) ? spec.transformElement(element) : null
 }
-export async function findElements(driver: WDDriver, selector: Selector, parent?: WDElement): Promise<WDElement[]> {
+export async function findElements(
+  driver: WDDriver,
+  selector: Selector,
+  parent?: WDElement | WDShadowRoot | ShadowRoot,
+): Promise<WDElement[]> {
   const originalDriver = driver.original as Driver
   let elements = [] as Element[]
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
+    parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
     elements = await spec.findElements(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
   } else if (!(Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2)) {
     try {
