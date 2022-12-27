@@ -45,11 +45,14 @@
   ],
   "scripts": {
     "lint": "eslint '**/*.ts'",
-    "build": "yarn build:dist && yarn build:bin",
+    "build": "yarn build:dist",
     "build:dist": "tsc",
-    "build:bin": "pkg .",
-    "build:zip": "zip -j ./bin/eyes-universal.zip ./bin/eyes-universal-alpine ./bin/eyes-universal-linux ./bin/eyes-universal-macos ./bin/eyes-universal-win.exe",
-    "build:tgz": "tar -czf ./bin/eyes-universal.tar.gz -C ./bin ./eyes-universal-alpine ./eyes-universal-linux ./eyes-universal-macos ./eyes-universal-win.exe",
+    "build:x64": "yarn build:dist && yarn build:bin:x64",
+    "build:arm64": "yarn build:dist && yarn build:bin:arm64",
+    "build:bin:x64": "pkg . --target node14-linux-x64,node14-alpine-x64,node14-macos-x64,node14-win-x64",
+    "build:bin:arm64": "pkg . --target node14-linux-arm64 --output ./bin/eyes-universal-linux-arm64",
+    "build:zip": "zip -j ./bin/eyes-universal.zip $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
+    "build:tgz": "tar -czf ./bin/eyes-universal.tar.gz $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "test": "yarn test:it && yarn test:e2e",
     "test:sanity": "yarn test:it",
     "test:it": "mocha ./test/it/*.spec.ts --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
@@ -59,10 +62,7 @@
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "deps": "bongo deps",
-    "gh:publish": "gh workflow run publish-universal.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion --verify-pending-changes --skip-deps",
-    "version": "bongo version --with-pending-changes",
-    "postversion": "bongo postversion --skip-release-notification"
+    "gh:publish": "gh workflow run publish-universal.yml --ref $(git rev-parse --abbrev-ref HEAD)"
   },
   "husky": {
     "hooks": {

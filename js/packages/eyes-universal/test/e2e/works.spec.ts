@@ -8,8 +8,13 @@ describe('works', () => {
   } else if (process.platform === 'win32') {
     bin = './bin/eyes-universal-win'
   } else if (process.platform === 'linux') {
-    bin = `./bin/eyes-universal-${fs.existsSync('/etc/alpine-release') ? 'alpine' : 'linux'}`
+    if (process.arch === 'arm64') {
+      bin = './bin/eyes-universal-linux-arm64'
+    } else {
+      bin = `./bin/eyes-universal-${fs.existsSync('/etc/alpine-release') ? 'alpine' : 'linux'}`
+    }
   }
+  console.log(bin)
   let server: ChildProcess
   afterEach(() => {
     server?.kill()
@@ -64,7 +69,7 @@ describe('works', () => {
     await new Promise<void>((resolve, reject) => {
       server.on('error', reject)
 
-      timeoutId = setTimeout(() => reject(new Error('No output from the server for 20 seconds')), 2000)
+      timeoutId = setTimeout(() => reject(new Error('No output from the server for 20 seconds')), 20000)
       server.on('exit', resolve)
       server.on('close', resolve)
 
