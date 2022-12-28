@@ -81,8 +81,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-cypress":
   feature:
-    - |
-      Support `strictNullChecks` in TypeScript configuration, by wrapping relevant types with NonNullable
+    - 
   bug-fix:
     - 
 "@applitools/eyes-storybook":
