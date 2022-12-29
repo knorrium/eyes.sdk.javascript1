@@ -62,14 +62,15 @@ export function isSelector(selector: any): selector is Selector | WDSelector {
 }
 export function transformDriver(driver: Driver): WDDriver {
   if (spec.isDriver(driver)) return driver
-  const server = (driver.options as any).selenium ?? (driver.options as any).webdriver
+  const selenium = (driver.options as any).selenium
+  const webdriver = (driver.options as any).webdriver
+  const ssl = selenium?.ssl ?? webdriver?.ssl
+  const hostname = selenium?.host ?? webdriver?.host
+  const port = selenium?.port ?? webdriver?.port
+  const path = selenium?.default_path_prefix ?? webdriver?.default_path_prefix
   const transformedDriver = spec.transformDriver({
     sessionId: driver.sessionId,
-    serverUrl:
-      server.url ??
-      `http${server.ssl ? 's' : ''}://${server.host ?? 'localhost'}${server.port ? `:${server.port}` : ''}${
-        server.default_path_prefix
-      }`,
+    serverUrl: `http${ssl ? 's' : ''}://${hostname ?? 'localhost'}${port ? `:${port}` : ''}${path}`,
     capabilities: (driver as any).capabilities,
   }) as spec.Driver
   transformedDriver.original = driver

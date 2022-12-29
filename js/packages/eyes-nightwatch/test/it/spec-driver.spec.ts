@@ -205,7 +205,7 @@ describe('spec driver', async () => {
   async function transformDriver({input}: {input: spec.Driver}) {
     const transformedDriver = spec.transformDriver(input)
     const result = await transformedDriver.getUrl()
-    const expected = await transformedDriver.getUrl()
+    const expected = await driver.url()
     assert.deepStrictEqual(result, expected)
   }
   async function transformElement({input}: {input: spec.Element | spec.ResponseElement}) {
