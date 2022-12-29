@@ -24,7 +24,10 @@ def test_set_nmg_capabilities_no_data_should_added(
     assert "optionalIntentArguments" not in caps
 
 
-def test_set_nmg_capabilities(configuration_keyword_with_native_mobile_grid):
+def test_set_nmg_capabilities(
+    configuration_keyword_with_native_mobile_grid, monkeypatch
+):
+    monkeypatch.setenv("APPLITOOLS_API_KEY", "dummy")
     caps = {
         "platformName": "iOS",
         "platformVersion": "15.4",
@@ -35,7 +38,10 @@ def test_set_nmg_capabilities(configuration_keyword_with_native_mobile_grid):
     assert caps["optionalIntentArguments"]
 
 
-def test_create_nmg_capabilities(configuration_keyword_with_native_mobile_grid):
+def test_create_nmg_capabilities(
+    configuration_keyword_with_native_mobile_grid, monkeypatch
+):
+    monkeypatch.setenv("APPLITOOLS_API_KEY", "dummy")
     res = configuration_keyword_with_native_mobile_grid.eyes_create_nmg_capabilities(
         platformName="iOS", platformVersion="15.4", deviceName="iPhone 13 Simulator"
     )
