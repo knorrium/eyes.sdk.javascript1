@@ -70,7 +70,7 @@ dist: eyes_universal/dist eyes_images/dist eyes_selenium/dist eyes_robotframewor
 eyes_universal/dist:
 	python -m pip install --upgrade wheel
 	set -e; cd eyes_universal; \
-	for PLAT in macosx_10_7_x86_64 macosx_11_0_arm64 manylinux1_x86_64 musllinux_1_2_x86_64 win_amd64; \
+	for PLAT in macosx_10_7_x86_64 macosx_11_0_arm64 manylinux1_x86_64 manylinux2014_aarch64 musllinux_1_2_x86_64 win_amd64; \
 	do python setup.py bdist_wheel --usdk-build-dir=${USDK_BUILD_DIR} --plat-name=$$PLAT; rm -rf build; done
 
 

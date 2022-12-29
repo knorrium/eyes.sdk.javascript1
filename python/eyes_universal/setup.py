@@ -1,6 +1,6 @@
 from base64 import b64encode
 from hashlib import md5
-from os import chmod, path, remove
+from os import chmod, path, remove, uname
 from shutil import copy
 from sys import platform
 
@@ -29,6 +29,8 @@ def current_platform_executable():
     elif platform == "win32":
         return "win"
     if platform in ("linux", "linux2"):
+        if uname().machine == "aarch64":
+            return "linux-arm64"
         if path.exists("/etc/alpine-release"):
             return "alpine"
         else:
@@ -41,7 +43,10 @@ def platform_executable(plat):
     if "macosx" in plat:
         return "macos"
     elif "manylinux" in plat:
-        return "linux"
+        if "aarch64" in plat:
+            return "linux-arm64"
+        else:
+            return "linux"
     elif "musllinux" in plat:
         return "alpine"
     elif "win" in plat:
