@@ -11,6 +11,12 @@
 
 
 
+## 1.12.1 - 2022/12/29
+
+### Features
+### Bug fixes
+- Improved webdriver url extraction
+
 ## 1.12.0 - 2022/12/27
 
 ### Features
