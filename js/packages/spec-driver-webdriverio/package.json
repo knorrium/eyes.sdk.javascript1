@@ -96,7 +96,7 @@
     "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION; echo \"$packagejson\" > package.json; fi",
-    "upgrade:node": "packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile @types/node@${NODE_VERSION:1:2}; echo \"$packagejson\" > package.json;",
+    "upgrade:node": "packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile @types/node@$(echo ${NODE_VERSION:1:2}); echo \"$packagejson\" > package.json;",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-webdriverio' -f links='types utils test-utils'",
     "gh:publish": "gh workflow run publish-spec-webdriverio.yml --ref $(git rev-parse --abbrev-ref HEAD)",
