@@ -21,13 +21,13 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.20":
-  version "1.11.20"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.20.tgz#7c61fd7bca52b1519e1ea8130f576789ed4310e9"
-  integrity sha512-rU9WgUBLEkNKX3fmlHqETlN/pSEOCtkeL0GDtEsZwoGnlh95egKXZr87f2WaPwNN3Em556avB2cpPLoe9kmMsA==
+"@applitools/driver@1.11.21":
+  version "1.11.21"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.21.tgz#cffaa81255d6cc7df635dd99e45a0ffe8d6caeb4"
+  integrity sha512-TsIVCThE3kn+/IBi2dDQ0/siXGecmXnkOND6dPW07W5WOR/e0T0EBgyD+O0QLiFQfv2ZijqlX/olS5EdXwin6g==
   dependencies:
     "@applitools/logger" "1.1.36"
-    "@applitools/snippets" "2.4.11"
+    "@applitools/snippets" "2.4.12"
     "@applitools/utils" "1.3.22"
     semver "7.3.7"
 
@@ -49,10 +49,10 @@
     cli-table3 "0.6.0"
     yargs "15.3.1"
 
-"@applitools/snippets@2.4.11":
-  version "2.4.11"
-  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.11.tgz#1cce35fc311cdd62faf98634f63c14173124ac13"
-  integrity sha512-7H4HJMGO1dgluVhB9S5DcsMeIhHBYWheomgF8XkOogZs3nSg54PUFHMB9h41gJnRdlxnLnL6fjqA/D69eMtlHw==
+"@applitools/snippets@2.4.12":
+  version "2.4.12"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.12.tgz#d0e8be21e8bef845b2a5514a6be36be2e9180db9"
+  integrity sha512-+B1jseyCYrwhweX27j92GQkgU30G+V1TrmUVzkA/Wl6HIqVFUAgX9QHh4dmTcgsKCcgQ8el+LX2VBhz7nJmCGw==
 
 "@applitools/test-utils@1.5.1":
   version "1.5.1"
