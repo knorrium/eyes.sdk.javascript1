@@ -1048,7 +1048,6 @@ describe('capabilities', () => {
       isMobile: true,
       isNative: false,
       isChrome: false,
-      isChrome: false,
       isIOS: true,
       isAndroid: false,
     })
@@ -1468,6 +1467,56 @@ describe('capabilities', () => {
       isChrome: false,
       isIOS: true,
       isAndroid: false,
+    })
+  })
+
+  it('should work with Native App without app capability', () => {
+    const driverInfo = parseCapabilities({
+      udid: '99434533-FB36-4B25-A6D0-BB42ECAFB46D',
+      platformName: 'ios',
+      animationCoolOffTimeout: 2,
+      autoAcceptAlerts: false,
+      autoGrantPermissions: 'true',
+      automationName: 'XCUITest',
+      deviceName: 'DD-QA-iPhone-14-Pro-Max',
+      environment: 'PROD',
+      executeCompareModelsSet: '1',
+      eyes: 'true',
+      locales: 'en_US',
+      model: 'iphone14promax',
+      mpn: 'MQAM3ZP/A',
+      newCommandTimeout: 600000,
+      platformVersion: '16.0',
+      product: 'iphone',
+      savelocalscreenshots: 'false',
+      useJSONSource: true,
+      usePrebuiltWDA: true,
+      wdaConnectionTimeout: 600000,
+      device: 'iphone',
+      browserName: 'Explore',
+      sdkVersion: '16.0',
+      CFBundleIdentifier: 'com.apple.ist.DemoDiscoveryApp',
+      pixelRatio: 3,
+      statBarHeight: 54,
+      viewportRect: {left: 0, top: 162, width: 1290, height: 2634},
+    })
+
+    assert.deepStrictEqual(driverInfo, {
+      browserName: undefined,
+      browserVersion: undefined,
+      deviceName: 'DD-QA-iPhone-14-Pro-Max',
+      displaySize: undefined,
+      isAndroid: false,
+      isChrome: false,
+      isIOS: true,
+      isMobile: true,
+      isNative: true,
+      isW3C: true,
+      orientation: undefined,
+      pixelRatio: 3,
+      platformName: 'ios',
+      platformVersion: '16.0',
+      statusBarSize: 54,
     })
   })
 })

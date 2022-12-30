@@ -22,10 +22,17 @@ export function parseCapabilities(capabilities: Capabilities): DriverInfo {
 
   if (info.isMobile) {
     info.deviceName = (capabilities.desired?.deviceName ?? capabilities.deviceName) || undefined
-    info.isNative = info.isMobile && !info.browserName
+    info.orientation = (capabilities.deviceOrientation ?? capabilities.orientation)?.toLowerCase()
     info.isIOS = isIOS(capabilities)
     info.isAndroid = isAndroid(capabilities)
-    info.orientation = (capabilities.deviceOrientation ?? capabilities.orientation)?.toLowerCase()
+    if (!info.browserName) {
+      info.isNative = true
+    } else if (info.isIOS && !/mobilesafari/i.test(capabilities.CFBundleIdentifier)) {
+      info.browserName = undefined
+      info.isNative = true
+    } else {
+      info.isNative = false
+    }
   }
 
   if (info.isNative) {
