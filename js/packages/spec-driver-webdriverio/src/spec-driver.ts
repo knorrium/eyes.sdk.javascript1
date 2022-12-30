@@ -101,9 +101,9 @@ export function isSelector(selector: any): selector is Selector {
 export function transformDriver(driver: Driver): Driver {
   const command =
     Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
-      ? require('webdriver').command
+      ? require('webdriver/lib/command').default
       : (method: string, url: string, body: any) => {
-          const webdriver = import('webdriver')
+          const webdriver = import('webdriver') as any
           return async function (this: any, ...args: any[]) {
             return (await webdriver).command(method, url, body).apply(this, args)
           }
@@ -250,7 +250,7 @@ export async function getCookies(browser: Driver, context?: boolean): Promise<Co
   let cookies
   if (browser.isDevTools) {
     const puppeteer = await browser.getPuppeteer()
-    const [page] = await puppeteer.pages()
+    const [page] = await puppeteer.pages!()
     const cdpSession = await page.target().createCDPSession()
     const response: any = await cdpSession.send('Network.getAllCookies')
     cookies = response.cookies
@@ -291,7 +291,7 @@ export async function visit(browser: Driver, url: string): Promise<void> {
 export async function takeScreenshot(browser: Driver): Promise<string | Buffer> {
   if (browser.isDevTools) {
     const puppeteer = await browser.getPuppeteer()
-    const [page] = await puppeteer.pages()
+    const [page] = await puppeteer.pages!()
     const scr = await (page as any)._client.send('Page.captureScreenshot')
     return scr.data
   }
@@ -310,7 +310,7 @@ export async function hover(browser: Driver, element: Element | Selector): Promi
       return {x: rect.x, y: rect.y, width: rect.width, height: rect.height}
     }, resolvedElement)
     const puppeteer = await browser.getPuppeteer()
-    const [page] = await puppeteer.pages()
+    const [page] = await puppeteer.pages!()
     await page.mouse.move(x + width / 2, y + height / 2)
   } else {
     const extendedElement = await browser.$(resolvedElement as any)
@@ -370,7 +370,7 @@ export async function getElementRegion(browser: Driver, element: Element): Promi
   }
 }
 export async function getElementAttribute(browser: Driver, element: Element, attr: string): Promise<string> {
-  return browser.getElementAttribute(extractElementId(element), attr)
+  return (await browser.getElementAttribute(extractElementId(element), attr)) as string
 }
 export async function getElementText(browser: Driver, element: Element): Promise<string> {
   const extendedElement = await browser.$(element as any)
@@ -390,7 +390,7 @@ export async function getCurrentWorld(driver: Driver): Promise<string> {
 }
 export async function getWorlds(driver: Driver): Promise<string[]> {
   const contexts = await driver.getContexts()
-  return contexts.map(context => (utils.types.isString(context) ? context : context.id))
+  return contexts.map(context => (utils.types.isString(context) ? context : (context as any).id))
 }
 export async function switchWorld(driver: Driver, name: string): Promise<void> {
   return driver.switchContext(name)
