@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.build",
+  "compilerOptions": {
+    "types": ["node", "mocha", "@wdio/globals/types", "./types/v8"],
+    // "module": "NodeNext",
+    // "moduleResolution": "node",
+  }
+}

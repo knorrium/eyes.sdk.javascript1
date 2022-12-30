@@ -67,12 +67,14 @@ jobs:
         id: prepare
         shell: bash
         run: |
+          ENVIRONMENTS=
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            echo "::set-output name=environments::[{\"framework-version\":7.27,\"node-version\":16}, {\"framework-version\":6,\"node-version\":16}, {\"framework-version\":5,\"node-version\":16}, {\"framework-version\":7.27,\"node-version\":14}, {\"framework-version\":7.27,\"node-version\":12}]"
+            ENVIRONMENTS="[{\"framework-version\":8,\"node-version\":18},{\"framework-version\":8,\"node-version\":16}, {\"framework-version\":7,\"node-version\":14}, {\"framework-version\":6,\"node-version\":12}, {\"framework-version\":5,\"node-version\":12}]"
           else
-            echo "::set-output name=environments::[{\"framework-version\":7.27,\"node-version\":16}]"
+            ENVIRONMENTS="[{\"framework-version\":8,\"node-version\":18}]"
           fi
+          echo "environments=${ENVIRONMENTS}" >> $GITHUB_OUTPUT
   test:
     needs: [verify]
     strategy:

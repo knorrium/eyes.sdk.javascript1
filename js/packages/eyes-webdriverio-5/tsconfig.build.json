@@ -7,14 +7,15 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
-    "stripInternal": false,
-    "removeComments": false,
+    "removeComments": true,
     "plugins": [{
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
       "rootFile": "./index.ts",
-      "allowModules": ["@applitools/driver"],
-      "allowGlobalNamespaces": ["Applitools"]
+      "allowGlobalNamespaces": ["Applitools"],
+      "stripPrivate": true,
+      "stripProtected": true,
+      "stripInternal": true
     }]
   },
   "exclude" : ["dist", "types", "test"]

@@ -21,9 +21,11 @@ const DIRECT_SELECTOR_REGEXP =
   /^(id|css selector|xpath|link text|partial link text|name|tag name|class name|-android uiautomator|-android datamatcher|-android viewmatcher|-android viewtag|-ios uiautomation|-ios predicate string|-ios class chain|accessibility id):(.+)/
 
 function extractElementId(element: Element): string {
-  if (utils.types.has(element, 'elementId')) return element.elementId as string
-  else if (utils.types.has(element, ELEMENT_ID)) return element[ELEMENT_ID] as string
-  else if (utils.types.has(element, LEGACY_ELEMENT_ID)) return element[LEGACY_ELEMENT_ID] as string
+  return (
+    (element as Applitools.WebdriverIO.Element).elementId ??
+    (element as {'element-6066-11e4-a52e-4f735466cecf': string})[ELEMENT_ID] ??
+    (element as {ELEMENT: string})[LEGACY_ELEMENT_ID]
+  )
 }
 function transformShadowRoot(shadowRoot: ShadowRoot | Element): Element {
   return isElement(shadowRoot) ? shadowRoot : {[ELEMENT_ID]: shadowRoot['shadow-6066-11e4-a52e-4f735466cecf']}
@@ -97,7 +99,15 @@ export function isSelector(selector: any): selector is Selector {
   )
 }
 export function transformDriver(driver: Driver): Driver {
-  const command = require('webdriver/build/command').default
+  const command =
+    Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
+      ? require('webdriver').command
+      : (method: string, url: string, body: any) => {
+          const webdriver = import('webdriver')
+          return async function (this: any, ...args: any[]) {
+            return (await webdriver).command(method, url, body).apply(this, args)
+          }
+        }
   const additionalCommands = {
     _getWindowSize: command('GET', '/session/:sessionId/window/current/size', {
       command: '_getWindowSize',
@@ -118,7 +128,7 @@ export function transformDriver(driver: Driver): Driver {
       ],
     }),
   }
-  Object.entries(additionalCommands).forEach(([name, command]) => driver.addCommand(name, command))
+  Object.entries(additionalCommands).forEach(([name, cmd]) => driver.addCommand(name, cmd))
   return driver
 }
 export function transformElement(element: Element): Element {
@@ -133,7 +143,7 @@ export function transformSelector(selector: CommonSelector<Selector>): Selector 
   }
   return selector
 }
-export function untransformSelector(selector: Selector): CommonSelector {
+export function untransformSelector(selector: Selector): CommonSelector | null {
   if (utils.types.isFunction(selector)) return null
   else if (utils.types.isString(selector)) {
     const match = selector.match(DIRECT_SELECTOR_REGEXP)
@@ -160,8 +170,8 @@ export async function isEqualElements(_browser: Driver, element1: Element, eleme
   const elementId2 = extractElementId(element2)
   return elementId1 === elementId2
 }
-export function extractHostName(driver: Driver): string {
-  return driver.options?.hostname
+export function extractHostName(driver: Driver): string | null {
+  return driver.options?.hostname ?? null
 }
 
 // #endregion
@@ -192,13 +202,13 @@ export async function findElement(
   browser: Driver,
   selector: Selector,
   parent?: Element,
-): Promise<Applitools.WebdriverIO.Element> {
+): Promise<Applitools.WebdriverIO.Element | null> {
   selector = utils.types.has(selector, ['using', 'value']) ? `${selector.using}:${selector.value}` : selector
   const root = parent ? await browser.$(transformShadowRoot(parent) as any) : browser
   try {
     const element = await root.$(selector)
     return !utils.types.has(element, 'error') ? element : null
-  } catch (error) {
+  } catch (error: any) {
     if (
       /element could not be located/i.test(error.message) ||
       /cannot locate an element/i.test(error.message) ||
@@ -264,7 +274,7 @@ export async function getCookies(browser: Driver, context?: boolean): Promise<Co
 export async function getCapabilities(browser: Driver): Promise<Record<string, any>> {
   try {
     return (await browser.getSession?.()) ?? browser.capabilities
-  } catch (error) {
+  } catch (error: any) {
     if (/cannot call non W3C standard command/i.test(error.message)) return browser.capabilities
     throw error
   }
@@ -288,29 +298,28 @@ export async function takeScreenshot(browser: Driver): Promise<string | Buffer> 
   return browser.takeScreenshot()
 }
 export async function click(browser: Driver, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(browser, element)
-  const extendedElement = await browser.$(element as any)
+  const resolvedElement = isSelector(element) ? await findElement(browser, element) : element
+  const extendedElement = await browser.$(resolvedElement as any)
   await extendedElement.click()
 }
 export async function hover(browser: Driver, element: Element | Selector): Promise<any> {
-  if (isSelector(element)) element = await findElement(browser, element)
-
+  const resolvedElement = isSelector(element) ? await findElement(browser, element) : element
   if (browser.isDevTools) {
     const {x, y, width, height} = await browser.execute((element: any) => {
       const rect = element.getBoundingClientRect()
       return {x: rect.x, y: rect.y, width: rect.width, height: rect.height}
-    }, element)
+    }, resolvedElement)
     const puppeteer = await browser.getPuppeteer()
     const [page] = await puppeteer.pages()
     await page.mouse.move(x + width / 2, y + height / 2)
   } else {
-    const extendedElement = await browser.$(element as any)
+    const extendedElement = await browser.$(resolvedElement as any)
     await extendedElement.moveTo()
   }
 }
 export async function scrollIntoView(browser: Driver, element: Element | Selector, align = false): Promise<void> {
-  if (isSelector(element)) element = await findElement(browser, element)
-  const extendedElement = await browser.$(element as any)
+  const resolvedElement = isSelector(element) ? await findElement(browser, element) : element
+  const extendedElement = await browser.$(resolvedElement as any)
   await extendedElement.scrollIntoView(align)
 }
 export async function waitUntilDisplayed(browser: Driver, selector: Selector, timeout: number): Promise<void> {
@@ -368,8 +377,8 @@ export async function getElementText(browser: Driver, element: Element): Promise
   return extendedElement.getText()
 }
 export async function setElementText(browser: Driver, element: Element | Selector, text: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(browser, element)
-  const extendedElement = await browser.$(element as any)
+  const resolvedElement = isSelector(element) ? await findElement(browser, element) : element
+  const extendedElement = await browser.$(resolvedElement as any)
   await extendedElement.setValue(text)
 }
 export async function performAction(browser: Driver, steps: any[]): Promise<void> {
@@ -381,7 +390,7 @@ export async function getCurrentWorld(driver: Driver): Promise<string> {
 }
 export async function getWorlds(driver: Driver): Promise<string[]> {
   const contexts = await driver.getContexts()
-  return contexts.map(context => (utils.types.isString(context) ? context : (context as any).id))
+  return contexts.map(context => (utils.types.isString(context) ? context : context.id))
 }
 export async function switchWorld(driver: Driver, name: string): Promise<void> {
   return driver.switchContext(name)

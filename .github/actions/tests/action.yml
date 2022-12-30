@@ -60,6 +60,7 @@ runs:
           npm run deps --if-present
         fi
         npm run upgrade:framework --if-present
+        npm run upgrade:node --if-present
         echo "::endgroup::"
 
         if [ ! -z "${{inputs.links}}" ]

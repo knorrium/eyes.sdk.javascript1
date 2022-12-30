@@ -29,8 +29,8 @@ interface EyesServiceOptions extends ConfigurationPlain {
 
 class EyesService {
   private _eyes: Eyes
-  private _appName: string
-  private _testResults: TestResults
+  private _appName?: string
+  private _testResults?: TestResults
 
   constructor({useVisualGrid, concurrency, eyes, ...config}: EyesServiceOptions) {
     const wdioMajorVersion = Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION)
@@ -46,7 +46,7 @@ class EyesService {
 
   private async _eyesOpen() {
     if (!this._eyes.isOpen) {
-      this._testResults = null
+      this._testResults = undefined
       await this._eyes.open(browser as Driver)
     }
   }
@@ -128,7 +128,7 @@ class EyesService {
   async afterTest() {
     // the next line is required because if we set an element in one test, then the following test
     // will say that the element is not attached to the page (because different browsers are used)
-    this._eyes.getConfiguration().setScrollRootElement(null)
+    this._eyes.getConfiguration().setScrollRootElement(null as any)
     await this._eyesClose()
   }
   async after() {
