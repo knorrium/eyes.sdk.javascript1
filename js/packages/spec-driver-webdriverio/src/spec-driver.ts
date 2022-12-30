@@ -101,7 +101,7 @@ export function isSelector(selector: any): selector is Selector {
 export function transformDriver(driver: Driver): Driver {
   const command =
     Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
-      ? require('webdriver/lib/command').default
+      ? require('webdriver/build/command').default
       : (method: string, url: string, body: any) => {
           const webdriver = import('webdriver') as any
           return async function (this: any, ...args: any[]) {

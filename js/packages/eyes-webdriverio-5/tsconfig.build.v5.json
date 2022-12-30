@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.base",
+  "extends": "./tsconfig.build",
   "compilerOptions": {
     "types": ["node", "mocha", "webdriverio", "@applitools/spec-driver-webdriverio/v5"]
   }
