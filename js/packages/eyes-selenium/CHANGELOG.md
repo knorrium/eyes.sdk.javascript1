@@ -8,6 +8,12 @@
 
 
 
+## 4.62.1 - 2022/12/31
+
+### Features
+### Bug fixes
+- Additional internal event logs
+
 ## 4.62.0 - 2022/12/21
 
 ### Features

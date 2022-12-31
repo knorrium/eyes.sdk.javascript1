@@ -17,7 +17,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Additional internal event logs
+    - 
 "@applitools/eyes-webdriverio":
   feature:
     - Upgrade to wdio@8
