@@ -1,12 +1,12 @@
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
-const {eyesOpenMapValues} = require('../../../src/browser/eyesOpenMapping');
+const {describe, it} = require('mocha')
+const {expect} = require('chai')
+const {eyesOpenMapValues} = require('../../../src/browser/eyesOpenMapping')
 
 describe('eyes open mapping', () => {
   const shouldUseBrowserHooks = true,
     dontCloseBatches = false,
     testName = 'test open mapping',
-    defaultBrowser = {};
+    defaultBrowser = {}
   it('should work with eyes open config', () => {
     const args = {
       browser: [
@@ -20,7 +20,7 @@ describe('eyes open mapping', () => {
       matchLevel: 'Layout',
       enablePatterns: true,
       batch: {id: '1234'},
-    };
+    }
 
     const expected = {
       browsersInfo: [
@@ -38,7 +38,7 @@ describe('eyes open mapping', () => {
         useDom: true,
       },
       batch: {id: '1234'},
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args,
@@ -46,12 +46,12 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('should work with config file', () => {
-    const args = {};
+    const args = {}
 
     const expected = {
       browsersInfo: [
@@ -72,7 +72,7 @@ describe('eyes open mapping', () => {
         useDom: true,
       },
       batch: {id: '1234'},
-    };
+    }
     const appliConfFile = {
       browser: [
         {width: 1200, height: 1000, name: 'chrome'},
@@ -90,16 +90,16 @@ describe('eyes open mapping', () => {
       matchLevel: 'Layout',
       enablePatterns: true,
       batch: {id: '1234'},
-    };
+    }
     const coreConfig = eyesOpenMapValues({
       args,
       appliConfFile,
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('eyes open config should have precedence over config file', () => {
     const args = {
@@ -119,7 +119,7 @@ describe('eyes open mapping', () => {
       batchId: '12345',
       batchName: 'test config file mapping 2',
       batchSequenceName: 'S2',
-    };
+    }
 
     const expected = {
       browsersInfo: [
@@ -138,7 +138,7 @@ describe('eyes open mapping', () => {
         useDom: true,
       },
       batch: {id: '12345', name: 'test config file mapping 2', sequenceName: 'S2'},
-    };
+    }
     const appliConfFile = {
       browser: [
         {width: 1100, height: 800, name: 'chrome'},
@@ -152,7 +152,7 @@ describe('eyes open mapping', () => {
       matchLevel: 'Strict',
       enablePatterns: false,
       batch: {id: '1234', name: 'test config file mapping', sequenceName: 'S1'},
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args,
@@ -160,16 +160,16 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('eyesOpen batch mapping, batch properties', () => {
     const args = {
       batchId: '1234',
       batchName: 'test eyesOpen mapping',
       batchSequenceName: 'S1',
-    };
+    }
 
     const expected = {
       browsersInfo: undefined,
@@ -185,7 +185,7 @@ describe('eyes open mapping', () => {
       dontCloseBatches,
       testName,
       batch: {id: '1234', name: 'test eyesOpen mapping', sequenceName: 'S1'},
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args,
@@ -193,9 +193,9 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('eyesOpen batch mapping, batch object with boolean', () => {
     const args = {
@@ -206,7 +206,7 @@ describe('eyes open mapping', () => {
         properties: 'Any properties',
         notifyOnCompletion: false,
       },
-    };
+    }
 
     const expected = {
       browsersInfo: undefined,
@@ -228,7 +228,7 @@ describe('eyes open mapping', () => {
         notifyOnCompletion: false,
         properties: 'Any properties',
       },
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args,
@@ -236,16 +236,16 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('config file batch mapping, batch properties', () => {
     const appliConfFile = {
       batchId: '1234',
       batchName: 'test config file mapping',
       batchSequenceName: 'S1',
-    };
+    }
 
     const expected = {
       browsersInfo: undefined,
@@ -261,7 +261,7 @@ describe('eyes open mapping', () => {
       dontCloseBatches,
       testName,
       batch: {id: '1234', name: 'test config file mapping', sequenceName: 'S1'},
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args: {},
@@ -269,9 +269,9 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('config file batch mapping, batch obejct', () => {
     const appliConfFile = {
@@ -282,7 +282,7 @@ describe('eyes open mapping', () => {
         notifyOnCompletion: true,
         properties: 'Any properties',
       },
-    };
+    }
 
     const expected = {
       browsersInfo: undefined,
@@ -304,7 +304,7 @@ describe('eyes open mapping', () => {
         notifyOnCompletion: true,
         properties: 'Any properties',
       },
-    };
+    }
 
     const coreConfig = eyesOpenMapValues({
       args: {},
@@ -312,12 +312,12 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfig).to.eql(expected);
-  });
+    })
+    expect(coreConfig).to.eql(expected)
+  })
 
   it('make sure applitConfFile stays intact for all tests', () => {
-    const args = {};
+    const args = {}
 
     const expected = {
       browsersInfo: [
@@ -338,7 +338,7 @@ describe('eyes open mapping', () => {
         useDom: true,
       },
       batch: {id: '1234'},
-    };
+    }
     const appliConfFile = {
       browser: [
         {width: 1200, height: 1000, name: 'chrome'},
@@ -356,14 +356,14 @@ describe('eyes open mapping', () => {
       matchLevel: 'Layout',
       enablePatterns: true,
       batch: {id: '1234'},
-    };
+    }
     eyesOpenMapValues({
       args,
       appliConfFile,
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
+    })
 
     const coreConfigTest2 = eyesOpenMapValues({
       args,
@@ -371,7 +371,7 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       defaultBrowser,
-    });
-    expect(coreConfigTest2).to.eql(expected);
-  });
-});
+    })
+    expect(coreConfigTest2).to.eql(expected)
+  })
+})

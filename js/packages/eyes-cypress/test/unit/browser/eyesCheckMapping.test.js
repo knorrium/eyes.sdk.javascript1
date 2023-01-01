@@ -1,6 +1,6 @@
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
-const {eyesCheckMapValues} = require('../../../src/browser/eyesCheckMapping');
+const {describe, it} = require('mocha')
+const {expect} = require('chai')
+const {eyesCheckMapValues} = require('../../../src/browser/eyesCheckMapping')
 
 describe('eyes check mapping', () => {
   it('should mapp values correctly', () => {
@@ -13,9 +13,7 @@ describe('eyes check mapping', () => {
       layout: [{selector: 'some layout region selector'}],
       strict: [{selector: 'some strict region selector'}],
       content: [{selector: 'some content region selector'}],
-      accessibility: [
-        {selector: 'some accessibility region selector', accessibilityType: 'RegularText'},
-      ],
+      accessibility: [{selector: 'some accessibility region selector', accessibilityType: 'RegularText'}],
       floating: [
         {
           selector: 'some floating region selector',
@@ -41,7 +39,7 @@ describe('eyes check mapping', () => {
       waitBeforeCapture: 2000,
       ignoreDisplacements: true,
       fully: false,
-    };
+    }
 
     const expected = {
       name: 'some tag name',
@@ -78,18 +76,18 @@ describe('eyes check mapping', () => {
       waitBeforeCapture: 2000,
       ignoreDisplacements: true,
       fully: false,
-    };
+    }
 
-    const appliConfFile = {};
+    const appliConfFile = {}
 
-    const coreConfig = eyesCheckMapValues({args, appliConfFile});
-    expect(coreConfig).to.be.deep.equal(expected);
-  });
+    const coreConfig = eyesCheckMapValues({args, appliConfFile})
+    expect(coreConfig).to.be.deep.equal(expected)
+  })
   it('should not include element in the returned config', () => {
     const args = {
       target: 'region',
       element: 'some-element',
-    };
+    }
     const expected = {
       name: undefined,
       hooks: undefined,
@@ -101,21 +99,21 @@ describe('eyes check mapping', () => {
       accessibilityRegions: undefined,
       region: {'applitools-ref-id': '1234', type: 'element'},
       target: 'region',
-    };
+    }
 
     const refer = {
       ref: () => {
         return {
           'applitools-ref-id': '1234',
-        };
+        }
       },
-    };
+    }
 
-    const coreConfig = eyesCheckMapValues({args, refer});
-    expect(coreConfig).to.be.deep.equal(expected);
-  });
+    const coreConfig = eyesCheckMapValues({args, refer})
+    expect(coreConfig).to.be.deep.equal(expected)
+  })
   it('should work with string input', () => {
-    const args = 'some tag name';
+    const args = 'some tag name'
     const expected = {
       name: 'some tag name',
       hooks: undefined,
@@ -125,8 +123,8 @@ describe('eyes check mapping', () => {
       layoutRegions: undefined,
       contentRegions: undefined,
       accessibilityRegions: undefined,
-    };
-    const coreConfig = eyesCheckMapValues({args});
-    expect(coreConfig).to.be.deep.equal(expected);
-  });
-});
+    }
+    const coreConfig = eyesCheckMapValues({args})
+    expect(coreConfig).to.be.deep.equal(expected)
+  })
+})

@@ -1,30 +1,30 @@
 /* global cy,Cypress*/
-const assert = require('assert');
-const {getTestInfo} = require('@applitools/test-utils');
+const assert = require('assert')
+const {getTestInfo} = require('@applitools/test-utils')
 
 describe('Coverage Tests - ShouldSendCoddedRegionsWithPaddingWithVg', () => {
   it('should send coded regions with padding with vg', () => {
-    cy.visit('https://applitools.github.io/demo/TestPages/PaddedBody/region-padding.html');
+    cy.visit('https://applitools.github.io/demo/TestPages/PaddedBody/region-padding.html')
     cy.eyesOpen({
       appName: 'Test Regions Padding',
       testName: 'TestRegionsPadding_VG',
       displayName: 'should send coded regions with padding with vg',
       baselineName: 'TestRegionsPadding_VG',
       viewportSize: {width: 1100, height: 700},
-    });
+    })
     cy.eyesCheckWindow({
       ignore: [{region: '#ignoreRegions', padding: 20}],
       layout: [{region: '#layoutRegions', padding: {top: 20, right: 20}}],
       content: [{region: '#contentRegions', padding: {right: 20, left: 20}}],
       strict: [{selector: '#strictRegions', padding: {bottom: 20}}],
-    });
-    cy.eyesClose();
+    })
+    cy.eyesClose()
 
     cy.eyesGetAllTestResults().then(async summary => {
       const info = await getTestInfo(
         summary.getAllResults()[0].getTestResults(),
         Cypress.config('appliConfFile').apiKey,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['ignore'],
         [
@@ -37,7 +37,7 @@ describe('Coverage Tests - ShouldSendCoddedRegionsWithPaddingWithVg', () => {
           },
         ],
         'ignore',
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['layout'],
         [
@@ -50,7 +50,7 @@ describe('Coverage Tests - ShouldSendCoddedRegionsWithPaddingWithVg', () => {
           },
         ],
         'layout',
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['content'],
         [
@@ -63,7 +63,7 @@ describe('Coverage Tests - ShouldSendCoddedRegionsWithPaddingWithVg', () => {
           },
         ],
         'content',
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['strict'],
         [
@@ -76,7 +76,7 @@ describe('Coverage Tests - ShouldSendCoddedRegionsWithPaddingWithVg', () => {
           },
         ],
         'strict',
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

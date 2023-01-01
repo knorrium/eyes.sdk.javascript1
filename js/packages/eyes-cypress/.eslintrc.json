@@ -7,7 +7,6 @@
     "types/",
     "test/generic",
     "*.d.ts",
-    "*.ts",
     "applitools.config.js",
     "test/coverage/generic/cypress.config.js",
     "test/unit/setup/fixtures/pluginCypress10.js",
@@ -15,6 +14,7 @@
     "test/play/support.js",
     "test/unit/setup/fixtures/supportFile-handle-commands.js",
     "test/e2e/setup/fixtures/cypress.config.js",
+    "test/e2e/ts/**/*.ts",
     "test/play/cypress",
     "test/components/"
   ],
@@ -37,25 +37,7 @@
     "node"
   ],
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "semi": true,
-        "parser": "babel",
-        "printWidth": 100,
-        "singleQuote": true,
-        "trailingComma": "all",
-        "bracketSpacing": false,
-        "jsxBracketSameLine": true
-      }
-    ],
-    "node/no-unsupported-features/es-syntax": [
-      "error",
-      {
-        "version": ">=8.0.0",
-        "ignores": ["restSpreadProperties"]
-      }
-    ],
+    "prettier/prettier": ["error", {"arrowParens": "avoid", "printWidth": 120}],
     "no-process-exit": "off",
     "no-const-assign": "error",
     "no-this-before-super": "error",
@@ -63,17 +45,70 @@
     "no-unreachable": "warn",
     "no-unused-vars": [
       1,
-      {
-        "varsIgnorePattern": "^_",
-        "args": "all",
-        "argsIgnorePattern": "^_"
-      }
+      {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}
     ],
     "constructor-super": "warn",
     "valid-typeof": "warn",
     "mocha-no-only/mocha-no-only": "error",
-    "node/no-unpublished-require": [
-      "off"
-    ]
-  }
+    "node/no-unpublished-require": ["off"],
+    "node/no-missing-require": ["error", {
+      "allowModules": ["@applitools/driver"]
+    }]
+  },
+  // =================================
+  // Overrides for Specific Files
+  // =================================
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "project": "./tsconfig.json"
+          }
+        }
+      },
+
+      // Parser Settings
+      // =================================
+      // allow ESLint to understand TypeScript syntax
+      // https://github.com/iamturns/eslint-config-airbnb-typescript/blob/master/lib/shared.js#L10
+
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "prettier", "node", "no-only-tests"],
+      "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
+      "rules": {
+        "node/no-unsupported-features/es-syntax":"off",
+        "node/no-missing-import": "off",
+        "prettier/prettier": ["error", {
+          "arrowParens": "avoid",
+          "printWidth": 130
+        }],
+        "node/shebang": ["error", {
+          "convertPath": {
+            "src/**/*.ts": ["^src/(.+?)\\.ts$", "dist/$1.js"]
+          }
+        }],
+        "no-console": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "no-only-tests/no-only-tests": ["error", {"fix": true}],
+        "node/no-extraneous-import": "error"
+      }
+
+    }
+  ]
 }

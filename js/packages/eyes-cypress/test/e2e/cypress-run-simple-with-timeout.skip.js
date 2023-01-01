@@ -1,46 +1,43 @@
-'use strict';
-const {describe, it, before, after} = require('mocha');
-const {exec} = require('child_process');
-const {promisify: p} = require('util');
-const path = require('path');
-const pexec = p(exec);
-const fs = require('fs');
-const {testServerInProcess} = require('@applitools/test-server');
+'use strict'
+const {describe, it, before, after} = require('mocha')
+const {exec} = require('child_process')
+const {promisify: p} = require('util')
+const path = require('path')
+const pexec = p(exec)
+const fs = require('fs')
+const {testServerInProcess} = require('@applitools/test-server')
 
-const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp');
-const targetTestAppPath = path.resolve(
-  __dirname,
-  '../fixtures/testAppCopies/testApp-simple-with-timeout',
-);
+const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
+const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-simple-with-timeout')
 
 describe('simple with middleware', () => {
-  let closeServer;
+  let closeServer
   before(async () => {
-    const staticPath = path.resolve(__dirname, '../fixtures');
+    const staticPath = path.resolve(__dirname, '../fixtures')
     const server = await testServerInProcess({
       port: 5555,
       staticPath,
       middlewares: ['slow'],
-    });
-    closeServer = server.close;
+    })
+    closeServer = server.close
 
     if (fs.existsSync(targetTestAppPath)) {
-      fs.rmdirSync(targetTestAppPath, {recursive: true});
+      fs.rmdirSync(targetTestAppPath, {recursive: true})
     }
-    await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`);
-    process.chdir(targetTestAppPath);
+    await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
+    process.chdir(targetTestAppPath)
     await pexec(`npm install`, {
       maxBuffer: 1000000,
-    });
-  });
+    })
+  })
 
   after(async () => {
     try {
-      fs.rmdirSync(targetTestAppPath, {recursive: true});
+      fs.rmdirSync(targetTestAppPath, {recursive: true})
     } finally {
-      await closeServer();
+      await closeServer()
     }
-  });
+  })
 
   it('works for simple.js', async () => {
     try {
@@ -49,10 +46,10 @@ describe('simple with middleware', () => {
         {
           maxBuffer: 10000000,
         },
-      );
+      )
     } catch (ex) {
-      console.error('Error during test!', ex.stdout);
-      throw ex;
+      console.error('Error during test!', ex.stdout)
+      throw ex
     }
-  });
-});
+  })
+})

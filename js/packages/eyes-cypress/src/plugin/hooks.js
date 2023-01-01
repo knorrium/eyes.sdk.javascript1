@@ -1,20 +1,20 @@
-'use strict';
-const handleTestResults = require('./handleTestResults');
+'use strict'
+const handleTestResults = require('./handleTestResults')
 
 function makeGlobalRunHooks({closeManager, closeBatches, closeUniversalServer}) {
   return {
     'before:run': ({config}) => {
-      if (!config.isTextTerminal) return;
+      if (!config.isTextTerminal) return
     },
 
     'after:run': async ({config}) => {
       try {
-        if (!config.isTextTerminal) return;
-        const summaries = await closeManager();
+        if (!config.isTextTerminal) return
+        const summaries = await closeManager()
 
-        let testResults;
+        let testResults
         for (const summary of summaries) {
-          testResults = summary.results.map(({testResults}) => testResults);
+          testResults = summary.results.map(({testResults}) => testResults)
         }
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({
@@ -22,20 +22,20 @@ function makeGlobalRunHooks({closeManager, closeBatches, closeUniversalServer}) 
             serverUrl: config.appliConfFile.serverUrl,
             proxy: config.appliConfFile.proxy,
             apiKey: config.appliConfFile.apiKey,
-          });
+          })
         }
 
         if (config.appliConfFile.tapDirPath) {
           await handleTestResults.handleBatchResultsFile(testResults, {
             tapDirPath: config.appliConfFile.tapDirPath,
             tapFileName: config.appliConfFile.tapFileName,
-          });
+          })
         }
       } finally {
-        await closeUniversalServer();
+        await closeUniversalServer()
       }
     },
-  };
+  }
 }
 
-module.exports = makeGlobalRunHooks;
+module.exports = makeGlobalRunHooks

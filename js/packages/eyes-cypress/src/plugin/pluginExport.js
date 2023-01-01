@@ -1,99 +1,94 @@
-'use strict';
-const isGlobalHooksSupported = require('./isGlobalHooksSupported');
-const {presult} = require('@applitools/functional-commons');
-const makeGlobalRunHooks = require('./hooks');
+'use strict'
+const isGlobalHooksSupported = require('./isGlobalHooksSupported')
+const {presult} = require('@applitools/functional-commons')
+const makeGlobalRunHooks = require('./hooks')
 
 function makePluginExport({startServer, eyesConfig}) {
   return function pluginExport(pluginModule) {
-    let eyesServer, pluginModuleExports, pluginExportsE2E, pluginExportsComponent;
+    let eyesServer, pluginModuleExports, pluginExportsE2E, pluginExportsComponent
     const pluginExports =
-      pluginModule.exports && pluginModule.exports.default
-        ? pluginModule.exports.default
-        : pluginModule.exports;
+      pluginModule.exports && pluginModule.exports.default ? pluginModule.exports.default : pluginModule.exports
 
     if (pluginExports.component) {
-      pluginExportsComponent = pluginExports.component.setupNodeEvents;
+      pluginExportsComponent = pluginExports.component.setupNodeEvents
     }
     if (pluginExports.e2e) {
-      pluginExportsE2E = pluginExports.e2e.setupNodeEvents;
+      pluginExportsE2E = pluginExports.e2e.setupNodeEvents
     }
     if (!pluginExports.e2e && !pluginExports.component) {
-      pluginModuleExports = pluginExports;
+      pluginModuleExports = pluginExports
     }
 
-    const setupNodeEvents = async function(...args) {
-      const {server, port, closeManager, closeBatches, closeUniversalServer} = await startServer();
-      eyesServer = server;
+    const setupNodeEvents = async function (...args) {
+      const {server, port, closeManager, closeBatches, closeUniversalServer} = await startServer()
+      eyesServer = server
 
-      const globalHooks = makeGlobalRunHooks({closeManager, closeBatches, closeUniversalServer});
+      const globalHooks = makeGlobalRunHooks({closeManager, closeBatches, closeUniversalServer})
 
-      const [origOn, config] = args;
+      const [origOn, config] = args
 
       if (!pluginModuleExports) {
-        pluginModuleExports =
-          config.testingType === 'e2e' ? pluginExportsE2E : pluginExportsComponent;
+        pluginModuleExports = config.testingType === 'e2e' ? pluginExportsE2E : pluginExportsComponent
       }
 
-      const isGlobalHookCalledFromUserHandlerMap = new Map();
-      eyesConfig.eyesIsGlobalHooksSupported = isGlobalHooksSupported(config);
-      let moduleExportsResult = {};
+      const isGlobalHookCalledFromUserHandlerMap = new Map()
+      eyesConfig.eyesIsGlobalHooksSupported = isGlobalHooksSupported(config)
+      let moduleExportsResult = {}
       // in case setupNodeEvents is not defined in cypress.config file
       if (typeof pluginModuleExports === 'function') {
-        moduleExportsResult = await pluginModuleExports(onThatCallsUserDefinedHandler, config);
+        moduleExportsResult = await pluginModuleExports(onThatCallsUserDefinedHandler, config)
       }
       if (eyesConfig.eyesIsGlobalHooksSupported) {
         for (const [eventName, eventHandler] of Object.entries(globalHooks)) {
           if (!isGlobalHookCalledFromUserHandlerMap.get(eventName)) {
-            origOn.call(this, eventName, eventHandler);
+            origOn.call(this, eventName, eventHandler)
           }
         }
       }
 
-      return Object.assign({}, eyesConfig, {eyesPort: port}, moduleExportsResult);
+      return Object.assign({}, eyesConfig, {eyesPort: port}, moduleExportsResult)
 
       // This piece of code exists because at the point of writing, Cypress does not support multiple event handlers:
       // https://github.com/cypress-io/cypress/issues/5240#issuecomment-948277554
       // So we wrap Cypress' `on` function in order to wrap the user-defined handler. This way we can call our own handler
       // in addition to the user's handler
       function onThatCallsUserDefinedHandler(eventName, handler) {
-        const isRunEvent = eventName === 'before:run' || eventName === 'after:run';
-        let handlerToCall = handler;
+        const isRunEvent = eventName === 'before:run' || eventName === 'after:run'
+        let handlerToCall = handler
         if (eyesConfig.eyesIsGlobalHooksSupported && isRunEvent) {
-          handlerToCall = handlerThatCallsUserDefinedHandler;
-          isGlobalHookCalledFromUserHandlerMap.set(eventName, true);
+          handlerToCall = handlerThatCallsUserDefinedHandler
+          isGlobalHookCalledFromUserHandlerMap.set(eventName, true)
         }
-        return origOn.call(this, eventName, handlerToCall);
+        return origOn.call(this, eventName, handlerToCall)
 
         async function handlerThatCallsUserDefinedHandler() {
-          const [err] = await presult(
-            Promise.resolve(globalHooks[eventName].apply(this, arguments)),
-          );
-          await handler.apply(this, arguments);
+          const [err] = await presult(Promise.resolve(globalHooks[eventName].apply(this, arguments)))
+          await handler.apply(this, arguments)
           if (err) {
-            throw err;
+            throw err
           }
         }
       }
-    };
+    }
 
     if (pluginExports.component) {
-      pluginExports.component.setupNodeEvents = setupNodeEvents;
+      pluginExports.component.setupNodeEvents = setupNodeEvents
     }
     if (pluginExports.e2e) {
-      pluginExports.e2e.setupNodeEvents = setupNodeEvents;
+      pluginExports.e2e.setupNodeEvents = setupNodeEvents
     }
     if (!pluginExports.component && !pluginExports.e2e) {
       if (pluginModule.exports.default) {
-        pluginModule.exports.default = setupNodeEvents;
+        pluginModule.exports.default = setupNodeEvents
       } else {
-        pluginModule.exports = setupNodeEvents;
+        pluginModule.exports = setupNodeEvents
       }
     }
 
     return function getCloseServer() {
-      return eyesServer.close();
-    };
-  };
+      return eyesServer.close()
+    }
+  }
 }
 
-module.exports = makePluginExport;
+module.exports = makePluginExport

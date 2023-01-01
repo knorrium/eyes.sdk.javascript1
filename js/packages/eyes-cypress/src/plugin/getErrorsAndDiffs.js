@@ -1,33 +1,33 @@
-'use strict';
+'use strict'
 function getErrorsAndDiffs(testResultsArr) {
   return testResultsArr.reduce(
     ({failed, diffs, passed}, testResults) => {
       if (testResults instanceof Error || testResults.error) {
-        failed.push(testResults);
+        failed.push(testResults)
       } else {
-        const testStatus = testResults.status;
+        const testStatus = testResults.status
         if (testStatus === 'Passed') {
-          passed.push(testResults);
+          passed.push(testResults)
         } else {
           if (testStatus === 'Unresolved') {
             if (testResults.isNew) {
               testResults.error = new Error(
                 `${testResults.name}. Please approve the new baseline at ${testResults.url}`,
-              );
-              failed.push(testResults);
+              )
+              failed.push(testResults)
             } else {
-              diffs.push(testResults);
+              diffs.push(testResults)
             }
           } else if (testStatus === 'Failed') {
-            failed.push(testResults);
+            failed.push(testResults)
           }
         }
       }
 
-      return {failed, diffs, passed};
+      return {failed, diffs, passed}
     },
     {failed: [], diffs: [], passed: []},
-  );
+  )
 }
 
-module.exports = getErrorsAndDiffs;
+module.exports = getErrorsAndDiffs

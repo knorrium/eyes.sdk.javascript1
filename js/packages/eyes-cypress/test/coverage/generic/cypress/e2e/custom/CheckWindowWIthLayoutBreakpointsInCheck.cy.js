@@ -1,7 +1,7 @@
 describe('Coverage tests', () => {
   /* global cy*/
   it('check window with layout breakpoints in config', () => {
-    cy.visit('https://applitools.github.io/demo/TestPages/JsLayout');
+    cy.visit('https://applitools.github.io/demo/TestPages/JsLayout')
     cy.eyesOpen({
       appName: 'Applitools Eyes SDK',
       testName: 'CheckWindowWithLayoutBreakpointsInConfig',
@@ -11,8 +11,8 @@ describe('Coverage tests', () => {
         {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
         {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
       ],
-    });
-    cy.eyesCheckWindow({isFully: false, fully: false, layoutBreakpoints: [500, 1000]});
-    cy.eyesClose(undefined);
-  });
-});
+    })
+    cy.eyesCheckWindow({isFully: false, fully: false, layoutBreakpoints: [500, 1000]})
+    cy.eyesClose(undefined)
+  })
+})

@@ -1,39 +1,39 @@
-'use strict';
-const {describe, it, beforeEach, afterEach} = require('mocha');
-const {expect} = require('chai');
-const makePluginExport = require('../../../src/plugin/pluginExport');
-const {promisify: p} = require('util');
-const psetTimeout = p(setTimeout);
-const makeConfig = require('../../../src/plugin/config');
+'use strict'
+const {describe, it, beforeEach, afterEach} = require('mocha')
+const {expect} = require('chai')
+const makePluginExport = require('../../../src/plugin/pluginExport')
+const {promisify: p} = require('util')
+const psetTimeout = p(setTimeout)
+const makeConfig = require('../../../src/plugin/config')
 
 describe('pluginExport', () => {
-  let prevEnv, eyesConfig, globalHooks;
+  let prevEnv, eyesConfig, globalHooks
 
   async function startServer() {
     return {
       port: 123,
-    };
+    }
   }
 
   beforeEach(() => {
-    prevEnv = process.env;
-    process.env = {};
-    eyesConfig = makeConfig().eyesConfig;
-    globalHooks = {};
-  });
+    prevEnv = process.env
+    process.env = {}
+    eyesConfig = makeConfig().eyesConfig
+    globalHooks = {}
+  })
 
   afterEach(() => {
-    process.env = prevEnv;
-  });
+    process.env = prevEnv
+  })
 
   it('sets eyesLegcyHooks', async () => {
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     let __module = {
       exports: () => ({bla: 'blah'}),
-    };
+    }
 
-    pluginExport(__module);
-    const ret = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret = await __module.exports(() => {}, {})
     expect(ret).to.eql({
       bla: 'blah',
       eyesPort: 123,
@@ -47,18 +47,18 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
+    })
 
     __module = {
       exports: (_on, config) => {
-        config.version = '6.5.0';
-        config.experimentalRunEvents = true;
-        return config;
+        config.version = '6.5.0'
+        config.experimentalRunEvents = true
+        return config
       },
-    };
+    }
 
-    pluginExport(__module);
-    const ret2 = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret2 = await __module.exports(() => {}, {})
     expect(ret2).to.eql({
       eyesPort: 123,
       eyesDisableBrowserFetching: false,
@@ -73,20 +73,20 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('handles async module.exports', async () => {
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     const __module = {
       exports: async () => {
-        await psetTimeout(0);
-        return {bla: 'bla'};
+        await psetTimeout(0)
+        return {bla: 'bla'}
       },
-    };
+    }
 
-    pluginExport(__module);
-    const ret = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret = await __module.exports(() => {}, {})
     expect(ret).to.eql({
       bla: 'bla',
       eyesPort: 123,
@@ -100,18 +100,18 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with disabled eyes', async () => {
-    eyesConfig.eyesIsDisabled = true;
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    eyesConfig.eyesIsDisabled = true
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     const __module = {
       exports: () => ({bla: 'ret'}),
-    };
+    }
 
-    pluginExport(__module);
-    const ret = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret = await __module.exports(() => {}, {})
     expect(ret).to.eql({
       bla: 'ret',
       eyesPort: 123,
@@ -125,18 +125,18 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with dont fail cypress on diff', async () => {
-    eyesConfig.eyesFailCypressOnDiff = false;
+    eyesConfig.eyesFailCypressOnDiff = false
     const __module = {
       exports: () => ({bla: 'ret'}),
-    };
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    }
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
 
-    pluginExport(__module);
-    const ret = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret = await __module.exports(() => {}, {})
     expect(ret).to.eql({
       bla: 'ret',
       eyesPort: 123,
@@ -150,18 +150,18 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with eyes disableBrowserFetching', async () => {
-    eyesConfig.eyesDisableBrowserFetching = true;
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    eyesConfig.eyesDisableBrowserFetching = true
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     const __module = {
       exports: () => ({bla: 'ret'}),
-    };
+    }
 
-    pluginExport(__module);
-    const ret = await __module.exports(() => {}, {});
+    pluginExport(__module)
+    const ret = await __module.exports(() => {}, {})
     expect(ret).to.eql({
       bla: 'ret',
       eyesPort: 123,
@@ -175,18 +175,18 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with ts cypress.json config', async () => {
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     let __module = {
       exports: {
         default: () => ({bla: 'blah'}),
       },
-    };
-    pluginExport(__module);
-    const ret = await __module.exports.default(() => {}, {});
+    }
+    pluginExport(__module)
+    const ret = await __module.exports.default(() => {}, {})
     expect(ret).to.eql({
       bla: 'blah',
       eyesPort: 123,
@@ -200,22 +200,22 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with e2e ts config file', async () => {
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     let __module = {
       exports: {
         default: {
           e2e: {
-            setupNodeEvents(on, config) {},
+            setupNodeEvents(_on, _config) {},
           },
         },
       },
-    };
-    pluginExport(__module);
-    const ret = await __module.exports.default.e2e.setupNodeEvents(() => {}, {});
+    }
+    pluginExport(__module)
+    const ret = await __module.exports.default.e2e.setupNodeEvents(() => {}, {})
     expect(ret).to.eql({
       eyesPort: 123,
       eyesDisableBrowserFetching: false,
@@ -228,22 +228,22 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
+    })
+  })
 
   it('works with component ts config file', async () => {
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks});
+    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     let __module = {
       exports: {
         default: {
           component: {
-            setupNodeEvents(on, config) {},
+            setupNodeEvents(_on, _config) {},
           },
         },
       },
-    };
-    pluginExport(__module);
-    const ret = await __module.exports.default.component.setupNodeEvents(() => {}, {});
+    }
+    pluginExport(__module)
+    const ret = await __module.exports.default.component.setupNodeEvents(() => {}, {})
     expect(ret).to.eql({
       eyesPort: 123,
       eyesDisableBrowserFetching: false,
@@ -256,6 +256,6 @@ describe('pluginExport', () => {
       eyesWaitBeforeCapture: undefined,
       tapDirPath: undefined,
       tapFileName: undefined,
-    });
-  });
-});
+    })
+  })
+})

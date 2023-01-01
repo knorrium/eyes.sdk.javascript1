@@ -1,16 +1,16 @@
 /* global cy,Cypress*/
-const assert = require('assert');
-const {getTestInfo} = require('@applitools/test-utils');
+const assert = require('assert')
+const {getTestInfo} = require('@applitools/test-utils')
 
 describe('Coverage tests', () => {
   it('should send accessibility regions by selector with vg', () => {
-    cy.visit('https://applitools.github.io/demo/TestPages/FramesTestPage/');
+    cy.visit('https://applitools.github.io/demo/TestPages/FramesTestPage/')
     cy.eyesOpen({
       appName: 'Eyes Selenium SDK - Fluent API',
       testName: 'TestAccessibilityRegions_VG',
       viewportSize: {width: 700, height: 460},
       accessibilityValidation: {level: 'AAA', guidelinesVersion: 'WCAG_2_0'},
-    });
+    })
     cy.eyesCheckWindow({
       accessibility: [
         {accessibilityType: 'LargeText', selector: '.ignore'},
@@ -23,24 +23,24 @@ describe('Coverage tests', () => {
           padding: {left: 5},
         },
       ],
-    });
-    cy.eyesClose();
+    })
+    cy.eyesClose()
 
     cy.eyesGetAllTestResults().then(async summary => {
       const info = await getTestInfo(
         summary.getAllResults()[0].getTestResults(),
         Cypress.config('appliConfFile').apiKey,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibilitySettings']['level'],
         'AAA',
         undefined,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibilitySettings']['version'],
         'WCAG_2_0',
         undefined,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibility']['0'],
         {
@@ -53,7 +53,7 @@ describe('Coverage tests', () => {
           regionId: 'accesibility-regionId',
         },
         undefined,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibility']['1'],
         {
@@ -66,7 +66,7 @@ describe('Coverage tests', () => {
           regionId: '.ignore (1)',
         },
         undefined,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibility']['2'],
         {
@@ -79,7 +79,7 @@ describe('Coverage tests', () => {
           regionId: '.ignore (2)',
         },
         undefined,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['accessibility']['3'],
         {
@@ -92,7 +92,7 @@ describe('Coverage tests', () => {
           regionId: '.ignore (3)',
         },
         undefined,
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

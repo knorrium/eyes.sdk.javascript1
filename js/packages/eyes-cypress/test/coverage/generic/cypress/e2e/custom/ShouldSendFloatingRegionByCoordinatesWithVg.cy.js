@@ -1,14 +1,14 @@
 /* global cy,Cypress*/
-const assert = require('assert');
-const {getTestInfo} = require('@applitools/test-utils');
+const assert = require('assert')
+const {getTestInfo} = require('@applitools/test-utils')
 describe('Coverage tests', () => {
   it('should send floating region by coordinates with vg', () => {
-    cy.visit('https://applitools.github.io/demo/TestPages/FramesTestPage/');
+    cy.visit('https://applitools.github.io/demo/TestPages/FramesTestPage/')
     cy.eyesOpen({
       appName: 'Eyes Selenium SDK - Fluent API',
       testName: 'TestCheckWindowWithFloatingByRegion_Fluent_VG',
       viewportSize: {width: 700, height: 460},
-    });
+    })
     cy.eyesCheckWindow({
       floating: [
         {
@@ -22,13 +22,13 @@ describe('Coverage tests', () => {
           maxRightOffset: 30,
         },
       ],
-    });
-    cy.eyesClose();
+    })
+    cy.eyesClose()
     cy.eyesGetAllTestResults().then(async summary => {
       const info = await getTestInfo(
         summary.getAllResults()[0].getTestResults(),
         Cypress.config('appliConfFile').apiKey,
-      );
+      )
       assert.deepStrictEqual(
         info['actualAppOutput']['0']['imageMatchSettings']['floating']['0'],
         {
@@ -42,7 +42,7 @@ describe('Coverage tests', () => {
           maxRightOffset: 30,
         },
         undefined,
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

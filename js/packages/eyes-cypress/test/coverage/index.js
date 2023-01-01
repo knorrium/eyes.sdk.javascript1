@@ -4,15 +4,12 @@ module.exports = {
   emitter: './test/coverage/emitter.js',
   template: './test/coverage/template.hbs',
   output: './test/coverage/generic/cypress/e2e/generic',
-  tests:
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/coverage-tests.js',
+  tests: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/coverage-tests.js',
   overrides: [
     'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/overrides.js',
     'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/js-overrides.js',
     ...(process.env.APPLITOOLS_TEST_REMOTE === 'eg'
-      ? [
-          'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/eg.overrides.js',
-        ]
+      ? ['https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/eg.overrides.js']
       : []),
     './test/coverage/overrides.js',
   ],
@@ -21,7 +18,7 @@ module.exports = {
       test.api === 'classic' ||
       (test.name.toLowerCase().includes('shadow') && test.name.toLowerCase().includes('dom'))
     )
-      return false;
-    return test.vg;
+      return false
+    return test.vg
   },
-};
+}

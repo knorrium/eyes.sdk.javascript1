@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
-const {addEyesCypressPlugin, pluginRequire} = require('../../../src/setup/addEyesCypressPlugin');
-const fs = require('fs');
-const path = require('path');
+const {describe, it} = require('mocha')
+const {expect} = require('chai')
+const {addEyesCypressPlugin, pluginRequire} = require('../../../src/setup/addEyesCypressPlugin')
+const fs = require('fs')
+const path = require('path')
 
 describe('addEyesCypressPlugin', () => {
   it('adds before other code', () => {
-    const content = 'some.code();';
-    expect(addEyesCypressPlugin(content)).to.equal(`some.code();${pluginRequire}`);
-  });
+    const content = 'some.code();'
+    expect(addEyesCypressPlugin(content)).to.equal(`some.code();${pluginRequire}`)
+  })
 
   it('add after "use strict" and comments', () => {
     const content = `'use strict';
@@ -24,7 +24,7 @@ describe('addEyesCypressPlugin', () => {
       return config;
     };
 
-    `;
+    `
 
     const expected = `'use strict';
     
@@ -37,10 +37,10 @@ describe('addEyesCypressPlugin', () => {
       return config;
     };
 
-    ${pluginRequire}`;
+    ${pluginRequire}`
 
-    expect(addEyesCypressPlugin(content)).to.equal(expected);
-  });
+    expect(addEyesCypressPlugin(content)).to.equal(expected)
+  })
 
   it('configure eyes in setupNodeEvents', () => {
     const content = `const {defineConfig} = require('cypress');
@@ -69,13 +69,13 @@ describe('addEyesCypressPlugin', () => {
           
         },
       },
-    });`;
+    });`
 
     const expected = fs.readFileSync(
       path.resolve(process.cwd(), 'test/unit/setup/fixtures/pluginCypress10.js'),
       'utf-8',
-    );
+    )
 
-    expect(addEyesCypressPlugin(content)).to.equal(expected);
-  });
-});
+    expect(addEyesCypressPlugin(content)).to.equal(expected)
+  })
+})

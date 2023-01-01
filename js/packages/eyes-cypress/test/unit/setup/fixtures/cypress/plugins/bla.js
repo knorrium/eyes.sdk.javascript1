@@ -1,3 +1,3 @@
-'use strict';
+'use strict'
 
-module.exports = (_on, _config) => {};
+module.exports = (_on, _config) => {}
