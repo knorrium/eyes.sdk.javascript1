@@ -62,7 +62,7 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
     "@applitools/test-server": "^1.1.16",
-    "@applitools/test-utils": "^1.5.5",
+    "@applitools/test-utils": "^1.5.6",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
