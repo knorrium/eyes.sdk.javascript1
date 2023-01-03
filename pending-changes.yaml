@@ -86,9 +86,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-storybook":
   feature:
-    - Additional internal event logs
+    - 
   bug-fix:
-    - fixed bug in mobile environment
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

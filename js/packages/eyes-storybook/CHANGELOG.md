@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.30.1 - 2023/1/3
+
+### Features
+- Additional internal event logs
+### Bug fixes
+- fixed bug in mobile environment
+
 ## 3.30.0 - 2022/12/19
 
 ### Features
