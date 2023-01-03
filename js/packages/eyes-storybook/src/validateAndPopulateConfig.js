@@ -58,7 +58,7 @@ async function validateAndPopulateConfig({config, packagePath, logger}) {
     }
   }
 
-  if (config.fakeIE && !config.browser.find(isIE)) {
+  if (config.fakeIE && !config.renderers.find(isIE)) {
     console.log(
       chalk.yellow(
         `\u26A0 fakeIE flag was set, but no IE browsers were found in the configuration`,

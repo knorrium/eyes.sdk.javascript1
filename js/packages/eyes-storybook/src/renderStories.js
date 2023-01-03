@@ -66,7 +66,7 @@ function makeRenderStories({
             getStoryData({
               story,
               storyUrl,
-              browser: config.browser,
+              renderers: config.renderers,
               page,
               waitBeforeStory: waitBeforeCapture,
             }),
@@ -92,7 +92,7 @@ function makeRenderStories({
               getStoryData({
                 story,
                 storyUrl,
-                browser: config.browser,
+                renderers: config.renderers,
                 page: newPageObj.page,
                 waitBeforeStory: waitBeforeCapture,
               }),
