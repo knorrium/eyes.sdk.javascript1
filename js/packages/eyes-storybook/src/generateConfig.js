@@ -55,8 +55,9 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     : utils.general.getEnvValue('SERVER_URL')
     ? utils.general.getEnvValue('SERVER_URL')
     : 'https://eyesapi.applitools.com';
+
   result.viewportSize = result.viewportSize ? result.viewportSize : {width: 1024, height: 600};
-  result.renderers = result.browser ? result.browser : [{name: 'chrome', width: 1024, height: 768}];
+
   result.saveNewTests = result.saveNewTests === undefined ? true : result.saveNewTests;
   result.keepBatchOpen = result.dontCloseBatches;
   result.fully = result.fully === undefined ? true : false;
@@ -75,7 +76,19 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
       result.testConcurrency,
     );
   }
+
+  if (!result.browser) {
+    result.renderers = [{name: 'chrome', width: 1024, height: 768}];
+  } else {
+    result.renderers = [];
+    if (!Array.isArray(result.browser)) {
+      result.browser = [result.browser];
+    }
+    result.renderers = result.browser.map(browser => {
+      return browser.deviceName ? {chromeEmulationInfo: browser} : browser
+    })
+  }
+  delete result.browser
   return result;
 }
-
 module.exports = generateConfig;
