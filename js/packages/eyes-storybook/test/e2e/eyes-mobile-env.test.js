@@ -33,7 +33,7 @@ describe('eyes-storybook mobile env', () => {
       utils.process.sh(
         `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
           __dirname,
-        'happy-config/mobile.config.js',
+          'happy-config/mobile.config.js',
         )}`,
         {spawnOptions},
       ),
@@ -52,5 +52,4 @@ describe('eyes-storybook mobile env', () => {
     await snap(normalizedStdout, 'stdout');
     await snap(stderr, 'stderr');
   });
-
- });
+});

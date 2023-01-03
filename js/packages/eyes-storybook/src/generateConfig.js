@@ -85,10 +85,10 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
       result.browser = [result.browser];
     }
     result.renderers = result.browser.map(browser => {
-      return browser.deviceName ? {chromeEmulationInfo: browser} : browser
-    })
+      return browser.deviceName ? {chromeEmulationInfo: browser} : browser;
+    });
   }
-  delete result.browser
+  delete result.browser;
   return result;
 }
 module.exports = generateConfig;

@@ -13,5 +13,5 @@ module.exports = {
     mobile: true,
     name: 'chrome',
   },
-include: /Button/,
+  include: /Button/,
 };
