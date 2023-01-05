@@ -83,7 +83,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Wrong url when running `cypress run`
 "@applitools/eyes-storybook":
   feature:
     - 

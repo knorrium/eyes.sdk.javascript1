@@ -30,12 +30,12 @@ function errorDigest({passed, failed, diffs, logger, isInteractive}) {
   logger.log('errorDigest: diff errors', diffs)
   logger.log('errorDigest: test errors', failed)
 
-  const testResultsUrl = diffs.length ? colorify(diffs[0].url, 'teal') : ''
+  const testResultsUrl = diffs.length ? colorify(` ${diffs[0].url} `, 'teal') : '' // the space around the url is for the link to be clickable in the cypress run
   const testResultsPrefix = testResultsUrl ? 'See details at:' : ''
-  const footer = testResultsUrl ? `\n${indent()}${colorify(testResultsPrefix)} ${testResultsUrl}` : ''
+  const footer = testResultsUrl ? `\n${indent()}${colorify(testResultsPrefix)}${testResultsUrl}` : ''
   return (
     colorify('Eyes-Cypress detected diffs or errors during execution of visual tests.') +
-    colorify(` ${testResultsPrefix} ${testResultsUrl}`) +
+    colorify(` ${testResultsPrefix}${testResultsUrl}`) +
     testResultsToString(passed, 'Passed') +
     testResultsToString(diffs, 'Unresolved') +
     testResultsToString(failed, 'Failed') +
