@@ -12,6 +12,12 @@
 
 
 
+## 3.28.1 - 2023/1/5
+
+### Features
+### Bug fixes
+- Wrong url when running `cypress run`
+
 ## 3.28.0 - 2022/12/28
 
 ### Features
