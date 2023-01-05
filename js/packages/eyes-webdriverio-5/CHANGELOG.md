@@ -10,6 +10,13 @@
 
 
 
+## 5.39.1 - 2023/1/5
+
+### Features
+- Upgrade to wdio@8
+### Bug fixes
+- Additional internal event logs
+
 ## 5.39.0 - 2022/12/21
 
 ### Features
