@@ -27,13 +27,6 @@ from .schema import (
     demarshal_locate_result,
     demarshal_match_result,
     demarshal_test_results,
-    marshal_check_settings,
-    marshal_configuration,
-    marshal_locate_settings,
-    marshal_ocr_extract_settings,
-    marshal_ocr_search_settings,
-    marshal_viewport_size,
-    marshal_webdriver_ref,
 )
 
 if typing.TYPE_CHECKING:
@@ -90,8 +83,8 @@ class Eyes(object):
             self._driver = driver
             self._eyes_ref = self._commands.manager_open_eyes(
                 self._runner._ref,  # noqa
-                marshal_webdriver_ref(driver),
-                config=self._marshaled_configuration(),
+                driver,
+                config=self.configure,
             )
         return driver
 
@@ -135,8 +128,9 @@ class Eyes(object):
 
         results = self._commands.eyes_check(
             self._eyes_ref,
-            settings=marshal_check_settings(check_settings),
-            config=self._marshaled_configuration(),
+            self._driver,
+            check_settings,
+            self.configure,
         )
         if results:
             # Original API only returns one result
@@ -158,9 +152,9 @@ class Eyes(object):
     def locate(self, visual_locator_settings):
         # type: (VisualLocatorSettings) -> LOCATORS_TYPE
         results = self._commands.core_locate(
-            marshal_webdriver_ref(self.driver),
-            marshal_locate_settings(visual_locator_settings),
-            self._marshaled_configuration(),
+            self.driver,
+            visual_locator_settings,
+            self.configure,
         )
         return demarshal_locate_result(results)
 
@@ -168,9 +162,9 @@ class Eyes(object):
         # type: (*OCRRegion) -> List[Text]
         return self._commands.eyes_extract_text(
             self._eyes_ref,
-            marshal_webdriver_ref(self.driver),
-            marshal_ocr_extract_settings(regions),
-            self._marshaled_configuration(),
+            self.driver,
+            regions,
+            self.configure,
         )
 
     @deprecated.attribute(
@@ -183,10 +177,7 @@ class Eyes(object):
     def locate_text(self, config):
         # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
         return self._commands.eyes_locate_text(
-            self._eyes_ref,
-            marshal_webdriver_ref(self.driver),
-            marshal_ocr_search_settings(config),
-            self._marshaled_configuration(),
+            self._eyes_ref, self.driver, config, self.configure
         )
 
     def close(self, raise_ex=True):
@@ -221,16 +212,14 @@ class Eyes(object):
     def get_viewport_size(driver):
         # type: (WebDriver) -> RectangleSize
         cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
-        result = cmd.core_get_viewport_size(marshal_webdriver_ref(driver))
+        result = cmd.core_get_viewport_size(driver)
         return RectangleSize.from_(result)
 
     @staticmethod
     def set_viewport_size(driver, viewport_size):
         # type: (WebDriver, ViewPort) -> None
         cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
-        cmd.core_set_viewport_size(
-            marshal_webdriver_ref(driver), marshal_viewport_size(viewport_size)
-        )
+        cmd.core_set_viewport_size(driver, viewport_size)
 
     @property
     def configuration(self):
@@ -508,9 +497,6 @@ class Eyes(object):
         # Saved for backward compatibility
         return None
 
-    def _marshaled_configuration(self):
-        return marshal_configuration(self.configure)
-
     def _close(self, raise_ex, wait_result):
         # type: (bool, bool) -> Optional[TestResults]
         if self.configure.is_disabled:
@@ -518,10 +504,7 @@ class Eyes(object):
         if not self.is_open:
             raise EyesError("Eyes not open")
         results = self._commands.eyes_close_eyes(
-            self._eyes_ref,
-            {"throwErr": raise_ex},
-            self._marshaled_configuration(),
-            wait_result,
+            self._eyes_ref, raise_ex, self.configure, wait_result
         )
         self._eyes_ref = None
         self._driver = None

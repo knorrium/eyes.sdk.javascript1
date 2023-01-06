@@ -1,10 +1,11 @@
 import uuid
 from copy import copy, deepcopy
 from datetime import datetime
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING
 
 import attr
 import six
+from six import string_types
 from six.moves.urllib.parse import urlparse, urlunsplit
 
 from applitools.common import deprecated
@@ -464,6 +465,6 @@ class Configuration(object):
 
     def set_user_test_id(self, user_test_id):
         # type: (Text) -> Self
-        argument_guard.is_a(user_test_id, Text)
+        argument_guard.is_a(user_test_id, string_types)
         self.user_test_id = user_test_id
         return self

@@ -10,6 +10,7 @@ from applitools.common import (
     deprecated,
 )
 from applitools.common.selenium import Configuration
+from applitools.common.target import ImageTarget
 from applitools.images.extract_text import OCRRegion, TextRegionSettings
 from applitools.images.fluent import Image, ImagesCheckSettings, Target
 from applitools.selenium import ClassicRunner
@@ -18,11 +19,6 @@ from applitools.selenium.schema import (
     demarshal_locate_text_result,
     demarshal_match_result,
     demarshal_test_results,
-    marshal_check_settings,
-    marshal_configuration,
-    marshal_image_target,
-    marshal_ocr_extract_settings,
-    marshal_ocr_search_settings,
 )
 
 if TYPE_CHECKING:
@@ -57,7 +53,7 @@ class Eyes(object):
         self._runner._set_connection_config(self.configure)  # noqa, friend
         self._eyes_ref = self._commands.manager_open_eyes(
             self._runner._ref,  # noqa
-            config=marshal_configuration(self.configure),
+            config=self.configure,
         )
 
     @overload
@@ -81,9 +77,9 @@ class Eyes(object):
 
         results = self._commands.eyes_check(
             self._eyes_ref,
-            target=marshal_image_target(check_settings),
-            settings=marshal_check_settings(check_settings),
-            config=marshal_configuration(self.configure),
+            ImageTarget(check_settings.values.image),
+            check_settings,
+            self.configure,
         )
         # Original API only returns one result
         results = demarshal_match_result(results[0])
@@ -113,9 +109,9 @@ class Eyes(object):
         assert all(r.image == image for r in regions), "All images same"
         return self._commands.eyes_extract_text(
             self._eyes_ref,
-            target={"image": image},
-            settings=marshal_ocr_extract_settings(regions),
-            config=marshal_configuration(self.configure),
+            ImageTarget(image),
+            regions,
+            self.configure,
         )
 
     @deprecated.attribute(
@@ -129,9 +125,9 @@ class Eyes(object):
         # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
         result = self._commands.eyes_locate_text(
             self._eyes_ref,
-            target={"image": config._image},  # noqa
-            settings=marshal_ocr_search_settings(config),
-            config=marshal_configuration(self.configure),
+            ImageTarget(config._image),  # noqa
+            config,
+            self.configure,
         )
         return demarshal_locate_text_result(result)
 
@@ -146,10 +142,7 @@ class Eyes(object):
         if not self.is_open:
             raise EyesError("Eyes not open")
         results = self._commands.eyes_close_eyes(
-            self._eyes_ref,
-            {"throwErr": raise_ex},
-            marshal_configuration(self.configure),
-            True,
+            self._eyes_ref, raise_ex, self.configure, True
         )
         self._eyes_ref = None
         results = demarshal_test_results(results, self.configure)

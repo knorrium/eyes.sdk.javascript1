@@ -150,11 +150,9 @@ class TestResults(object):
         from applitools.selenium.__version__ import __version__
         from applitools.selenium.command_executor import CommandExecutor
         from applitools.selenium.eyes import EyesRunner
-        from applitools.selenium.schema import marshal_delete_test_settings
 
         cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
-        marshaled = marshal_delete_test_settings(self)
-        cmd.core_delete_test(marshaled)
+        cmd.core_delete_test(self)
 
 
 @attr.s(repr=False, str=False)

@@ -588,9 +588,9 @@ def marshal_webdriver_ref(driver):
     return check_error(StaticDriver().dump(driver))
 
 
-def marshal_image_target(check_settings):
-    # type: (ics.ImagesCheckSettings) -> dict
-    return check_error(ImageTarget().dump(check_settings.values))
+def marshal_image_target(image_target):
+    # type: (ics.ImageTarget) -> dict
+    return check_error(ImageTarget().dump(image_target))
 
 
 def marshal_configuration(configuration):

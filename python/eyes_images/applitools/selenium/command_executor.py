@@ -4,11 +4,36 @@ import logging
 from enum import Enum
 from os import getcwd
 from threading import Lock
-from typing import Any, List, Optional, Text
+from typing import TYPE_CHECKING, Any, List, Optional, Text
 
+from ..common import TestResults
 from ..common.errors import USDKFailure
+from ..common.target import ImageTarget
 from .connection import USDKConnection
-from .schema import demarshal_error
+from .schema import (
+    demarshal_error,
+    marshal_check_settings,
+    marshal_configuration,
+    marshal_delete_test_settings,
+    marshal_enabled_batch_close,
+    marshal_image_target,
+    marshal_locate_settings,
+    marshal_ocr_extract_settings,
+    marshal_ocr_search_settings,
+    marshal_viewport_size,
+    marshal_webdriver_ref,
+)
+
+if TYPE_CHECKING:
+    from typing import Tuple, Union
+
+    from ..common.selenium import Configuration
+    from ..common.utils.custom_types import ViewPort
+    from ..core import TextRegionSettings, VisualLocatorSettings
+    from ..core.batch_close import _EnabledBatchClose  # noqa
+    from ..core.extract_text import OCRRegion
+    from .fluent import SeleniumCheckSettings
+    from .optional_deps import WebDriver
 
 logger = logging.getLogger(__name__)
 
@@ -62,31 +87,39 @@ class CommandExecutor(object):
             payload["agentId"] = agent_id
         return self._checked_command("Core.makeManager", payload)
 
-    def core_get_viewport_size(self, target):
-        # type: (dict) -> dict
+    def core_get_viewport_size(self, driver):
+        # type: (WebDriver) -> dict
+        target = marshal_webdriver_ref(driver)
         return self._checked_command("Core.getViewportSize", {"target": target})
 
-    def core_set_viewport_size(self, target, size):
-        # type: (dict, dict) -> None
-        self._checked_command("Core.setViewportSize", {"target": target, "size": size})
+    def core_set_viewport_size(self, driver, size):
+        # type: (WebDriver, ViewPort) -> None
+        target = marshal_webdriver_ref(driver)
+        self._checked_command(
+            "Core.setViewportSize",
+            {"target": target, "size": marshal_viewport_size(size)},
+        )
 
     def core_close_batch(self, close_batch_settings):
-        # type: (list) -> None
-        self._checked_command("Core.closeBatch", {"settings": close_batch_settings})
+        # type: (_EnabledBatchClose) -> None
+        settings = []
+        for batch_id in close_batch_settings._ids:  # noqa
+            close_batch_settings.batch_id = batch_id
+            settings.append(marshal_enabled_batch_close(close_batch_settings))
+        self._checked_command("Core.closeBatch", {"settings": settings})
 
-    def core_delete_test(self, close_test_settings):
-        # type: (dict) -> None
-        self._checked_command("Core.deleteTest", {"settings": close_test_settings})
+    def core_delete_test(self, test_results):
+        # type: (TestResults) -> None
+        settings = marshal_delete_test_settings(test_results)
+        self._checked_command("Core.deleteTest", {"settings": settings})
 
-    def manager_open_eyes(self, manager, target=None, settings=None, config=None):
-        # type: (dict, Optional[dict], Optional[dict], Optional[dict]) -> dict
+    def manager_open_eyes(self, manager, target=None, config=None):
+        # type: (dict, Optional[WebDriver], Optional[Configuration]) -> dict
         payload = {"manager": manager}
         if target is not None:
-            payload["target"] = target
-        if settings is not None:
-            payload["settings"] = settings
+            payload["target"] = marshal_webdriver_ref(target)
         if config is not None:
-            payload["config"] = config
+            payload["config"] = marshal_configuration(config)
         return self._checked_command("EyesManager.openEyes", payload)
 
     def manager_close_manager(self, manager, raise_ex, timeout):
@@ -97,49 +130,79 @@ class CommandExecutor(object):
             wait_timeout=timeout,
         )
 
-    def eyes_check(self, eyes, target=None, settings=None, config=None):
-        # type: (dict, Optional[dict], Optional[dict], Optional[dict]) -> dict
-        payload = {"eyes": eyes}
-        if target is not None:
-            payload["target"] = target
-        if settings is not None:
-            payload["settings"] = settings
-        if config is not None:
-            payload["config"] = config
+    def eyes_check(
+        self,
+        eyes,  # type: dict
+        target,  # type: Union[WebDriver, ImageTarget]
+        settings,  # type: SeleniumCheckSettings
+        config,  # type: Configuration
+    ):
+        # type: (...) -> dict
+        payload = {
+            "eyes": eyes,
+            "settings": marshal_check_settings(settings),
+            "config": marshal_configuration(config),
+        }
+        if isinstance(target, ImageTarget):
+            payload["target"] = marshal_image_target(target)
+        else:
+            payload["target"] = marshal_webdriver_ref(target)
         return self._checked_command("Eyes.check", payload)
 
-    def core_locate(self, target, settings, config=None):
-        # type: (dict, dict, Optional[dict]) -> dict
-        payload = {"target": target, "settings": settings}
-        if config:
-            payload["config"] = config
+    def core_locate(self, target, settings, config):
+        # type: (WebDriver, VisualLocatorSettings, Configuration) -> dict
+        payload = {
+            "target": marshal_webdriver_ref(target),
+            "settings": marshal_locate_settings(settings),
+            "config": marshal_configuration(config),
+        }
         return self._checked_command("Core.locate", payload)
 
-    def eyes_extract_text(self, eyes, target, settings, config=None):
-        # type: (dict, dict, dict, Optional[dict]) -> List[Text]
-        payload = {"eyes": eyes}
-        if target:
-            payload["target"] = target
-        if settings:
-            payload["settings"] = settings
-        if config:
-            payload["config"] = config
+    def eyes_extract_text(
+        self,
+        eyes,  # type: dict
+        target,  # type: Union[WebDriver, ImageTarget]
+        settings,  # type: Tuple[OCRRegion]
+        config,  # type: Configuration
+    ):
+        # type: (...) -> List[Text]
+        payload = {
+            "eyes": eyes,
+            "settings": marshal_ocr_extract_settings(settings),
+            "config": marshal_configuration(config),
+        }
+        if isinstance(target, ImageTarget):
+            payload["target"] = marshal_image_target(target)
+        else:
+            payload["target"] = marshal_webdriver_ref(target)
         return self._checked_command("Eyes.extractText", payload)
 
-    def eyes_locate_text(self, eyes, target=None, settings=None, config=None):
-        # type: (dict, Optional[dict], Optional[dict], Optional[dict]) -> dict
-        payload = {"eyes": eyes}
-        if target:
-            payload["target"] = target
-        if settings:
-            payload["settings"] = settings
-        if config:
-            payload["config"] = config
+    def eyes_locate_text(
+        self,
+        eyes,  # type: dict
+        target,  # type: Union[WebDriver, ImageTarget]
+        settings,  # type: TextRegionSettings
+        config,  # type: Configuration
+    ):
+        # type: (...) -> dict
+        payload = {
+            "eyes": eyes,
+            "settings": marshal_ocr_search_settings(settings),
+            "config": marshal_configuration(config),
+        }
+        if isinstance(target, ImageTarget):
+            payload["target"] = marshal_image_target(target)
+        else:
+            payload["target"] = marshal_webdriver_ref(target)
         return self._checked_command("Eyes.locateText", payload)
 
-    def eyes_close_eyes(self, eyes, settings, config, wait_result):
-        # type: (dict, dict, dict, bool) -> List[dict]
-        payload = {"eyes": eyes, "settings": settings, "config": config}
+    def eyes_close_eyes(self, eyes, throw_err, config, wait_result):
+        # type: (dict, bool, Configuration, bool) -> List[dict]
+        payload = {
+            "eyes": eyes,
+            "settings": {"throwErr": throw_err},
+            "config": marshal_configuration(config),
+        }
         return self._checked_command("Eyes.close", payload, wait_result)
 
     def eyes_abort_eyes(self, eyes, wait_result):

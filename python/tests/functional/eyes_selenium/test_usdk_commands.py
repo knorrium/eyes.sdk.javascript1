@@ -6,9 +6,10 @@ from mock import ANY
 from pytest import raises
 
 from applitools.common.errors import USDKFailure
+from applitools.common.selenium import Configuration
 from applitools.selenium.command_executor import CommandExecutor, ManagerType
 from applitools.selenium.connection import USDKConnection
-from applitools.selenium.schema import marshal_webdriver_ref
+from applitools.selenium.fluent import SeleniumCheckSettings
 
 
 def test_usdk_commands_make_manager():
@@ -21,6 +22,7 @@ def test_usdk_commands_make_manager():
 
 
 def test_usdk_commands_open_eyes(local_chrome_driver):
+    configuration = Configuration().set_app_name("a").set_test_name("b")
     local_chrome_driver.get("https://demo.applitools.com")
     commands = CommandExecutor(USDKConnection.create())
 
@@ -28,50 +30,36 @@ def test_usdk_commands_open_eyes(local_chrome_driver):
 
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
 
-    eyes = commands.manager_open_eyes(
-        mgr,
-        {
-            "sessionId": local_chrome_driver.session_id,
-            "serverUrl": local_chrome_driver.command_executor._url,  # noqa
-            "capabilities": local_chrome_driver.capabilities,
-        },
-        config={"open": {"appName": "a", "testName": "b"}},
-    )
+    eyes = commands.manager_open_eyes(mgr, local_chrome_driver, config=configuration)
 
     assert "applitools-ref-id" in eyes
 
 
 def test_usdk_commands_set_get_viewport_size(local_chrome_driver):
-    driver = marshal_webdriver_ref(local_chrome_driver)
     commands = CommandExecutor(USDKConnection.create())
     commands.make_core("sdk_name", "sdk_version", getcwd())
 
-    commands.core_set_viewport_size(driver, {"width": 800, "height": 600})
-    returned_size = commands.core_get_viewport_size(driver)
+    commands.core_set_viewport_size(local_chrome_driver, {"width": 800, "height": 600})
+    returned_size = commands.core_get_viewport_size(local_chrome_driver)
 
     assert returned_size == {"width": 800, "height": 600}
 
 
 def test_usdk_commands_open_close_eyes(local_chrome_driver):
-    driver = marshal_webdriver_ref(local_chrome_driver)
+    config = (
+        Configuration()
+        .set_app_name("USDK Test")
+        .set_test_name("USDK Commands open close")
+        .set_user_test_id("42")
+    )
     commands = CommandExecutor(USDKConnection.create())
     commands.make_core("sdk_name", "sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
-    eyes = commands.manager_open_eyes(
-        mgr,
-        driver,
-        config={
-            "open": {
-                "appName": "USDK Test",
-                "testName": "USDK Commands open close",
-                "userTestId": "42",
-            }
-        },
-    )
+    eyes = commands.manager_open_eyes(mgr, local_chrome_driver, config=config)
 
     assert "applitools-ref-id" in mgr
 
-    eyes_close_result = commands.eyes_close_eyes(eyes, {}, {}, True)
+    eyes_close_result = commands.eyes_close_eyes(eyes, False, Configuration(), True)
     test_result = eyes_close_result[0]
 
     assert len(eyes_close_result) == 1
@@ -93,21 +81,16 @@ def test_usdk_commands_open_close_eyes(local_chrome_driver):
 
 
 def test_usdk_commands_open_abort_eyes(local_chrome_driver):
-    driver = marshal_webdriver_ref(local_chrome_driver)
+    config = (
+        Configuration()
+        .set_app_name("USDK Test")
+        .set_test_name("USDK Commands open abort")
+        .set_user_test_id("abc")
+    )
     commands = CommandExecutor(USDKConnection.create())
     commands.make_core("sdk_name", "sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
-    eyes = commands.manager_open_eyes(
-        mgr,
-        driver,
-        config={
-            "open": {
-                "appName": "USDK Test",
-                "testName": "USDK Commands open abort",
-                "userTestId": "abc",
-            }
-        },
-    )
+    eyes = commands.manager_open_eyes(mgr, local_chrome_driver, config=config)
 
     assert "applitools-ref-id" in mgr
 
@@ -148,22 +131,23 @@ def test_usdk_commands_open_check_close_eyes(local_chrome_driver):
     local_chrome_driver.get(
         "https://applitools.github.io/demo/TestPages/SimpleTestPage"
     )
-    config = {
-        "open": {
-            "appName": "USDK Test",
-            "testName": "USDK Commands open check close",
-            "userTestId": "abc",
-        }
-    }
-    driver = marshal_webdriver_ref(local_chrome_driver)
+    config = (
+        Configuration()
+        .set_app_name("USDK Test")
+        .set_test_name("USDK Commands open check close")
+        .set_user_test_id("abc")
+    )
+
     commands = CommandExecutor(USDKConnection.create())
     commands.make_core("sdk_name", "sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
-    eyes = commands.manager_open_eyes(mgr, driver, config=config)
+    eyes = commands.manager_open_eyes(mgr, local_chrome_driver, config=config)
 
-    check_result = commands.eyes_check(eyes)
+    check_result = commands.eyes_check(
+        eyes, local_chrome_driver, SeleniumCheckSettings(), config
+    )
 
-    eyes_close_result = commands.eyes_close_eyes(eyes, {}, {}, True)
+    eyes_close_result = commands.eyes_close_eyes(eyes, False, Configuration(), True)
     test_result = eyes_close_result[0]
 
     assert "applitools-ref-id" in mgr
