@@ -1,7 +1,7 @@
 const {mochaGrep} = require('@applitools/test-utils')
 
 const tags = {
-  wd: [
+  wd: new Set([
     'image',
     'headfull',
     'webdriver',
@@ -16,12 +16,16 @@ const tags = {
     'edge',
     'safari',
     'all-cookies'
-  ],
-  cdp: ['image', 'chrome', 'all-cookies', 'cached-selectors']
+  ]),
+  cdp: new Set(['image', 'chrome', 'all-cookies', 'cached-selectors'])
 }
 
 const protocol = process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL in tags ? process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL : 'wd'
 
+// in wdio version 6 and below there was automatically populated moz argument that blows modern gecodriver
+if (Number(process.env.APPLITOOLS_WEBDRIVERIO_VERSION) <= 6) {
+  tags[protocol].delete('firefox')
+}
 
 module.exports = {
   spec: [
@@ -33,5 +37,5 @@ module.exports = {
   timeout: 0,
   reporter: 'spec-xunit-file',
   require: ['@applitools/test-utils/mocha-hooks/docker.js'],
-  grep: mochaGrep({tags: tags[protocol]}),
+  grep: mochaGrep({tags: Array.from(tags[protocol])}),
 }
