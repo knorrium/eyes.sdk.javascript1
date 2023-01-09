@@ -11,6 +11,7 @@ import {toBaseCheckSettings} from '../utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
 import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
+import addKeyToDuplicatedValuesInArray from './utils/add-key-to-duplicated-values-in-array'
 import chalk from 'chalk'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -54,12 +55,15 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
       userAgent: string,
       regionToTarget: Selector | Region,
       selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
+
+    const uniqueRenderers = addKeyToDuplicatedValuesInArray(settings.renderers ?? [])
+
     if (isDriver(target, spec)) {
       const driver = await makeDriver({spec, driver: target, logger})
       await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
-      if (driver.isWeb && (!settings.renderers || settings.renderers.length === 0)) {
+      if (driver.isWeb && uniqueRenderers.length === 0) {
         const viewportSize = await driver.getViewportSize()
-        settings.renderers = [{name: 'chrome', ...viewportSize}]
+        uniqueRenderers.push({name: 'chrome', ...viewportSize})
       }
 
       let cleanupGeneratedSelectors
@@ -87,7 +91,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
           waitBeforeCapture: settings.waitBeforeCapture,
           disableBrowserFetching: settings.disableBrowserFetching,
           layoutBreakpoints: settings.layoutBreakpoints,
-          renderers: settings.renderers,
+          renderers: uniqueRenderers,
           skipResources: client.getCachedResourceUrls(),
         },
         hooks: {
@@ -113,7 +117,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
 
       await cleanupGeneratedSelectors?.()
     } else {
-      snapshots = !utils.types.isArray(target) ? Array(settings.renderers.length).fill(target) : target
+      snapshots = !utils.types.isArray(target) ? Array(uniqueRenderers.length).fill(target) : target
       snapshotUrl = utils.types.has(snapshots[0], 'url') ? snapshots[0].url : undefined
     }
     regionToTarget ??= (elementReferenceToTarget as Selector) ?? (settings.region as Region)
@@ -122,7 +126,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
       safeSelector: selector as Selector,
     }))
 
-    const promises = settings.renderers.map(async (renderer, index) => {
+    const promises = uniqueRenderers.map(async (renderer, index) => {
       if (utils.types.has(renderer, 'name') && renderer.name === 'edge') {
         const message = chalk.yellow(
           `The 'edge' option that is being used in your browsers' configuration will soon be deprecated. Please change it to either 'edgelegacy' for the legacy version or to 'edgechromium' for the new Chromium-based version. Please note, when using the built-in BrowserType enum, then the values are BrowserType.EDGE_LEGACY and BrowserType.EDGE_CHROMIUM, respectively.`,
@@ -222,7 +226,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
       }
     })
 
-    return settings.renderers.map((renderer, index) => ({
+    return uniqueRenderers.map((renderer, index) => ({
       asExpected: true,
       userTestId: eyes.test.userTestId,
       renderer,

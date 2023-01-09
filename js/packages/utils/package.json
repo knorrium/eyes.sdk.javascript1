@@ -48,7 +48,7 @@
     "lint": "eslint '**/*.ts'",
     "build": "tsc",
     "test": "yarn test:unit",
-    "test:sanity": "test:unit",
+    "test:sanity": "yarn test:unit",
     "test:unit": "mocha ./test/unit/*.spec.ts --no-timeouts -r ts-node/register",
     "deps": "bongo deps",
     "preversion": "bongo preversion && yarn build",

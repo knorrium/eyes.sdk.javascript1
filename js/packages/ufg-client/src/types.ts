@@ -206,7 +206,14 @@ export type AndroidDeviceRenderer = {
   }
 }
 
-export type Renderer = DesktopBrowserRenderer | ChromeEmulationDeviceRenderer | IOSDeviceRenderer | AndroidDeviceRenderer
+export type Renderer = (DesktopBrowserRenderer | ChromeEmulationDeviceRenderer | IOSDeviceRenderer | AndroidDeviceRenderer) & {
+  /**
+   * The id of the renderer
+   * Used to identify the renderer if the same renderer is used multiple times
+   * @internal
+   **/
+  id?: string
+}
 
 export interface UFGClient {
   createRenderTarget(options: {snapshot: Snapshot; settings?: ProcessResourcesSettings}): Promise<RenderTarget>
