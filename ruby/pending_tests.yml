@@ -1,0 +1,62 @@
+#Accessibility:
+#  - TestAccessibilityRegions
+#  - TestAccessibilityRegions_VG
+#page with header:
+#  - TestCheckPageWithHeader_Region_Fully_Scroll
+#  - TestCheckPageWithHeader_Region_Scroll
+#  - TestCheckPageWithHeader_Window_Fully_Scroll
+#  - TestCheckPageWithHeader_Region_Fully
+#  - TestCheckPageWithHeader_Region
+Selenium Fluent API:
+#  - TestCheckWindowWithFloatingByRegion_Fluent_Scroll - FIXED
+  - TestCheckWindowWithIgnoreBySelector_Fluent_Scroll
+#  - TestCheckWindowWithIgnoreRegion_Fluent_Scroll - FIXED
+#  - TestCheckRegionByCoordinateInFrameFully_Fluent_Scroll
+  - TestCheckRegionBySelectorAfterManualScroll_Fluent
+#  - TestCheckWindowWithFloatingByRegion_Fluent - FIXED
+  - TestCheckWindowWithIgnoreBySelector_Fluent
+#  - TestCheckWindowWithIgnoreRegion_Fluent - FIXED
+#  - TestCheckFrame_Fluent_Scroll
+#  - TestCheckFrameInFrame_Fully_Fluent2
+#  - TestCheckRegionByCoordinateInFrameFully_Fluent
+#  - TestCheckOverflowingRegionByCoordinates_Fluent
+#  - TestCheckRegionInFrame2_Fluent
+#  - TestCheckWindowWithIgnoreBySelector_Centered_Fluent
+#  - TestCheckFrameInFrame_Fully_Fluent
+#  - TestCheckFrame_Fluent
+#  - TestCheckRegionBySelectorAfterManualScroll_Fluent
+#  - TestCheckRegionInFrame3_Fluent - FIXED
+#  - TestCheckRegionInFrame3_Fluent_Scroll - FIXED
+  - TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent
+  - TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent_Scroll
+  - TestIgnoreDisplacements
+  - TestIgnoreDisplacements_Scroll
+#  - TestCheckElementWithIgnoreRegionBySameElement_Fluent_Scroll
+Classic API:
+  - TestCheckInnerFrame
+#  - TestCheckWindowAfterScroll_Scroll
+  - TestCheckInnerFrame_Scroll
+  - TestIgnoreDisplacements
+  - TestIgnoreDisplacements_Scroll
+  - TestIgnoreDisplacements_Scroll
+
+UFG Classic API:
+  - TestIgnoreDisplacements_VG
+  - TestIgnoreDisplacements_VG
+#  - TestDuplicatedIFrames_VG
+#  - TestDoubleCheckWindow_VG
+#  - TestCheckWindow_VG
+UFG Fluent API:
+#  - TestCheckWindowWithFloatingBySelector_Fluent_VG
+#  - TestCheckWindowWithIgnoreBySelector_Stretched_Fluent_VG
+#  - TestCheckWindowWithIgnoreBySelector_Centered_Fluent_VG
+#  - TestCheckWindow_Fluent_VG
+#  - TestCheckFrameInFrame_Fully_Fluent2_VG
+  #- TestCheckRegionInFrame3_Fluent_VG - FIXED
+#  - TestCheckElementWithIgnoreRegionBySameElement_Fluent_VG
+#  - TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent_VG
+  #- TestCheckWindowWithIgnoreRegion_Fluent_VG - FIXED
+  #- TestCheckWindowWithIgnoreBySelector_Fluent_VG - FIXED
+  #- TestCheckWindowWithFloatingByRegion_Fluent_VG FIXED
+Spesial Cases:
+  - TestCheckRegionInAVeryBigFrame_Scroll

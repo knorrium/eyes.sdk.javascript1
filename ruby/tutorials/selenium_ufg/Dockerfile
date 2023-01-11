@@ -1,0 +1,16 @@
+FROM artemqaapplitools/chrome_ruby:latest
+
+RUN cd home/project \
+    && git clone https://github.com/applitools/tutorial-selenium-ruby-ultrafastgrid.git \
+    && cd tutorial-selenium-ruby-ultrafastgrid \
+    && sed -i "s/'APPLITOOLS_API_KEY'/ENV['APPLITOOLS_API_KEY']/g" simple_test_script.rb \
+    && bundle install
+
+COPY ./gems/. gems/
+
+RUN cd gems \
+    && gem install eyes_core \
+    && gem install eyes_selenium
+
+COPY ./selenium_ufg/start.sh /
+CMD ["/start.sh"]
