@@ -133,6 +133,8 @@ export type ChromeEmulationDevice =
   | 'Pixel 4 XL'
   | 'Pixel 5'
   | 'Sony Xperia 10 II'
+  | 'Huawei Mate 50 Pro'
+  | 'Huawei Matepad 11'
 export type ChromeEmulationDeviceRenderer = {
   chromeEmulationInfo: {
     deviceName: ChromeEmulationDevice
