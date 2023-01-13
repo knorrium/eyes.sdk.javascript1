@@ -72,6 +72,19 @@ jobs:
         with:
           workflow: publish-logger.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).logger.version}}"}'
+  socket:
+    needs: [ setup, utils ]
+    if: ${{fromJSON(needs.setup.outputs.packages).socket && !failure() && !cancelled()}}
+    name: socket
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Run remote workflow
+        uses: ./.github/actions/run
+        with:
+          workflow: publish-socket.yml
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).socket.version}}"}'
   req:
     needs: [ setup, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).req && !failure() && !cancelled()}}
