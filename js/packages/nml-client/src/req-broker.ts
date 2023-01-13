@@ -63,7 +63,7 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqB
   }
 }
 
-function handleLongRequests({req}: {req: Req}): Hooks {
+function handleLongRequests({req}: {req: Req}): Hooks<ReqBrokerOptions> {
   return {
     async afterResponse({request, response, options}) {
       if (response.status === 200) {
@@ -76,7 +76,7 @@ function handleLongRequests({req}: {req: Req}): Hooks {
   }
 }
 
-function handleUnexpectedResponse(): Hooks {
+function handleUnexpectedResponse(): Hooks<ReqBrokerOptions> {
   return {
     async afterResponse({response}) {
       if (response.status !== 200) {
