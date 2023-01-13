@@ -5,6 +5,7 @@ import {AbortController} from 'abort-controller'
 import {Builder} from 'selenium-webdriver'
 import {makeServer} from '../../src/proxy-server'
 import * as utils from '@applitools/utils'
+import {Command} from 'selenium-webdriver/lib/command'
 
 describe('proxy-server', () => {
   let proxy
@@ -263,5 +264,60 @@ describe('proxy-server', () => {
         await new Builder().withCapabilities({browserName: 'chrome'}).usingServer(proxy.url).build()
       }),
     )
+  })
+
+  it('returns session details', async () => {
+    proxy = await makeServer({resolveUrls: false})
+    const sessionId = 'session-guid'
+    nock('https://exec-wus.applitools.com')
+      .persist()
+      .post('/session')
+      .reply(200, {value: {capabilities: {}, sessionId}})
+
+    nock('https://exec-wus.applitools.com')
+      .persist()
+      .get(`/session/${sessionId}`)
+      .reply(200, {
+        value: {
+          sessionId,
+          applitools: true,
+        },
+      })
+
+    const driver = await new Builder().forBrowser('chrome').usingServer(proxy.url).build()
+    driver.getExecutor().defineCommand('getSessionDetails', 'GET', '/session/:sessionId')
+    const result = await driver.execute(new Command('getSessionDetails'))
+    assert.deepStrictEqual(result, {sessionId, applitools: true})
+  })
+
+  it('find element works with self healing', async () => {
+    proxy = await makeServer({resolveUrls: false, useSelfHealing: true})
+    const expected = {
+      successfulSelector: {using: 'css selector', value: 'actual-selector'},
+      unsuccessfulSelector: {using: 'css selector', value: 'blah'}
+    }
+    const sessionId = 'session-guid'
+    nock('https://exec-wus.applitools.com')
+      .persist()
+      .post('/session')
+      .reply(200, {value: {capabilities: {}, sessionId: 'session-guid'}})
+
+    nock('https://exec-wus.applitools.com')
+      .persist()
+      .post(`/session/${sessionId}/element`)
+      .reply(200, {
+        value: {'element-12345': 'blahblahblah'},
+        appliCustomData: {
+          selfHealing: expected
+        }
+      })
+
+    const driver = await new Builder().forBrowser('chrome').usingServer(proxy.url).build()
+    driver.getExecutor().defineCommand('getSessionMetadata', 'GET', '/session/:sessionId/applitools/metadata')
+    await driver.findElement({css: 'blah'})
+    const result = await driver.execute(new Command('getSessionMetadata'))
+    assert.deepStrictEqual(result, [expected])
+    const noResult = await driver.execute(new Command('getSessionMetadata'))
+    assert.ok(utils.types.isNotDefined(noResult))
   })
 })

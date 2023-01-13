@@ -98,16 +98,18 @@ export function isSelector(selector: any): selector is Selector {
     utils.types.isString(selector) || utils.types.isFunction(selector) || utils.types.has(selector, ['using', 'value'])
   )
 }
-export function transformDriver(driver: Driver): Driver {
-  const command =
-    Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
-      ? require('webdriver/build/command').default
-      : (method: string, url: string, body: any) => {
-          const webdriver = import('webdriver') as any
-          return async function (this: any, ...args: any[]) {
-            return (await webdriver).command(method, url, body).apply(this, args)
-          }
+function loadCommand() {
+  return Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
+    ? require('webdriver/lib/command').default
+    : (method: string, url: string, body: any) => {
+        const webdriver = import('webdriver') as any
+        return async function (this: any, ...args: any[]) {
+          return (await webdriver).command(method, url, body).apply(this, args)
         }
+      }
+}
+export function transformDriver(driver: Driver): Driver {
+  const command = loadCommand()
   const additionalCommands = {
     _getWindowSize: command('GET', '/session/:sessionId/window/current/size', {
       command: '_getWindowSize',
@@ -244,6 +246,19 @@ export async function setWindowSize(browser: Driver, size: Size): Promise<void> 
     await browser.setWindowPosition(0, 0)
     await browser._setWindowSize(size.width, size.height)
   }
+}
+// NOTE: this command is meant to be called when running with the eg-client
+// otherwise it will not be implemented on the driver and throw
+export async function getSessionMetadata(driver: Driver): Promise<[]|void> {
+  const command = loadCommand()
+  const cmd = command('GET', '/session/:sessionId/applitools/metadata', {
+    command: 'getSessionMetadata',
+    description: '',
+    ref: '',
+    parameters: [],
+  })
+  const result = await cmd.call(driver)
+  return result as unknown as [] | void
 }
 export async function getCookies(browser: Driver, context?: boolean): Promise<Cookie[]> {
   if (context) return browser.getCookies()

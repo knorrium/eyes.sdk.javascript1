@@ -96,6 +96,7 @@ type Environment = {
     type?: 'web' | 'native'
     renderer?: Record<string, any>
   }
+  egSessionId?: string
 }
 export interface OpenSettings extends ServerSettings {
   appName: string
@@ -160,6 +161,7 @@ export interface AccountInfo {
   uploadUrl: string // resultsUrl
   maxImageHeight: number
   maxImageArea: number
+  selfHealingEnabled: boolean
 }
 
 type ImageRotation = -270 | -180 | -90 | 0 | 90 | 180 | 270
@@ -247,14 +249,24 @@ export interface ExtractTextSettings<TRegion = Region> extends ImageSettings<TRe
   userCommandId?: string
 }
 
-export interface CloseSettings {
+export type SelfHealingReport = {
+  operations: {timestamp: string; old: {using: string, value: string}; new: {using: string, value: string}}[]
+}
+
+export type TestMetadata = Record<string, any>[]
+
+export interface ReportSelfHealingSettings {
+  testMetadata?: TestMetadata
+}
+
+export interface CloseSettings extends ReportSelfHealingSettings {
   updateBaselineIfNew?: boolean
   updateBaselineIfDifferent?: boolean
   /** @internal */
   userCommandId?: string
 }
 
-export interface AbortSettings {
+export interface AbortSettings extends ReportSelfHealingSettings {
   /** @internal */
   userCommandId?: string
 }

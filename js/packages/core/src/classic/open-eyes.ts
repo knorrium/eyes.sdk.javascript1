@@ -7,6 +7,8 @@ import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeLocateText} from './locate-text'
 import {makeExtractText} from './extract-text'
+import {makeClose} from './close'
+import {makeAbort} from './abort'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -39,6 +41,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
     const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings}))
     if (driver && !eyes) {
       const currentContext = driver.currentContext
+      settings.environment.egSessionId = driver.isExecutionGrid ? driver.sessionId : null
       settings.environment ??= {}
       if (!settings.environment.viewportSize || driver.isMobile) {
         const size = await driver.getViewportSize()
@@ -77,6 +80,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
     }
     const getBaseEyes = makeGetBaseEyes({settings, core, eyes, logger})
     const [baseEyes] = await getBaseEyes()
+
     return utils.general.extend(baseEyes, eyes => ({
       type: 'classic' as const,
       getBaseEyes,
@@ -84,6 +88,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       checkAndClose: makeCheckAndClose({eyes, target: driver, spec, logger}),
       locateText: makeLocateText({eyes, target: driver, spec, logger}),
       extractText: makeExtractText({eyes, target: driver, spec, logger}),
+      close: makeClose({eyes, target: driver, spec, logger}),
+      abort: makeAbort({eyes, target: driver, spec, logger})
     }))
   }
 }

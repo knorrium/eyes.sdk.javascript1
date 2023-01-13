@@ -1,20 +1,32 @@
-import type {TestResult} from './types'
+import type {AbortSettings, TestResult} from './types'
 import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type Renderer} from '@applitools/ufg-client'
 import {type AbortController} from 'abort-controller'
 import {AbortError} from '../errors/abort-error'
+import type {DriverTarget} from './types'
+import {isDriver, makeDriver, type SpecDriver} from '@applitools/driver'
 
-type Options = {
+type Options<TDriver, TContext, TElement, TSelector> = {
   storage: {renderer: Renderer; promise: Promise<{eyes: BaseEyes; renderer: Renderer}>}[]
   controller: AbortController
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   logger: Logger
 }
 
-export function makeAbort({storage, controller, logger: defaultLogger}: Options) {
+export function makeAbort<TDriver, TContext, TElement, TSelector>({
+  storage,
+  target,
+  spec,
+  controller,
+  logger: defaultLogger
+}: Options<TDriver, TContext, TElement, TSelector>) {
   return async function ({
+    settings,
     logger = defaultLogger,
   }: {
+    settings?: AbortSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
     controller.abort()
@@ -39,7 +51,10 @@ export function makeAbort({storage, controller, logger: defaultLogger}: Options)
             else throw error
           }
         }
-        const [result] = await eyes.abort({logger})
+        const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+        const testMetadata = await driver?.getSessionMetadata()
+
+        const [result] = await eyes.abort({settings: {...settings, testMetadata}, logger})
         return {...result, renderer} as TestResult
       }),
     )

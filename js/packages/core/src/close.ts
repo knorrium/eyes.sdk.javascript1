@@ -23,6 +23,7 @@ export function makeClose<TDriver, TContext, TElement, TSelector, TType extends 
     settings = {...config?.close, ...settings}
     settings.updateBaselineIfNew ??= true
     const typedEyes = await eyes.getTypedEyes({logger})
+
     const results = await typedEyes.close({settings, logger})
     if (settings.throwErr) {
       results.forEach(result => {

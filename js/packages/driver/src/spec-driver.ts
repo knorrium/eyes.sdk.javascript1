@@ -35,6 +35,7 @@ export type DriverInfo = {
     allCookies?: boolean
     canExecuteOnlyFunctionScripts?: boolean
   }
+  isExecutionGridClient?: boolean
 }
 
 export type WaitOptions = {
@@ -103,4 +104,6 @@ export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
   getWorlds?(driver: TDriver): Promise<string[]>
   switchWorld?(driver: TDriver, id: string): Promise<void>
   // #endregion
+
+  getSessionMetadata?(driver: TDriver): Promise<any>
 }

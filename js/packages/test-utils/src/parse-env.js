@@ -593,7 +593,7 @@ function parseEnv(
     env.capabilities.browserName = browser || env.capabilities.browserName || ''
     const preset = DEVICES[device] || BROWSERS[browser]
     if (preset) {
-      env.url = preset.url ? new URL(preset.url) : env.url
+      if (!env.url && preset.url) env.url = new URL(preset.url)
       env.capabilities = {
         ...env.capabilities,
         ...((legacy ? preset.capabilities.legacy : preset.capabilities.w3c) || preset.capabilities),

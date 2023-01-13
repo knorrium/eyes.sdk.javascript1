@@ -3,6 +3,7 @@ import assert from 'assert'
 import {By, locateWith} from 'selenium-webdriver'
 import * as spec from '../../src'
 import * as utils from '@applitools/utils'
+import nock from 'nock'
 
 describe('spec driver', async () => {
   let driver: spec.Driver, destroyDriver: () => void
@@ -17,6 +18,7 @@ describe('spec driver', async () => {
 
     after(async () => {
       await destroyDriver()
+      nock.cleanAll()
     })
 
     it('isDriver(driver)', async () => {
@@ -138,6 +140,20 @@ describe('spec driver', async () => {
     })
     it('visit()', async () => {
       await visit()
+    })
+    it('getSessionMetadata()', async () => {
+      // when driver doens't respond to the command route
+      await assert.rejects(async () => await spec.getSessionMetadata(driver), {message: /unknown command/})
+
+      // when the driver does
+      // TODO: replace w/ a proper e2e test
+      const session = await driver.getSession()
+      const sessionId = session.getId()
+      nock('http://localhost:4444/wd/hub').persist().get(`/session/${sessionId}/applitools/metadata`).reply(200, {
+        value: [],
+      })
+      nock('http://localhost:4444/wd/hub').persist().delete(`/session/${sessionId}`).reply(200, {value: null})
+      assert.deepStrictEqual(await spec.getSessionMetadata(driver), [])
     })
   })
 
