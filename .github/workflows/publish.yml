@@ -73,7 +73,7 @@ jobs:
           workflow: publish-logger.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).logger.version}}"}'
   socket:
-    needs: [ setup, utils ]
+    needs: [ setup, logger, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).socket && !failure() && !cancelled()}}
     name: socket
     runs-on: ubuntu-latest
@@ -218,6 +218,7 @@ jobs:
         setup,
         core-base,
         driver,
+        eg-client,
         logger,
         nml-client,
         req,
@@ -280,7 +281,7 @@ jobs:
           workflow: publish-ufg-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.version}}"}'
   eg-client:
-    needs: [ setup, logger, utils ]
+    needs: [ setup, logger, req, socket, test-server, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).eg-client && !failure() && !cancelled()}}
     name: eg-client
     runs-on: ubuntu-latest
