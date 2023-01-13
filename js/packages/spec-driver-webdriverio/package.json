@@ -121,7 +121,7 @@
     "@types/node": "16",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
-    "@wdio/globals": "^8.0.15",
+    "@wdio/globals": "^8.0.10",
     "chromedriver": "^101.0.0",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
@@ -134,8 +134,8 @@
     "prettier": "^2.6.2",
     "ts-node": "^10.8.0",
     "ttypescript": "^1.5.12",
-    "typescript": "^4.9.4",
-    "webdriverio": "^8.0.15"
+    "typescript": "4.9.4",
+    "webdriverio": "^8.0.10"
   },
   "peerDependencies": {
     "webdriverio": ">=5.0.0"
