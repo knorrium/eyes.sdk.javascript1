@@ -51,6 +51,14 @@
     "@applitools/utils" "1.3.22"
     chalk "4.1.2"
 
+"@applitools/logger@1.1.39":
+  version "1.1.39"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.39.tgz#dc2715f46ad9bc958f9081e7f59f0235863e9a4f"
+  integrity sha512-hOeT1fWJoJosUf2vPzBIxMDnk/C89Q0FwBI2pzZzHzjIeHTZSb0fZ6h1jzAOp5SCxYVAraGphNo614GguHtJqQ==
+  dependencies:
+    "@applitools/utils" "1.3.25"
+    chalk "4.1.2"
+
 "@applitools/logger@^1.0.12":
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.15.tgz#7b37de9c76f413a62983f718ceafb09c8637b5af"
@@ -80,17 +88,21 @@
     cli-table3 "0.6.0"
     yargs "15.3.1"
 
-"@applitools/socket@link:../socket":
-  version "0.0.0"
-  uid ""
-
-"@applitools/test-server@^1.1.16":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.16.tgz#cceb392a2d72dfa800a75a77eb8498d7657ebe98"
-  integrity sha512-o76pc9LG45PGDWFZDbo9uc/ojSeYMEVPvQZbw3jWX5DuiJ+Md2HE8H5+lf1krIKW8/91hqucYU0X+EZ0akzB/A==
+"@applitools/socket@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.1.tgz#7c2335c328355f1197c0166724d3a2843be08373"
+  integrity sha512-UQ26rhHbGe1USwW8vWZBWYJAbGxE7U1sPHE2edHY35gxDoZWz7BLtmI9bpnghtRVygBEIPSBPlEeAwIVyygbIQ==
   dependencies:
-    "@applitools/logger" "1.1.36"
-    "@applitools/utils" "1.3.22"
+    "@applitools/logger" "1.1.39"
+    "@applitools/utils" "1.3.25"
+
+"@applitools/test-server@^1.1.19":
+  version "1.1.19"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.19.tgz#61a099fef545f4056012b9416ec03e676274e25a"
+  integrity sha512-tPvWTIfZieZyp3/Lr8mCeN2FstTiRUf+80FsipzCA8RZJAx3y3I4u9JmpsYbSDn1HMGImE2vTSRI743x0r4m4w==
+  dependencies:
+    "@applitools/logger" "1.1.39"
+    "@applitools/utils" "1.3.25"
     body-parser "1.20.0"
     chalk "3.0.0"
     cookie-parser "1.4.5"
@@ -118,6 +130,11 @@
   version "1.3.22"
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.22.tgz#9ced9585d9701297c202afd5dd9bb848405550fe"
   integrity sha512-2hRcD8YMsiHiN82YWoWHv6Vt0kp0GRaf4+aI+UlUgAfNO5qgJFerXntT499MkulOSUmtd8VnujYk4jqKUEt00g==
+
+"@applitools/utils@1.3.25":
+  version "1.3.25"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.25.tgz#465119754df305de2c059e84b1c2fbc8118d262c"
+  integrity sha512-ihivnnPRntkO7RmWp37vgm7jPuSrevfPewmcAwI437vr9gLnYxm1JGQd3HX7jEa6gBv2iTYPo471aSstZr/MVg==
 
 "@babel/runtime@^7.0.0":
   version "7.18.6"
@@ -2043,9 +2060,9 @@ object-assign@^4, object-assign@^4.1.0:
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
 
 object-inspect@^1.9.0:
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.2.tgz#c0641f26394532f28ab8d796ab954e43c009a8ea"
-  integrity sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ==
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.12.3.tgz#ba62dffd67ee256c8c086dfae69e016cd1f198b9"
+  integrity sha512-geUvdk7c+eizMNUDkRpW1wJwgfOiOeHbxBR/hLXK1aT6zmVSO0jsQcs7fj6MGw89jC/cjGfLcNOrtMYtGqm81g==
 
 on-finished@2.4.1:
   version "2.4.1"
