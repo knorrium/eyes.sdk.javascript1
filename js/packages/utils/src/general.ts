@@ -160,7 +160,9 @@ export function wrap<TFunc extends (...args: any[]) => any>(
   func: TFunc,
   wrapper: (func: TFunc, ...args: Parameters<TFunc>) => ReturnType<TFunc>,
 ): TFunc {
-  return ((...args: Parameters<TFunc>) => wrapper(func, ...args)) as TFunc
+  return new Proxy(func, {
+    apply: (func, _this, args: Parameters<TFunc>) => wrapper(func, ...args),
+  })
 }
 
 export function extend<TTarget extends Record<PropertyKey, any>, TExtension extends Record<PropertyKey, any>>(

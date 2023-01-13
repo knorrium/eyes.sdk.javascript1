@@ -6,10 +6,9 @@ export function makeServerProcess(
   options: ServerOptions & {forkOptions?: ForkOptions},
 ): Promise<{port: number; close: () => void}> {
   return new Promise((resolve, reject) => {
-    const {forkOptions} = options
     const server = fork(path.resolve(__dirname, '../dist/cli.js'), [`--config=${JSON.stringify(options)}`], {
       stdio: [options.shutdownMode === 'stdin' ? 'inherit' : 'ignore', 'ignore', 'ignore', 'ipc'],
-      ...(forkOptions ?? {}),
+      ...(options.forkOptions ?? {}),
     })
 
     const timeout = setTimeout(() => {

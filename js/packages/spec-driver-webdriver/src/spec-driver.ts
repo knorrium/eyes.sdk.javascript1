@@ -111,10 +111,7 @@ export function transformDriver(driver: Driver | StaticDriver): Driver {
   }
 
   if (driver.proxy?.url) {
-    const agent = new ProxyAgent(<any>{
-      ...urlToHttpOptions(driver.proxy.url),
-      rejectUnauthorized: false,
-    })
+    const agent = new ProxyAgent({...urlToHttpOptions(driver.proxy.url), rejectUnauthorized: false} as any)
     agent.callback = utils.general.wrap(agent.callback.bind(agent), (fn, request, options, ...rest) => {
       return fn(request, {...options, rejectUnauthorized: false} as typeof options, ...rest)
     })

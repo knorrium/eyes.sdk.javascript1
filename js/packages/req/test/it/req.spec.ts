@@ -87,7 +87,7 @@ describe('req', () => {
   })
 
   it('retries on configured status codes with timeout', async () => {
-    let prevRequestTimestamp
+    let prevRequestTimestamp: number
     nock('https://eyesapi.applitools.com')
       .get('/api/hello')
       .times(2)
@@ -108,7 +108,7 @@ describe('req', () => {
   it('retries on configured status codes with timeout backoff', async () => {
     const expectedRetryIntervals = [1000, 1500, 2000]
     let index = -1
-    let prevRequestTimestamp
+    let prevRequestTimestamp: number
     nock('https://eyesapi.applitools.com')
       .get('/api/hello')
       .times(4)

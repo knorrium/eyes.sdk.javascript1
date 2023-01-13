@@ -1,117 +1,91 @@
+import type {EGClient, EGClientSettings} from './types'
 import {type AddressInfo} from 'net'
 import {type AbortSignal} from 'abort-controller'
-import {createServer, type ServerResponse, type Server} from 'http'
+import {createServer, type IncomingMessage, type ServerResponse} from 'http'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeQueue, type Queue} from './queue'
-import {makeTunnelManager} from './tunnel'
-import {makeProxy} from './proxy'
-import {modifyIncomingMessage, type ModifiedIncomingMessage} from './incoming-message'
+import {makeTunnelManager} from './tunnels/manager'
+import {makeTunnelManagerClient} from './tunnels/manager-client'
+import {makeReqProxy} from './req-proxy'
 import * as utils from '@applitools/utils'
 
-export type ServerOptions = {
-  egServerUrl?: string
-  egTunnelUrl?: string
-  egTimeout?: number | string
-  egInactivityTimeout?: number | string
-  proxyUrl?: string
-  eyesServerUrl?: string
-  apiKey?: string
-  port?: number
-  resolveUrls?: boolean
-  logger?: Logger
-  useSelfHealing?: boolean
-}
-
-const RETRY_BACKOFF = [].concat(
-  Array(5).fill(2000), // 5 tries with delay 2s (total 10s)
-  Array(4).fill(5000), // 4 tries with delay 5s (total 20s)
+const RETRY_BACKOFF = [
+  ...Array(5).fill(2000), // 5 tries with delay 2s (total 10s)
+  ...Array(4).fill(5000), // 4 tries with delay 5s (total 20s)
   10000, // all next tries with delay 10s
-)
+]
 
 const RETRY_ERROR_CODES = ['CONCURRENCY_LIMIT_REACHED', 'NO_AVAILABLE_DRIVER_POD']
 
 const getSessionId = (requestUrl: string): string => {
   try {
     return requestUrl.split('/')[2]
-  } catch(error) {
+  } catch (error) {
     return ''
   }
 }
 
-export function makeServer({
-  egServerUrl = 'https://exec-wus.applitools.com',
-  egTunnelUrl = process.env.APPLITOOLS_EG_TUNNEL_URL,
-  egTimeout = process.env.APPLITOOLS_EG_TIMEOUT,
-  egInactivityTimeout = process.env.APPLITOOLS_EG_INACTIVITY_TIMEOUT,
-  proxyUrl = process.env.APPLITOOLS_PROXY,
-  eyesServerUrl = process.env.APPLITOOLS_SERVER_URL,
-  apiKey = process.env.APPLITOOLS_API_KEY,
-  useSelfHealing,
-  port = 0,
-  resolveUrls = true,
-  logger,
-}: ServerOptions = {}): Promise<{url: string; port: number; server: Server}> {
-  logger = logger ? logger.extend({label: 'eg-client'}) : makeLogger({label: 'eg-client', colors: true})
-  const proxyRequest = makeProxy({
-    url: egServerUrl,
-    resolveUrls,
-    proxy: proxyUrl,
-    shouldRetry: async proxyResponse => {
-      return proxyResponse.statusCode >= 500 && !utils.types.has(await proxyResponse.json(), 'value')
+export async function makeServer({settings, logger}: {settings: EGClientSettings; logger?: Logger}): Promise<EGClient> {
+  const serverLogger = logger ? logger.extend({label: 'eg-client'}) : makeLogger({label: 'eg-client', colors: true})
+
+  const req = makeReqProxy({
+    targetUrl: settings.serverUrl,
+    proxy: settings.proxy,
+    retry: {
+      validate: async ({response, error}) => {
+        if (error) return !utils.types.instanceOf(error, 'AbortError')
+        if (response) return response.status >= 500 && !utils.types.has(await response.clone().json(), 'value')
+        return false
+      },
+      limit: 10,
+      timeout: 5000,
     },
   })
-  const {createTunnel, deleteTunnel} = makeTunnelManager({egTunnelUrl, logger})
 
-  const sessions = new Map()
+  const tunnel = settings.tunnelUrl
+    ? await makeTunnelManager({settings, logger: serverLogger})
+    : await makeTunnelManagerClient()
+
+  const sessions = new Map<string, Record<string, any>>()
   const queues = new Map<string, Queue>()
-  const metadata = new Map<string, any[]>()
 
-  const server = createServer(async (message, response) => {
-    const request = modifyIncomingMessage(message)
-    const requestLogger = logger.extend({
+  const server = createServer(async (request, response) => {
+    const url = request.url as string
+    const requestLogger = serverLogger.extend({
       tags: {request: `[${request.method}] ${request.url}`, requestId: utils.general.guid()},
     })
 
     try {
-      if (request.method === 'POST' && /^\/session\/?$/.test(request.url)) {
+      if (request.method === 'POST' && /^\/session\/?$/.test(url)) {
         return await createSession({request, response, logger: requestLogger})
-      } else if (request.method === 'DELETE' && /^\/session\/[^\/]+\/?$/.test(request.url)) {
+      } else if (request.method === 'DELETE' && /^\/session\/[^\/]+\/?$/.test(url)) {
         return await deleteSession({request, response, logger: requestLogger})
-      } else if (useSelfHealing && request.method === 'POST' && /^\/session\/[^\/]+\/element\/?$/.test(request.url)) {
+      } else if (request.method === 'POST' && /^\/session\/[^\/]+\/element\/?$/.test(url)) {
         requestLogger.log('Inspecting element lookup request to collect self-healing metadata')
-        const proxyResponse = await proxyRequest({
-          request,
-          response,
-          options: {handle: false},
-          logger,
-        })
+        const proxyResponse = await req(url, {io: {request, response}, logger: requestLogger})
         const {appliCustomData} = await proxyResponse.json()
         if (appliCustomData?.selfHealing?.successfulSelector) {
           requestLogger.log('Self-healed locators detected', appliCustomData.selfHealing)
-          const sessionId = getSessionId(request.url)
-          const sessionMetadata = metadata.get(sessionId) ? metadata.get(sessionId) : (metadata.set(sessionId, []) && metadata.get(sessionId))
-          sessionMetadata.push(appliCustomData.selfHealing)
+          const session = sessions.get(getSessionId(url))!
+          session.metadata ??= []
+          session.metadata.push(appliCustomData.selfHealing)
         } else {
           requestLogger.log('No self-healing metadata found')
         }
-        proxyResponse.pipe(response)
-        return
-      } else if (useSelfHealing && request.method === 'GET' && /^\/session\/[^\/]+\/applitools\/metadata?$/.test(request.url)) {
-        requestLogger.log('Session metadata requested, returning', metadata)
-        const sessionId = getSessionId(request.url)
-        const sessionMetadata = metadata.get(sessionId)
-        metadata.delete(sessionId)
-        response.writeHead(200).end(JSON.stringify({value: sessionMetadata}))
-      } else if (request.method === 'GET' && /^\/session\/[^\/]+\/?$/.test(request.url)) {
-        const sessionDetails = {sessionId: getSessionId(request.url), applitools: true}
+      } else if (request.method === 'GET' && /^\/session\/[^\/]+\/applitools\/metadata?$/.test(url)) {
+        const session = sessions.get(getSessionId(url))!
+        requestLogger.log('Session metadata requested, returning', session.metadata)
+        response.writeHead(200).end(JSON.stringify({value: session.metadata}))
+        session.metadata = undefined
+      } else if (request.method === 'GET' && /^\/session\/[^\/]+\/?$/.test(url)) {
+        const sessionDetails = {sessionId: getSessionId(url), applitools: true}
         requestLogger.log('Session details requested, returning', sessionDetails)
         response.writeHead(200).end(JSON.stringify({value: sessionDetails}))
       } else {
         requestLogger.log('Passthrough request')
-        return await proxyRequest({request, response, logger: requestLogger})
+        return await req(url, {io: {request, response}, logger: requestLogger})
       }
-    } catch (err) {
-      // console.error(err)
+    } catch (err: any) {
       requestLogger.error(`Error during processing request:`, err)
       if (!response.writableEnded) {
         response
@@ -123,16 +97,20 @@ export function makeServer({
     }
   })
 
-  server.listen(port)
+  server.listen(settings.port ?? 0)
 
-  return new Promise<{url: string; port: number; server: Server}>((resolve, reject) => {
+  return new Promise<{url: string; port: number; close(): void}>((resolve, reject) => {
     server.on('listening', () => {
       const address = server.address() as AddressInfo
-      logger.log(`Proxy server has started on port ${address.port}`)
-      resolve({url: `http://localhost:${address.port}`, port: address.port, server})
+      serverLogger.log(`Proxy server has started on port ${address.port}`)
+      resolve({
+        url: `http://localhost:${address.port}`,
+        port: address.port,
+        close: () => server.close(),
+      })
     })
     server.on('error', async (err: Error) => {
-      logger.fatal('Error starting proxy server', err)
+      serverLogger.fatal('Error starting proxy server', err)
       reject(err)
     })
   })
@@ -142,29 +120,46 @@ export function makeServer({
     response,
     logger,
   }: {
-    request: ModifiedIncomingMessage
+    request: IncomingMessage
     response: ServerResponse
     logger: Logger
   }): Promise<void> {
-    const requestBody = await request.json()
+    const requestBody = await utils.streams.toJSON(request)
 
     logger.log(`Request was intercepted with body:`, requestBody)
 
     const session = {} as any
-    session.eyesServerUrl = extractCapability(requestBody, 'applitools:eyesServerUrl') ?? eyesServerUrl
-    session.apiKey = extractCapability(requestBody, 'applitools:apiKey') ?? apiKey
-    session.tunnelId = extractCapability(requestBody, 'applitools:tunnel') ? await createTunnel(session) : undefined
-    session.key = `${session.eyesServerUrl ?? 'default'}:${session.apiKey}`
+    session.eyesServerUrl =
+      extractCapability(requestBody, 'applitools:eyesServerUrl') ??
+      extractCapability(requestBody, 'applitools:options')?.eyesServerUrl ??
+      settings.capabilities?.eyesServerUrl
+    session.apiKey =
+      extractCapability(requestBody, 'applitools:apiKey') ??
+      extractCapability(requestBody, 'applitools:options')?.apiKey ??
+      settings.capabilities?.apiKey
+    session.tunnelId =
+      extractCapability(requestBody, 'applitools:tunnel') ??
+      extractCapability(requestBody, 'applitools:options')?.tunnel
+        ? (await tunnel.create(session)).tunnelId
+        : undefined
+    session.key = `${session.eyesServerUrl}:${session.apiKey}`
 
     const applitoolsCapabilities = {
       'applitools:eyesServerUrl': session.eyesServerUrl,
       'applitools:apiKey': session.apiKey,
       'applitools:x-tunnel-id-0': session.tunnelId,
-      'applitools:timeout': extractCapability(requestBody, 'applitools:timeout') ?? egTimeout,
+      'applitools:timeout':
+        extractCapability(requestBody, 'applitools:timeout') ??
+        extractCapability(requestBody, 'applitools:options')?.timeout ??
+        settings.capabilities?.timeout,
       'applitools:inactivityTimeout':
-        extractCapability(requestBody, 'applitools:inactivityTimeout') ?? egInactivityTimeout,
+        extractCapability(requestBody, 'applitools:inactivityTimeout') ??
+        extractCapability(requestBody, 'applitools:options')?.inactivityTimeout ??
+        settings.capabilities?.inactivityTimeout,
       'applitools:useSelfHealing':
-        extractCapability(requestBody, 'applitools:useSelfHealing') ?? useSelfHealing,
+        extractCapability(requestBody, 'applitools:useSelfHealing') ??
+        extractCapability(requestBody, 'applitools:options')?.useSelfHealing ??
+        settings.capabilities?.useSelfHealing,
     }
 
     if (requestBody.capabilities) {
@@ -176,7 +171,7 @@ export function makeServer({
 
     logger.log('Request body has modified:', requestBody)
 
-    let queue = queues.get(session.key)
+    let queue = queues.get(session.key) as Queue
     if (!queue) {
       queue = makeQueue({logger: logger.extend({tags: {queue: session.key}})})
       queues.set(session.key, queue)
@@ -190,10 +185,10 @@ export function makeServer({
       // do not start the task if it is already aborted
       if (signal.aborted) return
 
-      const proxyResponse = await proxyRequest({
-        request,
-        response,
-        options: {body: JSON.stringify(requestBody), handle: false, signal},
+      const proxyResponse = await req(request.url as string, {
+        body: requestBody,
+        io: {request, response, handle: false},
+        signal,
         logger,
       })
 
@@ -214,7 +209,7 @@ export function makeServer({
       } else {
         queue.uncork()
         if (responseBody.value?.sessionId) sessions.set(responseBody.value.sessionId, session)
-        proxyResponse.pipe(response)
+        response.end(JSON.stringify(responseBody))
         return
       }
     }
@@ -225,18 +220,19 @@ export function makeServer({
     response,
     logger,
   }: {
-    request: ModifiedIncomingMessage
+    request: IncomingMessage
     response: ServerResponse
     logger: Logger
   }): Promise<void> {
-    const sessionId = getSessionId(request.url)
+    const url = request.url as string
+    const sessionId = getSessionId(url)
     logger.log(`Request was intercepted with sessionId:`, sessionId)
 
-    await proxyRequest({request, response, logger})
+    await req(url, {io: {request, response}, logger})
 
-    const session = sessions.get(sessionId)
+    const session = sessions.get(sessionId)!
     if (session.tunnelId) {
-      await deleteTunnel(session)
+      await tunnel.destroy(session as any)
       logger.log(`Tunnel with id ${session.tunnelId} was deleted for session with id ${sessionId}`)
     }
     sessions.delete(sessionId)

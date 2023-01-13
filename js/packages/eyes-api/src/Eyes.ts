@@ -56,6 +56,13 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   private _events: Map<string, Set<(...args: any[]) => any>> = new Map()
   private _handlers: SessionEventHandlers = new SessionEventHandlers()
 
+  static async getExecutionCloudUrl(config?: Configuration<unknown, unknown>): Promise<string> {
+    const client = await this._spec.makeEGClient({
+      settings: {serverUrl: config?.serverUrl, apiKey: config?.apiKey, proxy: config?.proxy},
+    })
+    return client.url
+  }
+
   static async setViewportSize(driver: unknown, size: RectangleSize) {
     await this._spec.setViewportSize({target: driver, size})
   }
@@ -166,6 +173,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     } else {
       this._events.forEach(handlers => handlers.delete(eventOrHandler))
     }
+  }
+
+  async getExecutionCloudUrl(): Promise<string> {
+    return (this.constructor as typeof Eyes).getExecutionCloudUrl(this._config)
   }
 
   async open(driver: TDriver, config?: Configuration<TElement, TSelector>): Promise<TDriver>

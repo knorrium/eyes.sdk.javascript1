@@ -1,12 +1,12 @@
 {
-  "name": "@applitools/req",
-  "version": "1.1.25",
-  "description": "Applitools fetch-based request library",
+  "name": "@applitools/socket",
+  "version": "0.1.0",
+  "description": "Applitools implementation for bidi-communication protocol",
   "keywords": [
     "applitools",
-    "fetch",
-    "request",
-    "proxy"
+    "socket",
+    "bidi",
+    "communication"
   ],
   "homepage": "https://applitools.com",
   "bugs": {
@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/req"
+    "directory": "js/packages/socket"
   },
   "license": "SEE LICENSE IN LICENSE",
   "author": {
@@ -23,7 +23,7 @@
     "email": "team@applitools.com"
   },
   "aliases": [
-    "req"
+    "socket"
   ],
   "exports": {
     ".": {
@@ -34,9 +34,6 @@
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
-  "browser": {
-    "proxy-agent": false
-  },
   "types": "./types/index.d.ts",
   "files": [
     "dist",
@@ -58,11 +55,8 @@
     }
   },
   "dependencies": {
-    "@applitools/utils": "1.3.24",
-    "@types/node-fetch": "2.6.2",
-    "abort-controller": "3.0.0",
-    "node-fetch": "2.6.7",
-    "proxy-agent": "5.0.0"
+    "@applitools/logger": "1.1.36",
+    "@applitools/utils": "1.3.22"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
@@ -78,7 +72,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^4.3.8",
     "mocha": "10.0.0",
-    "nock": "^13.2.9",
     "prettier": "^2.8.2",
     "ts-node": "^10.8.0",
     "typescript": "^4.9.4"
