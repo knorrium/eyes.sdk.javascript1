@@ -250,7 +250,7 @@ export interface ExtractTextSettings<TRegion = Region> extends ImageSettings<TRe
 }
 
 export type SelfHealingReport = {
-  operations: {timestamp: string; old: {using: string, value: string}; new: {using: string, value: string}}[]
+  operations: {timestamp: string; old: {using: string; value: string}; new: {using: string; value: string}}[]
 }
 
 export type TestMetadata = Record<string, any>[]

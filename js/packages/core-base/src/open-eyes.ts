@@ -61,7 +61,7 @@ export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogg
       abort: utils.general.wrap(makeAbort({requests: eyesRequests, logger}), async (abort, options) => {
         aborted.reject(new Error('Command "check" was aborted due to possible error in previous step'))
         return abort(options)
-      })
+      }),
     })
   }
 }

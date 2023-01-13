@@ -5,15 +5,15 @@ describe('transform', () => {
   it('driver-session-metadata to self-healing-report', async () => {
     const input = [
       {
-        successfulSelector: { using: 'xpath', value: '//blah' },
+        successfulSelector: {using: 'xpath', value: '//blah'},
         message: 'found with saved selector',
-        originalSelector: { using: 'css selector', value: '#blah' }
+        originalSelector: {using: 'css selector', value: '#blah'},
       },
       {
-        successfulSelector: { using: 'xpath', value: '//*[@href="/app.html" ]' },
+        successfulSelector: {using: 'xpath', value: '//*[@href="/app.html" ]'},
         message: 'found with saved selector',
-        originalSelector: { using: 'css selector', value: '#log-in' }
-      }
+        originalSelector: {using: 'css selector', value: '#log-in'},
+      },
     ]
     toSelfHealingReport(input).operations.forEach((result, index) => {
       assert.deepStrictEqual(result.old.value, input[index].originalSelector.value)

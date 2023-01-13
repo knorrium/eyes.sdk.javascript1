@@ -115,6 +115,7 @@ export function makeCoreRequests({
             notifyOnCompletion: settings.batch.notifyOnCompletion,
             properties: settings.batch.properties,
           },
+          egSessionId: settings.environment?.egSessionId ?? null,
           environment:
             settings.environment &&
             (settings.environment.rawEnvironment ?? {
@@ -136,7 +137,6 @@ export function makeCoreRequests({
           ignoreBaseline: settings.ignoreBaseline,
           saveDiffs: settings.saveDiffs,
           timeout: settings.abortIdleTestTimeout,
-          egSessionId: settings.environment.egSessionId ?? null,
         },
       },
       expected: [200, 201],
@@ -529,7 +529,13 @@ export function makeEyesRequests({
     return [result]
   }
 
-  async function abort({settings, logger = defaultLogger}: {settings?: AbortSettings, logger?: Logger} = {}): Promise<TestResult[]> {
+  async function abort({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: AbortSettings
+    logger?: Logger
+  } = {}): Promise<TestResult[]> {
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
     if (aborted || closed) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
@@ -553,7 +559,13 @@ export function makeEyesRequests({
     return [result]
   }
 
-  async function reportSelfHealing({settings, logger = defaultLogger}: {settings: ReportSelfHealingSettings, logger?: Logger}): Promise<void> { 
+  async function reportSelfHealing({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings: ReportSelfHealingSettings
+    logger?: Logger
+  }): Promise<void> {
     try {
       if (utils.types.isNull(settings?.testMetadata) || utils.types.isEmpty(settings?.testMetadata)) return
       logger.log('Request "reportSelfHealing" called')

@@ -107,6 +107,7 @@ describe('requests', () => {
         },
         baselineEnvName: 'Baseline environment name',
         environmentName: 'My environment name',
+        egSessionId: null,
         environment: {
           deviceInfo: 'Desktop',
           displaySize: {width: 100, height: 201},
@@ -158,6 +159,7 @@ describe('requests', () => {
         agentId: 'test-core',
         appIdOrName: 'app-name',
         scenarioIdOrName: 'test-name',
+        egSessionId: null,
         environment: {
           bla: 'lala',
           yada: 'yada yada',
@@ -183,10 +185,10 @@ describe('requests', () => {
           deviceName: 'Desktop',
           viewportSize: {width: 100.25, height: 200.75},
           userAgent: 'UserAgent string',
+          rendererId: 'renderer-id',
           rendererInfo: {
             type: 'web',
             renderer: {name: 'chrome', width: 100, height: 101},
-            rendererId: 'renderer-id',
           },
         },
       },
@@ -195,7 +197,6 @@ describe('requests', () => {
     assert.deepStrictEqual(test.rendererInfo, {
       type: 'web',
       renderer: {name: 'chrome', width: 100, height: 101},
-      rendererId: 'renderer-id',
     })
   })
 
