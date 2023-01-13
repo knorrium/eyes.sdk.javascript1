@@ -341,7 +341,7 @@ describe('spec driver', async () => {
       await visit()
     })
     it('getSessionMetadata()', async () => {
-      // when driver doens't respond to the command route
+      // when driver doesn't respond to the command route
       await assert.rejects(async () => await spec.getSessionMetadata(browser), {message: /unknown command/})
 
       // when the driver does
@@ -441,9 +441,6 @@ describe('spec driver', async () => {
     it('switchWorld(name)', async () => {
       await switchWorld({input: {name: 'WEBVIEW_com.applitools.eyes.android'}})
     })
-  })
-
-  describe('browser with saucelabs', async () => {
     it('extractHostName()', async () => {
       ;[browser, destroyBrowser] = await spec.build({browser: 'chrome-mac', protocol: 'wd'})
       await browser.url(url)

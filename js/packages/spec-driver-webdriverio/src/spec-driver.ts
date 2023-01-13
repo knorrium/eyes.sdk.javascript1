@@ -80,6 +80,16 @@ function scriptRunner(script: string, arg: any, ...elements: Element[]) {
     }
   }
 }
+function loadCommand() {
+  return Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
+    ? require('webdriver/build/command').default
+    : (method: string, url: string, body: any) => {
+        const webdriver = import('webdriver') as any
+        return async function (this: any, ...args: any[]) {
+          return (await webdriver).command(method, url, body).apply(this, args)
+        }
+      }
+}
 
 // #endregion
 
@@ -97,16 +107,6 @@ export function isSelector(selector: any): selector is Selector {
   return (
     utils.types.isString(selector) || utils.types.isFunction(selector) || utils.types.has(selector, ['using', 'value'])
   )
-}
-function loadCommand() {
-  return Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 8
-    ? require('webdriver/lib/command').default
-    : (method: string, url: string, body: any) => {
-        const webdriver = import('webdriver') as any
-        return async function (this: any, ...args: any[]) {
-          return (await webdriver).command(method, url, body).apply(this, args)
-        }
-      }
 }
 export function transformDriver(driver: Driver): Driver {
   const command = loadCommand()
