@@ -12,7 +12,7 @@ describe('screenshoter ios web', () => {
   })
 
   it('take viewport screenshot on page with no scale', async () => {
-    await driver.visit('http://applitoolsdemo.eastus.cloudapp.azure.com/test-noscale.html')
+    await driver.visit('https://applitools.github.io/demo/TestPages/DynamicResolution/desktop.html')
     await sleep(5000)
 
     await driver.init()
