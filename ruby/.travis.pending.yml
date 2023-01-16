@@ -1,0 +1,161 @@
+language: ruby
+rvm:
+- 1.9.3
+- 2.0.0
+- 2.1.6
+- 2.3.1
+- 2.4.1
+- 2.5.3
+- 2.6.0
+gemfile:
+- GemfileTravis
+env:
+- END_TO_END_TESTS=false
+- END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=chrome TEST_PLATFORM=linux
+- END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=firefox TEST_PLATFORM=linux
+- END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=chrome TEST_PLATFORM=linux
+- END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=firefox TEST_PLATFORM=linux
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=chrome TEST_PLATFORM=windows
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=firefox TEST_PLATFORM=windows
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=chrome TEST_PLATFORM=windows
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=firefox TEST_PLATFORM=windows
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=chrome TEST_PLATFORM=macos
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=classic TEST_IN_BROWSER=firefox TEST_PLATFORM=macos
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=chrome TEST_PLATFORM=macos
+#  - END_TO_END_TESTS=selenium SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_API=fluent TEST_IN_BROWSER=firefox TEST_PLATFORM=macos
+
+#matrix:
+#  include:
+#    - rvm: 2.4.1
+#      gemfile: GemfileTravisCapybara
+#      env: END_TO_END_TESTS=capybara SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+
+sudo: false
+branches:
+  only:
+  - master
+  - /^v.*$/
+before_install:
+- gem install builder
+- BUILD_ONLY=true rake clean build
+- cd pkg; mkdir gems; mv ./*.gem ./gems; gem generate_index; cd ..
+before_script:
+- export APPLITOOLS_BATCH_ID=$(java UUIDFromString $TRAVIS_COMMIT$TRAVIS_RUBY_VERSION)
+- echo $APPLITOOLS_BATCH_ID
+script:
+- bundle exec rake
+stages:
+  - test
+  - capybara tests
+  - applitools-data-attributes
+  - name: gems release
+    if: tag IS present
+
+jobs:
+  include:
+  - stage: applitools-data-attributes
+    rvm: 2.4.1
+    gemfile: GemfileTravis
+    env: END_TO_END_TESTS=overflow SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+  - rvm: 2.5.3
+    gemfile: GemfileTravis
+    env: END_TO_END_TESTS=overflow SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+  - rvm: 2.6.0
+    gemfile: GemfileTravis
+    env: END_TO_END_TESTS=overflow SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+  - stage: capybara tests
+    rvm: 2.4.1
+    gemfile: GemfileTravisCapybara
+    env: END_TO_END_TESTS=capybara SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+  - rvm: 2.5.3
+    gemfile: GemfileTravisCapybara
+    env: END_TO_END_TESTS=capybara SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+  - rvm: 2.6.0
+    gemfile: GemfileTravisCapybara
+    env: END_TO_END_TESTS=capybara SELENIUM_SERVER_URL=http://ondemand.saucelabs.com/wd/hub TEST_PLATFORM=linux
+
+  - stage: gems release
+    name: eyes_core
+    rvm: 2.4.1
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_core
+  - rvm: 2.4.1
+    name: eyes_images
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_images
+  - name: eyes_selenium
+    rvm: 2.4.1
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_selenium
+  - name: eyes_calabash
+    rvm: 2.4.1
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_calabash
+  - name: eyes_capybara
+    rvm: 2.4.1
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_capybara
+  - name: eyes_appium
+    rvm: 2.4.1
+    env: ''
+    before_install: skip
+    before_script: skip
+    gemfile: Gemfile
+    script: echo "Deploying to rubygems.org ..."
+    deploy:
+      provider: rubygems
+      api_key:
+        secure: g78H9jZbz8mGxbkR8Yk5zsG2/dKJfKltss58qM/YEdJOfbrVdkXZkXT7ouGQK3svbJjp+vTC0EDsSbzUjDREUGUgupSj1u2NofoQnVlYJHNT4F7IKYYaIjDpAW/ol8XP+CBpzNSqUMMonVWjd3Lo/jU8vnlFsBcs2wbe7MPXSkLJ6m+zQcPKTWqzcQm4nT8z2KKsieQtrWvcBD2ATuxH90FkPU4KPuobtKKccrHWmnmwdgT6TqhteEBQYFNbhzhWSwIrpI2Wt/TcMIR+XldjIENSm/nP0sChiLmD5Ia4piH02cipSYu3wEFhHxo11YDEeF35f8q+RajH9/hFLqmbIdMW6ZDfVMHVbMzi1F1T5VVviuU+/HxXMh+VLv2B4wIdzKOpN2xZ6/iwWS7Pqb0tLtU/ht/IkWJB907MZLN1Hbsbc//MXUC56Aonh3k1YVfacs/Qy0385NIjSkNqA38omrGITLAO1T9AcSZbTb8aTnaOJdlWDrB8iUV1M83q+zKMHHplmdX98BYmCGPIJIYGNCvE0ICvku+LJtQDO0lD271njMgvgHwbJ6lWCocKVkHiIYbbAYZuY7qWj/GHNlI8cpqwjlxXJ4//Vb2kxHgfqwBV1+0PPcBIhdu6JyB/eD9RleeUtubsCQi/k2Nvg2YubH1Rb5t61rBob+s9CXBwMgw=
+      on:
+        tags: true
+      gem: eyes_appium
