@@ -2,7 +2,7 @@ import {makeCore} from '../../../src/classic/core'
 import * as spec from '@applitools/spec-driver-selenium'
 import assert from 'assert'
 import {getTestInfo} from '@applitools/test-utils'
-import {makeServer} from '@applitools/execution-grid-client'
+import {makeEGClient} from '@applitools/execution-grid-client'
 
 describe('egSessionId classic', () => {
   let core
@@ -36,9 +36,13 @@ describe('egSessionId classic', () => {
   })
 
   it('sends egSessionId when eg-client is used', async () => {
-    const proxy = await makeServer({
-      eyesServerUrl: serverUrl,
-      useSelfHealing: true,
+    const proxy = await makeEGClient({
+      settings: {
+        capabilities: {
+          eyesServerUrl: serverUrl,
+          useSelfHealing: true,
+        },
+      },
     })
     const [driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
     try {
@@ -60,7 +64,7 @@ describe('egSessionId classic', () => {
       assert.deepStrictEqual(testInfo.egSessionId, sessionId)
     } finally {
       await destroyDriver?.()
-      await proxy.server.close()
+      await proxy.close()
     }
   })
 })

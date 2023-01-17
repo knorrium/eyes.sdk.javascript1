@@ -15,7 +15,7 @@ export function makeClose<TDriver, TContext, TElement, TSelector>({
   eyes,
   target,
   spec,
-  logger: defaultLogger
+  logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function ({
     settings,
@@ -28,8 +28,6 @@ export function makeClose<TDriver, TContext, TElement, TSelector>({
     const testMetadata = await driver?.getSessionMetadata()
 
     const baseEyes = await eyes.getBaseEyes()
-    return (
-      await Promise.all(baseEyes.map(baseEyes => baseEyes.close({settings: {...settings, testMetadata}, logger})))
-    ).flat()
+    return (await Promise.all(baseEyes.map(baseEyes => baseEyes.close({settings: {...settings, testMetadata}, logger})))).flat()
   }
 }

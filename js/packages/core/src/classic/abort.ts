@@ -15,7 +15,7 @@ export function makeAbort<TDriver, TContext, TElement, TSelector>({
   eyes,
   target,
   spec,
-  logger: defaultLogger
+  logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function ({
     settings,

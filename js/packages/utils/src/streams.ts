@@ -10,6 +10,7 @@ export async function toBuffer(stream: Readable): Promise<Buffer> {
     stream.on('end', onEnd)
     stream.on('error', onEnd)
     stream.on('aborted', onAbort)
+    stream.on('pause', onPause)
     stream.on('close', onCleanup)
 
     function onData(chunk: Buffer) {
@@ -23,11 +24,15 @@ export async function toBuffer(stream: Readable): Promise<Buffer> {
     function onAbort() {
       if (!ended) reject(new Error('Cannot collect message data due to it being closed before ended'))
     }
+    function onPause() {
+      stream.resume()
+    }
     function onCleanup() {
       stream.off('data', onData)
       stream.off('end', onEnd)
       stream.off('error', onEnd)
       stream.off('aborted', onAbort)
+      stream.off('pause', onPause)
       stream.off('close', onCleanup)
     }
   })

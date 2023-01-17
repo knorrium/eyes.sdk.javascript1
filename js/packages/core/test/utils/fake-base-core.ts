@@ -61,6 +61,22 @@ export function makeFakeCore({hooks, account = {}}: any = {}): BaseCore & EventE
               emitter.emit('afterCheck', options)
             }
           },
+          async checkAndClose(options) {
+            emitter.emit('beforeCheckAndClose', options)
+            try {
+              await utils.general.sleep(10)
+              await hooks?.checkAndClose?.(options)
+              const {target, settings} = options
+              if (settings.name?.startsWith('fail')) {
+                throw new Error('Received fail step name')
+              }
+              const result = {asExpected: !settings.name?.startsWith('diff'), target, settings, environment}
+              steps.push(result)
+              return [result]
+            } finally {
+              emitter.emit('afterCheckAndClose', options)
+            }
+          },
           async close(options) {
             emitter.emit('beforeClose', options)
             try {

@@ -2,7 +2,7 @@ import {makeCore} from '../../../src/classic/core'
 import * as spec from '@applitools/spec-driver-selenium'
 import assert from 'assert'
 import {getTestInfo} from '@applitools/test-utils'
-import {makeServer} from '@applitools/execution-grid-client'
+import {makeEGClient} from '@applitools/execution-grid-client'
 
 async function triggerSelfHealing(driver) {
   await driver.get('https://demo.applitools.com')
@@ -16,9 +16,10 @@ describe('self-healing classic', () => {
   const serverUrl = 'https://eyesapi.applitools.com'
 
   before(async () => {
-    proxy = await makeServer({
-      eyesServerUrl: serverUrl,
-      useSelfHealing: true,
+    proxy = await makeEGClient({
+      settings: {
+        capabilities: {eyesServerUrl: serverUrl, useSelfHealing: true},
+      },
     })
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
     core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
@@ -26,7 +27,7 @@ describe('self-healing classic', () => {
 
   after(async () => {
     await destroyDriver?.()
-    await proxy.server.close()
+    await proxy.close()
   })
 
   it('sends report on close', async () => {

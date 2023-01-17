@@ -8,27 +8,18 @@ describe('concurrency', () => {
   it('waits for base eyes to open before start rendering', async () => {
     const counters = {baseOpenEyes: 0, baseCheck: 0, bookRenderer: 0, render: 0}
 
-    const fakeCore = {
-      getAccountInfo() {
-        return {}
+    const fakeCore = makeFakeCore({
+      hooks: {
+        async openEyes() {
+          await utils.general.sleep(50)
+          counters.baseOpenEyes++
+        },
+        async check() {
+          await utils.general.sleep(50)
+          counters.baseCheck++
+        },
       },
-      async openEyes() {
-        await utils.general.sleep(50)
-        counters.baseOpenEyes++
-        return {
-          test: {rendererId: 'renderer-id'},
-          async check() {
-            await utils.general.sleep(50)
-            counters.baseCheck++
-            return [{}]
-          },
-          async close() {
-            await utils.general.sleep(0)
-            return [{}]
-          },
-        }
-      },
-    }
+    })
 
     const fakeClient = {
       async createRenderTarget() {
@@ -64,16 +55,16 @@ describe('concurrency', () => {
       settings: {renderers: [{name: 'chrome', width: 100, height: 100}]},
     })
     //t1 - renderer booked
-    await utils.general.sleep(55)
+    await utils.general.sleep(60)
     assert.deepStrictEqual(counters, {baseOpenEyes: 0, baseCheck: 0, bookRenderer: 1, render: 0})
     //t2 - eyes opened
-    await utils.general.sleep(55)
+    await utils.general.sleep(60)
     assert.deepStrictEqual(counters, {baseOpenEyes: 1, baseCheck: 0, bookRenderer: 1, render: 0})
     //t3 - snapshot rendered
-    await utils.general.sleep(55)
+    await utils.general.sleep(60)
     assert.deepStrictEqual(counters, {baseOpenEyes: 1, baseCheck: 0, bookRenderer: 1, render: 1})
     //t4 - target checked
-    await utils.general.sleep(55)
+    await utils.general.sleep(60)
     assert.deepStrictEqual(counters, {baseOpenEyes: 1, baseCheck: 1, bookRenderer: 1, render: 1})
 
     await eyes.close()
@@ -82,23 +73,10 @@ describe('concurrency', () => {
   it('prevents base eyes from open if concurrency slot is not available', async () => {
     const counters = {openEyes: {1: 0, 2: 0, 3: 0}}
 
-    const fakeCore = {
-      getAccountInfo() {
-        return {}
-      },
-      async openEyes({settings}) {
-        counters.openEyes[settings.testName] += 1
-        return {
-          test: {rendererId: 'renderer-id'},
-          async check() {
-            return [{}]
-          },
-          async close() {
-            return [{}]
-          },
-        }
-      },
-    }
+    const fakeCore = makeFakeCore()
+    fakeCore.on('beforeOpenEyes', ({settings}) => {
+      counters.openEyes[settings.testName] += 1
+    })
 
     const fakeClient = {
       async createRenderTarget() {
@@ -139,22 +117,13 @@ describe('concurrency', () => {
   })
 
   it('releases concurrency slot if eyes throw during close', async () => {
-    const fakeCore = {
-      getAccountInfo() {
-        return {}
+    const fakeCore = makeFakeCore({
+      hooks: {
+        close() {
+          throw new Error('close')
+        },
       },
-      async openEyes() {
-        return {
-          test: {rendererId: 'renderer-id'},
-          async check() {
-            return [{}]
-          },
-          async close() {
-            throw new Error('close')
-          },
-        }
-      },
-    }
+    })
 
     const fakeClient = {
       async createRenderTarget() {
@@ -193,25 +162,7 @@ describe('concurrency', () => {
   })
 
   it('releases concurrency slot if ufg client throw during render', async () => {
-    const fakeCore = {
-      getAccountInfo() {
-        return {}
-      },
-      async openEyes() {
-        return {
-          test: {rendererId: 'renderer-id'},
-          async check() {
-            return [{}]
-          },
-          async close() {
-            return [{}]
-          },
-          async abort() {
-            return [{}]
-          },
-        }
-      },
-    }
+    const fakeCore = makeFakeCore()
 
     const fakeClient = {
       async createRenderTarget() {

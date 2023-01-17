@@ -20,7 +20,7 @@ export function makeAbort<TDriver, TContext, TElement, TSelector>({
   target,
   spec,
   controller,
-  logger: defaultLogger
+  logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function ({
     settings,

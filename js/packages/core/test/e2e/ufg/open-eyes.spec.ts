@@ -3,7 +3,7 @@ import {By} from 'selenium-webdriver'
 import * as spec from '@applitools/spec-driver-selenium'
 import assert from 'assert'
 
-describe('openEyes UFG', () => {
+describe('openEyes ufg', () => {
   let driver, destroyDriver
 
   before(async () => {

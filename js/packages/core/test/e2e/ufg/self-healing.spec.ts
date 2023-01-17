@@ -2,7 +2,7 @@ import {makeCore} from '../../../src/ufg/core'
 import * as spec from '@applitools/spec-driver-selenium'
 import assert from 'assert'
 import {getTestInfo} from '@applitools/test-utils'
-import {makeServer} from '@applitools/execution-grid-client'
+import {makeEGClient} from '@applitools/execution-grid-client'
 
 async function triggerSelfHealing(driver) {
   await driver.get('https://demo.applitools.com')
@@ -16,9 +16,10 @@ describe('self-healing ufg', () => {
   const serverUrl = 'https://eyesapi.applitools.com'
 
   before(async () => {
-    proxy = await makeServer({
-      eyesServerUrl: serverUrl,
-      useSelfHealing: true,
+    proxy = await makeEGClient({
+      settings: {
+        capabilities: {eyesServerUrl: serverUrl, useSelfHealing: true},
+      },
     })
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
     core = makeCore({spec, concurrency: 10})
@@ -26,7 +27,7 @@ describe('self-healing ufg', () => {
 
   after(async () => {
     await destroyDriver?.()
-    await proxy.server.close()
+    await proxy.close()
   })
 
   it('sends report on close', async () => {
@@ -41,6 +42,7 @@ describe('self-healing ufg', () => {
         environment: {viewportSize: {width: 700, height: 460}},
       },
     })
+
     await eyes.check({})
 
     const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
@@ -68,7 +70,6 @@ describe('self-healing ufg', () => {
     await eyes.check({})
 
     const [result] = await eyes.abort()
-    console.log('HERE', result)
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
       assert.deepStrictEqual(result.old.value, '#log-in')

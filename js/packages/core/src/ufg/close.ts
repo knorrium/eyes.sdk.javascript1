@@ -16,7 +16,7 @@ export function makeClose<TDriver, TContext, TElement, TSelector>({
   storage,
   target,
   spec,
-  logger: defaultLogger
+  logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
   return async function ({
     settings,
