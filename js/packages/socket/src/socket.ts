@@ -106,7 +106,10 @@ export function makeSocket<
   }
 
   function emit(type: string | {name: string; key?: string}, payload?: Record<string, any>): () => void {
-    const command = () => transport.send(socket!, serialize(type, payload))
+    const command = () => {
+      logger?.log('[EMIT EVENT]', type, JSON.stringify(payload, null, 4))
+      transport.send(socket!, serialize(type, payload))
+    }
     if (socket) command()
     else queue.add(command)
     return () => queue.delete(command)
@@ -184,6 +187,7 @@ export function makeSocket<
     let temporary = utils.promises.makeControlledPromise<TResult>()
     let result = temporary
     on(name, async payload => {
+      logger?.log('[CREATE]', name, JSON.stringify(payload, null, 4))
       result = temporary
       try {
         result.resolve(await fn(payload))
