@@ -6,6 +6,7 @@ type MaybeArray<T> = T | T[]
 type LegacyRegion = {left: number; top: number; width: number; height: number}
 type Selector = {selector: string; type?: 'css' | 'xpath', nodeType?: 'element' | 'shadow-root'} | 'string'
 type Element = HTMLElement | JQuery<HTMLElement>
+type ElementWithOptions = {element: Element, regionId?: string, padding?: any}
 
 interface CypressCheckSettings extends api.CheckSettingsAutomationPlain<Element, Selector>{
   tag?: CypressCheckSettings['name']
@@ -14,12 +15,12 @@ interface CypressCheckSettings extends api.CheckSettingsAutomationPlain<Element,
   selector?: Selector
   element?: Element
 
-  ignore?: MaybeArray<NonNullable<CypressCheckSettings['ignoreRegions']>[number] | LegacyRegion>
-  layout?: MaybeArray<NonNullable<CypressCheckSettings['layoutRegions']>[number] | LegacyRegion>
-  content?: MaybeArray<NonNullable<CypressCheckSettings['contentRegions']>[number] | LegacyRegion>
-  strict?: MaybeArray<NonNullable<CypressCheckSettings['strictRegions']>[number] | LegacyRegion>
-  floating?: MaybeArray<NonNullable<CypressCheckSettings['floatingRegions']>[number] | (({element: Element} | Selector | LegacyRegion) & {maxUpOffset?: number; maxDownOffset?: number; maxLeftOffset?: number; maxRightOffset?: number})>
-  accessibility?: MaybeArray<NonNullable<CypressCheckSettings['accessibilityRegions']>[number] | (({element: Element} | Selector | LegacyRegion) & {accessibilityType?: api.AccessibilityRegionTypePlain})>
+  ignore?: MaybeArray<NonNullable<CypressCheckSettings['ignoreRegions']>[number] | LegacyRegion | ElementWithOptions>
+  layout?: MaybeArray<NonNullable<CypressCheckSettings['layoutRegions']>[number] | LegacyRegion| ElementWithOptions>
+  content?: MaybeArray<NonNullable<CypressCheckSettings['contentRegions']>[number] | LegacyRegion| ElementWithOptions>
+  strict?: MaybeArray<NonNullable<CypressCheckSettings['strictRegions']>[number] | LegacyRegion | ElementWithOptions>
+  floating?: MaybeArray<NonNullable<CypressCheckSettings['floatingRegions']>[number] | ((ElementWithOptions | Selector | LegacyRegion) & {maxUpOffset?: number; maxDownOffset?: number; maxLeftOffset?: number; maxRightOffset?: number})>
+  accessibility?: MaybeArray<NonNullable<CypressCheckSettings['accessibilityRegions']>[number] | ((ElementWithOptions | Selector | LegacyRegion) & {accessibilityType?: api.AccessibilityRegionTypePlain})>
   scriptHooks?: CypressCheckSettings['hooks']
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean

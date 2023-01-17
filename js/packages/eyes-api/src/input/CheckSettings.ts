@@ -19,7 +19,7 @@ type ContextReference<TElement, TSelector> = {
 
 type CodedRegion<TRegion = never> = {
   region: Region | TRegion
-  padding?: number | {top: number; bottom: number; let: number; right: number}
+  padding?: number | {top: number; bottom: number; left: number; right: number}
   regionId?: string
 }
 type CodedFloatingRegion<TRegion = never> = CodedRegion<TRegion> & {

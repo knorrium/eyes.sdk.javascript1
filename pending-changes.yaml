@@ -81,7 +81,8 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fix types to include region options when passing an element
+    - Add support for region options for coded floating and accessibility when using elements
 "@applitools/eyes-storybook":
   feature:
     - 

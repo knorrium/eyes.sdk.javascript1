@@ -131,6 +131,9 @@ function eyesCheckMapValues({args, refer}) {
 
   function convertAccessabilityRegions(accessibilityRegions) {
     if (!accessibilityRegions) return accessibilityRegions
+    if (!Array.isArray(accessibilityRegions)) {
+      accessibilityRegions = [accessibilityRegions]
+    }
     const accessibility = []
 
     accessibilityRegions.map(region => {
@@ -142,8 +145,9 @@ function eyesCheckMapValues({args, refer}) {
         accessibility.push(accessabilityRegion)
       } else if (region.hasOwnProperty('element')) {
         const elements = refElements(region.element)
+        delete region['element']
         for (const element of elements) {
-          accessibility.push(Object.assign({}, accessabilityRegion, {region: element}))
+          accessibility.push(Object.assign({}, region, accessabilityRegion, {region: element}))
         }
       } else if (region.hasOwnProperty('region')) {
         region.type = region.region.accessibilityType
@@ -165,6 +169,9 @@ function eyesCheckMapValues({args, refer}) {
 
   function convertFloatingRegion(floatingRegions) {
     if (!floatingRegions) return floatingRegions
+    if (!Array.isArray(floatingRegions)) {
+      floatingRegions = [floatingRegions]
+    }
     const floating = []
 
     for (const region of floatingRegions) {
@@ -179,8 +186,9 @@ function eyesCheckMapValues({args, refer}) {
         floating.push(floatingRegion)
       } else if (region.hasOwnProperty('element')) {
         const elements = refElements(region.element)
+        delete region['element']
         for (const element of elements) {
-          floating.push(Object.assign({}, floatingRegion, {region: element}))
+          floating.push(Object.assign({}, region, floatingRegion, {region: element}))
         }
       } else if (region.hasOwnProperty('region')) {
         floating.push(region)
