@@ -62,16 +62,17 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
         return await deleteSession({request, response, logger: requestLogger})
       } else if (request.method === 'POST' && /^\/session\/[^\/]+\/element\/?$/.test(url)) {
         requestLogger.log('Inspecting element lookup request to collect self-healing metadata')
-        const proxyResponse = await req(url, {io: {request, response}, logger: requestLogger})
-        const {appliCustomData} = await proxyResponse.json()
-        if (appliCustomData?.selfHealing?.successfulSelector) {
-          requestLogger.log('Self-healed locators detected', appliCustomData.selfHealing)
+        const proxyResponse = await req(url, {io: {request, response, handle: false}, logger: requestLogger})
+        const responseBody = await proxyResponse.json()
+        if (responseBody?.appliCustomData?.selfHealing?.successfulSelector) {
+          requestLogger.log('Self-healed locators detected', responseBody.appliCustomData.selfHealing)
           const session = sessions.get(getSessionId(url))!
           session.metadata ??= []
-          session.metadata.push(appliCustomData.selfHealing)
+          session.metadata.push(responseBody.appliCustomData.selfHealing)
         } else {
           requestLogger.log('No self-healing metadata found')
         }
+        response.end(JSON.stringify(responseBody))
       } else if (request.method === 'GET' && /^\/session\/[^\/]+\/applitools\/metadata?$/.test(url)) {
         const session = sessions.get(getSessionId(url))!
         requestLogger.log('Session metadata requested, returning', session.metadata)
