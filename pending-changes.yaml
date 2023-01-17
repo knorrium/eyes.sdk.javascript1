@@ -27,9 +27,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Handle fake shadowRoot with UFG
-    - Handed error during polling in long requests to eyes server
-    - Additional internal event logs
+    - 
 "@applitools/eyes-protractor":
   feature:
     - Added new selector extensions `child` and `fallback`
