@@ -65,7 +65,7 @@
     }
   },
   "dependencies": {
-    "@applitools/eg-tunnel": "1.0.26",
+    "@applitools/execution-grid-tunnel": "1.0.1",
     "@applitools/logger": "1.1.36",
     "@applitools/req": "1.1.23",
     "@applitools/socket": "1.0.1",

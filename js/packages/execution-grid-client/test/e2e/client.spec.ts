@@ -12,7 +12,7 @@ describe('proxy-server', () => {
     await client.close()
   })
 
-  it('works with real server', async () => {
+  it('works', async () => {
     client = await makeEGClient()
     const driver = await new Builder().forBrowser('chrome').usingServer(client.url).build()
 

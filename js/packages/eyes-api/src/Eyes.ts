@@ -58,7 +58,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
   static async getExecutionCloudUrl(config?: Configuration<unknown, unknown>): Promise<string> {
     const client = await this._spec.makeEGClient({
-      settings: {serverUrl: config?.serverUrl, apiKey: config?.apiKey, proxy: config?.proxy},
+      settings: {
+        proxy: config?.proxy,
+        capabilities: {eyesServerUrl: config?.serverUrl, apiKey: config?.apiKey},
+      },
     })
     return client.url
   }

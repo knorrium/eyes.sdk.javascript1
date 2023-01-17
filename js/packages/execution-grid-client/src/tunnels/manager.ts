@@ -1,7 +1,7 @@
 import {type Logger} from '@applitools/logger'
 import {makeReq} from '@applitools/req'
 //@ts-ignore
-import makeTunnel from '@applitools/eg-tunnel'
+import makeTunnel from '@applitools/execution-grid-tunnel'
 
 export interface TunnelManager {
   create(options: {eyesServerUrl: string; apiKey: string}): Promise<{tunnelId: string}>
