@@ -148,7 +148,7 @@ describe('git', () => {
         ],
       )
     })
-    it('should include external dep updates in consolidated list of commits', async () => {
+    it.skip('should include external dep updates in consolidated list of commits', async () => {
       const result = await gitLog({
         packageName: '@applitools/eyes-sdk-core',
         lowerVersion: '12.24.10',

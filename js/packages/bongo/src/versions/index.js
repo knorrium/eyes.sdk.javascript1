@@ -45,6 +45,11 @@ async function verifyInstalledVersions(
     checkPackagesForUniqueVersions(await npmLs(), filteredPackageNames)
   } else {
     const packageLock = require(path.resolve(installedDirectory, 'package-lock.json'))
+    packageLock.dependencies = Object.fromEntries(
+      Object.entries(packageLock.dependencies).filter(([depName]) => {
+        return internalPackages.some(({name}) => name === depName)
+      }),
+    )
     checkPackagesForUniqueVersions(packageLock, filteredPackageNames, {
       isNpmLs,
     })
