@@ -55,7 +55,7 @@
     "test:it": "mocha --no-timeouts -r ts-node/register ./test/it/*.spec.ts",
     "test:e2e": "mocha --no-timeouts -r ts-node/register ./test/e2e/*.spec.ts",
     "deps": "bongo deps",
-    "preversion": "bongo preversion && yarn build",
+    "preversion": "bongo preversion --skip-verify-installed-versions",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
@@ -66,10 +66,10 @@
   },
   "dependencies": {
     "@applitools/execution-grid-tunnel": "1.0.1",
-    "@applitools/logger": "1.1.36",
-    "@applitools/req": "1.1.23",
+    "@applitools/logger": "1.1.39",
+    "@applitools/req": "1.1.26",
     "@applitools/socket": "1.0.1",
-    "@applitools/utils": "1.3.22",
+    "@applitools/utils": "1.3.25",
     "abort-controller": "3.0.0",
     "proxy-agent": "5.0.0",
     "raw-body": "2.5.1",
