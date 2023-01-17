@@ -55,7 +55,7 @@
     "test:it": "mocha --no-timeouts -r ts-node/register ./test/it/*.spec.ts",
     "test:e2e": "mocha --no-timeouts -r ts-node/register ./test/e2e/*.spec.ts",
     "deps": "bongo deps",
-    "preversion": "bongo preversion --skip-verify-installed-versions",
+    "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
