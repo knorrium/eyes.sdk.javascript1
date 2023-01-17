@@ -12,6 +12,13 @@
 
 
 
+## 3.28.2 - 2023/1/17
+
+### Features
+### Bug fixes
+- Fix types to include region options when passing an element
+- Add support for region options for coded floating and accessibility when using elements
+
 ## 3.28.1 - 2023/1/5
 
 ### Features
