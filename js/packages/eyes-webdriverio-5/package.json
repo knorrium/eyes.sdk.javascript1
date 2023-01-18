@@ -116,17 +116,17 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.3.7",
-    "@applitools/eyes-api": "1.11.6",
-    "@applitools/spec-driver-webdriverio": "1.4.18"
+    "@applitools/core": "1.4.0",
+    "@applitools/eyes-api": "1.12.0",
+    "@applitools/spec-driver-webdriverio": "1.4.20"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
-    "@applitools/bongo": "^2.2.0",
+    "@applitools/bongo": "^2.2.2",
     "@applitools/scripts": "1.2.0",
     "@applitools/sdk-coverage-tests": "^2.7.10",
     "@applitools/sdk-shared": "0.9.15",
-    "@applitools/test-utils": "1.5.6",
+    "@applitools/test-utils": "1.5.8",
     "@types/mocha": "^9.1.1",
     "@types/node": "16",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
