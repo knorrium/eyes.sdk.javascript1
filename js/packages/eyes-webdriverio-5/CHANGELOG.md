@@ -10,6 +10,12 @@
 
 
 
+## 5.40.0 - 2023/1/18
+
+### Features
+- No new features
+### Bug fixes
+
 ## 5.39.1 - 2023/1/5
 
 ### Features
