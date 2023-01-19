@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.0.tgz#c8cae6a68ea4ec0955ecb5fe88ab35a523a0cf7f"
-  integrity sha512-XgEs7ts7qkpPpTDJZqpXkegPXRSAqazNhXuXm3kxpGCixvHz4H2Zfd1rbNePNzhtB/8xBrKpABzaEJL7VsozrA==
+"@applitools/bongo@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.2.tgz#6bc9a030ee37af0c452bfcb781fc1c34f1134b3e"
+  integrity sha512-5t3fIxokMAi2LLWPAxNFsnqIx98cwExwZUd9dHXfhbqCcXdU2vfgHujbCZ521uAGLXuwIlKQlnqXal04HHkrNQ==
   dependencies:
-    "@applitools/utils" "1.3.10"
+    "@applitools/utils" "1.3.26"
     chalk "3.0.0"
     compare-versions "4.1.3"
     js-yaml "4.1.0"
@@ -23,10 +23,10 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/execution-grid-tunnel@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.1.tgz#8eb221fe08f8ca2c85389f3fd4d9bb7e6328644a"
-  integrity sha512-Wvlp6rYpBQsy4gmY1MRaowkeqp2GQ3diQOxkOpztMt6FR9bZlUQE8xOt+7d+H8h2AKTRizLPYXwJ86yGpIP+mQ==
+"@applitools/execution-grid-tunnel@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.2.tgz#09e739fc02433dbb21a0b94b1ba4d1c3b7a0a59d"
+  integrity sha512-COEICIyLmyn9IvtB/0sV0S7zMUYm3ao1sYlWOuxVGLcTuapIIH0ZoPS7NXgUd8z4tebzSILohNRLZxfwVK0DUg==
   dependencies:
     "@applitools/eg-socks5-proxy-server" "^0.4.6"
     "@applitools/logger" "^1.0.12"
@@ -109,11 +109,6 @@
   integrity sha512-L80Cx8yVG/kMDyqD9x0wENcpKbu4HrljZbhprc/OfuhhR7fzIuw7k+EDwLXrSSKxYV4gI2vBVa2J2FbJai7ayA==
   dependencies:
     node-fetch "2.6.1"
-
-"@applitools/utils@1.3.10":
-  version "1.3.10"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.10.tgz#307359d6f668c5fe6b3a7d213405ebe3bf2235b6"
-  integrity sha512-CI/5BLB0D/aZn6uL8JJmsErI+TOHCa4Gz5Wi8sJknuPz/V9Ws6jIh9ZCTzvOCDUIp99qLJwD6TSA2BY9aMhCNw==
 
 "@applitools/utils@1.3.25":
   version "1.3.25"

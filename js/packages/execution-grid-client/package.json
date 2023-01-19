@@ -65,7 +65,7 @@
     }
   },
   "dependencies": {
-    "@applitools/execution-grid-tunnel": "1.0.1",
+    "@applitools/execution-grid-tunnel": "1.0.2",
     "@applitools/logger": "1.1.40",
     "@applitools/req": "1.1.27",
     "@applitools/socket": "1.0.2",
@@ -76,7 +76,7 @@
     "yargs": "17.6.2"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.0",
+    "@applitools/bongo": "^2.2.2",
     "@applitools/scripts": "^1.2.0",
     "@applitools/test-server": "^1.1.20",
     "@types/mocha": "^9.1.1",

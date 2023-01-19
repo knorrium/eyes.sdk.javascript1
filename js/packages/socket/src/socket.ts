@@ -217,13 +217,13 @@ export function makeSocket<
     else queue.add(command)
     return () => queue.delete(command)
   }
-}
 
-function serialize(type: string | {name: string; key?: string}, payload: any) {
-  const message = utils.types.isString(type) ? {name: type, payload} : {name: type.name, key: type.key, payload}
-  return JSON.stringify(message)
-}
+  function serialize(type: string | {name: string; key?: string}, payload: any) {
+    const message = utils.types.isString(type) ? {name: type, payload} : {name: type.name, key: type.key, payload}
+    return transport.format(JSON.stringify(message))
+  }
 
-function deserialize(message: string) {
-  return JSON.parse(message)
+  function deserialize(message: string) {
+    return JSON.parse(message)
+  }
 }

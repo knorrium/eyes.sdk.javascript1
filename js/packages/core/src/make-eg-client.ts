@@ -9,7 +9,7 @@ type Options = {
 }
 
 export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
-  return async function _makeEGClient({
+  return async function makeECClient({
     settings,
     logger = defaultLogger,
   }: {settings?: EGClientSettings; logger?: Logger} = {}): Promise<EGClient> {
@@ -20,9 +20,10 @@ export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
       'https://eyesapi.applitools.com'
     const apiKey = (settings.capabilities.apiKey ??= utils.general.getEnvValue('API_KEY'))
     const proxy = settings.proxy ?? (utils.general.getEnvValue('PROXY_URL') && {url: utils.general.getEnvValue('PROXY_URL')})
-    const _account = await core.getAccountInfo({settings: {serverUrl, apiKey, proxy}, logger})
+    const account = await core.getAccountInfo({settings: {serverUrl, apiKey, proxy}, logger})
     settings.capabilities ??= {}
-    settings.capabilities.useSelfHealing ??= utils.general.getEnvValue('USE_SELF_HEALING', 'boolean') ?? false // TODO replace with account.selfHealingEnabled
+    settings.capabilities.useSelfHealing ??=
+      utils.general.getEnvValue('USE_SELF_HEALING', 'boolean') ?? account.selfHealingEnabled
     const client = await makeEGClient({settings, logger})
     return client
   }

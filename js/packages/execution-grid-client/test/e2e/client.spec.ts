@@ -5,7 +5,7 @@ import {makeTestServer} from '@applitools/test-server'
 import {makeEGClient} from '../../src/client'
 import assert from 'assert'
 
-describe('proxy-server', () => {
+describe('client', () => {
   let client: EGClient
 
   afterEach(async () => {
@@ -63,7 +63,7 @@ describe('proxy-server', () => {
       await server.close()
     })
 
-    it('works with real server and tunnels', async () => {
+    it('works with tunnel', async () => {
       client = await makeEGClient()
       const driver = await new Builder()
         .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
@@ -76,6 +76,17 @@ describe('proxy-server', () => {
       await driver.quit()
 
       assert.strictEqual(title, 'My local page')
+    })
+
+    it('throws when eg is not enabled', async () => {
+      client = await makeEGClient({settings: {capabilities: {eyesServerUrl: 'https://testeyes.applitools.com'}}})
+      await assert.rejects(
+        new Builder()
+          .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
+          .usingServer(client.url)
+          .build(),
+        error => error.message === 'Failed to create tunnel with code EG_NOT_ENABLED',
+      )
     })
 
     // TODO: add assertion for expected error

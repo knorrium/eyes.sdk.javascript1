@@ -8,11 +8,18 @@ export interface EGClient {
 
 export interface EGClientSettings {
   serverUrl: string
-  tunnelUrl?: string
   proxy?: Proxy
-  port?: number
   capabilities?: EGCapabilities
-  resolveUrls?: boolean
+  port?: number
+  /** @internal */
+  tunnel?: {
+    serverUrl?: string
+    groupSize?: number
+    pool?: {
+      maxInuse?: number
+      timeout?: {idle?: number; expiration?: number}
+    }
+  }
 }
 
 export interface EGCapabilities {

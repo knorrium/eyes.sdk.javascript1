@@ -9,7 +9,7 @@ describe('tunnel-manager', () => {
   })
 
   it('creates new tunnel', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     nock('http://eg-tunnel').persist().post('/tunnels').reply(201, '"tunnel-id"')
 
@@ -19,7 +19,7 @@ describe('tunnel-manager', () => {
   })
 
   it('creates new tunnel with retries', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     let retries = 0
     nock('http://eg-tunnel')
@@ -42,7 +42,7 @@ describe('tunnel-manager', () => {
   })
 
   it('creates new tunnel with api key and server url', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     nock('http://eg-tunnel')
       .persist()
@@ -62,7 +62,7 @@ describe('tunnel-manager', () => {
   })
 
   it('throws when tunnel was not created', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     nock('http://eg-tunnel').persist().post('/tunnels').reply(401, {message: 'UNAUTHORIZED'})
 
@@ -72,15 +72,18 @@ describe('tunnel-manager', () => {
   })
 
   it('destroys tunnel', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     nock('http://eg-tunnel').persist().delete('/tunnels/tunnel-id').reply(200)
 
-    await manager.destroy({tunnelId: 'tunnel-id', eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+    await manager.destroy({
+      tunnelId: 'tunnel-id',
+      credentials: {eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'},
+    })
   })
 
   it('destroys tunnel with api key and server url', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
     nock('http://eg-tunnel')
       .persist()
@@ -94,16 +97,19 @@ describe('tunnel-manager', () => {
         return [401, {message: 'UNAUTHORIZED'}]
       })
 
-    await manager.destroy({tunnelId: 'tunnel-id', eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+    await manager.destroy({
+      tunnelId: 'tunnel-id',
+      credentials: {eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'},
+    })
   })
 
   it('throws when tunnel was not destroyed', async () => {
-    const manager = await makeTunnelManager({settings: {tunnelUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
 
-    nock('http://eg-tunnel').persist().post('/tunnels/tunnel-id').reply(404, {message: 'TUNNEL_NOT_FOUND'})
+    nock('http://eg-tunnel').persist().delete('/tunnels/tunnel-id').reply(404, {message: 'TUNNEL_NOT_FOUND'})
 
-    assert.rejects(
-      manager.destroy({tunnelId: 'tunnel-id', eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'}),
+    await assert.rejects(
+      manager.destroy({tunnelId: 'tunnel-id', credentials: {eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'}}),
       (err: Error) => err.message.includes('TUNNEL_NOT_FOUND'),
     )
   })

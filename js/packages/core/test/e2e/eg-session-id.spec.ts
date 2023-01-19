@@ -1,10 +1,9 @@
-import {makeCore} from '../../../src/classic/core'
+import {makeCore} from '../../src/index'
 import * as spec from '@applitools/spec-driver-selenium'
 import assert from 'assert'
 import {getTestInfo} from '@applitools/test-utils'
-import {makeEGClient} from '@applitools/execution-grid-client'
 
-describe('egSessionId classic', () => {
+describe('egSessionId', () => {
   let core
   const serverUrl = 'https://eyesapi.applitools.com'
 
@@ -36,7 +35,7 @@ describe('egSessionId classic', () => {
   })
 
   it('sends egSessionId when eg-client is used', async () => {
-    const proxy = await makeEGClient({
+    const proxy = await core.makeEGClient({
       settings: {
         capabilities: {
           eyesServerUrl: serverUrl,
@@ -44,6 +43,7 @@ describe('egSessionId classic', () => {
         },
       },
     })
+
     const [driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
     try {
       const eyes = await core.openEyes({

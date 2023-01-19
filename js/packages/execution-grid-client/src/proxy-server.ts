@@ -4,7 +4,7 @@ import {type AbortSignal} from 'abort-controller'
 import {createServer, type IncomingMessage, type ServerResponse} from 'http'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeQueue, type Queue} from './queue'
-import {makeTunnelManager} from './tunnels/manager'
+import {makeTunnelManager, type Tunnel} from './tunnels/manager'
 import {makeTunnelManagerClient} from './tunnels/manager-client'
 import {makeReqProxy} from './req-proxy'
 import * as utils from '@applitools/utils'
@@ -17,12 +17,13 @@ const RETRY_BACKOFF = [
 
 const RETRY_ERROR_CODES = ['CONCURRENCY_LIMIT_REACHED', 'NO_AVAILABLE_DRIVER_POD']
 
-const getSessionId = (requestUrl: string): string => {
-  try {
-    return requestUrl.split('/')[2]
-  } catch (error) {
-    return ''
+interface Session {
+  credentials: {
+    eyesServerUrl: string
+    apiKey: string
   }
+  tunnels?: Tunnel[]
+  metadata?: any[]
 }
 
 export async function makeServer({settings, logger}: {settings: EGClientSettings; logger?: Logger}): Promise<EGClient> {
@@ -42,11 +43,11 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
     },
   })
 
-  const tunnel = settings.tunnelUrl
-    ? await makeTunnelManager({settings, logger: serverLogger})
-    : await makeTunnelManagerClient()
+  const tunnelManager = settings.tunnel?.serverUrl
+    ? await makeTunnelManager({settings: settings.tunnel, logger: serverLogger})
+    : await makeTunnelManagerClient({settings: settings.tunnel})
 
-  const sessions = new Map<string, Record<string, any>>()
+  const sessions = new Map<string, Session>()
   const queues = new Map<string, Queue>()
 
   const server = createServer(async (request, response) => {
@@ -129,26 +130,29 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
 
     logger.log(`Request was intercepted with body:`, requestBody)
 
-    const session = {} as any
-    session.eyesServerUrl =
+    const session = {credentials: {}} as Session
+    session.credentials.eyesServerUrl =
       extractCapability(requestBody, 'applitools:eyesServerUrl') ??
       extractCapability(requestBody, 'applitools:options')?.eyesServerUrl ??
       settings.capabilities?.eyesServerUrl
-    session.apiKey =
+    session.credentials.apiKey =
       extractCapability(requestBody, 'applitools:apiKey') ??
       extractCapability(requestBody, 'applitools:options')?.apiKey ??
       settings.capabilities?.apiKey
-    session.tunnelId =
+    if (
       extractCapability(requestBody, 'applitools:tunnel') ??
       extractCapability(requestBody, 'applitools:options')?.tunnel
-        ? (await tunnel.create(session)).tunnelId
-        : undefined
-    session.key = `${session.eyesServerUrl}:${session.apiKey}`
+    ) {
+      session.tunnels = await tunnelManager.acquire(session.credentials)
+    }
 
     const applitoolsCapabilities = {
-      'applitools:eyesServerUrl': session.eyesServerUrl,
-      'applitools:apiKey': session.apiKey,
-      'applitools:x-tunnel-id-0': session.tunnelId,
+      'applitools:eyesServerUrl': session.credentials.eyesServerUrl,
+      'applitools:apiKey': session.credentials.apiKey,
+      ...session.tunnels?.reduce((caps, tunnel, index) => {
+        caps[`applitools:x-tunnel-id-${index}`] = tunnel.tunnelId
+        return caps
+      }, {} as Record<`applitools:x-tunnel-id-${number}`, string>),
       'applitools:timeout':
         extractCapability(requestBody, 'applitools:timeout') ??
         extractCapability(requestBody, 'applitools:options')?.timeout ??
@@ -172,10 +176,11 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
 
     logger.log('Request body has modified:', requestBody)
 
-    let queue = queues.get(session.key) as Queue
+    const queueKey = JSON.stringify(session.credentials)
+    let queue = queues.get(queueKey)!
     if (!queue) {
-      queue = makeQueue({logger: logger.extend({tags: {queue: session.key}})})
-      queues.set(session.key, queue)
+      queue = makeQueue({logger: logger.extend({tags: {queue: queueKey}})})
+      queues.set(queueKey, queue)
     }
 
     request.socket.on('close', () => queue.cancel(task))
@@ -189,7 +194,8 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
       const proxyResponse = await req(request.url as string, {
         body: requestBody,
         io: {request, response, handle: false},
-        signal,
+        // TODO uncomment when we can throw different abort reasons for task cancelation and timeout abortion
+        // signal,
         logger,
       })
 
@@ -232,9 +238,13 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
     await req(url, {io: {request, response}, logger})
 
     const session = sessions.get(sessionId)!
-    if (session.tunnelId) {
-      await tunnel.destroy(session as any)
-      logger.log(`Tunnel with id ${session.tunnelId} was deleted for session with id ${sessionId}`)
+    if (session.tunnels) {
+      await tunnelManager.release(session.tunnels)
+      logger.log(
+        `Tunnels with id ${session.tunnels.map(
+          tunnel => tunnel.tunnelId,
+        )} was released for session with id ${sessionId}`,
+      )
     }
     sessions.delete(sessionId)
   }
@@ -248,4 +258,8 @@ export async function makeServer({settings, logger}: {settings: EGClientSettings
   ): any {
     return data.capabilities?.alwaysMatch?.[capabilityName] ?? data.desiredCapabilities?.[capabilityName]
   }
+}
+
+function getSessionId(requestUrl: string): string {
+  return requestUrl?.split('/')[2] ?? ''
 }

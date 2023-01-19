@@ -21,5 +21,7 @@ export async function makeTunnelManagerClient({
   return {
     create: (options: any) => socket.request('Tunnel.create', options),
     destroy: (options: any) => socket.request('Tunnel.destroy', options),
+    acquire: (options: any) => socket.request('Tunnel.acquire', options),
+    release: (options: any) => socket.request('Tunnel.release', options),
   }
 }

@@ -132,7 +132,9 @@ describe('proxy-server', () => {
   })
 
   it('creates new tunnel when session is successfully created', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com', tunnelUrl: 'http://eg-tunnel'}})
+    proxy = await makeServer({
+      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+    })
 
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -157,7 +159,9 @@ describe('proxy-server', () => {
   })
 
   it('fails if new tunnel was not created', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com', tunnelUrl: 'http://eg-tunnel'}})
+    proxy = await makeServer({
+      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+    })
 
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -175,7 +179,12 @@ describe('proxy-server', () => {
   })
 
   it('deletes tunnel when session is successfully deleted', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com', tunnelUrl: 'http://eg-tunnel'}})
+    proxy = await makeServer({
+      settings: {
+        serverUrl: 'https://exec-wus.applitools.com',
+        tunnel: {serverUrl: 'http://eg-tunnel', pool: {timeout: {idle: 0}}},
+      },
+    })
 
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -243,7 +252,7 @@ describe('proxy-server', () => {
     assert.strictEqual(count, 1)
   })
 
-  it.skip('queue create session requests if they need retry', async () => {
+  it('queue create session requests if they need retry', async () => {
     proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
 
     let runningCount = 0
@@ -253,7 +262,7 @@ describe('proxy-server', () => {
       .reply(() => {
         if (runningCount < 2) {
           runningCount += 1
-          setTimeout(() => (runningCount -= 1), 10000)
+          setTimeout(() => (runningCount -= 1), 10_000)
           return [200, {value: {capabilities: {}, sessionId: 'session-guid'}}]
         }
         return [
@@ -270,7 +279,7 @@ describe('proxy-server', () => {
       })
 
     await Promise.all(
-      Array.from({length: 10}).map(async (_, _index) => {
+      Array.from({length: 5}).map(async (_, _index) => {
         await new Builder().withCapabilities({browserName: 'chrome'}).usingServer(proxy.url).build()
       }),
     )

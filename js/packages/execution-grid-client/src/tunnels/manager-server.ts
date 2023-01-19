@@ -66,6 +66,8 @@ export async function makeTunnelManagerServer({
 
     socket.command('Tunnel.create', manager.create)
     socket.command('Tunnel.destroy', manager.destroy)
+    socket.command('Tunnel.acquire', manager.acquire)
+    socket.command('Tunnel.release', manager.release)
   })
 }
 
