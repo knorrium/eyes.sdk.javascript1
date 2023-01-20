@@ -81,12 +81,12 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Update internal dependencies 
+    - 
 "@applitools/eyes-storybook":
   feature:
     - 
   bug-fix:
-    -
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

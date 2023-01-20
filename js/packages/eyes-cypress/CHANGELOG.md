@@ -12,6 +12,12 @@
 
 
 
+## 3.28.3 - 2023/1/20
+
+### Features
+### Bug fixes
+- Update internal dependencies
+
 ## 3.28.2 - 2023/1/17
 
 ### Features
