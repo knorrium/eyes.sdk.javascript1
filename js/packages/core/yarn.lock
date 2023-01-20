@@ -71,12 +71,12 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/execution-grid-client@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.2.2.tgz#2048a2ab95e6e068e5f69ec23ee205815577ba40"
-  integrity sha512-U8l8lHzSLz5B7ndx5O7Pjgeul+cKxe7n/Kc3addkDjj+xc+Zr2p5PHmZO43TwE2NU6nRg4g+Mx/ilr/RwXrxIg==
+"@applitools/execution-grid-client@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.2.3.tgz#d14624cad4d9dac34d7339e80bebe73d6cd81014"
+  integrity sha512-5w01O2iZnSeEAkEYEvg7/HHBHVqbwXmyxeEjD82SXSkTd/n+DPjgPeGneBaajUedsC2l3aF33dYWbmsxFjjBSQ==
   dependencies:
-    "@applitools/execution-grid-tunnel" "1.0.1"
+    "@applitools/execution-grid-tunnel" "1.0.2"
     "@applitools/logger" "1.1.40"
     "@applitools/req" "1.1.27"
     "@applitools/socket" "1.0.2"
@@ -86,10 +86,10 @@
     raw-body "2.5.1"
     yargs "17.6.2"
 
-"@applitools/execution-grid-tunnel@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.1.tgz#8eb221fe08f8ca2c85389f3fd4d9bb7e6328644a"
-  integrity sha512-Wvlp6rYpBQsy4gmY1MRaowkeqp2GQ3diQOxkOpztMt6FR9bZlUQE8xOt+7d+H8h2AKTRizLPYXwJ86yGpIP+mQ==
+"@applitools/execution-grid-tunnel@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.2.tgz#09e739fc02433dbb21a0b94b1ba4d1c3b7a0a59d"
+  integrity sha512-COEICIyLmyn9IvtB/0sV0S7zMUYm3ao1sYlWOuxVGLcTuapIIH0ZoPS7NXgUd8z4tebzSILohNRLZxfwVK0DUg==
   dependencies:
     "@applitools/eg-socks5-proxy-server" "^0.4.6"
     "@applitools/logger" "^1.0.12"
