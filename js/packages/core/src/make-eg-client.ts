@@ -1,6 +1,6 @@
 import type {Core as BaseCore} from '@applitools/core-base'
+import {type EGClient, type EGClientSettings} from '@applitools/execution-grid-client'
 import {type Logger} from '@applitools/logger'
-import {makeEGClient, type EGClient, type EGClientSettings} from '@applitools/execution-grid-client'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -9,6 +9,7 @@ type Options = {
 }
 
 export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
+  const {makeEGClient} = require('@applitools/execution-grid-client')
   return async function makeECClient({
     settings,
     logger = defaultLogger,
