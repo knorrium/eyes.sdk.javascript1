@@ -56,7 +56,7 @@
     "yargs": "17.0.1"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.0",
+    "@applitools/bongo": "^2.2.2",
     "@types/pem": "^1.9.6",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
