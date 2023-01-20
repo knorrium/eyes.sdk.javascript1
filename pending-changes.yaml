@@ -27,7 +27,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed dependency issue on windows
+    - 
 "@applitools/eyes-protractor":
   feature:
     - Added new selector extensions `child` and `fallback`

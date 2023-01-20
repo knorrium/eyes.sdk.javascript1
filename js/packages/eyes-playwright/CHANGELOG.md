@@ -11,6 +11,12 @@
 
 
 
+## 1.13.2 - 2023/1/20
+
+### Features
+### Bug fixes
+- Fixed dependency issue on windows
+
 ## 1.13.1 - 2023/1/17
 
 ### Features
