@@ -58,8 +58,8 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.4.0",
-    "@applitools/eyes-api": "1.12.0",
+    "@applitools/core": "1.4.2",
+    "@applitools/eyes-api": "1.12.2",
     "@applitools/spec-driver-playwright": "1.3.7"
   },
   "devDependencies": {
