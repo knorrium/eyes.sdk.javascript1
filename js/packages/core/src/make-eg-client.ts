@@ -9,11 +9,11 @@ type Options = {
 }
 
 export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
-  const {makeEGClient} = require('@applitools/execution-grid-client')
-  return async function makeECClient({
+  return async function makeEGClient({
     settings,
     logger = defaultLogger,
   }: {settings?: EGClientSettings; logger?: Logger} = {}): Promise<EGClient> {
+    const {makeEGClient} = require('@applitools/execution-grid-client')
     const serverUrl =
       settings.capabilities.eyesServerUrl ??
       utils.general.getEnvValue('EYES_SERVER_URL') ??
