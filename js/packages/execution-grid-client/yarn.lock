@@ -85,10 +85,10 @@
     "@applitools/logger" "1.1.40"
     "@applitools/utils" "1.3.26"
 
-"@applitools/test-server@^1.1.20":
-  version "1.1.20"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.20.tgz#8cd1678b590aab180b94c5960fdc1f7a2b9bc3ed"
-  integrity sha512-OYg1Cy4DUx+hckIHB4C8gGJb5R0eHFe6TlOfL28SkEmXoGwDg0FQVQo6tB23vNrJ0xeVr5oxfyBXEmQ4jRnORw==
+"@applitools/test-server@^1.1.21":
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.21.tgz#5564f04738732cbf2f52e06e52e123f89848481e"
+  integrity sha512-ilJzH7oIemujQxKnk5dJHpIsHeAFyGL3QZnw6CtrZAV4i79GY4zwaHJ8bkZ6m+Xe3BbMvCThMvCD5K4kD5Bamg==
   dependencies:
     "@applitools/logger" "1.1.40"
     "@applitools/utils" "1.3.26"
