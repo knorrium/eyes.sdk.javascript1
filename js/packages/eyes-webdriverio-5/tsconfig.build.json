@@ -8,6 +8,8 @@
     "declarationMap": false,
     "sourceMap": false,
     "removeComments": true,
+    // remove when pptr-core updated to version > 19.5.2
+    "skipLibCheck": true,
     "plugins": [{
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
