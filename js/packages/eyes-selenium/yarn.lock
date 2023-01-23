@@ -31,10 +31,10 @@
     "@applitools/req" "1.1.27"
     "@applitools/utils" "1.3.26"
 
-"@applitools/core@1.4.2":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.2.tgz#30f653126504fcb29cc32de78e8771a0fc7401e3"
-  integrity sha512-v4dRgBxnkWMIQT8+jn0/FPGb3vzNrt3OLu5ldm1dWGS8iJl20WdOD82gh9e8qpH2trOhLtY9yrgYrfWMw67WeQ==
+"@applitools/core@1.4.3":
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.3.tgz#4e7f6adc2c0aefa9f68a7fef39c741a9dc31e7a9"
+  integrity sha512-aojd9/UaHj6pOYILiomCBZ29UFafgQ14jSYmW8EsVJW71XKdIKkoshvUn+GGl2OAZyR6dSYOQ+NSD2sFYSzZng==
   dependencies:
     "@applitools/core-base" "1.1.30"
     "@applitools/dom-capture" "11.2.0"
@@ -131,12 +131,12 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/eyes-api@1.12.2":
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.12.2.tgz#98d6a8b8340c1e3093806d45c6b3d48bebeebadc"
-  integrity sha512-KDm9qYAjlsYeWbg4wUm1Z12jBmenTXeCYtb5Qb5/X04Ng3kBVt6DWMzjxqajEypPvz+KUOBrIQalIo4DZWJ4Ew==
+"@applitools/eyes-api@1.12.3":
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.12.3.tgz#347d392ac86d4d2a607ca24dbcf81c01b5382b86"
+  integrity sha512-kRU2Bo9z5mMoW1Tjes1tL6yJuxciHdHmDw09BvJeHkmRRkV642cbs56ayUOlZ/E6eorO2S4Xe5aed/Qs+gPk3g==
   dependencies:
-    "@applitools/core" "1.4.2"
+    "@applitools/core" "1.4.3"
     "@applitools/logger" "1.1.40"
     "@applitools/utils" "1.3.26"
 
