@@ -46,6 +46,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
 
     if (driver && !eyes) {
       const currentContext = driver.currentContext
+      settings.environment ??= {}
+      settings.environment.egSessionId = driver?.isExecutionGrid ? driver.sessionId : null
       if (settings.environment?.viewportSize) {
         await driver.setViewportSize(settings.environment.viewportSize)
       }

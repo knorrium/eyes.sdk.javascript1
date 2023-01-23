@@ -26,7 +26,10 @@ export function makeGetBaseEyes({settings: defaultSettings, core, client, eyes, 
   } = {}): Promise<EyesBase[]> {
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     const environment = await client.bookRenderer({settings})
-    const eyes = await core.openEyes({settings: {...defaultSettings, environment}, logger})
+    const eyes = await core.openEyes({
+      settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},
+      logger,
+    })
     return [eyes]
   }
 }

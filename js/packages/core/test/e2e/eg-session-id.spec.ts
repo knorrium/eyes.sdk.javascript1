@@ -4,38 +4,12 @@ import assert from 'assert'
 import {getTestInfo} from '@applitools/test-utils'
 
 describe('egSessionId', () => {
-  let core
+  let core, client, driver, destroyDriver
   const serverUrl = 'https://eyesapi.applitools.com'
 
   before(async () => {
     core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
-  })
-
-  it('does not send egSessionId by default', async () => {
-    const [driver, destroyDriver] = await spec.build({browser: 'chrome'})
-    try {
-      const eyes = await core.openEyes({
-        target: driver,
-        settings: {
-          serverUrl,
-          apiKey: process.env.APPLITOOLS_API_KEY,
-          appName: 'core e2e',
-          testName: 'classic - egSessionId',
-          environment: {viewportSize: {width: 700, height: 460}},
-        },
-      })
-      await eyes.check({})
-
-      const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
-      const testInfo = await getTestInfo(result)
-      assert.deepStrictEqual(testInfo.egSessionId, undefined)
-    } finally {
-      await destroyDriver()
-    }
-  })
-
-  it('sends egSessionId when eg-client is used', async () => {
-    const proxy = await core.makeEGClient({
+    client = await core.makeEGClient({
       settings: {
         capabilities: {
           eyesServerUrl: serverUrl,
@@ -43,28 +17,49 @@ describe('egSessionId', () => {
         },
       },
     })
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: client.url})
+  })
 
-    const [driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
-    try {
-      const eyes = await core.openEyes({
-        target: driver,
-        settings: {
-          serverUrl,
-          apiKey: process.env.APPLITOOLS_API_KEY,
-          appName: 'core e2e',
-          testName: 'classic - egSessionId',
-          environment: {viewportSize: {width: 700, height: 460}},
-        },
-      })
-      await eyes.check({})
+  after(async () => {
+    await destroyDriver?.()
+    await client?.close()
+  })
 
-      const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
-      const testInfo = await getTestInfo(result)
-      const {sessionId} = await spec.getDriverInfo(driver)
-      assert.deepStrictEqual(testInfo.egSessionId, sessionId)
-    } finally {
-      await destroyDriver?.()
-      await proxy.close()
-    }
+  it('sends egSessionId in classic', async () => {
+    const eyes = await core.openEyes({
+      type: 'classic',
+      target: driver,
+      settings: {
+        serverUrl,
+        apiKey: process.env.APPLITOOLS_API_KEY,
+        appName: 'core e2e',
+        testName: 'classic - egSessionId',
+        environment: {viewportSize: {width: 700, height: 460}},
+      },
+    })
+    await eyes.check()
+    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    const {sessionId} = await spec.getDriverInfo(driver)
+    const info = await getTestInfo(result)
+    assert.deepStrictEqual(info.egSessionId, sessionId)
+  })
+
+  it('sends egSessionId in ufg', async () => {
+    const eyes = await core.openEyes({
+      type: 'ufg',
+      target: driver,
+      settings: {
+        serverUrl,
+        apiKey: process.env.APPLITOOLS_API_KEY,
+        appName: 'core e2e',
+        testName: 'classic - egSessionId',
+        environment: {viewportSize: {width: 700, height: 460}},
+      },
+    })
+    await eyes.check()
+    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    const {sessionId} = await spec.getDriverInfo(driver)
+    const info = await getTestInfo(result)
+    assert.deepStrictEqual(info.egSessionId, sessionId)
   })
 })
