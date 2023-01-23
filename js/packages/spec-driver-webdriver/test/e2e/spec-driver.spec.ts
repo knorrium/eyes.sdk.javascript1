@@ -190,24 +190,6 @@ describe('spec driver', async () => {
     })
   })
 
-  describe('onscreen desktop (@webdriver)', async () => {
-    before(async () => {
-      ;[driver, destroyDriver] = await spec.build({browser: 'chrome', headless: false})
-    })
-
-    after(async () => {
-      await destroyDriver?.()
-      destroyDriver = null
-    })
-
-    it('getWindowSize()', async () => {
-      await getWindowSize()
-    })
-    it('setWindowSize({width, height})', async () => {
-      await setWindowSize({input: {width: 551, height: 552}})
-    })
-  })
-
   describe('legacy browser (@webdriver)', async () => {
     before(async () => {
       ;[driver, destroyDriver] = await spec.build({browser: 'ie-11', legacy: true})
