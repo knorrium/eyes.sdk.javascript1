@@ -131,10 +131,10 @@
     "@types/node": "16",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
-    "@wdio/cli": "^8.2.1",
+    "@wdio/cli": "^8.2.2",
     "@wdio/dot-reporter": "^8.0.14",
-    "@wdio/globals": "^8.2.1",
-    "@wdio/local-runner": "^8.2.1",
+    "@wdio/globals": "^8.2.2",
+    "@wdio/local-runner": "^8.2.2",
     "@wdio/mocha-framework": "^8.2.1",
     "chromedriver": "^105.0.1",
     "eslint": "^8.16.0",
@@ -151,7 +151,7 @@
     "ts-node": "^10.8.0",
     "ttypescript": "^1.5.13",
     "typescript": "^4.9.4",
-    "webdriverio": "^8.2.1"
+    "webdriverio": "^8.2.2"
   },
   "peerDependencies": {
     "webdriverio": "5.0.0 - 8.x.x"

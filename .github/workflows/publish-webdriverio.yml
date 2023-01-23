@@ -70,9 +70,9 @@ jobs:
           ENVIRONMENTS=
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            ENVIRONMENTS="[{\"framework-version\":7,\"node-version\":18},{\"framework-version\":7,\"node-version\":16}, {\"framework-version\":7,\"node-version\":14}, {\"framework-version\":6,\"node-version\":12}, {\"framework-version\":5,\"node-version\":12}]"
+            ENVIRONMENTS="[{\"framework-version\":8,\"node-version\":18},{\"framework-version\":8,\"node-version\":16}, {\"framework-version\":7,\"node-version\":14}, {\"framework-version\":6,\"node-version\":12}, {\"framework-version\":5,\"node-version\":12}]"
           else
-            ENVIRONMENTS="[{\"framework-version\":7,\"node-version\":18}]"
+            ENVIRONMENTS="[{\"framework-version\":8,\"node-version\":18}]"
           fi
           echo "environments=${ENVIRONMENTS}" >> $GITHUB_OUTPUT
   test:
@@ -123,7 +123,7 @@ jobs:
       - name: Download testing artifacts
         uses: actions/download-artifact@v2
         with:
-          name: wdio-test-results-framework-7-node-18
+          name: wdio-test-results-framework-8-node-18
           path: ./js/packages/eyes-webdriverio-5
       - name: Publish to NPM
         uses: ./.github/actions/publish
