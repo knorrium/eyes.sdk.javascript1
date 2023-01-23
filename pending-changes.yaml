@@ -17,12 +17,12 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with sessionId on ufg
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with sessionId on ufg
 "@applitools/eyes-playwright":
   feature:
     - 
@@ -76,7 +76,7 @@ Apollo SDK:
   feature:
     - No new features
   bug-fix:
-    - 
+    - Fixed issue with sessionId on ufg
 "@applitools/eyes-cypress":
   feature:
     - 
