@@ -77,10 +77,10 @@
     cli-table3 "0.6.0"
     yargs "15.3.1"
 
-"@applitools/socket@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.2.tgz#59d8297ee24cea6b541a400aea9079cd21fb423f"
-  integrity sha512-X5xrL0zOoO6todYMQ7rEwbLBshi1UuE+RyVKTchVRmOdm3RMk1Dp0EWr552iNr2trKqKltoNDoWZUKtWUlBIqg==
+"@applitools/socket@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.3.tgz#6a56e72b64139713db03af132139a7bde76b251c"
+  integrity sha512-bHnBwxb0MI0CDraj20JOn1xbKnTjzT31QZIdKZLfGv+pdPBg0La8HkZ7nOooQ+a8pWXTjjdHgHAti7si3Is2Gg==
   dependencies:
     "@applitools/logger" "1.1.40"
     "@applitools/utils" "1.3.26"
