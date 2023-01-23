@@ -10,6 +10,12 @@
 
 
 
+## 5.40.1 - 2023/1/23
+
+### Features
+### Bug fixes
+- Fixed dependency issue on windows
+
 ## 5.40.0 - 2023/1/18
 
 ### Features

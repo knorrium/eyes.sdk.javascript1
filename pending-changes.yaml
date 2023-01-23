@@ -22,7 +22,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed dependency issue on windows
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 
