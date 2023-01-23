@@ -74,7 +74,7 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-nightwatch":
   feature:
-    - No new features
+    - 
   bug-fix:
     - 
 "@applitools/eyes-cypress":
