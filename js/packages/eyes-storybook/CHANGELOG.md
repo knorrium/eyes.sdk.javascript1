@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.30.2 - 2023/1/23
+
+### Features
+### Bug fixes
+- Update dependencies
+
 ## 3.30.1 - 2023/1/3
 
 ### Features
