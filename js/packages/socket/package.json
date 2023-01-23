@@ -59,7 +59,7 @@
     "@applitools/utils": "1.3.26"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.0",
+    "@applitools/bongo": "^2.2.2",
     "@applitools/scripts": "^1.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
