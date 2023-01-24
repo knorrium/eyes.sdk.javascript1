@@ -1,15 +1,15 @@
 import {type Proxy} from '@applitools/req'
 
-export interface EGClient {
+export interface ECClient {
   readonly url: string
   readonly port: number
   close(): void
 }
 
-export interface EGClientSettings {
+export interface ECClientSettings {
   serverUrl: string
   proxy?: Proxy
-  capabilities?: EGCapabilities
+  capabilities?: ECCapabilities
   port?: number
   /** @internal */
   tunnel?: {
@@ -22,7 +22,7 @@ export interface EGClientSettings {
   }
 }
 
-export interface EGCapabilities {
+export interface ECCapabilities {
   eyesServerUrl?: string
   apiKey?: string
   timeout?: number | string

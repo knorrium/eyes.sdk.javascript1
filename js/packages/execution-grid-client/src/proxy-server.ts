@@ -1,4 +1,4 @@
-import type {EGClient, EGClientSettings} from './types'
+import type {ECClient, ECClientSettings} from './types'
 import {type AddressInfo} from 'net'
 import {type AbortSignal} from 'abort-controller'
 import {createServer, type IncomingMessage, type ServerResponse} from 'http'
@@ -26,8 +26,8 @@ interface Session {
   metadata?: any[]
 }
 
-export async function makeServer({settings, logger}: {settings: EGClientSettings; logger?: Logger}): Promise<EGClient> {
-  const serverLogger = logger ? logger.extend({label: 'eg-client'}) : makeLogger({label: 'eg-client', colors: true})
+export async function makeServer({settings, logger}: {settings: ECClientSettings; logger?: Logger}): Promise<ECClient> {
+  const serverLogger = logger ? logger.extend({label: 'ec-client'}) : makeLogger({label: 'ec-client', colors: true})
 
   const req = makeReqProxy({
     targetUrl: settings.serverUrl,

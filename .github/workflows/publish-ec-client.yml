@@ -1,4 +1,4 @@
-name: Publish - eg client
+name: Publish - ec client
 
 on:
   workflow_dispatch:

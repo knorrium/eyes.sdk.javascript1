@@ -1,15 +1,15 @@
-import type {EGClient, EGClientSettings} from './types'
+import type {ECClient, ECClientSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeServer} from './proxy-server'
 import * as utils from '@applitools/utils'
 
-export async function makeEGClient({
+export async function makeECClient({
   settings,
   logger,
 }: {
-  settings?: Partial<EGClientSettings>
+  settings?: Partial<ECClientSettings>
   logger?: Logger
-} = {}): Promise<EGClient> {
+} = {}): Promise<ECClient> {
   settings ??= {}
   settings.serverUrl ??= utils.general.getEnvValue('EG_SERVER_URL') ?? 'https://exec-wus.applitools.com'
   settings.proxy ??= utils.general.getEnvValue('PROXY_URL') ? {url: utils.general.getEnvValue('PROXY_URL')} : undefined
@@ -33,6 +33,6 @@ export async function makeEGClient({
   settings.capabilities.inactivityTimeout ??= utils.general.getEnvValue('EG_INACTIVITY_TIMEOUT')
   settings.capabilities.useSelfHealing ??= utils.general.getEnvValue('USE_SELF_HEALING', 'boolean')
 
-  const server = await makeServer({settings: settings as EGClientSettings, logger})
+  const server = await makeServer({settings: settings as ECClientSettings, logger})
   return server
 }

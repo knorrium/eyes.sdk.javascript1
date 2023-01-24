@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-import type {EGClientSettings} from './types'
+import type {ECClientSettings} from './types'
 import yargs from 'yargs'
-import {makeEGClient} from './client'
+import {makeECClient} from './client'
 import {makeTunnelManagerServer} from './tunnels/manager-server'
 
 yargs
-  .command<EGClientSettings>({
+  .command<ECClientSettings>({
     command: '*',
     builder: yargs => {
       return <any>yargs
         .example([
-          ['eg-client', 'Run EG client server on random port'],
-          ['eg-client --port 8080', 'Run EG client server on port 8080'],
+          ['ec-client', 'Run EG client server on random port'],
+          ['ec-client --port 8080', 'Run EG client server on port 8080'],
         ])
         .options({
           port: {
@@ -61,7 +61,7 @@ yargs
         })
     },
     handler: async settings => {
-      const client = await makeEGClient({settings})
+      const client = await makeECClient({settings})
       /* eslint-disable-next-line */
       console.log(client.url)
     },

@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/execution-grid-client",
+  "name": "@applitools/ec-client",
   "version": "1.2.4",
   "homepage": "https://applitools.com",
   "bugs": {
@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/execution-grid-client"
+    "directory": "js/packages/ec-client"
   },
   "license": "SEE LICENSE IN LICENSE",
   "author": {
@@ -16,6 +16,8 @@
     "email": "team@applitools.com"
   },
   "aliases": [
+    "ec-client",
+    "ecc",
     "eg-client",
     "egc"
   ],
@@ -41,6 +43,7 @@
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "bin": {
+    "ec-client": "./dist/cli.js"
     "eg-client": "./dist/cli.js"
   },
   "files": [

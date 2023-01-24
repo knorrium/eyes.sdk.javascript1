@@ -1,19 +1,19 @@
-import type {EGClient} from '../../src/types'
+import type {ECClient} from '../../src/types'
 import {Builder} from 'selenium-webdriver'
 import {Command} from 'selenium-webdriver/lib/command'
 import {makeTestServer} from '@applitools/test-server'
-import {makeEGClient} from '../../src/client'
+import {makeECClient} from '../../src/client'
 import assert from 'assert'
 
 describe('client', () => {
-  let client: EGClient
+  let client: ECClient
 
   afterEach(async () => {
     await client.close()
   })
 
   it('works', async () => {
-    client = await makeEGClient()
+    client = await makeECClient()
     const driver = await new Builder().forBrowser('chrome').usingServer(client.url).build()
 
     await driver.get('https://demo.applitools.com')
@@ -27,7 +27,7 @@ describe('client', () => {
   it('works with self healing', async () => {
     let driver: any
     try {
-      client = await makeEGClient()
+      client = await makeECClient()
 
       const builder = new Builder()
         .withCapabilities({browserName: 'chrome', 'applitools:useSelfHealing': true})
@@ -64,7 +64,7 @@ describe('client', () => {
     })
 
     it('works with tunnel', async () => {
-      client = await makeEGClient()
+      client = await makeECClient()
       const driver = await new Builder()
         .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
         .usingServer(client.url)
@@ -79,7 +79,7 @@ describe('client', () => {
     })
 
     it('throws when eg is not enabled', async () => {
-      client = await makeEGClient({settings: {capabilities: {eyesServerUrl: 'https://testeyes.applitools.com'}}})
+      client = await makeECClient({settings: {capabilities: {eyesServerUrl: 'https://testeyes.applitools.com'}}})
       await assert.rejects(
         new Builder()
           .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
@@ -91,7 +91,7 @@ describe('client', () => {
 
     // TODO: add assertion for expected error
     it.skip('fails gracefully when tunnel closes during test run', async () => {
-      client = await makeEGClient()
+      client = await makeECClient()
       let driver = await new Builder()
         .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
         .usingServer(client.url)

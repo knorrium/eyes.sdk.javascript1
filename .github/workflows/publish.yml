@@ -218,7 +218,7 @@ jobs:
         setup,
         core-base,
         driver,
-        eg-client,
+        ec-client,
         logger,
         nml-client,
         req,
@@ -249,7 +249,7 @@ jobs:
         setup,
         core,
         driver,
-        eg-client,
+        ec-client,
         utils,
         snippets,
         spec-selenium,
@@ -280,10 +280,10 @@ jobs:
         with:
           workflow: publish-ufg-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.version}}"}'
-  eg-client:
+  ec-client:
     needs: [ setup, logger, req, socket, test-server, utils ]
-    if: ${{fromJSON(needs.setup.outputs.packages).eg-client && !failure() && !cancelled()}}
-    name: eg-client
+    if: ${{fromJSON(needs.setup.outputs.packages).ec-client && !failure() && !cancelled()}}
+    name: ec-client
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -291,8 +291,8 @@ jobs:
       - name: Run remote workflow
         uses: ./.github/actions/run
         with:
-          workflow: publish-eg-client.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).eg-client.version}}"}'
+          workflow: publish-ec-client.yml
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ec-client.version}}"}'
   nml-client:
     needs:
       [
@@ -321,7 +321,7 @@ jobs:
         setup,
         core,
         driver,
-        eg-client,
+        ec-client,
         core-legacy,
         logger,
         utils,
