@@ -1,5 +1,5 @@
 import type {Core as BaseCore} from '@applitools/core-base'
-import {type EGClient, type EGClientSettings} from '@applitools/ec-client'
+import {type ECClient, type ECClientSettings} from '@applitools/ec-client'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
@@ -13,7 +13,7 @@ export function makeMakeECClient({core, logger: defaultLogger}: Options) {
   async function makeECClient({
     settings,
     logger = defaultLogger,
-  }: {settings?: EGClientSettings; logger?: Logger} = {}): Promise<EGClient> {
+  }: {settings?: ECClientSettings; logger?: Logger} = {}): Promise<ECClient> {
     const {makeECClient} = require('@applitools/ec-client')
     const serverUrl =
       settings.capabilities.eyesServerUrl ??
