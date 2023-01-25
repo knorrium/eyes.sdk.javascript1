@@ -196,9 +196,13 @@ export type AndroidDevice =
   | 'Galaxy S22 Plus'
   | 'Galaxy Tab S7'
   | 'Galaxy Tab S8'
+  | 'Xiaomi Redmi Note 10 JE'
   | 'Xiaomi Redmi Note 11'
   | 'Xiaomi Redmi Note 11 Pro'
+  | 'Sony Xperia 1 II'
   | 'Sony Xperia 10 II'
+  | 'Sony Xperia Ace II'
+  | 'Huawei P30 Lite'
 export type AndroidVersion = 'latest' | 'latest-1'
 export type AndroidDeviceRenderer = {
   androidDeviceInfo: {
