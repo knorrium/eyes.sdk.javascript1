@@ -273,10 +273,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/ufg-client@1.1.20":
-  version "1.1.20"
-  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.20.tgz#742bf18b2ed748ce7763cf9e3de2c454e9731d88"
-  integrity sha512-AGSgUsPircbOJNDjmEqwGsPkwypzhcLQwty6T05DbUheAazjCKehvtqYkBRmmoo9G3bctN0/qD+G/zHIeSFOFQ==
+"@applitools/ufg-client@1.1.21":
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.21.tgz#eae0c8dfddbb019aa58365cbc33ea578c0ccf928"
+  integrity sha512-dr2YEkQlRc00vd/bY3tradu375rrPIMR6deRD7iupecQUqCXbAx5lyKrtdgKW36iN/0uByYgDBwGyoR0COBuWA==
   dependencies:
     "@applitools/jsdom" "1.0.4"
     "@applitools/logger" "1.1.42"
