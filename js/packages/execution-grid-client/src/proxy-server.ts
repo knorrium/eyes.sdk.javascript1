@@ -1,4 +1,4 @@
-import type {ECClient, ECClientSettings} from './types'
+import type {ECCapabilities, ECClient, ECClientSettings} from './types'
 import {type AddressInfo} from 'net'
 import {type AbortSignal} from 'abort-controller'
 import {createServer, type IncomingMessage, type ServerResponse} from 'http'
@@ -128,30 +128,33 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
 
     logger.log(`Request was intercepted with body:`, requestBody)
 
-    const options = {...settings.capabilities, ...extractCapability(requestBody, 'applitools:options')}
+    const capabilities: Record<string, any> = requestBody.capabilities?.alwaysMatch ?? requestBody.desiredCapabilities
 
-    const session = {credentials: {}} as Session
-    session.credentials.eyesServerUrl =
-      extractCapability(requestBody, 'applitools:eyesServerUrl') ?? options.eyesServerUrl
-    session.credentials.apiKey = extractCapability(requestBody, 'applitools:apiKey') ?? options.apiKey
-    if (extractCapability(requestBody, 'applitools:tunnel') ?? options.tunnel) {
+    const options = {
+      ...settings.capabilities,
+      ...capabilities?.['applitools:options'],
+      ...(capabilities &&
+        Object.entries(capabilities).reduce((capabilities, [key, value]) => {
+          if (key.startsWith('applitools:')) {
+            capabilities[key.replace(/^applitools:/, '') as keyof ECCapabilities] = value
+          }
+          return capabilities
+        }, {} as ECCapabilities)),
+    }
+
+    const session = {
+      credentials: {eyesServerUrl: options.eyesServerUrl, apiKey: options.apiKey},
+    } as Session
+    if (options.tunnel) {
       session.tunnels = await tunnelManager.acquire(session.credentials)
+      session.tunnels.forEach((tunnel, index) => {
+        options[`x-tunnel-id-${index}`] = tunnel.tunnelId
+      })
     }
 
-    const applitoolsCapabilities = {
-      'applitools:eyesServerUrl': session.credentials.eyesServerUrl,
-      'applitools:apiKey': session.credentials.apiKey,
-      ...session.tunnels?.reduce((caps, tunnel, index) => {
-        caps[`applitools:x-tunnel-id-${index}`] = tunnel.tunnelId
-        return caps
-      }, {} as Record<`applitools:x-tunnel-id-${number}`, string>),
-      'applitools:useSelfHealing':
-        extractCapability(requestBody, 'applitools:useSelfHealing') ?? options.useSelfHealing,
-      'applitools:sessionName': extractCapability(requestBody, 'applitools:sessionName') ?? options.sessionName,
-      'applitools:timeout': extractCapability(requestBody, 'applitools:timeout') ?? options.timeout,
-      'applitools:inactivityTimeout':
-        extractCapability(requestBody, 'applitools:inactivityTimeout') ?? options.inactivityTimeout,
-    }
+    const applitoolsCapabilities = Object.fromEntries(
+      Object.entries(options).map(([key, value]) => [`applitools:${key}`, value]),
+    )
 
     if (requestBody.capabilities) {
       requestBody.capabilities.alwaysMatch = {...requestBody.capabilities?.alwaysMatch, ...applitoolsCapabilities}
@@ -242,16 +245,6 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
       )
     }
     sessions.delete(sessionId)
-  }
-
-  function extractCapability(
-    data: {
-      desiredCapabilities?: Record<string, any>
-      capabilities?: {alwaysMatch?: Record<string, any>; firstMatch?: Record<string, any>[]}
-    },
-    capabilityName: string,
-  ): any {
-    return data.capabilities?.alwaysMatch?.[capabilityName] ?? data.desiredCapabilities?.[capabilityName]
   }
 }
 
