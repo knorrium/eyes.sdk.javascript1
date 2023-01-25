@@ -26,10 +26,10 @@
     "@applitools/req" "1.1.28"
     "@applitools/utils" "1.3.28"
 
-"@applitools/core@1.4.4":
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.4.tgz#53cf259c19c6cdb985c81de965956cffae5d8325"
-  integrity sha512-mpYYjxea9D+ndeXVkNL1Utu3grTxSpjiKVg2PAXFgAWnt25JcrkeMrHsxLrI6ByHWRJmHUoY5LK8p4rh/C6oIQ==
+"@applitools/core@1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.5.tgz#da06fa3a5ca4753976f0335c5ad772334e0642f8"
+  integrity sha512-Jzn26WWiKs6tIU/CczLUuvVglkScVNt+5M8z5IYXtdWFKRfYfng5hASMBn83hHxx2DyKpjCMiYjktXXUsw9h1w==
   dependencies:
     "@applitools/core-base" "1.1.31"
     "@applitools/dom-capture" "11.2.0"
@@ -40,7 +40,7 @@
     "@applitools/req" "1.1.28"
     "@applitools/screenshoter" "3.7.23"
     "@applitools/snippets" "2.4.14"
-    "@applitools/ufg-client" "1.1.20"
+    "@applitools/ufg-client" "1.1.21"
     "@applitools/utils" "1.3.28"
     abort-controller "3.0.0"
     chalk "4.1.2"
@@ -253,10 +253,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/ufg-client@1.1.20":
-  version "1.1.20"
-  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.20.tgz#742bf18b2ed748ce7763cf9e3de2c454e9731d88"
-  integrity sha512-AGSgUsPircbOJNDjmEqwGsPkwypzhcLQwty6T05DbUheAazjCKehvtqYkBRmmoo9G3bctN0/qD+G/zHIeSFOFQ==
+"@applitools/ufg-client@1.1.21":
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.21.tgz#eae0c8dfddbb019aa58365cbc33ea578c0ccf928"
+  integrity sha512-dr2YEkQlRc00vd/bY3tradu375rrPIMR6deRD7iupecQUqCXbAx5lyKrtdgKW36iN/0uByYgDBwGyoR0COBuWA==
   dependencies:
     "@applitools/jsdom" "1.0.4"
     "@applitools/logger" "1.1.42"
