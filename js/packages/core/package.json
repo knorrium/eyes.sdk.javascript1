@@ -78,7 +78,7 @@
     "throat": "6.0.1"
   },
   "optionalDependencies": {
-    "@applitools/execution-grid-client": "^1.2.3"
+    "@applitools/ec-client": "^1.2.5"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",

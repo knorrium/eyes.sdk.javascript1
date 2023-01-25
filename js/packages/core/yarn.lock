@@ -64,27 +64,27 @@
     "@applitools/utils" "1.3.26"
     semver "7.3.7"
 
+"@applitools/ec-client@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.5.tgz#c88318193758792322236a0aa736d040f4ccd030"
+  integrity sha512-sbw9YllRMdXRtyDFAMD5FuueiLoOTA9tdhW6U4J5coz57dPoBg/CBS8JLOL2X3vz2wFdujWHduPe96qXbdgSzA==
+  dependencies:
+    "@applitools/execution-grid-tunnel" "1.0.2"
+    "@applitools/logger" "1.1.42"
+    "@applitools/req" "1.1.28"
+    "@applitools/socket" "1.0.4"
+    "@applitools/utils" "1.3.28"
+    abort-controller "3.0.0"
+    proxy-agent "5.0.0"
+    raw-body "2.5.1"
+    yargs "17.6.2"
+
 "@applitools/eg-socks5-proxy-server@^0.4.6":
   version "0.4.6"
   resolved "https://registry.yarnpkg.com/@applitools/eg-socks5-proxy-server/-/eg-socks5-proxy-server-0.4.6.tgz#5852db771ff503b1549387aefa79e091077a223a"
   integrity sha512-EOuR47cE8VN4tl1h+E9+eTKQ0cA/UsvOYaajNWirBJn/Cg41tue7NcFodY7iuuuZfMp1maSedhsl1wlfAjQ12w==
   dependencies:
     binary "^0.3.0"
-
-"@applitools/execution-grid-client@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.2.3.tgz#d14624cad4d9dac34d7339e80bebe73d6cd81014"
-  integrity sha512-5w01O2iZnSeEAkEYEvg7/HHBHVqbwXmyxeEjD82SXSkTd/n+DPjgPeGneBaajUedsC2l3aF33dYWbmsxFjjBSQ==
-  dependencies:
-    "@applitools/execution-grid-tunnel" "1.0.2"
-    "@applitools/logger" "1.1.40"
-    "@applitools/req" "1.1.27"
-    "@applitools/socket" "1.0.2"
-    "@applitools/utils" "1.3.26"
-    abort-controller "3.0.0"
-    proxy-agent "5.0.0"
-    raw-body "2.5.1"
-    yargs "17.6.2"
 
 "@applitools/execution-grid-tunnel@1.0.2":
   version "1.0.2"
@@ -159,6 +159,15 @@
     "@applitools/utils" "1.3.26"
     chalk "4.1.2"
 
+"@applitools/logger@1.1.42":
+  version "1.1.42"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.42.tgz#d67e5937d27b13030c01042941e3092e1ef9737c"
+  integrity sha512-It6fwzF6zGJeuOWcdpQuGjP/dMSs0H6rg7kF2OCb8+q43zP5ZmcnhCeqEavuJXSQ8jFZ6NBTVh1P87Z8PXzywQ==
+  dependencies:
+    "@applitools/utils" "1.3.28"
+    chalk "4.1.2"
+    debug "4.3.3"
+
 "@applitools/nml-client@1.3.27":
   version "1.3.27"
   resolved "https://registry.yarnpkg.com/@applitools/nml-client/-/nml-client-1.3.27.tgz#addbcc60a4af2feb24d6897438468e8b4347cf14"
@@ -174,6 +183,17 @@
   integrity sha512-6BsGgzY3W//qJg8P6EOtYjZsgvs+LVCxux0KAHoXE39ooywWPQ+god8j4GGoH5fu1KpQZG0QWLn9lX8jYBvKLw==
   dependencies:
     "@applitools/utils" "1.3.26"
+    "@types/node-fetch" "2.6.2"
+    abort-controller "3.0.0"
+    node-fetch "2.6.7"
+    proxy-agent "5.0.0"
+
+"@applitools/req@1.1.28":
+  version "1.1.28"
+  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.1.28.tgz#c345cb8b59705a9f21244261410ba4517e682611"
+  integrity sha512-YvfD1VIDPjruRbEDdc0IGNwLrJCBq1C7RbMNt3Vi+1ssSJWb0pENElm4nWRTnMMcL72KPIFZLuNpezvgChJzyA==
+  dependencies:
+    "@applitools/utils" "1.3.28"
     "@types/node-fetch" "2.6.2"
     abort-controller "3.0.0"
     node-fetch "2.6.7"
@@ -207,13 +227,13 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.13.tgz#ce6080abb6219315e29ac465f2bc306421bc9731"
   integrity sha512-JgGMvFUybXylIZga2TUa4A9opXZ3EBnZH4SS0ky5tXNckl4TQuFw98u6FTTnPBQmV2AZg9NhmosiTqs3oFYCRA==
 
-"@applitools/socket@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.2.tgz#59d8297ee24cea6b541a400aea9079cd21fb423f"
-  integrity sha512-X5xrL0zOoO6todYMQ7rEwbLBshi1UuE+RyVKTchVRmOdm3RMk1Dp0EWr552iNr2trKqKltoNDoWZUKtWUlBIqg==
+"@applitools/socket@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.4.tgz#056612c9a76b473640599b87f28a69a95e15a4b7"
+  integrity sha512-lYyO2xGXhg0A7OQyGT3XmzK6Nx1U1U9JDop0h8Kn94yTZ9JpF4bwfCmMQRL2kHngxN0rD/No4oRN10ohpmCbXA==
   dependencies:
-    "@applitools/logger" "1.1.40"
-    "@applitools/utils" "1.3.26"
+    "@applitools/logger" "1.1.42"
+    "@applitools/utils" "1.3.28"
 
 "@applitools/spec-driver-puppeteer@^1.1.36":
   version "1.1.36"
@@ -281,6 +301,11 @@
   version "1.3.26"
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.26.tgz#cb0a8cd64676bb4545ac8f88a57581f8b23d018d"
   integrity sha512-s5Q/tRJ5wjtzOXbIt0dWACcaOOz+cEh1jXsZLnCtrbMljnwsfjM/yVI88QnGSCr70grToxgo49X/E9Qnv1Nd/g==
+
+"@applitools/utils@1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.28.tgz#2e7ce12a9d1a1e40bf5bd868bb1c4b91b540bb93"
+  integrity sha512-KNBnuA4l89jNWBSAqanB9U9L3VlK2AEhUurKDCK8IFdtIbrq9GFsnM9wdV4DWEAGPYlR0OgJ1/GvjKVTw9vwSQ==
 
 "@babel/code-frame@^7.0.0":
   version "7.18.6"
@@ -1478,6 +1503,13 @@ debug@4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
   integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  dependencies:
+    ms "2.1.2"
+
+debug@4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
+  integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
   dependencies:
     ms "2.1.2"
 
