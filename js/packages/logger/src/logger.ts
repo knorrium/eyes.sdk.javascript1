@@ -3,12 +3,13 @@ import {type Handler} from './handler'
 import {type ConsoleHandler, makeConsoleHandler} from './handler-console'
 import {type FileHandler, makeFileHandler} from './handler-file'
 import {type RollingFileHandler, makeRollingFileHandler} from './handler-rolling-file'
+import {type DebugHandler, makeDebugHandler} from './handler-debug'
 import {type Printer, type PrinterOptions, makePrinter} from './printer'
 import {type LogLevelName, LogLevel} from './log-level'
 import {type ColoringOptions, format as defaultFormat} from './format'
 
 export type LoggerOptions = Omit<PrinterOptions, 'handler' | 'level' | 'colors'> & {
-  handler?: ConsoleHandler | FileHandler | RollingFileHandler | Handler
+  handler?: ConsoleHandler | FileHandler | RollingFileHandler | DebugHandler | Handler
   level?: LogLevelName | number
   colors?: boolean | ColoringOptions
   console?: boolean | Handler
@@ -36,7 +37,12 @@ export function makeLogger({
   console = true,
   extended = false,
 }: LoggerOptions & {extended?: boolean} = {}): Logger {
-  if (!handler) {
+  if (process.env.DEBUG) {
+    handler = {type: 'debug', label}
+    level = LogLevel.all
+    label = null
+    timestamp = false
+  } else if (!handler) {
     if (process.env.APPLITOOLS_LOG_FILE) {
       handler = {type: 'file', filename: process.env.APPLITOOLS_LOG_FILE}
     } else if (process.env.APPLITOOLS_LOG_DIR) {
@@ -73,6 +79,8 @@ export function makeLogger({
   if (utils.types.has(handler, 'type')) {
     if (handler.type === 'console') {
       handler = makeConsoleHandler()
+    } else if (handler.type === 'debug') {
+      handler = makeDebugHandler(handler)
     } else if (handler.type === 'file') {
       handler = makeFileHandler(handler)
       colors = undefined

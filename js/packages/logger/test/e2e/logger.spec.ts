@@ -2,6 +2,7 @@ import assert from 'assert'
 import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
+import childProcess from 'child_process'
 import * as utils from '@applitools/utils'
 import {makeLogger} from '../../src'
 
@@ -181,7 +182,61 @@ describe('logger', () => {
       assert.strictEqual(output, expected[index])
     })
 
-    fs.rmSync(dirname, {recursive: true})
+    await fs.promises.rmdir(dirname, {recursive: true})
+  })
+
+  it('handler debug', async () => {
+    // this is the test function that will be called by spawn to test the debug handler
+    // must use spawn to check the e2e flow
+    const child = childProcess.spawn(
+      process.execPath,
+      [
+        '-e',
+        `(${function () {
+          const {makeLogger} = require('../../dist')
+          let logger = makeLogger({label: 'label WITH SpAcEs AND uppeR CAseS'})
+          logger.log('log')
+          logger.warn('warn')
+          logger.error('error')
+          logger.fatal('fatal')
+          logger = makeLogger({label: 'label2', handler: logger, tags: {tag: '@@@'}})
+          logger.log('log2')
+          logger.warn('warn2')
+          logger.error('error2')
+          logger.fatal('fatal2')
+        }})()`,
+      ],
+      {
+        cwd: __dirname,
+        stdio: [0, 'pipe', 'pipe', 'ipc'],
+        env: {
+          APPLITOOLS_SHOW_LOGS: 'true',
+          DEBUG: '*',
+          DEBUG_HIDE_DATE: 'true',
+        },
+      },
+    )
+    let output = ''
+    child.stderr.on('data', data => {
+      output = `${output}${data}`
+    })
+
+    await new Promise(resolve => child.on('close', resolve))
+
+    assert.strictEqual(
+      output,
+      [
+        'appli:label-with-spaces-and-upper-cases [INFO ] log',
+        'appli:label-with-spaces-and-upper-cases [WARN ] warn',
+        'appli:label-with-spaces-and-upper-cases [ERROR] error',
+        'appli:label-with-spaces-and-upper-cases [FATAL] fatal',
+        'appli:label2 [INFO ] {"tag":"@@@"} log2',
+        'appli:label2 [WARN ] {"tag":"@@@"} warn2',
+        'appli:label2 [ERROR] {"tag":"@@@"} error2',
+        'appli:label2 [FATAL] {"tag":"@@@"} fatal2',
+        '',
+      ].join('\n'),
+    )
   })
 
   it('handler custom', () => {
