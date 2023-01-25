@@ -21,10 +21,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.26.tgz#cb0a8cd64676bb4545ac8f88a57581f8b23d018d"
   integrity sha512-s5Q/tRJ5wjtzOXbIt0dWACcaOOz+cEh1jXsZLnCtrbMljnwsfjM/yVI88QnGSCr70grToxgo49X/E9Qnv1Nd/g==
 
-"@applitools/utils@1.3.27":
-  version "1.3.27"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.27.tgz#ad5c0bf3b91944f811a2a1ace8719057615a3100"
-  integrity sha512-fN/ERSloJoYs2MqgxE7Hx44CUYHzyrs42RszT9ByWXGdxSNuXHvZ7qIOZk1HZSgvrLWKO1l9bJreIT/5Dt06lQ==
+"@applitools/utils@1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.28.tgz#2e7ce12a9d1a1e40bf5bd868bb1c4b91b540bb93"
+  integrity sha512-KNBnuA4l89jNWBSAqanB9U9L3VlK2AEhUurKDCK8IFdtIbrq9GFsnM9wdV4DWEAGPYlR0OgJ1/GvjKVTw9vwSQ==
 
 "@babel/code-frame@^7.0.0":
   version "7.16.7"
