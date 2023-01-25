@@ -62,12 +62,12 @@
     }
   },
   "dependencies": {
-    "@applitools/utils": "1.3.26",
+    "@applitools/utils": "1.3.27",
     "chalk": "4.1.2",
     "debug": "4.3.3"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.0",
+    "@applitools/bongo": "^2.2.2",
     "@types/debug": "^4.1.7",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
