@@ -1,11 +1,11 @@
-import type {TypedCore, TypedEyes, OpenSettings} from './types'
+import type {DriverTarget, TypedCore, TypedEyes, OpenSettings} from './types'
 import {type Renderer} from '@applitools/ufg-client'
 import {type Logger} from '@applitools/logger'
 
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type: TType
   settings: OpenSettings<TType>
-  target?: TDriver
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   cores: {[TKey in 'classic' | 'ufg']: TypedCore<TDriver, TContext, TElement, TSelector, TKey>}
   logger?: Logger
 }

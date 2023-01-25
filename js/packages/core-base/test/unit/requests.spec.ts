@@ -107,7 +107,7 @@ describe('requests', () => {
         },
         baselineEnvName: 'Baseline environment name',
         environmentName: 'My environment name',
-        egSessionId: null,
+        ecSessionId: null,
         environment: {
           deviceInfo: 'Desktop',
           displaySize: {width: 100, height: 201},
@@ -159,7 +159,7 @@ describe('requests', () => {
         agentId: 'test-core',
         appIdOrName: 'app-name',
         scenarioIdOrName: 'test-name',
-        egSessionId: null,
+        ecSessionId: null,
         environment: {
           bla: 'lala',
           yada: 'yada yada',

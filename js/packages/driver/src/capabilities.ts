@@ -18,7 +18,7 @@ export function parseCapabilities(capabilities: Capabilities): DriverInfo {
     isW3C: isW3C(capabilities),
     isMobile: isMobile(capabilities),
     isChrome: isChrome(capabilities),
-    isExecutionGridClient: Boolean(capabilities.applitools),
+    isECClient: Boolean(capabilities['applitools:isECClient']),
   }
 
   if (info.isMobile) {

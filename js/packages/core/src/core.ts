@@ -10,7 +10,7 @@ import {makeOpenEyes} from './open-eyes'
 import {makeMakeManager} from './make-manager'
 import {makeCloseBatch} from './close-batch'
 import {makeDeleteTest} from './delete-test'
-import {makeMakeEGClient} from './make-eg-client'
+import {makeMakeECClient} from './make-ec-client'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -45,6 +45,6 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
     makeManager: makeMakeManager({spec, concurrency, agentId, logger}),
     closeBatch: makeCloseBatch({core, logger}),
     deleteTest: makeDeleteTest({core, logger}),
-    makeEGClient: makeMakeEGClient({core, logger}),
+    makeECClient: makeMakeECClient({core, logger}),
   })
 }

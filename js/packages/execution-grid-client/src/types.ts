@@ -25,7 +25,11 @@ export interface ECClientSettings {
 export interface ECCapabilities {
   eyesServerUrl?: string
   apiKey?: string
-  timeout?: number | string
-  inactivityTimeout?: number | string
+  sessionName?: string
   useSelfHealing?: boolean
+  tunnel?: boolean
+  timeout?: number
+  inactivityTimeout?: number
+  requestDriverTimeout?: number
+  selfHealingMaxRetryTime?: number
 }

@@ -4,6 +4,7 @@ import {type Selector} from './selector'
 
 export type DriverInfo = {
   sessionId?: string
+  remoteHostname?: string
   browserName?: string
   browserVersion?: string
   platformName?: string
@@ -30,12 +31,12 @@ export type DriverInfo = {
   isMac?: boolean
   isWindows?: boolean
   isWebView?: boolean
+  isECClient?: boolean
   features?: {
     shadowSelector?: boolean
     allCookies?: boolean
     canExecuteOnlyFunctionScripts?: boolean
   }
-  isExecutionGridClient?: boolean
 }
 
 export type WaitOptions = {

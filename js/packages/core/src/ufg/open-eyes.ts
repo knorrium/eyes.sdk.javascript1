@@ -41,14 +41,13 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       eyes ? 'predefined eyes' : '',
     )
     const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: {disableHelper: true}}))
-    settings.environment ??= {}
-    settings.environment.egSessionId = driver?.isExecutionGrid ? driver.sessionId : null
-
     if (driver && !eyes) {
       const currentContext = driver.currentContext
       settings.environment ??= {}
-      settings.environment.egSessionId = driver?.isExecutionGrid ? driver.sessionId : null
-      if (settings.environment?.viewportSize) {
+      if (driver.isEC) {
+        settings.environment.ecSessionId = driver.sessionId
+      }
+      if (settings.environment.viewportSize) {
         await driver.setViewportSize(settings.environment.viewportSize)
       }
       await currentContext.focus()
@@ -62,7 +61,6 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
     })
 
     const getBaseEyes = makeGetBaseEyes({settings, eyes, core, client, logger})
-
     return utils.general.extend({}, eyes => {
       const storage = []
       let closed = false

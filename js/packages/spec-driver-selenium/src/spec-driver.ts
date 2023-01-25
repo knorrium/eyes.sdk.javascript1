@@ -230,12 +230,14 @@ export async function getDriverInfo(driver: Driver): Promise<DriverInfo> {
   return {sessionId: session.getId()}
 }
 export async function getCapabilities(driver: Driver): Promise<Record<string, any>> {
-  try {
-    return await executeCustomCommand(driver, new Command('getSessionDetails'))
-  } catch {
-    const capabilities = await driver.getCapabilities()
-    return Array.from(capabilities.keys()).reduce((obj, key) => Object.assign(obj, {key: capabilities.get(key)}), {})
-  }
+  return (
+    (await executeCustomCommand(driver, new Command('getSessionDetails')).catch(() => null)) ??
+    (await driver
+      .getCapabilities()
+      .then(capabilities =>
+        Array.from(capabilities.keys()).reduce((obj, key) => Object.assign(obj, {[key]: capabilities.get(key)}), {}),
+      ))
+  )
 }
 export async function getTitle(driver: Driver): Promise<string> {
   return driver.getTitle()

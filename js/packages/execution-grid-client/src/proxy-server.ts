@@ -73,16 +73,14 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
         } else {
           requestLogger.log('No self-healing metadata found')
         }
-        response.end(JSON.stringify(responseBody))
+        response
+          .writeHead(proxyResponse.status, Object.fromEntries(proxyResponse.headers.entries()))
+          .end(JSON.stringify(responseBody))
       } else if (request.method === 'GET' && /^\/session\/[^\/]+\/applitools\/metadata?$/.test(url)) {
         const session = sessions.get(getSessionId(url))!
         requestLogger.log('Session metadata requested, returning', session.metadata)
         response.writeHead(200).end(JSON.stringify({value: session.metadata}))
         session.metadata = undefined
-      } else if (request.method === 'GET' && /^\/session\/[^\/]+\/?$/.test(url)) {
-        const sessionDetails = {sessionId: getSessionId(url), applitools: true}
-        requestLogger.log('Session details requested, returning', sessionDetails)
-        response.writeHead(200).end(JSON.stringify({value: sessionDetails}))
       } else {
         requestLogger.log('Passthrough request')
         return await req(url, {io: {request, response}, logger: requestLogger})
@@ -130,19 +128,13 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
 
     logger.log(`Request was intercepted with body:`, requestBody)
 
+    const options = {...settings.capabilities, ...extractCapability(requestBody, 'applitools:options')}
+
     const session = {credentials: {}} as Session
     session.credentials.eyesServerUrl =
-      extractCapability(requestBody, 'applitools:eyesServerUrl') ??
-      extractCapability(requestBody, 'applitools:options')?.eyesServerUrl ??
-      settings.capabilities?.eyesServerUrl
-    session.credentials.apiKey =
-      extractCapability(requestBody, 'applitools:apiKey') ??
-      extractCapability(requestBody, 'applitools:options')?.apiKey ??
-      settings.capabilities?.apiKey
-    if (
-      extractCapability(requestBody, 'applitools:tunnel') ??
-      extractCapability(requestBody, 'applitools:options')?.tunnel
-    ) {
+      extractCapability(requestBody, 'applitools:eyesServerUrl') ?? options.eyesServerUrl
+    session.credentials.apiKey = extractCapability(requestBody, 'applitools:apiKey') ?? options.apiKey
+    if (extractCapability(requestBody, 'applitools:tunnel') ?? options.tunnel) {
       session.tunnels = await tunnelManager.acquire(session.credentials)
     }
 
@@ -153,18 +145,12 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
         caps[`applitools:x-tunnel-id-${index}`] = tunnel.tunnelId
         return caps
       }, {} as Record<`applitools:x-tunnel-id-${number}`, string>),
-      'applitools:timeout':
-        extractCapability(requestBody, 'applitools:timeout') ??
-        extractCapability(requestBody, 'applitools:options')?.timeout ??
-        settings.capabilities?.timeout,
-      'applitools:inactivityTimeout':
-        extractCapability(requestBody, 'applitools:inactivityTimeout') ??
-        extractCapability(requestBody, 'applitools:options')?.inactivityTimeout ??
-        settings.capabilities?.inactivityTimeout,
       'applitools:useSelfHealing':
-        extractCapability(requestBody, 'applitools:useSelfHealing') ??
-        extractCapability(requestBody, 'applitools:options')?.useSelfHealing ??
-        settings.capabilities?.useSelfHealing,
+        extractCapability(requestBody, 'applitools:useSelfHealing') ?? options.useSelfHealing,
+      'applitools:sessionName': extractCapability(requestBody, 'applitools:sessionName') ?? options.sessionName,
+      'applitools:timeout': extractCapability(requestBody, 'applitools:timeout') ?? options.timeout,
+      'applitools:inactivityTimeout':
+        extractCapability(requestBody, 'applitools:inactivityTimeout') ?? options.inactivityTimeout,
     }
 
     if (requestBody.capabilities) {
@@ -215,8 +201,17 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
         return task(signal, attempt + 1)
       } else {
         queue.uncork()
-        if (responseBody.value?.sessionId) sessions.set(responseBody.value.sessionId, session)
-        response.end(JSON.stringify(responseBody))
+        if (responseBody.value) {
+          sessions.set(responseBody.value.sessionId, session)
+          responseBody.value.capabilities ??= {}
+          responseBody.value.capabilities['applitools:isECClient'] = true
+          if (proxyResponse.headers.has('content-length')) {
+            proxyResponse.headers.set('content-length', Buffer.byteLength(JSON.stringify(responseBody)).toString())
+          }
+        }
+        response
+          .writeHead(proxyResponse.status, Object.fromEntries(proxyResponse.headers.entries()))
+          .end(JSON.stringify(responseBody))
         return
       }
     }

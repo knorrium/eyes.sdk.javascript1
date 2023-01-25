@@ -1,7 +1,7 @@
 import type {TypedCore, Batch, Eyes, Config, OpenSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
-import {type SpecDriver} from '@applitools/driver'
+import {makeDriver, type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
 import {makeCore as makeUFGCore} from './ufg/core'
 import {makeGetTypedEyes} from './get-typed-eyes'
@@ -10,8 +10,8 @@ import {makeCheckAndClose} from './check-and-close'
 import {makeLocateText} from './locate-text'
 import {makeExtractText} from './extract-text'
 import {makeClose} from './close'
-import * as utils from '@applitools/utils'
 import {extractCIProvider} from './utils/extract-ci-provider'
+import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type?: TType
@@ -65,6 +65,13 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
       const ufgConfig = config as Config<TElement, TSelector, 'ufg'>
       ufgSettings.renderConcurrency ??= ufgConfig?.check?.renderers?.length
     }
+
+    const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
+    if (driver?.isEC) {
+      settings.properties ??= []
+      settings.properties.push({name: 'Running platform', value: 'Execution cloud'})
+    }
+
     core.logEvent({
       settings: {
         serverUrl: settings.serverUrl,
@@ -77,7 +84,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
           testConcurrency: concurrency,
           concurrentRendersPerTest: (settings as OpenSettings<'ufg'>).renderConcurrency,
           node: {version: process.version, platform: process.platform, arch: process.arch},
-          driverUrl: target && spec?.extractHostName?.(target),
+          driverUrl: driver?.remoteHostname,
           extractedCIProvider: extractCIProvider(),
         },
       },
@@ -86,7 +93,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
     const getTypedEyes = makeGetTypedEyes({
       type,
       settings: settings as OpenSettings<TType>,
-      target,
+      target: driver,
       cores: cores ?? {
         ufg: makeUFGCore({spec, core, concurrency: concurrency ?? 5, logger}),
         classic: makeClassicCore({spec, core, logger}),
@@ -96,10 +103,10 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
     const eyes = await getTypedEyes({logger})
     return utils.general.extend(eyes, eyes => ({
       getTypedEyes,
-      check: makeCheck({type, eyes, target, spec, logger}),
-      checkAndClose: makeCheckAndClose({type, eyes, target, spec, logger}),
-      locateText: makeLocateText({eyes, logger}),
-      extractText: makeExtractText({eyes, logger}),
+      check: makeCheck({type, eyes, target: driver, spec, logger}),
+      checkAndClose: makeCheckAndClose({type, eyes, target: driver, spec, logger}),
+      locateText: makeLocateText({eyes, target: driver, logger}),
+      extractText: makeExtractText({eyes, target: driver, logger}),
       close: makeClose({eyes, logger}),
     })) as Eyes<TDriver, TContext, TElement, TSelector, TType>
   }

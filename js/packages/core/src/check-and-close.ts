@@ -1,11 +1,11 @@
-import type {Target, Eyes, Config, CheckSettings, CloseSettings, TestResult} from './types'
+import type {Target, DriverTarget, Eyes, Config, CheckSettings, CloseSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
 
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type?: TType
   eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
-  target?: Target<TDriver, TContext, TElement, TSelector, TType>
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   logger: Logger
 }
@@ -19,7 +19,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector, TDefau
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   return async function checkAndClose<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as any,
-    target = defaultTarget as any,
+    target = defaultTarget,
     settings = {},
     config,
     logger = defaultLogger,

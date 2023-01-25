@@ -1,5 +1,5 @@
 import type {Core as BaseCore} from '@applitools/core-base'
-import {type EGClient, type EGClientSettings} from '@applitools/execution-grid-client'
+import {type EGClient, type EGClientSettings} from '@applitools/ec-client'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
@@ -8,12 +8,13 @@ type Options = {
   logger: Logger
 }
 
-export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
-  return async function makeEGClient({
+export function makeMakeECClient({core, logger: defaultLogger}: Options) {
+  return utils.general.cachify(makeECClient, ([options]) => options?.settings)
+  async function makeECClient({
     settings,
     logger = defaultLogger,
   }: {settings?: EGClientSettings; logger?: Logger} = {}): Promise<EGClient> {
-    const {makeEGClient} = require('@applitools/execution-grid-client')
+    const {makeECClient} = require('@applitools/ec-client')
     const serverUrl =
       settings.capabilities.eyesServerUrl ??
       utils.general.getEnvValue('EYES_SERVER_URL') ??
@@ -25,7 +26,7 @@ export function makeMakeEGClient({core, logger: defaultLogger}: Options) {
     settings.capabilities ??= {}
     settings.capabilities.useSelfHealing ??=
       utils.general.getEnvValue('USE_SELF_HEALING', 'boolean') ?? account.selfHealingEnabled
-    const client = await makeEGClient({settings, logger})
+    const client = await makeECClient({settings, logger})
     return client
   }
 }

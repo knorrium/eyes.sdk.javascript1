@@ -57,7 +57,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   private _handlers: SessionEventHandlers = new SessionEventHandlers()
 
   static async getExecutionCloudUrl(config?: Configuration<unknown, unknown>): Promise<string> {
-    const client = await this._spec.makeEGClient({
+    const client = await this._spec.makeECClient({
       settings: {
         proxy: config?.proxy,
         capabilities: {eyesServerUrl: config?.serverUrl, apiKey: config?.apiKey},

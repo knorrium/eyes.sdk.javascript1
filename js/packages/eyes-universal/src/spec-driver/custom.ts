@@ -45,8 +45,8 @@ export function makeSpec(options: {
           (utils.types.isString(selector.selector) || utils.types.has(selector, 'applitools-ref-id')))
       )
     },
-    extractContext(element: Driver & {context: Context}): Context {
-      return element.context
+    extractContext(driver: Driver & {context: Context}): Context {
+      return driver.context
     },
     extractSelector(element: Element & {selector: Selector}): Selector {
       return element.selector

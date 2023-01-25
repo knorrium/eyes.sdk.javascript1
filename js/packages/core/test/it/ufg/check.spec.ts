@@ -4,7 +4,6 @@ import {makeFakeCore} from '../../utils/fake-base-core'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import * as utils from '@applitools/utils'
 import assert from 'assert'
-import {type Renderer} from '@applitools/ufg-client'
 
 describe('check', () => {
   it('renders multiple viewport sizes', async () => {
@@ -284,7 +283,7 @@ describe('check', () => {
     assert.deepStrictEqual(originalDocument, resultDocument)
   })
 
-  it('remove duplicated renderers', async function () {
+  it('adds unique id to duplicated renderers', async function () {
     const core = makeCore({core: makeFakeCore(), client: makeFakeClient(), concurrency: 10})
 
     const eyes = await core.openEyes({
@@ -321,89 +320,4 @@ describe('check', () => {
       [[true], [true]],
     )
   })
-
-  const genericTests: {input: Renderer[]; output: Renderer[]}[] = [
-    {
-      input: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'chrome', width: 100, height: 100},
-      ],
-      output: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'chrome', width: 100, height: 100},
-      ],
-    },
-    {
-      input: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100},
-      ],
-      output: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100, id: '1'},
-      ],
-    },
-    {
-      input: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100, id: 'bla'},
-      ],
-      output: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100, id: 'bla'},
-      ],
-    },
-    {
-      input: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100, id: ''},
-      ],
-      output: [
-        {name: 'firefox', width: 100, height: 100},
-        {name: 'firefox', width: 100, height: 100, id: '1'},
-        {name: 'firefox', width: 100, height: 100, id: ''},
-      ],
-    },
-    {
-      input: [
-        {name: 'firefox', width: 100, height: 100, id: 'bla'},
-        {name: 'firefox', width: 100, height: 100, id: 'bla'},
-      ],
-      output: [
-        {name: 'firefox', width: 100, height: 100, id: 'bla'},
-        {name: 'firefox', width: 100, height: 100, id: 'bla-1'},
-      ],
-    },
-  ]
-  for (let i = 0; i < genericTests.length; i++) {
-    it(`remove duplicated renderers generic test ${i}`, async function () {
-      const {input, output} = genericTests[i]
-      const core = makeCore({core: makeFakeCore(), client: makeFakeClient(), concurrency: 10})
-
-      const eyes = await core.openEyes({
-        settings: {
-          serverUrl: 'server-url',
-          apiKey: 'api-key',
-          appName: 'app-name',
-          testName: 'test-name',
-        },
-      })
-
-      await eyes.check({
-        target: {cdt: []},
-        settings: {
-          name: 'good',
-          renderers: input,
-        },
-      })
-
-      const results = await eyes.close()
-
-      assert.deepStrictEqual(
-        results.map(result => result.renderer),
-        output,
-      )
-    })
-  }
 })

@@ -9,9 +9,9 @@ import {takeSnapshots} from './utils/take-snapshots'
 import {waitForLazyLoad} from '../utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
+import {uniquifyRenderers} from './utils/uniquify-renderers'
 import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
-import addKeyToDuplicatedValuesInArray from './utils/add-key-to-duplicated-values-in-array'
 import chalk from 'chalk'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
@@ -49,23 +49,24 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
 
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({settings})
 
-    let snapshots: DomSnapshot[] | AndroidSnapshot[] | IOSSnapshot[],
-      snapshotUrl: string,
-      snapshotTitle: string,
-      userAgent: string,
-      regionToTarget: Selector | Region,
-      selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
-
-    const uniqueRenderers = addKeyToDuplicatedValuesInArray(settings.renderers ?? [])
-
+    let snapshots: DomSnapshot[] | AndroidSnapshot[] | IOSSnapshot[]
+    let snapshotUrl: string
+    let snapshotTitle: string
+    let userAgent: string
+    let regionToTarget: Selector | Region
+    let selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
+    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
     if (isDriver(target, spec)) {
       const driver = await makeDriver({spec, driver: target, logger})
       await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
-      if (driver.isWeb && uniqueRenderers.length === 0) {
-        const viewportSize = await driver.getViewportSize()
-        uniqueRenderers.push({name: 'chrome', ...viewportSize})
+      if (uniqueRenderers.length === 0) {
+        if (driver.isWeb) {
+          const viewportSize = await driver.getViewportSize()
+          uniqueRenderers.push({name: 'chrome', ...viewportSize})
+        } else {
+          // TODO add default nmg renderers
+        }
       }
-
       let cleanupGeneratedSelectors
       if (driver.isWeb) {
         userAgent = driver.userAgent

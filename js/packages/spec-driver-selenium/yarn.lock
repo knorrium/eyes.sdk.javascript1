@@ -7,12 +7,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.11.tgz#1f8066698389f6c52710405b472ef9ec99b97945"
   integrity sha512-JCJ4RGxH6pTQGOyx9yK35TrQy2whoh+d8pwJchNe78Vy0+I96iMSazvWnW/qW03YoZGyxZO7G4pv69VE3Vhl/w==
 
-"@applitools/bongo@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.0.tgz#c8cae6a68ea4ec0955ecb5fe88ab35a523a0cf7f"
-  integrity sha512-XgEs7ts7qkpPpTDJZqpXkegPXRSAqazNhXuXm3kxpGCixvHz4H2Zfd1rbNePNzhtB/8xBrKpABzaEJL7VsozrA==
+"@applitools/bongo@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.2.tgz#6bc9a030ee37af0c452bfcb781fc1c34f1134b3e"
+  integrity sha512-5t3fIxokMAi2LLWPAxNFsnqIx98cwExwZUd9dHXfhbqCcXdU2vfgHujbCZ521uAGLXuwIlKQlnqXal04HHkrNQ==
   dependencies:
-    "@applitools/utils" "1.3.10"
+    "@applitools/utils" "1.3.26"
     chalk "3.0.0"
     compare-versions "4.1.3"
     js-yaml "4.1.0"
@@ -67,11 +67,6 @@
   integrity sha512-N7kMOh/XDCE0t/ObpxZR/XOnle38ixUbFUps2ivSs15QY+XVv87kIpyOfPhIRtHz3HnvEH1CKl6eum5XktuGxg==
   dependencies:
     node-fetch "2.6.1"
-
-"@applitools/utils@1.3.10":
-  version "1.3.10"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.10.tgz#307359d6f668c5fe6b3a7d213405ebe3bf2235b6"
-  integrity sha512-CI/5BLB0D/aZn6uL8JJmsErI+TOHCa4Gz5Wi8sJknuPz/V9Ws6jIh9ZCTzvOCDUIp99qLJwD6TSA2BY9aMhCNw==
 
 "@applitools/utils@1.3.26":
   version "1.3.26"

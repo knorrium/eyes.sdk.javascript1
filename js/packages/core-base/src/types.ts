@@ -96,7 +96,7 @@ type Environment = {
     type?: 'web' | 'native'
     renderer?: Record<string, any>
   }
-  egSessionId?: string
+  ecSessionId?: string
 }
 export interface OpenSettings extends ServerSettings {
   appName: string

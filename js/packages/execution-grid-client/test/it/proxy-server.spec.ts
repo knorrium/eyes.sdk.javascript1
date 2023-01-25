@@ -26,6 +26,8 @@ describe('proxy-server', () => {
     nock('https://exec-wus.applitools.com').persist().delete('/session/session-guid').reply(200, {value: null})
 
     const driver = await new Builder().forBrowser('chrome').usingServer(proxy.url).build()
+    const capabilities = await driver.getCapabilities()
+    assert.strictEqual(capabilities.get('applitools:isECClient'), true)
     await driver.quit()
   })
 

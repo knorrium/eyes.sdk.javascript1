@@ -115,7 +115,7 @@ export function makeCoreRequests({
             notifyOnCompletion: settings.batch.notifyOnCompletion,
             properties: settings.batch.properties,
           },
-          egSessionId: settings.environment?.egSessionId ?? null,
+          egSessionId: settings.environment?.ecSessionId ?? null,
           environment:
             settings.environment &&
             (settings.environment.rawEnvironment ?? {

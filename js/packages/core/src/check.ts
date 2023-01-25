@@ -1,4 +1,4 @@
-import type {Target, Eyes, Config, CheckSettings, CheckResult} from './types'
+import type {Target, DriverTarget, Eyes, Config, CheckSettings, CheckResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
 import * as utils from '@applitools/utils'
@@ -7,7 +7,7 @@ import chalk from 'chalk'
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   type?: TType
   eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
-  target?: Target<TDriver, TContext, TElement, TSelector, TType>
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   logger?: Logger
 }
@@ -22,7 +22,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
   let stepIndex = 0
   return async function check<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as any,
-    target = defaultTarget as any,
+    target = defaultTarget,
     settings,
     config,
     logger = defaultLogger,

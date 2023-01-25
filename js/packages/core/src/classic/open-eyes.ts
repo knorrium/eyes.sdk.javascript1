@@ -42,12 +42,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
     if (driver && !eyes) {
       const currentContext = driver.currentContext
       settings.environment ??= {}
-      settings.environment.egSessionId = driver?.isExecutionGrid ? driver.sessionId : null
-      if (!settings.environment.viewportSize || driver.isMobile) {
-        const size = await driver.getViewportSize()
-        settings.environment.viewportSize = utils.geometry.scale(size, driver.viewportScale)
-      } else {
-        await driver.setViewportSize(settings.environment.viewportSize)
+      if (driver.isEC) {
+        settings.environment.ecSessionId = driver.sessionId
       }
       if (driver.isWeb) {
         settings.environment.userAgent ??= driver.userAgent
@@ -75,6 +71,12 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
         if (driver.platformVersion) {
           settings.environment.os += ` ${driver.platformVersion}`
         }
+      }
+      if (!settings.environment.viewportSize || driver.isMobile) {
+        const size = await driver.getViewportSize()
+        settings.environment.viewportSize = utils.geometry.scale(size, driver.viewportScale)
+      } else {
+        await driver.setViewportSize(settings.environment.viewportSize)
       }
       await currentContext.focus()
     }

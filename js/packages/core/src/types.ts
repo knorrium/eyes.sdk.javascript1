@@ -1,5 +1,5 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {EGClient} from '@applitools/execution-grid-client'
+import type {ECClient} from '@applitools/ec-client'
 import type * as AutomationCore from './automation/types'
 import type * as ClassicCore from './classic/types'
 import type * as UFGCore from './ufg/types'
@@ -30,7 +30,7 @@ export type Target<TDriver, TContext, TElement, TSelector, TType extends 'classi
 
 export interface Core<TDriver, TContext, TElement, TSelector>
   extends AutomationCore.Core<TDriver, TContext, TElement, TSelector> {
-  makeEGClient(options?: {settings?: any; logger?: Logger}): Promise<EGClient>
+  makeECClient(options?: {settings?: any; logger?: Logger}): Promise<ECClient>
   makeManager<TType extends 'classic' | 'ufg' = 'classic'>(options?: {
     type: TType
     concurrency?: TType extends 'ufg' ? number : never

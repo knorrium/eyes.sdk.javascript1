@@ -9,6 +9,7 @@ import {takeSnapshots} from './utils/take-snapshots'
 import {waitForLazyLoad} from '../utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
+import {uniquifyRenderers} from './utils/uniquify-renderers'
 import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
 import chalk from 'chalk'
@@ -50,19 +51,22 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
 
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({settings})
 
-    let snapshotUrl: string,
-      snapshotTitle: string,
-      userAgent: string,
-      regionToTarget: Selector | Region,
-      selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
+    let snapshotUrl: string
+    let snapshotTitle: string
+    let userAgent: string
+    let regionToTarget: Selector | Region
+    let selectorsToCalculate: {originalSelector: Selector; safeSelector: Selector}[]
+    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
     if (isDriver(target, spec)) {
-      // TODO driver custom config
       const driver = await makeDriver({spec, driver: target, logger})
-      if (driver.isWeb && (!settings.renderers || settings.renderers.length === 0)) {
-        const viewportSize = await driver.getViewportSize()
-        settings.renderers = [{name: 'chrome', ...viewportSize}]
+      if (uniqueRenderers.length === 0) {
+        if (driver.isWeb) {
+          const viewportSize = await driver.getViewportSize()
+          uniqueRenderers.push({name: 'chrome', ...viewportSize})
+        } else {
+          // TODO add default nmg renderers
+        }
       }
-
       let cleanupGeneratedSelectors
       if (driver.isWeb) {
         userAgent = driver.userAgent

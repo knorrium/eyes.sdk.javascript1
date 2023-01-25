@@ -29,9 +29,11 @@ export async function makeECClient({
     utils.general.getEnvValue('SERVER_URL') ??
     'https://eyesapi.applitools.com'
   settings.capabilities.apiKey ??= utils.general.getEnvValue('API_KEY')
-  settings.capabilities.timeout ??= utils.general.getEnvValue('EG_TIMEOUT')
-  settings.capabilities.inactivityTimeout ??= utils.general.getEnvValue('EG_INACTIVITY_TIMEOUT')
+  settings.capabilities.tunnel ??= utils.general.getEnvValue('TUNNEL', 'boolean')
   settings.capabilities.useSelfHealing ??= utils.general.getEnvValue('USE_SELF_HEALING', 'boolean')
+  settings.capabilities.sessionName ??= utils.general.getEnvValue('SESSION_NAME')
+  settings.capabilities.timeout ??= utils.general.getEnvValue('EG_TIMEOUT', 'number')
+  settings.capabilities.inactivityTimeout ??= utils.general.getEnvValue('EG_INACTIVITY_TIMEOUT', 'number')
 
   const server = await makeServer({settings: settings as ECClientSettings, logger})
   return server

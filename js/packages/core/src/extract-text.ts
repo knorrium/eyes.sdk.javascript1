@@ -1,19 +1,21 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {Target, Eyes, Config, ExtractTextSettings} from './types'
+import type {Target, DriverTarget, Eyes, Config, ExtractTextSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
+  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   logger: Logger
 }
 
 export function makeExtractText<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
   eyes,
+  target: defaultTarget,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector, TType>) {
   return async function extractText({
-    target,
+    target = defaultTarget,
     settings,
     config,
     logger = defaultLogger,

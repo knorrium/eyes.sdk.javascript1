@@ -43,7 +43,7 @@
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "bin": {
-    "ec-client": "./dist/cli.js"
+    "ec-client": "./dist/cli.js",
     "eg-client": "./dist/cli.js"
   },
   "files": [
