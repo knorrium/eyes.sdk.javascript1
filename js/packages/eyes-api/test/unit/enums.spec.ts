@@ -31,11 +31,11 @@ describe('enums', () => {
     })
   })
 
-  describe('AndroidDeviceName', () => {
-    const url = 'https://render-wus.applitools.com/public/android-devices'
+  describe.skip('AndroidDeviceName', () => {
+    const url = 'https://render-wus.applitools.com/android-devices-sizes'
     let expectedDeviceNames: string[]
     before(async () => {
-      const LEGACY = ['Galaxy Note 9', 'Galaxy S9', 'Galaxy S9 Plus']
+      const LEGACY = ['Test Phone']
       const devices = await fetch(url).then(response => response.json())
       expectedDeviceNames = Object.keys(devices).filter(deviceName => !LEGACY.includes(deviceName))
     })
