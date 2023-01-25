@@ -23,7 +23,7 @@ export enum AndroidDeviceNameEnum {
   Sony_Xperia_1_II = 'Sony Xperia 1 II',
   Sony_Xperia_10_II = 'Sony Xperia 10 II',
   Sony_Xperia_Ace_II = 'Sony Xperia Ace II',
-  Huawei_P30_Lite = 'Huawei P30 Lite'
+  Huawei_P30_Lite = 'Huawei P30 Lite',
 }
 
 export type AndroidDeviceName = `${AndroidDeviceNameEnum}`
