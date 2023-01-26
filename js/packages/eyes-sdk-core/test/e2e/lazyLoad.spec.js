@@ -15,9 +15,9 @@ describe('lazyLoad', () => {
   })
 
   afterEach(async () => {
-    if (destroyDriver) await destroyDriver()
     if (eyes) await eyes.abort()
     await manager.closeManager()
+    if (destroyDriver) await destroyDriver()
   })
 
   it('test lazyLoad with layoutBreakpoints - checkSettings', async () => {
