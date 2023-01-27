@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/eyes-universal":
   feature:
-    -
+    - 
   bug-fix:
     - 
 "@applitools/eyes-selenium":
@@ -20,9 +20,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
+    - 
   bug-fix:
-    - Fixed issue with sessionId on ufg
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 

@@ -10,6 +10,13 @@
 
 
 
+## 5.40.2 - 2023/1/27
+
+### Features
+- Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
+### Bug fixes
+- Fixed issue with sessionId on ufg
+
 ## 5.40.1 - 2023/1/23
 
 ### Features
