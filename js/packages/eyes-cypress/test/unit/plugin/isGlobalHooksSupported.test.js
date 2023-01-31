@@ -1,7 +1,7 @@
 'use strict'
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
-const isGlobalHooksSupported = require('../../../src/plugin/isGlobalHooksSupported')
+const isGlobalHooksSupported = require('../../../dist/plugin/isGlobalHooksSupported').default
 
 describe('isGlobalHooksSupported', () => {
   it('should return true if version >= 6.2.0 and experimentalRunEvents flag is set', () => {

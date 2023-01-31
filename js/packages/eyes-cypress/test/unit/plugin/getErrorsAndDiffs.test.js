@@ -2,7 +2,7 @@
 
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
-const getErrorsAndDiffs = require('../../../src/plugin/getErrorsAndDiffs')
+const getErrorsAndDiffs = require('../../../dist/plugin/getErrorsAndDiffs').default
 
 describe('getErrorAndDiffs', () => {
   it('works', () => {

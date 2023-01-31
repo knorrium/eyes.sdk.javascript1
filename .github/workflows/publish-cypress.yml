@@ -8,10 +8,18 @@ on:
         type: choice
         options: [patch, minor, major]
         default: patch
+      multiversion:
+        description: test multiple cypress version
+        type: boolean
+        default: true
       multienv:
         description: test on multiple environments
         type: boolean
         default: true
+      dryRun:
+        description: run all the publish process without publish step
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       version:
@@ -41,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environments: ${{steps.prepare.outputs.environments}}
+      versions: ${{steps.prepare.outputs.versions}}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
@@ -64,10 +73,19 @@ jobs:
         run: |
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            echo "::set-output name=environments::[{\"node-version\":16}, {\"node-version\":14}, {\"node-version\":12}]"
+            ENVIRONMENTS="[{\"node-version\":16}, {\"node-version\":14}, {\"node-version\":12}]"
           else
-            echo "::set-output name=environments::[{\"node-version\":16}]"
+            ENVIRONMENTS="[{\"node-version\":16}]"
           fi
+          echo "environments=${ENVIRONMENTS}" >> $GITHUB_OUTPUT
+
+          if [${{github.event.inputs.multiversion}} = true]
+          then
+            VERSIONS="[{\"cypress-version\":12},{\"cypress-version\":11},{\"cypress-version\":10},{\"cypress-version\":9}]"
+          else
+            VERSIONS="[{\"cypress-version\":12}]"
+          fi
+          echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
   test:
     needs: [verify]
     strategy:
@@ -90,8 +108,32 @@ jobs:
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/eyes-cypress
+  test-cypress-versions:
+    needs: [verify]
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.verify.outputs.versions)}}
+    name: 'Test (cypress: ${{matrix.cypress-version}})'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+          always-auth: true
+      - name: Run tests
+        uses: ./.github/actions/tests
+        with:
+          test-type: 'ts:run:${{matrix.cypress-version}}'
+          working-directory: ./js/packages/eyes-cypress
   publish:
-    needs: [test]
+    if: ${{!github.event.inputs.dryRun}}
+    needs: [test, test-cypress-versions]
     name: Publish
     runs-on: ubuntu-latest
     steps:

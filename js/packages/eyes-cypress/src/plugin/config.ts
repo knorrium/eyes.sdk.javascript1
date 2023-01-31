@@ -1,19 +1,12 @@
-'use strict'
-const utils = require('@applitools/utils')
-const {configParams} = require('./configParams')
+import * as utils from '@applitools/utils'
+import configParams from './configParams'
 const DEFAULT_TEST_CONCURRENCY = 5
-const uuid = require('uuid')
+import * as uuid from 'uuid'
+import {type EyesPluginConfig} from './'
 
-function makeConfig() {
+export default function makeConfig(): {config: any; eyesConfig: EyesPluginConfig} {
   const config = utils.config.getConfig({
-    params: [
-      ...configParams,
-      'failCypressOnDiff',
-      'tapDirPath',
-      'tapFileName',
-      'disableBrowserFetching',
-      'testConcurrency',
-    ],
+    params: [...configParams, 'failCypressOnDiff', 'tapDirPath', 'tapFileName', 'disableBrowserFetching', 'testConcurrency'],
   })
 
   if ((!config.batch || !config.batch.id) && !config.batchId) {
@@ -51,5 +44,3 @@ function makeConfig() {
 
   return {config, eyesConfig}
 }
-
-module.exports = makeConfig

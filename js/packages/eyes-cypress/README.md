@@ -45,12 +45,38 @@ Normally, this is `cypress/plugins/index.js`. You can read more about it in Cypr
 
  #### Cypress version >= 10:
 
- Add the following code to your `cypress.config.js` file after `module.exports`:
+ Add the following code to your:
+
+ ##### `cypress.config.js`
 
 ```js
-require('@applitools/eyes-cypress')(module)
+const { defineConfig } = require('cypress')
+const eyesPlugin = require('@applitools/eyes-cypress')
+module.exports = eyesPlugin(defineConfig({
+  // the e2e or component configuration
+  e2e: {
+    setupNodeEvents(on, config) {
+    }
+  }
+}))
 ```
+
+##### `cypress.config.ts`
+
+```typescript
+import { defineConfig } from 'cypress'
+import eyesPlugin from '@applitools/eyes-cypress'
+export default eyesPlugin(defineConfig({
+  // the e2e or component configuration
+  e2e: {
+    setupNodeEvents(on, config) {
+    }
+  }
+}))
+```
+
 This file is normally at the root of the project
+
 ##### 2. Configure custom commands
 
 Eyes-Cypress exposes new commands to your tests. This means that more methods will be available on the `cy` object. To enable this, it's required to configure these custom commands.

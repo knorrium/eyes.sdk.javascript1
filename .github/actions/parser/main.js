@@ -76,7 +76,8 @@ async function getPackages() {
       path: packagePath,
       tag: `${manifest.name}@`,
       framework: Object.keys(manifest.peerDependencies ?? {})[0],
-      dependencies: [...Object.keys(manifest.dependencies ?? {}), ...Object.keys(manifest.devDependencies ?? {})]
+      dependencies: [...Object.keys(manifest.dependencies ?? {}), ...Object.keys(manifest.devDependencies ?? {})],
+      xvfb: manifest.xvfb
     }
     return packages
   }, Promise.resolve({}))
@@ -183,7 +184,8 @@ function createJobs(input) {
         [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_VERSION`]: frameworkVersion,
         [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol
       },
-      requested: true
+      requested: true,
+      xvfb: packageInfo.xvfb,
     }
   
     jobs[allowVariations ? job.displayName : job.name] = job

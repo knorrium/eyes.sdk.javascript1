@@ -1,7 +1,6 @@
-'use strict'
-function getErrorsAndDiffs(testResultsArr) {
+export default function getErrorsAndDiffs(testResultsArr: any) {
   return testResultsArr.reduce(
-    ({failed, diffs, passed}, testResults) => {
+    ({failed, diffs, passed}: any, testResults: any) => {
       if (testResults instanceof Error || testResults.error) {
         failed.push(testResults)
       } else {
@@ -11,9 +10,7 @@ function getErrorsAndDiffs(testResultsArr) {
         } else {
           if (testStatus === 'Unresolved') {
             if (testResults.isNew) {
-              testResults.error = new Error(
-                `${testResults.name}. Please approve the new baseline at ${testResults.url}`,
-              )
+              testResults.error = new Error(`${testResults.name}. Please approve the new baseline at ${testResults.url}`)
               failed.push(testResults)
             } else {
               diffs.push(testResults)
@@ -29,5 +26,3 @@ function getErrorsAndDiffs(testResultsArr) {
     {failed: [], diffs: [], passed: []},
   )
 }
-
-module.exports = getErrorsAndDiffs

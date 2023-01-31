@@ -6,7 +6,7 @@ const path = require('path')
 const pexec = p(exec)
 const fs = require('fs')
 const {expect} = require('chai')
-const {msgText} = require('../../src/plugin/concurrencyMsg')
+const {msgText} = require('../../dist/plugin/concurrencyMsg').default
 const concurrencyMsg = msgText.substr(0, 100)
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')

@@ -79,7 +79,7 @@ Apollo SDK:
     - Fixed issue with sessionId on ufg
 "@applitools/eyes-cypress":
   feature:
-    - 
+    - Support ESM and TypeScript in Applitools' config file
   bug-fix:
     - 
 "@applitools/eyes-storybook":

@@ -20,15 +20,14 @@ describe(testName, () => {
   })
 
   after(() => {
-    cy.eyesGetAllTestResults().then((summary) => {
-      console.log(summary.getAllResults()[0].toJSON())
+    cy.eyesGetAllTestResults().then(summary => {
       const testResults = summary.getAllResults()[0]
       expect(summary.getAllResults()).to.have.length(1)
-      expect(testResults.exception).to.be.undefined
-      expect(testResults.browserInfo).to.have.property('width')
-      expect(testResults.browserInfo).to.have.property('height')
-      expect(testResults.testResults).to.have.property('name', testName)
-      expect(testResults.testResults).to.have.property('status', 'Passed')
+      expect(testResults.getException()).to.be.undefined
+      expect(testResults.getBrowserInfo()).to.have.property('width')
+      expect(testResults.getBrowserInfo()).to.have.property('height')
+      expect(testResults.getTestResults()).to.have.property('name', testName)
+      expect(testResults.getTestResults()).to.have.property('status', 'Passed')
     })
   })
 })

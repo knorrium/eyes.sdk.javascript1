@@ -1,38 +1,37 @@
-'use strict'
-const connectSocket = require('./webSocket')
-const {makeServerProcess} = require('@applitools/eyes-universal')
-const handleTestResults = require('./handleTestResults')
-const path = require('path')
-const fs = require('fs')
-const semverLt = require('semver/functions/lt')
-const {Server: HttpsServer} = require('https')
-const {Server: WSServer} = require('ws')
-const which = require('which')
+import connectSocket, {type SocketWithUniversal} from './webSocket'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import {makeServerProcess} from '@applitools/eyes-universal'
+import handleTestResults from './handleTestResults'
+import path from 'path'
+import fs from 'fs'
+import {lt as semverLt} from 'semver'
+import {Server as HttpsServer} from 'https'
+import {Server as WSServer} from 'ws'
+import which from 'which'
+import {type Logger} from '@applitools/logger'
+import {AddressInfo} from 'net'
+import {promisify} from 'util'
 
-function makeStartServer({logger}) {
+export default function makeStartServer({logger}: {logger: Logger}) {
   return async function startServer() {
-    const key = fs.readFileSync(path.resolve(__dirname, '../pem/server.key'))
-    const cert = fs.readFileSync(path.resolve(__dirname, '../pem/server.cert'))
-    let port
-
+    const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
+    const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
     const https = new HttpsServer({
       key,
       cert,
     })
-    await https.listen(0, err => {
-      if (err) {
-        logger.log('error starting plugin server', err)
-      } else {
-        logger.log(`plugin server running at port: ${https.address().port}`)
-        port = https.address().port
-      }
-    })
+    await promisify(https.listen.bind(https))()
 
+    const port = (https.address() as AddressInfo).port
     const wss = new WSServer({server: https, path: '/eyes', maxPayload: 254 * 1024 * 1024})
 
     wss.on('close', () => https.close())
 
-    const forkOptions = {
+    const forkOptions: {
+      detached: boolean
+      execPath?: string
+    } = {
       detached: true,
     }
 
@@ -53,13 +52,13 @@ function makeStartServer({logger}) {
       portResolutionMode: 'random',
     })
 
-    const managers = []
-    let socketWithUniversal
+    const managers: {manager: object; socketWithUniversal: SocketWithUniversal}[] = []
+    let socketWithUniversal: SocketWithUniversal
 
     wss.on('connection', socketWithClient => {
       socketWithUniversal = connectSocket(`ws://localhost:${universalPort}/eyes`)
 
-      socketWithUniversal.setPassthroughListener(message => {
+      socketWithUniversal.setPassthroughListener((message: string) => {
         logger.log('<== ', message.toString().slice(0, 1000))
         const {name, payload} = JSON.parse(message)
         if (name === 'Core.makeManager') {
@@ -69,7 +68,7 @@ function makeStartServer({logger}) {
         socketWithClient.send(message.toString())
       })
 
-      socketWithClient.on('message', message => {
+      socketWithClient.on('message', (message: string) => {
         const msg = JSON.parse(message)
         logger.log('==> ', message.toString().slice(0, 1000))
         if (msg.name === 'Core.makeSDK') {
@@ -134,13 +133,11 @@ function makeStartServer({logger}) {
         ),
       )
     }
-    function closeBatches(settings) {
+    function closeBatches(settings: any) {
       if (socketWithUniversal)
-        return socketWithUniversal.request('Core.closeBatches', {settings}).catch(err => {
+        return socketWithUniversal.request('Core.closeBatches', {settings}).catch((err: Error) => {
           logger.log('@@@', err)
         })
     }
   }
 }
-
-module.exports = makeStartServer

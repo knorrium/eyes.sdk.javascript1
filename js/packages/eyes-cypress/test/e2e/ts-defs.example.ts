@@ -1,17 +1,17 @@
-/// <reference path="../fixtures/testAppCopies/testApp-pack-install/node_modules/@applitools/eyes-cypress/index.d.ts" />
+// eslint-disable-next-line
+/// <reference path="../../types/index.d.ts" />
 
-// no options
-cy.eyesOpen();
+cy.eyesOpen()
 
 // VGC options
-cy.eyesOpen({appName: 'someName'});
+cy.eyesOpen({appName: 'someName'})
 
 // string
-cy.eyesCheckWindow('just string');
+cy.eyesCheckWindow('just string')
 
 // VGC options
 cy.eyesCheckWindow({
   tag: 'Play Cypress',
-});
+})
 
-cy.eyesClose();
+cy.eyesClose()

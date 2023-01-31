@@ -1,5 +1,5 @@
 {
-  "include": ["src", "./index.d.ts"],
+  "include": ["src"],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
-
+    "types": ["cypress"],
     "module": "commonjs",
     "moduleResolution": "node16",
     "target": "es2019",
@@ -15,14 +15,16 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "downlevelIteration": true,
-    "stripInternal": false,
-    "removeComments": false,
+    "removeComments": true,
     "plugins": [{
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
-      "rootFile": "./index.ts",
-      "allowModules": ["cypress"],
+      "rootFile": "./expose.ts",
+      "allowModules": ["Cypress"],
+      "stripPrivate": true,
+      "stripProtected": true,
+      "stripInternal": true
     }]
   },
-  "ts-node": {"transpileOnly": true},
+  "ts-node": {"transpileOnly": true}
 }

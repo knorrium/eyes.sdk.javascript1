@@ -1,10 +1,10 @@
 'use strict'
 const {describe, it, beforeEach, afterEach} = require('mocha')
 const {expect} = require('chai')
-const makePluginExport = require('../../../src/plugin/pluginExport')
+const makePluginExport = require('../../../dist/plugin/pluginExport').default
 const {promisify: p} = require('util')
 const psetTimeout = p(setTimeout)
-const makeConfig = require('../../../src/plugin/config')
+const makeConfig = require('../../../dist/plugin/config').default
 
 describe('pluginExport', () => {
   let prevEnv, eyesConfig, globalHooks

@@ -197,19 +197,26 @@ No configuration file found at ${cypressJsonPath}. This is usually caused by set
     const [err, result] = await presult(runSetupScript())
     expect(err).to.be.undefined
 
-    expect(removeStyleFromText(result.stdout)).to.equal(
-      `Setup Eyes-Cypress ${packageVersion}
-Cypress version: ${cypressVersion}
-Plugins defined.
+    expect(
+      removeStyleFromText(result.stdout)
+        .split('\n')
+        .map(str =>
+          str.indexOf('We detected that you are using TS or ESM syntax. Please configure the') > 0
+            ? 'TS or ESM Message'
+            : str,
+        )
+        .join('\n'),
+    ).to.equal(
+      `Setup Eyes-Cypress 3.28.2
+Cypress version: 10.6.0
+TS or ESM Message
 Commands defined.
 TypeScript defined.
 Setup done!
 `,
     )
 
-    expect(readFileSync(cypressConfigTSPath).toString()).to.equal(
-      origCypressConfigTSContent.replace(/}\);\n$/, `});\n${pluginRequire}`),
-    )
+    expect(readFileSync(cypressConfigTSPath).toString()).to.equal(origCypressConfigTSContent)
 
     expect(readFileSync(supportFilePath).toString()).to.equal(
       origSupportFileContent.replace(

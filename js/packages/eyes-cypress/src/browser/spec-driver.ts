@@ -37,7 +37,7 @@ export function childContext(_context: Context, element: HTMLIFrameElement): Con
   }
 }
 
-export function getViewportSize(): Object {
+export function getViewportSize(): {width: number; height: number} {
   //@ts-ignore
   const currWindow = cy.state('window')
   const viewportSize = {

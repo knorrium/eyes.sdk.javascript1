@@ -1,5 +1,3 @@
-'use strict'
-
 const configParams = [
   'appName',
   'testName',
@@ -45,4 +43,4 @@ const configParams = [
   'dontCloseBatches',
 ]
 
-module.exports = {configParams}
+export default configParams

@@ -1,6 +1,6 @@
 {
   "integrationFolder":"test/e2e/ts/cypress/integration",
-  "pluginsFile":"test/e2e/ts/cypress/plugins/index.js",
+  "pluginsFile":"test/e2e/ts/cypress/plugins/index.ts",
   "supportFile":"test/e2e/ts/cypress/support/index.js",
   "video": false,
   "screenshotOnRunFailure": false

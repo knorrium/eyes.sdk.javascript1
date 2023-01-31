@@ -1,7 +1,7 @@
 'use strict'
 const {describe, it, before, after, beforeEach, afterEach} = require('mocha')
 const {expect} = require('chai')
-let startPlugin = require('../../../src/plugin/startPlugin')
+let startPlugin = require('../../../dist/plugin').default
 
 describe('start plugin', () => {
   let getCloseServer, __module
@@ -25,8 +25,8 @@ describe('start plugin', () => {
   describe('with eyes disabled', () => {
     before(() => {
       process.env['APPLITOOLS_IS_DISABLED'] = true
-      delete require.cache[require.resolve('../../../src/plugin/startPlugin')]
-      startPlugin = require('../../../src/plugin/startPlugin')
+      delete require.cache[require.resolve('../../../dist/plugin')]
+      startPlugin = require('../../../dist/plugin').default
     })
 
     beforeEach(() => {
@@ -36,7 +36,7 @@ describe('start plugin', () => {
 
     after(() => {
       delete process.env['APPLITOOLS_IS_DISABLED']
-      delete require.cache[require.resolve('../../../src/plugin/startPlugin')]
+      delete require.cache[require.resolve('../../../dist/plugin')]
     })
 
     it('patches module exports with disabled eyes pref', async () => {
@@ -48,8 +48,8 @@ describe('start plugin', () => {
   describe('with eyes dont fail cypress on diff', () => {
     before(() => {
       process.env['APPLITOOLS_FAIL_CYPRESS_ON_DIFF'] = false
-      delete require.cache[require.resolve('../../../src/plugin/startPlugin')]
-      startPlugin = require('../../../src/plugin/startPlugin')
+      delete require.cache[require.resolve('../../../dist/plugin')]
+      startPlugin = require('../../../dist/plugin').default
     })
 
     beforeEach(() => {
@@ -59,7 +59,7 @@ describe('start plugin', () => {
 
     after(() => {
       delete process.env['APPLITOOLS_FAIL_CYPRESS_ON_DIFF']
-      delete require.cache[require.resolve('../../../src/plugin/startPlugin')]
+      delete require.cache[require.resolve('../../../dist/plugin')]
     })
 
     it('patches module exports with dont fail on diff pref', async () => {
