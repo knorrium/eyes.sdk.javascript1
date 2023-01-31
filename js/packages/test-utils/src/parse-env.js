@@ -174,6 +174,23 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
+  'Pixel 4 XL': {
+    type: 'sauce',
+    url: SAUCE_SERVER_URL,
+    capabilities: {
+      platformName: 'Android',
+      'appium:deviceName': 'Google Pixel 4 GoogleAPI Emulator',
+      'appium:platformVersion': '12.0',
+      'appium:automationName': 'UiAutomator2',
+      'appium:deviceOrientation': 'portrait',
+      'appium:autoGrantPermissions': true,
+      'appium:autoAcceptAlerts': true,
+    },
+    options: {
+      appiumVersion: '1.22.1',
+      ...SAUCE_CREDENTIALS,
+    },
+  },
   'Pixel 3 XL duckduckgo': {
     type: 'sauce',
     url: SAUCE_SERVER_URL,
@@ -621,13 +638,23 @@ function parseEnv(
       env.url = new URL(process.env.CVG_TESTS_EG_REMOTE)
     }
     if (injectUFGLib) {
-      env.capabilities[legacy ? 'processArguments' : 'appium:processArguments'] = {
-        args: [],
-        env: {
-          DYLD_INSERT_LIBRARIES:
-            '@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib',
-          NML_API_KEY: withNML ? process.env.APPLITOOLS_API_KEY : undefined,
-        },
+      if (env.capabilities.platformName.toLowerCase() === 'ios') {
+        env.capabilities[legacy ? 'processArguments' : 'appium:processArguments'] = {
+          args: [],
+          env: {
+            DYLD_INSERT_LIBRARIES:
+              '@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib',
+            NML_API_KEY: withNML ? process.env.APPLITOOLS_API_KEY : undefined,
+          },
+        }
+      } else if (env.capabilities.platformName.toLowerCase() === 'android') {
+        env.capabilities[
+          legacy ? 'optionalIntentArguments' : 'appium:optionalIntentArguments'
+        ] = `--es APPLITOOLS '${JSON.stringify({
+          NML_API_KEY: process.env.APPLITOOLS_API_KEY,
+          NML_SERVER_URL: 'https://eyesapi.applitools.com',
+          NML_PROXY_URL: process.env.HTTP_PROXY ? process.env.HTTP_PROXY : undefined,
+        })}'`
       }
     }
   } else if (protocol === 'cdp') {

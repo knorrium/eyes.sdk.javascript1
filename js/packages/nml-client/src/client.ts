@@ -73,6 +73,7 @@ export async function takeSnapshots({
               UIKitRunTimeVersionNumber: metadata.UIKitRunTimeVersionNumber,
             }
           : undefined,
+      vhsType: platformName === 'android' ? 'android-x' : undefined,
     }
   })
 

@@ -10,17 +10,18 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/eyes-universal":
   feature:
-    - 
+    - Add NML support for Android
   bug-fix:
     - 
 "@applitools/eyes-selenium":
   feature:
     - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
+    - Add NML support for Android
   bug-fix:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Add NML support for Android
   bug-fix:
     - 
 "@applitools/eyes-playwright":
@@ -44,6 +45,7 @@ Apollo SDK:
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Added `nmgOptions` to `CheckSettings`
     - Additional internal event logs
+    - Add support for NML Android 
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices
@@ -68,6 +70,7 @@ Apollo SDK:
     - Use APPLITOOLS_CONCURRENCY env variable to specify concurrency
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Additional internal event logs
+    - Add NML support for Android
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
@@ -75,6 +78,7 @@ Apollo SDK:
 "@applitools/eyes-nightwatch":
   feature:
     - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
+    - Add NML support for Android
   bug-fix:
     - Fixed issue with sessionId on ufg
 "@applitools/eyes-cypress":

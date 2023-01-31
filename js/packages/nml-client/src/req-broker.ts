@@ -69,7 +69,12 @@ function handleLongRequests({req}: {req: Req}): Hooks<ReqBrokerOptions> {
       if (response.status === 200) {
         return req(request.url + '-response', {
           proxy: options.proxy,
-          retry: {statuses: [404]},
+          retry: {
+            // 1500 attempts x 200 ms = 5 minutes
+            limit: 1500,
+            timeout: 200,
+            statuses: [404],
+          },
         })
       }
     },
