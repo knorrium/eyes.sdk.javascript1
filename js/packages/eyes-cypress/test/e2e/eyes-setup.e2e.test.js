@@ -207,8 +207,8 @@ No configuration file found at ${cypressJsonPath}. This is usually caused by set
         )
         .join('\n'),
     ).to.equal(
-      `Setup Eyes-Cypress 3.28.2
-Cypress version: 10.6.0
+      `Setup Eyes-Cypress ${packageVersion}
+Cypress version: ${cypressVersion}
 TS or ESM Message
 Commands defined.
 TypeScript defined.
