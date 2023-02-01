@@ -116,9 +116,9 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "1.4.5",
-    "@applitools/eyes-api": "1.13.0",
-    "@applitools/spec-driver-webdriverio": "1.4.21"
+    "@applitools/core": "1.4.6",
+    "@applitools/eyes-api": "1.13.1",
+    "@applitools/spec-driver-webdriverio": "1.4.22"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
@@ -126,7 +126,7 @@
     "@applitools/scripts": "1.2.0",
     "@applitools/sdk-coverage-tests": "^2.7.10",
     "@applitools/sdk-shared": "0.9.15",
-    "@applitools/test-utils": "1.5.9",
+    "@applitools/test-utils": "1.5.10",
     "@types/mocha": "^9.1.1",
     "@types/node": "16",
     "@typescript-eslint/eslint-plugin": "^5.27.0",

@@ -21,31 +21,31 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.31":
-  version "1.1.31"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.31.tgz#8fbc7e3c2e3f7b1ed18061056565ce038c2ff563"
-  integrity sha512-2Uw/EHtUdU6l+dONTlt/ilw8SRetfdoORjB3oJDXnWbCV8ntvoKMHbC8LfNsrBXw5szex7SmtyN+aIXCETxItQ==
+"@applitools/core-base@1.1.32":
+  version "1.1.32"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.32.tgz#81bbeeb698008c74f65f576fc989722b18834371"
+  integrity sha512-fXVPg4UJs+d90eQMzOoOFK9h1EOGf/7XLneGGk7N7ZVsFdGBdrL9muk9DOTFiwk5luOFQWEwo5R4U6HgOFXrWA==
   dependencies:
     "@applitools/image" "1.0.22"
     "@applitools/logger" "1.1.42"
     "@applitools/req" "1.1.28"
     "@applitools/utils" "1.3.28"
 
-"@applitools/core@1.4.5":
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.5.tgz#da06fa3a5ca4753976f0335c5ad772334e0642f8"
-  integrity sha512-Jzn26WWiKs6tIU/CczLUuvVglkScVNt+5M8z5IYXtdWFKRfYfng5hASMBn83hHxx2DyKpjCMiYjktXXUsw9h1w==
+"@applitools/core@1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-1.4.6.tgz#3b7cadaf8001addaab521d7c1ab3450a39f63306"
+  integrity sha512-18q1q6vVRrXadB9ubl347cM4oXje7vToDQ/uh2C8mrPVdjml6v4vmANLeznurQdRelNwEGa2SEGn6BzP56bJOQ==
   dependencies:
-    "@applitools/core-base" "1.1.31"
-    "@applitools/dom-capture" "11.2.0"
+    "@applitools/core-base" "1.1.32"
+    "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.3"
     "@applitools/driver" "1.11.26"
     "@applitools/logger" "1.1.42"
-    "@applitools/nml-client" "1.3.28"
+    "@applitools/nml-client" "1.3.29"
     "@applitools/req" "1.1.28"
     "@applitools/screenshoter" "3.7.23"
     "@applitools/snippets" "2.4.14"
-    "@applitools/ufg-client" "1.1.21"
+    "@applitools/ufg-client" "1.1.22"
     "@applitools/utils" "1.3.28"
     abort-controller "3.0.0"
     chalk "4.1.2"
@@ -54,10 +54,10 @@
   optionalDependencies:
     "@applitools/ec-client" "^1.2.5"
 
-"@applitools/dom-capture@11.2.0":
-  version "11.2.0"
-  resolved "https://registry.npmjs.org/@applitools/dom-capture/-/dom-capture-11.2.0.tgz"
-  integrity sha512-zFfYgvdXq5oTpLuYvOJdkh7jsbAxajOpD67pVoKc27lKwE0CGaM9I0Uf+qGh7GYtY93qyzMWBzqC7C8JlSK1gA==
+"@applitools/dom-capture@11.2.1":
+  version "11.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-11.2.1.tgz#00375ab0789be3dfef821346926fd874b7954763"
+  integrity sha512-c3x87rgC+8wdyOHDd+jFkrJIfx1mWmSiN7pfOOZNVM1X69cF7qmLIlTrZ09ssU/eOXppRKqhAX6JiNmpD5uXKw==
   dependencies:
     "@applitools/dom-shared" "1.0.5"
     "@applitools/functional-commons" "1.6.0"
@@ -131,12 +131,12 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/eyes-api@1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.13.0.tgz#2ff102d175101ff67ea9edb9544b8eb74c18e892"
-  integrity sha512-dd+fWMkX3Q66JJUoHDu1d6Og1OpGNME42BJzLEzbNKO1RI2dhFeOw0jWpYJtKlHB7ZszbEilv9Imv2NJ2jHgJQ==
+"@applitools/eyes-api@1.13.1":
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.13.1.tgz#cf00615084c0d7ab5ca79347a48e26fe08c12b05"
+  integrity sha512-LpKr+vxh2WeSL0RdMlPUCSL+oUFrCNfYy7Q8MuX5RFvR5M6TDoidfwZJVXsMGzYa87NUjlWQFD7xYoVOKQujOw==
   dependencies:
-    "@applitools/core" "1.4.5"
+    "@applitools/core" "1.4.6"
     "@applitools/logger" "1.1.42"
     "@applitools/utils" "1.3.28"
 
@@ -205,10 +205,10 @@
     "@applitools/utils" "1.3.26"
     chalk "4.1.2"
 
-"@applitools/nml-client@1.3.28":
-  version "1.3.28"
-  resolved "https://registry.yarnpkg.com/@applitools/nml-client/-/nml-client-1.3.28.tgz#2d7ec53fa9015fc442d355461d4ce54c4298bcdf"
-  integrity sha512-T7cux2sac08iKXiHP6CuWf8Fk3YsEaYfpwxe/FecnWmNxUOdzzbJ3O3dnCvz9AERreAfv08iu+x9o6ip4i0syA==
+"@applitools/nml-client@1.3.29":
+  version "1.3.29"
+  resolved "https://registry.yarnpkg.com/@applitools/nml-client/-/nml-client-1.3.29.tgz#bcc2dee8ab4a10e570700eba225607061bbfd46f"
+  integrity sha512-eCHoiMwZOuZlTptZ9K4FIJkEG4WvO+4xawn5Rj6vk9T6iJEdX2orRosqgBgBOhPs3M1bzJ2G9O1BHZB0lLuwIQ==
   dependencies:
     "@applitools/logger" "1.1.42"
     "@applitools/req" "1.1.28"
@@ -290,10 +290,10 @@
     "@applitools/logger" "1.1.42"
     "@applitools/utils" "1.3.28"
 
-"@applitools/spec-driver-webdriverio@1.4.21":
-  version "1.4.21"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.21.tgz#68149234fbe8098a4adb0b2ad156339cf3069a5d"
-  integrity sha512-iKcaUxyXP3hezPfckMK4WG4qcubO21NIAcu346HRnB6T8G4zVF4pi8INwOWJ84W3VrHOJ51bvDYo+3puRo14OA==
+"@applitools/spec-driver-webdriverio@1.4.22":
+  version "1.4.22"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.22.tgz#8bd3d4e91be073b11c8b388e557bd1751666b745"
+  integrity sha512-3TIlFU4uqEnBkxlhrUSyuIJ4wN08P8lfl3/QbdvIY0e8LjFgHT8yGWGUIXSD/V6htyCRKijj7odLzrvJalpL1w==
   dependencies:
     "@applitools/driver" "1.11.26"
     "@applitools/utils" "1.3.28"
@@ -321,6 +321,13 @@
   dependencies:
     node-fetch "2.6.1"
 
+"@applitools/test-utils@1.5.10":
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.10.tgz#d12ff87d7cbf3b0219530fd68b7422fc9a8fb29b"
+  integrity sha512-oH6QFmxb4i8zYVLgYkEEkD/GdUZZMcNQJgOuoQOPAxayJOUbHiy2qJzNX5eRJQWFL0wIrgWbpujPSxzFQw85VA==
+  dependencies:
+    node-fetch "2.6.1"
+
 "@applitools/test-utils@1.5.2":
   version "1.5.2"
   resolved "https://registry.npmjs.org/@applitools/test-utils/-/test-utils-1.5.2.tgz"
@@ -328,17 +335,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/test-utils@1.5.9":
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.9.tgz#625952fc647f19a3f67f8d471add573e5ea9b90a"
-  integrity sha512-82fpRw/oMk5mTwHUxFMfYxgaNxgFHBNOw4oE97OcnZE1PMRgawXqkztlzvFxdxSQSEEjV3danMpQdM698FBQ4A==
-  dependencies:
-    node-fetch "2.6.1"
-
-"@applitools/ufg-client@1.1.21":
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.21.tgz#eae0c8dfddbb019aa58365cbc33ea578c0ccf928"
-  integrity sha512-dr2YEkQlRc00vd/bY3tradu375rrPIMR6deRD7iupecQUqCXbAx5lyKrtdgKW36iN/0uByYgDBwGyoR0COBuWA==
+"@applitools/ufg-client@1.1.22":
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.1.22.tgz#d591e23af926602b408b38e2fc866f43054ec7f0"
+  integrity sha512-jP+KxRpZxHuLSY8Lm/c/UBgvodVLeYIVFr3d5kZkTHoXNtak1Y4qWXYYO/iNYE3bACoUZxt3h6M/W0p7GI3zMg==
   dependencies:
     "@applitools/jsdom" "1.0.4"
     "@applitools/logger" "1.1.42"
