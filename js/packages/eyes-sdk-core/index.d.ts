@@ -1,6 +1,5 @@
 import {Core} from '@applitools/core'
 import {SpecDriver} from '@applitools/driver'
-export {makeServer as makeExecutionGridClient} from '@applitools/execution-grid-client'
 
 export function makeSDK<TDriver, TContext, TElement, TSelector>(options: {
   name: string

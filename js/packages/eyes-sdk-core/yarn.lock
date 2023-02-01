@@ -109,21 +109,6 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/execution-grid-client@1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-client/-/execution-grid-client-1.2.4.tgz#2ad03435abc4996f14a41ef2c0df901a977cf130"
-  integrity sha512-qA/mn33ZY04krDx+Uk0YBJrXCsQJjPgRTyhMSrzjmVEfTHeNFmS0ORnu7A6x59m8aqPzNObnVx5L1pt1wKspyQ==
-  dependencies:
-    "@applitools/execution-grid-tunnel" "1.0.2"
-    "@applitools/logger" "1.1.40"
-    "@applitools/req" "1.1.27"
-    "@applitools/socket" "1.0.3"
-    "@applitools/utils" "1.3.26"
-    abort-controller "3.0.0"
-    proxy-agent "5.0.0"
-    raw-body "2.5.1"
-    yargs "17.6.2"
-
 "@applitools/execution-grid-tunnel@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.2.tgz#09e739fc02433dbb21a0b94b1ba4d1c3b7a0a59d"
@@ -189,14 +174,6 @@
     ws "^8.2.3"
     xml-name-validator "^4.0.0"
 
-"@applitools/logger@1.1.40":
-  version "1.1.40"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.40.tgz#b2a5e031cc831ecc41cb0c7acc791a4f763fd482"
-  integrity sha512-FRShbTZuc6eBWel98MXVfqG4hOAEg9JfDyMWrbgjFD/9XH5ADK9HytyI3nC6Gl82AnB3nTOz1tgJt5OcLDiFCQ==
-  dependencies:
-    "@applitools/utils" "1.3.26"
-    chalk "4.1.2"
-
 "@applitools/logger@1.1.42", "@applitools/logger@^1.0.12":
   version "1.1.42"
   resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.42.tgz#d67e5937d27b13030c01042941e3092e1ef9737c"
@@ -214,17 +191,6 @@
     "@applitools/logger" "1.1.42"
     "@applitools/req" "1.1.28"
     "@applitools/utils" "1.3.28"
-
-"@applitools/req@1.1.27":
-  version "1.1.27"
-  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.1.27.tgz#079d371b64f0efa3cb39fcc8fa474574ecb62750"
-  integrity sha512-6BsGgzY3W//qJg8P6EOtYjZsgvs+LVCxux0KAHoXE39ooywWPQ+god8j4GGoH5fu1KpQZG0QWLn9lX8jYBvKLw==
-  dependencies:
-    "@applitools/utils" "1.3.26"
-    "@types/node-fetch" "2.6.2"
-    abort-controller "3.0.0"
-    node-fetch "2.6.7"
-    proxy-agent "5.0.0"
 
 "@applitools/req@1.1.28":
   version "1.1.28"
@@ -263,14 +229,6 @@
   version "2.4.14"
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.14.tgz#c71b1332dab0e6de8a421bcee357fc2ebd909904"
   integrity sha512-EhNJWTaDwQYnR0X/GJ69/lWhD6XNu4tMt4H0kpOts8ePlmCskd0hkbjsstRzPQHDrojgGbYY6S/MGLBteSbn0A==
-
-"@applitools/socket@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.3.tgz#6a56e72b64139713db03af132139a7bde76b251c"
-  integrity sha512-bHnBwxb0MI0CDraj20JOn1xbKnTjzT31QZIdKZLfGv+pdPBg0La8HkZ7nOooQ+a8pWXTjjdHgHAti7si3Is2Gg==
-  dependencies:
-    "@applitools/logger" "1.1.40"
-    "@applitools/utils" "1.3.26"
 
 "@applitools/socket@1.0.4":
   version "1.0.4"
