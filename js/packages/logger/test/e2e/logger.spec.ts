@@ -189,35 +189,45 @@ describe('logger', () => {
     // this is the test function that will be called by spawn to test the debug handler
     // must use spawn to check the e2e flow
     const child = childProcess.spawn(
-      process.execPath,
+      '../../node_modules/.bin/ts-node',
       [
         '-e',
         `(${function () {
-          const {makeLogger} = require('../../dist')
+          const {makeLogger} = require('../../src/logger')
           let logger = makeLogger({label: 'label WITH SpAcEs AND uppeR CAseS'})
           logger.log('log')
           logger.warn('warn')
           logger.error('error')
           logger.fatal('fatal')
-          logger = makeLogger({label: 'label2', handler: logger, tags: {tag: '@@@'}})
+          logger = logger.extend({label: 'label2', tags: {tag: '@@@'}})
           logger.log('log2')
           logger.warn('warn2')
           logger.error('error2')
           logger.fatal('fatal2')
+          const consoleLogger = makeLogger({
+            label: 'console',
+            level: 'all',
+            timestamp: false,
+            handler: {type: 'console'},
+          })
+          consoleLogger.log('log')
         }})()`,
       ],
       {
         cwd: __dirname,
         stdio: [0, 'pipe', 'pipe', 'ipc'],
         env: {
-          APPLITOOLS_SHOW_LOGS: 'true',
           DEBUG: '*',
           DEBUG_HIDE_DATE: 'true',
+          PATH: process.env.PATH,
         },
       },
     )
     let output = ''
     child.stderr.on('data', data => {
+      output = `${output}${data}`
+    })
+    child.stdout.on('data', data => {
       output = `${output}${data}`
     })
 
@@ -234,6 +244,7 @@ describe('logger', () => {
         'appli:label2 [WARN ] {"tag":"@@@"} warn2',
         'appli:label2 [ERROR] {"tag":"@@@"} error2',
         'appli:label2 [FATAL] {"tag":"@@@"} fatal2',
+        'console   | [INFO ] log',
         '',
       ].join('\n'),
     )

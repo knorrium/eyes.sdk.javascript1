@@ -37,16 +37,20 @@ export function makeLogger({
   console = true,
   extended = false,
 }: LoggerOptions & {extended?: boolean} = {}): Logger {
-  if (process.env.DEBUG) {
-    handler = {type: 'debug', label}
-    level = LogLevel.all
-    label = null
-    timestamp = false
-  } else if (!handler) {
+  let forceInitHandler: boolean
+  if (!handler) {
     if (process.env.APPLITOOLS_LOG_FILE) {
       handler = {type: 'file', filename: process.env.APPLITOOLS_LOG_FILE}
     } else if (process.env.APPLITOOLS_LOG_DIR) {
       handler = {type: 'rolling file', dirname: process.env.APPLITOOLS_LOG_DIR}
+    } else if (process.env.APPLITOOLS_SHOW_LOGS === 'true') {
+      handler = {type: 'console'}
+    } else if (process.env.DEBUG) {
+      handler = {type: 'debug', label}
+      level = LogLevel.all
+      label = null
+      timestamp = false
+      forceInitHandler = true
     } else {
       handler = {type: 'console'}
     }
@@ -117,7 +121,7 @@ export function makeLogger({
         level,
         console: consoleHandler,
         ...options,
-        handler,
+        handler: forceInitHandler ? undefined : handler,
         extended: true,
       })
     },
