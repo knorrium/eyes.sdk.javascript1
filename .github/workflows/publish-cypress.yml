@@ -79,7 +79,7 @@ jobs:
           fi
           echo "environments=${ENVIRONMENTS}" >> $GITHUB_OUTPUT
 
-          if [${{github.event.inputs.multiversion}} = true]
+          if [ ${{github.event.inputs.multiversion}} = true ]
           then
             VERSIONS="[{\"cypress-version\":12},{\"cypress-version\":11},{\"cypress-version\":10},{\"cypress-version\":9}]"
           else
@@ -132,7 +132,7 @@ jobs:
           test-type: 'ts:run:${{matrix.cypress-version}}'
           working-directory: ./js/packages/eyes-cypress
   publish:
-    if: ${{!github.event.inputs.dryRun}}
+    if: ${{ !github.event.inputs.dryRun }}
     needs: [test, test-cypress-versions]
     name: Publish
     runs-on: ubuntu-latest
