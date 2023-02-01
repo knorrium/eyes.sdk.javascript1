@@ -10,6 +10,12 @@
 
 
 
+## 5.41.0 - 2023/2/1
+
+### Features
+- Add NML support for Android
+### Bug fixes
+
 ## 5.40.2 - 2023/1/27
 
 ### Features

@@ -21,7 +21,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Add NML support for Android
+    - 
   bug-fix:
     - 
 "@applitools/eyes-playwright":
@@ -45,7 +45,7 @@ Apollo SDK:
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Added `nmgOptions` to `CheckSettings`
     - Additional internal event logs
-    - Add support for NML Android 
+    - Add support for NML Android
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices
