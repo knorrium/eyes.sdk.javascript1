@@ -41,6 +41,25 @@ describe('req', () => {
     assert.deepStrictEqual(await response.json(), {hello: 'world'})
   })
 
+  it('serializes body of null', async () => {
+    nock('https://eyesapi.applitools.com')
+      .post('/api/hello')
+      .matchHeader('content-type', 'application/json')
+      .reply((_url, body) => {
+        if (body === null) return [200, {hello: 'world'}]
+        else return [500]
+      })
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      method: 'post',
+      headers: {'content-type': 'application/json'},
+      body: null,
+    })
+
+    assert.strictEqual(response.status, 200)
+    assert.deepStrictEqual(await response.json(), {hello: 'world'})
+  })
+
   it('retries on configured error codes', async () => {
     let index = 0
     nock('https://eyesapi.applitools.com')

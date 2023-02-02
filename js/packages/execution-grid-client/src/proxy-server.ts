@@ -79,8 +79,8 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
       } else if (request.method === 'GET' && /^\/session\/[^\/]+\/applitools\/metadata?$/.test(url)) {
         const session = sessions.get(getSessionId(url))!
         requestLogger.log('Session metadata requested, returning', session.metadata)
-        response.writeHead(200).end(JSON.stringify({value: session.metadata}))
-        session.metadata = undefined
+        response.writeHead(200).end(JSON.stringify({value: session.metadata ?? []}))
+        session.metadata = []
       } else {
         requestLogger.log('Passthrough request')
         return await req(url, {io: {request, response}, logger: requestLogger})

@@ -8,24 +8,13 @@ type Options = {
   logger: Logger
 }
 
-export function makeMakeECClient({core, logger: defaultLogger}: Options) {
+export function makeMakeECClient({logger: defaultLogger}: Options) {
   return utils.general.cachify(makeECClient, ([options]) => options?.settings)
   async function makeECClient({
     settings,
     logger = defaultLogger,
   }: {settings?: ECClientSettings; logger?: Logger} = {}): Promise<ECClient> {
     const {makeECClient} = require('@applitools/ec-client')
-    const serverUrl =
-      settings.capabilities.eyesServerUrl ??
-      utils.general.getEnvValue('EYES_SERVER_URL') ??
-      utils.general.getEnvValue('SERVER_URL') ??
-      'https://eyesapi.applitools.com'
-    const apiKey = (settings.capabilities.apiKey ??= utils.general.getEnvValue('API_KEY'))
-    const proxy = settings.proxy ?? (utils.general.getEnvValue('PROXY_URL') && {url: utils.general.getEnvValue('PROXY_URL')})
-    const account = await core.getAccountInfo({settings: {serverUrl, apiKey, proxy}, logger})
-    settings.capabilities ??= {}
-    settings.capabilities.useSelfHealing ??=
-      utils.general.getEnvValue('USE_SELF_HEALING', 'boolean') ?? account.selfHealingEnabled
     const client = await makeECClient({settings, logger})
     return client
   }

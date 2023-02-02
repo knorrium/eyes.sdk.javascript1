@@ -45,7 +45,7 @@ describe('client', () => {
       assert.ok(result[0].successfulSelector)
       assert.deepStrictEqual(result[0].originalSelector, {using: 'css selector', value: '#log-in'})
       const noResult = await driver.execute(new Command('getSessionMetadata'))
-      assert.strictEqual(noResult, null)
+      assert.deepStrictEqual(noResult, [])
     } finally {
       await driver.quit()
     }
