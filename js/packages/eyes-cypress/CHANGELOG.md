@@ -12,6 +12,12 @@
 
 
 
+## 3.29.1 - 2023/2/2
+
+### Features
+### Bug fixes
+- update readme and add types folder to publish artifacts
+
 ## 3.29.0 - 2023/2/1
 
 ### Features
