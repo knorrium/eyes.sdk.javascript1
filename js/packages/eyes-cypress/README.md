@@ -31,19 +31,8 @@ The above command will add the necessary imports to your cypress `pluginsFile` a
  
 Eyes-Cypress acts as a [Cypress plugin](https://docs.cypress.io/guides/tooling/plugins-guide.html), so it should be configured as such.
 Unfortunately there's no easy way to do this automatically, so you need to manually:
- #### Cypress version < 10:
-Add the following code to your `pluginsFile`:
 
-**Important**: add this code **after** the definition of `module.exports`:
-
-```js
-require('@applitools/eyes-cypress')(module)
-```
-
-Normally, this is `cypress/plugins/index.js`. You can read more about it in Cypress' docs [here](https://docs.cypress.io/guides/references/configuration.html#Folders-Files).
-<br>
-
- #### Cypress version >= 10:
+#### Cypress version >= 10:
 
  Add the following code to your:
 
@@ -60,6 +49,19 @@ module.exports = eyesPlugin(defineConfig({
   }
 }))
 ```
+<br>
+
+#### Cypress version < 10:
+Add the following code to your `pluginsFile`:
+
+**Important**: add this code **after** the definition of `module.exports`:
+
+```js
+require('@applitools/eyes-cypress')(module)
+```
+
+Normally, this is `cypress/plugins/index.js`. You can read more about it in Cypress' docs [here](https://docs.cypress.io/guides/references/configuration.html#Folders-Files).
+<br>
 
 ##### `cypress.config.ts`
 
@@ -90,6 +92,20 @@ Normally, this is `cypress/support/index.js` for cypress version < 10 and `cypre
 
 ##### 3. (Optional) TypeScript configuration
 
+For `typescript` use you must add the following code to your `tsconfig.json`:
+
+```json
+{
+  ...
+  "compilerOptions": {
+    ...
+    "types": ["@applitools/eyes-cypress", "cypress", "node"]
+    "moduleResolution": "node" // or "node16"
+    ...
+  }
+}
+```
+
 Eyes-Cypress ships with official type declarations for TypeScript. This allows you to add eyes commands to your TypeScript tests.
 
 Add this file to your project with either: 
@@ -100,10 +116,10 @@ Add this file to your project with either:
       ...
     }
     ```
-  2. Copying the file to to your [cypress/support/](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Folder-Structure) dir:
-      ```
-      cp node_modules/@applitools/eyes-cypress/index.d.ts ./cypress/support/    
-      ```
+2. Copying the file to to your [cypress/support/](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Folder-Structure) dir:
+    ```
+    cp node_modules/@applitools/eyes-cypress/index.d.ts ./cypress/support/    
+    ```
 ### Applitools API key
 
 In order to authenticate via the Applitools server, you need to supply the Eyes-Cypress SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).

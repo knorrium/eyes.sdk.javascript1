@@ -22,7 +22,8 @@
     "bin",
     "index.js",
     "commands.js",
-    "index.d.ts"
+    "index.d.ts",
+    "types"
   ],
   "scripts": {
     "lint": "eslint \"**/*.{js,ts}\"",
