@@ -411,8 +411,8 @@ export class CheckSettingsImageFluent extends CheckSettingsBaseFluent {
 }
 
 type CheckSettingsAutomationSpec<TElement = unknown, TSelector = unknown> = {
-  isElement(value: any): value is TElement
-  isSelector(value: any): value is TSelector
+  isElement?(value: any): value is TElement
+  isSelector?(value: any): value is TSelector
 }
 
 export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unknown> extends CheckSettingsBaseFluent<
@@ -424,16 +424,16 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
 
   protected _isElementReference(value: any): value is ElementReference<TSelector, TElement> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
-    return spec.isElement(value) || this._isSelectorReference(value)
+    return !!spec.isElement?.(value) || this._isSelectorReference(value)
   }
   protected _isSelectorReference(selector: any): selector is SelectorReference<TSelector> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
     return (
-      spec.isSelector(selector) ||
+      !!spec.isSelector?.(selector) ||
       utils.types.isString(selector) ||
       (utils.types.isPlainObject(selector) &&
         utils.types.has(selector, 'selector') &&
-        (utils.types.isString(selector.selector) || spec.isSelector(selector.selector)))
+        (utils.types.isString(selector.selector) || !!spec.isSelector?.(selector.selector)))
     )
   }
   protected _isFrameReference(value: any): value is FrameReference<TSelector, TElement> {

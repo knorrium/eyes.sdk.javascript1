@@ -67,7 +67,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   }
 
   static async setViewportSize(driver: unknown, size: RectangleSize) {
-    await this._spec.setViewportSize({target: driver, size})
+    await this._spec.setViewportSize?.({target: driver, size})
   }
 
   constructor(runner?: EyesRunner, config?: Configuration<TElement, TSelector>)
@@ -537,7 +537,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
   async getViewportSize(): Promise<RectangleSizeData> {
     return (
-      this._config.getViewportSize() || new RectangleSizeData(await this._spec.getViewportSize({target: this._driver!}))
+      this._config.getViewportSize() ??
+      (this._spec.getViewportSize
+        ? new RectangleSizeData(await this._spec.getViewportSize({target: this._driver!}))
+        : (undefined as never))
     )
   }
   async setViewportSize(size: RectangleSize): Promise<void> {
@@ -547,10 +550,11 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       this._config.setViewportSize(size)
     } else {
       try {
-        await this._spec.setViewportSize({target: this._driver, size})
+        await this._spec.setViewportSize?.({target: this._driver, size})
         this._config.setViewportSize(size)
       } catch (err) {
-        this._config.setViewportSize(await this._spec.getViewportSize({target: this._driver}))
+        if (this._spec.getViewportSize)
+          this._config.setViewportSize(await this._spec.getViewportSize({target: this._driver}))
         throw new EyesError('Failed to set the viewport size')
       }
     }

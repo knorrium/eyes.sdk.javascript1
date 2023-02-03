@@ -37,8 +37,8 @@ type RenderInfo =
   | ChromeEmulationInfoLegacy
 
 type ConfigurationSpec<TElement = unknown, TSelector = unknown> = {
-  isElement(element: any): element is TElement
-  isSelector(selector: any): selector is TSelector
+  isElement?(element: any): element is TElement
+  isSelector?(selector: any): selector is TSelector
 }
 
 export type GeneralConfiguration = {
@@ -130,17 +130,17 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
 
   private _isElementReference(value: any): value is TElement | EyesSelector<TSelector> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
-    return spec.isElement(value) || this._isSelectorReference(value)
+    return !!spec.isElement?.(value) || this._isSelectorReference(value)
   }
 
   private _isSelectorReference(selector: any): selector is EyesSelector<TSelector> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
     return (
-      spec.isSelector(selector) ||
+      !!spec.isSelector?.(selector) ||
       utils.types.isString(selector) ||
       (utils.types.isPlainObject(selector) &&
         utils.types.has(selector, 'selector') &&
-        (utils.types.isString(selector.selector) || spec.isSelector(selector.selector)))
+        (utils.types.isString(selector.selector) || !!spec.isSelector?.(selector.selector)))
     )
   }
 
