@@ -1,4 +1,5 @@
 import {type Driver} from '@applitools/driver'
+import * as utils from '@applitools/utils'
 
 export async function extractBrokerUrl({
   driver,
@@ -18,7 +19,15 @@ export async function extractBrokerUrl({
     })
     if (!element) return null
     const result = JSON.parse(await element.getText())
-    return result.nextPath
+    if (result.nextPath) return result.nextPath
+    if (!result.error) {
+      const attempts = Array.from(Array(60).keys())
+      for (const _attempt of attempts) {
+        await utils.general.sleep(500)
+        const result = JSON.parse(await element.getText())
+        if (result.nextPath) return result.nextPath
+      }
+    }
   } catch (error) {
     return null
   }
