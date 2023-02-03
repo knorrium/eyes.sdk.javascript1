@@ -1,4 +1,4 @@
-import {toBaseCheckSettings} from '../../src/utils/to-base-check-settings'
+import {toBaseCheckSettings} from '../../src/automation/utils/to-base-check-settings'
 import assert from 'assert'
 
 describe('to-base-check-settings', () => {

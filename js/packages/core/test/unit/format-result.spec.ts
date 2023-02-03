@@ -99,7 +99,7 @@ Difference found. See https://eyes.com/results for details.
       assert.deepStrictEqual(toXmlOutput(testResults, {totalTime: 10}), expected)
     })
     it('works with no diffs and no succeeses', async () => {
-      const testResults = []
+      const testResults = [] as any[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="0" time="0">
 </testsuite>`

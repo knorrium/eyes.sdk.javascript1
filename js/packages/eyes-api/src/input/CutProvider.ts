@@ -17,17 +17,15 @@ type CutProviderRegion = {
 export type CutProvider = CutProviderRect | CutProviderRegion
 
 export class CutProviderData implements Required<CutProviderRegion & CutProviderRect> {
-  private _region: CutProviderRegion
-  private _rect: CutProviderRect
+  private _region?: CutProviderRegion
+  private _rect?: CutProviderRect
 
   constructor(rectOrRegion: CutProvider)
   constructor(top: number, bottom: number, left: number, right: number)
   constructor(rectOrRegionOrTop: CutProvider | number, bottom?: number, left?: number, right?: number) {
     if (utils.types.isNumber(rectOrRegionOrTop)) {
-      return new CutProviderData({top: rectOrRegionOrTop, bottom, left, right})
-    }
-
-    if (utils.types.has(rectOrRegionOrTop, ['top', 'right', 'bottom', 'left'])) {
+      this._rect = {top: rectOrRegionOrTop, bottom: bottom!, left: left!, right: right!}
+    } else if (utils.types.has(rectOrRegionOrTop, ['top', 'right', 'bottom', 'left'])) {
       this._rect = rectOrRegionOrTop
     } else if (utils.types.has(rectOrRegionOrTop, ['width', 'height', 'x', 'y'])) {
       this._region = rectOrRegionOrTop
@@ -35,29 +33,37 @@ export class CutProviderData implements Required<CutProviderRegion & CutProvider
   }
 
   get top() {
-    return this._rect.top
+    if (!this._rect) return undefined as never
+    return this._rect.top!
   }
   get right() {
-    return this._rect.right
+    if (!this._rect) return undefined as never
+    return this._rect.right!
   }
   get bottom() {
-    return this._rect.bottom
+    if (!this._rect) return undefined as never
+    return this._rect.bottom!
   }
   get left() {
-    return this._rect.left
+    if (!this._rect) return undefined as never
+    return this._rect.left!
   }
 
   get width() {
-    return this._region.width
+    if (!this._region) return undefined as never
+    return this._region.width!
   }
   get height() {
-    return this._region.height
+    if (!this._region) return undefined as never
+    return this._region.height!
   }
   get x() {
-    return this._region.x
+    if (!this._region) return undefined as never
+    return this._region.x!
   }
   get y() {
-    return this._region.y
+    if (!this._region) return undefined as never
+    return this._region.y!
   }
 
   scale(scaleRatio: number): CutProviderData {
@@ -82,12 +88,12 @@ export class CutProviderData implements Required<CutProviderRegion & CutProvider
 
   /** @internal */
   toObject(): CutProvider {
-    return this._region ? this._region : this._rect
+    return (this._region ?? this._rect)!
   }
 
   /** @internal */
   toJSON(): CutProvider {
-    return utils.general.toJSON(this._region ? this._region : this._rect) as CutProvider
+    return utils.general.toJSON((this._region ?? this._rect)!) as CutProvider
   }
 
   /** @internal */

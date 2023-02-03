@@ -1,9 +1,9 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 describe('lazy load', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -14,7 +14,7 @@ describe('lazy load', () => {
   })
 
   it('performs lazy load before taking screenshot', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/LazyLoad/')
+    await driver.url('https://applitools.github.io/demo/TestPages/LazyLoad/')
 
     const core = makeCore({spec})
 
@@ -22,7 +22,7 @@ describe('lazy load', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'lazyLoad with classic - checkSettings',
         environment: {viewportSize: {width: 800, height: 600}},
@@ -33,7 +33,7 @@ describe('lazy load', () => {
       settings: {fully: true, lazyLoad: true, hideScrollbars: true},
     })
 
-    await driver.get('https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html')
+    await driver.url('https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html')
 
     await eyes.check({
       settings: {

@@ -24,7 +24,15 @@ export function makeRender({
 
   return renderWithConcurrency
 
-  async function render({target, settings, signal}: {target: RenderTarget; settings: RenderSettings; signal?: AbortSignal}) {
+  async function render({
+    target,
+    settings,
+    signal,
+  }: {
+    target: RenderTarget
+    settings: RenderSettings
+    signal?: AbortSignal
+  }) {
     const timedOutAt = Date.now() + timeout
     const render = await startRenderWithBatching({target, settings})
     return checkRenderResultWithBatching({render, signal, timedOutAt})
@@ -55,7 +63,7 @@ export function makeRender({
 
   async function checkRenderResults(
     batch: [
-      {render: StartedRender; signal: AbortSignal; timedOutAt: number},
+      {render: StartedRender; signal?: AbortSignal; timedOutAt: number},
       {resolve(result: RenderResult): void; reject(reason?: any): void},
     ][],
   ) {

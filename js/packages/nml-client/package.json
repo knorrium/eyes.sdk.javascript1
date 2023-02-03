@@ -35,8 +35,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "lint": "eslint '**/*.ts'",
-    "build": "tsc",
+    "lint": "npx eslint '**/*.ts'",
+    "build": "npx tsc --project ./tsconfig.build.json",
     "test": "mocha --no-timeouts -r ts-node/register 'test/**/*.spec.ts'",
     "test:sanity": "yarn test",
     "test:watch": "yarn test --watch --extension ts",
@@ -46,33 +46,21 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/logger": "1.1.42",
+    "@applitools/logger": "1.1.43",
     "@applitools/req": "1.1.28",
     "@applitools/utils": "1.3.28"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
-    "@applitools/scripts": "^1.2.0",
-    "@applitools/spec-driver-selenium": "^1.5.25",
+    "@applitools/spec-driver-webdriverio": "^1.4.22",
     "@applitools/test-server": "^1.1.22",
     "@applitools/test-utils": "^1.5.10",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
-    "@types/selenium-webdriver": "^4.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "eslint": "^8.28.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-no-only-tests": "^3.0.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "chromedriver": "^109.0.0",
     "mocha": "^10.0.0",
     "nock": "^13.2.9",
-    "pixelmatch": "^5.3.0",
-    "prettier": "^2.7.1",
-    "selenium-webdriver": "^4.4.0",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.6.4"
+    "webdriverio": "^8.3.2"
   },
   "engines": {
     "node": ">=12.13.0"

@@ -1,14 +1,7 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node16",
-    "target": "es2019",
-    "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2020.string", "dom"],
-    "types": ["node"],
-    "strict": true,
-    "esModuleInterop": true,
-    "downlevelIteration": true,
+    "types": ["node"]
   },
   "ts-node": {"transpileOnly": true},
-  "exclude" : ["dist", "types"],
 }

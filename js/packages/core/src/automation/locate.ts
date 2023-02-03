@@ -6,8 +6,8 @@ import {takeScreenshot} from './utils/take-screenshot'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
   core: BaseCore
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+  logger: Logger
 }
 
 export function makeLocate<TDriver, TContext, TElement, TSelector>({
@@ -28,7 +28,7 @@ export function makeLocate<TDriver, TContext, TElement, TSelector>({
     if (!isDriver(target, spec)) {
       return core.locate({target, settings: settings as BaseLocateSettings<TLocator>, logger})
     }
-    const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    const driver = await makeDriver({driver: target, spec, logger})
     const screenshot = await takeScreenshot({driver, settings, logger})
     const baseTarget = {image: await screenshot.image.toPng()}
     const results = await core.locate({target: baseTarget, settings: settings as BaseLocateSettings<TLocator>, logger})

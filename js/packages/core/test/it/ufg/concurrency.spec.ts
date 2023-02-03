@@ -74,8 +74,8 @@ describe('concurrency', () => {
     const counters = {openEyes: {1: 0, 2: 0, 3: 0}}
 
     const fakeCore = makeFakeCore()
-    fakeCore.on('beforeOpenEyes', ({settings}) => {
-      counters.openEyes[settings.testName] += 1
+    fakeCore.emitter.on('beforeOpenEyes', ({settings}) => {
+      counters.openEyes[settings.testName as 1 | 2 | 3] += 1
     })
 
     const fakeClient = {
@@ -152,7 +152,9 @@ describe('concurrency', () => {
     await assert.rejects(eyes1.close(), error => error.message === 'close')
 
     const eyes2 = await Promise.race([
-      core.openEyes({settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'}}),
+      core.openEyes({
+        settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      }),
       utils.general.sleep(100).then(() => assert.fail('not resolved')),
     ])
 
@@ -187,7 +189,9 @@ describe('concurrency', () => {
     await assert.rejects(eyes1.close(), error => error.message === 'render')
 
     const eyes2 = await Promise.race([
-      core.openEyes({settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'}}),
+      core.openEyes({
+        settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      }),
       utils.general.sleep(100).then(() => assert.fail('not resolved')),
     ])
 

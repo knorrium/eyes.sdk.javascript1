@@ -4,17 +4,13 @@ import {TestResultContainer, TestResultContainerData} from './TestResultContaine
 export type TestResultsSummary = Iterable<TestResultContainer>
 
 export class TestResultsSummaryData implements Iterable<TestResultContainerData> {
-  private _summary: CoreTestResultSummary
-  private _deleteTest: CoreSpec['deleteTest']
+  private _summary?: CoreTestResultSummary
+  private _deleteTest?: CoreSpec['deleteTest']
 
   /** @internal */
-  constructor(options?: {summary: CoreTestResultSummary; deleteTest: CoreSpec['deleteTest']}) {
-    if (!options) return
-
-    const {summary, deleteTest} = options
-
-    this._summary = summary
-    this._deleteTest = deleteTest
+  constructor(options?: {summary?: CoreTestResultSummary; deleteTest?: CoreSpec['deleteTest']}) {
+    this._summary = options?.summary
+    this._deleteTest = options?.deleteTest
   }
 
   getAllResults(): TestResultContainerData[] {
@@ -37,7 +33,7 @@ export class TestResultsSummaryData implements Iterable<TestResultContainerData>
 
   /** @internal */
   toJSON(): CoreTestResultContainer[] {
-    return this._summary?.results
+    return this._summary?.results ?? []
   }
 
   /** @internal */
@@ -45,19 +41,19 @@ export class TestResultsSummaryData implements Iterable<TestResultContainerData>
     return (
       'result summary {' +
       '\n\tpassed=' +
-      this._summary.passed +
+      this._summary?.passed +
       '\n\tunresolved=' +
-      this._summary.unresolved +
+      this._summary?.unresolved +
       '\n\tfailed=' +
-      this._summary.failed +
+      this._summary?.failed +
       '\n\texceptions=' +
-      this._summary.exceptions +
+      this._summary?.exceptions +
       '\n\tmismatches=' +
-      this._summary.mismatches +
+      this._summary?.mismatches +
       '\n\tmissing=' +
-      this._summary.missing +
+      this._summary?.missing +
       '\n\tmatches=' +
-      this._summary.matches +
+      this._summary?.matches +
       '\n}'
     )
   }

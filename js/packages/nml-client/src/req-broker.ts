@@ -40,23 +40,23 @@ export function makeReqBroker({config, logger}: {config: ReqBrokerConfig; logger
 function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqBrokerOptions> {
   return {
     beforeRequest({request, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       logger?.log(
-        `Broker request "${options.name}" will be sent to the address "[${request.method}]${request.url}" with body`,
-        options.body,
+        `Broker request "${options?.name}" will be sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
       )
     },
     async afterResponse({request, response, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       logger?.log(
-        `Broker request "${options.name}" that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
+        `Broker request "${options?.name}" that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
         response.status !== 200 ? `and body ${JSON.stringify(await response.clone().text())}` : '',
       )
     },
     afterError({request, error, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       logger?.error(
-        `Broker request "${options.name}" that was sent to the address "[${request.method}]${request.url}" failed with error`,
+        `Broker request "${options?.name}" that was sent to the address "[${request.method}]${request.url}" failed with error`,
         error,
       )
     },
@@ -68,7 +68,7 @@ function handleLongRequests({req}: {req: Req}): Hooks<ReqBrokerOptions> {
     async afterResponse({request, response, options}) {
       if (response.status === 200) {
         return req(request.url + '-response', {
-          proxy: options.proxy,
+          proxy: options?.proxy,
           retry: {
             // 1500 attempts x 200 ms = 5 minutes
             limit: 1500,

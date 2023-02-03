@@ -50,7 +50,7 @@ export function makeReqEyes({config, fetch, logger}: {config: ReqEyesConfig; fet
       },
       // retry on requests that were blocked by concurrency
       {
-        timeout: [].concat(Array(5).fill(2000) /* 5x2s */, Array(4).fill(5000) /* 4x5s */, 10000 /* 10s */),
+        timeout: [...Array(5).fill(2000) /* 5x2s */, ...Array(4).fill(5000) /* 4x5s */, 10000 /* 10s */],
         statuses: [503],
       },
     ],
@@ -65,7 +65,7 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqE
 
   return {
     beforeRequest({request, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       let requestId = request.headers.get('x-applitools-eyes-client-request-id')
       if (!requestId) {
         requestId = `${counter++}--${guid}`
@@ -73,8 +73,8 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqE
       }
 
       logger?.log(
-        `Request "${options.name}" [${requestId}] will be sent to the address "[${request.method}]${request.url}" with body`,
-        options.body,
+        `Request "${options?.name}" [${requestId}] will be sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
       )
     },
     beforeRetry({request, attempt}) {
@@ -84,18 +84,18 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqE
       }
     },
     async afterResponse({request, response, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       const requestId = request.headers.get('x-applitools-eyes-client-request-id')
       logger?.log(
-        `Request "${options.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
+        `Request "${options?.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
         !response.ok ? `and body ${JSON.stringify(await response.clone().text())}` : '',
       )
     },
     afterError({request, error, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       const requestId = request.headers.get('x-applitools-eyes-client-request-id')
       logger?.error(
-        `Request "${options.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" failed with error`,
+        `Request "${options?.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" failed with error`,
         error,
       )
     },
@@ -105,10 +105,14 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqE
 function handleUnexpectedResponse(): Hooks<ReqEyesOptions> {
   return {
     async afterResponse({request, response, options}) {
-      const {expected, name} = options
-      if (expected && (utils.types.isArray(expected) ? !expected.includes(response.status) : expected !== response.status)) {
+      if (
+        options?.expected &&
+        (utils.types.isArray(options?.expected)
+          ? !options.expected.includes(response.status)
+          : options.expected !== response.status)
+      ) {
         throw new Error(
-          `Request "${name}" that was sent to the address "[${request.method}]${request.url}" failed due to unexpected status ${response.statusText}(${response.status})`,
+          `Request "${options?.name}" that was sent to the address "[${request.method}]${request.url}" failed due to unexpected status ${response.statusText}(${response.status})`,
         )
       }
     },
@@ -130,38 +134,38 @@ function handleLongRequests({req}: {req: Req}): Hooks {
 
         // polling for result
         const pollResponse = await req(
-          response.headers.get('Location'),
-          mergeOptions(options, {
+          response.headers.get('Location')!,
+          mergeOptions<ReqEyesOptions>(options ?? {}, {
             method: 'GET',
-            body: null,
-            expected: null,
+            body: undefined,
+            expected: undefined,
             retry: {
               statuses: [200],
-              timeout: [].concat(Array(5).fill(1000) /* 5x1s */, Array(5).fill(2000) /* 5x2s */, 5000 /* 5s */),
+              timeout: [...Array(5).fill(1000) /* 5x1s */, ...Array(5).fill(2000) /* 5x2s */, 5000 /* 5s */],
             },
             hooks: {
               beforeRetry({request, response}) {
                 if (response && response.status === 200 && response.headers.has('Location')) {
-                  return new Request(response.headers.get('Location'), request)
+                  return new Request(response.headers.get('Location')!, request)
                 }
               },
             },
-          } as ReqEyesOptions),
+          }),
         )
 
         // getting result of the initial request
         const resultResponse = await req(
-          pollResponse.headers.get('Location'),
-          mergeOptions(options, {
+          pollResponse.headers.get('Location')!,
+          mergeOptions<ReqEyesOptions>(options ?? {}, {
             method: 'DELETE',
-            expected: null,
+            expected: undefined,
             hooks: {
               beforeRetry({response, stop}) {
                 // if the long request is blocked due to concurrency the whole long request should start over
-                if (response.status === 503) return stop
+                if (response?.status === 503) return stop
               },
             },
-          } as ReqEyesOptions),
+          }),
         )
 
         return resultResponse.status === 503 ? req(request, options) : resultResponse

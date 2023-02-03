@@ -6,11 +6,11 @@ import assert from 'assert'
 
 const logger = makeLogger()
 
-function generateSnapshotResponse(overrides) {
+function generateSnapshotResponse(overrides: any) {
   return JSON.stringify({status: 'SUCCESS', value: generateSnapshotObject(overrides)})
 }
 
-function generateSnapshotObject(overrides) {
+function generateSnapshotObject(overrides: any) {
   return {
     cdt: [],
     srcAttr: null,
@@ -24,7 +24,7 @@ function generateSnapshotObject(overrides) {
 }
 
 describe('take-dom-snapshot', () => {
-  let mock, driver: Driver<unknown, unknown, unknown, unknown>
+  let mock: MockDriver, driver: Driver<unknown, unknown, unknown, unknown>
 
   beforeEach(async () => {
     mock = new MockDriver()
@@ -74,7 +74,7 @@ describe('take-dom-snapshot', () => {
 
   it('should take a dom snapshot with cross origin frames', async () => {
     mock.mockElements([{selector: '[data-applitools-selector="123"]', frame: true}])
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       return this.name === '[data-applitools-selector="123"]'
         ? generateSnapshotResponse({cdt: 'frame-cdt', url: 'http://cors.com/?applitools-iframe=known'})
         : generateSnapshotResponse({
@@ -123,7 +123,7 @@ describe('take-dom-snapshot', () => {
         frame: true,
       },
     ])
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
@@ -215,7 +215,7 @@ describe('take-dom-snapshot', () => {
       },
     ])
 
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
@@ -305,7 +305,7 @@ describe('take-dom-snapshot', () => {
       },
     ])
 
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
@@ -414,7 +414,7 @@ describe('take-dom-snapshot', () => {
         ],
       },
     ])
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
@@ -475,7 +475,7 @@ describe('take-dom-snapshot', () => {
         isCORS: true,
       },
     ])
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case 'cors-frame':
           return generateSnapshotResponse({
@@ -508,7 +508,7 @@ describe('take-dom-snapshot', () => {
         isCORS: true,
       },
     ])
-    mock.mockScript('dom-snapshot', function () {
+    mock.mockScript('dom-snapshot', function (this: any) {
       switch (this.name) {
         case 'some-frame-with-data-url':
           return generateSnapshotResponse({

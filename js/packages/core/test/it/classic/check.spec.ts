@@ -5,7 +5,7 @@ import {makeCore} from '../../../src/classic/core'
 import assert from 'assert'
 
 describe('check', () => {
-  let driver
+  let driver: MockDriver
 
   async function getDocumentElement() {
     return driver.findElement('html')

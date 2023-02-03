@@ -1,6 +1,15 @@
 import type {Cookie} from '../types'
 import {type Logger} from '@applitools/logger'
-import {makeReq, Request, Response, AbortController, type Fetch, type Proxy, type Hooks, type AbortSignal} from '@applitools/req'
+import {
+  makeReq,
+  Request,
+  Response,
+  AbortController,
+  type Fetch,
+  type Proxy,
+  type Hooks,
+  type AbortSignal,
+} from '@applitools/req'
 import {makeResource, type UrlResource, type ContentfulResource, FailedResource} from './resource'
 import {createCookieHeader} from '../utils/create-cookie-header'
 import {createUserAgentHeader} from '../utils/create-user-agent-header'
@@ -52,8 +61,8 @@ export function makeFetchResource({
     runningRequest = req(resource.url, {
       headers: {
         Referer: settings.referer,
-        Cookie: createCookieHeader({url: resource.url, cookies: settings.cookies}),
-        'User-Agent': createUserAgentHeader({renderer: resource.renderer}) ?? settings.userAgent,
+        Cookie: settings.cookies && createCookieHeader({url: resource.url, cookies: settings.cookies}),
+        'User-Agent': (resource.renderer && createUserAgentHeader({renderer: resource.renderer})) ?? settings.userAgent,
       },
       proxy: resourceUrl => {
         const {proxy, autProxy} = settings
@@ -71,7 +80,7 @@ export function makeFetchResource({
           ? makeResource({
               ...resource,
               value: Buffer.from(await response.arrayBuffer()),
-              contentType: response.headers.get('Content-Type'),
+              contentType: response.headers.get('Content-Type')!,
             })
           : makeResource({...resource, errorStatusCode: response.status})
       })
@@ -81,10 +90,13 @@ export function makeFetchResource({
   }
 }
 
-function handleLogs({logger}: {logger: Logger}): Hooks {
+function handleLogs({logger}: {logger?: Logger}): Hooks {
   return {
     beforeRequest({request}) {
-      logger?.log(`Resource with url ${request.url} will be fetched using headers`, Object.fromEntries(request.headers.entries()))
+      logger?.log(
+        `Resource with url ${request.url} will be fetched using headers`,
+        Object.fromEntries(request.headers.entries()),
+      )
     },
     beforeRetry({request, attempt}) {
       logger?.log(`Resource with url ${request.url} will be re-fetched (attempt ${attempt})`)
@@ -98,7 +110,7 @@ function handleLogs({logger}: {logger: Logger}): Hooks {
   }
 }
 
-function handleStreaming({timeout, logger}: {timeout: number; logger: Logger}): Hooks {
+function handleStreaming({timeout, logger}: {timeout: number; logger?: Logger}): Hooks {
   const controller = new AbortController()
   return {
     async beforeRequest({request}: {request: Request & {signal?: AbortSignal}}) {
@@ -107,21 +119,20 @@ function handleStreaming({timeout, logger}: {timeout: number; logger: Logger}): 
       return new Request(request, {signal: controller.signal})
     },
     async afterResponse({response}) {
-      const isProbablyStreaming =
-        response.ok &&
-        !response.headers.get('Content-Length') &&
-        ['audio/', 'video/'].some(prefix => response.headers.get('Content-Type').startsWith(prefix))
+      const contentLength = response.headers.get('Content-Length')
+      const contentType = response.headers.get('Content-Type')
+      const isProbablyStreaming = response.ok && !contentLength && contentType && /^(audio|video)\//.test(contentType)
       if (!isProbablyStreaming) return
       return new Promise<Response>(resolve => {
         const timer = setTimeout(() => {
           controller.abort()
-          resolve(new Response(null, {status: 599}))
+          resolve(new Response(undefined, {status: 599}))
           logger?.log(`Resource with url ${response.url} was interrupted, due to it takes too long to download`)
         }, timeout)
         response
           .arrayBuffer()
           .then(body => resolve(new Response(body, response)))
-          .catch(() => resolve(new Response(null, {status: 599})))
+          .catch(() => resolve(new Response(undefined, {status: 599})))
           .finally(() => clearTimeout(timer))
       })
     },

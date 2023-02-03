@@ -9,11 +9,11 @@ type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | '
   eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
   target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
-  type: defaultType,
+  type: defaultType = 'classic' as TDefaultType,
   eyes,
   target: defaultTarget,
   spec,
@@ -21,7 +21,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   let stepIndex = 0
   return async function check<TType extends 'classic' | 'ufg' = TDefaultType>({
-    type = defaultType as any,
+    type = defaultType as unknown as TType,
     target = defaultTarget,
     settings,
     config,
@@ -57,16 +57,20 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
     settings.waitBetweenStitches ??= utils.types.isObject(settings.lazyLoad) ? settings.lazyLoad.waitingTime : 100
 
     if (settings.matchLevel === 'Content') {
-      logger.console.log(chalk.yellow(`The "Content" match level value has been deprecated, use "IgnoreColors" instead.`))
+      logger.console.log(
+        chalk.yellow(`The "Content" match level value has been deprecated, use "IgnoreColors" instead.`),
+      )
     }
 
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const typedEyes = await eyes.getTypedEyes({
       type,
-      settings: driver && {
-        type: driver.isNative ? 'native' : 'web',
-        renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers,
-      },
+      settings: driver
+        ? {
+            type: driver.isNative ? 'native' : 'web',
+            renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers!,
+          }
+        : undefined,
       logger,
     })
     const results = await typedEyes.check({target: driver ?? target, settings, logger})

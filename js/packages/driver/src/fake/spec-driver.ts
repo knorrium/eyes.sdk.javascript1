@@ -23,7 +23,7 @@ export function isSelector(selector: any): selector is Selector {
 export function transformSelector(selector: Selector | {selector: Selector}): Selector {
   return utils.types.has(selector, 'selector') ? selector.selector : selector
 }
-export function untransformSelector(selector: Selector): CommonSelector {
+export function untransformSelector(selector: Selector): CommonSelector | null {
   if (utils.types.isString(selector)) {
     return {type: 'css', selector: selector}
   } else if (utils.types.has(selector, ['using', 'value'])) {
@@ -31,6 +31,7 @@ export function untransformSelector(selector: Selector): CommonSelector {
   } else if (utils.types.has(selector, ['selector'])) {
     return selector
   }
+  return null
 }
 export function extractSelector(element: Element): any {
   if (utils.types.has(element, ['selector'])) {
@@ -77,11 +78,11 @@ export async function getOrientation(_driver: Driver): Promise<'portrait' | 'lan
   return 'portrait'
 }
 export async function getUrl(driver: Driver): Promise<string> {
-  if (this._isNative) return null
+  if (driver._isNative) return ''
   return driver.getUrl()
 }
 export async function getTitle(driver: Driver): Promise<string> {
-  if (this._isNative) return null
+  if (driver._isNative) return ''
   return driver.getTitle()
 }
 export async function visit(driver: Driver, url: string): Promise<void> {

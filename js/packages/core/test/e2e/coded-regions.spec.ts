@@ -17,10 +17,10 @@ import assert from 'assert'
  */
 
 describe('coded regions', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
-    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', selenium: require('selenium-webdriver')})
   })
 
   after(async () => {
@@ -54,9 +54,9 @@ describe('coded regions', () => {
         el,
         {region: el, regionId: 'my-custom-id'},
         By.tagName('my-region'),
-        locateWith(By.css('.two')).toRightOf(el),
+        locateWith(By.css('.two')).toRightOf(el as any),
         '.region.three:nth-child(3n)', // 4 regions are targeted by this selector
-      ]
+      ] as any[]
 
       // check #1 - ignore regions
       await eyes.check({settings: {fully: false, ignoreRegions: regions}})

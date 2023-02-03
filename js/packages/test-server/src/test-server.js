@@ -11,6 +11,7 @@ const utils = require('@applitools/utils')
 
 function testServer(argv = {}) {
   let {staticPath = resolve('./test/fixtures'), port = 0, allowCors, showLogs, middlewares, key, cert} = argv
+  if (!argv.staticPath) argv.staticPath = staticPath
 
   const app = express()
   app.use(cookieParser())

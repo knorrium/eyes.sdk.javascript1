@@ -1,9 +1,9 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 describe('extract-text', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -19,13 +19,13 @@ describe('extract-text', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'extractText e2e test',
         environment: {viewportSize: {width: 700, height: 460}},
       },
     })
-    await driver.get('https://applitools.github.io/demo/TestPages/OCRPage')
+    await driver.url('https://applitools.github.io/demo/TestPages/OCRPage')
     const strings = await eyes.extractText({
       settings: [
         {region: 'body > h1'},

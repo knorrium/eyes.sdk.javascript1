@@ -59,6 +59,7 @@ runs:
         if [ "${{inputs.skip-build}}" = "false" ]
         then
           echo "::group::Installing and updating dependencies"
+          yarn --cwd ../../ install
           yarn install
           npm run deps --if-present -- --commit
           echo "::endgroup::"

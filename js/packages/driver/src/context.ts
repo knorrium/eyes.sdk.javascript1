@@ -26,21 +26,32 @@ export type ContextPlain<TDriver, TContext, TElement, TSelector> =
       parent?: ContextPlain<TDriver, TContext, TElement, TSelector>
     }
 
-export type ContextState = {
+type ContextState = {
   region?: Region
   clientRegion?: Region
   scrollingRegion?: Region
   innerOffset?: Location
 }
 
-export class Context<TDriver, TContext, TElement, TSelector> {
-  private _target: TContext
+type ContextOptions<TDriver, TContext, TElement, TSelector> = {
+  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  context?: TContext
+  driver?: Driver<TDriver, TContext, TElement, TSelector>
+  parent?: Context<TDriver, TContext, TElement, TSelector>
+  reference?: ContextReference<TDriver, TContext, TElement, TSelector>
+  element?: Element<TDriver, TContext, TElement, TSelector>
+  scrollingElement?: Element<TDriver, TContext, TElement, TSelector>
+  logger: Logger
+}
 
-  private _driver: Driver<TDriver, TContext, TElement, TSelector>
-  private _parent: Context<TDriver, TContext, TElement, TSelector>
-  private _element: Element<TDriver, TContext, TElement, TSelector>
-  private _reference: ContextReference<TDriver, TContext, TElement, TSelector>
-  private _scrollingElement: Element<TDriver, TContext, TElement, TSelector>
+export class Context<TDriver, TContext, TElement, TSelector> {
+  private _target?: TContext
+
+  private _driver?: Driver<TDriver, TContext, TElement, TSelector>
+  private _parent?: Context<TDriver, TContext, TElement, TSelector>
+  private _element?: Element<TDriver, TContext, TElement, TSelector> | null
+  private _reference?: ContextReference<TDriver, TContext, TElement, TSelector> | null
+  private _scrollingElement?: Element<TDriver, TContext, TElement, TSelector> | null
   private _state: ContextState = {}
   private _logger: Logger
 
@@ -57,21 +68,9 @@ export class Context<TDriver, TContext, TElement, TSelector> {
 
   protected readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
 
-  constructor(options: {
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    context?: TContext | Context<TDriver, TContext, TElement, TSelector>
-    driver?: Driver<TDriver, TContext, TElement, TSelector>
-    parent?: Context<TDriver, TContext, TElement, TSelector>
-    reference?: ContextReference<TDriver, TContext, TElement, TSelector>
-    element?: Element<TDriver, TContext, TElement, TSelector>
-    scrollingElement?: Element<TDriver, TContext, TElement, TSelector>
-    logger?: Logger
-  }) {
-    if (options.context instanceof Context) return options.context
-
+  constructor(options: ContextOptions<TDriver, TContext, TElement, TSelector>) {
     this._spec = options.spec
-
-    if (options.logger) this._logger = options.logger
+    this._logger = options.logger
 
     if (options.context) {
       if (this._spec.isContext?.(options.context) ?? this._spec.isDriver(options.context)) {
@@ -90,23 +89,21 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       this._reference = options.reference
       this._parent = options.parent
       this._scrollingElement = options.scrollingElement
-      this._driver = options.driver || this._parent.driver
+      this._driver = options.driver || this._parent?.driver
     } else if (!options.reference) {
-      this._element = null
-      this._parent = null
       this._scrollingElement = options.scrollingElement
-      this._driver = options.driver
+      this._driver = options.driver!
     } else {
       throw new TypeError('Context constructor called with argument of unknown type!')
     }
   }
 
   get target(): TContext {
-    return this._target
+    return this._target!
   }
 
   get driver(): Driver<TDriver, TContext, TElement, TSelector> {
-    return this._driver
+    return this._driver!
   }
 
   get parent(): Context<TDriver, TContext, TElement, TSelector> | null {
@@ -168,8 +165,9 @@ export class Context<TDriver, TContext, TElement, TSelector> {
           if (element) {
             clearTimeout(timeout)
             elements = [element]
+            break
           }
-          await utils.general.sleep(wait.interval)
+          await utils.general.sleep(wait.interval ?? 0)
         }
       }
     } else if (all) {
@@ -184,28 +182,28 @@ export class Context<TDriver, TContext, TElement, TSelector> {
         if (selector.child) {
           elements = await elements.reduce((result, element) => {
             return result.then(async result => {
-              return result.concat(await this._findElements(selector.child, {parent: element, all, wait}))
+              return result.concat(await this._findElements(selector.child!, {parent: element, all, wait}))
             })
-          }, Promise.resolve([]))
+          }, Promise.resolve([] as TElement[]))
         } else if (selector.shadow) {
           elements = await elements.reduce((result, element) => {
             return result.then(async result => {
               const root: TElement = await this._spec.executeScript(this.target, snippets.getShadowRoot, [element])
-              return result.concat(root ? await this._findElements(selector.shadow, {parent: root, all, wait}) : [])
+              return result.concat(root ? await this._findElements(selector.shadow!, {parent: root, all, wait}) : [])
             })
-          }, Promise.resolve([]))
+          }, Promise.resolve([] as TElement[]))
         } else if (selector.frame) {
           elements = await elements.reduce((result, element) => {
             return result.then(async result => {
               const context = await this.context(element)
-              return result.concat(await context._findElements(selector.frame, {all, wait}))
+              return result.concat(await context._findElements(selector.frame!, {all, wait}))
             })
-          }, Promise.resolve([]))
+          }, Promise.resolve([] as TElement[]))
         }
       }
 
       if (elements.length === 0 && selector.fallback) {
-        elements = await this._findElements(selector.fallback, parent)
+        elements = await this._findElements(selector.fallback, {parent})
       }
     }
 
@@ -214,7 +212,9 @@ export class Context<TDriver, TContext, TElement, TSelector> {
 
   async init(): Promise<this> {
     if (this.isInitialized) return this
-    if (!this._reference) throw new TypeError('Cannot initialize context without a reference to the context element')
+    if (!this._reference || !this.parent) {
+      throw new TypeError('Cannot initialize context without a reference to the context element')
+    }
 
     await this.parent.focus()
 
@@ -245,12 +245,10 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       }
     } else if (this._spec.isElement(this._reference) || this._reference instanceof Element) {
       this._logger.log('Initialize context from reference element', this._reference)
-      this._element = new Element({
-        spec: this._spec,
-        context: this.parent,
-        element: this._reference,
-        logger: this._logger,
-      })
+      this._element =
+        this._reference instanceof Element
+          ? this._reference
+          : new Element({spec: this._spec, context: this.parent, element: this._reference, logger: this._logger})
     } else {
       throw new TypeError('Reference type does not supported')
     }
@@ -272,17 +270,17 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       await this.init()
     }
 
-    if (!this.parent.isCurrent) {
+    if (!this.parent!.isCurrent) {
       await this.driver.switchTo(this)
       return this
     }
 
-    await this.parent.preserveInnerOffset()
+    await this.parent!.preserveInnerOffset()
 
-    if (this.parent.isMain) await this.parent.preserveContextRegions()
+    if (this.parent!.isMain) await this.parent!.preserveContextRegions()
     await this.preserveContextRegions()
 
-    this._target = await this._spec.childContext(this.parent.target, this._element.target)
+    this._target = await this._spec.childContext(this.parent!.target, this._element!.target)
 
     this.driver.updateCurrentContext(this)
 
@@ -294,14 +292,14 @@ export class Context<TDriver, TContext, TElement, TSelector> {
   ): Promise<boolean> {
     if (context === this || (this.isMain && context === null)) return true
     if (!this._element) return false
-    return this._element.equals(context instanceof Context ? await context.getContextElement() : context)
+    return this._element.equals(context instanceof Context ? (await context.getContextElement())! : context)
   }
 
   async context(
     reference: ContextPlain<TDriver, TContext, TElement, TSelector>,
   ): Promise<Context<TDriver, TContext, TElement, TSelector>> {
     if (reference instanceof Context) {
-      if (reference.parent !== this && !(await this.equals(reference.parent))) {
+      if (reference.parent !== this && !(await this.equals(reference.parent!))) {
         throw Error('Cannot attach a child context because it has a different parent')
       }
       return reference
@@ -317,12 +315,14 @@ export class Context<TDriver, TContext, TElement, TSelector> {
         scrollingElement: reference?.scrollingElement,
         logger: this._logger,
       })
+    } else {
+      throw new Error('Cannot get context using reference of unknown type!')
     }
   }
 
   async element(
     elementOrSelector: TElement | Selector<TSelector>,
-  ): Promise<Element<TDriver, TContext, TElement, TSelector>> {
+  ): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
     if (this._spec.isElement(elementOrSelector)) {
       return new Element({spec: this._spec, context: this, element: elementOrSelector, logger: this._logger})
     } else if (!specUtils.isSelector(this._spec, elementOrSelector)) {
@@ -331,11 +331,8 @@ export class Context<TDriver, TContext, TElement, TSelector> {
     if (this.isRef) {
       return new Element({spec: this._spec, context: this, selector: elementOrSelector, logger: this._logger})
     }
-
     this._logger.log('Finding element by selector: ', elementOrSelector)
-
     const [element] = await this._findElements(elementOrSelector, {all: false})
-
     return element
       ? new Element({spec: this._spec, context: this, element, selector: elementOrSelector, logger: this._logger})
       : null
@@ -348,11 +345,8 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       if (this.isRef) {
         return [new Element({spec: this._spec, context: this, selector: selectorOrElement, logger: this._logger})]
       }
-
       this._logger.log('Finding elements by selector: ', selectorOrElement)
-
       const elements = await this._findElements(selectorOrElement, {all: true})
-
       return elements.map((element, index) => {
         return new Element({
           spec: this._spec,
@@ -373,7 +367,8 @@ export class Context<TDriver, TContext, TElement, TSelector> {
   async waitFor(
     selector: Selector<TSelector>,
     options?: WaitOptions,
-  ): Promise<Element<TDriver, TContext, TElement, TSelector>> {
+  ): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
+    this._logger.log('Waiting for element by selector: ', selector, 'and options', options)
     const [element] = await this._findElements(selector, {
       wait: {state: 'exist', timeout: 10000, interval: 500, ...options},
     })
@@ -443,7 +438,7 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       clearTimeout(executionTimer)
     }
 
-    function deserialize(json) {
+    function deserialize(json: string) {
       try {
         return JSON.parse(json)
       } catch (err) {
@@ -456,13 +451,13 @@ export class Context<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  async getContextElement(): Promise<Element<TDriver, TContext, TElement, TSelector>> {
+  async getContextElement(): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
     if (this.isMain) return null
     await this.init()
-    return this._element
+    return this._element ?? null
   }
 
-  async getScrollingElement(): Promise<Element<TDriver, TContext, TElement, TSelector>> {
+  async getScrollingElement(): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
     if (!(this._scrollingElement instanceof Element)) {
       await this.focus()
       if (this._scrollingElement) {
@@ -485,7 +480,12 @@ export class Context<TDriver, TContext, TElement, TSelector> {
   }
 
   async setScrollingElement(
-    scrollingElement: Element<TDriver, TContext, TElement, TSelector> | TElement | Selector<TSelector>,
+    scrollingElement:
+      | Element<TDriver, TContext, TElement, TSelector>
+      | TElement
+      | Selector<TSelector>
+      | undefined
+      | null,
   ): Promise<void> {
     if (scrollingElement === undefined) return
     else if (scrollingElement === null) this._scrollingElement = null
@@ -495,7 +495,7 @@ export class Context<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  async blurElement(element?: Element<TDriver, TContext, TElement, TSelector>): Promise<TElement> {
+  async blurElement(element?: Element<TDriver, TContext, TElement, TSelector>): Promise<TElement | null> {
     try {
       return await this.execute(snippets.blurElement, [element])
     } catch (err) {
@@ -526,9 +526,9 @@ export class Context<TDriver, TContext, TElement, TSelector> {
         : viewportRegion
     } else if (this.parent?.isCurrent) {
       await this.init()
-      this._state.region = await this._element.getRegion()
+      this._state.region = await this._element?.getRegion()
     }
-    return this._state.region
+    return this._state.region!
   }
 
   async getClientRegion(): Promise<Region> {
@@ -542,17 +542,17 @@ export class Context<TDriver, TContext, TElement, TSelector> {
         : viewportRegion
     } else if (this.parent?.isCurrent) {
       await this.init()
-      this._state.clientRegion = await this._element.getClientRegion()
+      this._state.clientRegion = await this._element?.getClientRegion()
     }
-    return this._state.clientRegion
+    return this._state.clientRegion!
   }
 
   async getScrollingRegion(): Promise<Region> {
     if (this.isCurrent) {
       const scrollingElement = await this.getScrollingElement()
-      this._state.scrollingRegion = await scrollingElement.getClientRegion()
+      this._state.scrollingRegion = await scrollingElement?.getClientRegion()
     }
-    return this._state.scrollingRegion
+    return this._state.scrollingRegion!
   }
 
   async getContentSize(): Promise<Size> {
@@ -564,7 +564,7 @@ export class Context<TDriver, TContext, TElement, TSelector> {
       const scrollingElement = await this.getScrollingElement()
       this._state.innerOffset = scrollingElement ? await scrollingElement.getInnerOffset() : {x: 0, y: 0}
     }
-    return this._state.innerOffset
+    return this._state.innerOffset!
   }
 
   async getLocationInMainContext(): Promise<Location> {
@@ -580,7 +580,7 @@ export class Context<TDriver, TContext, TElement, TSelector> {
 
     if (this.isMain) return location
 
-    let currentContext = this as Context<TDriver, TContext, TElement, TSelector>
+    let currentContext = this as Context<TDriver, TContext, TElement, TSelector> | null
     while (currentContext) {
       const contextLocation = utils.geometry.location(await currentContext.getClientRegion())
       const parentContextInnerOffset = (await currentContext.parent?.getInnerOffset()) ?? {x: 0, y: 0}
@@ -595,13 +595,12 @@ export class Context<TDriver, TContext, TElement, TSelector> {
   }
 
   async getRegionInViewport(region: Region): Promise<Region> {
-    let currentContext = this as Context<TDriver, TContext, TElement, TSelector>
-
     this._logger.log('Converting context region to viewport region', region)
 
-    if (region) region = utils.geometry.offsetNegative(region, await currentContext.getInnerOffset())
+    if (region) region = utils.geometry.offsetNegative(region, await this.getInnerOffset())
     else region = {x: 0, y: 0, width: Infinity, height: Infinity}
 
+    let currentContext = this as Context<TDriver, TContext, TElement, TSelector> | null
     while (currentContext) {
       const contextRegion = await currentContext.getClientRegion()
       // const contextScrollingRegion = await currentContext.getScrollingRegion()

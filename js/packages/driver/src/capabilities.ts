@@ -90,7 +90,7 @@ function isAndroid(capabilities: Capabilities) {
   return /Android/i.test(capabilities.platformName) || /Android/i.test(capabilities.browserName)
 }
 
-function extractDisplaySize(capabilities: Capabilities): Size {
+function extractDisplaySize(capabilities: Capabilities): Size | undefined {
   if (!capabilities.deviceScreenSize) return undefined
   const [width, height] = capabilities.deviceScreenSize.split('x')
   if (Number.isNaN(Number(width)) || Number.isNaN(Number(height))) return undefined

@@ -8,7 +8,7 @@ export type LegacyRegion = {left: number; top: number; width: number; height: nu
 export type Region = Location & RectangleSize
 
 export class RegionData implements Required<Region> {
-  private _region: Region = {} as any
+  private _region: Region
 
   constructor(region: Region)
   constructor(location: Location, size: RectangleSize)
@@ -19,15 +19,19 @@ export class RegionData implements Required<Region> {
     width?: number,
     height?: number,
   ) {
+    let region: Region
     if (utils.types.isNumber(regionOrLocationOrX)) {
-      return new RegionData({x: regionOrLocationOrX, y: sizeOrY as number, width, height})
+      region = {x: regionOrLocationOrX, y: sizeOrY as number, width: width!, height: height!}
     } else if (!utils.types.has(regionOrLocationOrX, ['width', 'height'])) {
-      return new RegionData({...regionOrLocationOrX, ...(sizeOrY as RectangleSize)})
+      region = {...regionOrLocationOrX, ...(sizeOrY as RectangleSize)}
+    } else {
+      region = regionOrLocationOrX
     }
-    this.x = regionOrLocationOrX.x
-    this.y = regionOrLocationOrX.y
-    this.width = regionOrLocationOrX.width
-    this.height = regionOrLocationOrX.height
+    utils.guard.isNumber(region.x, {name: 'x'})
+    utils.guard.isNumber(region.y, {name: 'y'})
+    utils.guard.isNumber(region.width, {name: 'width', gte: 0})
+    utils.guard.isNumber(region.height, {name: 'height', gte: 0})
+    this._region = region
   }
 
   get x(): number {

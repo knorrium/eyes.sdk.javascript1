@@ -24,18 +24,30 @@ export interface Core<TDriver, TContext, TElement, TSelector, TEyes = Eyes<TDriv
   }): Promise<TEyes>
 }
 
-export interface Eyes<TDriver, TContext, TElement, TSelector, TTarget = UFGTarget<TDriver, TContext, TElement, TSelector>>
-  extends AutomationCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
+export interface Eyes<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TTarget = UFGTarget<TDriver, TContext, TElement, TSelector>,
+> extends AutomationCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
   readonly type: 'ufg'
-  getBaseEyes(options?: {settings?: {type: 'web' | 'native'; renderer: Renderer}; logger?: Logger}): Promise<BaseCore.Eyes[]>
-  check(options?: {target?: TTarget; settings?: CheckSettings<TElement, TSelector>; logger?: Logger}): Promise<CheckResult[]>
+  getBaseEyes(options?: {
+    settings?: {type: 'web' | 'native'; renderer: Renderer}
+    logger?: Logger
+  }): Promise<BaseCore.Eyes[]>
+  check(options?: {
+    target?: TTarget
+    settings?: CheckSettings<TElement, TSelector>
+    logger?: Logger
+  }): Promise<CheckResult[]>
   checkAndClose(options?: {
     target?: TTarget
     settings?: CheckSettings<TElement, TSelector> & AutomationCore.CloseSettings
     logger?: Logger
   }): Promise<TestResult[]>
-  locateText?: never
-  extractText?: never
+  locateText: never
+  extractText: never
   close(options?: {settings?: AutomationCore.CloseSettings; logger?: Logger}): Promise<TestResult[]>
   abort(options?: {logger?: Logger}): Promise<TestResult[]>
 }

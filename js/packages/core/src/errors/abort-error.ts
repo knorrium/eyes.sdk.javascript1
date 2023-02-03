@@ -1,3 +1,1 @@
-export class AbortError extends Error {
-  info: Record<string, any>
-}
+export class AbortError extends Error {}

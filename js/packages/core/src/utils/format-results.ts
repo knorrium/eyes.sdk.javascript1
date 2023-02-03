@@ -7,16 +7,12 @@ export function toFormatterString(
   results: TestResult[],
   {includeSubTests = true, markNewAsPassed = false}: {includeSubTests?: boolean; markNewAsPassed?: boolean} = {},
 ) {
-  if (results.length === 0) {
-    return 'No results found.'
-  }
+  if (results.length === 0) return 'No results found.'
 
   let formattedString = '[EYES: TEST RESULTS]:\n'
 
-  for (let i = 0; i < results.length; i += 1) {
-    /** @type {TestResults} */ const currentResult = results[i]
-
-    const testTitle = `${currentResult.name} [${currentResult.hostDisplaySize.width}x${currentResult.hostDisplaySize.height}]`
+  results.forEach(currentResult => {
+    const testTitle = `${currentResult.name} [${currentResult.hostDisplaySize?.width}x${currentResult.hostDisplaySize?.height}]`
     let testResult = ''
 
     if (currentResult.isNew) {
@@ -24,28 +20,26 @@ export function toFormatterString(
     } else if (!currentResult.isDifferent) {
       testResult = 'Passed'
     } else {
-      const stepsFailed = currentResult.mismatches + currentResult.missing
+      const stepsFailed = (currentResult.mismatches ?? 0) + (currentResult.missing ?? 0)
       testResult = `Failed ${stepsFailed} of ${currentResult.steps}`
     }
 
     formattedString += `${testTitle} - ${testResult}\n`
 
     if (includeSubTests) {
-      if (currentResult.stepsInfo.length > 0) {
-        for (let j = 0; j < currentResult.stepsInfo.length; j += 1) {
-          const currentStep = currentResult.stepsInfo[j]
-
+      if (currentResult.stepsInfo && currentResult.stepsInfo.length > 0) {
+        currentResult.stepsInfo.forEach(currentStep => {
           const subTestTitle = currentStep.name
           const subTestResult = currentStep.isDifferent ? 'Passed' : 'Failed'
           formattedString += `\t> ${subTestTitle} - ${subTestResult}\n`
-        }
+        })
       } else {
         formattedString += '\tNo steps exist for this test.\n'
       }
     }
-  }
+  })
 
-  formattedString += `See details at ${results[0].appUrls.batch}`
+  formattedString += `See details at ${results[0].appUrls?.batch}`
 
   return formattedString
 }
@@ -54,19 +48,13 @@ export function toHierarchicTAPString(
   results: TestResult[],
   {includeSubTests = true, markNewAsPassed = false}: {includeSubTests?: boolean; markNewAsPassed?: boolean} = {},
 ) {
-  if (results.length === 0) {
-    return ''
-  }
+  if (results.length === 0) return ''
 
   let tapString = `1..${results.length}\n`
 
-  for (let i = 0; i < results.length; i += 1) {
-    /** @type {TestResults} */ const currentResult = results[i]
-    const tapIndex = i + 1
-
-    if (i > 0) {
-      tapString += '#\n'
-    }
+  results.forEach((currentResult, index) => {
+    if (index > 0) tapString += '#\n'
+    const tapIndex = index + 1
 
     const name = `Test: '${currentResult.name}', Application: '${currentResult.appName}'`
 
@@ -89,38 +77,40 @@ export function toHierarchicTAPString(
     }
 
     const url =
-      currentResult.appUrls && currentResult.appUrls.session ? currentResult.appUrls.session : "No URL (session didn't start)."
+      currentResult.appUrls && currentResult.appUrls.session
+        ? currentResult.appUrls.session
+        : "No URL (session didn't start)."
     tapString += `#\tTest url: ${url}\n`
     tapString += `#\tBrowser: ${currentResult.hostApp}, Viewport: ${currentResult.hostDisplaySize}\n`
 
     if (includeSubTests) {
-      if (currentResult.stepsInfo.length > 0) {
+      if (currentResult.stepsInfo && currentResult.stepsInfo.length > 0) {
         tapString += `\t1..${currentResult.stepsInfo.length}\n`
-        for (let j = 0; j < currentResult.stepsInfo.length; j += 1) {
-          const currentStep = currentResult.stepsInfo[j]
+        currentResult.stepsInfo.forEach(currentStep => {
           tapString += '\t'
           tapString += currentStep.isDifferent ? NOT_OK : OK
-          tapString += ` '${currentStep.name}', URL: ${currentStep.appUrls.step}\n`
-        }
+          tapString += ` '${currentStep.name}', URL: ${currentStep.appUrls?.step}\n`
+        })
       } else {
         tapString += '\tNo steps exist for this test.\n'
       }
     }
-  }
+  })
 
   return tapString
 }
 
-export function toFlattenedTAPString(results: TestResult[], {markNewAsPassed = false}: {markNewAsPassed?: boolean} = {}) {
+export function toFlattenedTAPString(
+  results: TestResult[],
+  {markNewAsPassed = false}: {markNewAsPassed?: boolean} = {},
+) {
   let tapString = ''
   let stepsCounter = 0
 
   // We'll add the TAP plan at the beginning, after we calculate the total number of steps.
-  for (let i = 0; i < results.length; i += 1) {
+  results.forEach((currentResult, index) => {
     tapString += '#\n'
-
-    /** @type {TestResults} */ const currentResult = results[i]
-    const tapIndex = i + 1
+    const tapIndex = index + 1
 
     const name = `Test: '${currentResult.name}', Application: '${currentResult.appName}'`
 
@@ -143,20 +133,21 @@ export function toFlattenedTAPString(results: TestResult[], {markNewAsPassed = f
     }
 
     const url =
-      currentResult.appUrls && currentResult.appUrls.session ? currentResult.appUrls.session : "No URL (session didn't start)."
+      currentResult.appUrls && currentResult.appUrls.session
+        ? currentResult.appUrls.session
+        : "No URL (session didn't start)."
 
     tapString += `#\tTest url: ${url}\n`
-    if (currentResult.stepsInfo.length > 0) {
-      for (let j = 0; j < currentResult.stepsInfo.length; j += 1) {
+    if (currentResult.stepsInfo && currentResult.stepsInfo.length > 0) {
+      currentResult.stepsInfo.forEach(currentStep => {
         stepsCounter += 1
-        const currentStep = currentResult.stepsInfo[j]
         tapString += currentStep.isDifferent ? NOT_OK : OK
-        tapString += ` ${stepsCounter} '${currentStep.name}', URL: ${currentStep.appUrls.step}\n`
-      }
+        tapString += ` ${stepsCounter} '${currentStep.name}', URL: ${currentStep.appUrls?.step}\n`
+      })
     } else {
       tapString += '#\tNo steps exist for this test.\n'
     }
-  }
+  })
 
   if (stepsCounter > 0) {
     tapString = `1..${stepsCounter}\n${tapString}`
@@ -174,7 +165,8 @@ export function toXmlOutput(results: TestResult[], {totalTime}: {totalTime?: num
     const properties = {} as any
     if (result.hostOS) properties.hostOS = result.hostOS
     if (result.hostApp) properties.hostApp = result.hostApp
-    if (result.hostDisplaySize) properties.viewportSize = `${result.hostDisplaySize.width}x${result.hostDisplaySize.height}`
+    if (result.hostDisplaySize)
+      properties.viewportSize = `${result.hostDisplaySize.width}x${result.hostDisplaySize.height}`
 
     if (properties.hostOS || properties.hostApp || properties.viewportSize) {
       output += `\n<properties>`
@@ -185,7 +177,7 @@ export function toXmlOutput(results: TestResult[], {totalTime}: {totalTime?: num
     }
     if (result.isDifferent) {
       output += `\n<failure>`
-      output += `\nDifference found. See ${result.appUrls.batch} for details.`
+      output += `\nDifference found. See ${result.appUrls?.batch} for details.`
       output += `\n</failure>`
     } else if (result.isAborted) {
       output += `\n<failure>`
@@ -198,6 +190,6 @@ export function toXmlOutput(results: TestResult[], {totalTime}: {totalTime?: num
   return output
 }
 
-export function toJsonOutput(results, space) {
+export function toJsonOutput(results: TestResult[], space?: number | string) {
   return JSON.stringify(results, null, space)
 }

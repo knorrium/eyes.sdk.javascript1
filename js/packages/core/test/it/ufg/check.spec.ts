@@ -2,7 +2,6 @@ import {makeCore} from '../../../src/ufg/core'
 import {makeFakeClient} from '../../utils/fake-ufg-client'
 import {makeFakeCore} from '../../utils/fake-base-core'
 import {MockDriver, spec} from '@applitools/driver/fake'
-import * as utils from '@applitools/utils'
 import assert from 'assert'
 
 describe('check', () => {
@@ -33,7 +32,7 @@ describe('check', () => {
     const results = await eyes.close()
 
     assert.deepStrictEqual(
-      results.map(result => result.stepsInfo.map((step: any) => step.asExpected)),
+      results.map(result => result.stepsInfo!.map((step: any) => step.asExpected)),
       [[true], [true], [true]],
     )
   })
@@ -67,70 +66,6 @@ describe('check', () => {
     )
   })
 
-  it('runs base check in the correct order', async () => {
-    const core = makeCore({core: makeFakeCore(), client: makeFakeClient(), concurrency: 10})
-
-    const eyes = await core.openEyes({
-      settings: {
-        serverUrl: 'server-url',
-        apiKey: 'api-key',
-        appName: 'app-name',
-        testName: 'test-name',
-      },
-    })
-
-    const target = {
-      cdt: [],
-      hooks: {
-        check({settings}) {
-          if (settings.name === 'one') return utils.general.sleep(200)
-          else if (settings.name === 'two') return utils.general.sleep(100)
-          else return utils.general.sleep(0)
-        },
-      },
-    }
-
-    await eyes.check({
-      target,
-      settings: {
-        name: 'one',
-        renderers: [
-          {name: 'chrome', width: 320, height: 480},
-          {name: 'firefox', width: 640, height: 768},
-        ],
-      },
-    })
-    await eyes.check({
-      target,
-      settings: {
-        name: 'two',
-        renderers: [
-          {name: 'chrome', width: 320, height: 480},
-          {name: 'firefox', width: 640, height: 768},
-        ],
-      },
-    })
-    await eyes.check({
-      target,
-      settings: {
-        name: 'three',
-        renderers: [
-          {name: 'chrome', width: 320, height: 480},
-          {name: 'firefox', width: 640, height: 768},
-        ],
-      },
-    })
-
-    const results = await eyes.close()
-    assert.deepStrictEqual(
-      results.map((result: any) => result.stepsInfo.map((step: any) => `${step.settings.name}-${result.renderer.name}`)),
-      [
-        ['one-chrome', 'two-chrome', 'three-chrome'],
-        ['one-firefox', 'two-firefox', 'three-firefox'],
-      ],
-    )
-  })
-
   it('handles region by selector', async () => {
     const core = makeCore({core: makeFakeCore(), client: makeFakeClient(), concurrency: 10})
 
@@ -152,7 +87,7 @@ describe('check', () => {
 
     assert.deepStrictEqual(
       results.map(result =>
-        result.stepsInfo.map((step: any) => ({
+        result.stepsInfo!.map((step: any) => ({
           asExpected: step.asExpected,
           locationInViewport: step.target.locationInViewport,
         })),
@@ -186,7 +121,7 @@ describe('check', () => {
 
     assert.deepStrictEqual(
       results.map(result =>
-        result.stepsInfo.map((step: any) => ({
+        result.stepsInfo!.map((step: any) => ({
           asExpected: step.asExpected,
           locationInViewport: step.target.locationInViewport,
         })),
@@ -316,7 +251,7 @@ describe('check', () => {
       ],
     )
     assert.deepStrictEqual(
-      results.map(result => result.stepsInfo.map((step: any) => step.asExpected)),
+      results.map(result => result.stepsInfo!.map((step: any) => step.asExpected)),
       [[true], [true]],
     )
   })

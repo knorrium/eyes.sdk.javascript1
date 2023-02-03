@@ -16,7 +16,7 @@ export abstract class SessionEventHandler {
   abstract validationWillStart(sessionId: string, validationInfo: ValidationInfoData): any
   abstract validationEnded(sessionId: string, validationId: number, validationResult: ValidationResultData): any
 
-  private _detach: () => void
+  private _detach?: () => void
 
   /** @internal */
   attach(eyes: Eyes) {
@@ -92,8 +92,8 @@ export class SessionEventHandlers extends SessionEventHandler {
  */
 export class RemoteSessionEventHandler extends SessionEventHandler {
   private _serverUrl: string
-  private _accessKey: string
-  private _timeout: number
+  private _accessKey?: string
+  private _timeout?: number
 
   constructor(options: {serverUrl: string; accessKey?: string; timeout?: number})
   constructor(serverUrl: string, accessKey?: string, timeout?: number)
@@ -103,12 +103,12 @@ export class RemoteSessionEventHandler extends SessionEventHandler {
     timeout?: number,
   ) {
     super()
-    if (utils.types.isString(optionsOrServerUrl)) {
-      return new RemoteSessionEventHandler({serverUrl: optionsOrServerUrl, accessKey, timeout})
-    }
-    this._serverUrl = optionsOrServerUrl.serverUrl
-    this._accessKey = optionsOrServerUrl.accessKey
-    this._timeout = optionsOrServerUrl.timeout
+    const options = utils.types.isObject(optionsOrServerUrl)
+      ? optionsOrServerUrl
+      : {serverUrl: optionsOrServerUrl, accessKey, timeout}
+    this._serverUrl = options.serverUrl
+    this._accessKey = options.accessKey
+    this._timeout = options.timeout
   }
 
   get serverUrl(): string {
@@ -124,29 +124,29 @@ export class RemoteSessionEventHandler extends SessionEventHandler {
     this.serverUrl = serverUrl
   }
 
-  get accessKey(): string {
+  get accessKey(): string | undefined {
     return this._accessKey
   }
-  set accessKey(accessKey: string) {
+  set accessKey(accessKey: string | undefined) {
     this._accessKey = accessKey
   }
-  getAccessKey(): string {
+  getAccessKey(): string | undefined {
     return this.accessKey
   }
   setAccessKey(accessKey: string) {
     this._accessKey = accessKey
   }
 
-  get timeout(): number {
+  get timeout(): number | undefined {
     return this._timeout
   }
-  set timeout(timeout: number) {
+  set timeout(timeout: number | undefined) {
     this._timeout = timeout
   }
   setTimeout(timeout: number) {
     this._timeout = timeout
   }
-  getTimeout(): number {
+  getTimeout(): number | undefined {
     return this._timeout
   }
 
@@ -176,7 +176,7 @@ export class RemoteSessionEventHandler extends SessionEventHandler {
   }
 
   /** @internal */
-  toJSON(): {serverUrl: string; accessKey: string} {
+  toJSON(): {serverUrl: string; accessKey?: string} {
     return utils.general.toJSON(this, ['serverUrl', 'accessKey'])
   }
 

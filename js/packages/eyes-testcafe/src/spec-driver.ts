@@ -128,7 +128,7 @@ export function isElement(element: any): element is Element {
   )
 }
 export function isSelector(selector: any): selector is Selector {
-  if (!selector) return
+  if (!selector) return false
   return Boolean(selector.addCustomMethods && selector.find && selector.parent)
 }
 export function transformElement(element: Element): TestCafe.Selector {
@@ -270,7 +270,7 @@ export async function waitUntilDisplayed(t: Driver, selector: Selector): Promise
 
 export function build(): [Driver, () => Promise<void>] {
   // no-op for coverage-tests
-  return [undefined, () => void 0]
+  return [undefined as any, async () => undefined]
 }
 
 // #endregion

@@ -16,38 +16,37 @@ type RenderInfo =
   | ChromeEmulationInfoLegacy
 
 export type TestResultContainer = {
-  readonly exception: Error
-  readonly testResults: TestResults
-  readonly browserInfo: RenderInfo
+  readonly exception?: Error
+  readonly testResults?: TestResults
+  readonly browserInfo?: RenderInfo
 }
 
 export class TestResultContainerData implements Required<TestResultContainer> {
   private _container: CoreTestResultContainer
-  private _deleteTest: CoreSpec['deleteTest']
+  private _deleteTest?: CoreSpec['deleteTest']
 
   /** @internal */
-  constructor(options?: {container: CoreTestResultContainer; deleteTest: CoreSpec['deleteTest']}) {
-    if (!options) return this
+  constructor(options: {container: CoreTestResultContainer; deleteTest?: CoreSpec['deleteTest']}) {
     this._container = options.container
     this._deleteTest = options.deleteTest
   }
 
   get testResults(): TestResults {
-    return this._container.result
+    return this._container.result!
   }
   getTestResults(): TestResultsData {
     return this.testResults && new TestResultsData({result: this.testResults, deleteTest: this._deleteTest})
   }
 
   get exception(): Error {
-    return this._container.error
+    return this._container.error!
   }
   getException(): Error {
     return this.exception
   }
 
   get browserInfo(): RenderInfo {
-    return this._container.renderer
+    return this._container.renderer!
   }
   getBrowserInfo(): RenderInfo {
     return this.browserInfo

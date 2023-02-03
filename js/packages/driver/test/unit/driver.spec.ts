@@ -69,7 +69,7 @@ describe('driver', () => {
     const frameElement = await driver.element('frame0')
     await driver.switchToChildContext(frameElement)
     assert.strictEqual(driver.currentContext.path.length, 2)
-    assert.ok(await driver.currentContext.equals(frameElement))
+    assert.ok(await driver.currentContext.equals(frameElement!))
   })
 
   it('switchToMainContext()', async () => {
@@ -78,7 +78,7 @@ describe('driver', () => {
     await driver.switchToMainContext()
     assert.strictEqual(driver.currentContext, driver.mainContext)
     const currentContextDocument = await driver.element('html')
-    assert.ok(await mainContextDocument.equals(currentContextDocument))
+    assert.ok(await mainContextDocument?.equals(currentContextDocument))
   })
 
   it('switchToParentContext()', async () => {
@@ -91,12 +91,12 @@ describe('driver', () => {
     await driver.switchToParentContext()
     assert.strictEqual(driver.currentContext.path.length, 2)
     const parentContextDocument = await driver.element('html')
-    assert.ok(await parentContextDocument.equals(nestedContextDocument))
+    assert.ok(await parentContextDocument?.equals(nestedContextDocument))
 
     await driver.switchToParentContext()
     assert.strictEqual(driver.currentContext, driver.mainContext)
     const grandparentContextDocument = await driver.element('html')
-    assert.ok(await grandparentContextDocument.equals(mainContextDocument))
+    assert.ok(await grandparentContextDocument?.equals(mainContextDocument))
   })
 
   it('switchTo(context)', async () => {
@@ -117,7 +117,7 @@ describe('driver', () => {
 
     for (const contextDocument of contextDocuments) {
       const currentDocument = await driver.element('html')
-      assert.ok(await currentDocument.equals(contextDocument))
+      assert.ok(await currentDocument?.equals(contextDocument))
       await driver.switchToParentContext()
     }
   })
@@ -158,7 +158,6 @@ describe('driver', () => {
 
   describe('refreshContexts() when parentContext not implemented', () => {
     before(() => {
-      // unable to deep clone driver object atm
       // @ts-ignore
       delete driver._spec.parentContext
     })
@@ -400,8 +399,8 @@ describe('driver native', () => {
   it('skip unnecessary method calls on native mode', async () => {
     const title = await driver.getTitle()
     const url = await driver.getUrl()
-    assert.strictEqual(title, null)
-    assert.strictEqual(url, null)
+    assert.strictEqual(title, undefined)
+    assert.strictEqual(url, undefined)
   })
 
   it('should return correct viewport size', async () => {

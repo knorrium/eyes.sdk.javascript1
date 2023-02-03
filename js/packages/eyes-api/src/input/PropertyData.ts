@@ -13,7 +13,7 @@ export class PropertyDataData implements Required<PropertyData> {
   constructor(propertyOrName: PropertyData | string, value?: string) {
     if (utils.types.isString(propertyOrName)) {
       utils.guard.isString(propertyOrName, {name: 'name'})
-      this._property = {name: propertyOrName, value}
+      this._property = {name: propertyOrName, value: value!}
     } else {
       utils.guard.isString(propertyOrName.name, {name: 'property.name'})
       this._property = propertyOrName

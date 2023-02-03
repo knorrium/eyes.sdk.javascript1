@@ -4,13 +4,13 @@ import {LogLevel} from './log-level'
 import {format} from './format'
 
 export type PrinterOptions = {
-  handler?: Handler
-  format?: typeof format
+  handler: Handler
+  format: typeof format
   prelude?: boolean
   label?: string
   tags?: Record<string, unknown>
   timestamp?: boolean
-  level?: number
+  level: number
   colors?: ColoringOptions
 }
 

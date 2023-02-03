@@ -1,6 +1,6 @@
 import {makeResource, type ContentfulResource} from './resource'
 
-export function makeResourceDom({cdt, resources}): ContentfulResource {
+export function makeResourceDom({cdt, resources}: Record<string, any>): ContentfulResource {
   const value = Buffer.from(
     JSON.stringify({
       resources: Object.fromEntries(Object.entries(resources).sort(([url1], [url2]) => (url1 > url2 ? 1 : -1))),

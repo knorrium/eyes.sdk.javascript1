@@ -1,3 +1,4 @@
+import type {Location, Size, Region} from '@applitools/utils'
 import fs from 'fs'
 import stream from 'stream'
 import path from 'path'
@@ -6,26 +7,12 @@ import * as jpeg from 'jpeg-js'
 import * as bmp from 'bmpimagejs'
 import * as utils from '@applitools/utils'
 
-type TransformData = {
-  rotate: number
-  scale: number
-  crop?: any
-  modifiers: any[]
-  added?: any
-}
-
-type RawImage = {
-  width: number
-  height: number
-  data: Buffer
-}
-
 export interface Image {
-  isImage: boolean
-  size: {width: number; height: number}
-  unscaledSize: {width?: number; height?: number; x?: number; y?: number}
-  rawSize: {width: number; height: number}
-  transforms: TransformData
+  isImage: true
+  size: Size
+  unscaledSize: Size
+  rawSize: Size
+  transforms: Transforms
   width: number
   height: number
   scale(ratio: number): Image
@@ -33,17 +20,36 @@ export interface Image {
   crop(region: any): Image
   copy(srcImage: Image, offset: any): Image
   frame(topImage: Image, bottomImage: Image, region: any): Image
-  toRaw(): Promise<any>
+  toRaw(): Promise<ImageRaw>
   toBuffer(): Promise<Buffer>
-  toPng(): Promise<any>
-  toFile(path: string): Promise<any>
-  toObject(): Promise<any>
-  debug(debug: any): Promise<any>
+  toPng(): Promise<Buffer>
+  toFile(path: string): Promise<void>
+  toObject(): Promise<ImageRaw>
+  debug(debug: any): Promise<void>
 }
 
-export function makeImage(data: any): Image {
-  let image: any, size: any
-  let transforms: TransformData = {rotate: 0, scale: 1, crop: null as any, modifiers: [] as any[]}
+type ImageSource = string | Buffer | Image | (Size & {data?: Buffer}) | {auto: true}
+
+type ImageRaw = {
+  width: number
+  height: number
+  data: Buffer
+}
+
+type Transforms = {
+  rotate: number
+  scale: number
+  crop?: Region
+  modifiers: (
+    | {type: 'copy'; image: Promise<ImageRaw>; offset: Location}
+    | {type: 'frame'; top: Promise<ImageRaw>; bottom: Promise<ImageRaw>; region: Region}
+  )[]
+  added?: any
+}
+
+export function makeImage(data: ImageSource): Image {
+  let image: ImageRaw | Promise<ImageRaw>, size: Size
+  let transforms: Transforms = {rotate: 0, scale: 1, crop: undefined, modifiers: []}
 
   if (utils.types.isBase64(data)) {
     return makeImage(Buffer.from(data, 'base64'))
@@ -62,13 +68,13 @@ export function makeImage(data: any): Image {
     } else {
       throw new Error('Unable to create an image abstraction from buffer with unknown data')
     }
-  } else if (data.isImage) {
+  } else if (utils.types.has(data, 'isImage')) {
     transforms = data.transforms
     image = data.toRaw()
     size = data.rawSize
   } else if (utils.types.has(data, ['width', 'height'])) {
     image = fromSize(data)
-    if (utils.types.has(data, 'data')) image.data = data.data
+    if (utils.types.has(data, 'data') && data.data) image.data = data.data
     size = {width: data.width, height: data.height}
   } else if (data.auto) {
     size = {width: -1, height: -1}
@@ -78,16 +84,16 @@ export function makeImage(data: any): Image {
 
   return {
     get isImage() {
-      return true
+      return true as const
     },
     get size() {
-      const croppedSize = utils.geometry.size(transforms.crop || size)
+      const croppedSize = utils.geometry.size(transforms.crop ?? size)
       const scaledSize = utils.geometry.scale(croppedSize, transforms.scale)
       const rotatedSize = utils.geometry.rotate(scaledSize, transforms.rotate)
       return utils.geometry.ceil(rotatedSize)
     },
     get unscaledSize() {
-      const croppedSize = utils.geometry.size(transforms.crop || size)
+      const croppedSize = utils.geometry.size(transforms.crop ?? size)
       const rotatedSize = utils.geometry.rotate(croppedSize, transforms.rotate)
       return utils.geometry.ceil(rotatedSize)
     },
@@ -127,7 +133,7 @@ export function makeImage(data: any): Image {
         ? utils.geometry.intersect(transforms.crop, utils.geometry.offset(region, transforms.crop))
         : utils.geometry.intersect({x: 0, y: 0, ...size}, region)
       transforms.crop = region
-      size = utils.geometry.size(transforms.crop)
+      size = utils.geometry.size(region)
       return this
     },
     copy(srcImage, offset) {
@@ -189,7 +195,7 @@ export function makeImage(data: any): Image {
     async toObject() {
       image = await transform(image ? await image : size, transforms)
       size = {width: image.width, height: image.height}
-      transforms = {crop: null, scale: 1, rotate: 0, modifiers: []}
+      transforms = {crop: undefined, scale: 1, rotate: 0, modifiers: []}
       return image
     },
     async debug(debug) {
@@ -197,28 +203,28 @@ export function makeImage(data: any): Image {
       const timestamp = new Date().toISOString().replace(/[-T:.]/g, '_')
       const filename = ['screenshot', timestamp, debug.name, debug.suffix].filter(part => part).join('_') + '.png'
       const transformedImage = await transform(image ? await image : size, transforms)
-      return toFile(transformedImage, path.join(debug.path, filename)).catch(() => null)
+      return toFile(transformedImage, path.join(debug.path, filename)).catch(() => undefined)
     },
   }
 }
 
-function isPngBuffer(buffer: Buffer) {
+function isPngBuffer(buffer: Buffer): boolean {
   return buffer.slice(12, 16).toString('ascii') === 'IHDR'
 }
 
-function isJpegBuffer(buffer: Buffer) {
+function isJpegBuffer(buffer: Buffer): boolean {
   return ['JFIF', 'Exif'].includes(buffer.slice(6, 10).toString('ascii'))
 }
 
-function isBmpBuffer(buffer: Buffer) {
+function isBmpBuffer(buffer: Buffer): boolean {
   return buffer.slice(0, 2).toString('ascii') === 'BM'
 }
 
-function extractPngSize(buffer: Buffer) {
+function extractPngSize(buffer: Buffer): Size {
   return {width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20)}
 }
 
-function extractJpegSize(buffer: Buffer) {
+function extractJpegSize(buffer: Buffer): Size {
   // skip file signature
   let offset = 4
   while (buffer.length > offset) {
@@ -232,17 +238,18 @@ function extractJpegSize(buffer: Buffer) {
       offset += 2
     }
   }
+  return {width: 0, height: 0}
 }
 
-function extractBmpSize(buffer: Buffer) {
+function extractBmpSize(buffer: Buffer): Size {
   return {width: buffer.readUInt32LE(18), height: buffer.readUInt32LE(22)}
 }
 
-function fromSize(size: any) {
+function fromSize(size: Size): ImageRaw {
   return new png.Image({width: size.width, height: size.height})
 }
 
-async function fromPngBuffer(buffer: Buffer): Promise<RawImage> {
+async function fromPngBuffer(buffer: Buffer): Promise<ImageRaw> {
   return new Promise((resolve, reject) => {
     const image = new png.Image()
 
@@ -253,16 +260,16 @@ async function fromPngBuffer(buffer: Buffer): Promise<RawImage> {
   })
 }
 
-async function fromJpegBuffer(buffer: Buffer): Promise<RawImage> {
+async function fromJpegBuffer(buffer: Buffer): Promise<ImageRaw> {
   return jpeg.decode(buffer, {tolerantDecoding: true, formatAsRGBA: true})
 }
 
-async function fromBmpBuffer(buffer: Buffer): Promise<RawImage> {
+async function fromBmpBuffer(buffer: Buffer): Promise<ImageRaw> {
   const image = bmp.decode(buffer)
   return {data: Buffer.from(image.pixels), width: image.width, height: image.height}
 }
 
-async function toPng(image: any) {
+async function toPng(image: ImageRaw): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     let buffer = Buffer.alloc(0)
 
@@ -283,7 +290,7 @@ async function toPng(image: any) {
   })
 }
 
-async function toFile(image: any, filepath: string) {
+async function toFile(image: ImageRaw, filepath: string): Promise<void> {
   const buffer = await toPng(image)
   return new Promise<void>((resolve, reject) => {
     fs.mkdirSync(path.dirname(filepath), {recursive: true})
@@ -291,11 +298,14 @@ async function toFile(image: any, filepath: string) {
   })
 }
 
-async function transform(image: any, transforms: TransformData) {
-  if (!image.data) {
+async function transform(imageOrSize: ImageRaw | Size, transforms: Transforms): Promise<ImageRaw> {
+  let image: ImageRaw
+  if (utils.types.has(imageOrSize, 'data')) {
+    image = imageOrSize
+  } else {
     const size = transforms.added
-      ? {width: image.width - transforms.added.width, height: image.height - transforms.added.height}
-      : image
+      ? {width: imageOrSize.width - transforms.added.width, height: imageOrSize.height - transforms.added.height}
+      : imageOrSize
     image = new png.Image(size)
   }
 
@@ -307,7 +317,7 @@ async function transform(image: any, transforms: TransformData) {
     } else {
       return image
     }
-  }, image)
+  }, Promise.resolve(image))
 
   image = transforms.crop ? await extract(image, transforms.crop) : image
   image = transforms.scale !== 1 ? await scale(image, transforms.scale) : image
@@ -315,7 +325,7 @@ async function transform(image: any, transforms: TransformData) {
   return image
 }
 
-async function scale(image: any, scaleRatio: any) {
+async function scale(image: ImageRaw, scaleRatio: number): Promise<ImageRaw> {
   if (scaleRatio === 1) return image
 
   const ratio = image.height / image.width
@@ -324,7 +334,7 @@ async function scale(image: any, scaleRatio: any) {
   return resize(image, {width: scaledWidth, height: scaledHeight})
 }
 
-async function resize(image: any, size: any) {
+async function resize(image: ImageRaw, size: Size): Promise<ImageRaw> {
   const dst = {
     data: Buffer.alloc(size.height * size.width * 4),
     width: size.width,
@@ -344,7 +354,7 @@ async function resize(image: any, size: any) {
   return image
 }
 
-async function extract(image: any, region: any) {
+async function extract(image: ImageRaw, region: Region): Promise<ImageRaw> {
   const srcX = Math.max(0, Math.round(region.x))
   const srcY = Math.max(0, Math.round(region.y))
   const dstWidth = Math.round(Math.min(image.width - srcX, region.width))
@@ -372,7 +382,7 @@ async function extract(image: any, region: any) {
   return extracted
 }
 
-async function rotate(image: any, degrees: number) {
+async function rotate(image: ImageRaw, degrees: number): Promise<ImageRaw> {
   degrees = (360 + degrees) % 360
 
   const dstImage = new png.Image({width: image.width, height: image.height})
@@ -405,13 +415,13 @@ async function rotate(image: any, degrees: number) {
       }
     }
   } else {
-    return dstImage.data.set(image.data)
+    dstImage.data.set(image.data)
   }
 
   return dstImage
 }
 
-async function copy(dstImage: any, srcImage: any, offset: any) {
+async function copy(dstImage: ImageRaw, srcImage: ImageRaw, offset: Location): Promise<ImageRaw> {
   const dstX = Math.round(offset.x)
   const dstY = Math.round(offset.y)
   const srcWidth = Math.min(srcImage.width, dstImage.width - dstX)
@@ -435,7 +445,7 @@ async function copy(dstImage: any, srcImage: any, offset: any) {
   return dstImage
 }
 
-async function frame(topImage: any, bottomImage: any, srcImage: any, region: any) {
+async function frame(topImage: ImageRaw, bottomImage: ImageRaw, srcImage: ImageRaw, region: Region): Promise<ImageRaw> {
   region = utils.geometry.intersect(
     {x: 0, y: 0, width: topImage.width, height: topImage.height},
     utils.geometry.round(region),

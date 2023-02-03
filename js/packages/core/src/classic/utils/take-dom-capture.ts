@@ -1,31 +1,43 @@
-import {type Driver} from '@applitools/driver'
+import {type Driver, type Context} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
-import {getCaptureDomPoll, getPollResult, getCaptureDomPollForIE, getPollResultForIE} from '@applitools/dom-capture'
-import req, {type Fetch} from '@applitools/req'
+import {req, type Fetch} from '@applitools/req'
 
-export type DomCaptureSettings = {fetch?: Fetch; executionTimeout?: number; pollTimeout?: number; chunkByteLength?: number}
+const {
+  getCaptureDomPoll,
+  getPollResult,
+  getCaptureDomPollForIE,
+  getPollResultForIE,
+} = require('@applitools/dom-capture')
 
-export async function takeDomCapture<TDriver extends Driver<unknown, unknown, unknown, unknown>>({
+export type DomCaptureSettings = {
+  fetch?: Fetch
+  executionTimeout?: number
+  pollTimeout?: number
+  chunkByteLength?: number
+}
+
+export async function takeDomCapture({
   driver,
   settings,
   logger,
 }: {
-  driver: TDriver
+  driver: Driver<unknown, unknown, unknown, unknown>
   settings?: DomCaptureSettings
   logger: Logger
 }) {
   const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
-  const {canExecuteOnlyFunctionScripts} = driver.features
   const arg = {
     chunkByteLength:
       settings?.chunkByteLength ??
       (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || (driver.isIOS ? 100_000 : 250 * 1024 * 1024)),
   }
   const scripts = {
-    main: canExecuteOnlyFunctionScripts
+    main: driver.features?.canExecuteOnlyFunctionScripts
       ? require('@applitools/dom-capture').captureDomPoll
-      : `return (${isLegacyBrowser ? await getCaptureDomPollForIE() : await getCaptureDomPoll()}).apply(null, arguments);`,
-    poll: canExecuteOnlyFunctionScripts
+      : `return (${
+          isLegacyBrowser ? await getCaptureDomPollForIE() : await getCaptureDomPoll()
+        }).apply(null, arguments);`,
+    poll: driver.features?.canExecuteOnlyFunctionScripts
       ? require('@applitools/dom-capture').pollResult
       : `return (${isLegacyBrowser ? await getPollResultForIE() : await getPollResult()}).apply(null, arguments);`,
   }
@@ -36,14 +48,14 @@ export async function takeDomCapture<TDriver extends Driver<unknown, unknown, un
   // TODO save debug DOM like we have for debug screenshots
   return dom
 
-  async function captureContextDom(context) {
-    const capture = await context.executePoll(scripts, {
+  async function captureContextDom(context: Context<unknown, unknown, unknown, unknown>): Promise<string> {
+    const capture: string = await context.executePoll(scripts, {
       main: arg,
       poll: arg,
       executionTimeout: settings?.executionTimeout ?? 5 * 60 * 1000,
       pollTimeout: settings?.pollTimeout ?? 200,
     })
-    if (!capture) return {}
+    if (!capture) return ''
     const raws = capture.split('\n')
     const tokens = JSON.parse(raws[0])
     const cssEndIndex = raws.indexOf(tokens.separator)
@@ -52,28 +64,26 @@ export async function takeDomCapture<TDriver extends Driver<unknown, unknown, un
 
     const cssResources = await Promise.all(
       raws.slice(1, cssEndIndex).reduce((cssResources, href) => {
-        return href ? cssResources.concat(fetchCss(new URL(href, url).href)) : cssResources
-      }, []),
+        return href ? cssResources.concat(fetchCssResource(new URL(href, url).href)) : cssResources
+      }, [] as Promise<{url: string; css: string}>[]),
     )
-
-    for (const {href, css} of cssResources) {
-      dom = dom.replace(`${tokens.cssStartToken}${href}${tokens.cssEndToken}`, css)
+    for (const {url, css} of cssResources) {
+      dom = dom.replace(`${tokens.cssStartToken}${url}${tokens.cssEndToken}`, css)
     }
 
     const framePaths = raws.slice(cssEndIndex + 1, frameEndIndex)
-
     for (const xpaths of framePaths) {
       if (!xpaths) continue
       const references = xpaths.split(',').reduce((parent, selector) => {
         return {reference: {type: 'xpath', selector}, parent}
-      }, null)
-      let contextDom
+      }, null as any)
+      let contextDom: string
       try {
         const frame = await context.context(references)
         contextDom = await captureContextDom(frame)
       } catch (ignored) {
         logger.log('Switching to frame failed')
-        contextDom = {}
+        contextDom = ''
       }
       dom = dom.replace(`${tokens.iframeStartToken}${xpaths}${tokens.iframeEndToken}`, contextDom)
     }
@@ -81,70 +91,53 @@ export async function takeDomCapture<TDriver extends Driver<unknown, unknown, un
     return dom
   }
 
-  async function fetchCss(href) {
+  async function fetchCssResource(url: string): Promise<{url: string; css: string}> {
+    logger.log(`Request to download css will be sent to the address "[GET]${url}"`)
     try {
-      logger.log(`Given URL to download: ${href}`)
-
-      const response = await req(href, {
+      const response = await req(url, {
         retry: {
           limit: 1,
-          validate: ({response, error}) => Boolean(error) || response.status >= 400,
+          validate: ({response, error}) => Boolean(error) || !response!.ok,
         },
-        fetch: settings.fetch,
+        fetch: settings?.fetch,
       })
-      if (response.status < 400) {
-        const css = await response.text()
-        logger.log(`downloading CSS in length of ${css.length} chars took`)
-        return {href, css: cleanStringForJSON(css)}
-      }
-    } catch (err) {
-      return {href, css: ''}
+      logger.log(
+        `Request to download css that was sent to the address "[GET]${url}" respond with ${response.statusText}(${response.status})`,
+        response.ok ? `and css of length ${(await response.clone().text()).length} chars` : '',
+      )
+      return {url, css: response.ok ? encodeJSON(await response.text()) : ''}
+    } catch (error) {
+      logger.error(`Request to download css that was sent to the address "[GET]${url}" failed with error`, error)
+      return {url, css: ''}
     }
   }
 
-  function cleanStringForJSON(str) {
-    if (str == null || str.length === 0) {
-      return ''
-    }
-
-    let sb = ''
-    let char = '\0'
-    let tmp
-
-    for (let i = 0, l = str.length; i < l; i += 1) {
-      char = str[i]
+  function encodeJSON(str: string) {
+    if (!str) return ''
+    return Array.from(str).reduce((result, char) => {
       switch (char) {
         case '\\':
         case '"':
         case '/':
-          sb += '\\' + char; // eslint-disable-line
-          break
+          return result + '\\' + char
         case '\b':
-          sb += '\\b'
-          break
+          return result + '\\b'
         case '\t':
-          sb += '\\t'
-          break
+          return result + '\\t'
         case '\n':
-          sb += '\\n'
-          break
+          return result + '\\n'
         case '\f':
-          sb += '\\f'
-          break
+          return result + '\\f'
         case '\r':
-          sb += '\\r'
-          break
+          return result + '\\r'
         default:
           if (char < ' ') {
-            tmp = '000' + char.charCodeAt(0).toString(16); // eslint-disable-line
-            sb += '\\u' + tmp.substring(tmp.length - 4); // eslint-disable-line
+            const tmp = '000' + char.charCodeAt(0).toString(16)
+            return result + '\\u' + tmp.substring(tmp.length - 4)
           } else {
-            sb += char
+            return result + char
           }
-          break
       }
-    }
-
-    return sb
+    }, '')
   }
 }

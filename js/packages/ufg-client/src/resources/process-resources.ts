@@ -41,17 +41,20 @@ export function makeProcessResources({
     resources: Record<string, ContentfulResource | UrlResource | FailedResource>
     settings?: ProcessResourcesSettings
   }): Promise<{mapping: ResourceMapping; promise: Promise<ResourceMapping>}> {
-    const processedResources = await Object.entries(resources).reduce(async (processedResourcesPromise, [url, resource]) => {
-      if (utils.types.has(resource, 'value') || utils.types.has(resource, 'errorStatusCode')) {
-        // process contentful resource or failed resource
-        const processedResource = await processContentfulResource({resource})
-        return Object.assign(await processedResourcesPromise, {[url]: processedResource})
-      } else {
-        // process url resource with dependencies
-        const processedResourceWithDependencies = await processUrlResourceWithDependencies({resource, settings})
-        return Object.assign(await processedResourcesPromise, processedResourceWithDependencies)
-      }
-    }, Promise.resolve({} as Record<string, KnownResource & {ready: boolean | Promise<boolean>}>))
+    const processedResources = await Object.entries(resources).reduce(
+      async (processedResourcesPromise, [url, resource]) => {
+        if (utils.types.has(resource, 'value') || utils.types.has(resource, 'errorStatusCode')) {
+          // process contentful resource or failed resource
+          const processedResource = await processContentfulResource({resource})
+          return Object.assign(await processedResourcesPromise, {[url]: processedResource})
+        } else {
+          // process url resource with dependencies
+          const processedResourceWithDependencies = await processUrlResourceWithDependencies({resource, settings})
+          return Object.assign(await processedResourcesPromise, processedResourceWithDependencies)
+        }
+      },
+      Promise.resolve({} as Record<string, KnownResource & {ready: boolean | Promise<boolean>}>),
+    )
 
     const mapping = {} as ResourceMapping
     const ready = [] as (boolean | Promise<boolean>)[]
@@ -63,7 +66,11 @@ export function makeProcessResources({
     return {mapping, promise: Promise.all(ready).then(() => mapping)}
   }
 
-  async function processContentfulResource({resource}: {resource: ContentfulResource | FailedResource}): Promise<KnownResource> {
+  async function processContentfulResource({
+    resource,
+  }: {
+    resource: ContentfulResource | FailedResource
+  }): Promise<KnownResource> {
     return persistResource({resource})
   }
 
@@ -72,8 +79,8 @@ export function makeProcessResources({
     settings,
   }: {
     resource: UrlResource
-    settings: ProcessResourcesSettings
-  }): Promise<KnownResource> {
+    settings?: ProcessResourcesSettings
+  }): Promise<KnownResource | null> {
     const cachedResource = cache.get(resource.id)
     if (cachedResource) {
       const dependencies = cachedResource.dependencies || []
@@ -94,6 +101,8 @@ export function makeProcessResources({
         logger?.log(`error fetching resource at ${resource.url}, setting errorStatusCode to 504. err=${err}`)
         return makeResource({...resource, errorStatusCode: 504})
       }
+    } else {
+      return null
     }
   }
 
@@ -102,7 +111,7 @@ export function makeProcessResources({
     settings,
   }: {
     resource: UrlResource
-    settings: ProcessResourcesSettings
+    settings?: ProcessResourcesSettings
   }): Promise<Record<string, KnownResource>> {
     const processedResourcesWithDependencies = {} as Record<string, KnownResource>
 
@@ -110,7 +119,7 @@ export function makeProcessResources({
 
     return processedResourcesWithDependencies
 
-    async function doProcessUrlResourceWithDependencies(resource) {
+    async function doProcessUrlResourceWithDependencies(resource: UrlResource) {
       const processedResource = await processUrlResource({resource, settings})
 
       if (processedResource) {
@@ -118,7 +127,7 @@ export function makeProcessResources({
         if (processedResource.dependencies) {
           const dependencyResources = processedResource.dependencies.flatMap(dependencyUrl => {
             if (processedResourcesWithDependencies[dependencyUrl]) return []
-            return makeResource({url: dependencyUrl, renderer: settings.renderer})
+            return makeResource({url: dependencyUrl, renderer: settings?.renderer})
           })
           await Promise.all(dependencyResources.map(doProcessUrlResourceWithDependencies))
         }
@@ -140,7 +149,7 @@ export function makeProcessResources({
     if (utils.types.has(resource, 'value')) {
       entry.ready = uploadResource({resource})
         .then(() => {
-          const entry = cache.get(resource.id)
+          const entry = cache.get(resource.id)!
           cache.set(resource.id, {...entry, ready: true})
           return true
         })
@@ -157,7 +166,7 @@ export function makeProcessResources({
 
   async function extractDependencyUrls({resource}: {resource: ContentfulResource}): Promise<string[]> {
     try {
-      let dependencyUrls = []
+      let dependencyUrls = [] as string[]
       if (/text\/css/.test(resource.contentType)) {
         dependencyUrls = extractCssDependencyUrls(resource.value.toString())
       } else if (/image\/svg/.test(resource.contentType)) {
@@ -168,7 +177,7 @@ export function makeProcessResources({
         // skip recursive dependency
         if (dependencyUrl !== resource.url) dependencyUrls.push(dependencyUrl)
         return dependencyUrls
-      }, [])
+      }, [] as string[])
     } catch (e) {
       logger?.log(`could not parse ${resource.contentType} ${resource.url}`, e)
       return []

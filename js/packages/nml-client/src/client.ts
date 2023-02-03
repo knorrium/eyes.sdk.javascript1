@@ -37,7 +37,7 @@ export async function takeScreenshot({
   return result.payload
 }
 
-export async function takeSnapshots({
+export async function takeSnapshots<TSnapshot extends IOSSnapshot | AndroidSnapshot = IOSSnapshot | AndroidSnapshot>({
   url,
   settings,
   logger,
@@ -45,7 +45,7 @@ export async function takeSnapshots({
   url: string
   settings: ReqBrokerConfig & SnapshotSettings
   logger?: Logger
-}): Promise<IOSSnapshot[] | AndroidSnapshot[]> {
+}): Promise<TSnapshot[]> {
   logger = logger?.extend({label: 'nml client'}) ?? makeLogger({label: 'nml client'})
   const req = makeReqBroker({config: settings, logger})
   const payload = {
@@ -60,21 +60,19 @@ export async function takeSnapshots({
       payload,
     },
   })
-  const snapshot: AndroidSnapshot | IOSSnapshot = await response.json().then(({payload}) => {
-    const {resourceMap, metadata} = payload.result
-    const platformName = resourceMap.metadata.platformName
-    return {
-      platformName,
-      vhsHash: resourceMap.vhs,
-      vhsCompatibilityParams:
-        platformName === 'ios'
-          ? {
-              UIKitLinkTimeVersionNumber: metadata.UIKitLinkTimeVersionNumber,
-              UIKitRunTimeVersionNumber: metadata.UIKitRunTimeVersionNumber,
-            }
-          : undefined,
-      vhsType: platformName === 'android' ? 'android-x' : undefined,
+  const snapshot = await response.json().then(({payload}) => {
+    const platformName = payload.result.resourceMap.metadata.platformName
+    const snapshot = {platformName, vhsHash: payload.result.resourceMap.vhs} as TSnapshot
+    if (platformName === 'ios') {
+      ;(snapshot as IOSSnapshot).vhsCompatibilityParams = {
+        UIKitLinkTimeVersionNumber: payload.result.metadata.UIKitLinkTimeVersionNumber,
+        UIKitRunTimeVersionNumber: payload.result.metadata.UIKitRunTimeVersionNumber,
+      }
+    } else if (platformName === 'android') {
+      ;(snapshot as AndroidSnapshot).vhsType = 'android-x'
     }
+
+    return snapshot
   })
 
   return Array(settings.renderers.length).fill(snapshot)

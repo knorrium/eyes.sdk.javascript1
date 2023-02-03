@@ -1,10 +1,10 @@
-import assert from 'assert'
+import {makeLogger} from '../../src'
 import * as fs from 'fs'
 import * as path from 'path'
-import chalk from 'chalk'
-import childProcess from 'child_process'
 import * as utils from '@applitools/utils'
-import {makeLogger} from '../../src'
+import assert from 'assert'
+import chalk from 'chalk'
+import debug from 'debug'
 
 describe('logger', () => {
   it('level silent', () => {
@@ -186,73 +186,38 @@ describe('logger', () => {
   })
 
   it('handler debug', async () => {
-    // this is the test function that will be called by spawn to test the debug handler
-    // must use spawn to check the e2e flow
-    const child = childProcess.spawn(
-      '../../node_modules/.bin/ts-node',
-      [
-        '-e',
-        `(${function () {
-          const {makeLogger} = require('../../src/logger')
-          let logger = makeLogger({label: 'label WITH SpAcEs AND uppeR CAseS'})
-          logger.log('log')
-          logger.warn('warn')
-          logger.error('error')
-          logger.fatal('fatal')
-          logger = logger.extend({label: 'label2', tags: {tag: '@@@'}})
-          logger.log('log2')
-          logger.warn('warn2')
-          logger.error('error2')
-          logger.fatal('fatal2')
-          const consoleLogger = makeLogger({
-            label: 'console',
-            level: 'all',
-            timestamp: false,
-            handler: {type: 'console'},
-          })
-          consoleLogger.log('log')
-        }})()`,
-      ],
-      {
-        cwd: __dirname,
-        stdio: [0, 'pipe', 'pipe', 'ipc'],
-        env: {
-          DEBUG: '*',
-          DEBUG_HIDE_DATE: 'true',
-          PATH: process.env.PATH,
-        },
-      },
-    )
-    let output = ''
-    child.stderr.on('data', data => {
-      output = `${output}${data}`
-    })
-    child.stdout.on('data', data => {
-      output = `${output}${data}`
+    process.env.DEBUG = 'appli:*'
+    debug.enable(process.env.DEBUG)
+    Object.assign((debug as any).inspectOpts, {colors: false, hideDate: true})
+
+    const logger = makeLogger({label: 'label WITH SpAcEs AND uppeR CAseS', colors: false, timestamp: false})
+    const loggerExtended = logger.extend({label: 'label2', tags: {tag: '@@@'}})
+    const output = track(() => {
+      logger.log('log')
+      logger.warn('warn')
+      logger.error('error')
+      logger.fatal('fatal')
+      loggerExtended.log('log2')
+      loggerExtended.warn('warn2')
+      loggerExtended.error('error2')
+      loggerExtended.fatal('fatal2')
     })
 
-    await new Promise(resolve => child.on('close', resolve))
-
-    assert.strictEqual(
-      output,
-      [
-        'appli:label-with-spaces-and-upper-cases [INFO ] log',
-        'appli:label-with-spaces-and-upper-cases [WARN ] warn',
-        'appli:label-with-spaces-and-upper-cases [ERROR] error',
-        'appli:label-with-spaces-and-upper-cases [FATAL] fatal',
-        'appli:label2 [INFO ] {"tag":"@@@"} log2',
-        'appli:label2 [WARN ] {"tag":"@@@"} warn2',
-        'appli:label2 [ERROR] {"tag":"@@@"} error2',
-        'appli:label2 [FATAL] {"tag":"@@@"} fatal2',
-        'console   | [INFO ] log',
-        '',
-      ].join('\n'),
-    )
+    assert.deepStrictEqual(output.stderr, [
+      'appli:label-with-spaces-and-upper-cases [INFO ] log\n',
+      'appli:label-with-spaces-and-upper-cases [WARN ] warn\n',
+      'appli:label-with-spaces-and-upper-cases [ERROR] error\n',
+      'appli:label-with-spaces-and-upper-cases [FATAL] fatal\n',
+      'appli:label2 [INFO ] {"tag":"@@@"} log2\n',
+      'appli:label2 [WARN ] {"tag":"@@@"} warn2\n',
+      'appli:label2 [ERROR] {"tag":"@@@"} error2\n',
+      'appli:label2 [FATAL] {"tag":"@@@"} fatal2\n',
+    ])
   })
 
   it('handler custom', () => {
-    const output = []
-    const handler = {log: message => output.push(message)}
+    const output = [] as string[]
+    const handler = {log: (message: string) => output.push(message)}
     const logger = makeLogger({handler, level: 'info', timestamp: new Date('2021-03-19T16:49:00.000Z') as any})
 
     logger.log('info')
@@ -269,9 +234,9 @@ describe('logger', () => {
   })
 
   it('format', () => {
-    const output = []
-    const format = (chunks, options) => ({chunks, ...options})
-    const handler = {log: message => output.push(message)}
+    const output = [] as string[]
+    const format = (chunks: any[], options?: Record<string, any>) => ({chunks, ...options} as any)
+    const handler = {log: (message: string) => output.push(message)}
     const timestamp = new Date('2021-03-19T16:49:00.000Z') as any
     const label = 'Test'
     const logger = makeLogger({handler, format, level: 'info', label, timestamp})
@@ -303,8 +268,8 @@ describe('logger', () => {
   })
 
   it('console custom', () => {
-    const output = []
-    const handler = {log: message => output.push(message)}
+    const output = [] as any[]
+    const handler = {log: (message: string) => output.push(message)}
     const logger = makeLogger({handler, level: 'silent', console: false})
     const {stdout, stderr} = track(() => {
       logger.console.log('info')
@@ -318,12 +283,16 @@ describe('logger', () => {
     assert.deepStrictEqual(output, ['info', 'warn', 'error', 'fatal'])
   })
 
-  function track(action) {
-    const output = {stdout: [], stderr: []}
+  function track(action: () => void) {
+    const output = {stdout: [] as string[], stderr: [] as string[]}
     const originalStdoutWrite = process.stdout.write.bind(process.stdout)
     const originalStderrWrite = process.stderr.write.bind(process.stderr)
-    process.stdout.write = (chunk, ...rest: any[]) => (output.stdout.push(chunk), originalStdoutWrite(chunk, ...rest))
-    process.stderr.write = (chunk, ...rest: any[]) => (output.stderr.push(chunk), originalStderrWrite(chunk, ...rest))
+    process.stdout.write = (chunk, ...rest: any[]) => (
+      output.stdout.push(chunk as string), originalStdoutWrite(chunk, ...rest)
+    )
+    process.stderr.write = (chunk, ...rest: any[]) => (
+      output.stderr.push(chunk as string), originalStderrWrite(chunk, ...rest)
+    )
     action()
     process.stdout.write = originalStdoutWrite
     process.stderr.write = originalStderrWrite

@@ -39,7 +39,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get exact(): ExactMatchSettings {
-    return this._settings.exact
+    return this._settings.exact!
   }
   set exact(exact: ExactMatchSettings) {
     this._settings.exact = exact
@@ -52,7 +52,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get matchLevel(): MatchLevel {
-    return this._settings.matchLevel
+    return this._settings.matchLevel!
   }
   set matchLevel(matchLevel: MatchLevel) {
     utils.guard.isEnumValue(matchLevel, MatchLevelEnum, {name: 'matchLevel'})
@@ -66,7 +66,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get ignoreCaret(): boolean {
-    return this._settings.ignoreCaret
+    return this._settings.ignoreCaret!
   }
   set ignoreCaret(ignoreCaret: boolean) {
     utils.guard.isBoolean(ignoreCaret, {name: 'ignoreCaret', strict: false})
@@ -80,7 +80,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get useDom(): boolean {
-    return this._settings.useDom
+    return this._settings.useDom!
   }
   set useDom(useDom: boolean) {
     utils.guard.isBoolean(useDom, {name: 'useDom', strict: false})
@@ -94,7 +94,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get enablePatterns(): boolean {
-    return this._settings.enablePatterns
+    return this._settings.enablePatterns!
   }
   set enablePatterns(enablePatterns: boolean) {
     utils.guard.isBoolean(enablePatterns, {name: 'enablePatterns', strict: false})
@@ -108,7 +108,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get ignoreDisplacements(): boolean {
-    return this._settings.ignoreDisplacements
+    return this._settings.ignoreDisplacements!
   }
   set ignoreDisplacements(ignoreDisplacements: boolean) {
     utils.guard.isBoolean(ignoreDisplacements, {name: 'ignoreDisplacements', strict: false})
@@ -122,7 +122,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get ignoreRegions(): Region[] {
-    return this._settings.ignoreRegions
+    return this._settings.ignoreRegions!
   }
   set ignoreRegions(ignoreRegions: Region[]) {
     utils.guard.isArray(ignoreRegions, {name: 'ignoreRegions', strict: false})
@@ -136,7 +136,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get layoutRegions(): Region[] {
-    return this._settings.layoutRegions
+    return this._settings.layoutRegions!
   }
   set layoutRegions(layoutRegions: Region[]) {
     utils.guard.isArray(layoutRegions, {name: 'layoutRegions', strict: false})
@@ -156,7 +156,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get strictRegions(): Region[] {
-    return this._settings.strictRegions
+    return this._settings.strictRegions!
   }
   set strictRegions(strictRegions: Region[]) {
     utils.guard.isArray(strictRegions, {name: 'strictRegions', strict: false})
@@ -176,7 +176,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get contentRegions(): Region[] {
-    return this._settings.contentRegions
+    return this._settings.contentRegions!
   }
   set contentRegions(contentRegions: Region[]) {
     utils.guard.isArray(contentRegions, {name: 'contentRegions', strict: false})
@@ -196,7 +196,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get floatingRegions(): (Region | FloatingMatchSettings)[] {
-    return this._settings.floatingRegions
+    return this._settings.floatingRegions!
   }
   set floatingRegions(floatingRegions: (Region | FloatingMatchSettings)[]) {
     utils.guard.isArray(floatingRegions, {name: 'floatingRegions', strict: false})
@@ -216,7 +216,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get accessibilityRegions(): (Region | AccessibilityMatchSettings)[] {
-    return this._settings.accessibilityRegions
+    return this._settings.accessibilityRegions!
   }
   set accessibilityRegions(accessibilityRegions: (Region | AccessibilityMatchSettings)[]) {
     utils.guard.isArray(accessibilityRegions, {name: 'accessibilityRegions', strict: false})
@@ -240,7 +240,7 @@ export class ImageMatchSettingsData implements Required<ImageMatchSettings> {
   }
 
   get accessibilitySettings(): AccessibilitySettings {
-    return this._settings.accessibilitySettings
+    return this._settings.accessibilitySettings!
   }
   set accessibilitySettings(accessibilitySettings: AccessibilitySettings) {
     if (accessibilitySettings) {

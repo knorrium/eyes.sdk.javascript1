@@ -1,3 +1,4 @@
+import {makeLogger} from '@applitools/logger'
 import {makeFakeCore} from '../utils/fake-base-core'
 import {makeOpenEyes} from '../../src/open-eyes'
 import assert from 'assert'
@@ -11,10 +12,10 @@ describe('open-eyes', () => {
           openEyes({settings}) {
             assert.strictEqual(settings.serverUrl, process.env.APPLITOOLS_SERVER_URL)
             assert.strictEqual(settings.apiKey, process.env.APPLITOOLS_API_KEY)
-            assert.strictEqual(settings.batch.id, process.env.APPLITOOLS_BATCH_ID)
-            assert.strictEqual(settings.batch.name, process.env.APPLITOOLS_BATCH_NAME)
-            assert.strictEqual(settings.batch.sequenceName, process.env.APPLITOOLS_BATCH_SEQUENCE)
-            assert.strictEqual(settings.batch.notifyOnCompletion, process.env.APPLITOOLS_BATCH_NOTIFY === 'true')
+            assert.strictEqual(settings.batch!.id, process.env.APPLITOOLS_BATCH_ID)
+            assert.strictEqual(settings.batch!.name, process.env.APPLITOOLS_BATCH_NAME)
+            assert.strictEqual(settings.batch!.sequenceName, process.env.APPLITOOLS_BATCH_SEQUENCE)
+            assert.strictEqual(settings.batch!.notifyOnCompletion, process.env.APPLITOOLS_BATCH_NOTIFY === 'true')
             assert.strictEqual(settings.keepBatchOpen, process.env.APPLITOOLS_DONT_CLOSE_BATCHES === '1')
             assert.strictEqual(settings.branchName, process.env.APPLITOOLS_BRANCH)
             assert.strictEqual(settings.parentBranchName, process.env.APPLITOOLS_PARENT_BRANCH)
@@ -22,7 +23,7 @@ describe('open-eyes', () => {
           },
         },
       })
-      const openEyes = makeOpenEyes({core: fakeCore})
+      const openEyes = makeOpenEyes({core: fakeCore, logger: makeLogger()})
 
       process.env = {
         APPLITOOLS_SERVER_URL: 'server-url',
@@ -47,12 +48,12 @@ describe('open-eyes', () => {
     const fakeCore = makeFakeCore({
       hooks: {
         openEyes({settings}) {
-          const [testName, _random] = settings.userTestId.split('--')
+          const [testName, _random] = settings.userTestId!.split('--')
           assert.strictEqual(testName, settings.testName)
         },
       },
     })
-    const openEyes = makeOpenEyes({core: fakeCore})
+    const openEyes = makeOpenEyes({core: fakeCore, logger: makeLogger()})
 
     await openEyes({type: 'classic', settings: {testName: 'test-name'}})
   })

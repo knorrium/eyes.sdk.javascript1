@@ -5,15 +5,20 @@ import {type Logger} from '@applitools/logger'
 
 export * from '@applitools/core-base/types'
 
-export type DriverTarget<TDriver, TContext, TElement, TSelector> = TDriver | Driver<TDriver, TContext, TElement, TSelector>
+export type DriverTarget<TDriver, TContext, TElement, TSelector> =
+  | TDriver
+  | Driver<TDriver, TContext, TElement, TSelector>
 
 export interface Core<TDriver, TContext, TElement, TSelector, TEyes = Eyes<TDriver, TContext, TElement, TSelector>>
   extends BaseCore.Core<TEyes> {
-  isDriver(driver: any): driver is TDriver
-  isElement(element: any): element is TElement
-  isSelector(selector: any): selector is TSelector
-  getViewportSize(options: {target: DriverTarget<TDriver, TContext, TElement, TSelector>; logger?: Logger}): Promise<Size>
-  setViewportSize(options: {
+  isDriver?(driver: any): driver is TDriver
+  isElement?(element: any): element is TElement
+  isSelector?(selector: any): selector is TSelector
+  getViewportSize?(options: {
+    target: DriverTarget<TDriver, TContext, TElement, TSelector>
+    logger?: Logger
+  }): Promise<Size>
+  setViewportSize?(options: {
     target: DriverTarget<TDriver, TContext, TElement, TSelector>
     size: Size
     logger?: Logger
@@ -31,8 +36,13 @@ export interface Core<TDriver, TContext, TElement, TSelector, TEyes = Eyes<TDriv
   }): Promise<BaseCore.LocateResult<TLocator>>
 }
 
-export interface Eyes<TDriver, TContext, TElement, TSelector, TTarget = DriverTarget<TDriver, TContext, TElement, TSelector>>
-  extends BaseCore.Eyes<TTarget> {
+export interface Eyes<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TTarget = DriverTarget<TDriver, TContext, TElement, TSelector>,
+> extends BaseCore.Eyes<TTarget> {
   getBaseEyes(options?: {logger?: Logger}): Promise<BaseCore.Eyes[]>
   check(options?: {
     target?: TTarget
@@ -44,12 +54,12 @@ export interface Eyes<TDriver, TContext, TElement, TSelector, TTarget = DriverTa
     settings?: CheckSettings<TElement, TSelector> & BaseCore.CloseSettings
     logger?: Logger
   }): Promise<BaseCore.TestResult[]>
-  locateText?<TPattern extends string>(options: {
+  locateText<TPattern extends string>(options: {
     target?: TTarget
     settings: LocateTextSettings<TPattern, TElement, TSelector>
     logger?: Logger
   }): Promise<BaseCore.LocateTextResult<TPattern>>
-  extractText?(options: {
+  extractText(options: {
     target?: TTarget
     settings: MaybeArray<ExtractTextSettings<TElement, TSelector>>
     logger?: Logger
@@ -64,7 +74,8 @@ type ContextReference<TElement, TSelector> = {
   scrollRootElement?: ElementReference<TElement, TSelector>
 }
 type StitchMode = 'Scroll' | 'CSS'
-export interface ScreenshotSettings<TElement, TSelector> extends BaseCore.ImageSettings<RegionReference<TElement, TSelector>> {
+export interface ScreenshotSettings<TElement, TSelector>
+  extends BaseCore.ImageSettings<RegionReference<TElement, TSelector>> {
   frames?: (ContextReference<TElement, TSelector> | FrameReference<TElement, TSelector>)[]
   fully?: boolean
   scrollRootElement?: ElementReference<TElement, TSelector>
@@ -93,5 +104,7 @@ export type LocateTextSettings<TPattern extends string, TElement, TSelector> = B
 > &
   ScreenshotSettings<TElement, TSelector>
 
-export type ExtractTextSettings<TElement, TSelector> = BaseCore.ExtractTextSettings<RegionReference<TElement, TSelector>> &
+export type ExtractTextSettings<TElement, TSelector> = BaseCore.ExtractTextSettings<
+  RegionReference<TElement, TSelector>
+> &
   ScreenshotSettings<TElement, TSelector>

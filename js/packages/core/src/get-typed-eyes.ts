@@ -19,7 +19,7 @@ export function makeGetTypedEyes<TDriver, TContext, TElement, TSelector, TDefaul
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   let eyes: TypedEyes<TDriver, TContext, TElement, TSelector, 'classic' | 'ufg'>
   return async function getTypesEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
-    type = defaultType as any,
+    type = defaultType as unknown as TType,
     settings,
     logger = defaultLogger,
   }: {
@@ -28,10 +28,7 @@ export function makeGetTypedEyes<TDriver, TContext, TElement, TSelector, TDefaul
     logger?: Logger
   } = {}): Promise<TypedEyes<TDriver, TContext, TElement, TSelector, TType>> {
     if (!eyes) {
-      eyes =
-        type === 'ufg'
-          ? await cores.ufg.openEyes({target, settings: defaultSettings, logger})
-          : await cores.classic.openEyes({target, settings: defaultSettings, logger})
+      eyes = await cores[type].openEyes({target, settings: defaultSettings, logger})
       return eyes as any
     } else if (eyes.type === type) {
       return eyes as any
@@ -40,7 +37,9 @@ export function makeGetTypedEyes<TDriver, TContext, TElement, TSelector, TDefaul
       return cores.ufg.openEyes({target, settings: defaultSettings, eyes: baseEyes, logger}) as any
     } else {
       const baseEyes = (
-        await Promise.all(settings.renderers.map(renderer => eyes.getBaseEyes({settings: {type: settings.type, renderer}})))
+        await Promise.all(
+          settings!.renderers.map(renderer => eyes.getBaseEyes({settings: {type: settings!.type, renderer}})),
+        )
       ).flat()
       return cores.classic.openEyes({target, settings: defaultSettings, eyes: baseEyes, logger}) as any
     }

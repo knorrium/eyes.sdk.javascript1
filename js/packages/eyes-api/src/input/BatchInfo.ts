@@ -11,26 +11,33 @@ export type BatchInfo = {
 }
 
 export class BatchInfoData implements Required<BatchInfo> {
-  private _batch: BatchInfo = {}
+  private _batch: BatchInfo
 
   constructor()
   constructor(batch?: BatchInfo)
   constructor(name?: string, startedAt?: Date | string, id?: string)
   constructor(batchOrName?: BatchInfo | string, startedAt?: Date | string, id?: string) {
-    if (utils.types.isNull(batchOrName) || utils.types.isString(batchOrName)) {
-      return new BatchInfoData({name: batchOrName, id, startedAt})
+    const batch =
+      utils.types.isNull(batchOrName) || utils.types.isString(batchOrName)
+        ? {name: batchOrName, id, startedAt}
+        : batchOrName
+    utils.guard.isString(batch.id, {name: 'id', strict: false})
+    utils.guard.isString(batch.name, {name: 'name', strict: false})
+    utils.guard.isString(batch.sequenceName, {name: 'sequenceName', strict: false})
+    utils.guard.isBoolean(batch.notifyOnCompletion, {name: 'notifyOnCompletion', strict: false})
+    utils.guard.isArray(batch.properties, {name: 'properties', strict: false})
+    this._batch = {
+      id: batch.id ?? utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`,
+      name: batch.name ?? utils.general.getEnvValue('BATCH_NAME'),
+      sequenceName: batch.sequenceName ?? utils.general.getEnvValue('BATCH_SEQUENCE'),
+      startedAt: batch.startedAt ?? new Date(),
+      notifyOnCompletion: batch.notifyOnCompletion ?? utils.general.getEnvValue('BATCH_NOTIFY', 'boolean') ?? false,
+      properties: batch.properties,
     }
-    this.id = batchOrName.id ?? utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
-    this.name = batchOrName.name ?? utils.general.getEnvValue('BATCH_NAME')
-    this.sequenceName = batchOrName.sequenceName ?? utils.general.getEnvValue('BATCH_SEQUENCE')
-    this.startedAt = batchOrName.startedAt ?? new Date()
-    this.notifyOnCompletion =
-      batchOrName.notifyOnCompletion ?? utils.general.getEnvValue('BATCH_NOTIFY', 'boolean') ?? false
-    this.properties = batchOrName.properties
   }
 
   get id(): string {
-    return this._batch.id
+    return this._batch.id!
   }
   set id(id: string) {
     utils.guard.isString(id, {name: 'id', strict: false})
@@ -45,7 +52,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   }
 
   get name(): string {
-    return this._batch.name
+    return this._batch.name!
   }
   set name(name: string) {
     utils.guard.isString(name, {name: 'name', strict: false})
@@ -60,7 +67,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   }
 
   get sequenceName(): string {
-    return this._batch.sequenceName
+    return this._batch.sequenceName!
   }
   set sequenceName(sequenceName: string) {
     utils.guard.isString(sequenceName, {name: 'sequenceName', strict: false})
@@ -75,7 +82,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   }
 
   get startedAt(): Date | string {
-    return this._batch.startedAt
+    return this._batch.startedAt!
   }
   set startedAt(startedAt: Date | string) {
     this._batch.startedAt = new Date(startedAt)
@@ -89,7 +96,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   }
 
   get notifyOnCompletion(): boolean {
-    return this._batch.notifyOnCompletion
+    return this._batch.notifyOnCompletion!
   }
   set notifyOnCompletion(notifyOnCompletion: boolean) {
     utils.guard.isBoolean(notifyOnCompletion, {name: 'notifyOnCompletion', strict: false})
@@ -104,7 +111,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   }
 
   get properties(): PropertyData[] {
-    return this._batch.properties
+    return this._batch.properties!
   }
   set properties(properties: PropertyData[]) {
     utils.guard.isArray(properties, {name: 'properties', strict: false})
@@ -120,7 +127,7 @@ export class BatchInfoData implements Required<BatchInfo> {
   addProperty(name: string, value: string): this
   addProperty(prop: PropertyData): this
   addProperty(propOrName: PropertyData | string, value?: string): this {
-    const property = utils.types.isString(propOrName) ? {name: propOrName, value} : propOrName
+    const property = utils.types.isString(propOrName) ? {name: propOrName, value: value!} : propOrName
     if (!this.properties) this.properties = []
     this.properties.push(property)
     return this

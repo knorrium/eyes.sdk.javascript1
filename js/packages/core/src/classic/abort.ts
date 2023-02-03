@@ -17,7 +17,7 @@ export function makeAbort<TDriver, TContext, TElement, TSelector>({
   spec,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>) {
-  return async function ({
+  return async function abort({
     settings,
     logger = defaultLogger,
   }: {
@@ -26,7 +26,6 @@ export function makeAbort<TDriver, TContext, TElement, TSelector>({
   } = {}): Promise<TestResult[]> {
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const testMetadata = await driver?.getSessionMetadata()
-
     const [baseEyes] = await eyes.getBaseEyes()
     return await baseEyes.abort({settings: {...settings, testMetadata}, logger})
   }

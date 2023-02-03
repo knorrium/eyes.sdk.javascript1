@@ -7,16 +7,15 @@ export type MatchResult = {
 }
 
 export class MatchResultData implements Required<MatchResult> {
-  private _result: Mutable<MatchResult> = {} as any
+  private _result: Mutable<MatchResult>
 
   /** @internal */
-  constructor(result?: MatchResult) {
-    if (!result) return this
+  constructor(result: MatchResult) {
     this._result = result instanceof MatchResultData ? result.toJSON() : result
   }
 
   get asExpected(): boolean {
-    return this._result.asExpected
+    return this._result.asExpected!
   }
   getAsExpected(): boolean {
     return this.asExpected
@@ -27,7 +26,7 @@ export class MatchResultData implements Required<MatchResult> {
   }
 
   get windowId(): number {
-    return this._result.windowId
+    return this._result.windowId!
   }
   getWindowId(): number {
     return this.windowId

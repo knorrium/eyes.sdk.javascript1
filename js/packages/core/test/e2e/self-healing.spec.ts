@@ -1,30 +1,33 @@
-import {makeCore} from '../../src/core'
+import {makeCore, type Core, type ECClient} from '../../src/index'
 import {getTestInfo} from '@applitools/test-utils'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
-async function triggerSelfHealing(driver) {
-  await driver.get('https://demo.applitools.com')
-  await driver.findElement({css: '#log-in'})
-  await driver.executeScript("document.querySelector('#log-in').id = 'log-inn'")
-  await driver.findElement({css: '#log-in'})
+async function triggerSelfHealing(driver: spec.Driver) {
+  await driver.url('https://demo.applitools.com')
+  await driver.$('#log-in')
+  await driver.execute("document.querySelector('#log-in').id = 'log-inn'")
+  await driver.$('#log-in')
 }
 
 describe('self-healing', () => {
-  let driver, destroyDriver, proxy, core
+  let driver: spec.Driver,
+    destroyDriver: () => Promise<void>,
+    client: ECClient,
+    core: Core<spec.Driver, spec.Driver, spec.Element, spec.Selector>
   const serverUrl = 'https://eyesapi.applitools.com'
 
   before(async () => {
-    core = makeCore({spec, concurrency: 10})
-    proxy = await core.makeECClient({
+    core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec, concurrency: 10})
+    client = await core.makeECClient({
       settings: {capabilities: {eyesServerUrl: serverUrl, useSelfHealing: true}},
     })
-    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: proxy.url})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: client.url})
   })
 
   after(async () => {
     await destroyDriver?.()
-    await proxy.close()
+    await client.close()
   })
 
   it('sends report on close - ufg', async () => {

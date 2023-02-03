@@ -29,17 +29,11 @@
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
-  },
   "dependencies": {
     "node-fetch": "2.6.1"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
-    "@applitools/scripts": "^1.2.0",
     "eslint": "^6.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-mocha-no-only": "^1.1.1",

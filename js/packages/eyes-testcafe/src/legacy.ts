@@ -1,10 +1,10 @@
 import type {Driver, Element, Selector} from './spec-driver'
+import {formatters} from '@applitools/core'
 import * as utils from '@applitools/utils'
 import * as api from '@applitools/eyes-api'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as spec from './spec-driver'
-import {TestResultsFormatter} from '@applitools/eyes-sdk-core'
 
 export interface LegacyTestCafeEyes<TDriver, TSelector> {
   open(options: {t: TDriver} & TestCafeConfiguration): Promise<TDriver>
@@ -37,7 +37,7 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
     extends Eyes<TDriver, TElement, TSelector>
     implements LegacyTestCafeEyes<TDriver, TSelector>
   {
-    private _testcafeConfig: TestCafeConfiguration
+    private _testcafeConfig?: TestCafeConfiguration
 
     constructor(runner?: api.EyesRunner, config?: api.ConfigurationPlain<TElement, TSelector>)
     constructor(config?: api.ConfigurationPlain<TElement, TSelector>, runner?: api.EyesRunner)
@@ -51,7 +51,7 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
     ) {
       if (utils.types.isNull(runnerOrConfigOrOptions) || utils.types.has(runnerOrConfigOrOptions, 'configPath')) {
         const testcafeConfig = utils.config.getConfig({
-          paths: runnerOrConfigOrOptions?.configPath && [runnerOrConfigOrOptions.configPath],
+          paths: runnerOrConfigOrOptions?.configPath ? [runnerOrConfigOrOptions.configPath] : undefined,
           params: ['failTestcafeOnDiff'],
         })
         const runner =
@@ -64,43 +64,76 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
       }
     }
 
-    async open(driver: TDriver, config?: api.ConfigurationPlain<Element, Selector>): Promise<TDriver>
+    async open(driver: TDriver, config?: api.ConfigurationPlain<TElement, TSelector>): Promise<TDriver>
     async open(
       driver: TDriver,
       appName?: string,
       testName?: string,
-      viewportSize?: api.RectangleSizePlain,
+      viewportSize?: api.RectangleSize,
       sessionType?: api.SessionType,
     ): Promise<TDriver>
+    async open(config?: api.ConfigurationPlain<TElement, TSelector>): Promise<void>
+    async open(
+      appName?: string,
+      testName?: string,
+      viewportSize?: api.RectangleSize,
+      sessionType?: api.SessionType,
+    ): Promise<void>
     async open(options: {t: TDriver} & TestCafeConfiguration): Promise<TDriver>
     async open(
-      driverOrOptions: TDriver | ({t: TDriver} & TestCafeConfiguration),
-      configOrAppName?: api.ConfigurationPlain<Element, Selector> | string,
-      testName?: string,
-      viewportSize?: api.RectangleSizePlain,
+      driverOrConfigOrAppNameOrOptions?:
+        | TDriver
+        | api.ConfigurationPlain<TElement, TSelector>
+        | string
+        | ({t: TDriver} & TestCafeConfiguration),
+      configOrAppNameOrTestName?: api.ConfigurationPlain<TElement, TSelector> | string,
+      testNameOrViewportSize?: string | api.RectangleSizePlain,
+      viewportSizeOrSessionType?: api.RectangleSizePlain | api.SessionType,
       sessionType?: api.SessionType,
-    ): Promise<TDriver> {
-      let driver, config
-      if (utils.types.has(driverOrOptions, 't')) {
-        const {t, ...testcafeConfig} = driverOrOptions
+    ): Promise<TDriver | void> {
+      let driver: TDriver | undefined, config: api.ConfigurationPlain<TElement, TSelector> | undefined
+      if (spec.isDriver(driverOrConfigOrAppNameOrOptions)) {
+        driver = driverOrConfigOrAppNameOrOptions
+        config = utils.types.isString(configOrAppNameOrTestName)
+          ? {
+              appName: configOrAppNameOrTestName,
+              testName: testNameOrViewportSize as string,
+              viewportSize: viewportSizeOrSessionType as api.RectangleSize,
+              sessionType,
+            }
+          : configOrAppNameOrTestName
+      } else if (utils.types.has(driverOrConfigOrAppNameOrOptions, 't')) {
+        const {t, ...testcafeConfig} = driverOrConfigOrAppNameOrOptions
         this._testcafeConfig = {...this._testcafeConfig, ...testcafeConfig}
         driver = t
         config = transformConfig(this._testcafeConfig)
       } else {
-        driver = driverOrOptions
-        config = configOrAppName
+        config = utils.types.isString(configOrAppNameOrTestName)
+          ? {
+              appName: configOrAppNameOrTestName,
+              testName: testNameOrViewportSize as string,
+              viewportSize: viewportSizeOrSessionType as api.RectangleSize,
+              sessionType,
+            }
+          : configOrAppNameOrTestName
       }
-      if (this._testcafeConfig.showLogs) this.setLogHandler({type: 'console'})
-      // driver health check, re: https://trello.com/c/xNCZNfPi
-      await spec
-        .executeScript(driver, () => true)
-        .catch(() => {
-          throw new Error(
-            `The browser is in an invalid state due to JS errors on the page that TestCafe is unable to handle. Try running the test with TestCafe's --skip-js-errors option enabled: https://devexpress.github.io/testcafe/documentation/reference/configuration-file.html#skipjserrors`,
-          )
-        })
 
-      return super.open(driver, config as string, testName, viewportSize, sessionType)
+      if (this._testcafeConfig?.showLogs) this.setLogHandler({type: 'console'})
+
+      if (driver) {
+        // driver health check, re: https://trello.com/c/xNCZNfPi
+        await spec
+          .executeScript(driver, () => true)
+          .catch(() => {
+            throw new Error(
+              `The browser is in an invalid state due to JS errors on the page that TestCafe is unable to handle. Try running the test with TestCafe's --skip-js-errors option enabled: https://devexpress.github.io/testcafe/documentation/reference/configuration-file.html#skipjserrors`,
+            )
+          })
+        config
+        return super.open(driver, config)
+      } else {
+        return super.open(config)
+      }
     }
 
     async checkWindow(name?: string, timeout?: number, fully?: boolean): Promise<api.MatchResult>
@@ -128,7 +161,7 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
         const results = resultsSummary.getAllResults().map(r => r.getTestResults())
         const includeSubTests = false
         const markNewAsPassed = true
-        const formatted = new TestResultsFormatter(results).asHierarchicTAPString(includeSubTests, markNewAsPassed)
+        const formatted = formatters.toHierarchicTAPString(results, {includeSubTests, markNewAsPassed})
         fs.writeFileSync(path.resolve(this._testcafeConfig.tapDirPath, 'eyes.tap'), formatted)
       }
       return resultsSummary
@@ -239,8 +272,8 @@ export function transformConfig<TElement, TSelector>(
 
 export function transformCheckSettings<TElement, TSelector>(
   options: TestCafeCheckSettings<TSelector>,
-): api.CheckSettingsPlain<TElement, TSelector> {
-  const settings: api.CheckSettingsPlain<TElement, TSelector> = {...options}
+): api.CheckSettingsAutomationPlain<TElement, TSelector> {
+  const settings: api.CheckSettingsAutomationPlain<TElement, TSelector> = {...options}
   settings.name = options.tag
   settings.hooks = options.scriptHooks
   settings.fully = options.fully ?? options.target !== 'region'

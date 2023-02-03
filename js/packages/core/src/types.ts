@@ -6,6 +6,7 @@ import type * as UFGCore from './ufg/types'
 import {type Logger} from '@applitools/logger'
 import {type Renderer} from '@applitools/ufg-client'
 
+export {ECClient}
 export * from '@applitools/core-base/types'
 export * from './automation/types'
 
@@ -52,14 +53,18 @@ export interface Core<TDriver, TContext, TElement, TSelector>
   }): Promise<AutomationCore.LocateResult<TLocator>>
 }
 
-export interface EyesManager<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> {
-  openEyes(options: {
-    target?: TDriver
+export interface EyesManager<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg'> {
+  openEyes<TType extends 'classic' | 'ufg' = TDefaultType>(options: {
+    type?: TType
+    target?: AutomationCore.DriverTarget<TDriver, TContext, TElement, TSelector>
     settings?: Partial<OpenSettings<TType>>
     config?: Config<TElement, TSelector, TType>
     logger?: Logger
   }): Promise<Eyes<TDriver, TContext, TElement, TSelector, TType>>
-  closeManager: (options?: {settings?: {throwErr?: boolean}; logger?: Logger}) => Promise<TestResultSummary<TType>>
+  closeManager: (options?: {
+    settings?: {throwErr?: boolean}
+    logger?: Logger
+  }) => Promise<TestResultSummary<'classic' | 'ufg'>>
 }
 
 export interface ClassicEyes<
@@ -111,8 +116,13 @@ export interface ClassicEyes<
   }): Promise<TestResult<'classic'>[]>
 }
 
-export interface UFGEyes<TDriver, TContext, TElement, TSelector, TTarget = Target<TDriver, TContext, TElement, TSelector, 'ufg'>>
-  extends UFGCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
+export interface UFGEyes<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TTarget = Target<TDriver, TContext, TElement, TSelector, 'ufg'>,
+> extends UFGCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
   getTypedEyes<TType extends 'classic' | 'ufg' = 'classic'>(options?: {
     type?: TType
     settings?: {type: 'web' | 'native'; renderers: Renderer[]}
@@ -158,7 +168,9 @@ export type Eyes<
 export type Config<TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   open: Partial<OpenSettings<TType>>
   screenshot: Partial<ClassicCore.ScreenshotSettings<TElement, TSelector>>
-  check: Partial<Omit<CheckSettings<TElement, TSelector, TType>, keyof ClassicCore.ScreenshotSettings<TElement, TSelector>>>
+  check: Partial<
+    Omit<CheckSettings<TElement, TSelector, TType>, keyof ClassicCore.ScreenshotSettings<TElement, TSelector>>
+  >
   close: Partial<CloseSettings<TType>>
 }
 
@@ -168,7 +180,9 @@ export type LocateSettings<TLocator extends string, TElement, TSelector> = Autom
   TSelector
 >
 
-export type OpenSettings<TType extends 'classic' | 'ufg'> = TType extends 'ufg' ? UFGCore.OpenSettings : ClassicCore.OpenSettings
+export type OpenSettings<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
+  ? UFGCore.OpenSettings
+  : ClassicCore.OpenSettings
 
 export type CheckSettings<TElement, TSelector, TType extends 'classic' | 'ufg'> = TType extends 'ufg'
   ? UFGCore.CheckSettings<TElement, TSelector>
@@ -191,9 +205,13 @@ export type CloseSettings<TType extends 'classic' | 'ufg'> = (TType extends 'ufg
   ? UFGCore.CloseSettings
   : ClassicCore.CloseSettings) & {throwErr?: boolean}
 
-export type CheckResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg' ? UFGCore.CheckResult : ClassicCore.CheckResult
+export type CheckResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
+  ? UFGCore.CheckResult
+  : ClassicCore.CheckResult
 
-export type TestResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg' ? UFGCore.TestResult : ClassicCore.TestResult
+export type TestResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
+  ? UFGCore.TestResult
+  : ClassicCore.TestResult
 
 export interface TestResultContainer<TType extends 'classic' | 'ufg'> {
   readonly error?: Error

@@ -14,16 +14,15 @@ export type StepInfo = {
 }
 
 export class StepInfoData implements Required<StepInfo> {
-  private _info: Mutable<StepInfo> = {} as any
+  private _info: Mutable<StepInfo>
 
   /** @internal */
-  constructor(info?: StepInfo) {
-    if (!info) return this
+  constructor(info: StepInfo) {
     this._info = info instanceof StepInfoData ? info.toJSON() : info
   }
 
   get name(): string {
-    return this._info.name
+    return this._info.name!
   }
   getName(): string {
     return this.name
@@ -34,7 +33,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get isDifferent(): boolean {
-    return this._info.isDifferent
+    return this._info.isDifferent!
   }
   getIsDifferent(): boolean {
     return this.isDifferent
@@ -45,7 +44,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get hasBaselineImage(): boolean {
-    return this._info.hasBaselineImage
+    return this._info.hasBaselineImage!
   }
   getHasBaselineImage(): boolean {
     return this.hasBaselineImage
@@ -56,7 +55,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get hasCurrentImage(): boolean {
-    return this._info.hasCurrentImage
+    return this._info.hasCurrentImage!
   }
   getHasCurrentImage(): boolean {
     return this.hasCurrentImage
@@ -67,7 +66,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get appUrls(): AppUrls {
-    return this._info.appUrls
+    return this._info.appUrls!
   }
   getAppUrls(): AppUrlsData {
     return new AppUrlsData(this.appUrls)
@@ -78,7 +77,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get apiUrls(): ApiUrls {
-    return this._info.apiUrls
+    return this._info.apiUrls!
   }
   getApiUrls(): ApiUrlsData {
     return new ApiUrlsData(this.apiUrls)
@@ -89,7 +88,7 @@ export class StepInfoData implements Required<StepInfo> {
   }
 
   get renderId(): string[] {
-    return this._info.renderId
+    return this._info.renderId!
   }
   getRenderId(): string[] {
     return this.renderId

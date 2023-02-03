@@ -17,7 +17,7 @@ export function makeExtractText({requests, logger: defaultLogger}: Options) {
     logger = defaultLogger,
   }: {
     target: ImageTarget
-    settings?: MaybeArray<ExtractTextSettings>
+    settings: MaybeArray<ExtractTextSettings>
     logger?: Logger
   }): Promise<string[]> {
     logger.log('Command "extractText" is called with settings', settings)

@@ -41,7 +41,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
 
   private readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
   private readonly _input: Element<TDriver, TContext, TElement, TSelector>
-  private readonly _action?: Element<TDriver, TContext, TElement, TSelector>
+  private readonly _action: Element<TDriver, TContext, TElement, TSelector> | null
   private readonly _legacy: boolean
   private readonly _supportAsync: boolean = false
   private _logger: Logger
@@ -51,10 +51,10 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   constructor(options: {
     spec: SpecDriver<TDriver, TContext, TElement, TSelector>
     input: Element<TDriver, TContext, TElement, TSelector>
-    action?: Element<TDriver, TContext, TElement, TSelector>
+    action: Element<TDriver, TContext, TElement, TSelector> | null
     legacy: boolean
-    logger?: any
-    supportAsync?: boolean
+    supportAsync: boolean
+    logger: Logger
   }) {
     this._spec = options.spec
     this._input = options.input
@@ -65,7 +65,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     this._supportAsync = options.supportAsync === true
   }
 
-  private async _getElementId(element: Element<TDriver, TContext, TElement, TSelector>): Promise<string> {
+  private async _getElementId(element: Element<TDriver, TContext, TElement, TSelector>): Promise<string | null> {
     const resourceId = await element.getAttribute('resource-id')
     if (!resourceId) return null
     return resourceId.split('/')[1]
@@ -89,7 +89,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     }
     if (text === 'WAIT') {
       this._logger.warn(`Helper library didn't provide a response for async command (${command}) during ${timeout}ms`)
-      text = null
+      text = ''
     }
     return text
   }
@@ -97,7 +97,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   async getContentRegion(
     element: Element<TDriver, TContext, TElement, TSelector>,
     options?: {lazyLoad?: {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}},
-  ): Promise<Region> {
+  ): Promise<Region | null> {
     const elementId = await this._getElementId(element)
     if (!elementId) return null
 
@@ -115,24 +115,24 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     const contentHeight = Number(contentHeightString)
     if (Number.isNaN(contentHeight)) return null
 
-    const region = await this._spec.getElementRegion(this._input.driver.target, element.target)
-    if (contentHeight < region.height) return null
+    const region = await this._spec.getElementRegion?.(this._input.driver.target, element.target)
+    if (!region || contentHeight < region.height) return null
 
     return {x: region.x, y: region.y, width: region.width, height: contentHeight}
   }
 
-  async getTouchPadding(): Promise<number> {
-    if (this._legacy) return null
+  async getTouchPadding(): Promise<number | undefined> {
+    if (this._legacy) return undefined
 
     const touchPaddingString = await this._command(`getTouchPadding;0;0;0;0;0`)
 
     const touchPadding = Number(touchPaddingString)
-    if (!touchPadding || Number.isNaN(touchPadding)) return null
+    if (!touchPadding || Number.isNaN(touchPadding)) return undefined
 
     return touchPadding
   }
 
-  async getRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region> {
+  async getRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region | null> {
     if (this._legacy) return null
 
     const elementId = await this._getElementId(element)
@@ -141,7 +141,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     if (!regionString) return null
     const [, x, y, height, width] = regionString.match(
       /\[(-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?)\]/,
-    )
+    )!
     const region = {x: Number(x), y: Number(y), width: Number(width), height: Number(height)}
     if (Number.isNaN(region.x + region.y + region.width + region.height)) return null
 
@@ -149,18 +149,18 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   }
 
   async scrollToTop(element: Element<TDriver, TContext, TElement, TSelector>): Promise<void> {
-    if (this._legacy) return null
+    if (this._legacy) return
 
     const elementId = await this._getElementId(element)
-    if (!elementId) return null
+    if (!elementId) return
     await this._command(`moveToTop;${elementId};0;-1;0`)
   }
 
   async scrollBy(element: Element<TDriver, TContext, TElement, TSelector>, offset: Location): Promise<void> {
-    if (this._legacy) return null
+    if (this._legacy) return
 
     const elementId = await this._getElementId(element)
-    if (!elementId) return null
+    if (!elementId) return
     await this._command(`scroll;${elementId};${offset.y};0;0;0`)
   }
 }

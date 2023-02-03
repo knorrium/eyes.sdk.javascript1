@@ -4,7 +4,7 @@ import {testServer} from '@applitools/test-server'
 import assert from 'assert'
 
 describe('fetch-resource', () => {
-  let server
+  let server: any
 
   before(async () => {
     server = await testServer({
@@ -20,7 +20,9 @@ describe('fetch-resource', () => {
 
   it('works with a self-signed certificate', async () => {
     const fetchResource = makeFetchResource({retryLimit: 0})
-    const resource = await fetchResource({resource: makeResource({url: `https://localhost:${server.port}/page/smurfs.jpg`})})
+    const resource = await fetchResource({
+      resource: makeResource({url: `https://localhost:${server.port}/page/smurfs.jpg`}),
+    })
     assert.strictEqual((resource.hash as any).contentType, 'image/jpeg')
   })
 })

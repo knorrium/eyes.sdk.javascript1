@@ -8,7 +8,7 @@ export type AccessibilityMatchSettings = {
 }
 
 export class AccessibilityMatchSettingsData implements Required<AccessibilityMatchSettings> {
-  private _settings: AccessibilityMatchSettings = {} as any
+  private _settings: AccessibilityMatchSettings
 
   constructor(settings: AccessibilityMatchSettings)
   constructor(region: Region)
@@ -20,13 +20,17 @@ export class AccessibilityMatchSettingsData implements Required<AccessibilityMat
     height?: number,
     type?: AccessibilityRegionType,
   ) {
+    let settings: AccessibilityMatchSettings
     if (utils.types.isNumber(settingsOrRegionOrX)) {
-      return new AccessibilityMatchSettingsData({region: {x: settingsOrRegionOrX, y, width, height}, type})
+      settings = {region: {x: settingsOrRegionOrX, y: y!, width: width!, height: height!}, type}
     } else if (!utils.types.has(settingsOrRegionOrX, 'region')) {
-      return new AccessibilityMatchSettingsData({region: settingsOrRegionOrX})
+      settings = {region: settingsOrRegionOrX}
+    } else {
+      settings = settingsOrRegionOrX
     }
-    this.region = settingsOrRegionOrX.region
-    this.type = settingsOrRegionOrX.type
+    utils.guard.isEnumValue(settings.type, AccessibilityRegionTypeEnum, {name: 'type', strict: false})
+    utils.guard.isObject(settings.region, {name: 'region'})
+    this._settings = settings
   }
 
   get region(): Region {
@@ -68,7 +72,7 @@ export class AccessibilityMatchSettingsData implements Required<AccessibilityMat
   }
 
   get type(): AccessibilityRegionType {
-    return this._settings.type
+    return this._settings.type!
   }
   set type(type: AccessibilityRegionType) {
     utils.guard.isEnumValue(type, AccessibilityRegionTypeEnum, {name: 'type', strict: false})

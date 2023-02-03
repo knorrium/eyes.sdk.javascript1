@@ -22,10 +22,16 @@ describe('extract branching timestamp', () => {
     })
 
     it('works and caches response', async () => {
-      const result1 = await extractBranchingTimestamp({parentBranchName: 'master', branchName: 'some-feat'}, {cwd: repoDir})
+      const result1 = await extractBranchingTimestamp(
+        {parentBranchName: 'master', branchName: 'some-feat'},
+        {cwd: repoDir},
+      )
       assert.strictEqual(result1, '2020-02-06T15:20:56+02:00')
 
-      const result2 = await extractBranchingTimestamp({parentBranchName: 'master', branchName: 'some-feat'}, {cwd: repoDir})
+      const result2 = await extractBranchingTimestamp(
+        {parentBranchName: 'master', branchName: 'some-feat'},
+        {cwd: repoDir},
+      )
       assert.strictEqual(result2, '2020-02-06T15:20:56+02:00')
     })
   })
@@ -49,7 +55,10 @@ describe('extract branching timestamp', () => {
         {cwd: repoDir},
       )
 
-      const result = await extractBranchingTimestamp({parentBranchName: 'master', branchName: 'some-branch-name'}, {cwd: repoDir})
+      const result = await extractBranchingTimestamp(
+        {parentBranchName: 'master', branchName: 'some-branch-name'},
+        {cwd: repoDir},
+      )
       assert.strictEqual(result, '2020-02-19T17:14:31+02:00')
     })
 
@@ -58,7 +67,10 @@ describe('extract branching timestamp', () => {
         `git clone --single-branch --branch master https://github.com/applitools/testing-exmaple-repo.git . && git fetch origin +refs/pull/1/merge && git checkout -qf FETCH_HEAD`,
         {cwd: repoDir},
       )
-      const result = await extractBranchingTimestamp({parentBranchName: 'master', branchName: 'some-branch-name'}, {cwd: repoDir})
+      const result = await extractBranchingTimestamp(
+        {parentBranchName: 'master', branchName: 'some-branch-name'},
+        {cwd: repoDir},
+      )
       assert.strictEqual(result, '2020-02-19T17:14:31+02:00')
     })
 
@@ -67,7 +79,10 @@ describe('extract branching timestamp', () => {
         `git clone --depth=1 --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git .`,
         {cwd: repoDir},
       )
-      const result = await extractBranchingTimestamp({parentBranchName: 'master', branchName: 'some-branch-name'}, {cwd: repoDir})
+      const result = await extractBranchingTimestamp(
+        {parentBranchName: 'master', branchName: 'some-branch-name'},
+        {cwd: repoDir},
+      )
       assert.strictEqual(result, '2020-02-19T17:14:31+02:00')
     })
 

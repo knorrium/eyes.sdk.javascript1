@@ -8,7 +8,7 @@ export type DomSnapshot = {
   cdt: any[]
   url: string
   resourceUrls: string[]
-  resourceContents: Record<string, {type: string; value: Buffer}>
+  resourceContents: Record<string, {type: string; value: Buffer; dependencies?: string[]} | {errorStatusCode: number}>
   frames: DomSnapshot[]
   cookies?: Cookie[]
 }
@@ -21,7 +21,12 @@ export type IOSSnapshot = {
   platformName: 'ios'
   vhsCompatibilityParams: Record<string, any>
 } & (
-  | {resourceContents: Record<string, {type: string; value: Buffer}>}
+  | {
+      resourceContents: Record<
+        string,
+        {type: string; value: Buffer; dependencies?: string[]} | {errorStatusCode: number}
+      >
+    }
   | {vhsHash: {hashFormat: string; hash: string; contentType: string}}
 )
 export type Snapshot = DomSnapshot | AndroidSnapshot | IOSSnapshot
@@ -212,7 +217,12 @@ export type AndroidDeviceRenderer = {
   }
 }
 
-export type Renderer = (DesktopBrowserRenderer | ChromeEmulationDeviceRenderer | IOSDeviceRenderer | AndroidDeviceRenderer) & {
+export type Renderer = (
+  | DesktopBrowserRenderer
+  | ChromeEmulationDeviceRenderer
+  | IOSDeviceRenderer
+  | AndroidDeviceRenderer
+) & {
   /**
    * The id of the renderer
    * Used to identify the renderer if the same renderer is used multiple times

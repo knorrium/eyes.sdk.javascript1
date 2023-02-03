@@ -5,7 +5,7 @@ import * as path from 'path'
 import assert from 'assert'
 
 describe('browser-fetching', () => {
-  let page, destroyPage, server, baseUrl
+  let page: spec.Driver, destroyPage: () => Promise<void>, server: any, baseUrl: string
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
@@ -31,7 +31,7 @@ describe('browser-fetching', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'VgFetch',
         testName: 'TestDisableBrowserFetching',
       },

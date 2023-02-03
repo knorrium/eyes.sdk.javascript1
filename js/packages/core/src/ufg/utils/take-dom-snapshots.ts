@@ -38,9 +38,9 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
 }): Promise<DomSnapshot[]> {
   const currentContext = driver.currentContext
   const waitBeforeCapture = async () => {
-    if (typeof settings.waitBeforeCapture === 'function') {
+    if (utils.types.isFunction(settings.waitBeforeCapture)) {
       await settings.waitBeforeCapture()
-    } else {
+    } else if (settings.waitBeforeCapture) {
       await utils.general.sleep(settings.waitBeforeCapture)
     }
   }
@@ -57,7 +57,7 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
   const isStrictBreakpoints = utils.types.isArray(settings.layoutBreakpoints)
 
   const requiredWidths = await settings.renderers.reduce(async (prev, renderer, index) => {
-    const {name, width} = await extractRendererInfo({renderer})
+    const {name, width} = (await extractRendererInfo({renderer}))!
     const requiredWidths = await prev
     const requiredWidth = isStrictBreakpoints
       ? calculateBreakpoint({breakpoints: settings.layoutBreakpoints as number[], value: width})
@@ -72,7 +72,7 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
 
   if (isStrictBreakpoints && requiredWidths.has(smallestBreakpoint - 1)) {
     const smallestBrowsers = requiredWidths
-      .get(smallestBreakpoint - 1)
+      .get(smallestBreakpoint - 1)!
       .map(({name, width}) => `(${name}, ${width})`)
       .join(', ')
     const message = chalk.yellow(
@@ -90,7 +90,7 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
     await hooks?.beforeEachSnapshot?.()
     await waitBeforeCapture()
     const snapshot = await takeDomSnapshot({context: currentContext, settings, logger})
-    requiredWidths.get(viewportSize.width).forEach(({index}) => (snapshots[index] = snapshot))
+    requiredWidths.get(viewportSize.width)!.forEach(({index}) => (snapshots[index] = snapshot))
   }
   for (const [requiredWidth, browsersInfo] of requiredWidths.entries()) {
     logger.log(`taking dom snapshot for width ${requiredWidth}`)
@@ -136,19 +136,15 @@ export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, 
   async function extractRendererInfo({renderer}: {renderer: Renderer}) {
     if (utils.types.has(renderer, ['width', 'height'])) {
       const {name, width, height} = renderer
-      return {name, width, height}
-    } else {
-      let devices, info
-      if (utils.types.has(renderer, 'chromeEmulationInfo')) {
-        info = renderer.chromeEmulationInfo
-        devices = await provides.getChromeEmulationDevices()
-      } else if (utils.types.has(renderer, 'iosDeviceInfo')) {
-        info = renderer.iosDeviceInfo
-        devices = await provides.getIOSDevices()
-      }
-      const {deviceName, screenOrientation = 'portrait'} = info
-      const size = devices[deviceName][screenOrientation]
-      return {name: deviceName, screenOrientation, ...size}
+      return {name: name ?? 'default', width, height}
+    } else if (utils.types.has(renderer, 'chromeEmulationInfo')) {
+      const devices = await provides!.getChromeEmulationDevices()
+      const {deviceName, screenOrientation = 'portrait'} = renderer.chromeEmulationInfo
+      return {name: deviceName, screenOrientation, ...devices[deviceName][screenOrientation]}
+    } else if (utils.types.has(renderer, 'iosDeviceInfo')) {
+      const devices = await provides!.getIOSDevices()
+      const {deviceName, screenOrientation = 'portrait'} = renderer.iosDeviceInfo
+      return {name: deviceName, screenOrientation, ...devices[deviceName][screenOrientation]}
     }
   }
 }

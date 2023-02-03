@@ -45,7 +45,7 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqU
 
   return {
     beforeRequest({request, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       let requestId = request.headers.get('x-applitools-eyes-client-request-id')
       if (!requestId) {
         requestId = `${counter++}--${guid}`
@@ -53,8 +53,8 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqU
       }
 
       logger?.log(
-        `Request "${options.name}" [${requestId}] will be sent to the address "[${request.method}]${request.url}" with body`,
-        options.body,
+        `Request "${options?.name}" [${requestId}] will be sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
       )
     },
     beforeRetry({request, attempt}) {
@@ -64,18 +64,18 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqU
       }
     },
     async afterResponse({request, response, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       const requestId = request.headers.get('x-applitools-eyes-client-request-id')
       logger?.log(
-        `Request "${options.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
+        `Request "${options?.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
         !response.ok ? `and body ${JSON.stringify(await response.clone().text())}` : '',
       )
     },
     afterError({request, error, options}) {
-      const logger = options.logger ?? defaultLogger
+      const logger = options?.logger ?? defaultLogger
       const requestId = request.headers.get('x-applitools-eyes-client-request-id')
       logger?.error(
-        `Request "${options.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" failed with error`,
+        `Request "${options?.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" failed with error`,
         error,
       )
     },
@@ -85,12 +85,18 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqU
 function handleUnexpectedResponse(): Hooks<ReqUFGOptions> {
   return {
     async afterResponse({request, response, options}) {
-      const {expected, name} = options
-      if (expected && (utils.types.isArray(expected) ? !expected.includes(response.status) : expected !== response.status)) {
+      if (
+        options?.expected &&
+        (utils.types.isArray(options.expected)
+          ? !options.expected.includes(response.status)
+          : options.expected !== response.status)
+      ) {
         throw new Error(
-          `Request "${name}" that was sent to the address "[${request.method}]${request.url}" failed due to unexpected status ${
-            response.statusText
-          }(${response.status}) with body ${JSON.stringify(await response.clone().text())}`,
+          `Request "${name}" that was sent to the address "[${request.method}]${
+            request.url
+          }" failed due to unexpected status ${response.statusText}(${response.status}) with body ${JSON.stringify(
+            await response.clone().text(),
+          )}`,
         )
       }
     },

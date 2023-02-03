@@ -1,10 +1,13 @@
+import type {Core} from '../../../src/classic/types'
 import {makeCore} from '../../../src/classic/core'
 import {getTestInfo} from '@applitools/test-utils'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 describe('coded regions', () => {
-  let driver, destroyDriver, core
+  let driver: spec.Driver,
+    destroyDriver: () => Promise<void>,
+    core: Core<spec.Driver, spec.Driver, spec.Element, spec.Selector>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -16,7 +19,7 @@ describe('coded regions', () => {
           Inner
         </div>
       </div>`
-    await driver.get(page)
+    await driver.url(page)
   })
 
   after(async () => {
@@ -28,7 +31,7 @@ describe('coded regions', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core classic',
         testName: 'coded region in full page',
       },
@@ -46,13 +49,13 @@ describe('coded regions', () => {
     assert.strictEqual(result.status, 'Passed')
   })
 
-  for (const stitchMode of ['Scroll', 'CSS']) {
+  for (const stitchMode of ['Scroll' as const, 'CSS' as const]) {
     it(`works inside an element with ${stitchMode} stitching`, async () => {
       const eyes = await core.openEyes({
         target: driver,
         settings: {
           serverUrl: 'https://eyesapi.applitools.com',
-          apiKey: process.env.APPLITOOLS_API_KEY,
+          apiKey: process.env.APPLITOOLS_API_KEY!,
           appName: 'core classic',
           testName: 'coded region inside an element',
         },

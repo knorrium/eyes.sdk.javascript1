@@ -10,6 +10,6 @@ export class DiffsFoundError extends TestFailedError {
       results = message
       message = `Test '${results.name}' of '${results.appName}' detected differences! See details at: ${results.url}`
     }
-    super(message, results)
+    super(message, results!)
   }
 }

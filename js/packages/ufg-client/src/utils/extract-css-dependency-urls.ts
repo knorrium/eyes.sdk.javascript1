@@ -2,7 +2,7 @@ import * as utils from '@applitools/utils'
 import ValueParser from 'postcss-value-parser'
 
 export function extractCssDependencyUrls(css: string): string[] {
-  const urls = []
+  const urls = [] as string[]
   const parsedValue = new ValueParser(css)
   parsedValue.walk((node, index, nodes) => {
     urls.push(...extractUrls(node, index, nodes))
@@ -10,7 +10,7 @@ export function extractCssDependencyUrls(css: string): string[] {
   return [...new Set(urls)].map(utils.general.toUriEncoding).map(utils.general.toUnAnchoredUri)
 }
 
-function extractUrls(node, index, nodes): string[] {
+function extractUrls(node: ValueParser.Node, index: number, nodes: ValueParser.Node[]): string[] {
   if (node.type === 'function') {
     if (node.value === 'url' && node.nodes?.length == 1) {
       return [node.nodes[0].value]

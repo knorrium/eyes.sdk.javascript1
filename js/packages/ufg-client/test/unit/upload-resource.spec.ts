@@ -1,18 +1,18 @@
 import {type UFGRequests} from '../../src/server/requests'
 import {makeUploadResource} from '../../src/resources/upload-resource'
-import {makeResource} from '../../src/resources/resource'
+import {makeResource, type ContentfulResource} from '../../src/resources/resource'
 import {makeResourceDom} from '../../src/resources/resource-dom'
 import * as utils from '@applitools/utils'
 import assert from 'assert'
 
 describe('upload-resource', () => {
-  function getKey(resource) {
+  function getKey(resource: ContentfulResource) {
     return `${resource.url || 'dom'}_${resource.hash.hash}`
   }
 
   it('works', async () => {
-    const putCount = {}
-    const checkCount = {}
+    const putCount = {} as Record<string, number>
+    const checkCount = {} as Record<string, number>
     const uploadResource = makeUploadResource({
       requests: {
         checkResources({resources}) {

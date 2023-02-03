@@ -1,4 +1,4 @@
-import {makeDriver} from '@applitools/driver'
+import {makeDriver, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {Response} from '@applitools/req'
 import {makeLogger} from '@applitools/logger'
@@ -7,9 +7,9 @@ import assert from 'assert'
 
 describe('take-dom-capture', () => {
   const logger = makeLogger()
-  let mock, driver
+  let mock: MockDriver, driver: Driver<MockDriver, unknown, unknown, unknown>
 
-  function createDomCapture(domCapture) {
+  function createDomCapture(domCapture: string) {
     const tokens = {
       separator: '-----',
       cssStartToken: '#####',
@@ -29,7 +29,7 @@ describe('take-dom-capture', () => {
 
     return result.join('\n')
 
-    function extract(start, end) {
+    function extract(start: string, end: string) {
       const regexp = new RegExp(`${start}(.*?)${end}`, 'g')
       const matches = []
       let match
@@ -69,7 +69,7 @@ describe('take-dom-capture', () => {
   })
 
   it('works with polling', async () => {
-    mock.mockScript('dom-capture', function () {
+    mock.mockScript('dom-capture', function (this: any) {
       this.poll = this.poll || 0
       if (this.poll === 0) {
         this.domCapture = createDomCapture('dom capture')
@@ -86,7 +86,7 @@ describe('take-dom-capture', () => {
   })
 
   it('handles frames', async () => {
-    mock.mockScript('dom-capture', function () {
+    mock.mockScript('dom-capture', function (this: any) {
       let value
       if (this.name === null) {
         value = createDomCapture('main frame dom capture [@@@@@frame1@@@@@] [@@@@@frame2,frame2-2@@@@@]')
@@ -102,7 +102,10 @@ describe('take-dom-capture', () => {
 
     const result = await takeDomCapture({driver, logger})
 
-    assert.strictEqual(result, 'main frame dom capture [frame1 dom capture [frame1-1 dom capture]] [frame2-2 dom capture]')
+    assert.strictEqual(
+      result,
+      'main frame dom capture [frame1 dom capture [frame1-1 dom capture]] [frame2-2 dom capture]',
+    )
   })
 
   it('handles css', async () => {
@@ -127,7 +130,10 @@ describe('take-dom-capture', () => {
       return JSON.stringify({status: 'ERROR', error: 'Oops! Something went wrong!'})
     })
 
-    assert.rejects(takeDomCapture({driver, logger}), `Error during capture dom and pull script: 'Oops! Something went wrong!'`)
+    assert.rejects(
+      takeDomCapture({driver, logger}),
+      `Error during capture dom and pull script: 'Oops! Something went wrong!'`,
+    )
   })
 
   it('stops execution if timeout is reached', async () => {

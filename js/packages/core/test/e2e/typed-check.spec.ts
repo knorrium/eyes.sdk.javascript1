@@ -1,8 +1,8 @@
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import {makeCore} from '../../src/index'
 
 describe('typed check', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -13,7 +13,7 @@ describe('typed check', () => {
   })
 
   it('performs classic check during ufg test', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
+    await driver.url('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
 
     const core = makeCore({spec})
     const manager = await core.makeManager({type: 'ufg'})
@@ -68,7 +68,7 @@ describe('typed check', () => {
   })
 
   it.skip('performs ufg check during classic test', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
+    await driver.url('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
 
     const core = makeCore({spec})
     const manager = await core.makeManager({type: 'classic'})

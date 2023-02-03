@@ -10,12 +10,12 @@ import {makeCloseManager} from './close-manager'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   core?: BaseCore
   concurrency?: number
   agentId?: string
   cwd?: string
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeMakeManager<TDriver, TContext, TElement, TSelector>({
@@ -50,33 +50,36 @@ export function makeMakeManager<TDriver, TContext, TElement, TSelector>({
       ufg: makeUFGCore({spec, core, concurrency, logger}),
       classic: makeClassicCore({spec, core, logger}),
     }
-    const storage = [] as {eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
-    // open eyes with result storage
-    const openEyes = utils.general.wrap(makeOpenEyes({type, batch, spec, core, cores, logger}), async (openEyes, options) => {
-      const eyes = await openEyes(options)
-      const item = {eyes} as typeof storage[number]
-      storage.push(item)
-      return utils.general.extend(eyes, {
-        close(options) {
-          const promise = eyes.close(options)
-          item.promise ??= promise
-          return promise
-        },
-        checkAndClose(options) {
-          const promise = eyes.checkAndClose(options)
-          item.promise ??= promise
-          return promise
-        },
-        abort(options) {
-          const promise = eyes.abort(options)
-          item.promise ??= promise
-          return promise
-        },
-      })
-    })
-
+    const storage = [] as {
+      eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
+      promise?: Promise<TestResult<TType>[]>
+    }[]
     return {
-      openEyes,
+      openEyes: utils.general.wrap(
+        makeOpenEyes({type, batch, spec, core, cores, logger}),
+        async (openEyes, options) => {
+          const eyes = await openEyes(options)
+          const item = {eyes} as (typeof storage)[number]
+          storage.push(item)
+          return utils.general.extend(eyes, {
+            checkAndClose: utils.general.wrap(eyes.checkAndClose, (checkAndClose, options?) => {
+              const promise = checkAndClose(options)
+              item.promise ??= promise
+              return promise
+            }),
+            close: utils.general.wrap(eyes.close, (close, options?) => {
+              const promise = close(options)
+              item.promise ??= promise
+              return promise
+            }),
+            abort: utils.general.wrap(eyes.abort, (abort, options?) => {
+              const promise = abort(options)
+              item.promise ??= promise
+              return promise
+            }),
+          })
+        },
+      ),
       closeManager: makeCloseManager({core, storage, logger}),
     }
   }

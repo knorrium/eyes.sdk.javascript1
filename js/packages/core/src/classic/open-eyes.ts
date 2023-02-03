@@ -14,7 +14,7 @@ import * as utils from '@applitools/utils'
 type Options<TDriver, TContext, TElement, TSelector> = {
   core: BaseCore
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({

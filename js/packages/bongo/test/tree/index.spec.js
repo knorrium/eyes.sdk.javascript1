@@ -163,7 +163,7 @@ describe('tree', () => {
     assert.deepStrictEqual(
       [
         ['@applitools/bongo'],
-        ['@applitools/snippets', '@applitools/types', '@applitools/utils', '@applitools/scripts'],
+        ['@applitools/snippets', '@applitools/types', '@applitools/utils'],
         [
           '@applitools/driver',
           '@applitools/logger',

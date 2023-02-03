@@ -7,7 +7,7 @@ import {makeCore as makeClassicCore} from './classic/core'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
   core: BaseCore
   logger: Logger
 }
@@ -23,7 +23,7 @@ export function makeLocate<TDriver, TContext, TElement, TSelector, TType extends
     config,
     logger = defaultLogger,
   }: {
-    target?: DriverTarget<TDriver, TContext, TElement, TSelector> | ImageTarget
+    target: DriverTarget<TDriver, TContext, TElement, TSelector> | ImageTarget
     settings: LocateSettings<TLocator, TElement, TSelector>
     config?: Config<TElement, TSelector, TType>
     logger?: Logger

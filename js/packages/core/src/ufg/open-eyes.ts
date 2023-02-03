@@ -15,7 +15,7 @@ type Options<TDriver, TContext, TElement, TSelector> = {
   core: BaseCore
   client?: UFGClient
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
@@ -62,7 +62,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
 
     const getBaseEyes = makeGetBaseEyes({settings, eyes, core, client, logger})
     return utils.general.extend({}, eyes => {
-      const storage = []
+      const storage = [] as any[]
       let closed = false
       let aborted = false
 
@@ -87,7 +87,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
         getBaseEyes,
         // check with indexing and storage
         check: utils.general.wrap(
-          makeCheck({eyes, client, target: driver, spec, signal: controller.signal, logger}),
+          makeCheck({eyes, client: client!, target: driver, spec, signal: controller.signal, logger}),
           async (check, options = {}) => {
             const results = await check(options)
             storage.push(
@@ -99,7 +99,16 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
             return results
           },
         ),
-        checkAndClose: makeCheckAndClose({eyes, client, target: driver, spec, signal: controller.signal, logger}),
+        checkAndClose: makeCheckAndClose({
+          eyes,
+          client: client!,
+          target: driver,
+          spec,
+          signal: controller.signal,
+          logger,
+        }),
+        locateText: null as never,
+        extractText: null as never,
         // close only once
         close: utils.general.wrap(makeClose({storage, target: driver, logger}), async (close, options) => {
           if (closed || aborted) return []
@@ -107,11 +116,14 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
           return close(options)
         }),
         // abort only once
-        abort: utils.general.wrap(makeAbort({storage, target: driver, spec, controller, logger}), async (abort, options) => {
-          if (aborted || closed) return []
-          aborted = true
-          return abort(options)
-        }),
+        abort: utils.general.wrap(
+          makeAbort({storage, target: driver, spec, controller, logger}),
+          async (abort, options) => {
+            if (aborted || closed) return []
+            aborted = true
+            return abort(options)
+          },
+        ),
       }
     })
   }

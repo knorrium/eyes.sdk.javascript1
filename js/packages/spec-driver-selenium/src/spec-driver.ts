@@ -30,7 +30,7 @@ function transformShadowRoot(driver: Driver, shadowRoot: ShadowRoot | Element): 
     : shadowRoot
 }
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
-  return byHash.includes(Object.keys(selector)[0] as typeof byHash[number])
+  return byHash.includes(Object.keys(selector)[0] as (typeof byHash)[number])
 }
 async function executeCustomCommand(driver: Driver, command: Command) {
   return process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION === '3'
@@ -82,18 +82,18 @@ export function transformSelector(selector: CommonSelector<Selector>): Selector 
     return {css: selector}
   } else if (utils.types.has(selector, 'selector')) {
     if (!utils.types.isString(selector.selector)) return selector.selector
-    if (!utils.types.has(selector, 'type')) return {css: selector.selector}
+    if (!utils.types.has(selector, 'type') || !selector.type) return {css: selector.selector}
     if (selector.type === 'css') return {css: selector.selector}
     else return {using: selector.type, value: selector.selector}
   }
   return selector
 }
 
-export function untransformSelector(selector: Selector): CommonSelector {
+export function untransformSelector(selector: Selector): CommonSelector | null {
   if (utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy') || utils.types.isFunction(selector)) {
     return null
   } else if (isByHashSelector(selector)) {
-    const [[how, what]] = Object.entries(selector) as [[typeof byHash[number], string]]
+    const [[how, what]] = Object.entries(selector) as [[(typeof byHash)[number], string]]
     if (how === 'js') return null
     selector = Selenium.By[how](what)
   }
@@ -142,7 +142,7 @@ export async function findElement(driver: Driver, selector: Selector, parent?: E
   try {
     const root = parent ? transformShadowRoot(driver, parent) : driver
     return await root.findElement(selector as Selenium.Locator)
-  } catch (err) {
+  } catch (err: any) {
     if (err.name === 'NoSuchElementError') return null
     else throw err
   }
@@ -157,17 +157,17 @@ export async function waitForSelector(
   _parent?: Element,
   options?: WaitOptions,
 ): Promise<Element | null> {
-  if ((options?.state ?? 'exists') === 'exist') {
-    return driver.wait(Selenium.until.elementLocated(selector as Selenium.Locator), options?.timeout)
-  } else if (options?.state === 'visible') {
-    const element = await findElement(driver, selector)
+  if (options?.state === 'visible') {
+    const element = await driver.findElement(selector as Selenium.Locator)
     return driver.wait(Selenium.until.elementIsVisible(element), options?.timeout)
+  } else {
+    return driver.wait(Selenium.until.elementLocated(selector as Selenium.Locator), options?.timeout)
   }
 }
 export async function setElementText(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(driver, element)
-  await element.clear()
-  await element.sendKeys(keys)
+  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
+  await resolvedElement?.clear()
+  await resolvedElement?.sendKeys(keys)
 }
 export async function getElementText(_driver: Driver, element: Element): Promise<string> {
   return element.getText()
@@ -252,26 +252,26 @@ export async function takeScreenshot(driver: Driver): Promise<string> {
   return driver.takeScreenshot()
 }
 export async function click(driver: Driver, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(driver, element)
-  await element.click()
+  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
+  await resolvedElement?.click()
 }
 export async function hover(driver: Driver, element: Element | Selector) {
-  if (isSelector(element)) element = await findElement(driver, element)
+  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
   if (process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION === '3') {
     const {ActionSequence} = require('selenium-webdriver')
     const action = new ActionSequence(driver)
-    await action.mouseMove(element).perform()
+    await action.mouseMove(resolvedElement).perform()
   } else {
-    await driver.actions().move({origin: element}).perform()
+    await driver.actions().move({origin: resolvedElement!}).perform()
   }
 }
 export async function scrollIntoView(driver: Driver, element: Element | Selector, align = false): Promise<void> {
-  if (isSelector(element)) element = await findElement(driver, element)
-  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', element, align)
+  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
+  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', resolvedElement, align)
 }
 export async function waitUntilDisplayed(driver: Driver, selector: Selector, timeout: number): Promise<void> {
   const element = await findElement(driver, selector)
-  await driver.wait(Selenium.until.elementIsVisible(element), timeout)
+  await driver.wait(Selenium.until.elementIsVisible(element!), timeout)
 }
 
 // #endregion

@@ -36,22 +36,21 @@ export class FloatingMatchSettingsData implements Required<FloatingMatchSettings
     maxLeftOffset?: number,
     maxRightOffset?: number,
   ) {
+    let settings: FloatingMatchSettings
     if (utils.types.isNumber(settingsOrRegionOrX)) {
-      return new FloatingMatchSettingsData({
-        region: {x: settingsOrRegionOrX, y, width, height},
+      settings = {
+        region: {x: settingsOrRegionOrX, y: y!, width: width!, height: height!},
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
         maxRightOffset,
-      })
+      }
     } else if (!utils.types.has(settingsOrRegionOrX, 'region')) {
-      return new FloatingMatchSettingsData({region: settingsOrRegionOrX})
+      settings = {region: settingsOrRegionOrX}
+    } else {
+      settings = settingsOrRegionOrX
     }
-    this.region = settingsOrRegionOrX.region
-    this.maxUpOffset = maxUpOffset
-    this.maxDownOffset = maxDownOffset
-    this.maxLeftOffset = maxLeftOffset
-    this.maxRightOffset = maxRightOffset
+    this._settings = settings
   }
 
   get region(): Region {
@@ -93,7 +92,7 @@ export class FloatingMatchSettingsData implements Required<FloatingMatchSettings
   }
 
   get maxUpOffset(): number {
-    return this._settings.maxUpOffset
+    return this._settings.maxUpOffset!
   }
   set maxUpOffset(maxUpOffset: number) {
     utils.guard.isNumber(maxUpOffset, {name: 'maxUpOffset'})
@@ -107,7 +106,7 @@ export class FloatingMatchSettingsData implements Required<FloatingMatchSettings
   }
 
   get maxDownOffset(): number {
-    return this._settings.maxDownOffset
+    return this._settings.maxDownOffset!
   }
   set maxDownOffset(maxDownOffset: number) {
     utils.guard.isNumber(maxDownOffset, {name: 'maxDownOffset'})
@@ -121,7 +120,7 @@ export class FloatingMatchSettingsData implements Required<FloatingMatchSettings
   }
 
   get maxLeftOffset(): number {
-    return this._settings.maxLeftOffset
+    return this._settings.maxLeftOffset!
   }
   set maxLeftOffset(maxLeftOffset: number) {
     utils.guard.isNumber(maxLeftOffset, {name: 'maxLeftOffset'})
@@ -135,7 +134,7 @@ export class FloatingMatchSettingsData implements Required<FloatingMatchSettings
   }
 
   get maxRightOffset(): number {
-    return this._settings.maxRightOffset
+    return this._settings.maxRightOffset!
   }
   set maxRightOffset(maxRightOffset: number) {
     utils.guard.isNumber(maxRightOffset, {name: 'maxRightOffset'})

@@ -42,14 +42,29 @@ describe('requests', () => {
 
     const [result] = await eyes.close()
     const info = await getTestInfo(result)
-    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, [{left: 0, top: 0, width: 100, height: 100}])
-    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.layout, [{left: 100, top: 100, width: 100, height: 100}])
-    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.content, [{left: 200, top: 200, width: 100, height: 100}])
+    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, [
+      {left: 0, top: 0, width: 100, height: 100},
+    ])
+    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.layout, [
+      {left: 100, top: 100, width: 100, height: 100},
+    ])
+    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.content, [
+      {left: 200, top: 200, width: 100, height: 100},
+    ])
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.strict, [
       {left: 300, top: 300, width: 100, height: 100, regionId: 'my-id'},
     ])
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.floating, [
-      {left: 400, top: 400, width: 100, height: 100, maxLeftOffset: 20, maxRightOffset: 0, maxUpOffset: 10, maxDownOffset: 0},
+      {
+        left: 400,
+        top: 400,
+        width: 100,
+        height: 100,
+        maxLeftOffset: 20,
+        maxRightOffset: 0,
+        maxUpOffset: 10,
+        maxDownOffset: 0,
+      },
     ])
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.accessibility, [
       {left: 500, top: 500, width: 100, height: 100, type: 'BoldText', isDisabled: false},

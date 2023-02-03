@@ -8,7 +8,9 @@ import * as specUtils from './spec-utils'
 
 const snippets = require('@applitools/snippets')
 
-export type ElementState<TElement> = {
+export type ElementReference<TElement, TSelector> = TElement | Selector<TSelector>
+
+type ElementState<TElement> = {
   contentSize?: Size
   scrollOffset?: Location
   transforms?: any
@@ -17,40 +19,40 @@ export type ElementState<TElement> = {
   containedElements?: Map<TElement, boolean>
 }
 
-export class Element<TDriver, TContext, TElement, TSelector> {
-  private _target: TElement
+type ElementOptions<TDriver, TContext, TElement, TSelector> = {
+  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  context?: Context<TDriver, TContext, TElement, TSelector>
+  logger: Logger
+} & (
+  | {element: TElement; selector?: Selector<TSelector>; index?: number}
+  | {selector: Selector<TSelector>; index?: number}
+)
 
-  private _context: Context<TDriver, TContext, TElement, TSelector>
-  private _selector: Selector<TSelector>
-  private _commonSelector?: Selector
-  private _index: number
+export class Element<TDriver, TContext, TElement, TSelector> {
+  private _target?: TElement
+
+  private _context?: Context<TDriver, TContext, TElement, TSelector>
+  private _selector?: Selector<TSelector>
+  private _commonSelector: Selector | null
+  private _index?: number
   private _state: ElementState<TElement> = {}
   private _originalOverflow: any
   private _logger: Logger
 
   protected readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
 
-  constructor(options: {
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    element?: TElement | Element<TDriver, TContext, TElement, TSelector>
-    context?: Context<TDriver, TContext, TElement, TSelector>
-    selector?: Selector<TSelector>
-    index?: number
-    logger?: Logger
-  }) {
-    if (options.element instanceof Element) return options.element
-
+  constructor(options: ElementOptions<TDriver, TContext, TElement, TSelector>) {
     this._spec = options.spec
+    this._context = options.context
+    this._logger = options.logger
 
-    if (options.context) this._context = options.context
-    if (options.logger) this._logger = options.logger
-
-    this._target = this._spec.transformElement?.(options.element) ?? options.element
-
-    if (this._spec.isElement(this._target)) {
-      // Some frameworks contains information about the selector inside an element
-      this._selector = options.selector ?? this._spec.extractSelector?.(options.element)
-      this._index = options.index
+    if (utils.types.has(options, 'element')) {
+      this._target = this._spec.transformElement?.(options.element) ?? options.element
+      if (this._spec.isElement(this._target)) {
+        // Some frameworks contains information about the selector inside an element
+        this._selector = options.selector ?? this._spec.extractSelector?.(options.element)
+        this._index = options.index
+      }
     } else if (specUtils.isSelector(this._spec, options.selector)) {
       this._selector = options.selector
     } else {
@@ -60,14 +62,18 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     if (specUtils.isSimpleCommonSelector(this._selector)) {
       this._commonSelector = this._selector
     } else if (this._selector && this._spec.untransformSelector) {
-      this._commonSelector = this._spec.untransformSelector(this._spec.transformSelector(this._selector))
+      this._commonSelector = this._spec.untransformSelector(
+        this._spec.transformSelector?.(this._selector) ?? this._selector,
+      )
     } else if (utils.types.isString(this._selector)) {
       this._commonSelector = {selector: this._selector}
+    } else {
+      this._commonSelector = null
     }
   }
 
   get target() {
-    return this._target
+    return this._target!
   }
 
   get selector() {
@@ -83,15 +89,15 @@ export class Element<TDriver, TContext, TElement, TSelector> {
   }
 
   get context() {
-    return this._context
+    return this._context!
   }
 
   get driver() {
-    return this.context.driver
+    return this.context!.driver
   }
 
   get isRef() {
-    return this.context.isRef || !this.target
+    return this.context?.isRef || !this.target
   }
 
   async equals(element: Element<TDriver, TContext, TElement, TSelector> | TElement): Promise<boolean> {
@@ -100,10 +106,10 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     element = element instanceof Element ? element.target : element
     if (this.driver.isWeb) {
       return this._spec
-        .executeScript(this.context.target, snippets.isEqualElements, [this.target, element])
+        .executeScript(this.context!.target, snippets.isEqualElements, [this.target, element])
         .catch(() => false)
     } else {
-      return this._spec.isEqualElements(this.context.target, this.target, element)
+      return this._spec.isEqualElements?.(this.context!.target, this.target, element) ?? false
     }
   }
 
@@ -114,14 +120,13 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         this._logger.log('Checking if web element with selector', this.selector, 'contains element', innerElement)
         return false // TODO implement a snipped for web
       } else {
-        if (this._state.containedElements?.has(innerElement)) return this._state.containedElements.get(innerElement)
-
+        if (this._state.containedElements?.has(innerElement)) return this._state.containedElements.get(innerElement)!
         this._logger.log('Checking if native element with selector', this.selector, 'contains element', innerElement)
         // appium doesn't have a way to check if an element is contained in another element, so juristic applied
         if (await this.equals(innerElement)) return false
         // if the inner element region is contained in this element region, then it then could be assumed that the inner element is contained in this element
         const contentRegion = await this.getContentRegion()
-        const innerRegion = await this._spec.getElementRegion(this.driver.target, innerElement)
+        const innerRegion = await this._spec.getElementRegion!(this.driver.target, innerElement)
         const contains = utils.geometry.contains(contentRegion, innerRegion)
         this._state.containedElements ??= new Map()
         this._state.containedElements.set(innerElement, contains)
@@ -141,8 +146,8 @@ export class Element<TDriver, TContext, TElement, TSelector> {
       const element = await this._context.element(this._selector)
       if (!element) throw new Error(`Cannot find element with selector ${JSON.stringify(this._selector)}`)
       this._target = element.target
-      return this
     }
+    return this
   }
 
   async getRegion(): Promise<Region> {
@@ -152,14 +157,14 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         return this.context.execute(snippets.getElementRect, [this, false])
       } else {
         this._logger.log('Extracting region of native element with selector', this.selector)
-        const region = await this._spec.getElementRegion(this.driver.target, this.target)
+        const region = await this._spec.getElementRegion!(this.driver.target, this.target)
         this._logger.log('Extracted native region', region)
         const normalizedRegion = await this.driver.normalizeRegion(region)
 
         // if element is a child of scrolling element, then region location should be adjusted
         const scrollingElement = await this.context.getScrollingElement()
         return (await scrollingElement?.contains(this))
-          ? utils.geometry.offset(normalizedRegion, await scrollingElement.getScrollOffset())
+          ? utils.geometry.offset(normalizedRegion, await scrollingElement!.getScrollOffset())
           : normalizedRegion
       }
     })
@@ -182,14 +187,14 @@ export class Element<TDriver, TContext, TElement, TSelector> {
 
   async getContentRegion(
     options: {lazyLoad?: {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}} = {},
-  ) {
-    if (!this.driver.isNative) return
+  ): Promise<Region> {
+    if (!this.driver.isNative) return null as never
     this._logger.log('Extracting content region of native element with selector', this.selector)
     let contentRegion = await this.driver.helper?.getContentRegion(this, options)
     this._logger.log('Extracted content region using helper library', contentRegion)
 
     if (!contentRegion || !this.driver.isAndroid) {
-      let attrContentRegion: Region
+      let attrContentRegion = null as Region | null
       try {
         const size = JSON.parse(await this.getAttribute('contentSize'))
         attrContentRegion = {
@@ -200,10 +205,10 @@ export class Element<TDriver, TContext, TElement, TSelector> {
             ? Math.max(size.height, size.scrollableOffset)
             : size.height + size.scrollableOffset,
         }
-      } catch (err) {
+      } catch (err: any) {
         this._logger.warn(`Unable to get the attribute 'contentSize' due to the following error: '${err.message}'`)
       }
-      this._logger.log('Extracted content region using attribute', attrContentRegion)
+      this._logger.log('Extracted content region using attribute', attrContentRegion!)
 
       // ios workaround
       if (!attrContentRegion && this.driver.isIOS) {
@@ -215,15 +220,15 @@ export class Element<TDriver, TContext, TElement, TSelector> {
               selector: '//XCUIElementTypeScrollView[1]/*', // We cannot be sure that our element is the first one
             })
             if (child) {
-              const region = await this._spec.getElementRegion(this.driver.target, this.target)
-              const childRegion = await this._spec.getElementRegion(this.driver.target, child.target)
+              const region = await this._spec.getElementRegion!(this.driver.target, this.target)
+              const childRegion = await this._spec.getElementRegion!(this.driver.target, child.target)
               attrContentRegion = {
                 ...region,
                 height: childRegion.y + childRegion.height - region.y,
               }
             }
           }
-        } catch (err) {
+        } catch (err: any) {
           this._logger.warn(
             `Unable to calculate content region using iOS workaround due to the following error: '${err.message}'`,
           )
@@ -241,11 +246,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
       }
     }
 
-    return contentRegion ?? (await this._spec.getElementRegion(this.driver.target, this.target))
-  }
-
-  async getContentSizeIOS() {
-    return this._spec.getElementRegion(this.driver.target, this.target)
+    return contentRegion ?? (await this._spec.getElementRegion!(this.driver.target, this.target))
   }
 
   async getContentSize(
@@ -265,8 +266,8 @@ export class Element<TDriver, TContext, TElement, TSelector> {
           if (this.driver.isAndroid) {
             this._state.contentSize = utils.geometry.scale(this._state.contentSize, 1 / this.driver.pixelRatio)
           }
-          if (contentRegion.y < this.driver.statusBarSize) {
-            this._state.contentSize.height -= this.driver.statusBarSize - contentRegion.y
+          if (contentRegion.y < this.driver.statusBarSize!) {
+            this._state.contentSize.height -= this.driver.statusBarSize! - contentRegion.y
           }
           return this._state.contentSize
         } catch (err) {
@@ -317,14 +318,14 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     return this.withRefresh(async () => {
       if (this.driver.isWeb) {
         const rootElement = await this.context.element({type: 'css', selector: 'html'})
-        return this.equals(rootElement)
+        return this.equals(rootElement!)
       } else {
         return false
       }
     })
   }
 
-  async getShadowRoot(): Promise<TElement> {
+  async getShadowRoot(): Promise<TElement | null> {
     if (!this.driver.isWeb) return null
     return this._spec.executeScript(this.context.target, snippets.getShadowRoot, [this.target])
   }
@@ -352,7 +353,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         this._logger.log('Touch padding set:', this._state.touchPadding)
       }
     }
-    return this._state.touchPadding
+    return this._state.touchPadding!
   }
 
   async getText(): Promise<string> {
@@ -361,7 +362,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         return ''
       } else {
         this._logger.log('Extracting text of native element with selector', this.selector)
-        return this._spec.getElementText(this.context.target, this.target)
+        return this._spec.getElementText!(this.context.target, this.target)
       }
     })
     this._logger.log('Extracted element text', text)
@@ -383,9 +384,9 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         this._logger.log(`Extracting "${name}" attribute of native element with selector`, this.selector)
         this._state.attributes ??= {}
         try {
-          this._state.attributes[name] = await this._spec.getElementAttribute(this.driver.target, this.target, name)
+          this._state.attributes[name] = await this._spec.getElementAttribute!(this.driver.target, this.target, name)
           return this._state.attributes[name]
-        } catch (err) {
+        } catch (err: any) {
           this._state.attributes[name] = err
           throw err
         } finally {
@@ -565,10 +566,10 @@ export class Element<TDriver, TContext, TElement, TSelector> {
         // pages should be scrolled one-by-one as well
         if (isPager || this.driver.isIOS) {
           for (const action of actions) {
-            await this._spec.performAction(this.driver.target, action)
+            await this._spec.performAction!(this.driver.target, action)
           }
         } else if (actions.length > 0) {
-          await this._spec.performAction(this.driver.target, actions.flat())
+          await this._spec.performAction!(this.driver.target, actions.flat())
         }
 
         const actualScrollableRegion = await this.getClientRegion()
@@ -616,12 +617,13 @@ export class Element<TDriver, TContext, TElement, TSelector> {
   }
 
   async click(): Promise<void> {
-    await this._spec.click(this.context.target, this.target)
+    this._logger.log(`Clicking on the element with selector`, this.selector)
+    await this._spec.click?.(this.context.target, this.target)
   }
 
   async type(value: string): Promise<void> {
-    this._logger.log(`Typing text "${value}" in element with selector`, this.selector)
-    await this._spec.setElementText(this.context.target, this.target, value)
+    this._logger.log(`Typing text "${value}" in the element with selector`, this.selector)
+    await this._spec.setElementText?.(this.context.target, this.target, value)
   }
 
   async preserveState(): Promise<ElementState<TElement>> {
@@ -640,8 +642,8 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     if (state.scrollOffset) await this.scrollTo(state.scrollOffset)
     if (state.transforms) await this.context.execute(snippets.setElementStyleProperties, [this, state.transforms])
     if (state === this._state) {
-      this._state.scrollOffset = null
-      this._state.transforms = null
+      this._state.scrollOffset = undefined
+      this._state.transforms = undefined
     }
   }
 
@@ -670,8 +672,8 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     }
     if (!this._selector) return false
     const element =
-      this._index > 0
-        ? await this.context.elements(this._selector).then(elements => elements[this._index])
+      this._index! > 0
+        ? await this.context.elements(this._selector).then(elements => elements[this._index!])
         : await this.context.element(this._selector)
     if (element) {
       this._target = element.target
@@ -704,4 +706,11 @@ export class Element<TDriver, TContext, TElement, TSelector> {
   toJSON(): TElement {
     return this.target
   }
+}
+
+export function isElementReference<TElement, TSelector>(
+  reference: any,
+  spec?: SpecDriver<unknown, unknown, TElement, TSelector>,
+): reference is ElementReference<TElement, TSelector> {
+  return !!spec && (spec.isElement(reference) || specUtils.isSelector(spec, reference))
 }

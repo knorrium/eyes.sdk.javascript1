@@ -1,10 +1,9 @@
 import {makeCore} from '../../../src/ufg/core'
-import {By} from 'selenium-webdriver'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
-describe('openEyes ufg', () => {
-  let driver, destroyDriver
+describe('open eyes ufg', () => {
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -17,25 +16,25 @@ describe('openEyes ufg', () => {
   it('should preserve original frame after opening', async () => {
     const core = makeCore({spec, concurrency: 10})
 
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+    await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
 
-    const frame = await driver.findElement(By.css('[name="frame1"]'))
-    await driver.switchTo().frame(frame)
+    const frame = await driver.$('[name="frame1"]')
+    await driver.switchToFrame(frame)
 
-    const frameUrlBaseline = await driver.executeScript(`return location.href`)
+    const frameUrlBaseline = await driver.execute(`return location.href`)
 
     const eyes = await core.openEyes({
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'ufg - should preserve original frame after opening',
         environment: {viewportSize: {width: 700, height: 460}},
       },
     })
 
-    const frameUrlAfterOpenEyes = await driver.executeScript(`return location.href`)
+    const frameUrlAfterOpenEyes = await driver.execute(`return location.href`)
 
     assert.strictEqual(
       frameUrlBaseline,
@@ -43,6 +42,6 @@ describe('openEyes ufg', () => {
       'frame url baseline should be equals to frame url after open eyes',
     )
 
-    await eyes.close({})
+    await eyes.close()
   })
 })

@@ -8,7 +8,7 @@ import {type Printer, type PrinterOptions, makePrinter} from './printer'
 import {type LogLevelName, LogLevel} from './log-level'
 import {type ColoringOptions, format as defaultFormat} from './format'
 
-export type LoggerOptions = Omit<PrinterOptions, 'handler' | 'level' | 'colors'> & {
+export type LoggerOptions = Omit<Partial<PrinterOptions>, 'handler' | 'level' | 'colors'> & {
   handler?: ConsoleHandler | FileHandler | RollingFileHandler | DebugHandler | Handler
   level?: LogLevelName | number
   colors?: boolean | ColoringOptions
@@ -48,7 +48,7 @@ export function makeLogger({
     } else if (process.env.DEBUG) {
       handler = {type: 'debug', label}
       level = LogLevel.all
-      label = null
+      label = undefined
       timestamp = false
       forceInitHandler = true
     } else {
@@ -84,7 +84,7 @@ export function makeLogger({
     if (handler.type === 'console') {
       handler = makeConsoleHandler()
     } else if (handler.type === 'debug') {
-      handler = makeDebugHandler(handler)
+      handler = makeDebugHandler({label, ...handler})
     } else if (handler.type === 'file') {
       handler = makeFileHandler(handler)
       colors = undefined
@@ -100,19 +100,20 @@ export function makeLogger({
 
   return {
     isLogger: true,
-    console: makePrinter({handler: consoleHandler, format, prelude: false}),
+    console: makePrinter({handler: consoleHandler, format, level: LogLevel.all, prelude: false}),
     ...makePrinter({handler, format, label, tags, timestamp, level, colors: colors as ColoringOptions}),
     tag(name, value) {
       tags ??= {}
       tags[name] = value
     },
     extend(options?: ExtendOptions) {
-      if (!options?.colors) {
-        options.colors = options?.colors ?? colors ?? false
-      } else if (colors) {
-        options.colors = {...(colors as ColoringOptions), ...(options?.colors as ColoringOptions)}
+      if (options) {
+        if (!options.colors) {
+          options.colors = options?.colors ?? colors ?? false
+        } else if (colors) {
+          options.colors = {...(colors as ColoringOptions), ...(options?.colors as ColoringOptions)}
+        }
       }
-
       return makeLogger({
         format,
         label,

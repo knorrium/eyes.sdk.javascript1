@@ -1,9 +1,9 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 describe('chrome 107 on window 8', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -31,13 +31,13 @@ describe('chrome 107 on window 8', () => {
   })
 
   it('populates environment for browser with reduced user agent', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/index.html')
+    await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/index.html')
     const core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'test',
         testName: 'test environment',
         environment: {
@@ -52,7 +52,7 @@ describe('chrome 107 on window 8', () => {
 })
 
 describe('chrome 107 on mac os 12', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -80,13 +80,13 @@ describe('chrome 107 on mac os 12', () => {
   })
 
   it('populates environment for browser with reduced user agent', async () => {
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/index.html')
+    await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/index.html')
     const core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'test',
         testName: 'test environment',
         environment: {

@@ -573,7 +573,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
     const declaration = symbol.valueDeclaration as ts.ParameterDeclaration
 
     return ts.factory.createParameterDeclaration(
-      undefined /* decorators */,
       undefined /* modifiers */,
       declaration.dotDotDotToken,
       name,
@@ -598,7 +597,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
       return parameter.type.types.flatMap(typeNode => {
         return parameters.map(parameters => {
           const parameterDeclaration = ts.factory.createParameterDeclaration(
-            parameter.decorators,
             parameter.modifiers,
             parameter.dotDotDotToken,
             parameter.name,
@@ -639,7 +637,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
   function createIndexDeclaration(options: {info: ts.IndexInfo; node?: ts.Node}): ts.IndexSignatureDeclaration {
     const {info, node} = options
     return ts.factory.createIndexSignature(
-      undefined /* decorators */,
       info.declaration?.modifiers,
       info.declaration?.parameters, // TODO construct own parameters object
       createTypeNode({type: info.type, node}),
@@ -660,7 +657,7 @@ export default function transformer(program: ts.Program, config: TransformerConf
 
     return isSignature
       ? parameters.map(parameters => ts.factory.createConstructSignature(typeParameters, parameters, returnType))
-      : parameters.map(parameters => ts.factory.createConstructorDeclaration(/* decorators */ undefined, modifiers, parameters, /* body */ undefined))
+      : parameters.map(parameters => ts.factory.createConstructorDeclaration(modifiers, parameters, /* body */ undefined))
   }
 
   function createPropertyDeclaration(options: {symbol: ts.Symbol; node?: ts.Node; isSignature: true}): ts.PropertySignature[] | ts.MethodSignature[]
@@ -690,7 +687,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
         return isSignature
           ? ts.factory.createMethodSignature(modifiers, propertyName, optionalToken, member.typeParameters, member.parameters, member.type)
           : ts.factory.createMethodDeclaration(
-              /* decorators */ undefined,
               modifiers,
               /* asteriskToken */ undefined,
               propertyName,
@@ -706,14 +702,7 @@ export default function transformer(program: ts.Program, config: TransformerConf
     return [
       isSignature
         ? ts.factory.createPropertySignature(modifiers, propertyName, optionalToken, typeNode)
-        : ts.factory.createPropertyDeclaration(
-            /* decorators */ undefined,
-            modifiers,
-            propertyName,
-            optionalToken,
-            typeNode,
-            /* initializer */ undefined,
-          ),
+        : ts.factory.createPropertyDeclaration(modifiers, propertyName, optionalToken, typeNode, /* initializer */ undefined),
     ]
   }
 
@@ -723,14 +712,7 @@ export default function transformer(program: ts.Program, config: TransformerConf
     const modifiers = ts.factory.createModifiersFromModifierFlags(modifierFlags)
     const accessorName = getPropertyName(symbol)
     const type = createTypeNode({type: checker.getTypeOfSymbolAtLocation(symbol, node), node})
-    return ts.factory.createGetAccessorDeclaration(
-      /* decorators */ undefined,
-      modifiers,
-      accessorName,
-      /* parameters */ [],
-      type,
-      /* body */ undefined,
-    )
+    return ts.factory.createGetAccessorDeclaration(modifiers, accessorName, /* parameters */ [], type, /* body */ undefined)
   }
 
   function createSetAccessorDeclaration(options: {symbol: ts.Symbol; node?: ts.Node; isStatic?: boolean}): ts.SetAccessorDeclaration {
@@ -739,13 +721,7 @@ export default function transformer(program: ts.Program, config: TransformerConf
     const modifiers = ts.factory.createModifiersFromModifierFlags(modifierFlags)
     const accessorName = getPropertyName(symbol)
 
-    return ts.factory.createSetAccessorDeclaration(
-      /* decorators */ undefined,
-      modifiers,
-      accessorName,
-      [createParameterDeclaration({symbol, node})],
-      /* body */ undefined,
-    )
+    return ts.factory.createSetAccessorDeclaration(modifiers, accessorName, [createParameterDeclaration({symbol, node})], /* body */ undefined)
   }
 
   function createMethodDeclaration(options: {symbol: ts.Symbol; node?: ts.Node; isSignature: true}): ts.MethodSignature[]
@@ -773,7 +749,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
         ? parameters.map(parameters => ts.factory.createMethodSignature(modifiers, methodName, optionalToken, typeParameters, parameters, returnType))
         : parameters.map(parameters =>
             ts.factory.createMethodDeclaration(
-              /* decorators */ undefined,
               modifiers,
               /* asteriskToken */ undefined,
               methodName,
@@ -825,20 +800,13 @@ export default function transformer(program: ts.Program, config: TransformerConf
             ts.NodeFlags.Const,
           ),
         ),
-        ts.factory.createExportAssignment(
-          /* decorators*/ undefined,
-          /* modifiers */ undefined,
-          isExportEquals,
-          ts.factory.createIdentifier('_default'),
-        ),
+        ts.factory.createExportAssignment(/* modifiers */ undefined, isExportEquals, ts.factory.createIdentifier('_default')),
       ]
     } else {
       const symbol = type.aliasSymbol ?? type.symbol
       if (exports.symbols.has(symbol)) {
         const typeNode = createTypeNode({type, node}) as ts.TypeReferenceNode
-        return [
-          ts.factory.createExportAssignment(/* decorators*/ undefined, /* modifiers */ undefined, isExportEquals, typeNode.typeName as ts.Identifier),
-        ]
+        return [ts.factory.createExportAssignment(/* modifiers */ undefined, isExportEquals, typeNode.typeName as ts.Identifier)]
       } else if (symbol.flags & ts.SymbolFlags.Class) {
         return [createClassDeclaration({type: type as ts.InterfaceType, name: '_default', node: node as ts.ClassDeclaration, isDefault: true})]
       } else if (symbol.flags & ts.SymbolFlags.Interface) {
@@ -873,7 +841,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
     const [constructorSignature] = type.getConstructSignatures()
 
     return ts.factory.createClassDeclaration(
-      /* decorators */ undefined,
       modifiers,
       name,
       constructorSignature.getTypeParameters()?.map(typeParameter => createTypeParameterDeclaration({typeParameter, node})),
@@ -902,14 +869,7 @@ export default function transformer(program: ts.Program, config: TransformerConf
       heritageClauses.push(ts.factory.createHeritageClause(ts.SyntaxKind.ExtendsKeyword, types))
     }
 
-    return ts.factory.createInterfaceDeclaration(
-      /* decorators */ undefined,
-      modifiers,
-      name,
-      /* typeParameters */ [],
-      heritageClauses,
-      createTypeMembers({type, node}),
-    )
+    return ts.factory.createInterfaceDeclaration(modifiers, name, /* typeParameters */ [], heritageClauses, createTypeMembers({type, node}))
   }
 
   function createFunctionDeclaration(options: {type: ts.Type; name: string; node?: ts.FunctionDeclaration; isDefault?: boolean}): ts.Statement[] {
@@ -930,7 +890,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
 
       return parameters.map(parameters =>
         ts.factory.createFunctionDeclaration(
-          /* decorators */ undefined,
           modifiers,
           /* asteriskToken */ undefined,
           name,
@@ -951,7 +910,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
     type.aliasSymbol = undefined
 
     return ts.factory.createTypeAliasDeclaration(
-      undefined /* decorators */,
       [ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
       name,
       node.typeParameters, // TODO figure out where it should come from
@@ -963,7 +921,6 @@ export default function transformer(program: ts.Program, config: TransformerConf
     const {type, name, node} = options
 
     return ts.factory.createEnumDeclaration(
-      undefined /* decorators */,
       [ts.factory.createModifier(ts.SyntaxKind.ExportKeyword)],
       name,
       type.getProperties().map(symbol => createEnumMemberDeclaration({symbol, node})),

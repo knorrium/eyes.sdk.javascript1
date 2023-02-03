@@ -4,18 +4,17 @@ export type ProxySettings = {
   url: string
   username?: string
   password?: string
-  isHttpOnly?: boolean
 }
 
 export class ProxySettingsData implements Required<ProxySettings> {
   private _proxy: ProxySettings = {} as any
 
   constructor(proxy: ProxySettings)
-  constructor(url: string, username?: string, password?: string, isHttpOnly?: boolean)
-  constructor(proxyOrUrl: ProxySettings | string, username?: string, password?: string, isHttpOnly?: boolean) {
+  constructor(url: string, username?: string, password?: string, deprecatedIsHttpOnly?: boolean)
+  constructor(proxyOrUrl: ProxySettings | string, username?: string, password?: string) {
     utils.guard.notNull(proxyOrUrl, {name: 'proxyOrUrl'})
     if (utils.types.isString(proxyOrUrl)) {
-      return new ProxySettingsData({url: proxyOrUrl, username, password, isHttpOnly})
+      return new ProxySettingsData({url: proxyOrUrl, username, password})
     }
     this._proxy = proxyOrUrl
   }
@@ -31,7 +30,7 @@ export class ProxySettingsData implements Required<ProxySettings> {
   }
 
   get username(): string {
-    return this._proxy.username
+    return this._proxy.username!
   }
   getUsername(): string {
     return this.username
@@ -45,7 +44,7 @@ export class ProxySettingsData implements Required<ProxySettings> {
   }
 
   get isHttpOnly(): boolean {
-    return this._proxy.isHttpOnly
+    return undefined as never
   }
   getIsHttpOnly(): boolean {
     return this.isHttpOnly

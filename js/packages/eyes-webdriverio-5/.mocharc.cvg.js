@@ -28,14 +28,11 @@ if (Number(process.env.APPLITOOLS_WEBDRIVERIO_VERSION) <= 6) {
 }
 
 module.exports = {
-  spec: [
-    './test/generic/*.spec.js',
-    './node_modules/@applitools/sdk-shared/coverage-tests/custom/**/*.spec.js',
-  ],
+  spec: ['./test/generic/*.spec.js'],
   parallel: true,
   jobs: process.env.MOCHA_JOBS || 15,
   timeout: 0,
-  reporter: 'spec-xunit-file',
-  require: ['@applitools/test-utils/mocha-hooks/docker.js'],
+  reporter: 'mocha-multi',
+  reporterOptions: ['spec=-,xunit=coverage-test-report.xml'],
   grep: mochaGrep({tags: Array.from(tags[protocol])}),
 }

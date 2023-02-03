@@ -23,7 +23,7 @@ type CommonSelector<TSelector = never> = string | {selector: TSelector | string;
 
 const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
-  return byHash.includes(Object.keys(selector)[0] as typeof byHash[number])
+  return byHash.includes(Object.keys(selector)[0] as (typeof byHash)[number])
 }
 const SHADOW_ROOT_ID = 'shadow-6066-11e4-a52e-4f735466cecf'
 function extractShadowRootId(shadowRoot: ShadowRoot): string {
@@ -99,7 +99,7 @@ export function untransformSelector(selector: Selector): CommonSelector | null {
   if (utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy') || utils.types.isFunction(selector)) {
     return null
   } else if (isByHashSelector(selector)) {
-    const [[how, what]] = Object.entries(selector) as [[typeof byHash[number], string]]
+    const [[how, what]] = Object.entries(selector) as [[(typeof byHash)[number], string]]
     if (how === 'js') return null
     const Selenium = require('selenium-webdriver')
     selector = Selenium.By[how](what) as Selenium.By

@@ -1,9 +1,9 @@
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import {makeCore} from '../../src/index'
 import assert from 'assert'
 
 describe('close-manager', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
@@ -25,14 +25,14 @@ describe('close-manager', () => {
     const summary = await manager.closeManager()
     assert.ok(summary.results)
     assert.ok(summary.results.length === 1)
-    assert.ok(summary.results[0].result.isAborted)
+    assert.ok(summary.results[0].result?.isAborted)
   })
 
   it('should add new test error to the summary', async () => {
     const core = makeCore({spec})
     const manager = await core.makeManager()
 
-    await driver.get('https://applitools.com/helloworld')
+    await driver.url('https://applitools.com/helloworld')
 
     const eyes = await manager.openEyes({
       target: driver,

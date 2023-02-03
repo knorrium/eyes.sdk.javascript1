@@ -3,7 +3,7 @@ import * as spec from '@applitools/spec-driver-webdriverio'
 import * as utils from '@applitools/utils'
 import assert from 'assert'
 
-async function switchToWebview(driver: any, attempt = 1) {
+async function switchToWebview(driver: spec.Driver, attempt = 1): Promise<void> {
   await utils.general.sleep(500)
   const worlds = await spec.getWorlds(driver)
   if (!worlds[1]) {
@@ -11,11 +11,10 @@ async function switchToWebview(driver: any, attempt = 1) {
     return switchToWebview(driver, attempt + 1)
   }
   await spec.switchWorld(driver, worlds[1])
-  return
 }
 
 describe('webview', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -41,7 +40,7 @@ describe('webview', () => {
         target: driver,
         settings: {
           serverUrl: 'https://eyesapi.applitools.com',
-          apiKey: process.env.APPLITOOLS_API_KEY,
+          apiKey: process.env.APPLITOOLS_API_KEY!,
           appName: 'core app',
           testName: 'webview',
         },
@@ -67,7 +66,7 @@ describe('webview', () => {
         target: driver,
         settings: {
           serverUrl: 'https://eyesapi.applitools.com',
-          apiKey: process.env.APPLITOOLS_API_KEY,
+          apiKey: process.env.APPLITOOLS_API_KEY!,
           appName: 'core app',
           testName: 'webview',
         },
@@ -94,7 +93,7 @@ describe('webview', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'webview - viewport',
       },
@@ -116,7 +115,7 @@ describe('webview', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'webview',
       },

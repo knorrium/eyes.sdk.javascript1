@@ -10,7 +10,7 @@ type Options<TDriver, TContext, TElement, TSelector> = {
   eyes: Eyes<TDriver, TContext, TElement, TSelector>
   target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeLocateText<TDriver, TContext, TElement, TSelector>({
@@ -29,6 +29,7 @@ export function makeLocateText<TDriver, TContext, TElement, TSelector>({
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
     logger.log('Command "locateText" is called with settings', settings)
+    if (!target) throw new Error('Method was called with no target')
     const [baseEyes] = await eyes.getBaseEyes()
     if (!isDriver(target, spec)) {
       return baseEyes.locateText({target, settings: settings as BaseLocateTextSettings<TPattern>, logger})

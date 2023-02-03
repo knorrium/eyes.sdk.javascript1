@@ -20,10 +20,16 @@ type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | '
   core: BaseCore
   cores?: {[TKey in 'classic' | 'ufg']: TypedCore<TDriver, TContext, TElement, TSelector, TKey>}
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
-export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
+export function makeOpenEyes<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TDefaultType extends 'classic' | 'ufg' = 'classic',
+>({
   type: defaultType = 'classic' as TDefaultType,
   concurrency,
   batch,
@@ -33,7 +39,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   return async function openEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
-    type = defaultType as any,
+    type = defaultType as unknown as TType,
     settings,
     config,
     target,
@@ -45,7 +51,7 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
     target?: TDriver
     logger?: Logger
   }): Promise<Eyes<TDriver, TContext, TElement, TSelector, TType>> {
-    settings = {...config?.open, ...settings}
+    settings = {...config?.open, ...settings} as Partial<OpenSettings<TDefaultType> & OpenSettings<TType>>
     settings.userTestId ??= `${settings.testName}--${utils.general.guid()}`
     settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')
@@ -66,7 +72,8 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector, TDefaultTyp
       ufgSettings.renderConcurrency ??= ufgConfig?.check?.renderers?.length
     }
 
-    const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
+    const driver =
+      target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
     if (driver?.isEC) {
       settings.properties ??= []
       settings.properties.push({name: 'Running platform', value: 'Execution cloud'})

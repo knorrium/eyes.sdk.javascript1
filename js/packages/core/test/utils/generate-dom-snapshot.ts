@@ -1,12 +1,14 @@
+import type {Region} from '@applitools/utils'
+
 const RESET_STYLES = `
   body{position: relative; margin: 0; padding: 0;}
 `
 
-function generatePositionStyle(rect) {
+function generatePositionStyle(rect: Region) {
   return `position:absolute;left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px`
 }
 
-function elementToCdt(element) {
+function elementToCdt(element: any) {
   const fakeAttr = {name: 'data-fake-selector', value: element.selector}
   const cdt = {
     nodeType: 1,
@@ -21,7 +23,7 @@ function elementToCdt(element) {
 }
 
 export function generateDomSnapshot(driver: any) {
-  const cdt = Array.from(driver._elements.values() as any[]).reduce((cdt, elements) => {
+  const cdt = Array.from(driver._elements.values() as any[]).reduce<any[]>((cdt, elements) => {
     return cdt.concat(elements.map(elementToCdt))
   }, [] as any[])
   return JSON.stringify({

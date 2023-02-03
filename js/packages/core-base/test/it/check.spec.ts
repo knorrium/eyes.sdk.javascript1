@@ -35,7 +35,9 @@ describe('check', () => {
       .twice()
       .reply((_url, body) => {
         checked += 1
-        return (body as any).options.name === 'error' ? [400] : [200, {windowId: JSON.stringify(body), asExpected: true}]
+        return (body as any).options.name === 'error'
+          ? [400]
+          : [200, {windowId: JSON.stringify(body), asExpected: true}]
       })
 
     const core = makeCore({agentId: 'test-core'})

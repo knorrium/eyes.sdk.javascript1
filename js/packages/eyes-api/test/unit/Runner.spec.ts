@@ -5,7 +5,7 @@ import * as api from '../../src'
 const makeSDK = require('../utils/fake-sdk')
 
 describe('Runner', () => {
-  let sdk: core.Core<any, any, any> & {history: Record<string, any>[]; settings: Record<string, any>}
+  let sdk: core.Core<any, any, any, any> & {history: Record<string, any>[]; settings: Record<string, any>}
   const driver = {isDriver: true}
 
   class Eyes extends api.Eyes {

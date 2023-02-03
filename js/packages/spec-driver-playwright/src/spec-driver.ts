@@ -11,6 +11,8 @@ export type Context = Playwright.Frame & {__applitoolsBrand?: never}
 export type Element<T = Node> = Playwright.ElementHandle<T> & {__applitoolsBrand?: never}
 export type Selector = (string | Playwright.Locator) & {__applitoolsBrand?: never}
 
+BigInt
+
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
 
 // #region HELPERS
@@ -61,7 +63,7 @@ export function transformSelector(selector: CommonSelector<Selector>): Selector 
 }
 export function untransformSelector(selector: Selector): CommonSelector {
   if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) {
-    ;[, selector] = selector.toString().match(/Locator@(.+)/)
+    ;[, selector] = selector.toString().match(/Locator@(.+)/)!
   }
   if (utils.types.isString(selector)) return {selector}
   return selector
@@ -91,33 +93,46 @@ export async function mainContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
   let mainFrame = frame
   while (mainFrame.parentFrame()) {
-    mainFrame = mainFrame.parentFrame()
+    mainFrame = mainFrame.parentFrame()!
   }
   return mainFrame
 }
 export async function parentContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
-  return frame.parentFrame()
+  return frame.parentFrame() ?? frame
 }
 export async function childContext(_frame: Context, element: Element): Promise<Context> {
-  return element.contentFrame()
+  const frame = (await element.contentFrame())!
+  return frame
 }
-export async function findElement(frame: Context, selector: Selector, parent?: Element): Promise<Element | null> {
-  if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) return selector.elementHandle()
+export async function findElement(
+  frame: Context,
+  selector: Selector,
+  parent?: Element,
+): Promise<Element<SVGElement | HTMLElement> | null> {
+  if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) {
+    return selector.elementHandle()
+  }
   const root = parent ?? frame
   return root.$(selector)
 }
-export async function findElements(frame: Context, selector: Selector, parent?: Element): Promise<Element[]> {
-  if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) return selector.elementHandles()
+export async function findElements(
+  frame: Context,
+  selector: Selector,
+  parent?: Element,
+): Promise<Element<SVGElement | HTMLElement>[]> {
+  if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) {
+    return (await selector.elementHandles()) as Element<SVGElement | HTMLElement>[]
+  }
   const root = parent ?? frame
   return root.$$(selector)
 }
 export async function setElementText(frame: Context, element: Element | Selector, text: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.fill(text)
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.fill(text)
 }
 export async function getViewportSize(page: Driver): Promise<Size> {
-  return page.viewportSize()
+  return page.viewportSize()!
 }
 export async function setViewportSize(page: Driver, size: Size): Promise<void> {
   return page.setViewportSize(size)
@@ -125,7 +140,7 @@ export async function setViewportSize(page: Driver, size: Size): Promise<void> {
 export async function getCookies(page: Driver): Promise<Cookie[]> {
   const cookies = await page.context().cookies()
   return cookies.map(cookie => {
-    const copy = {...cookie, expiry: cookie.expires}
+    const copy = {...cookie, expiry: cookie.expires} as Record<keyof typeof cookie, any> & Cookie
     delete copy.expires
     return copy
   })
@@ -146,17 +161,19 @@ export async function takeScreenshot(page: Driver): Promise<Buffer> {
   return page.screenshot()
 }
 export async function click(frame: Context, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.click()
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.click()
 }
 export async function hover(frame: Context, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.hover()
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.hover()
 }
 export async function scrollIntoView(frame: Context, element: Element | Selector, align = false): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  // @ts-ignore
-  await frame.evaluate(([element, align]) => element.scrollIntoView(align), [element, align])
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await frame.evaluate(([element, align]) => element?.scrollIntoView(align), [
+    resolvedElement as Element<HTMLElement | SVGElement>,
+    align,
+  ] as const)
 }
 export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
   if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) return selector.waitFor()

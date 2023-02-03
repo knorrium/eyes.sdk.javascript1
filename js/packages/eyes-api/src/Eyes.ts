@@ -37,7 +37,7 @@ import {MatchResultData} from './output/MatchResult'
 import {TestResults, TestResultsData} from './output/TestResults'
 import {ValidationInfo} from './output/ValidationInfo'
 import {ValidationResult} from './output/ValidationResult'
-import {SessionEventHandler, SessionEventHandlers, RemoteSessionEventHandler} from './SessionEventHandlers'
+import {SessionEventHandler, SessionEventHandlers} from './SessionEventHandlers'
 import {EyesRunner, ClassicRunner} from './Runners'
 import {Logger} from './Logger'
 
@@ -51,8 +51,8 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   private _config: ConfigurationData<TElement, TSelector>
   private _state: {appName?: string} = {}
   private _runner: EyesRunner
-  private _driver: TDriver
-  private _eyes: CoreEyes<TDriver, TElement, TSelector>
+  private _driver?: TDriver
+  private _eyes?: CoreEyes<TDriver, TElement, TSelector>
   private _events: Map<string, Set<(...args: any[]) => any>> = new Map()
   private _handlers: SessionEventHandlers = new SessionEventHandlers()
 
@@ -100,14 +100,14 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     return this._runner
   }
   getRunner(): EyesRunner {
-    return this._runner
+    return this.runner
   }
 
   get driver(): TDriver {
-    return this._driver
+    return this._driver!
   }
   getDriver(): TDriver {
-    return this._driver
+    return this.driver
   }
 
   get configuration(): Configuration<TElement, TSelector> {
@@ -162,8 +162,8 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       handlers = new Set()
       this._events.set(event, handlers)
     }
-    handlers.add(handler)
-    return () => handlers.delete(handler)
+    handlers.add(handler!)
+    return () => handlers!.delete(handler!)
   }
 
   /** @undocumented */
@@ -210,7 +210,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       sessionType = viewportSizeOrSessionType as SessionType
       viewportSizeOrSessionType = testNameOrViewportSize as RectangleSize
       testNameOrViewportSize = configOrAppNameOrTestName as string
-      configOrAppNameOrTestName = driverOrConfigOrAppName
+      configOrAppNameOrTestName = driverOrConfigOrAppName as Configuration<TElement, TSelector> | string
     }
 
     if (this._config.isDisabled) return this._driver
@@ -233,8 +233,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       config.open.appName = configOrAppNameOrTestName
     }
     if (utils.types.isString(testNameOrViewportSize)) config.open.testName = testNameOrViewportSize
-    if (utils.types.has(viewportSizeOrSessionType, ['width', 'height']))
+    if (utils.types.has(viewportSizeOrSessionType, ['width', 'height'])) {
+      config.open.environment ??= {}
       config.open.environment.viewportSize = viewportSizeOrSessionType
+    }
     if (utils.types.isEnumValue(sessionType, SessionTypeEnum)) config.open.sessionType = sessionType
 
     config.open.keepPlatformNameAsIs = true
@@ -273,10 +275,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     checkSettingsOrTargetOrName?: CheckSettingsAutomation<TElement, TSelector> | Image | string,
     checkSettings?: CheckSettingsImage | CheckSettingsImageFluent | CheckSettingsAutomationFluent<TElement, TSelector>,
   ): Promise<MatchResultData> {
-    if (this._config.isDisabled) return null
+    if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let serialized: {target: Image; settings: any}
+    let serialized: {target?: Image; settings: any}
     if (utils.types.isString(checkSettingsOrTargetOrName)) {
       serialized = this._driver
         ? new CheckSettingsAutomationFluent(
@@ -304,12 +306,12 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     // TODO remove when major version of sdk should be released
     config.screenshot.fully ??= false
 
-    let type: 'classic' | 'ufg'
+    let type: 'classic' | 'ufg' | undefined
     if (settings?.nmgOptions?.nonNMGCheck === 'addToAllDevices') {
       type = this._runner.config.type === 'ufg' ? 'classic' : 'ufg'
     }
 
-    const [result] = await this._eyes.check({type, target, settings, config})
+    const [result] = await this._eyes!.check({type, target, settings, config})
 
     return new MatchResultData(result)
   }
@@ -378,7 +380,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   async locate<TLocator extends string>(
     settings: VisualLocatorSettings<TLocator>,
   ): Promise<Record<TLocator, Region[]>> {
-    if (this._config.isDisabled) return null
+    if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
     const config = this._config.toJSON()
@@ -401,14 +403,14 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     targetOrSettings: CoreTargetImage | (OCRSettings<TPattern> & {image?: CoreTargetImage['image']}),
     settings?: OCRSettings<TPattern>,
   ): Promise<Record<TPattern, TextRegion[]>> {
-    if (this._config.isDisabled) return null
+    if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let target: CoreTargetImage
+    let target: CoreTargetImage | undefined
     if (utils.types.has(targetOrSettings, 'patterns')) {
       settings = targetOrSettings
       if (utils.types.has(targetOrSettings, 'image')) {
-        target = {image: targetOrSettings.image}
+        target = {image: targetOrSettings.image!}
       }
     } else {
       target = targetOrSettings
@@ -416,7 +418,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
     const config = this._config.toJSON()
 
-    return this._eyes.locateText({target, settings, config})
+    return this._eyes!.locateText!({target, settings: settings!, config})
   }
 
   async extractText(target: CoreTargetImage, settings: OCRRegion<TElement, TSelector>[]): Promise<string[]>
@@ -432,20 +434,20 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       | OCRRegion<TElement, TSelector>[],
     settings?: OCRRegion<TElement, TSelector>[],
   ): Promise<string[]> {
-    if (this._config.isDisabled) return null
+    if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let targets: CoreTargetImage[]
+    let targets: (CoreTargetImage | undefined)[]
     if (utils.types.isArray(targetOrSettings)) {
       settings = targetOrSettings
       targets = targetOrSettings.map(settings => {
         return utils.types.has(settings, 'image') ? {image: settings.image as CoreTargetImage['image']} : undefined
       })
     } else {
-      targets = Array(settings.length).fill(targetOrSettings)
+      targets = Array(settings!.length).fill(targetOrSettings)
     }
 
-    settings = settings.map(settings => ({
+    settings = settings!.map(settings => ({
       ...settings,
       region:
         utils.types.isPlainObject(settings.target) && utils.types.has(settings.target, ['left', 'top'])
@@ -457,13 +459,13 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
     return await settings.reduce((results, settings, index) => {
       return results.then(async results => {
-        return results.concat(await this._eyes.extractText({target: targets[index], settings, config}))
+        return results.concat(await this._eyes!.extractText!({target: targets[index], settings: settings!, config}))
       })
-    }, Promise.resolve([]))
+    }, Promise.resolve([] as string[]))
   }
 
   async close(throwErr = true): Promise<TestResultsData> {
-    if (this._config.isDisabled) return null
+    if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
     const deleteTest = (options: any) =>
       this._spec.deleteTest({
@@ -478,20 +480,22 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     try {
       const config = this._config.toJSON()
 
-      const [result] = await this._eyes.close({settings: {throwErr}, config})
+      const [result] = await this._eyes!.close({settings: {throwErr}, config})
       return new TestResultsData({result, deleteTest})
-    } catch (err) {
-      if (!err.info?.result) throw err
-      const result = new TestResultsData({result: err.info.result, deleteTest})
-      if (err.reason === 'test failed') {
-        throw new TestFailedError(err.message, result)
-      } else if (err.reason === 'test different') {
-        throw new DiffsFoundError(err.message, result)
-      } else if (err.reason === 'test new') {
-        throw new NewTestError(err.message, result)
+    } catch (err: any) {
+      if (err.info?.result) {
+        const result = new TestResultsData({result: err.info.result, deleteTest})
+        if (err.reason === 'test failed') {
+          throw new TestFailedError(err.message, result)
+        } else if (err.reason === 'test different') {
+          throw new DiffsFoundError(err.message, result)
+        } else if (err.reason === 'test new') {
+          throw new NewTestError(err.message, result)
+        }
       }
+      throw err
     } finally {
-      this._eyes = null
+      this._eyes = undefined
     }
   }
   /** @deprecated */
@@ -500,25 +504,25 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   }
 
   async abort(): Promise<TestResultsData> {
-    if (!this.isOpen || this._config.isDisabled) return null
-    return this._eyes
-      .abort()
-      .then(([result]) => {
-        return new TestResultsData({
-          result,
-          deleteTest: options =>
-            this._spec.deleteTest({
-              ...options,
-              settings: {
-                ...options.settings,
-                serverUrl: this._config.serverUrl,
-                apiKey: this._config.apiKey,
-                proxy: this._config.proxy,
-              },
-            }),
-        })
+    if (!this.isOpen || this._config.isDisabled) return null as never
+    try {
+      const [result] = await this._eyes!.abort()
+      return new TestResultsData({
+        result,
+        deleteTest: options =>
+          this._spec.deleteTest({
+            ...options,
+            settings: {
+              ...options.settings,
+              serverUrl: this._config.serverUrl,
+              apiKey: this._config.apiKey,
+              proxy: this._config.proxy,
+            },
+          }),
       })
-      .finally(() => (this._eyes = null))
+    } finally {
+      this._eyes = undefined
+    }
   }
   /** @deprecated */
   async abortAsync(): Promise<void> {
@@ -533,7 +537,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
   async getViewportSize(): Promise<RectangleSizeData> {
     return (
-      this._config.getViewportSize() || new RectangleSizeData(await this._spec.getViewportSize({target: this._driver}))
+      this._config.getViewportSize() || new RectangleSizeData(await this._spec.getViewportSize({target: this._driver!}))
     )
   }
   async setViewportSize(size: RectangleSize): Promise<void> {
@@ -547,7 +551,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
         this._config.setViewportSize(size)
       } catch (err) {
         this._config.setViewportSize(await this._spec.getViewportSize({target: this._driver}))
-        throw new TestFailedError('Failed to set the viewport size')
+        throw new EyesError('Failed to set the viewport size')
       }
     }
   }
@@ -564,15 +568,16 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   }
   getLogHandler(): LogHandlerData {
     const handler = this._logger.getLogHandler()
-    if (!handler) {
-      return new NullLogHandlerData()
-    } else if (!utils.types.has(handler, 'type')) {
-      return handler as LogHandlerData
-    } else if (handler.type === 'file') {
-      return new FileLogHandlerData(true, handler.filename, handler.append)
-    } else if (handler.type === 'console') {
-      return new ConsoleLogHandlerData(true)
+    if (handler) {
+      if (!utils.types.has(handler, 'type')) {
+        return handler as LogHandlerData
+      } else if (handler.type === 'file') {
+        return new FileLogHandlerData(true, handler.filename, handler.append)
+      } else if (handler.type === 'console') {
+        return new ConsoleLogHandlerData(true)
+      }
     }
+    return new NullLogHandlerData()
   }
 
   setCutProvider(cutProvider: CutProviderData) {
@@ -632,7 +637,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   setBatch(name: string, id?: string, startedAt?: Date | string): void
   setBatch(batchOrName: BatchInfo | string, id?: string, startedAt?: Date | string) {
     if (utils.types.isString(batchOrName)) {
-      this._config.setBatch({name: batchOrName, id, startedAt: new Date(startedAt)})
+      this._config.setBatch({name: batchOrName, id, startedAt: new Date(startedAt!)})
     } else {
       this._config.setBatch(batchOrName)
     }
@@ -856,22 +861,14 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
    * @deprecated
    */
   addSessionEventHandler(handler: SessionEventHandler) {
-    if (handler instanceof RemoteSessionEventHandler) {
-      this._config.setRemoteEvents(handler.toJSON())
-    } else {
-      this._handlers.addEventHandler(handler)
-    }
+    this._handlers.addEventHandler(handler)
   }
   /**
    * @undocumented
    * @deprecated
    */
   removeSessionEventHandler(handler: SessionEventHandler) {
-    if (handler instanceof RemoteSessionEventHandler) {
-      this._config.setRemoteEvents(null)
-    } else {
-      this._handlers.removeEventHandler(handler)
-    }
+    this._handlers.removeEventHandler(handler)
   }
   /**
    * @undocumented

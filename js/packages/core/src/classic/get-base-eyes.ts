@@ -4,10 +4,10 @@ import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
 type Options = {
-  settings?: OpenSettings
+  settings: OpenSettings
+  core: BaseCore
   eyes?: BaseEyes[]
-  core?: BaseCore
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeGetBaseEyes({settings, core, eyes, logger: defaultLogger}: Options) {

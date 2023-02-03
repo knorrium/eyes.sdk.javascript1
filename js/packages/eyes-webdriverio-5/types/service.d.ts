@@ -1,4 +1,4 @@
-import { ConfigurationPlain } from './api';
+import { ConfigurationPlain } from './index';
 interface EyesServiceOptions extends ConfigurationPlain {
     useVisualGrid?: boolean;
     concurrency?: number;

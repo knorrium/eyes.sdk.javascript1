@@ -17,27 +17,29 @@ type Options = {
 }
 
 export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogger}: Options) {
-  return async function openEyes({settings, logger = defaultLogger}: {settings: OpenSettings; logger?: Logger}): Promise<Eyes> {
+  return async function openEyes({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings: OpenSettings
+    logger?: Logger
+  }): Promise<Eyes> {
     logger.log('Command "openEyes" is called with settings', settings)
-    if (!settings.ignoreGitBranching) {
-      if (!settings.gitBranchingTimestamp) {
-        let branches = {branchName: settings.branchName, parentBranchName: settings.parentBranchName}
-        try {
-          if (
-            settings.batch?.id &&
-            !settings.batch.id.startsWith('generated') &&
-            !branches.branchName &&
-            !branches.parentBranchName
-          ) {
-            branches = await requests.getBatchBranches({settings: {...settings, batchId: settings.batch.id}})
-          }
-          if (branches.branchName && branches.parentBranchName && branches.branchName !== branches.parentBranchName) {
-            settings.gitBranchingTimestamp = await extractBranchingTimestamp(branches, {cwd})
-            logger.log('Branching timestamp successfully extracted', settings.gitBranchingTimestamp)
-          }
-        } catch (err) {
-          logger.error('Error during extracting merge timestamp', err)
+    if (!settings.ignoreGitBranching && !settings.gitBranchingTimestamp) {
+      let branchName = settings.branchName
+      let parentBranchName = settings.parentBranchName
+      try {
+        if (!branchName && !parentBranchName && settings.batch?.id && !settings.batch.id.startsWith('generated')) {
+          const branches = await requests.getBatchBranches({settings: {...settings, batchId: settings.batch.id}})
+          branchName = branches.branchName
+          parentBranchName = branches.parentBranchName
         }
+        if (branchName && parentBranchName && branchName !== parentBranchName) {
+          settings.gitBranchingTimestamp = await extractBranchingTimestamp({branchName, parentBranchName}, {cwd})
+          logger.log('Branching timestamp successfully extracted', settings.gitBranchingTimestamp)
+        }
+      } catch (err) {
+        logger.error('Error during extracting merge timestamp', err)
       }
     } else {
       settings.gitBranchingTimestamp = undefined
@@ -46,10 +48,10 @@ export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogg
     const eyesRequests = await requests.openEyes({settings, logger})
 
     const aborted = utils.promises.makeControlledPromise<never>()
-    const queue = []
+    const queue = [] as (PromiseLike<void> & {resolve(): void})[]
     return utils.general.extend(eyesRequests, {
       check: utils.general.wrap(makeCheck({requests: eyesRequests, logger}), async (check, options) => {
-        const index = options.settings?.stepIndex
+        const index = options.settings?.stepIndex ?? -1
         queue[index] ??= utils.promises.makeControlledPromise()
         if (index > 0) await Promise.race([(queue[index - 1] ??= utils.promises.makeControlledPromise()), aborted])
         return Promise.race([check(options), aborted]).finally(queue[index].resolve)

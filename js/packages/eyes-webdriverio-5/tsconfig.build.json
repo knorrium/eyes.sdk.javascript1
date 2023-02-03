@@ -7,7 +7,8 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
-    "removeComments": true,
+    "stripInternal": false,
+    "removeComments": false,
     "plugins": [{
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,

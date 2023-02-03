@@ -52,7 +52,7 @@ export function splitSelector<TSelector>(
   contextSelectors: Selector<TSelector>[]
   elementSelector: Selector<TSelector>
 } {
-  let targetSelector = selector
+  let targetSelector: Selector<TSelector> | null = selector
   let activeSelector = {} as CommonSelector<TSelector>
   let elementSelector = activeSelector
   const contextSelectors = [] as Selector<TSelector>[]

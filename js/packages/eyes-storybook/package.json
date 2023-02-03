@@ -94,7 +94,6 @@
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
-    "@applitools/scripts": "^1.2.0",
     "@applitools/sdk-shared": "0.9.15",
     "@applitools/snaptdout": "^1.0.1",
     "@storybook/addon-interactions": "^6.4.18",

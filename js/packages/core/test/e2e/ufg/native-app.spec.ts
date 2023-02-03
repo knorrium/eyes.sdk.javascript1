@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/ufg/core'
-import * as spec from '@applitools/spec-driver-selenium'
+import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 describe('nml - android', () => {
@@ -47,7 +47,7 @@ describe('nml - android', () => {
 })
 
 describe('nml - ios', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -68,7 +68,7 @@ describe('nml - ios', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'native ufg ios nml',
       },
@@ -85,7 +85,7 @@ describe('nml - ios', () => {
 })
 
 describe('legacy protocol - android', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -104,7 +104,7 @@ describe('legacy protocol - android', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'native ufg android',
       },
@@ -121,7 +121,7 @@ describe('legacy protocol - android', () => {
 })
 
 describe('legacy protocol - ios', () => {
-  let driver, destroyDriver
+  let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
@@ -141,7 +141,7 @@ describe('legacy protocol - ios', () => {
       target: driver,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'native ufg ios',
       },

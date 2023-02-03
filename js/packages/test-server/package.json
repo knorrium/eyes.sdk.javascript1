@@ -72,10 +72,5 @@
   },
   "engines": {
     "node": ">=12.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
   }
 }

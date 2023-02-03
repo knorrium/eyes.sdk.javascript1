@@ -13,7 +13,7 @@ export function makeFileHandler({
   filename = process.env.APPLITOOLS_LOG_FILE ?? 'eyes.log',
   append = true,
 }: Omit<FileHandler, 'type'> = {}): Handler {
-  let writer: fs.WriteStream = null
+  let writer = null as fs.WriteStream | null
 
   return {log, open, close}
 
@@ -29,7 +29,7 @@ export function makeFileHandler({
   }
   function log(message: string) {
     if (!writer) open()
-    writer.write(message + os.EOL)
+    writer!.write(message + os.EOL)
   }
 }
 

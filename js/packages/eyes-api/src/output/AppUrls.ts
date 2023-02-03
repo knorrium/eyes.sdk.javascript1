@@ -7,16 +7,15 @@ export type AppUrls = {
 }
 
 export class AppUrlsData implements Required<AppUrls> {
-  private _urls: Mutable<AppUrls> = {} as any
+  private _urls: Mutable<AppUrls>
 
   /** @internal */
-  constructor(urls?: AppUrls) {
-    if (!urls) return this
+  constructor(urls: AppUrls) {
     this._urls = urls instanceof AppUrlsData ? urls.toJSON() : urls
   }
 
   get step(): string {
-    return this._urls.step
+    return this._urls.step!
   }
   getStep(): string {
     return this.step
@@ -27,7 +26,7 @@ export class AppUrlsData implements Required<AppUrls> {
   }
 
   get stepEditor(): string {
-    return this._urls.stepEditor
+    return this._urls.stepEditor!
   }
   getStepEditor(): string {
     return this.stepEditor

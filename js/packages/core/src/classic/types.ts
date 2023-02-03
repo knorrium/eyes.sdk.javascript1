@@ -19,8 +19,13 @@ export interface Core<TDriver, TContext, TElement, TSelector, TEyes = Eyes<TDriv
   }): Promise<TEyes>
 }
 
-export interface Eyes<TDriver, TContext, TElement, TSelector, TTarget = ClassicTarget<TDriver, TContext, TElement, TSelector>>
-  extends AutomationCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
+export interface Eyes<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TTarget = ClassicTarget<TDriver, TContext, TElement, TSelector>,
+> extends AutomationCore.Eyes<TDriver, TContext, TElement, TSelector, TTarget> {
   readonly type: 'classic'
   check(options?: {
     target?: TTarget

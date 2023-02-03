@@ -3,10 +3,10 @@ import * as types from './types'
 export function getEnvValue<T extends 'boolean' | 'number' | 'string' = 'string'>(
   name: string,
   type?: T,
-): T extends 'boolean' ? boolean : T extends 'number' ? number : string {
-  if (!process) return
+): T extends 'boolean' ? boolean : T extends 'number' ? number : T extends 'string' ? string : string | undefined {
+  if (!process) return undefined as any
   const value = process.env[`APPLITOOLS_${name}`]
-  if (value === undefined || value === 'null') return
+  if (value === undefined || value === 'null') return undefined as any
   if (type === 'boolean') return ['true', true, '1', 1].includes(value) as any
   if (type === 'number') return Number(value) as any
   return value as any
@@ -74,7 +74,7 @@ export function toJSON(object: Record<PropertyKey, any>, props?: string[] | Reco
 }
 
 export function toString(object: Record<PropertyKey, any>): string {
-  return `${this.constructor.name} ${JSON.stringify(object, null, 2)}`
+  return `${object.constructor.name} ${JSON.stringify(object, null, 2)}`
 }
 
 export function toUnAnchoredUri(url: string): string {
@@ -110,7 +110,7 @@ export function cachify<TFunc extends (...args: any[]) => any>(
   const cache = new Map<string, ReturnType<TFunc>>()
   const funcWithCache = ((...args: Parameters<TFunc>) => {
     const key = stringifyKey(getKey?.(args) ?? args)
-    let value = cache.get(key)
+    let value = cache.get(key)!
     if (!value) {
       value = func(...args)
       cache.set(key, value)
@@ -139,10 +139,10 @@ export function batchify<
   TInput = Parameters<TFunc>[0][number][0],
   TResult = Parameters<Parameters<TFunc>[0][number][1]['resolve']>[0],
 >(func: TFunc, {timeout}: {timeout: number}): (input: Parameters<TFunc>[0][number][0]) => Promise<TResult> {
-  let pendingInputs = new Map<TInput, {resolve(result?: TResult): void; reject(reason?: any): void}>()
+  let pendingInputs = new Map<TInput, {resolve(result: TResult): void; reject(reason?: any): void}>()
   let throttleTimer = false
   return function (input: TInput): Promise<TResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<TResult>(async (resolve, reject) => {
       pendingInputs.set(input, {resolve, reject})
       if (!throttleTimer) {
         throttleTimer = true

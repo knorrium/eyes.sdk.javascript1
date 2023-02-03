@@ -137,16 +137,17 @@ export async function mainContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
   let mainFrame = frame
   while (mainFrame.parentFrame()) {
-    mainFrame = mainFrame.parentFrame()
+    mainFrame = mainFrame.parentFrame()!
   }
   return mainFrame
 }
 export async function parentContext(frame: Context): Promise<Context> {
   frame = extractContext(frame)
-  return frame.parentFrame()
+  return frame.parentFrame() ?? frame
 }
 export async function childContext(_frame: Context, element: Element): Promise<Context> {
-  return element.contentFrame()
+  const frame = (await element.contentFrame())!
+  return frame
 }
 export async function findElement(frame: Context, selector: Selector, parent?: Element): Promise<Element | null> {
   const root = parent ?? frame
@@ -159,12 +160,12 @@ export async function findElements(frame: Context, selector: Selector, parent?: 
   return (isXpathSelector(selector) ? root.$x(selector) : root.$$(selector)) as Promise<Element[]>
 }
 export async function setElementText(frame: Context, element: Element | Selector, text: string): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.evaluate((element: HTMLInputElement) => (element.value = ''))
-  await element.type(text)
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.evaluate(element => ((element as HTMLInputElement).value = ''))
+  await resolvedElement?.type(text)
 }
 export async function getViewportSize(page: Driver): Promise<Size> {
-  return page.viewport()
+  return page.viewport()!
 }
 export async function setViewportSize(page: Driver, size: Size): Promise<void> {
   await page.setViewport(size)
@@ -175,7 +176,7 @@ export async function getCookies(page: Driver): Promise<Cookie[]> {
   const {cookies} = await cdpSession.send('Network.getAllCookies')
 
   return cookies.map(cookie => {
-    const copy = {...cookie, expiry: cookie.expires}
+    const copy = {...cookie, expiry: cookie.expires} as Record<keyof typeof cookie, any> & Cookie
     delete copy.expires
     delete copy.size
     delete copy.priority
@@ -203,16 +204,16 @@ export async function takeScreenshot(page: Driver): Promise<Buffer> {
   return result as Buffer
 }
 export async function click(frame: Context, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.click()
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.click()
 }
 export async function hover(frame: Context, element: Element | Selector): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await element.hover()
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await resolvedElement?.hover()
 }
 export async function scrollIntoView(frame: Context, element: Element | Selector, align = false): Promise<void> {
-  if (isSelector(element)) element = await findElement(frame, element)
-  await frame.evaluate((element, align) => element.scrollIntoView(align), element, align)
+  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
+  await frame.evaluate((element, align) => element?.scrollIntoView(align), resolvedElement, align)
 }
 export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
   await frame.waitForSelector(selector)

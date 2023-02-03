@@ -10,16 +10,15 @@ export type ApiUrls = {
 }
 
 export class ApiUrlsData implements Required<ApiUrls> {
-  private _urls: Mutable<ApiUrls> = {} as any
+  private _urls: Mutable<ApiUrls>
 
   /** @internal */
-  constructor(urls?: ApiUrls) {
-    if (!urls) return this
+  constructor(urls: ApiUrls) {
     this._urls = urls instanceof ApiUrlsData ? urls.toJSON() : urls
   }
 
   get baselineImage(): string {
-    return this._urls.baselineImage
+    return this._urls.baselineImage!
   }
   getBaselineImage(): string {
     return this.baselineImage
@@ -30,7 +29,7 @@ export class ApiUrlsData implements Required<ApiUrls> {
   }
 
   get currentImage(): string {
-    return this._urls.currentImage
+    return this._urls.currentImage!
   }
   getCurrentImage(): string {
     return this.currentImage
@@ -41,7 +40,7 @@ export class ApiUrlsData implements Required<ApiUrls> {
   }
 
   get checkpointImage(): string {
-    return this._urls.checkpointImage
+    return this._urls.checkpointImage!
   }
   getCheckpointImage(): string {
     return this.checkpointImage
@@ -52,7 +51,7 @@ export class ApiUrlsData implements Required<ApiUrls> {
   }
 
   get checkpointImageThumbnail(): string {
-    return this._urls.checkpointImageThumbnail
+    return this._urls.checkpointImageThumbnail!
   }
   getCheckpointImageThumbnail(): string {
     return this.checkpointImageThumbnail
@@ -63,7 +62,7 @@ export class ApiUrlsData implements Required<ApiUrls> {
   }
 
   get diffImage(): string {
-    return this._urls.diffImage
+    return this._urls.diffImage!
   }
   getDiffImage(): string {
     return this.diffImage

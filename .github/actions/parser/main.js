@@ -7,11 +7,9 @@ import INI from 'ini'
 
 const TOOL_PACKAGES = [
   '@applitools/bongo',
-  '@applitools/scripts',
   '@applitools/sdk-coverage-tests',
   '@applitools/api-extractor',
   '@applitools/sdk-fake-eyes-server',
-  '@applitools/sdk-shared'
 ]
 
 const OS = {

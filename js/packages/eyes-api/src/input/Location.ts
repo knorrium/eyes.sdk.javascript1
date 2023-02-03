@@ -11,12 +11,10 @@ export class LocationData implements Required<Location> {
   constructor(location: Location)
   constructor(x: number, y: number)
   constructor(locationOrX: Location | number, y?: number) {
-    if (utils.types.isNumber(locationOrX)) {
-      return new LocationData({x: locationOrX, y})
-    }
-    this._location = {} as any
-    this.x = locationOrX.x
-    this.y = locationOrX.y
+    const location = utils.types.isNumber(locationOrX) ? {x: locationOrX, y: y!} : locationOrX
+    utils.guard.isNumber(location.x, {name: 'x'})
+    utils.guard.isNumber(location.y, {name: 'y'})
+    this._location = location
   }
 
   get x(): number {

@@ -1,13 +1,13 @@
 import {takeDomSnapshots} from '../../../src/ufg/utils/take-dom-snapshots'
-import {makeLogger} from '@applitools/logger'
-import {makeDriver} from '@applitools/driver'
+import {makeLogger, type Logger} from '@applitools/logger'
+import {makeDriver, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {generateDomSnapshot} from '../../utils/generate-dom-snapshot'
 import chalk from 'chalk'
 import assert from 'assert'
 
 describe('take-dom-snapshots', () => {
-  let driver, logger, output
+  let driver: Driver<MockDriver, unknown, unknown, unknown>, logger: Logger, output: string[]
 
   beforeEach(async () => {
     const mock = new MockDriver({viewport: {width: 600, height: 700}})
@@ -27,6 +27,7 @@ describe('take-dom-snapshots', () => {
     output = []
     logger = makeLogger()
     logger.console = {
+      ...logger.console,
       log: (...chunks) => output.push(...chunks),
     }
   })

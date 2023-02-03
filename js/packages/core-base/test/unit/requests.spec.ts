@@ -3,12 +3,14 @@ import nock from 'nock'
 import assert from 'assert'
 
 describe('requests', () => {
+  let history = [] as any[]
   beforeEach(() => {
     nock('https://localhost:3000').get('/api/sessions/renderinfo').query({apiKey: 'my0api0key'}).reply(200, {})
     nock('https://localhost:3000')
       .post('/api/sessions/running')
       .query({apiKey: 'my0api0key'})
-      .reply((_url, body) => {
+      .reply((url, body) => {
+        history.push({url, body})
         return [
           201,
           {
@@ -24,7 +26,8 @@ describe('requests', () => {
     nock('https://localhost:3000')
       .post('/api/sessions/running/test-id')
       .query({apiKey: 'my0api0key'})
-      .reply((_url, body) => {
+      .reply((url, body) => {
+        history.push({url, body})
         return [
           200,
           {
@@ -36,12 +39,21 @@ describe('requests', () => {
     nock('https://localhost:3000')
       .post('/api/sessions/running/images/text')
       .query({apiKey: 'my0api0key'})
-      .reply((_url, body) => {
+      .reply((url, body) => {
+        history.push({url, body})
         return [200, [JSON.stringify(body)]]
+      })
+    nock('https://localhost:3000')
+      .put('/api/sessions/running/test-id/selfhealdata')
+      .query({apiKey: 'my0api0key'})
+      .reply((url, body) => {
+        history.push({url, body})
+        return [200, null]
       })
   })
 
   afterEach(() => {
+    history = []
     nock.cleanAll()
   })
 
@@ -240,7 +252,11 @@ describe('requests', () => {
         ],
         contentRegions: [
           {x: 100, y: 110, width: 101, height: 111},
-          {region: {x: 100, y: 110, width: 101, height: 111}, regionId: 'content-region', padding: {top: 3, left: 3, bottom: 2}},
+          {
+            region: {x: 100, y: 110, width: 101, height: 111},
+            regionId: 'content-region',
+            padding: {top: 3, left: 3, bottom: 2},
+          },
         ],
         floatingRegions: [
           {x: 200, y: 210, width: 201, height: 211},
@@ -371,6 +387,43 @@ describe('requests', () => {
       regions: [{left: 0, top: 0, width: 100, height: 201, expected: 'HiNt'}],
       minMatch: 0,
       language: 'en',
+    })
+  })
+
+  it('report', async () => {
+    const requests = makeCoreRequests({agentId: 'test-core'})
+
+    const eyes = await requests.openEyes({
+      settings: {
+        serverUrl: 'https://localhost:3000',
+        apiKey: 'my0api0key',
+        agentId: 'custom-agent',
+        appName: 'My wonderful app',
+        testName: 'My great test',
+      },
+    })
+
+    const metadata = [
+      {
+        successfulSelector: {using: 'xpath', value: '//blah'},
+        message: 'found with saved selector',
+        originalSelector: {using: 'css selector', value: '#blah'},
+      },
+      {
+        successfulSelector: {using: 'xpath', value: '//*[@href="/app.html" ]'},
+        message: 'found with saved selector',
+        originalSelector: {using: 'css selector', value: '#log-in'},
+      },
+    ]
+
+    await eyes.report({settings: {testMetadata: metadata}})
+
+    const request = history.find(({url}) => url.startsWith('/api/sessions/running/test-id/selfhealdata'))
+
+    ;(request.body.operations as any[]).forEach((operation, index) => {
+      assert.deepStrictEqual(operation.old.value, metadata[index].originalSelector.value)
+      assert.deepStrictEqual(operation.new.value, metadata[index].successfulSelector.value)
+      assert(Date.parse(operation.timestamp))
     })
   })
 })

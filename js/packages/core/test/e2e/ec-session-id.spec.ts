@@ -1,16 +1,18 @@
-import {makeCore} from '../../src/index'
-import * as spec from '@applitools/spec-driver-selenium'
-import assert from 'assert'
+import {makeCore, type Core, type ECClient} from '../../src/index'
 import {getTestInfo} from '@applitools/test-utils'
+import * as spec from '@applitools/spec-driver-webdriverio'
+import assert from 'assert'
 
 describe('ecSessionId', () => {
-  let core, client, driver, destroyDriver
-  const serverUrl = 'https://eyesapi.applitools.com'
+  let driver: spec.Driver,
+    destroyDriver: () => Promise<void>,
+    client: ECClient,
+    core: Core<spec.Driver, spec.Driver, spec.Element, spec.Selector>
 
   before(async () => {
     core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
     client = await core.makeECClient({
-      settings: {capabilities: {eyesServerUrl: serverUrl, useSelfHealing: true}},
+      settings: {capabilities: {useSelfHealing: true}},
     })
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome', url: client.url})
   })

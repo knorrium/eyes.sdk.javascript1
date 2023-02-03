@@ -5,11 +5,11 @@ import {type UFGClient, type Renderer} from '@applitools/ufg-client'
 import * as utils from '@applitools/utils'
 
 type Options = {
-  settings?: OpenSettings
+  settings: OpenSettings
   eyes?: EyesBase[]
-  core?: CoreBase
-  client?: UFGClient
-  logger?: Logger
+  core: CoreBase
+  client: UFGClient
+  logger: Logger
 }
 
 export function makeGetBaseEyes({settings: defaultSettings, core, client, eyes, logger: defaultLogger}: Options) {
@@ -25,6 +25,7 @@ export function makeGetBaseEyes({settings: defaultSettings, core, client, eyes, 
     logger?: Logger
   } = {}): Promise<EyesBase[]> {
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
+    if (!settings) throw new Error('')
     const environment = await client.bookRenderer({settings})
     const eyes = await core.openEyes({
       settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},

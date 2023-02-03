@@ -232,7 +232,14 @@ export class MockDriver {
     }
     elements.push(element)
   }
-  wrapMethod(name, wrapper) {
+  wrapMethod<
+    TName extends {
+      [K in keyof MockDriver]: MockDriver[K] extends (...args: any[]) => any ? K : never
+    }[keyof MockDriver],
+  >(
+    name: TName,
+    wrapper: (method: this[TName], thisArg: this, args: Parameters<this[TName]>) => ReturnType<this[TName]>,
+  ) {
     if (!this[name] || name.startsWith('_') || !utils.types.isFunction(this[name])) return
     if (this._methods.has(name)) this.unwrapMethod(name)
     this._methods.set(name, this[name])
@@ -333,7 +340,7 @@ export class MockDriver {
     if (this.info.isNative) throw new Error("Native context doesn't support this method")
     this._window.url = url
   }
-  async takeScreenshot() {
+  async takeScreenshot(): Promise<unknown> {
     // const image = new png.Image({
     //   width: this._window.rect.width,
     //   height: this._window.rect.height,

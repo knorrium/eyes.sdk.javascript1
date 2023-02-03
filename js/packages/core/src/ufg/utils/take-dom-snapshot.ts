@@ -1,8 +1,24 @@
 import {type Logger} from '@applitools/logger'
 import {type Context, type Cookie} from '@applitools/driver'
 import {type DomSnapshot} from '@applitools/ufg-client'
-import {getProcessPagePoll, getPollResult, getProcessPagePollForIE, getPollResultForIE} from '@applitools/dom-snapshot'
 import * as utils from '@applitools/utils'
+
+const {
+  getProcessPagePoll,
+  getPollResult,
+  getProcessPagePollForIE,
+  getPollResultForIE,
+} = require('@applitools/dom-snapshot')
+
+type RawDomSnapshot = {
+  url: string
+  selector: string
+  cdt: {attributes: {name: string; value: string}[]}[]
+  crossFrames: {selector: string; index: number}[]
+  frames: RawDomSnapshot[]
+  resourceUrls: string[]
+  blobs: {url: string; value: string}[]
+}
 
 export type DomSnapshotSettings = {
   disableBrowserFetching?: boolean
@@ -23,43 +39,45 @@ export async function takeDomSnapshot<TContext extends Context<unknown, unknown,
   logger: Logger
 }): Promise<DomSnapshot> {
   const driver = context.driver
-  const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
-  const {canExecuteOnlyFunctionScripts} = driver.features
+  const cookies: Cookie[] = driver.features?.allCookies ? await driver.getCookies().catch(() => []) : []
 
-  const arg = {
-    dontFetchResources: settings?.disableBrowserFetching,
-    skipResources: settings?.skipResources,
-    removeReverseProxyURLPrefixes: Boolean(process.env.APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES),
-    chunkByteLength:
-      settings?.chunkByteLength ??
-      (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || (driver.isIOS ? 100_000 : 250 * 1024 * 1024)),
-    serializeResources: true,
-    compressResources: false,
-    showLogs: settings?.showLogs,
-  }
-  const scripts = {
-    main: canExecuteOnlyFunctionScripts
-      ? require('@applitools/dom-snapshot').processPagePoll
-      : `return (${isLegacyBrowser ? await getProcessPagePollForIE() : await getProcessPagePoll()}).apply(null, arguments);`,
-
-    poll: canExecuteOnlyFunctionScripts
-      ? require('@applitools/dom-snapshot').pollResult
-      : `return (${isLegacyBrowser ? await getPollResultForIE() : await getPollResult()}).apply(null, arguments);`,
-  }
-  const cookies: Cookie[] = driver.features.allCookies ? await driver.getCookies().catch(() => []) : []
-
-  const snapshot = await takeContextDomSnapshot({context})
+  const snapshot = deserializeDomSnapshot({snapshot: await takeContextDomSnapshot({context})})
   snapshot.cookies = cookies
-  return deserializeDomSnapshot({snapshot})
+  return snapshot
 
-  async function takeContextDomSnapshot({context}: {context: TContext}) {
+  async function takeContextDomSnapshot({context}: {context: TContext}): Promise<RawDomSnapshot> {
     // logger.log(`taking dom snapshot. ${context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''}`)
 
-    if (!driver.features.allCookies) {
+    if (!driver.features?.allCookies) {
       cookies.push(...(await context.getCookies()))
     }
 
-    const snapshot = await context.executePoll(scripts, {
+    const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
+
+    const arg = {
+      dontFetchResources: settings?.disableBrowserFetching,
+      skipResources: settings?.skipResources,
+      removeReverseProxyURLPrefixes: Boolean(process.env.APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES),
+      chunkByteLength:
+        settings?.chunkByteLength ??
+        (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || (driver.isIOS ? 100_000 : 250 * 1024 * 1024)),
+      serializeResources: true,
+      compressResources: false,
+      showLogs: settings?.showLogs,
+    }
+    const scripts = {
+      main: driver.features?.canExecuteOnlyFunctionScripts
+        ? require('@applitools/dom-snapshot').processPagePoll
+        : `return (${
+            isLegacyBrowser ? await getProcessPagePollForIE() : await getProcessPagePoll()
+          }).apply(null, arguments);`,
+
+      poll: driver.features?.canExecuteOnlyFunctionScripts
+        ? require('@applitools/dom-snapshot').pollResult
+        : `return (${isLegacyBrowser ? await getPollResultForIE() : await getPollResult()}).apply(null, arguments);`,
+    }
+
+    const snapshot: RawDomSnapshot = await context.executePoll(scripts, {
       main: arg,
       poll: arg,
       executionTimeout: settings?.executionTimeout ?? 5 * 60 * 1000,
@@ -74,7 +92,10 @@ export async function takeDomSnapshot<TContext extends Context<unknown, unknown,
         .catch(err => {
           const srcAttr = cdtNode.attributes.find(attr => attr.name === 'src')
           if (srcAttr) srcAttr.value = ''
-          logger.log(`could not switch to frame during takeDomSnapshot. Path to frame: ${JSON.stringify(reference)}`, err)
+          logger.log(
+            `could not switch to frame during takeDomSnapshot. Path to frame: ${JSON.stringify(reference)}`,
+            err,
+          )
         })
 
       if (frameContext) {
@@ -89,28 +110,34 @@ export async function takeDomSnapshot<TContext extends Context<unknown, unknown,
     }
 
     logger.log(`dom snapshot cdt length: ${snapshot.cdt.length}`)
-    logger.log(`blobs urls (${snapshot.blobs.length}):`, JSON.stringify(snapshot.blobs.map(({url}) => url))) // eslint-disable-line prettier/prettier
-    logger.log(`resource urls (${snapshot.resourceUrls.length}):`, JSON.stringify(snapshot.resourceUrls)) // eslint-disable-line prettier/prettier
+    logger.log(`blobs urls (${snapshot.blobs.length}):`, JSON.stringify(snapshot.blobs.map(({url}) => url)))
+    logger.log(`resource urls (${snapshot.resourceUrls.length}):`, JSON.stringify(snapshot.resourceUrls))
     return snapshot
   }
 }
 
-export function deserializeDomSnapshot({snapshot}) {
+export function deserializeDomSnapshot({snapshot}: {snapshot: RawDomSnapshot}): DomSnapshot {
+  const {blobs, selector: _, crossFrames: __, ...rest} = snapshot
   const deserializedSnapshot = {
-    ...snapshot,
-    resourceContents: snapshot.blobs.reduce((resourceContents, blob) => {
+    ...rest,
+    resourceContents: blobs.reduce((resourceContents, blob) => {
       if (blob.value === undefined) return {...resourceContents, [blob.url]: blob}
       else return {...resourceContents, [blob.url]: {...blob, value: Buffer.from(blob.value, 'base64')}}
     }, {}),
     frames: snapshot.frames.map(frameSnapshot => deserializeDomSnapshot({snapshot: frameSnapshot})),
-  }
-  delete deserializedSnapshot.blobs
-  delete deserializedSnapshot.selector
-  delete deserializedSnapshot.crossFrames
+  } as DomSnapshot
   return deserializedSnapshot
 }
 
-export function extractCrossFrames({snapshot, parent = null, logger}): any[] {
+export function extractCrossFrames({
+  snapshot,
+  parent = null,
+  logger,
+}: {
+  snapshot: RawDomSnapshot
+  parent?: any
+  logger: Logger
+}): {cdtNode: RawDomSnapshot['cdt'][number]; reference: any; parentSnapshot: RawDomSnapshot}[] {
   const crossFrames = [snapshot, ...(snapshot.frames ?? [])].flatMap((snapshot, index) => {
     const crossFrames = (snapshot.crossFrames ?? []).map(({selector, index}) => ({
       reference: {reference: {type: 'css', selector}, parent},
@@ -120,12 +147,19 @@ export function extractCrossFrames({snapshot, parent = null, logger}): any[] {
     return [
       ...crossFrames,
       ...(index > 0
-        ? extractCrossFrames({snapshot, parent: {reference: {type: 'css', selector: snapshot.selector}, parent}, logger})
+        ? extractCrossFrames({
+            snapshot,
+            parent: {reference: {type: 'css', selector: snapshot.selector}, parent},
+            logger,
+          })
         : []),
     ]
   })
 
-  logger.log(`frames paths for ${snapshot.crossFrames}`, crossFrames.map(selector => JSON.stringify(selector)).join(' , '))
+  logger.log(
+    `frames paths for ${snapshot.crossFrames}`,
+    crossFrames.map(selector => JSON.stringify(selector)).join(' , '),
+  )
 
   return crossFrames
 }

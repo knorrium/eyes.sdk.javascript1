@@ -84,8 +84,8 @@ describe('context', () => {
     const childContext11 = await childContext1.context('frame1-1')
     await childContext11.init()
 
-    assert.strictEqual((await childContext1.getContextElement()).target.selector, 'frame1')
-    assert.strictEqual((await childContext11.getContextElement()).target.selector, 'frame1-1')
+    assert.strictEqual((await childContext1.getContextElement())?.target.selector, 'frame1')
+    assert.strictEqual((await childContext11.getContextElement())?.target.selector, 'frame1-1')
     assert.strictEqual(driver.currentContext, childContext1)
   })
 
@@ -103,7 +103,7 @@ describe('context', () => {
     await childContext11.focus()
     const element = await childContext11.element('frame1-1--element1')
 
-    assert.strictEqual(element.target.name, 'element within frame')
+    assert.strictEqual(element?.target.name, 'element within frame')
   })
 
   it('element(child-selector)', async () => {
@@ -111,7 +111,7 @@ describe('context', () => {
       selector: 'element1',
       child: {selector: 'element1-1', child: {selector: 'element1-1-1'}},
     })
-    assert.deepStrictEqual(element.target.name, 'element within element')
+    assert.deepStrictEqual(element?.target.name, 'element within element')
   })
 
   it('element(shadow-selector)', async () => {
@@ -119,7 +119,7 @@ describe('context', () => {
       selector: 'shadow1',
       shadow: {selector: 'shadow1-1', shadow: {selector: 'shadow1-1--element1'}},
     })
-    assert.deepStrictEqual(element.target.name, 'element within shadow')
+    assert.deepStrictEqual(element?.target.name, 'element within shadow')
   })
 
   it('element(frame-selector)', async () => {
@@ -127,7 +127,7 @@ describe('context', () => {
       selector: 'frame1',
       frame: {selector: 'frame1-1', frame: {selector: 'frame1-1--element1'}},
     })
-    assert.deepStrictEqual(element.target.name, 'element within frame')
+    assert.deepStrictEqual(element?.target.name, 'element within frame')
   })
 
   it('element(fallback-selector)', async () => {
@@ -135,7 +135,7 @@ describe('context', () => {
       selector: 'not-an-element',
       fallback: 'fallback1',
     })
-    assert.deepStrictEqual(element.target.name, 'fallback element')
+    assert.deepStrictEqual(element?.target.name, 'fallback element')
   })
 
   it('element(non-existent)', async () => {
@@ -286,7 +286,7 @@ describe('context', () => {
     const childContext = await context.context('frame1')
 
     assert.strictEqual(await mainContext.getContextElement(), null)
-    assert.strictEqual((await childContext.getContextElement()).target.selector, 'frame1')
+    assert.strictEqual((await childContext.getContextElement())?.target.selector, 'frame1')
   })
 
   it('getScrollingElement()', async () => {
@@ -294,8 +294,8 @@ describe('context', () => {
     await mainContext.setScrollingElement(await mock.findElement('element-scroll'))
     const childContext = await context.context('frame1')
 
-    assert.strictEqual((await mainContext.getScrollingElement()).target.selector, 'element-scroll')
-    assert.strictEqual((await childContext.getScrollingElement()).target.selector, 'html')
+    assert.strictEqual((await mainContext.getScrollingElement())?.target.selector, 'element-scroll')
+    assert.strictEqual((await childContext.getScrollingElement())?.target.selector, 'html')
   })
 
   it('getClientRect()', async () => {

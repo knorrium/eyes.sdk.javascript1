@@ -7,10 +7,7 @@ const tags = [
 ]
 
 module.exports = {
-  spec: [
-    './test/generic/*.spec.js',
-    // './node_modules/@applitools/sdk-shared/coverage-tests/custom/**/*.spec.js',
-  ],
+  spec: ['./test/generic/*.spec.js'],
   parallel: true,
   jobs: 2,
   timeout: 0,

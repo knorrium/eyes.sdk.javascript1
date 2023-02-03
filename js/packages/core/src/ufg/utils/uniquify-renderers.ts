@@ -4,7 +4,7 @@ export function uniquifyRenderers(renderers: Renderer[]): Renderer[] {
   const duplications = new Map(renderers.map(renderer => [JSON.stringify(renderer), 0]))
   return renderers.reduce((uniqueRenderers, renderer) => {
     const key = JSON.stringify(renderer)
-    let index = duplications.get(key)
+    let index = duplications.get(key)!
     if (index > 0) {
       if (!renderer.id) {
         let uniqueRenderer: Renderer

@@ -1,8 +1,9 @@
-import type {RenderTarget} from './types'
+import type {DomSnapshot, RenderTarget, Snapshot} from './types'
 import {type ProcessResources, type ProcessResourcesSettings, type ResourceMapping} from './resources/process-resources'
 import {makeResource, type HashedResource} from './resources/resource'
 import {makeResourceDom} from './resources/resource-dom'
 import {makeResourceVhs} from './resources/resource-vhs'
+import * as utils from '@applitools/utils'
 
 export function makeCreateRenderTarget({processResources}: {processResources: ProcessResources}) {
   return async function createRenderTarget({
@@ -35,37 +36,45 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
     snapshot,
     settings,
   }: {
-    snapshot: any
+    snapshot: Snapshot
     settings?: ProcessResourcesSettings
   }): Promise<{mapping: ResourceMapping; promise: Promise<ResourceMapping>}> {
     const [snapshotResources, ...frameResources] = await Promise.all([
       processResources({
         resources: {
-          ...(snapshot.resourceUrls ?? []).reduce((resources, url) => {
+          ...(utils.types.has(snapshot, 'resourceUrls') ? snapshot.resourceUrls : []).reduce((resources, url) => {
             return Object.assign(resources, {[url]: makeResource({url, renderer: settings?.renderer})})
           }, {}),
-          ...Object.entries(snapshot.resourceContents ?? {}).reduce((resources, [url, resource]: [string, any]) => {
-            return Object.assign(resources, {
-              [url]: resource.errorStatusCode
-                ? makeResource({id: url, errorStatusCode: resource.errorStatusCode})
-                : makeResource({url, value: resource.value, contentType: resource.type, dependencies: resource.dependencies}),
-            })
-          }, {}),
+          ...Object.entries(utils.types.has(snapshot, 'resourceContents') ? snapshot.resourceContents : {}).reduce(
+            (resources, [url, resource]) => {
+              return Object.assign(resources, {
+                [url]: utils.types.has(resource, 'errorStatusCode')
+                  ? makeResource({id: url, errorStatusCode: resource.errorStatusCode})
+                  : makeResource({
+                      url,
+                      value: resource.value,
+                      contentType: resource.type,
+                      dependencies: resource.dependencies,
+                    }),
+              })
+            },
+            {},
+          ),
         },
-        settings: {referer: snapshot.url, ...settings},
+        settings: {referer: utils.types.has(snapshot, 'url') ? snapshot.url : undefined, ...settings},
       }),
-      ...(snapshot.frames ?? []).map(frameSnapshot => {
+      ...(utils.types.has(snapshot, 'frames') ? snapshot.frames ?? [] : []).map(frameSnapshot => {
         return processSnapshotResources({snapshot: frameSnapshot, settings})
       }),
     ])
 
     const frameDomResourceMapping = frameResources.reduce((mapping, resources, index) => {
-      const frameUrl = snapshot.frames[index].url
+      const frameUrl = (snapshot as DomSnapshot).frames[index].url
       return Object.assign(mapping, {[frameUrl]: resources.mapping[frameUrl]})
     }, {})
 
     const resourceMappingWithoutDom = {...snapshotResources.mapping, ...frameDomResourceMapping}
-    const domResource = snapshot.cdt
+    const domResource = utils.types.has(snapshot, 'cdt')
       ? {
           [snapshot.url]: makeResourceDom({
             cdt: snapshot.cdt,
@@ -74,8 +83,10 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
         }
       : {
           vhs: makeResourceVhs({
-            vhsHash: snapshot.vhsHash /* android */ ?? snapshotResources.mapping.vhs /* ios */,
-            vhsType: snapshot.vhsType, // will only be populated in android
+            vhsHash: utils.types.has(snapshot, 'vhsHash')
+              ? snapshot.vhsHash /* android */
+              : snapshotResources.mapping.vhs /* ios */,
+            vhsType: utils.types.has(snapshot, 'vhsType') ? snapshot.vhsHash : undefined, // will only be populated in android
             platformName: snapshot.platformName,
             resources: resourceMappingWithoutDom, // this will be empty until resources are supported inside VHS
           }),
@@ -92,6 +103,7 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
       ...snapshotResources.mapping,
       ...processedDomResource.mapping,
     }
+
     return {
       mapping: resourceMapping,
       promise: Promise.all([

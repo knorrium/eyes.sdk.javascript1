@@ -38,13 +38,19 @@ export interface UFGRequests {
 
 export type UFGRequestsConfig = ReqUFGConfig & {uploadUrl: string; stitchingServiceUrl: string}
 
-export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGRequestsConfig; logger: Logger}): UFGRequests {
+export function makeUFGRequests({
+  config,
+  logger: defaultLogger,
+}: {
+  config: UFGRequestsConfig
+  logger: Logger
+}): UFGRequests {
   defaultLogger ??= makeLogger()
   const req = makeReqUFG({config, logger: defaultLogger})
 
   const getChromeEmulationDevicesWithCache = utils.general.cachify(getChromeEmulationDevices)
   const getIOSDevicesWithCache = utils.general.cachify(getIOSDevices)
-  const getAndroidDevicesWithCache = utils.general.cachify(() => null)
+  const getAndroidDevicesWithCache = utils.general.cachify(() => null as never)
 
   return {
     bookRenderers,
@@ -81,7 +87,7 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
       expected: 200,
       logger,
     })
-    const results = await response.json().then(results => {
+    const results = await response.json().then((results: any[]) => {
       return results.map((result, index) => {
         return {
           rendererId: result.renderer,
@@ -142,8 +148,10 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
       expected: 200,
       logger,
     })
-    const results = await response.json().then(results => {
-      return results.map(result => ({jobIb: result.jobId, renderId: result.renderId, status: result.renderStatus}))
+    const results = await response.json().then((results: any[]) => {
+      return results.map(result => {
+        return {jobId: result.jobId, renderId: result.renderId, status: result.renderStatus} as StartedRender
+      })
     })
     logger.log('Request "startRenders" finished successfully with body', results)
     return results
@@ -177,7 +185,7 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
       },
       logger,
     })
-    const results = await response.json().then(results => {
+    const results = await response.json().then((results: any[]) => {
       return results.map((result, index) => ({
         renderId: renders[index].renderId,
         status: result.status,
@@ -187,7 +195,7 @@ export function makeUFGRequests({config, logger: defaultLogger}: {config: UFGReq
         locationInViewport: result.imagePositionInActiveFrame,
         locationInView: result.imagePositionInActiveFrame,
         fullViewSize: result.fullPageSize,
-        selectorRegions: result.selectorRegions?.map(regions => {
+        selectorRegions: result.selectorRegions?.map((regions: any[]) => {
           return regions?.map(region => ({
             ...region,
             x: Math.max(0, region.x - result.imagePositionInActiveFrame.x),
@@ -278,7 +286,9 @@ function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
   if (utils.types.has(settings.renderer, ['width', 'height'])) {
     return {
       platform: {name: 'linux', type: 'web'},
-      browser: {name: settings.renderer.name.replace(/(one|two)-versions?-back$/, (_, num) => ({one: 1, two: 2}[num]))},
+      browser: {
+        name: settings.renderer.name!.replace(/(one|two)-versions?-back$/, (_, num) => (num === 'one' ? '1' : '2')),
+      },
       renderInfo: {width: settings.renderer.width, height: settings.renderer.height},
     }
   } else if (utils.types.has(settings.renderer, 'chromeEmulationInfo')) {
@@ -325,7 +335,7 @@ function transformSelector({selector}: {selector: Selector}) {
   const pathSelector = [] as {nodeType: string; type: string; selector: string}[]
   let currentSelector = selector as Selector | undefined
   while (currentSelector) {
-    let stepSelector
+    let stepSelector: any
     if (utils.types.isString(currentSelector)) {
       stepSelector = {nodeType: 'element', type: 'css', selector: currentSelector}
       currentSelector = undefined

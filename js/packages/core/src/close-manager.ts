@@ -7,7 +7,7 @@ import {InternalError} from './errors/internal-error'
 type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
   core: BaseCore<unknown>
   storage: {eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
@@ -29,10 +29,10 @@ export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType e
               result,
               error: result.status !== 'Passed' ? new TestError(result) : undefined,
               userTestId: result.userTestId,
-              renderer: (result as any).renderer,
+              renderer: (result as TestResult<'ufg'>).renderer,
             }
           })
-        } catch (error) {
+        } catch (error: any) {
           return [{error: new InternalError(error), ...error.info}]
         }
       }),
@@ -70,9 +70,9 @@ export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType e
         else if (container.result.status === 'Passed') summary.passed += 1
         else if (container.result.status === 'Unresolved') summary.unresolved += 1
 
-        summary.matches += container.result.matches
-        summary.missing += container.result.missing
-        summary.mismatches += container.result.mismatches
+        summary.matches += container.result.matches ?? 0
+        summary.missing += container.result.missing ?? 0
+        summary.mismatches += container.result.mismatches ?? 0
       }
     }
 

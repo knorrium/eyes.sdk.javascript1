@@ -10,7 +10,7 @@ import {makeFixtureResource as makeFixtureFrame1Resource} from '../fixtures/page
 import {makeFixtureResource as makeFixtureFrame2Resource} from '../fixtures/page-with-frames/inner/frame.resource'
 
 describe('create-render-target', () => {
-  let server, baseUrl
+  let server: any, baseUrl: string
 
   before(async () => {
     server = await testServer()

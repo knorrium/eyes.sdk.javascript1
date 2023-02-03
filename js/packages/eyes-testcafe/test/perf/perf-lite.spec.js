@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const NUMBER_OF_TESTS = 5
 const LARGE_STRING_LENGTH = 1024 * 1024 * 1
 const payload = new Array(LARGE_STRING_LENGTH).join('a')

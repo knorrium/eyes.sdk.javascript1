@@ -1,3 +1,4 @@
+import type {TestResult} from '../../../src/ufg/types'
 import {makeCore} from '../../../src/ufg/core'
 import {makeFakeClient} from '../../utils/fake-ufg-client'
 import {makeFakeCore} from '../../utils/fake-base-core'
@@ -14,7 +15,7 @@ describe('abort', () => {
     })
 
     let aborted = false
-    fakeCore.on('abort', () => (aborted = true))
+    fakeCore.emitter.on('abort', () => (aborted = true))
 
     const results = await eyes.abort()
     assert.strictEqual(aborted, false)
@@ -34,12 +35,12 @@ describe('abort', () => {
     })
 
     let rendering = false
-    fakeClient.on('beforeRender', () => (rendering = true))
+    fakeClient.emitter.on('beforeRender', () => (rendering = true))
     let aborted = false
-    fakeCore.on('afterAbort', () => (aborted = true))
+    fakeCore.emitter.on('afterAbort', () => (aborted = true))
 
-    const results = await new Promise<any>(resolve => {
-      fakeClient.on('afterBookRenderer', () => resolve(eyes.abort()))
+    const results = await new Promise<TestResult[]>(resolve => {
+      fakeClient.emitter.on('afterBookRenderer', () => resolve(eyes.abort()))
     })
 
     assert.strictEqual(rendering, false)
@@ -72,14 +73,14 @@ describe('abort', () => {
     })
 
     let opened = false
-    fakeCore.on('afterOpenEyes', () => (opened = true))
+    fakeCore.emitter.on('afterOpenEyes', () => (opened = true))
     let checking = false
-    fakeCore.on('afterCheck', () => (checking = true))
+    fakeCore.emitter.on('afterCheck', () => (checking = true))
     let aborted = false
-    fakeCore.on('afterAbort', () => (aborted = true))
+    fakeCore.emitter.on('afterAbort', () => (aborted = true))
 
-    const results = await new Promise<any>(resolve => {
-      fakeCore.on('beforeOpenEyes', () => resolve(eyes.abort()))
+    const results = await new Promise<TestResult[]>(resolve => {
+      fakeCore.emitter.on('beforeOpenEyes', () => resolve(eyes.abort()))
     })
 
     assert.strictEqual(opened, true)
@@ -114,12 +115,12 @@ describe('abort', () => {
     })
 
     let checked = false
-    fakeCore.on('afterCheck', () => (checked = true))
+    fakeCore.emitter.on('afterCheck', () => (checked = true))
     let aborted = false
-    fakeCore.on('afterAbort', () => (aborted = true))
+    fakeCore.emitter.on('afterAbort', () => (aborted = true))
 
-    const results = await new Promise<any>(resolve => {
-      fakeCore.on('beforeCheck', () => resolve(eyes.abort()))
+    const results = await new Promise<TestResult[]>(resolve => {
+      fakeCore.emitter.on('beforeCheck', () => resolve(eyes.abort()))
     })
 
     assert.strictEqual(checked, true)

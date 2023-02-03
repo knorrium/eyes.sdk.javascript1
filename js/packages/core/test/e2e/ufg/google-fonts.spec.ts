@@ -4,7 +4,7 @@ import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
 describe('google fonts', () => {
-  let page, destroyPage, server, baseUrl
+  let page: spec.Driver, destroyPage: () => Promise<void>, server: any, baseUrl: string
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
@@ -26,7 +26,7 @@ describe('google fonts', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'renders google font on IE correctly',
       },
@@ -52,7 +52,7 @@ describe('google fonts', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'renders google font on IE and iOS correctly',
       },
@@ -61,7 +61,10 @@ describe('google fonts', () => {
     await eyes.check({
       settings: {
         fully: true,
-        renderers: [{width: 640, height: 480, name: 'ie'}, {iosDeviceInfo: {deviceName: 'iPhone 11', version: 'latest'}}],
+        renderers: [
+          {width: 640, height: 480, name: 'ie'},
+          {iosDeviceInfo: {deviceName: 'iPhone 11', version: 'latest'}},
+        ],
       },
     })
 

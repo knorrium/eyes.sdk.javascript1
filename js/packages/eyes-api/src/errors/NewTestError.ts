@@ -10,6 +10,6 @@ export class NewTestError extends TestFailedError {
       results = message
       message = `Test '${results.name}' of '${results.appName}' is new! Please approve the new baseline at ${results.url}`
     }
-    super(message, results)
+    super(message, results!)
   }
 }

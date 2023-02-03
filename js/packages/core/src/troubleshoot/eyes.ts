@@ -8,13 +8,13 @@ export const RENDER_INFO_URL = `${config.serverUrl}/api/sessions/renderinfo?apiK
 
 export const CURL_CMD = `curl ${RENDER_INFO_URL} ${getProxyCurlArg()}`
 
-const validateRawAccountInfo = res => {
+const validateRawAccountInfo = (res: any) => {
   if (!res || !res.accessToken || !res.resultsUrl) {
     throw new Error(`bad render info result ${JSON.stringify(res)}`)
   }
 }
 
-const validateAccountInfo = res => {
+const validateAccountInfo = (res: any) => {
   if (!res || !res.ufg || !res.ufg.accessToken || !res.uploadUrl) {
     throw new Error(`bad render info result ${JSON.stringify(res)}`)
   }

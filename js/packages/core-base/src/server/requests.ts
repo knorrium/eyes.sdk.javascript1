@@ -4,11 +4,14 @@ import type {
   Core,
   Eyes,
   ServerSettings,
+  OpenSettings,
   CheckSettings,
   LocateSettings,
   LocateTextSettings,
   ExtractTextSettings,
+  AbortSettings,
   CloseSettings,
+  TestReportSettings,
   CloseBatchSettings,
   DeleteTestSettings,
   LogEventSettings,
@@ -18,57 +21,34 @@ import type {
   CheckResult,
   LocateTextResult,
   TestResult,
-  OpenSettings,
-  AbortSettings,
-  ReportSelfHealingSettings,
 } from '../types'
 import {type Fetch} from '@applitools/req'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeReqEyes, type ReqEyes} from './req-eyes'
 import {makeUpload, type Upload} from './upload'
 import * as utils from '@applitools/utils'
-import {toSelfHealingReport} from '../utils/to-self-healing-report'
 
-export interface CoreRequests extends Core {
-  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
-  locate<TLocator extends string>(options: {
-    target: ImageTarget
-    settings: LocateSettings<TLocator>
-    logger?: Logger
-  }): Promise<LocateResult<TLocator>>
-  getAccountInfo(options: {settings: ServerSettings; logger?: Logger}): Promise<AccountInfo>
+export interface CoreRequests extends Core<EyesRequests> {
   getBatchBranches(options: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
-  }): Promise<{branchName: string; parentBranchName: string}>
-  closeBatch(options: {settings: CloseBatchSettings; logger?: Logger}): Promise<void>
-  deleteTest(options: {settings: DeleteTestSettings; logger?: Logger}): Promise<void>
-  logEvent(options: {settings: MaybeArray<LogEventSettings>; logger?: Logger})
+  }): Promise<{branchName?: string; parentBranchName?: string}>
 }
 
-export interface EyesRequests extends Eyes {
-  readonly test: TestInfo
-  check(options: {target: ImageTarget; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
-  checkAndClose(options: {target: ImageTarget; settings?: CheckSettings; logger?: Logger}): Promise<TestResult[]>
-  locateText<TPattern extends string>(options: {
-    target: ImageTarget
-    settings: LocateTextSettings<TPattern>
-    logger?: Logger
-  }): Promise<LocateTextResult<TPattern>>
-  extractText(options: {target: ImageTarget; settings: ExtractTextSettings; logger?: Logger}): Promise<string[]>
-  close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<TestResult[]>
+export interface EyesRequests extends Required<Eyes> {
+  report(options: {settings?: TestReportSettings; logger?: Logger}): Promise<void>
 }
 
 export function makeCoreRequests({
   agentId: defaultAgentId,
   fetch,
-  logger: defaultLogger,
+  logger,
 }: {
   agentId: string
   fetch?: Fetch
   logger?: Logger
 }): CoreRequests {
-  defaultLogger ??= makeLogger()
+  const defaultLogger = logger?.extend({label: 'core-requests'}) ?? makeLogger({label: 'core-requests'})
 
   const getAccountInfoWithCache = utils.general.cachify(getAccountInfo, ([{settings}]) => {
     return [settings.serverUrl, settings.apiKey, settings.proxy]
@@ -87,7 +67,13 @@ export function makeCoreRequests({
     logEvent,
   }
 
-  async function openEyes({settings, logger = defaultLogger}: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests> {
+  async function openEyes({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings: OpenSettings
+    logger?: Logger
+  }): Promise<EyesRequests> {
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "openEyes" called with settings', settings)
@@ -124,7 +110,7 @@ export function makeCoreRequests({
               hostingApp: settings.environment.hostingApp,
               hostingAppInfo: settings.environment.hostingAppInfo,
               deviceInfo: settings.environment.deviceName,
-              displaySize: utils.geometry.round(settings.environment.viewportSize),
+              displaySize: settings.environment.viewportSize && utils.geometry.round(settings.environment.viewportSize),
               inferred: settings.environment.userAgent && `useragent:${settings.environment.userAgent}`,
             }),
           environmentName: settings.environmentName,
@@ -143,21 +129,20 @@ export function makeCoreRequests({
       logger,
     })
     const test: TestInfo = await response.json().then(async result => {
-      const test: TestInfo = {
+      const test = {
         testId: result.id,
-        userTestId: settings.userTestId,
+        userTestId: settings.userTestId!,
         batchId: settings.batch?.id ?? result.batchId,
         baselineId: result.baselineId,
         sessionId: result.sessionId,
         resultsUrl: result.url,
         appId: settings.appName,
         isNew: result.isNew ?? response.status === 201,
-        keepBatchOpen: settings.keepBatchOpen,
+        keepBatchOpen: settings.keepBatchOpen ?? false,
         server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
         rendererId: settings.environment?.rendererId,
         rendererInfo: settings.environment?.rendererInfo,
-        account: null,
-      }
+      } as TestInfo
       if (result.renderingInfo) {
         const {serviceUrl, accessToken, resultsUrl, ...rest} = result.renderingInfo
         test.account = {ufg: {serverUrl: serviceUrl, accessToken}, uploadUrl: resultsUrl, ...rest}
@@ -237,19 +222,21 @@ export function makeCoreRequests({
   }: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
-  }): Promise<{branchName: string; parentBranchName: string}> {
+  }): Promise<{branchName?: string; parentBranchName?: string}> {
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "getBatchBranches" called with settings', settings)
     const response = await req(`/api/sessions/batches/${settings.batchId}/config/bypointerId`, {
       name: 'getBatchBranches',
       method: 'GET',
-      expected: 200,
       logger,
     })
-    const result = await response.json().then(result => {
-      return {branchName: result.scmSourceBranch, parentBranchName: result.scmTargetBranch}
-    })
+    const result =
+      response.status === 200
+        ? await response.json().then(result => {
+            return {branchName: result.scmSourceBranch, parentBranchName: result.scmTargetBranch}
+          })
+        : {branchName: undefined, parentBranchName: undefined}
     logger.log('Request "getBatchBranches" finished successfully with body', result)
     return result
   }
@@ -283,7 +270,13 @@ export function makeCoreRequests({
     logger.log('Request "deleteTest" finished successfully')
   }
 
-  async function logEvent({settings, logger = defaultLogger}: {settings: MaybeArray<LogEventSettings>; logger?: Logger}) {
+  async function logEvent({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings: MaybeArray<LogEventSettings>
+    logger?: Logger
+  }) {
     settings = utils.types.isArray(settings) ? settings : [settings]
     const [config] = settings
     const agentId = `${defaultAgentId} ${config.agentId ? `[${config.agentId}]` : ''}`.trim()
@@ -317,7 +310,7 @@ export function makeEyesRequests({
   test: TestInfo
   req: ReqEyes
   upload: Upload
-  logger?: Logger
+  logger: Logger
 }): EyesRequests {
   let supportsCheckAndClose = true
   let aborted = false
@@ -338,6 +331,7 @@ export function makeEyesRequests({
     checkAndClose,
     locateText,
     extractText,
+    report,
     close,
     abort,
   }
@@ -354,7 +348,7 @@ export function makeEyesRequests({
     logger.log('Request "check" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
-      upload({name: 'dom', resource: target.dom, gzip: true}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'check',
@@ -386,7 +380,7 @@ export function makeEyesRequests({
     logger.log('Request "checkAndClose" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
-      upload({name: 'dom', resource: target.dom, gzip: true}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const matchOptions = transformCheckOptions({target, settings})
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
@@ -407,7 +401,7 @@ export function makeEyesRequests({
       },
       hooks: {
         beforeRetry({response, stop}) {
-          if (response.status === 404) return stop
+          if (response?.status === 404) return stop
         },
       },
       expected: 200,
@@ -435,7 +429,7 @@ export function makeEyesRequests({
     logger.log('Request "locateText" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
-      upload({name: 'dom', resource: target.dom, gzip: true}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req('/api/sessions/running/images/textregions', {
       name: 'locateText',
@@ -444,7 +438,7 @@ export function makeEyesRequests({
         appOutput: {
           screenshotUrl: target.image,
           domUrl: target.dom,
-          location: utils.geometry.round(target.locationInViewport),
+          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
         },
         patterns: settings.patterns,
         ignoreCase: settings.ignoreCase,
@@ -471,7 +465,7 @@ export function makeEyesRequests({
     logger.log('Request "extractText" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
-      upload({name: 'dom', resource: target.dom, gzip: true}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req('/api/sessions/running/images/text', {
       name: 'extractText',
@@ -480,9 +474,9 @@ export function makeEyesRequests({
         appOutput: {
           screenshotUrl: target.image,
           domUrl: target.dom,
-          location: utils.geometry.round(target.locationInViewport),
+          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
         },
-        regions: [{left: 0, top: 0, ...utils.geometry.round(target.size), expected: settings.hint}],
+        regions: target.size && [{left: 0, top: 0, ...utils.geometry.round(target.size), expected: settings.hint}],
         minMatch: settings.minMatch,
         language: settings.language,
       },
@@ -504,10 +498,10 @@ export function makeEyesRequests({
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
     if (aborted || closed) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
-      return null
+      return null as never
     }
-    const sendSelfHealingReport = reportSelfHealing({settings, logger})
     closed = true
+    const reportPromise = report({settings, logger})
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'close',
       method: 'DELETE',
@@ -525,7 +519,7 @@ export function makeEyesRequests({
     // for backwards compatibility with outdated servers
     result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
     logger.log('Request "close" finished successfully with body', result)
-    await sendSelfHealingReport
+    await reportPromise
     return [result]
   }
 
@@ -539,10 +533,10 @@ export function makeEyesRequests({
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
     if (aborted || closed) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
-      return null
+      return null as never
     }
-    const sendSelfHealingReport = reportSelfHealing({settings, logger})
     aborted = true
+    const reportPromise = report({settings, logger})
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'abort',
       method: 'DELETE',
@@ -555,24 +549,28 @@ export function makeEyesRequests({
     const result: Mutable<TestResult> = await response.json()
     result.userTestId = test.userTestId
     logger.log('Request "abort" finished successfully with body', result)
-    await sendSelfHealingReport
+    await reportPromise
     return [result]
   }
 
-  async function reportSelfHealing({
+  async function report({
     settings,
     logger = defaultLogger,
   }: {
-    settings: ReportSelfHealingSettings
+    settings?: TestReportSettings
     logger?: Logger
   }): Promise<void> {
+    logger.log(`Request "report" called for test ${test.testId} with settings`, settings)
+    if (!settings?.testMetadata || utils.types.isEmpty(settings.testMetadata)) return
     try {
-      if (utils.types.isNull(settings?.testMetadata) || utils.types.isEmpty(settings?.testMetadata)) return
-      logger.log('Request "reportSelfHealing" called')
       await req(`/api/sessions/running/${encodeURIComponent(test.testId)}/selfhealdata`, {
         name: 'reportSelfHealing',
         method: 'PUT',
-        body: toSelfHealingReport(settings.testMetadata),
+        body: {
+          operations: settings.testMetadata.map(item => {
+            return {old: item?.originalSelector, new: item?.successfulSelector, timestamp: new Date().toISOString()}
+          }),
+        },
         expected: 200,
         logger,
       })
@@ -588,11 +586,11 @@ function transformCheckOptions({target, settings}: {target: ImageTarget; setting
       title: target.name,
       screenshotUrl: target.image,
       domUrl: target.dom,
-      location: utils.geometry.round(target.locationInViewport),
+      location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
       pageCoverageInfo: settings.pageId && {
         pageId: settings.pageId,
-        imagePositionInPage: utils.geometry.round(target.locationInView),
-        ...utils.geometry.round(target.fullViewSize),
+        imagePositionInPage: target.locationInView && utils.geometry.round(target.locationInView),
+        ...(target.fullViewSize && utils.geometry.round(target.fullViewSize)),
       },
     },
     options: {
@@ -625,7 +623,7 @@ function transformCheckOptions({target, settings}: {target: ImageTarget; setting
 function transformRegions({
   regions,
 }: {
-  regions: CheckSettings<Region>[`${'ignore' | 'layout' | 'content' | 'strict' | 'floating' | 'accessibility'}Regions`][number][]
+  regions: CheckSettings<Region>[`${'ignore' | 'layout' | 'content' | 'strict' | 'floating' | 'accessibility'}Regions`]
 }) {
   return regions
     ?.map(region => {
@@ -642,7 +640,7 @@ function transformRegions({
           options.maxLeftOffset = offset.left
           options.maxRightOffset = offset.right
         }
-        region = utils.geometry.round(utils.geometry.padding(region.region, region.padding))
+        region = utils.geometry.round(utils.geometry.padding(region.region, region.padding ?? 0))
       }
       return {left: region.x, top: region.y, width: region.width, height: region.height, ...options}
     })
@@ -655,7 +653,7 @@ function transformRegions({
 
   function transformDuplicatedRegionIds() {
     const stats = {} as Record<string, {firstIndex: number; count: number}>
-    return (regions, region, index) => {
+    return (regions: any[], region: any, index: number) => {
       if (!region.regionId) return regions.concat(region)
       if (!stats[region.regionId]) {
         stats[region.regionId] = {firstIndex: index, count: 1}

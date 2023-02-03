@@ -11,8 +11,16 @@ describe('take-vhses', () => {
     const mock = new MockDriver()
     const driver = await makeDriver({logger, spec, driver: mock})
     await assert.rejects(
-      takeVHSes({driver, logger}),
-      error => error.message === 'Error while taking VHS - cannot take VHS on mobile device other than iOS or Android',
+      takeVHSes({
+        driver,
+        settings: {
+          serverUrl: 'server-url',
+          apiKey: 'api-key',
+          renderers: [],
+        },
+        logger,
+      }),
+      error => error.message.includes('cannot take VHS on mobile device other than iOS or Android'),
     )
   })
 
@@ -22,8 +30,17 @@ describe('take-vhses', () => {
       platform: {name: 'iOS'},
     })
     const driver = await makeDriver({logger, spec, driver: mock})
-    await assert.rejects(takeVHSes({driver, logger}), error =>
-      error.message.includes('Error while taking VHS - UFG_TriggerArea element could not be found'),
+    await assert.rejects(
+      takeVHSes({
+        driver,
+        settings: {
+          serverUrl: 'server-url',
+          apiKey: 'api-key',
+          renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12'}}],
+        },
+        logger,
+      }),
+      error => error.message.includes('Trigger element could not be found'),
     )
   })
 
@@ -33,8 +50,17 @@ describe('take-vhses', () => {
       platform: {name: 'Android'},
     })
     const driver = await makeDriver({logger, spec, driver: mock})
-    await assert.rejects(takeVHSes({driver, logger}), error =>
-      error.message.includes('Error while taking VHS - UFG_TriggerArea element could not be found'),
+    await assert.rejects(
+      takeVHSes({
+        driver,
+        settings: {
+          serverUrl: 'server-url',
+          apiKey: 'api-key',
+          renderers: [{androidDeviceInfo: {deviceName: 'Pixel 6'}}],
+        },
+        logger,
+      }),
+      error => error.message.includes('Trigger element could not be found'),
     )
   })
 })

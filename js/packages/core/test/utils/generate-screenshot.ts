@@ -1,6 +1,6 @@
 import {Image} from 'png-async'
 
-export function generateScreenshot() {
+export function generateScreenshot(this: any) {
   const image = new Image({
     width: this._window.rect.width,
     height: this._window.rect.height,

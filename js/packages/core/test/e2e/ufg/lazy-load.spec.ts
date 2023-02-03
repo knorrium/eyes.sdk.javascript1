@@ -3,7 +3,7 @@ import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
 describe('lazy load', () => {
-  let page, destroyPage
+  let page: spec.Driver, destroyPage: () => Promise<void>
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
@@ -22,7 +22,7 @@ describe('lazy load', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'lazyLoad with layoutbreakpoints - checkSettings',
         environment: {viewportSize: {width: 800, height: 600}},

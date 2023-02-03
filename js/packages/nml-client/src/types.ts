@@ -50,10 +50,9 @@ export type AndroidSnapshot = {
   vhsType: string
   vhsHash: {hashFormat: string; hash: string; contentType: string}
 }
+
 export type IOSSnapshot = {
   platformName: 'ios'
   vhsCompatibilityParams: Record<string, any>
-} & (
-  | {resourceContents: Record<string, {type: string; value: Buffer}>}
-  | {vhsHash: {hashFormat: string; hash: string; contentType: string}}
-)
+  vhsHash: {hashFormat: string; hash: string; contentType: string}
+}

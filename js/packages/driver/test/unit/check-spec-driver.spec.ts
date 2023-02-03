@@ -8,8 +8,9 @@ describe.skip('check spec driver', () => {
     const results = await checkSpecDriver({spec, driver})
 
     results.forEach(result => {
+      // eslint-disable-next-line no-console
       console.log(result)
-      assert.ok(!result.error, result.error)
+      assert.ok(!result.error, result.error?.message)
     })
   })
 })

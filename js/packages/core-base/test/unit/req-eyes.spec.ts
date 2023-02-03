@@ -1,7 +1,7 @@
+import {Response, type Request} from '@applitools/req'
+import {makeReqEyes} from '../../src/server/req-eyes'
 import assert from 'assert'
 import nock from 'nock'
-import {Response, type Request} from 'node-fetch'
-import {makeReqEyes} from '../../src/server/req-eyes'
 
 describe('req-eyes', () => {
   const req = makeReqEyes({
@@ -46,7 +46,7 @@ describe('req-eyes', () => {
 
   it('handles long requests', async () => {
     const expectedRetryIntervals = [1000, 1500, 2000]
-    let prevRequestTimestamp
+    let prevRequestTimestamp: number
     nock('https://eyesapi.applitools.com')
       .post('/long')
       .query({apiKey: 'api-key'})

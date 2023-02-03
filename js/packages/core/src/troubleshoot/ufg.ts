@@ -1,8 +1,9 @@
 import {request as sendRequest} from 'https'
 import {createHash} from 'crypto'
-import {RENDER_INFO_URL} from './eyes'
+import {makeLogger} from '@applitools/logger'
 import {makeUFGRequests} from '@applitools/ufg-client'
 import {config, getProxyCurlArg} from './utils'
+import {RENDER_INFO_URL} from './eyes'
 import * as utils from '@applitools/utils'
 import fetch from 'node-fetch'
 
@@ -34,7 +35,7 @@ export const getCmd = async () =>
     resource.value
   }' ${UFG_PUT_RESOURCE_URL} ${getProxyCurlArg()}`
 
-const validateVgResult = (res, sha) => {
+const validateVgResult = (res: any, sha: string) => {
   if (!res || res.hash !== sha) {
     throw new Error(`bad VG result ${res}`)
   }
@@ -68,7 +69,7 @@ export default {
     const url = new URL(UFG_PUT_RESOURCE_URL)
     const requests = makeUFGRequests({
       config: {serverUrl: url.origin, accessToken: await accessTokenPromise, uploadUrl: '', stitchingServiceUrl: ''},
-      logger: null,
+      logger: makeLogger(),
     })
     await requests.uploadResource({resource})
   },

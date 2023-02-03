@@ -1,15 +1,16 @@
 import type {Region} from '@applitools/utils'
 import type {ScreenshotSettings} from '../../classic/types'
 import {type Logger} from '@applitools/logger'
-import {type Driver, type Element} from '@applitools/driver'
-import {takeScreenshot as legacyTakeScreenshot} from '@applitools/screenshoter'
+import {type Driver, type Element, type ElementReference} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
-export type Screenshot = {
-  image: any
+const {takeScreenshot: legacyTakeScreenshot} = require('@applitools/screenshoter')
+
+export type Screenshot<TElement, TSelector> = {
+  image: any //TODO replace with a proper type
   region: Region
-  element: Element<unknown, unknown, unknown, unknown>
-  scrollingElement: Element<unknown, unknown, unknown, unknown>
+  element: Element<unknown, unknown, TElement, TSelector>
+  scrollingElement: Element<unknown, unknown, TElement, TSelector>
   restoreState(): Promise<void>
   calculatedRegions: []
 }
@@ -20,9 +21,9 @@ export async function takeScreenshot<TDriver, TContext, TElement, TSelector>({
   logger,
 }: {
   driver: Driver<TDriver, TContext, TElement, TSelector>
-  settings: ScreenshotSettings<TElement, TSelector> & {regionsToCalculate?: any[]}
+  settings: ScreenshotSettings<TElement, TSelector> & {regionsToCalculate?: ElementReference<TElement, TSelector>[]}
   logger: Logger
-}): Promise<Screenshot> {
+}): Promise<Screenshot<TElement, TSelector>> {
   return legacyTakeScreenshot({
     driver,
     frames: settings.frames?.map(frame => {

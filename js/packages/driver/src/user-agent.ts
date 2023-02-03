@@ -50,7 +50,7 @@ export function parsePlatform(userAgent: string): PlatformInfo {
 
   if (!platformRegExp) return {platformName: 'Unknown'}
 
-  const [_, platformName, platformMajorVersion, platformMinorVersion] = platformRegExp.exec(userAgent)
+  const [_, platformName, platformMajorVersion, platformMinorVersion] = platformRegExp.exec(userAgent)!
 
   if (platformName.startsWith('CPU')) {
     return {platformName: 'iOS', platformVersion: platformMajorVersion}
@@ -79,19 +79,19 @@ export function parseBrowser(userAgent: string): BrowserInfo {
   const browserRegExp = BROWSER_REGEXPES.find(regexp => regexp.test(userAgent))
   if (!browserRegExp) {
     if (HIDDEN_IE_REGEX.test(userAgent)) {
-      const [_, browserVersion] = HIDDEN_IE_REGEX.exec(userAgent)
+      const [_, browserVersion] = HIDDEN_IE_REGEX.exec(userAgent)!
       return {browserName: 'IE', browserVersion}
     } else {
       return {browserName: 'Unknown'}
     }
   }
 
-  const [_, browserName, browserVersion] = browserRegExp.exec(userAgent)
+  const [_, browserName, browserVersion] = browserRegExp.exec(userAgent)!
   const result = {browserName, browserVersion}
 
   if (result.browserName === 'Edg') result.browserName = 'Edge'
   if (BROWSER_VERSION_REGEX.test(userAgent)) {
-    const [_, browserVersion] = BROWSER_VERSION_REGEX.exec(userAgent)
+    const [_, browserVersion] = BROWSER_VERSION_REGEX.exec(userAgent)!
     result.browserVersion = browserVersion
   }
 

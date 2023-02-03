@@ -52,6 +52,7 @@ runs:
         echo "::endgroup::"
 
         echo "::group::Installing and updating dependencies"
+        yarn --cwd ../../ install
         yarn install
         if [ "${{runner.os}}" = "Windows" ]
         then
@@ -65,10 +66,7 @@ runs:
         if [ ! -z "${{inputs.links}}" ]
         then
           echo "::group::Linking dependencies"
-          yarn --cwd ../scripts install
-          yarn --cwd ../scripts link
-          yarn link @applitools/scripts
-          npx -p @applitools/scripts link "${{inputs.links}}" --build --install
+          node ../../scripts/link.js "${{inputs.links}}" --build --install
           ls -F ./node_modules/@applitools
           echo "::endgroup::"
         fi

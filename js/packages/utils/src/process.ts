@@ -98,8 +98,8 @@ export async function execute(
 ): Promise<{stdout: string; stderr: string; code: number}> {
   return new Promise(resolve => {
     exec(command, options, (error, stdout, stderr) => {
-      if (error) resolve({stdout, stderr, code: error.code})
-      resolve({stdout, stderr, code: 0})
+      if (error) resolve({stdout: stdout.toString('utf8'), stderr: stderr.toString('utf8'), code: error.code!})
+      resolve({stdout: stdout.toString('utf8'), stderr: stderr.toString('utf8'), code: 0})
     })
   })
 }

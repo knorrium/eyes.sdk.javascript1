@@ -41,7 +41,7 @@ export function makeClose<TDriver, TContext, TElement, TSelector>({
 
           const [result] = await eyes.close({settings: {...settings, testMetadata}, logger})
           return {...result, renderer}
-        } catch (error) {
+        } catch (error: any) {
           await error.info?.eyes?.abort({logger})
           throw error
         }

@@ -4,7 +4,11 @@ import assert from 'assert'
 import nock from 'nock'
 
 describe('fetch-resource', () => {
-  const mockResource = makeResource({url: 'http://something', contentType: 'some/content-type', value: Buffer.from('bla')})
+  const mockResource = makeResource({
+    url: 'http://something',
+    contentType: 'some/content-type',
+    value: Buffer.from('bla'),
+  })
   const urlResource = makeResource({url: mockResource.url})
 
   it('fetches with content and content-type', async () => {
@@ -110,7 +114,10 @@ describe('fetch-resource', () => {
     })
 
     it('doesnt apply to requests with non media content type', async () => {
-      nock(mockResource.url).get('/').delayBody(200).reply(200, mockResource.value, {'content-type': mockResource.contentType})
+      nock(mockResource.url)
+        .get('/')
+        .delayBody(200)
+        .reply(200, mockResource.value, {'content-type': mockResource.contentType})
 
       const fetchResource = makeFetchResource({streamingTimeout: 80})
       const resource = await fetchResource({resource: urlResource})

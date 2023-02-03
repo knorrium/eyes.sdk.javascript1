@@ -15,7 +15,7 @@ export function makeLocateText({requests, logger: defaultLogger}: Options) {
     logger = defaultLogger,
   }: {
     target: ImageTarget
-    settings?: LocateTextSettings<TPattern>
+    settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
     logger.log('Command "locateText" is called with settings', settings)

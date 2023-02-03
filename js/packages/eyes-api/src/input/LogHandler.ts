@@ -110,6 +110,6 @@ export class NullLogHandlerData extends LogHandlerData {
 
   /** @internal */
   toJSON(): LogHandler {
-    return null
+    return null as never
   }
 }

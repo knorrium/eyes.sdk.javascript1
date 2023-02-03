@@ -15,19 +15,28 @@ const selectors = {
   sel10: {region: {x: 605, y: 605, width: 605, height: 605}},
 }
 
-export function makeFakeClient({hooks}: any = {}): UFGClient & EventEmitter {
+export function makeFakeClient({
+  hooks,
+}: {
+  hooks?: {
+    [TKey in keyof UFGClient]?: UFGClient[TKey] extends (...args: any[]) => any
+      ? (...args: Parameters<UFGClient[TKey]>) => any
+      : never
+  }
+} = {}): UFGClient & {emitter: EventEmitter} {
   const emitter = new EventEmitter()
-  return <any>{
-    on: emitter.on.bind(emitter),
-    once: emitter.once.bind(emitter),
-    off: emitter.off.bind(emitter),
+  return {
+    emitter,
+    getChromeEmulationDevices: null as never,
+    getIOSDevices: null as never,
+    getAndroidDevices: null as never,
     async createRenderTarget(options) {
       emitter.emit('beforeCreateRenderTarget', options)
       try {
         await utils.general.sleep(10)
         await hooks?.createRenderTarget?.(options)
         const {snapshot} = options
-        return snapshot
+        return snapshot as any
       } finally {
         emitter.emit('afterCreateRenderTarget', options)
       }
@@ -43,6 +52,10 @@ export function makeFakeClient({hooks}: any = {}): UFGClient & EventEmitter {
         const browserName = renderer.name
         return {
           rendererId: 'renderer-uid',
+          rendererInfo: {
+            type: 'web',
+            renderer: settings.renderer,
+          },
           rawEnvironment: {
             os: 'os',
             osInfo: 'os',
@@ -62,22 +75,24 @@ export function makeFakeClient({hooks}: any = {}): UFGClient & EventEmitter {
       try {
         await utils.general.sleep(0)
         await hooks?.render?.(options)
-        const {target, settings} = options
         return {
           renderId: 'render-id',
           status: 'rendered',
-          image: target as any as string,
-          selectorRegions: settings.selectorsToCalculate.map(() => [{x: 0, y: 0, width: 100, height: 100}]),
-          locationInViewport: settings.region
-            ? utils.geometry.location(selectors[settings.region]?.region ?? settings.region)
+          image: options.target as any as string,
+          selectorRegions:
+            options.settings.selectorsToCalculate?.map(() => [{x: 0, y: 0, width: 100, height: 100}]) ?? [],
+          locationInViewport: options.settings.region
+            ? utils.geometry.location(
+                selectors[options.settings.region as keyof typeof selectors]?.region ?? options.settings.region,
+              )
             : {x: 0, y: 0},
         }
       } finally {
         emitter.emit('afterRender', options)
       }
     },
-    async getCachedResourceUrls() {
-      return []
+    getCachedResourceUrls() {
+      return [] as string[]
     },
   }
 }

@@ -44,7 +44,7 @@
     "setup:ios": "echo \"setup:ios - do nothing\"",
     "android:setup": "node ./scripts/android-emulator.js",
     "android:shutdown": "adb -s emulator-5555 emu kill || true && adb -s emulator-5557 emu kill || true",
-    "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
+    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "ios:setup": "node ./scripts/ios-simulator.js",
     "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log &",
@@ -67,7 +67,6 @@
   "devDependencies": {
     "@applitools/bongo": "^2.0.3",
     "@applitools/driver": "1.7.0",
-    "@applitools/scripts": "1.1.0",
     "@applitools/spec-driver-webdriverio": "1.2.8",
     "@applitools/test-utils": "1.3.1",
     "appium": "^1.22.2",

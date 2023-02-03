@@ -59,7 +59,7 @@
     "test:e2e": "mocha ./test/e2e/*.spec.ts --exit --no-timeouts -r ts-node/register",
     "test:unit": "mocha ./test/unit/*.spec.ts --no-timeouts -r ts-node/register",
     "setup": "yarn docker:setup",
-    "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
+    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "deps": "bongo deps",
     "gh:publish": "gh workflow run publish-universal.yml --ref $(git rev-parse --abbrev-ref HEAD)",
@@ -87,7 +87,6 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.0",
     "@applitools/eyes-api": "^1.11.5",
-    "@applitools/scripts": "^1.2.0",
     "@applitools/sdk-coverage-tests": "^2.7.8",
     "@applitools/spec-driver-selenium": "^1.5.18",
     "@applitools/test-server": "^1.1.16",

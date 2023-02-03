@@ -1,5 +1,5 @@
 import type {Size, Region} from '@applitools/utils'
-import {type Cookie, type ScreenOrientation} from '@applitools/driver'
+import {type Cookie, type DriverInfo, type ScreenOrientation} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
 export type Driver = Applitools.WebdriverIO.Browser & {__applitoolsBrand?: never}
@@ -285,6 +285,9 @@ export async function getCookies(browser: Driver, context?: boolean): Promise<Co
     delete copy.sourcePort
     return copy
   })
+}
+export async function getDriverInfo(driver: Driver): Promise<DriverInfo> {
+  return {sessionId: driver.sessionId}
 }
 export async function getCapabilities(browser: Driver): Promise<Record<string, any>> {
   try {

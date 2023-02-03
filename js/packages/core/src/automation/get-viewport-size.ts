@@ -4,7 +4,7 @@ import {makeDriver, type SpecDriver} from '@applitools/driver'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
   spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeGetViewportSize<TDriver, TContext, TElement, TSelector>({
@@ -19,7 +19,7 @@ export function makeGetViewportSize<TDriver, TContext, TElement, TSelector>({
     logger?: Logger
   }) {
     logger.log(`Command "getViewportSize" is called`)
-    const driver = await makeDriver<TDriver, TContext, TElement, TSelector>({spec, driver: target, logger})
+    const driver = await makeDriver<TDriver, TContext, TElement, TSelector>({driver: target, spec, logger})
     return driver.getViewportSize()
   }
 }

@@ -1,3 +1,4 @@
+import type {Core} from '../../src/types'
 import {makeCore} from '../../src/core'
 import {generateScreenshot} from '../utils/generate-screenshot'
 import {MockDriver, spec} from '@applitools/driver/fake'
@@ -5,7 +6,7 @@ import {makeFakeCore} from '../utils/fake-base-core'
 import assert from 'assert'
 
 describe('close', async () => {
-  let driver, core
+  let driver: MockDriver, core: Core<MockDriver, unknown, unknown, unknown>
 
   before(async () => {
     driver = new MockDriver()

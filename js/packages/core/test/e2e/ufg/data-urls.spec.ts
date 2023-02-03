@@ -4,7 +4,7 @@ import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
 describe('core e2e', () => {
-  let page, destroyPage, server, baseUrl
+  let page: spec.Driver, destroyPage: () => Promise<void>, server: any, baseUrl: string
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
@@ -26,7 +26,7 @@ describe('core e2e', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'data url image iframe',
       },
@@ -48,7 +48,7 @@ describe('core e2e', () => {
       target: page,
       settings: {
         serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
+        apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'data url html iframe',
       },

@@ -45,36 +45,22 @@
     "types"
   ],
   "scripts": {
-    "lint": "eslint '**/*.ts'",
-    "build": "tsc",
+    "lint": "npx eslint '**/*.ts'",
+    "build": "npx tsc --project ./tsconfig.build.json",
     "test": "yarn test:unit",
     "test:sanity": "yarn test:unit",
     "test:unit": "mocha ./test/unit/*.spec.ts --no-timeouts -r ts-node/register",
     "deps": "bongo deps",
-    "preversion": "bongo preversion && yarn build",
+    "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
   },
   "dependencies": {},
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
-    "eslint": "^8.16.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^4.3.8",
-    "mocha": "^10.0.0",
-    "prettier": "^2.1.2",
-    "ts-node": "^10.8.0",
-    "typescript": "^4.9.4"
+    "mocha": "^10.0.0"
   },
   "engines": {
     "node": ">=12.13.0"

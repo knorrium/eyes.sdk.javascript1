@@ -50,6 +50,7 @@ runs:
         echo "::endgroup::"
 
         echo "::group::Installing and updating dependencies"
+        yarn --cwd ../../ install
         yarn install
         npm run deps --if-present -- --commit
         echo "::endgroup::"

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-import {ptimeoutWithError, presult} from './utils'
 import defaultEyes from './eyes'
 import defaultUFG from './ufg'
 import * as utils from '@applitools/utils'
@@ -11,45 +10,7 @@ const TIMEOUT = 15000
 const config = utils.config.getConfig({params: ['apiKey', 'serverUrl', 'proxy']})
 
 export async function checkNetwork({stream = process.stdout, eyes = defaultEyes, ufg = defaultUFG} = {}) {
-  const hasClearLine = stream.clearLine && stream.cursorTo
-
-  async function doTest(func, name) {
-    const delimiterLength = 30 - name.length
-    const delimiter = new Array(delimiterLength).join(' ')
-    hasClearLine && printSuccess(name, delimiter, '[ ?  ]')
-
-    const start = Date.now()
-    const funcWithTimeout = ptimeoutWithError(func(), TIMEOUT, new Error('request timeout!'))
-    const [err] = await presult(funcWithTimeout)
-    const end = (Date.now() - start) / 1000
-
-    clearLine()
-    if (err) {
-      printErr(name, delimiter, `[ X  ]  +${end}`, err.message, err.message[err.message.length - 1] !== '\n' ? '\n' : '')
-    } else {
-      printSuccess(name, delimiter, `[ OK ]  +${end}`, '\n')
-    }
-    return !!err
-  }
-
-  function print(...msg) {
-    stream.write(chalk(...msg))
-  }
-
-  function printErr(...msg) {
-    stream.write(chalk.red(...msg))
-  }
-
-  function printSuccess(...msg) {
-    stream.write(chalk.green(...msg))
-  }
-
-  function clearLine() {
-    if (hasClearLine) {
-      stream.clearLine(0)
-      stream.cursorTo(0)
-    }
-  }
+  const hasClearLine = !!stream.clearLine && !!stream.cursorTo
 
   if (!config.apiKey) {
     printErr('Missing "apiKey". Add APPLITOOLS_API_KEY as an env variable or add "apiKey" in applitools.config.js\n')
@@ -83,11 +44,68 @@ export async function checkNetwork({stream = process.stdout, eyes = defaultEyes,
     printSuccess('\nSuccess!\n')
   }
 
-  const proxyMsg = '\nYour proxy seems to be blocking requests to Applitools. Please make sure the following command succeeds:'
+  const proxyMsg =
+    '\nYour proxy seems to be blocking requests to Applitools. Please make sure the following command succeeds:'
   if (curlRenderErr) {
     printErr(proxyMsg, '\n', eyes.cmd, '\n')
   } else if (curlVgErr) {
     printErr(proxyMsg, '\n', await ufg.getCmd())
+  }
+
+  async function doTest(func: () => Promise<any>, name: string) {
+    const delimiterLength = 30 - name.length
+    const delimiter = new Array(delimiterLength).join(' ')
+    hasClearLine && printSuccess(name, delimiter, '[ ?  ]')
+
+    const start = Date.now()
+    const [err] = await ptimeoutWithError(func(), TIMEOUT, new Error('request timeout!'))
+    const end = (Date.now() - start) / 1000
+
+    clearLine()
+    if (err) {
+      printErr(
+        name,
+        delimiter,
+        `[ X  ]  +${end}`,
+        err.message,
+        err.message[err.message.length - 1] !== '\n' ? '\n' : '',
+      )
+    } else {
+      printSuccess(name, delimiter, `[ OK ]  +${end}`, '\n')
+    }
+    return !!err
+  }
+
+  function print(...msg: string[]) {
+    stream.write(chalk(...msg))
+  }
+
+  function printErr(...msg: string[]) {
+    stream.write(chalk.red(...msg))
+  }
+
+  function printSuccess(...msg: string[]) {
+    stream.write(chalk.green(...msg))
+  }
+
+  function clearLine() {
+    if (hasClearLine) {
+      stream.clearLine(0)
+      stream.cursorTo(0)
+    }
+  }
+
+  async function ptimeoutWithError(promise: Promise<any>, timeout: number, err: Error) {
+    let timer: NodeJS.Timeout | undefined
+    return Promise.race([
+      promise.then<[undefined, any], [any]>(
+        v => (timer && clearTimeout(timer), [undefined, v]),
+        err => (timer && clearTimeout(timer), [err]),
+      ),
+      new Promise<[Error]>(res => {
+        timer = setTimeout(() => res([err]), timeout)
+      }),
+    ])
   }
 }
 

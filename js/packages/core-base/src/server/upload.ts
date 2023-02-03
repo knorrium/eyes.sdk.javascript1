@@ -7,7 +7,7 @@ export type Upload = (options: {name: string; resource: Buffer | URL | string; g
 
 export function makeUpload({config, logger}: {config: {uploadUrl: string; proxy?: Proxy}; logger?: Logger}): Upload {
   return async function upload({name, resource, gzip}) {
-    logger.log(`Upload called for ${name} resource`)
+    logger?.log(`Upload called for ${name} resource`)
     if (utils.types.isNull(resource) || utils.types.isHttpUrl(resource)) return resource
     else if (resource instanceof URL) return resource.href
     const url = config.uploadUrl.replace('__random__', utils.general.guid())
@@ -29,18 +29,22 @@ export function makeUpload({config, logger}: {config: {uploadUrl: string; proxy?
       },
       hooks: {
         beforeRetry({response, error, attempt}) {
-          logger.warn(
+          logger?.warn(
             `Upload of ${name} resource will be retried due to ${
-              error ? `an error with message "${error.message}"` : `unexpected status ${response.statusText}(${response.status})`
+              error
+                ? `an error with message "${error.message}"`
+                : `unexpected status ${response!.statusText}(${response!.status})`
             } in previous attempt (${attempt})`,
           )
         },
       },
     })
     if (response.status !== 201) {
-      throw new Error(`Upload of ${name} resource failed due to unexpected status ${response.statusText}(${response.status})`)
+      throw new Error(
+        `Upload of ${name} resource failed due to unexpected status ${response.statusText}(${response.status})`,
+      )
     }
-    logger.log(`Upload of ${name} resource finished successfully in location`, url)
+    logger?.log(`Upload of ${name} resource finished successfully in location`, url)
     return url
   }
 }

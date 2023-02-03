@@ -4,7 +4,7 @@ import * as spec from '@applitools/spec-driver-webdriverio'
 import * as utils from '@applitools/utils'
 
 describe('proxy', () => {
-  let driver, destroyDriver, proxy, restoreNetwork
+  let driver: spec.Driver, destroyDriver: () => Promise<void>, proxy: any, restoreNetwork: () => void
 
   describe('images with proxy', () => {
     before(async () => {

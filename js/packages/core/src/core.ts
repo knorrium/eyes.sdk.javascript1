@@ -35,11 +35,11 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   core ??= makeBaseCore({agentId, cwd, logger})
 
   return utils.general.extend(core, {
-    isDriver: spec?.isDriver,
-    isElement: spec?.isElement,
-    isSelector: spec?.isSelector,
-    getViewportSize: makeGetViewportSize({spec, logger}),
-    setViewportSize: makeSetViewportSize({spec, logger}),
+    isDriver: spec && spec.isDriver,
+    isElement: spec && spec.isElement,
+    isSelector: spec && spec.isSelector,
+    getViewportSize: spec && makeGetViewportSize({spec, logger}),
+    setViewportSize: spec && makeSetViewportSize({spec, logger}),
     locate: makeLocate({spec, core, logger}),
     openEyes: makeOpenEyes({spec, core, concurrency, logger}),
     makeManager: makeMakeManager({spec, concurrency, agentId, logger}),

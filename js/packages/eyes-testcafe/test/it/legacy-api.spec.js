@@ -165,7 +165,6 @@ test.skip('eyes.checkWindow sendDom', async t => {
   })
   const result = await eyes.close(false)
   const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
-  console.log(info['actualAppOutput']['0']['image'])
   assert.deepStrictEqual(info['actualAppOutput']['0']['image']['hasDom'], false)
 })
 test('eyes.waitForResults', async t => {
@@ -226,7 +225,6 @@ test('eyes failTestcafeOnDiff true', async t => {
     assert(false) // we should not reach this
   } catch (error) {
     // we should not reach this
-    console.log(error)
     if (error.message.includes('detected differences')) assert(true)
     else assert(false)
   }

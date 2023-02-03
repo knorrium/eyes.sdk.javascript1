@@ -6,7 +6,8 @@ export class ImageRotationData {
   private _rotation: ImageRotation
 
   constructor(rotation: ImageRotation) {
-    this.rotation = rotation
+    utils.guard.isOneOf(rotation, [-270, -180, -90, 0, 90, 180, 270], {name: 'rotation'})
+    this._rotation = rotation
   }
 
   get rotation(): ImageRotation {

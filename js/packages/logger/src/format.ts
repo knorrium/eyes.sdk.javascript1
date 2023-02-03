@@ -1,7 +1,7 @@
-import * as utils from '@applitools/utils'
-import {inspect} from 'util'
-import chalk from 'chalk'
 import {type LogLevelName} from './log-level'
+import {inspect} from 'util'
+import * as utils from '@applitools/utils'
+import chalk from 'chalk'
 
 type ForegroundColor =
   | 'black'
@@ -110,5 +110,5 @@ export function format(
 function colorize(string: string, {color}: {color?: Style | Style[]} = {}) {
   if (!color) return string
   if (!utils.types.isArray(color)) color = [color]
-  return color.reduce((chalk, color) => chalk[color] || chalk, chalk)(string)
+  return color.reduce<chalk.Chalk>((chalk, color) => chalk[color] ?? chalk, chalk)(string)
 }

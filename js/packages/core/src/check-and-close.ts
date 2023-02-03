@@ -10,15 +10,21 @@ type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | '
   logger: Logger
 }
 
-export function makeCheckAndClose<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
-  type: defaultType,
+export function makeCheckAndClose<
+  TDriver,
+  TContext,
+  TElement,
+  TSelector,
+  TDefaultType extends 'classic' | 'ufg' = 'classic',
+>({
+  type: defaultType = 'classic' as TDefaultType,
   eyes,
   target: defaultTarget,
   spec,
   logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
   return async function checkAndClose<TType extends 'classic' | 'ufg' = TDefaultType>({
-    type = defaultType as any,
+    type = defaultType as unknown as TType,
     target = defaultTarget,
     settings = {},
     config,
@@ -38,10 +44,12 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector, TDefau
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const typedEyes = await eyes.getTypedEyes({
       type,
-      settings: driver && {
-        type: driver.isNative ? 'native' : 'web',
-        renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers,
-      },
+      settings: driver
+        ? {
+            type: driver.isNative ? 'native' : 'web',
+            renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers!,
+          }
+        : undefined,
       logger,
     })
     const results = await typedEyes.checkAndClose({target: driver ?? target, settings, logger})

@@ -702,7 +702,10 @@ describe('processResources', () => {
       url: 'https://fonts.googleapis.com/some-font',
       renderer: {name: 'ie', width: 100, height: 100},
     })
-    const standardResource = makeResource({url: 'http://bla/some-resource', renderer: {name: 'ie', width: 100, height: 100}})
+    const standardResource = makeResource({
+      url: 'http://bla/some-resource',
+      renderer: {name: 'ie', width: 100, height: 100},
+    })
     const defaultUserAgent = 'DefaultUserAgent'
 
     const resources = await processResources({
@@ -736,7 +739,10 @@ describe('processResources', () => {
       (resourcesFromCache.mapping[googleFontResource.url] as any).contentType,
       `application/Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; rv:11.0) like Gecko`,
     )
-    assert.strictEqual((resourcesFromCache.mapping[standardResource.url] as any).contentType, `application/${defaultUserAgent}`)
+    assert.strictEqual(
+      (resourcesFromCache.mapping[standardResource.url] as any).contentType,
+      `application/${defaultUserAgent}`,
+    )
 
     assert.deepStrictEqual([...cache.keys()], [`${googleFontResource.url}~ie`, standardResource.url])
   })

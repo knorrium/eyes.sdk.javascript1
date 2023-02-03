@@ -13,7 +13,7 @@ export function makeMakeECClient({logger: defaultLogger}: Options) {
   async function makeECClient({
     settings,
     logger = defaultLogger,
-  }: {settings?: ECClientSettings; logger?: Logger} = {}): Promise<ECClient> {
+  }: {settings?: Partial<ECClientSettings>; logger?: Logger} = {}): Promise<ECClient> {
     const {makeECClient} = require('@applitools/ec-client')
     const client = await makeECClient({settings, logger})
     return client

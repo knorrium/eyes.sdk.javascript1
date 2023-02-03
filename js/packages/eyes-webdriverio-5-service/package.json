@@ -46,7 +46,7 @@
     "test": "wdio tests/wdio.conf.js",
     "test:sanity": "yarn test",
     "setup": "yarn docker:setup",
-    "docker:setup": "node ../scripts/scripts/generate-docker-compose-config.js && docker-compose up -d",
+    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "deps": "bongo deps",
     "preversion": "bongo preversion",

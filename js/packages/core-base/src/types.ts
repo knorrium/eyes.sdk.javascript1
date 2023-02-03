@@ -35,13 +35,17 @@ export interface Eyes<TTarget = ImageTarget> {
   readonly aborted: boolean
   readonly closed: boolean
   check(options: {target: TTarget; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
-  checkAndClose(options: {target: TTarget; settings?: CheckSettings & CloseSettings; logger?: Logger}): Promise<TestResult[]>
-  locateText?<TPattern extends string>(options: {
+  checkAndClose(options: {
+    target: TTarget
+    settings?: CheckSettings & CloseSettings
+    logger?: Logger
+  }): Promise<TestResult[]>
+  locateText<TPattern extends string>(options: {
     target: TTarget
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>>
-  extractText?(options: {target: TTarget; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
+  extractText(options: {target: TTarget; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
   close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<TestResult[]>
   abort(options?: {settings?: AbortSettings; logger?: Logger}): Promise<TestResult[]>
 }
@@ -125,7 +129,9 @@ export interface OpenSettings extends ServerSettings {
   removeSession?: boolean
 }
 
-export interface LocateSettings<TLocator extends string, TRegion = Region> extends ServerSettings, ImageSettings<TRegion> {
+export interface LocateSettings<TLocator extends string, TRegion = Region>
+  extends ServerSettings,
+    ImageSettings<TRegion> {
   appName: string
   locatorNames: TLocator[]
   firstOnly?: boolean
@@ -253,20 +259,18 @@ export type SelfHealingReport = {
   operations: {timestamp: string; old: {using: string; value: string}; new: {using: string; value: string}}[]
 }
 
-export type TestMetadata = Record<string, any>[]
-
-export interface ReportSelfHealingSettings {
-  testMetadata?: TestMetadata
+export interface TestReportSettings {
+  testMetadata?: Record<string, any>[]
 }
 
-export interface CloseSettings extends ReportSelfHealingSettings {
+export interface CloseSettings extends TestReportSettings {
   updateBaselineIfNew?: boolean
   updateBaselineIfDifferent?: boolean
   /** @internal */
   userCommandId?: string
 }
 
-export interface AbortSettings extends ReportSelfHealingSettings {
+export interface AbortSettings extends TestReportSettings {
   /** @internal */
   userCommandId?: string
 }

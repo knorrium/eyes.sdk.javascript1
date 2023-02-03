@@ -40,18 +40,17 @@ export type TestResults = {
 }
 
 export class TestResultsData implements Required<TestResults> {
-  private _result: CoreTestResult = {}
-  private readonly _deleteTest: CoreSpec['deleteTest']
+  private _result: CoreTestResult
+  private _deleteTest?: CoreSpec['deleteTest']
 
   /** @internal */
-  constructor(options?: {result?: CoreTestResult; deleteTest?: CoreSpec['deleteTest']}) {
-    if (!options) return this
+  constructor(options: {result?: CoreTestResult; deleteTest?: CoreSpec['deleteTest']}) {
     this._deleteTest = options.deleteTest
-    this._result = options.result
+    this._result = options.result ?? {}
   }
 
   get id(): string {
-    return this._result.id
+    return this._result.id!
   }
   getId(): string {
     return this.id
@@ -62,7 +61,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get name(): string {
-    return this._result.name
+    return this._result.name!
   }
   getName(): string {
     return this.name
@@ -73,7 +72,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get secretToken(): string {
-    return this._result.secretToken
+    return this._result.secretToken!
   }
   getSecretToken(): string {
     return this.secretToken
@@ -84,7 +83,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get status(): TestResultsStatus {
-    return this._result.status
+    return this._result.status!
   }
   getStatus(): TestResultsStatusEnum {
     return this.status as TestResultsStatusEnum
@@ -95,7 +94,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get appName(): string {
-    return this._result.appName
+    return this._result.appName!
   }
   getAppName(): string {
     return this.appName
@@ -106,7 +105,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get batchName(): string {
-    return this._result.batchName
+    return this._result.batchName!
   }
   getBatchName(): string {
     return this.batchName
@@ -117,7 +116,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get batchId(): string {
-    return this._result.batchId
+    return this._result.batchId!
   }
   getBatchId(): string {
     return this.batchId
@@ -128,7 +127,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get branchName(): string {
-    return this._result.batchName
+    return this._result.batchName!
   }
   getBranchName(): string {
     return this.branchName
@@ -139,7 +138,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get hostOS(): string {
-    return this._result.hostOS
+    return this._result.hostOS!
   }
   getHostOS(): string {
     return this.hostOS
@@ -150,7 +149,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get hostApp(): string {
-    return this._result.hostApp
+    return this._result.hostApp!
   }
   getHostApp(): string {
     return this.hostApp
@@ -161,7 +160,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get hostDisplaySize(): RectangleSize {
-    return this._result.hostDisplaySize
+    return this._result.hostDisplaySize!
   }
   getHostDisplaySize(): RectangleSizeData {
     return new RectangleSizeData(this.hostDisplaySize)
@@ -172,7 +171,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get accessibilityStatus(): TestAccessibilityStatus {
-    return this._result.accessibilityStatus
+    return this._result.accessibilityStatus!
   }
   getAccessibilityStatus(): TestAccessibilityStatus {
     return this.accessibilityStatus
@@ -183,7 +182,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get startedAt(): Date | string {
-    return this._result.startedAt
+    return this._result.startedAt!
   }
   getStartedAt(): Date {
     return new Date(this.startedAt)
@@ -194,7 +193,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get duration(): number {
-    return this._result.duration
+    return this._result.duration!
   }
   getDuration(): number {
     return this.duration
@@ -205,7 +204,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get isNew(): boolean {
-    return this._result.isNew
+    return this._result.isNew!
   }
   getIsNew(): boolean {
     return this.isNew
@@ -216,7 +215,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get isDifferent(): boolean {
-    return this._result.isDifferent
+    return this._result.isDifferent!
   }
   getIsDifferent(): boolean {
     return this.isDifferent
@@ -227,7 +226,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get isAborted(): boolean {
-    return this._result.isAborted
+    return this._result.isAborted!
   }
   getIsAborted(): boolean {
     return this.isAborted
@@ -238,7 +237,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get appUrls(): SessionUrls {
-    return this._result.appUrls
+    return this._result.appUrls!
   }
   getAppUrls(): SessionUrlsData {
     return new SessionUrlsData(this.appUrls)
@@ -249,7 +248,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get apiUrls(): SessionUrls {
-    return this._result.apiUrls
+    return this._result.apiUrls!
   }
   getApiUrls(): SessionUrlsData {
     return new SessionUrlsData(this.apiUrls)
@@ -260,7 +259,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get stepsInfo(): StepInfo[] {
-    return this._result.stepsInfo
+    return this._result.stepsInfo!
   }
   getStepsInfo(): StepInfoData[] {
     return this.stepsInfo.map(info => new StepInfoData(info))
@@ -271,7 +270,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get steps(): number {
-    return this._result.steps
+    return this._result.steps!
   }
   getSteps(): number {
     return this.steps
@@ -282,7 +281,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get matches(): number {
-    return this._result.matches
+    return this._result.matches!
   }
   getMatches(): number {
     return this.matches
@@ -293,7 +292,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get mismatches(): number {
-    return this._result.mismatches
+    return this._result.mismatches!
   }
   getMismatches(): number {
     return this.mismatches
@@ -304,7 +303,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get missing(): number {
-    return this._result.missing
+    return this._result.missing!
   }
   getMissing(): number {
     return this.missing
@@ -315,7 +314,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get exactMatches(): number {
-    return this._result.exactMatches
+    return this._result.exactMatches!
   }
   getExactMatches(): number {
     return this.exactMatches
@@ -326,7 +325,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get strictMatches(): number {
-    return this._result.strictMatches
+    return this._result.strictMatches!
   }
   getStrictMatches(): number {
     return this.strictMatches
@@ -337,7 +336,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get contentMatches(): number {
-    return this._result.contentMatches
+    return this._result.contentMatches!
   }
   getContentMatches(): number {
     return this.contentMatches
@@ -348,7 +347,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get layoutMatches(): number {
-    return this._result.layoutMatches
+    return this._result.layoutMatches!
   }
   getLayoutMatches(): number {
     return this.layoutMatches
@@ -359,7 +358,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get noneMatches(): number {
-    return this._result.noneMatches
+    return this._result.noneMatches!
   }
   getNoneMatches(): number {
     return this.noneMatches
@@ -370,7 +369,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get url(): string {
-    return this._result.url
+    return this._result.url!
   }
   getUrl(): string {
     return this.url
@@ -385,8 +384,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   async delete(): Promise<void> {
-    if (!this._deleteTest) return
-    return this._deleteTest({
+    return this._deleteTest?.({
       settings: {serverUrl: '', apiKey: '', testId: this.id, batchId: this.batchId, secretToken: this.secretToken},
     })
   }

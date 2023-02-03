@@ -2,11 +2,11 @@ import type {Location, Size, Region} from './utility-types'
 import * as types from './types'
 import * as guard from './guard'
 
-export function location(region: Region): Location {
+export function location<TLocatable extends Location>(region: TLocatable): Location {
   return {x: region.x, y: region.y}
 }
 
-export function size(region: Region): Size {
+export function size<TSizable extends Size>(region: TSizable): Size {
   return {width: region.width, height: region.height}
 }
 
@@ -86,7 +86,7 @@ export function rotate(target: Region | Size | Location, degrees: number, size?:
       result.height = target.height
     }
   }
-  if (types.has(target, ['x', 'y'])) {
+  if (types.has(target, ['x', 'y']) && size) {
     const hasSize = types.has(target, ['width', 'height'])
     // rotate coordinate system around a target
     if (degrees === 0) {
@@ -215,6 +215,7 @@ export function equals(
     }
     return false
   }
+  return false
 }
 
 export function divide(region: Region, size: Size, padding: {top?: number; bottom?: number} = {}): Region[] {
@@ -262,17 +263,10 @@ export function padding(
 ): Region {
   if (types.isNumber(padding)) {
     padding = {left: padding, right: padding, top: padding, bottom: padding}
-  } else {
-    padding = {
-      left: padding?.left ?? 0,
-      right: padding?.right ?? 0,
-      top: padding?.top ?? 0,
-      bottom: padding?.bottom ?? 0,
-    }
   }
-  region.x -= padding.left
-  region.width += padding.left + padding.right
-  region.y -= padding.top
-  region.height += padding.top + padding.bottom
+  region.x -= padding.left ?? 0
+  region.width += (padding.left ?? 0) + (padding.right ?? 0)
+  region.y -= padding.top ?? 0
+  region.height += (padding.top ?? 0) + (padding.bottom ?? 0)
   return region
 }

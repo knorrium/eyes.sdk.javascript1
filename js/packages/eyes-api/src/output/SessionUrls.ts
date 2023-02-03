@@ -7,16 +7,15 @@ export type SessionUrls = {
 }
 
 export class SessionUrlsData implements Required<SessionUrls> {
-  private _urls: Mutable<SessionUrls> = {} as any
+  private _urls: Mutable<SessionUrls>
 
   /** @internal */
-  constructor(urls?: SessionUrls) {
-    if (!urls) return this
+  constructor(urls: SessionUrls) {
     this._urls = urls instanceof SessionUrlsData ? urls.toJSON() : urls
   }
 
   get batch(): string {
-    return this._urls.batch
+    return this._urls.batch!
   }
   getBatch(): string {
     return this.batch
@@ -27,7 +26,7 @@ export class SessionUrlsData implements Required<SessionUrls> {
   }
 
   get session(): string {
-    return this._urls.session
+    return this._urls.session!
   }
   getSession(): string {
     return this.session

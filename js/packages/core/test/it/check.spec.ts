@@ -5,12 +5,12 @@ import {MockDriver, spec} from '@applitools/driver/fake'
 import assert from 'assert'
 
 describe('check', () => {
-  let driver
+  let driver: MockDriver
 
   beforeEach(() => {
     driver = new MockDriver()
     driver.takeScreenshot = generateScreenshot
-    driver.mockElement('element0')
+    driver.mockElement('element0', null)
   })
 
   it("throws error when check region by selector that doesn't exist", async () => {

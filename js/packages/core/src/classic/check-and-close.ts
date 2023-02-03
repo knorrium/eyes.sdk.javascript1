@@ -4,15 +4,15 @@ import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from '../automation/utils/take-screenshot'
 import {takeDomCapture} from './utils/take-dom-capture'
-import {toBaseCheckSettings} from '../utils/to-base-check-settings'
-import {waitForLazyLoad} from '../utils/wait-for-lazy-load'
+import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
+import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import * as utils from '@applitools/utils'
 
 type Options<TDriver, TContext, TElement, TSelector> = {
   eyes: Eyes<TDriver, TContext, TElement, TSelector>
   target?: DriverTarget<TDriver, TContext, TElement, TSelector>
   spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
@@ -31,6 +31,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
     logger?: Logger
   } = {}): Promise<TestResult[]> {
     logger.log('Command "checkAndClose" is called with settings', settings)
+    if (!target) throw new Error('Method was called with no target')
     const baseEyes = await eyes.getBaseEyes({logger})
     if (!isDriver(target, spec)) {
       const baseSettings = settings as BaseCheckSettings & BaseCloseSettings
@@ -63,18 +64,23 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
     if (driver.isWeb && settings.sendDom) {
       if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
       else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-      baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
+      baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => undefined)
     }
     if (settings.pageId) {
       const scrollingElement = await driver.mainContext.getScrollingElement()
-      const scrollingOffset = driver.isNative ? {x: 0, y: 0} : await scrollingElement.getScrollOffset()
+      const scrollingOffset =
+        !scrollingElement || driver.isNative ? {x: 0, y: 0} : await scrollingElement.getScrollOffset()
       baseTarget.locationInView = utils.geometry.offset(scrollingOffset, screenshot.region)
-      baseTarget.fullViewSize = scrollingElement ? await scrollingElement.getContentSize() : await driver.getViewportSize()
+      baseTarget.fullViewSize = scrollingElement
+        ? await scrollingElement.getContentSize()
+        : await driver.getViewportSize()
     }
     await screenshot.restoreState()
 
     return (
-      await Promise.all(baseEyes.map(baseEyes => baseEyes.checkAndClose({target: baseTarget, settings: baseSettings, logger})))
+      await Promise.all(
+        baseEyes.map(baseEyes => baseEyes.checkAndClose({target: baseTarget, settings: baseSettings, logger})),
+      )
     ).flat()
   }
 }

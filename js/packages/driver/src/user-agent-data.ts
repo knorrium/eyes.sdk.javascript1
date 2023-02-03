@@ -32,10 +32,10 @@ export function parseUserAgentData(userAgentData: UserAgentData): DriverInfo {
   }
 
   if (info.platformName === 'Windows') {
-    info.platformVersion = WINDOWS_VERSIONS[info.platformVersion]
+    info.platformVersion = WINDOWS_VERSIONS[info.platformVersion as keyof typeof WINDOWS_VERSIONS]
   } else if (info.platformName === 'macOS') {
     info.platformName = 'Mac OS X'
-    info.platformVersion = info.platformVersion.split(/[._]/, 2).join('.')
+    info.platformVersion = info.platformVersion?.split(/[._]/, 2).join('.')
   }
 
   return info

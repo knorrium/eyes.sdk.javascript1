@@ -11,7 +11,7 @@ describe('render', () => {
         resources: {},
       },
       settings: {type: 'web' as const, renderer: {name: 'chrome' as const, width: 1000, height: 700}},
-    }
+    } as any
   }
 
   it('works', async () => {
@@ -53,7 +53,10 @@ describe('render', () => {
           return renders.map(render => {
             checkRenderResultsCalls[render.renderId] ??= 0
             checkRenderResultsCalls[render.renderId] += 1
-            return {renderId: render.renderId, status: checkRenderResultsCalls[render.renderId] >= 3 ? 'rendered' : 'undefined'}
+            return {
+              renderId: render.renderId,
+              status: checkRenderResultsCalls[render.renderId] >= 3 ? 'rendered' : 'undefined',
+            }
           })
         },
       } as UFGRequests,
@@ -67,12 +70,12 @@ describe('render', () => {
   it('throws from renders if checkRenderResults threw exception', async () => {
     const render = makeRender({
       requests: {
-        async startRenders({requests}) {
+        async startRenders({requests}: {requests: any[]}) {
           return requests.map((_, index) => {
             return {renderId: `${index + 1}`} as any
           })
         },
-        async checkRenderResults({renders}) {
+        async checkRenderResults({renders}: {renders: any[]}) {
           return renders.map(render => {
             if (render.renderId === '2') throw new Error('fail')
             return {renderId: render.renderId, status: 'undefined'}
@@ -150,8 +153,8 @@ describe('render', () => {
       batchingTimeout: 10,
     })
 
-    const render1Promise = render({request: createRenderRequest('page1')})
-    const render2Promise = render({request: createRenderRequest('page2')})
+    const render1Promise = render({...createRenderRequest('page1')})
+    const render2Promise = render({...createRenderRequest('page2')})
     await assert.doesNotReject(render1Promise)
     await assert.doesNotReject(render2Promise)
   })

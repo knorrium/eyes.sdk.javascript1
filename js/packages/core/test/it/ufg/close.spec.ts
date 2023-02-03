@@ -13,7 +13,7 @@ describe('close', async () => {
     })
 
     let closed = false
-    fakeCore.on('abort', () => (closed = true))
+    fakeCore.emitter.on('abort', () => (closed = true))
 
     const results = await eyes.close()
     assert.strictEqual(closed, false)

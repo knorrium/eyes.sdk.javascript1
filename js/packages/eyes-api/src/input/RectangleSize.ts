@@ -6,16 +6,15 @@ export type RectangleSize = {
 }
 
 export class RectangleSizeData implements Required<RectangleSize> {
-  private _size: RectangleSize = {} as any
+  private _size: RectangleSize
 
   constructor(size: RectangleSize)
   constructor(width: number, height: number)
   constructor(sizeOrWidth: RectangleSize | number, height?: number) {
-    if (utils.types.isNumber(sizeOrWidth)) {
-      return new RectangleSizeData({width: sizeOrWidth, height})
-    }
-    this.width = sizeOrWidth.width
-    this.height = sizeOrWidth.height
+    const size = utils.types.isNumber(sizeOrWidth) ? {width: sizeOrWidth, height: height!} : sizeOrWidth
+    utils.guard.isNumber(size.width, {name: 'width', gte: 0})
+    utils.guard.isNumber(size.height, {name: 'height', gte: 0})
+    this._size = size
   }
 
   get width(): number {

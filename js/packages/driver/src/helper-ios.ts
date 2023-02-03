@@ -26,7 +26,7 @@ export class HelperIOS<TDriver, TContext, TElement, TSelector> {
     driver: Driver<TDriver, TContext, TElement, TSelector>
     element: Element<TDriver, TContext, TElement, TSelector>
     spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    logger?: Logger
+    logger: Logger
   }) {
     this._driver = options.driver
     this._element = options.element
@@ -35,25 +35,27 @@ export class HelperIOS<TDriver, TContext, TElement, TSelector> {
     this.name = 'ios'
   }
 
-  async getContentRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region> {
+  async getContentRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region | null> {
     await this._element.click()
-
-    const region = await this._spec.getElementRegion(this._driver.target, element.target)
 
     const sizeLabel = await this._driver.element({type: 'name', selector: 'applitools_content_size_label'})
     const sizeString = await sizeLabel?.getText()
     if (!sizeString) return null
-    const [, width, height] = sizeString.match(/\{(-?\d+(?:\.\d+)?),\s?(-?\d+(?:\.\d+)?)\}/)
+    const [, width, height] = sizeString.match(/\{(-?\d+(?:\.\d+)?),\s?(-?\d+(?:\.\d+)?)\}/)!
     const contentSize = {width: Number(width), height: Number(height)}
     if (Number.isNaN(contentSize.width + contentSize.height)) return null
     const paddingLabel = await this._driver.element({type: 'name', selector: 'applitools_content_offset_label'})
     const paddingString = await paddingLabel?.getText()
     if (paddingString) {
-      const [, x, y] = paddingString.match(/\{(-?\d+(?:\.\d+)?),\s?(-?\d+(?:\.\d+)?)\}/)
+      const [, x, y] = paddingString.match(/\{(-?\d+(?:\.\d+)?),\s?(-?\d+(?:\.\d+)?)\}/)!
       const contentOffset = {x: Number(x), y: Number(y)}
       if (!Number.isNaN(contentOffset.x)) contentSize.width -= contentOffset.x
       if (!Number.isNaN(contentOffset.y)) contentSize.height -= contentOffset.y
     }
+
+    const region = await this._spec.getElementRegion?.(this._driver.target, element.target)
+    if (!region || contentSize.height < region.height) return null
+
     return contentSize.height >= region.height ? {x: region.x, y: region.y, ...contentSize} : null
   }
 }

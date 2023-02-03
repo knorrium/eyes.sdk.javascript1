@@ -10,9 +10,8 @@ import {Eyes} from './Eyes'
 import * as utils from '@applitools/utils'
 
 export abstract class EyesRunner {
-  protected _spec: CoreSpec
-
-  private _manager: CoreEyesManager
+  protected _spec?: CoreSpec
+  private _manager?: CoreEyesManager
   private _eyes: Eyes<unknown, unknown, unknown>[] = []
 
   /** @internal */
@@ -34,7 +33,7 @@ export abstract class EyesRunner {
     logger?: Logger
     on?: (name: string, data?: Record<string, any>) => void
   }): Promise<CoreEyes<TDriver, TElement, TSelector>> {
-    if (!this._manager) this._manager = await this._spec.makeManager(this.config)
+    if (!this._manager) this._manager = await this._spec!.makeManager(this.config)
 
     return await this._manager.openEyes(options)
   }
@@ -42,36 +41,38 @@ export abstract class EyesRunner {
   async getAllTestResults(throwErr = true): Promise<TestResultsSummaryData> {
     if (!this._manager) return new TestResultsSummaryData()
     const [eyes] = this._eyes
-    const deleteTest: typeof this._spec.deleteTest = options =>
-      this._spec.deleteTest({
+    const deleteTest: NonNullable<typeof this._spec>['deleteTest'] = options =>
+      this._spec!.deleteTest({
         ...options,
         settings: {
           ...options.settings,
-          serverUrl: eyes.configuration.serverUrl,
-          apiKey: eyes.configuration.apiKey,
+          serverUrl: eyes.configuration.serverUrl!,
+          apiKey: eyes.configuration.apiKey!,
           proxy: eyes.configuration.proxy,
         },
       })
     try {
       const summary = await this._manager.closeManager({settings: {throwErr}})
       return new TestResultsSummaryData({summary, deleteTest})
-    } catch (err) {
-      if (!err.info?.result) throw err
-      const testResult = new TestResultsData({result: err.info.result, deleteTest})
-      if (err.reason === 'test failed') {
-        throw new TestFailedError(err.message, testResult)
-      } else if (err.reason === 'test different') {
-        throw new DiffsFoundError(err.message, testResult)
-      } else if (err.reason === 'test new') {
-        throw new NewTestError(err.message, testResult)
+    } catch (err: any) {
+      if (err.info?.result) {
+        const result = new TestResultsData({result: err.info.result, deleteTest})
+        if (err.reason === 'test failed') {
+          throw new TestFailedError(err.message, result)
+        } else if (err.reason === 'test different') {
+          throw new DiffsFoundError(err.message, result)
+        } else if (err.reason === 'test new') {
+          throw new NewTestError(err.message, result)
+        }
       }
+      throw err
     }
   }
 }
 
 export class VisualGridRunner extends EyesRunner {
-  private _testConcurrency: number
-  private _legacyConcurrency: number
+  private _testConcurrency?: number
+  private _legacyConcurrency?: number
 
   constructor(options?: RunnerOptions)
   /** @deprecated */

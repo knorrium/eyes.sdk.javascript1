@@ -1,3 +1,5 @@
+import {Eyes} from '../../src/types'
+import {makeLogger} from '@applitools/logger'
 import {makeFakeCore} from '../utils/fake-base-core'
 import {makeCheck} from '../../src/check'
 import assert from 'assert'
@@ -7,13 +9,16 @@ describe('check', () => {
     const fakeCore = makeFakeCore({
       hooks: {
         check({settings}) {
-          assert.strictEqual(settings.sendDom, true)
+          assert.strictEqual(settings!.sendDom, true)
         },
       },
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
-    const check = makeCheck({eyes: fakeEyes as any})
+    const check = makeCheck({
+      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      logger: makeLogger(),
+    })
 
     await check({settings: {enablePatterns: true}})
     await check({settings: {useDom: true}})
@@ -26,14 +31,17 @@ describe('check', () => {
     const fakeCore = makeFakeCore({
       hooks: {
         check({settings}) {
-          assert.strictEqual(settings.sendDom, true)
+          assert.strictEqual(settings!.sendDom, true)
         },
       },
       account: {rcaEnabled: true},
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
-    const check = makeCheck({eyes: fakeEyes as any})
+    const check = makeCheck({
+      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      logger: makeLogger(),
+    })
 
     await check()
     await check({settings: {enablePatterns: false}})
@@ -48,13 +56,16 @@ describe('check', () => {
 
     const fakeCore = makeFakeCore({
       hooks: {
-        check: ({settings}) => {
-          assert.deepStrictEqual(settings.overlap, {...defaultOverlap, ...overlaps[settings.stepIndex]})
+        check: ({settings}: any) => {
+          assert.deepStrictEqual(settings!.overlap, {...defaultOverlap, ...overlaps[settings!.stepIndex]})
         },
       },
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
-    const check = makeCheck({eyes: fakeEyes as any})
+    const check = makeCheck({
+      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      logger: makeLogger(),
+    })
     for (const [stepIndex, overlap] of overlaps.entries()) {
       await check({settings: {stepIndex, overlap}})
     }

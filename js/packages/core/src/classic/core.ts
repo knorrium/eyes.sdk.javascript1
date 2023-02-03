@@ -21,16 +21,16 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   core,
   agentId = 'core-classic',
   cwd = process.cwd(),
-  logger,
+  logger: defaultLogger,
 }: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TContext, TElement, TSelector> {
-  logger = logger?.extend({label: 'core-classic'}) ?? makeLogger({label: 'core-classic'})
+  const logger = defaultLogger?.extend({label: 'core-classic'}) ?? makeLogger({label: 'core-classic'})
   logger.log(`Core classic is initialized ${core ? 'with' : 'without'} custom base core`)
   core ??= makeBaseCore({agentId, cwd, logger})
   return utils.general.extend(core, {
     type: 'classic' as const,
-    isDriver: spec?.isDriver,
-    isElement: spec?.isElement,
-    isSelector: spec?.isSelector,
+    isDriver: spec && spec.isDriver,
+    isElement: spec && spec.isElement,
+    isSelector: spec && spec.isSelector,
     getViewportSize: spec && makeGetViewportSize({spec, logger}),
     setViewportSize: spec && makeSetViewportSize({spec, logger}),
     locate: makeLocate({spec, core, logger}),
