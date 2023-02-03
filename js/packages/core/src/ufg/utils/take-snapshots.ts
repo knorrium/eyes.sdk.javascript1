@@ -36,9 +36,9 @@ export async function takeSnapshots<TDriver extends Driver<unknown, unknown, unk
   if (driver.isWeb) {
     return takeDomSnapshots({driver, settings, hooks, provides, logger})
   } else {
-    const brokerUrl = await extractBrokerUrl({driver})
+    const brokerUrl = await extractBrokerUrl({driver, logger})
     if (brokerUrl) {
-      return takeSnapshotsWithNml({url: brokerUrl, settings, logger})
+      return (await takeSnapshotsWithNml({url: brokerUrl, settings, logger})) as AndroidSnapshot[] | IOSSnapshot[]
     } else {
       return takeVHSes({driver, settings, hooks, logger})
     }
