@@ -42,8 +42,8 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/logger": "1.1.42",
-    "@applitools/utils": "1.3.28",
+    "@applitools/logger": "1.1.44",
+    "@applitools/utils": "1.3.29",
     "body-parser": "1.20.0",
     "chalk": "3.0.0",
     "cookie-parser": "1.4.5",
