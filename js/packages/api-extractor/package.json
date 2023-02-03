@@ -30,8 +30,8 @@
     "dist"
   ],
   "scripts": {
-    "lint": "npx eslint '**/*.ts'",
-    "build": "npx tsc --project ./tsconfig.build.json",
+    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
+    "build": "yarn --cwd ../.. tsc --project ./tsconfig.build.json",
     "test": "mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register",
     "test:sanity": "yarn test",
     "preversion": "bongo preversion",

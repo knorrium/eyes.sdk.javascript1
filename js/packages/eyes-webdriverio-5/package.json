@@ -88,8 +88,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "npx eslint '**/*.ts'",
-    "build": "npx ttsc --project tsconfig.build.v$([ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ] && echo ${APPLITOOLS_WEBDRIVERIO_VERSION%%.*} || echo 8).json",
+    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
+    "build": "yarn --cwd ../.. ttsc --project tsconfig.build.v$([ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ] && echo ${APPLITOOLS_WEBDRIVERIO_VERSION%%.*} || echo 8).json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes.webdriverio.javascript5'",
     "test": "yarn test:service && yarn test:coverage",
     "test:sanity": "echo 'create sanity suite'",

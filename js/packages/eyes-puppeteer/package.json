@@ -38,8 +38,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "npx eslint '**/*.ts'",
-    "build": "npx ttsc --project ./tsconfig.build.json",
+    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
+    "build": "yarn --cwd ../.. ttsc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-puppeteer'",
     "test": "yarn test:coverage",
     "test:sanity": "echo 'create sanity suite'",

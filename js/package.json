@@ -8,8 +8,8 @@
   "scripts": {
     "render": "node ./scripts/render.js",
     "link": "node ./scripts/link.js",
-    "lint:changed": "npx eslint $(git --no-pager diff --name-only --relative --diff-filter=d -- \"*.ts\" \"*.js\")",
-    "lint:staged": "npx eslint $(git --no-pager diff --name-only --relative --diff-filter=d --cached -- \"*.ts\" \"*.js\")",
+    "lint:changed": "eslint $(git --no-pager diff --name-only --relative --diff-filter=d -- \"*.ts\" \"*.js\")",
+    "lint:staged": "eslint $(git --no-pager diff --name-only --relative --diff-filter=d --cached -- \"*.ts\" \"*.js\")",
     "prepare": "cd .. && husky install ./js/.husky"
   },
   "devDependencies": {

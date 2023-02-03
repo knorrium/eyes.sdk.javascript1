@@ -34,8 +34,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "npx eslint '**/*.ts'",
-    "build": "npx tsc --project ./tsconfig.build.json",
+    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
+    "build": "yarn --cwd ../.. tsc --project ./tsconfig.build.json",
     "test": "mocha --no-timeouts -r ts-node/register --parallel --jobs 15 './test/**/*.spec.ts'",
     "test:sanity": "yarn test:unit && yarn test:it",
     "test:it": "mocha --no-timeouts -r ts-node/register './test/it/**/*.spec.ts'",

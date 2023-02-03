@@ -41,8 +41,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "npx eslint '**/*.ts'",
-    "build": "npx ttsc --project ./tsconfig.build.json",
+    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
+    "build": "yarn --cwd ../.. ttsc --project ./tsconfig.build.json",
     "test": "mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
     "test:sanity": "yarn test",
     "setup": "yarn docker:setup",
