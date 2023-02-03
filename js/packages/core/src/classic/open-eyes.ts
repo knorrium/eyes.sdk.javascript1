@@ -47,29 +47,30 @@ export function makeOpenEyes<TDriver, TContext, TElement, TSelector>({
       }
       if (driver.isWeb) {
         settings.environment.userAgent ??= driver.userAgent
-        if (
+      }
+      if (!settings.environment.deviceName && driver.deviceName) {
+        settings.environment.deviceName = driver.deviceName
+      }
+      if (!settings.environment.os) {
+        if (driver.isNative && driver.platformName) {
+          settings.environment.os = driver.platformName
+          if (!settings.keepPlatformNameAsIs) {
+            if (settings.environment.os?.startsWith('android')) {
+              settings.environment.os = `Android${settings.environment.os.slice(7)}`
+            }
+            if (settings.environment.os?.startsWith('ios')) {
+              settings.environment.os = `iOS${settings.environment.os.slice(3)}`
+            }
+          }
+          if (driver.platformVersion) {
+            settings.environment.os += ` ${driver.platformVersion}`
+          }
+        } else if (
           driver.isChromium &&
           ((driver.isWindows && Number.parseInt(driver.browserVersion as string) >= 107) ||
             (driver.isMac && Number.parseInt(driver.browserVersion as string) >= 90))
         ) {
           settings.environment.os = `${driver.platformName} ${driver.platformVersion ?? ''}`.trim()
-        }
-      }
-      if (!settings.environment.deviceName && driver.deviceName) {
-        settings.environment.deviceName = driver.deviceName
-      }
-      if (!settings.environment.os && driver.isNative && driver.platformName) {
-        settings.environment.os = driver.platformName
-        if (!settings.keepPlatformNameAsIs) {
-          if (settings.environment.os?.startsWith('android')) {
-            settings.environment.os = `Android${settings.environment.os.slice(7)}`
-          }
-          if (settings.environment.os?.startsWith('ios')) {
-            settings.environment.os = `iOS${settings.environment.os.slice(3)}`
-          }
-        }
-        if (driver.platformVersion) {
-          settings.environment.os += ` ${driver.platformVersion}`
         }
       }
       if (!settings.environment.viewportSize || driver.isMobile) {
