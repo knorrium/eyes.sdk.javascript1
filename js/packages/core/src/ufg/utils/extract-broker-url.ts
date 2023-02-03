@@ -1,33 +1,30 @@
 import {type Driver} from '@applitools/driver'
+import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
 export async function extractBrokerUrl({
   driver,
+  logger,
 }: {
   driver: Driver<unknown, unknown, unknown, unknown>
+  logger: Logger
 }): Promise<string | null> {
+  if (!driver.isNative) return null
+  logger.log('Broker url extraction is started')
+  const element = await driver.element({type: 'accessibility id', selector: 'Applitools_View'})
+  if (!element) return null
   try {
-    const selector = driver.isIOS
-      ? '//XCUIElementTypeOther[@name="Applitools_View"]'
-      : driver.isAndroid
-      ? '//android.widget.TextView[@content-desc="Applitools_View"]'
-      : null
-    if (!selector) return null
-    const element = await driver.element({
-      type: 'xpath',
-      selector,
-    })
-    if (!element) return null
-    const result = JSON.parse(await element.getText())
-    if (result.nextPath) return result.nextPath
-    if (!result.error) {
-      const attempts = Array.from(Array(60).keys())
-      for (const _attempt of attempts) {
-        await utils.general.sleep(500)
-        const result = JSON.parse(await element.getText())
-        if (result.nextPath) return result.nextPath
+    let result: {error: string; nextPath: string | null}
+    do {
+      result = JSON.parse(await element.getText())
+      if (result.nextPath) {
+        logger.log('Broker url was extraction finished successfully with value', result.nextPath)
+        return result.nextPath
       }
-    }
+      await utils.general.sleep(1000)
+    } while (!result.error)
+    logger.error('Broker url extraction has failed with error', result.error)
+    return null
   } catch (error) {
     return null
   }
