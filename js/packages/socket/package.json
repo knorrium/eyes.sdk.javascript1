@@ -40,8 +40,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
-    "build": "yarn --cwd ../.. tsc --project ./tsconfig.build.json",
+    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
+    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
     "test": "mocha --no-timeouts -r ts-node/register ./test/**/*.spec.ts",
     "test:sanity": "yarn test",
     "deps": "bongo deps",

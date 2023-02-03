@@ -37,8 +37,8 @@
     "types"
   ],
   "scripts": {
-    "lint": "yarn --cwd ../.. eslint '**/*.ts'",
-    "build": "yarn --cwd ../.. ttsc --project ./tsconfig.build.json",
+    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
+    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-playwright'",
     "test": "yarn test:coverage",
     "test:sanity": "echo 'create sanity suite'",
