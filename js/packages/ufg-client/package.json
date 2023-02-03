@@ -47,17 +47,17 @@
   },
   "dependencies": {
     "@applitools/jsdom": "1.0.4",
-    "@applitools/logger": "1.1.43",
-    "@applitools/req": "1.1.28",
-    "@applitools/utils": "1.3.28",
+    "@applitools/logger": "1.1.44",
+    "@applitools/req": "1.1.29",
+    "@applitools/utils": "1.3.29",
     "abort-controller": "3.0.0",
     "postcss-value-parser": "4.2.0",
     "throat": "6.0.1"
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
-    "@applitools/test-server": "^1.1.22",
-    "@applitools/test-utils": "^1.5.11",
+    "@applitools/test-server": "^1.1.23",
+    "@applitools/test-utils": "^1.5.12",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
     "mocha": "^10.0.0",
