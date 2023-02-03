@@ -3,7 +3,7 @@ import {testServer} from '@applitools/test-server'
 import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
-describe('core e2e', () => {
+describe('data urls', () => {
   let page: spec.Driver, destroyPage: () => Promise<void>, server: any, baseUrl: string
 
   before(async () => {

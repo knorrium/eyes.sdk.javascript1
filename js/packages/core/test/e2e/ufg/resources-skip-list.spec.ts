@@ -10,7 +10,7 @@ describe('resources skip list', () => {
 
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
-    server = await makeTestServer({port: 5558, middlewares: ['ephemeral']})
+    server = await makeTestServer({middlewares: ['ephemeral']})
   })
 
   after(async () => {
@@ -19,7 +19,7 @@ describe('resources skip list', () => {
   })
 
   it('skips already fetched resources', async () => {
-    const pageUrl = adjustUrlToDocker('http://localhost:5558/skip-list/skip-list.html')
+    const pageUrl = adjustUrlToDocker(`http://localhost:${server.port}/skip-list/skip-list.html`)
     await driver.url(pageUrl)
     const core = makeCore({spec, concurrency: 10})
     const eyes = await core.openEyes({
@@ -34,9 +34,9 @@ describe('resources skip list', () => {
         },
       },
     })
-    await eyes.check({settings: {fully: true}})
+    await eyes.check({settings: {stepIndex: 0, fully: true}})
     await driver.url(pageUrl)
-    await eyes.check({settings: {fully: true}})
+    await eyes.check({settings: {stepIndex: 1, fully: true}})
     const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
     assert.strictEqual(result.status, 'Passed')
   })
