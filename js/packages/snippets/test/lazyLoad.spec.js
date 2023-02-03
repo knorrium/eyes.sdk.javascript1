@@ -77,12 +77,9 @@ describe('lazyLoad', () => {
 
     it('works on a page with a custom scrolling element', async () => {
       await page.goto(pages.snippetsTestPageInsideScrollableArea)
-      await page.evaluate(
-        `document.querySelector('#sre').scrollTo(${startingPosition.x}, ${startingPosition.y})`,
-      )
+      await page.evaluate(`document.querySelector('#sre').scrollTo(${startingPosition.x}, ${startingPosition.y})`)
       const scrollableHeight = await page.evaluate(
-        () =>
-          document.querySelector('#sre').scrollHeight - document.querySelector('#sre').clientHeight,
+        () => document.querySelector('#sre').scrollHeight - document.querySelector('#sre').clientHeight,
       )
       const sre = await page.$('#sre')
       await page.evaluate(lazyLoad, [sre, options])

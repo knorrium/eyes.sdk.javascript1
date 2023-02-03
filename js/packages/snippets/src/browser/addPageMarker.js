@@ -29,14 +29,8 @@ function addPageMarker([{mask, size = 1}]) {
   }
 
   const transform = {value: 'none', important: true}
-  const html = setElementStyleProperties([
-    document.documentElement,
-    {transform, '-webkit-transform': transform},
-  ])
-  const body = setElementStyleProperties([
-    document.body,
-    {transform, '-webkit-transform': transform},
-  ])
+  const html = setElementStyleProperties([document.documentElement, {transform, '-webkit-transform': transform}])
+  const body = setElementStyleProperties([document.body, {transform, '-webkit-transform': transform}])
 
   document.documentElement.setAttribute('data-applitools-original-transforms', JSON.stringify(html))
   document.body.setAttribute('data-applitools-original-transforms', JSON.stringify(body))

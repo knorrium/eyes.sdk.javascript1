@@ -3,9 +3,7 @@ const getElementXpath = require('./getElementXpath')
 function getContextInfo() {
   let isRoot
   try {
-    isRoot =
-      window.top.document === window.document ||
-      window.document['applitools-marker'] === 'root-context'
+    isRoot = window.top.document === window.document || window.document['applitools-marker'] === 'root-context'
   } catch (err) {
     isRoot = false
   }

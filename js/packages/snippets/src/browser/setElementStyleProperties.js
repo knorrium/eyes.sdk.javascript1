@@ -11,9 +11,7 @@ function setElementStyleProperties([element, properties] = []) {
   keys.forEach(prop => {
     element.style.setProperty(
       prop,
-      typeof properties[prop] === 'string' || !properties[prop]
-        ? properties[prop]
-        : properties[prop].value,
+      typeof properties[prop] === 'string' || !properties[prop] ? properties[prop] : properties[prop].value,
       properties[prop] && properties[prop].important ? 'important' : '',
     )
   })

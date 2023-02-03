@@ -18,10 +18,7 @@ describe('scrollTo', () => {
       await page.goto(url)
       const element = await page.$('#scrollable')
       await page.evaluate(scrollTo, [element, {x: 10, y: 11}])
-      const offset = await page.evaluate(
-        element => ({x: element.scrollLeft, y: element.scrollTop}),
-        element,
-      )
+      const offset = await page.evaluate(element => ({x: element.scrollLeft, y: element.scrollTop}), element)
       assert.deepStrictEqual(offset, {x: 10, y: 11})
     })
 

@@ -46,10 +46,7 @@ const generator = {
 
 const concat = {
   json(outputs) {
-    const json = outputs.reduce(
-      (json, output) => Object.assign(json, {[output.name]: output.code}),
-      {},
-    )
+    const json = outputs.reduce((json, output) => Object.assign(json, {[output.name]: output.code}), {})
     return JSON.stringify(json, null, 2)
   },
   snippet(outputs) {

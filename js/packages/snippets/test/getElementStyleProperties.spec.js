@@ -40,10 +40,7 @@ describe('getElementStyleProperties', () => {
         await driver.execute(function(element) {
           element.style.backgroundColor = 'red'
         }, element)
-        const styles = await driver.execute(getElementStyleProperties, [
-          element,
-          ['background-color'],
-        ])
+        const styles = await driver.execute(getElementStyleProperties, [element, ['background-color']])
         assert.deepStrictEqual(styles['background-color'], {value: 'red', important: false})
       })
     })

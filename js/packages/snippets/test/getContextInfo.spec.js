@@ -30,9 +30,7 @@ describe('getContextInfo', () => {
       await page.goto(url)
       const frame = await page.frame('frame')
       const expectedDocumentElement = await frame.evaluateHandle('document.documentElement')
-      const [documentElement, selector, isRoot, isCORS] = await frame
-        .evaluateHandle(getContextInfo)
-        .then(mapResult)
+      const [documentElement, selector, isRoot, isCORS] = await frame.evaluateHandle(getContextInfo).then(mapResult)
       assert.strictEqual(isRoot, false)
       assert.strictEqual(isCORS, false)
       assert.strictEqual(selector, '/HTML[1]/BODY[1]/DIV[1]/IFRAME[1]')
@@ -44,9 +42,7 @@ describe('getContextInfo', () => {
       const frame = await page.frame('frame')
       await frame.evaluate('document["applitools-marker"] = "root-context"')
       const expectedDocumentElement = await frame.evaluateHandle('document.documentElement')
-      const [documentElement, selector, isRoot, isCORS] = await frame
-        .evaluateHandle(getContextInfo)
-        .then(mapResult)
+      const [documentElement, selector, isRoot, isCORS] = await frame.evaluateHandle(getContextInfo).then(mapResult)
       assert.strictEqual(isRoot, true) // THIS IS THE IMPORTANT CHECK
       assert.strictEqual(isCORS, false)
       assert.strictEqual(selector, '/HTML[1]/BODY[1]/DIV[1]/IFRAME[1]')
@@ -56,9 +52,7 @@ describe('getContextInfo', () => {
     it('return top context info', async () => {
       await page.goto(url)
       const expectedDocumentElement = await page.evaluateHandle('document.documentElement')
-      const [documentElement, selector, isRoot, isCORS] = await page
-        .evaluateHandle(getContextInfo)
-        .then(mapResult)
+      const [documentElement, selector, isRoot, isCORS] = await page.evaluateHandle(getContextInfo).then(mapResult)
       assert.strictEqual(isRoot, true)
       assert.strictEqual(isCORS, false)
       assert.strictEqual(selector, null)

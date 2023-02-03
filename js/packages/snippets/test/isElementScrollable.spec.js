@@ -4,8 +4,7 @@ const {isElementScrollable} = require('../dist/index')
 describe('isElementScrollable', () => {
   const urls = {
     snippetsTestPage: 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/',
-    overflowingTestPage:
-      'https://applitools.github.io/demo/TestPages/OverflowingElementWithoutOverflowAttribute/',
+    overflowingTestPage: 'https://applitools.github.io/demo/TestPages/OverflowingElementWithoutOverflowAttribute/',
   }
 
   describe('chrome', () => {

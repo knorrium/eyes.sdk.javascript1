@@ -5,9 +5,7 @@ function getTranslateOffset([element = document.documentElement] = []) {
   const translates = Object.keys(transforms).reduce((translates, key) => {
     const transform = transforms[key].value
     if (transform) {
-      const match = transform.match(
-        /^translate\s*\(\s*(\-?[\d, \.]+)px\s*(,\s*(-?[\d, \.]+)px)?\s*\)/,
-      )
+      const match = transform.match(/^translate\s*\(\s*(\-?[\d, \.]+)px\s*(,\s*(-?[\d, \.]+)px)?\s*\)/)
       if (!match) {
         translates.push({x: 0, y: 0})
       } else {
@@ -18,9 +16,7 @@ function getTranslateOffset([element = document.documentElement] = []) {
     }
     return translates
   }, [])
-  const isSameOffsets = translates.every(
-    offset => translates[0].x === offset.x || translates[0].y === offset.y,
-  )
+  const isSameOffsets = translates.every(offset => translates[0].x === offset.x || translates[0].y === offset.y)
   if (!isSameOffsets) {
     throw new Error('Got different css positions!')
   }

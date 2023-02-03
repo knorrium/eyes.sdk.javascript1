@@ -3,10 +3,7 @@ const getElementInnerOffset = require('./getElementInnerOffset')
 const getDocumentScrollingElement = require('./getDocumentScrollingElement')
 
 module.exports = function getElementRect([element, isClient = false] = []) {
-  if (
-    element === document.documentElement ||
-    element.tagName.toLowerCase() === getDocumentScrollingElement()
-  ) {
+  if (element === document.documentElement || element.tagName.toLowerCase() === getDocumentScrollingElement()) {
     return {x: 0, y: 0, width: element.clientWidth, height: element.clientHeight}
   }
 
