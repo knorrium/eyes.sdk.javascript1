@@ -110,15 +110,21 @@ Eyes-Cypress ships with official type declarations for TypeScript. This allows y
 
 Add this file to your project with either: 
 1. Adding the path to your [tsconfig](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file:
-    ```
-    {
-      "files": ["./node_modules/@applitools/eyes-cypress/index.d.ts"],
-      ...
-    }
-    ```
+
+```json
+{
+  ...
+  "compilerOptions": {
+    ...
+    "types": ["@applitools/eyes-cypress", "cypress", "node"]
+    ...
+  }
+}
+```
+
 2. Copying the file to to your [cypress/support/](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Folder-Structure) dir:
     ```
-    cp node_modules/@applitools/eyes-cypress/index.d.ts ./cypress/support/    
+    cp node_modules/@applitools/eyes-cypress/index.d.ts node_modules/@applitools/eyes-cypress/expose.d.ts ./cypress/support/    
     ```
 ### Applitools API key
 
