@@ -23,7 +23,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fix instability when getting information to connect to the NML
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 

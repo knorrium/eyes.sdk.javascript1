@@ -10,6 +10,12 @@
 
 
 
+## 5.41.1 - 2023/2/6
+
+### Features
+### Bug fixes
+- Fix instability when getting information to connect to the NML
+
 ## 5.41.0 - 2023/2/1
 
 ### Features
