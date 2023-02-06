@@ -1,8 +1,8 @@
 /* global browser */
 'use strict'
-const {expect} = require('chai')
 const {getTestInfo} = require('@applitools/test-utils')
 const {version} = require('../../../package.json')
+const {strictEqual} = require('assert')
 
 describe('vg', () => {
   it('full page', async () => {
@@ -12,6 +12,6 @@ describe('vg', () => {
   after(async () => {
     const testResults = await browser.eyesGetTestResults()
     const data = await getTestInfo(testResults, process.env.APPLITOOLS_API_KEY)
-    expect(data.startInfo.agentId).to.equal(`eyes-webdriverio-service.visualgrid/${version}`)
+    strictEqual(data.startInfo.agentId, `eyes-webdriverio-service.visualgrid/${version}`)
   })
 })

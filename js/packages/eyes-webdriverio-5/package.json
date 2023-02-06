@@ -111,15 +111,15 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core": "1.4.6",
-    "@applitools/eyes-api": "1.13.1",
-    "@applitools/spec-driver-webdriverio": "1.4.22"
+    "@applitools/core": "1.4.7",
+    "@applitools/eyes-api": "1.13.2",
+    "@applitools/spec-driver-webdriverio": "1.4.23"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
     "@applitools/bongo": "^2.2.2",
     "@applitools/sdk-coverage-tests": "^2.7.10",
-    "@applitools/test-utils": "1.5.11",
+    "@applitools/test-utils": "1.5.12",
     "@types/mocha": "^9.1.1",
     "@types/node": "16",
     "@wdio/cli": "^8.2.2",

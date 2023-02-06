@@ -1,9 +1,9 @@
 /* global browser */
 'use strict'
-const {expect} = require('chai')
 const {Target} = require('../../../dist')
 const {getTestInfo} = require('@applitools/test-utils')
 const {version} = require('../../../package.json')
+const {strictEqual} = require('assert')
 
 describe('EyesServiceTest', () => {
   it('checkWindow', async () => {
@@ -11,6 +11,6 @@ describe('EyesServiceTest', () => {
     await browser.eyesCheck('', Target.window())
     const testResults = await browser.eyesGetTestResults()
     const data = await getTestInfo(testResults, process.env.APPLITOOLS_API_KEY)
-    expect(data.startInfo.agentId).to.equal(`eyes-webdriverio-service/${version}`)
+    strictEqual(data.startInfo.agentId, `eyes-webdriverio-service/${version}`)
   })
 })
