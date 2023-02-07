@@ -39,6 +39,7 @@
     "build": "ttsc",
     "test:build": "cd test/ext && yarn && yarn webpack",
     "test": "yarn test:build && mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register",
+    "test:xvfb": "xvfb-run --auto-servernum -- yarn test",
     "test:sanity": "yarn test",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-browser-extension' -f links='types utils test-utils'",
