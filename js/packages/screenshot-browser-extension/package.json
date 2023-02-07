@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@applitools/driver": "1.11.8",
-    "@applitools/core": "13.11.19",
+    "@applitools/core": "1.4.7",
     "@applitools/logger": "1.1.30",
     "@applitools/screenshoter": "3.7.9",
     "@applitools/spec-driver-browser-extension": "1.0.0",
