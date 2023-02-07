@@ -37,7 +37,7 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "ttsc",
-    "test:build": "yarn build && cd test/ext && yarn webpack",
+    "test:build": "cd test/ext && yarn && yarn webpack",
     "test": "yarn test:build && mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register",
     "test:sanity": "yarn test",
     "deps": "bongo deps",
