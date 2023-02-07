@@ -50,6 +50,7 @@ jobs:
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/spec-driver-browser-extension
+          test-type: xvfb
   publish:
     needs: [test]
     name: Publish
