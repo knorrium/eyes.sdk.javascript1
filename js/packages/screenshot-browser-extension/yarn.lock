@@ -256,10 +256,6 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.8.tgz#21295baef3951a934c59e8e0cbd7a92eca94b2d5"
   integrity sha512-YjwI0GIXy53vz+bOXd4GwHXYjrsfkyY1JX3u3wH6OblAIRANYsgNWmNVaAPubktr8f5d78fdm1sA2SD9k4G6Fg==
 
-"@applitools/spec-driver-browser-extension@link:../spec-driver-browser-extension":
-  version "0.0.0"
-  uid ""
-
 "@applitools/spec-driver-playwright@^1.3.4":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@applitools/spec-driver-playwright/-/spec-driver-playwright-1.3.4.tgz#b2904a60d95679e27f4c000e1e026e9b2eeecf9f"
@@ -5250,7 +5246,7 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
-webextension-polyfill@0.10.0, webextension-polyfill@^0.10.0:
+webextension-polyfill@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.10.0.tgz#ccb28101c910ba8cf955f7e6a263e662d744dbb8"
   integrity sha512-c5s35LgVa5tFaHhrZDnr3FpQpjj1BB+RXhLTYUxGqBVN460HkbM8TBtEqdXWbpTKfzwCcjAZVF7zXCYSKtcp9g==

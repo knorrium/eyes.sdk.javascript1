@@ -108,7 +108,7 @@ For `typescript` use you must add the following code to your `tsconfig.json`:
 
 Eyes-Cypress ships with official type declarations for TypeScript. This allows you to add eyes commands to your TypeScript tests.
 
-Add this file to your project with either: 
+Add this file to your project using one of the following two options:
 1. Adding the path to your [tsconfig](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) file:
 
 ```json
@@ -122,9 +122,9 @@ Add this file to your project with either:
 }
 ```
 
-2. Copying the file to to your [cypress/support/](https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html#Folder-Structure) dir:
+2. Create `index.d.ts` file under `cypress/support` folder that contains:
     ```
-    cp node_modules/@applitools/eyes-cypress/index.d.ts node_modules/@applitools/eyes-cypress/expose.d.ts ./cypress/support/    
+      import "@applitools/eyes-cypress"
     ```
 ### Applitools API key
 
