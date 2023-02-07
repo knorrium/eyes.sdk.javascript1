@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Applitools Centra Screenshot Capture",
+  "description": "Take a screenshot and save it to your system clipboard",
+  "version": "__PACKAGE_VERSION__",
+  "version_name": "__PACKAGE_VERSION__",
+  "action": {
+    "default_title": "Click to capture screenshot to system clipboard"
+  },
+  "icons": {
+    "16": "assets/ChromeExt_16_LightBG.png",
+    "32": "assets/ChromeExt_32LightBG.png",
+    "48": "assets/ChromeExt_80_LightBG.png",
+    "128": "assets/ChromeExt_126_LightBG.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs",
+    "storage",
+    "clipboardWrite",
+    "contextMenus",
+    "notifications"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

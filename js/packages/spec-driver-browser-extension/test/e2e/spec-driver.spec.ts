@@ -1,15 +1,19 @@
-/* global browser */
-
-const assert = require('assert')
-const spec = require('../utils/spec-driver')
+import assert from 'assert'
+import * as path from 'path'
+import * as spec from '@applitools/spec-driver-playwright'
 
 describe('spec driver', async () => {
-  let driver, backgroundPage, contentPage, destroyPage
+  let driver: any, backgroundPage: any, contentPage: any, destroyPage: any
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
+
+  async function build(env: any) {
+    const extPath = path.resolve(process.cwd(), 'test/ext/dist')
+    return spec.build({...env, extension: extPath})
+  }
 
   describe('onscreen desktop (@chrome)', async () => {
     before(async () => {
-      ;[contentPage, destroyPage] = await spec.build({browser: 'chromium'})
+      ;[contentPage, destroyPage] = await build({browser: 'chromium'})
 
       backgroundPage =
         contentPage.context().serviceWorkers()[0] || (await contentPage.context().waitForEvent('serviceworker'))
@@ -18,11 +22,13 @@ describe('spec driver', async () => {
 
       contentPage.on('console', async msg => {
         for (let i = 0; i < msg.args().length; ++i)
+          // eslint-disable-next-line no-console
           console.log(`${i}: ${JSON.stringify(await msg.args()[i].jsonValue())}`)
       })
 
       backgroundPage.on('console', async msg => {
         for (let i = 0; i < msg.args().length; ++i)
+          // eslint-disable-next-line no-console
           console.log(`${i}: ${JSON.stringify(await msg.args()[i].jsonValue())}`)
       })
 
@@ -153,7 +159,7 @@ describe('spec driver', async () => {
       async ([driver]) => {
         const frames = await browser.webNavigation.getAllFrames({tabId: driver.tabId})
         return frames.find(
-          frame => frame.url === 'https://applitools.github.io/demo/TestPages/FramesTestPage/frame2.html',
+          (frame: any) => frame.url === 'https://applitools.github.io/demo/TestPages/FramesTestPage/frame2.html',
         )
       },
       [driver],

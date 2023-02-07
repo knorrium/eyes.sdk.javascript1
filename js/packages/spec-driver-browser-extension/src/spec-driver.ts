@@ -1,21 +1,34 @@
 import browser from 'webextension-polyfill'
 import * as utils from '@applitools/utils'
+import type {Size} from '@applitools/utils'
+import type {Ref} from './refer'
+
+type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
+type Driver = {windowId: number; tabId: number}
+type Context = {windowId: number; tabId: number; frameId: number}
+type Element = globalThis.Element | Ref
+
+declare global {
+  interface Window {
+    refer: any
+  }
+}
 
 // #region UTILITY
 
-export function isDriver(driver) {
+export function isDriver(driver: any) {
   return utils.types.has(driver, ['windowId', 'tabId'])
 }
-export function isContext(context) {
+export function isContext(context: any) {
   return utils.types.has(context, ['windowId', 'tabId', 'frameId'])
 }
-export function isElement(element) {
+export function isElement(element: any) {
   return utils.types.has(element, 'applitools-ref-id')
 }
-export function isSelector(selector) {
+export function isSelector(selector: any) {
   return utils.types.has(selector, ['type', 'selector'])
 }
-export function transformSelector(selector) {
+export function transformSelector(selector: CommonSelector) {
   if (utils.types.isString(selector)) {
     return {type: 'css', selector: selector}
   } else if (utils.types.has(selector, 'selector')) {
@@ -24,10 +37,10 @@ export function transformSelector(selector) {
   }
   return selector
 }
-export function extractContext(driver) {
+export function extractContext(driver: Driver) {
   return {...driver, frameId: 0}
 }
-export function isStaleElementError(error) {
+export function isStaleElementError(error: any) {
   if (!error) return false
   error = error.originalError || error
   return error instanceof Error && error.message === 'StaleElementReferenceError'
@@ -37,8 +50,8 @@ export function isStaleElementError(error) {
 
 // #region COMMANDS
 
-export async function executeScript(context, script, arg) {
-  const [{result, error}] = await browser.scripting.executeScript({
+export async function executeScript(context: Context, script: (arg: any) => any, arg: any) {
+  const [{result, error}]: any = await browser.scripting.executeScript({
     target: {tabId: context.tabId, frameIds: [context.frameId || 0]},
     func: script,
     args: [arg || null],
@@ -51,19 +64,19 @@ export async function executeScript(context, script, arg) {
   }
   return result
 }
-export async function mainContext(context) {
+export async function mainContext(context: Context) {
   return {...context, frameId: 0}
 }
-export async function parentContext(context) {
+export async function parentContext(context: Context) {
   const frames = await browser.webNavigation.getAllFrames({tabId: context.tabId})
   const frame = frames.find(frame => frame.frameId === context.frameId)
-  return {...context, frameId: frame.parentFrameId}
+  return {...context, frameId: frame?.parentFrameId}
 }
-export async function childContext(context, element) {
+export async function childContext(context: Context, element: Element) {
   const childFrameId = await new Promise(async (resolve, reject) => {
     const key = utils.general.guid()
     browser.runtime.onMessage.addListener(handler)
-    function handler(data, sender) {
+    function handler(data: any, sender: any) {
       if (data.key === key) {
         resolve(sender.frameId)
         browser.runtime.onMessage.removeListener(handler)
@@ -72,7 +85,7 @@ export async function childContext(context, element) {
     await browser.scripting.executeScript({
       target: {tabId: context.tabId, frameIds: [context.frameId || 0]},
       func: (element, key) => {
-        refer.deref(element).contentWindow.postMessage({key, isApplitools: true}, '*') // eslint-disable-line no-undef
+        window.refer.deref(element).contentWindow.postMessage({key, isApplitools: true}, '*') // eslint-disable-line no-undef
       },
       args: [element, key],
     })
@@ -81,16 +94,16 @@ export async function childContext(context, element) {
 
   return {...context, frameId: childFrameId}
 }
-export async function findElement(context, selector, parent) {
+export async function findElement(context: Context, selector: CommonSelector, parent?: Element | Node) {
   const [{result}] = await browser.scripting.executeScript({
     target: {tabId: context.tabId, frameIds: [context.frameId || 0]},
     /* eslint-disable no-undef */
     func: (selector, parent) => {
       if (selector.type === 'css') {
-        const root = parent ? refer.deref(parent) : document
-        return refer.ref(root.querySelector(selector.selector))
+        const root = parent ? window.refer.deref(parent) : document
+        return window.refer.ref(root.querySelector(selector.selector))
       } else if (selector.type === 'xpath') {
-        return refer.ref(
+        return window.refer.ref(
           document.evaluate(selector.selector, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue,
         )
       }
@@ -100,19 +113,19 @@ export async function findElement(context, selector, parent) {
   })
   return result
 }
-export async function findElements(context, selector, parent) {
+export async function findElements(context: Context, selector: CommonSelector, parent?: Element | Node) {
   const [{result}] = await browser.scripting.executeScript({
     target: {tabId: context.tabId, frameIds: [context.frameId || 0]},
     /* eslint-disable no-undef */
     func: (selector, parent) => {
       if (selector.type === 'css') {
-        const root = parent ? refer.deref(parent) : document
-        return Array.from(root.querySelectorAll(selector.selector), refer.ref)
+        const root = parent ? window.refer.deref(parent) : document
+        return Array.from(root.querySelectorAll(selector.selector), window.refer.ref)
       } else if (selector.type === 'xpath') {
         const iterator = document.evaluate(selector.selector, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE)
         const elements = []
         for (let element = iterator.iterateNext(); element !== null; element = iterator.iterateNext()) {
-          elements.push(refer.ref(element))
+          elements.push(window.refer.ref(element))
         }
         return elements
       }
@@ -122,14 +135,14 @@ export async function findElements(context, selector, parent) {
   })
   return result
 }
-export async function getWindowSize(driver) {
+export async function getWindowSize(driver: Driver): Promise<Size> {
   const [{result}] = await browser.scripting.executeScript({
     target: {tabId: driver.tabId, frameIds: [0]},
     func: () => ({width: window.outerWidth, height: window.outerHeight}),
   })
   return result
 }
-export async function setWindowSize(driver, size) {
+export async function setWindowSize(driver: Driver, size: Size) {
   await browser.windows.update(driver.windowId, {
     state: 'normal',
     left: 0,
@@ -138,10 +151,10 @@ export async function setWindowSize(driver, size) {
     height: size.height,
   })
 }
-export async function getCookies(_driver) {
+export async function getCookies(_driver: Driver) {
   const cookies = await browser.cookies.getAll({})
   return cookies.map(cookie => {
-    const copy = {
+    const copy: any = {
       ...cookie,
       expiry: cookie.expirationDate,
       sameSite:
@@ -156,7 +169,7 @@ export async function getCookies(_driver) {
     return copy
   })
 }
-export async function takeScreenshot(driver) {
+export async function takeScreenshot(driver: Driver) {
   const [activeTab] = await browser.tabs.query({windowId: driver.windowId, active: true})
   await browser.tabs.update(driver.tabId, {active: true})
   const url = await browser.tabs.captureVisibleTab(driver.windowId, {format: 'png'})
@@ -164,11 +177,11 @@ export async function takeScreenshot(driver) {
   await utils.general.sleep(500)
   return url.replace(/^data:image\/png;base64,/, '')
 }
-export async function getTitle(driver) {
+export async function getTitle(driver: Driver) {
   const {title} = await browser.tabs.get(driver.tabId)
   return title
 }
-export async function getUrl(driver) {
+export async function getUrl(driver: Driver) {
   const {url} = await browser.tabs.get(driver.tabId)
   return url
 }

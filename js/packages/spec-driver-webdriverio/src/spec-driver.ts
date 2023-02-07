@@ -421,6 +421,14 @@ const browserOptionsNames: Record<string, string> = {
   chrome: 'goog:chromeOptions',
   firefox: 'moz:firefoxOptions',
 }
+/*
+ * Spawn a browser with a given configuration (INTERNAL USE ONLY)
+ *
+ * NOTE:
+ * This function is intended for internal use only. As a result it relies on some dev dependencies.
+ * When wiring the spec-driver up to an SDK and calling this function, if you don't have the same dev deps
+ * installed in the SDK, then this function will error.
+ */
 export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
   const webdriverio = require('webdriverio')
   const chromedriver = require('chromedriver')

@@ -2,21 +2,21 @@ import * as utils from '@applitools/utils'
 
 const REF_ID = 'applitools-ref-id'
 
-export function makeRefer({check = () => true, validate = () => void 0} = {}) {
+export function makeRefer({check = (_arg: any) => true, validate = (_arg: any) => void 0} = {}) {
   const store = new Map()
   const shorthands = new Map()
 
   return {isRef, get, ref, deref}
 
-  function isRef(ref) {
+  function isRef(ref: any) {
     return utils.types.has(ref, REF_ID)
   }
 
-  function get(key) {
+  function get(key: any) {
     return shorthands.get(key)
   }
 
-  function ref(value, key) {
+  function ref(value: any, key?: any): any {
     if (check(value)) {
       const refId = utils.general.guid()
       store.set(refId, value)
@@ -32,7 +32,7 @@ export function makeRefer({check = () => true, validate = () => void 0} = {}) {
     }
   }
 
-  function deref(ref) {
+  function deref(ref: any): any {
     if (isRef(ref)) {
       const value = store.get(ref[REF_ID])
       validate(value)
@@ -46,3 +46,5 @@ export function makeRefer({check = () => true, validate = () => void 0} = {}) {
     }
   }
 }
+
+export type Ref = {'applitools-ref-id': string}

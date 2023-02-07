@@ -223,6 +223,14 @@ export async function waitUntilDisplayed(frame: Context, selector: Selector): Pr
 
 // #region BUILD
 const browserNames = ['chrome', 'firefox']
+/*
+ * Spawn a browser with a given configuration (INTERNAL USE ONLY)
+ *
+ * NOTE:
+ * This function is intended for internal use only. As a result it relies on some dev dependencies.
+ * When wiring the spec-driver up to an SDK and calling this function, if you don't have the same dev deps
+ * installed in the SDK, then this function will error.
+ */
 export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
   const puppeteer = require('puppeteer')
   const parseEnv = require('@applitools/test-utils/src/parse-env')

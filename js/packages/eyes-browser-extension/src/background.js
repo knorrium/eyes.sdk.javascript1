@@ -1,8 +1,7 @@
 import browser from 'webextension-polyfill'
 import {makeSDK} from '@applitools/eyes-sdk-core'
 import {makeMessenger} from './messenger'
-import {makeRefer} from './refer'
-import * as spec from './spec-driver'
+import {spec, makeRefer} from '@applitools/spec-driver-browser-extension'
 
 globalThis.browser = browser
 globalThis.spec = spec
