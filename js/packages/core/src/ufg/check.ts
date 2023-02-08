@@ -234,7 +234,9 @@ export function makeCheck<TSpec extends SpecType>({
 
           return {...result, eyes: baseEyes, renderer}
         } catch (error: any) {
-          await baseEyes.abort({settings: {testMetadata: await driver?.getSessionMetadata()}})
+          if (baseEyes.running && !signal?.aborted) {
+            await baseEyes.abort({settings: {testMetadata: await driver?.getSessionMetadata()}})
+          }
           error.info = {eyes: baseEyes}
           throw error
         }
