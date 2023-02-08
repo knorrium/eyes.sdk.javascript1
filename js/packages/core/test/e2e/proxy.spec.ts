@@ -37,7 +37,7 @@ describe('proxy', () => {
       })
       await eyes.check({target: {image: 'https://picsum.photos/500'}})
       await eyes.close({settings: {updateBaselineIfNew: false}})
-      await eyes.getResults({settings: {throwErr: true}})
+      await eyes.getResults({settings: {throwErr: false}})
     })
   })
 

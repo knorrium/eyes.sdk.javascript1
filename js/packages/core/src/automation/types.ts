@@ -30,12 +30,12 @@ export interface Core<
     logger?: Logger
   }): Promise<BaseCore.LocateResult<TLocator>>
   locateText<TPattern extends string>(options: {
-    target?: TTarget
+    target: TTarget
     settings: LocateTextSettings<TPattern, TSpec>
     logger?: Logger
   }): Promise<BaseCore.LocateTextResult<TPattern>>
   extractText(options: {
-    target?: TTarget
+    target: TTarget
     settings: MaybeArray<ExtractTextSettings<TSpec>>
     logger?: Logger
   }): Promise<string[]>

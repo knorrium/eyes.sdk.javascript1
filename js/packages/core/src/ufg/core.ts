@@ -7,6 +7,8 @@ import {makeCore as makeBaseCore} from '@applitools/core-base'
 import {makeGetViewportSize} from '../automation/get-viewport-size'
 import {makeSetViewportSize} from '../automation/set-viewport-size'
 import {makeLocate} from '../automation/locate'
+import {makeLocateText} from '../automation/locate-text'
+import {makeExtractText} from '../automation/extract-text'
 import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 import throat from 'throat'
@@ -73,6 +75,8 @@ export function makeCore<TSpec extends SpecType>({
     getViewportSize: spec && makeGetViewportSize({spec, logger}),
     setViewportSize: spec && makeSetViewportSize({spec, logger}),
     locate: makeLocate({spec, core, logger}),
+    locateText: makeLocateText({spec, core, logger}),
+    extractText: makeExtractText({spec, core, logger}),
     openEyes: makeOpenEyes({spec, client, core, logger}),
   })
 }

@@ -22,6 +22,7 @@ describe('extract-text', () => {
     await core.setViewportSize!({target: driver, size: {width: 700, height: 460}})
     await driver.url('https://applitools.github.io/demo/TestPages/OCRPage')
     const strings = await core.extractText({
+      target: driver,
       settings: [
         {...serverSettings, region: 'body > h1'},
         {...serverSettings, region: {type: 'css', selector: 'body > h1'}},
