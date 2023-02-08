@@ -88,7 +88,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-storybook":
   feature:
-    - 
+    - Add the option to send external http headers to Puppeteer Page object
   bug-fix:
     - 
 "@applitools/eyes-webdriverio5-service":

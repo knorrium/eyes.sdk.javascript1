@@ -22,6 +22,10 @@ function makeInitPage({iframeUrl, config, browser, logger, getTransitiongIntoIE,
       });
     }
 
+    if (config.puppeteerExtraHTTPHeader) {
+      await page.setExtraHTTPHeaders(config.puppeteerExtraHTTPHeaders);
+    }
+
     page.on('close', async () => {
       if (!getTransitiongIntoIE() && pagePool.isInPool(pageId)) {
         logger.log(
