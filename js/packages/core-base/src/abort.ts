@@ -1,4 +1,4 @@
-import type {AbortSettings, TestResult} from './types'
+import type {AbortSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 
@@ -8,16 +8,14 @@ type Options = {
 }
 
 export function makeAbort({requests, logger: defaultLogger}: Options) {
-  let results
   return async function abort({
     settings,
     logger = defaultLogger,
   }: {
     settings?: AbortSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     logger.log('Command "abort" is called with settings', settings)
-    results ??= await requests.abort({settings, logger})
-    return results
+    await requests.abort({settings, logger})
   }
 }

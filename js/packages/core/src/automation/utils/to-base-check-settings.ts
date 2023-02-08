@@ -1,16 +1,16 @@
 import type {Region} from '@applitools/utils'
-import type {CheckSettings as BaseCheckSettings} from '@applitools/core-base'
 import type {CheckSettings} from '../types'
-import {type Selector} from '@applitools/driver'
+import type {CheckSettings as BaseCheckSettings} from '@applitools/core-base'
+import {type SpecType, type ElementReference, type Selector} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
-export function toBaseCheckSettings<TElement, TSelector>({settings}: {settings: CheckSettings<TElement, TSelector>}) {
+export function toBaseCheckSettings<TSpec extends SpecType>({settings}: {settings: CheckSettings<TSpec>}) {
   const regionTypes = ['ignore', 'layout', 'strict', 'content', 'floating', 'accessibility'] as const
   const elementReferencesToCalculate = regionTypes.flatMap(regionType => {
     return (settings[`${regionType}Regions`] ?? []).reduce((regions, reference) => {
       const {region} = utils.types.has(reference, 'region') ? reference : {region: reference}
       return !isRegion(region) ? regions.concat(region) : regions
-    }, [] as (TElement | Selector<TSelector>)[])
+    }, [] as ElementReference<TSpec>[])
   })
 
   const elementReferenceToTarget = !isRegion(settings.region) ? settings.region : undefined

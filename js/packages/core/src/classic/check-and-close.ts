@@ -1,33 +1,37 @@
-import type {ClassicTarget, DriverTarget, ImageTarget, Eyes, CheckSettings, CloseSettings, TestResult} from './types'
-import type {CheckSettings as BaseCheckSettings, CloseSettings as BaseCloseSettings} from '@applitools/core-base'
+import type {Target, DriverTarget, Eyes, CheckSettings, CloseSettings, TestResult} from './types'
+import type {
+  Target as BaseTarget,
+  CheckSettings as BaseCheckSettings,
+  CloseSettings as BaseCloseSettings,
+} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
-import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
+import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from '../automation/utils/take-screenshot'
 import {takeDomCapture} from './utils/take-dom-capture'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import * as utils from '@applitools/utils'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  eyes: Eyes<TDriver, TContext, TElement, TSelector>
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  eyes: Eyes<TSpec>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
+export function makeCheckAndClose<TSpec extends SpecType>({
   eyes,
   target: defaultTarget,
   spec,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
+}: Options<TSpec>) {
   return async function checkAndClose({
     target = defaultTarget,
     settings = {},
     logger = defaultLogger,
   }: {
-    target?: ClassicTarget<TDriver, TContext, TElement, TSelector>
-    settings?: CheckSettings<TElement, TSelector> & CloseSettings
+    target?: Target<TSpec>
+    settings?: CheckSettings<TSpec> & CloseSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
     logger.log('Command "checkAndClose" is called with settings', settings)
@@ -53,13 +57,13 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
       settings: {...settings, regionsToCalculate: elementReferencesToCalculate},
       logger,
     })
-    const baseTarget: ImageTarget = {
+    const baseTarget = {
       name: await driver.getTitle(),
       source: await driver.getUrl(),
       image: await screenshot.image.toPng(),
       locationInViewport: utils.geometry.location(screenshot.region),
       isTransformed: true,
-    }
+    } as BaseTarget
     const baseSettings = getBaseCheckSettings({calculatedRegions: screenshot.calculatedRegions})
     if (driver.isWeb && settings.sendDom) {
       if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')

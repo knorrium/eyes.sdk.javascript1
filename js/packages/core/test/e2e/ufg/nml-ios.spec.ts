@@ -35,7 +35,8 @@ describe('nml - ios', () => {
         renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12', version: 'latest-1'}}],
       },
     })
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })

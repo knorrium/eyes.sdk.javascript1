@@ -1,4 +1,4 @@
-import type {ImageTarget, LocateSettings, LocateResult} from './types'
+import type {Target, LocateSettings, LocateResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {type CoreRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
@@ -14,7 +14,7 @@ export function makeLocate({requests, logger: defaultLogger}: Options) {
     settings,
     logger = defaultLogger,
   }: {
-    target: ImageTarget
+    target: Target
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {

@@ -3,6 +3,8 @@ import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCoreRequests} from './server/requests'
 import {makeOpenEyes} from './open-eyes'
 import {makeLocate} from './locate'
+import {makeLocateText} from './locate-text'
+import {makeExtractText} from './extract-text'
 import {makeCloseBatch} from './close-batch'
 import {makeDeleteTest} from './delete-test'
 
@@ -20,6 +22,8 @@ export function makeCore({agentId = 'core-base', cwd = process.cwd(), logger: de
   return {
     openEyes: makeOpenEyes({requests: coreRequests, logger, cwd}),
     locate: makeLocate({requests: coreRequests, logger}),
+    locateText: makeLocateText({requests: coreRequests, logger}),
+    extractText: makeExtractText({requests: coreRequests, logger}),
     closeBatch: makeCloseBatch({requests: coreRequests, logger}),
     deleteTest: makeDeleteTest({requests: coreRequests, logger}),
     getAccountInfo: coreRequests.getAccountInfo,

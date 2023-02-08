@@ -1,17 +1,17 @@
 import type {ServerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
-import {type Driver} from '@applitools/driver'
+import {type SpecType, type Driver} from '@applitools/driver'
 import {type Renderer, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
 
 export type VHSesSettings = ServerSettings & {renderers: Renderer[]; waitBeforeCapture?: number}
 
-export async function takeVHSes<TDriver extends Driver<unknown, unknown, unknown, unknown>>({
+export async function takeVHSes<TSpec extends SpecType>({
   driver,
   settings,
   hooks,
   logger,
 }: {
-  driver: TDriver
+  driver: Driver<TSpec>
   settings: VHSesSettings
   hooks?: {beforeSnapshots?(): void | Promise<void>; beforeEachSnapshot?(): void | Promise<void>}
   logger: Logger

@@ -41,7 +41,8 @@ describe('nml - android', () => {
         renderers: [{androidDeviceInfo: {deviceName: 'Pixel 5', version: 'latest'}}],
       },
     })
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })

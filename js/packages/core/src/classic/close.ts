@@ -1,34 +1,27 @@
-import type {CloseSettings, TestResult} from './types'
+import type {CloseSettings} from './types'
 import type {Eyes} from './types'
 import {type Logger} from '@applitools/logger'
 import type {DriverTarget} from './types'
-import {isDriver, makeDriver, type SpecDriver} from '@applitools/driver'
+import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  eyes: Eyes<TDriver, TContext, TElement, TSelector>
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  eyes: Eyes<TSpec>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeClose<TDriver, TContext, TElement, TSelector>({
-  eyes,
-  target,
-  spec,
-  logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
+export function makeClose<TSpec extends SpecType>({eyes, target, spec, logger: defaultLogger}: Options<TSpec>) {
   return async function close({
     settings,
     logger = defaultLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const testMetadata = await driver?.getSessionMetadata()
     const baseEyes = await eyes.getBaseEyes()
-    return (
-      await Promise.all(baseEyes.map(baseEyes => baseEyes.close({settings: {...settings, testMetadata}, logger})))
-    ).flat()
+    await Promise.all(baseEyes.map(baseEyes => baseEyes.close({settings: {...settings, testMetadata}, logger})))
   }
 }

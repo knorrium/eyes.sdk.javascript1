@@ -1,33 +1,28 @@
 import type {Region} from '@applitools/utils'
-import {type SpecDriver} from './spec-driver'
+import {type Logger} from '@applitools/logger'
+import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Driver} from './driver'
 import {type Element} from './element'
-import {type Logger} from '@applitools/logger'
 
-export class HelperIOS<TDriver, TContext, TElement, TSelector> {
-  static async make<TDriver, TContext, TElement, TSelector>(options: {
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    driver: Driver<TDriver, TContext, TElement, TSelector>
+export class HelperIOS<T extends SpecType> {
+  static async make<T extends SpecType>(options: {
+    spec: SpecDriver<T>
+    driver: Driver<T>
     logger: Logger
-  }): Promise<HelperIOS<TDriver, TContext, TElement, TSelector> | null> {
+  }): Promise<HelperIOS<T> | null> {
     const {spec, driver, logger} = options
     const element = await driver.element({type: 'name', selector: 'applitools_grab_scrollable_data_button'})
-    return element ? new HelperIOS<TDriver, TContext, TElement, TSelector>({driver, element, spec, logger}) : null
+    return element ? new HelperIOS<T>({driver, element, spec, logger}) : null
   }
 
-  private readonly _driver: Driver<TDriver, TContext, TElement, TSelector>
-  private readonly _element: Element<TDriver, TContext, TElement, TSelector>
-  private readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  private readonly _driver: Driver<T>
+  private readonly _element: Element<T>
+  private readonly _spec: SpecDriver<T>
   private _logger: Logger
 
   readonly name: 'ios'
 
-  constructor(options: {
-    driver: Driver<TDriver, TContext, TElement, TSelector>
-    element: Element<TDriver, TContext, TElement, TSelector>
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    logger: Logger
-  }) {
+  constructor(options: {driver: Driver<T>; element: Element<T>; spec: SpecDriver<T>; logger: Logger}) {
     this._driver = options.driver
     this._element = options.element
     this._spec = options.spec
@@ -35,7 +30,7 @@ export class HelperIOS<TDriver, TContext, TElement, TSelector> {
     this.name = 'ios'
   }
 
-  async getContentRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region | null> {
+  async getContentRegion(element: Element<T>): Promise<Region | null> {
     await this._element.click()
 
     const sizeLabel = await this._driver.element({type: 'name', selector: 'applitools_content_size_label'})

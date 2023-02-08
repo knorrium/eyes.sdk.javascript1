@@ -44,7 +44,7 @@ export function makeFakeClient({
     async bookRenderer(options) {
       emitter.emit('beforeBookRenderer', options)
       try {
-        await utils.general.sleep(10)
+        await utils.general.sleep(0)
         await hooks?.bookRenderer?.(options)
         const {settings} = options
         const renderer = settings.renderer as any

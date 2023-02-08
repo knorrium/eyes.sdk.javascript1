@@ -1,17 +1,17 @@
 import type {Location, Region} from '@applitools/utils'
-import {type SpecDriver} from './spec-driver'
+import {type Logger} from '@applitools/logger'
+import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Driver} from './driver'
 import {type Element} from './element'
-import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 import semverGte from 'semver/functions/gte'
 
-export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
-  static async make<TDriver, TContext, TElement, TSelector>(options: {
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    driver: Driver<TDriver, TContext, TElement, TSelector>
+export class HelperAndroid<T extends SpecType> {
+  static async make<T extends SpecType>(options: {
+    spec: SpecDriver<T>
+    driver: Driver<T>
     logger: Logger
-  }): Promise<HelperAndroid<TDriver, TContext, TElement, TSelector> | null> {
+  }): Promise<HelperAndroid<T> | null> {
     const {spec, driver, logger} = options
     let legacy = false
     let input = await driver.element({type: 'xpath', selector: '//*[@content-desc="EyesAppiumHelperEDT"]'})
@@ -28,7 +28,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
       ? await driver.element({type: 'xpath', selector: '//*[@content-desc="EyesAppiumHelper_Action"]'})
       : null
     return input
-      ? new HelperAndroid<TDriver, TContext, TElement, TSelector>({
+      ? new HelperAndroid<T>({
           spec,
           input,
           action,
@@ -39,9 +39,9 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
       : null
   }
 
-  private readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  private readonly _input: Element<TDriver, TContext, TElement, TSelector>
-  private readonly _action: Element<TDriver, TContext, TElement, TSelector> | null
+  private readonly _spec: SpecDriver<T>
+  private readonly _input: Element<T>
+  private readonly _action: Element<T> | null
   private readonly _legacy: boolean
   private readonly _supportAsync: boolean = false
   private _logger: Logger
@@ -49,9 +49,9 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   readonly name: 'android' | 'android-legacy'
 
   constructor(options: {
-    spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-    input: Element<TDriver, TContext, TElement, TSelector>
-    action: Element<TDriver, TContext, TElement, TSelector> | null
+    spec: SpecDriver<T>
+    input: Element<T>
+    action: Element<T> | null
     legacy: boolean
     supportAsync: boolean
     logger: Logger
@@ -65,7 +65,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     this._supportAsync = options.supportAsync === true
   }
 
-  private async _getElementId(element: Element<TDriver, TContext, TElement, TSelector>): Promise<string | null> {
+  private async _getElementId(element: Element<T>): Promise<string | null> {
     const resourceId = await element.getAttribute('resource-id')
     if (!resourceId) return null
     return resourceId.split('/')[1]
@@ -95,7 +95,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
   }
 
   async getContentRegion(
-    element: Element<TDriver, TContext, TElement, TSelector>,
+    element: Element<T>,
     options?: {lazyLoad?: {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}},
   ): Promise<Region | null> {
     const elementId = await this._getElementId(element)
@@ -132,7 +132,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     return touchPadding
   }
 
-  async getRegion(element: Element<TDriver, TContext, TElement, TSelector>): Promise<Region | null> {
+  async getRegion(element: Element<T>): Promise<Region | null> {
     if (this._legacy) return null
 
     const elementId = await this._getElementId(element)
@@ -148,7 +148,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     return region
   }
 
-  async scrollToTop(element: Element<TDriver, TContext, TElement, TSelector>): Promise<void> {
+  async scrollToTop(element: Element<T>): Promise<void> {
     if (this._legacy) return
 
     const elementId = await this._getElementId(element)
@@ -156,7 +156,7 @@ export class HelperAndroid<TDriver, TContext, TElement, TSelector> {
     await this._command(`moveToTop;${elementId};0;-1;0`)
   }
 
-  async scrollBy(element: Element<TDriver, TContext, TElement, TSelector>, offset: Location): Promise<void> {
+  async scrollBy(element: Element<T>, offset: Location): Promise<void> {
     if (this._legacy) return
 
     const elementId = await this._getElementId(element)

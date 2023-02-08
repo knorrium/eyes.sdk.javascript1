@@ -1,4 +1,4 @@
-import {makeDriver, type Driver} from '@applitools/driver'
+import {makeDriver, type SpecType, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {makeLogger} from '@applitools/logger'
 import {takeDomSnapshot} from '../../../src/ufg/utils/take-dom-snapshot'
@@ -24,7 +24,7 @@ function generateSnapshotObject(overrides: any) {
 }
 
 describe('take-dom-snapshot', () => {
-  let mock: MockDriver, driver: Driver<unknown, unknown, unknown, unknown>
+  let mock: MockDriver, driver: Driver<SpecType<MockDriver>>
 
   beforeEach(async () => {
     mock = new MockDriver()

@@ -1,51 +1,39 @@
-import type {CloseSettings, TestResult} from './types'
-import type {Eyes as BaseEyes} from '@applitools/core-base'
+import type {DriverTarget, CloseSettings, CheckResult} from './types'
 import {type Logger} from '@applitools/logger'
-import {type Renderer} from '@applitools/ufg-client'
-import type {DriverTarget} from './types'
-import {isDriver, makeDriver, type SpecDriver} from '@applitools/driver'
+import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  storage: {renderer: Renderer; promise: Promise<{eyes: BaseEyes; renderer: Renderer}>}[]
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  storage: Map<string, CheckResult['promise'][]>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeClose<TDriver, TContext, TElement, TSelector>({
-  storage,
-  target,
-  spec,
-  logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
-  return async function ({
+export function makeClose<TSpec extends SpecType>({storage, target, spec, logger: defaultLogger}: Options<TSpec>) {
+  return async function close({
     settings,
     logger = defaultLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
-    const tests = storage.reduce((tests, {renderer, promise}) => {
-      const key = JSON.stringify(renderer)
-      const promises = tests.get(key) ?? []
-      promises.push(promise)
-      return tests.set(key, promises)
-    }, new Map<string, Promise<{eyes: BaseEyes; renderer: Renderer}>[]>())
-    return Promise.all(
-      Array.from(tests.values(), async promises => {
+  } = {}): Promise<void> {
+    logger.log('Command "close" is called with settings', settings)
+    const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    const testMetadata = await driver?.getSessionMetadata()
+
+    storage.forEach(async promises => {
+      try {
+        const [{eyes}] = await Promise.all(promises)
         try {
-          const [{eyes, renderer}] = await Promise.all(promises)
-
-          const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
-          const testMetadata = await driver?.getSessionMetadata()
-
-          const [result] = await eyes.close({settings: {...settings, testMetadata}, logger})
-          return {...result, renderer}
-        } catch (error: any) {
-          await error.info?.eyes?.abort({logger})
-          throw error
+          await eyes.close({settings: {...settings, testMetadata}, logger})
+        } catch (error) {
+          logger.warn('Command "close" received an error during performing, trying to perform abort instead', error)
+          await eyes.abort({settings: {...settings, testMetadata}, logger})
         }
-      }),
-    )
+      } catch (error: any) {
+        logger.warn('Command "close" received an error during waiting for eyes instances in background', error)
+        await error.info?.eyes?.abort({settings: {...settings, testMetadata}, logger})
+      }
+    })
   }
 }

@@ -53,7 +53,8 @@ describe('webview', () => {
       const worldAfterCheck = await spec.getCurrentWorld(driver)
       assert.deepStrictEqual(worldAfterCheck, worldBeforeCheck)
 
-      const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+      await eyes.close({settings: {updateBaselineIfNew: false}})
+      const [result] = await eyes.getResults()
       assert.strictEqual(result.status, 'Passed')
     })
 
@@ -79,7 +80,8 @@ describe('webview', () => {
       const worldAfterCheck = await spec.getCurrentWorld(driver)
       assert.deepStrictEqual(worldAfterCheck, worldBeforeCheck)
 
-      const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+      await eyes.close({settings: {updateBaselineIfNew: false}})
+      const [result] = await eyes.getResults()
       assert.strictEqual(result.status, 'Passed')
     })
   })
@@ -104,7 +106,8 @@ describe('webview', () => {
     const worldAfterCheck = await spec.getCurrentWorld(driver)
     assert.deepStrictEqual(worldAfterCheck, worldBeforeCheck)
 
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 

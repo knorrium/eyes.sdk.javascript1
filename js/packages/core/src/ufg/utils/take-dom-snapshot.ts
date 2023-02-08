@@ -1,5 +1,5 @@
 import {type Logger} from '@applitools/logger'
-import {type Context, type Cookie} from '@applitools/driver'
+import {type SpecType, type Context, type Cookie} from '@applitools/driver'
 import {type DomSnapshot} from '@applitools/ufg-client'
 import * as utils from '@applitools/utils'
 
@@ -29,12 +29,12 @@ export type DomSnapshotSettings = {
   showLogs?: boolean
 }
 
-export async function takeDomSnapshot<TContext extends Context<unknown, unknown, unknown, unknown>>({
+export async function takeDomSnapshot<TSpec extends SpecType>({
   context,
   settings,
   logger,
 }: {
-  context: TContext
+  context: Context<TSpec>
   settings?: DomSnapshotSettings
   logger: Logger
 }): Promise<DomSnapshot> {
@@ -45,7 +45,7 @@ export async function takeDomSnapshot<TContext extends Context<unknown, unknown,
   snapshot.cookies = cookies
   return snapshot
 
-  async function takeContextDomSnapshot({context}: {context: TContext}): Promise<RawDomSnapshot> {
+  async function takeContextDomSnapshot({context}: {context: Context<TSpec>}): Promise<RawDomSnapshot> {
     // logger.log(`taking dom snapshot. ${context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''}`)
 
     if (!driver.features?.allCookies) {
@@ -99,7 +99,7 @@ export async function takeDomSnapshot<TContext extends Context<unknown, unknown,
         })
 
       if (frameContext) {
-        const frameSnapshot = await takeContextDomSnapshot({context: frameContext as TContext})
+        const frameSnapshot = await takeContextDomSnapshot({context: frameContext as Context<TSpec>})
         let url = new URL(frameSnapshot.url)
         if (url.protocol === 'data:') url = new URL(`http://data-url-frame${url.search}`)
         if (!url.searchParams.has('applitools-iframe')) url.searchParams.set('applitools-iframe', utils.general.guid())

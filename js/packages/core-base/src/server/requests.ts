@@ -11,7 +11,7 @@ import type {
   ExtractTextSettings,
   AbortSettings,
   CloseSettings,
-  TestReportSettings,
+  ReportSettings,
   CloseBatchSettings,
   DeleteTestSettings,
   LogEventSettings,
@@ -21,6 +21,7 @@ import type {
   CheckResult,
   LocateTextResult,
   TestResult,
+  GetResultsSettings,
 } from '../types'
 import {type Fetch} from '@applitools/req'
 import {makeLogger, type Logger} from '@applitools/logger'
@@ -28,15 +29,15 @@ import {makeReqEyes, type ReqEyes} from './req-eyes'
 import {makeUpload, type Upload} from './upload'
 import * as utils from '@applitools/utils'
 
-export interface CoreRequests extends Core<EyesRequests> {
+export interface CoreRequests extends Core<ImageTarget, EyesRequests> {
   getBatchBranches(options: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}>
 }
 
-export interface EyesRequests extends Required<Eyes> {
-  report(options: {settings?: TestReportSettings; logger?: Logger}): Promise<void>
+export interface EyesRequests extends Eyes<ImageTarget> {
+  report(options: {settings?: ReportSettings; logger?: Logger}): Promise<void>
 }
 
 export function makeCoreRequests({
@@ -62,6 +63,8 @@ export function makeCoreRequests({
     getBatchBranches: getBatchBranchesWithCache,
     openEyes,
     locate,
+    locateText,
+    extractText,
     closeBatch,
     deleteTest,
     logEvent,
@@ -192,6 +195,89 @@ export function makeCoreRequests({
     return result
   }
 
+  async function locateText<TPattern extends string>({
+    target,
+    settings,
+    logger = defaultLogger,
+  }: {
+    target: ImageTarget
+    settings: LocateTextSettings<TPattern>
+    logger?: Logger
+  }): Promise<LocateTextResult<TPattern>> {
+    const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
+    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    logger.log('Request "locateText" called for target', target, 'with settings', settings)
+
+    const account = await getAccountInfoWithCache({settings})
+    const upload = makeUpload({config: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
+
+    ;[target.image, target.dom] = await Promise.all([
+      upload({name: 'image', resource: target.image as Buffer}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
+    ])
+    const response = await req('/api/sessions/running/images/textregions', {
+      name: 'locateText',
+      method: 'POST',
+      body: {
+        appOutput: {
+          screenshotUrl: target.image,
+          domUrl: target.dom,
+          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
+        },
+        patterns: settings.patterns,
+        ignoreCase: settings.ignoreCase,
+        firstOnly: settings.firstOnly,
+        language: settings.language,
+      },
+      expected: 200,
+      logger,
+    })
+    const result = await response.json()
+    logger.log('Request "locateText" finished successfully with body', result)
+    return result
+  }
+
+  async function extractText({
+    target,
+    settings,
+    logger = defaultLogger,
+  }: {
+    target: ImageTarget
+    settings: ExtractTextSettings
+    logger?: Logger
+  }): Promise<string[]> {
+    const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
+    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    logger.log('Request "extractText" called for target', target, 'with settings', settings)
+
+    const account = await getAccountInfoWithCache({settings})
+    const upload = makeUpload({config: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
+
+    ;[target.image, target.dom] = await Promise.all([
+      upload({name: 'image', resource: target.image as Buffer}),
+      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
+    ])
+    const response = await req('/api/sessions/running/images/text', {
+      name: 'extractText',
+      method: 'POST',
+      body: {
+        appOutput: {
+          screenshotUrl: target.image,
+          domUrl: target.dom,
+          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
+        },
+        regions: target.size && [{left: 0, top: 0, ...utils.geometry.round(target.size), expected: settings.hint}],
+        minMatch: settings.minMatch,
+        language: settings.language,
+      },
+      expected: 200,
+      logger,
+    })
+    const result = await response.json()
+    logger.log('Request "extractText" finished successfully with body', result)
+    return result
+  }
+
   async function getAccountInfo({
     settings,
     logger = defaultLogger,
@@ -312,28 +398,20 @@ export function makeEyesRequests({
   upload: Upload
   logger: Logger
 }): EyesRequests {
+  let resultsPromise = undefined as Promise<TestResult[]> | undefined
   let supportsCheckAndClose = true
-  let aborted = false
-  let closed = false
 
   return {
     test,
     get running() {
-      return !closed && !aborted
-    },
-    get closed() {
-      return closed
-    },
-    get aborted() {
-      return aborted
+      return !resultsPromise
     },
     check,
     checkAndClose,
-    locateText,
-    extractText,
     report,
     close,
     abort,
+    getResults,
   }
 
   async function check({
@@ -374,8 +452,9 @@ export function makeEyesRequests({
   }): Promise<TestResult[]> {
     if (!supportsCheckAndClose) {
       logger.log('Request "checkAndClose" is notSupported by the server, using "check" and "close" requests instead')
-      await check({target, settings})
-      return close({settings})
+      await check({target, settings, logger})
+      await close({settings, logger})
+      return getResults({settings, logger})
     }
     logger.log('Request "checkAndClose" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
@@ -417,92 +496,20 @@ export function makeEyesRequests({
     return [result]
   }
 
-  async function locateText<TPattern extends string>({
-    target,
-    settings,
-    logger = defaultLogger,
-  }: {
-    target: ImageTarget
-    settings: LocateTextSettings<TPattern>
-    logger?: Logger
-  }): Promise<LocateTextResult<TPattern>> {
-    logger.log('Request "locateText" called for target', target, 'with settings', settings)
-    ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
-      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
-    ])
-    const response = await req('/api/sessions/running/images/textregions', {
-      name: 'locateText',
-      method: 'POST',
-      body: {
-        appOutput: {
-          screenshotUrl: target.image,
-          domUrl: target.dom,
-          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
-        },
-        patterns: settings.patterns,
-        ignoreCase: settings.ignoreCase,
-        firstOnly: settings.firstOnly,
-        language: settings.language,
-      },
-      expected: 200,
-      logger,
-    })
-    const result = await response.json()
-    logger.log('Request "locateText" finished successfully with body', result)
-    return result
-  }
-
-  async function extractText({
-    target,
-    settings,
-    logger = defaultLogger,
-  }: {
-    target: ImageTarget
-    settings: ExtractTextSettings
-    logger?: Logger
-  }): Promise<string[]> {
-    logger.log('Request "extractText" called for target', target, 'with settings', settings)
-    ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
-      target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
-    ])
-    const response = await req('/api/sessions/running/images/text', {
-      name: 'extractText',
-      method: 'POST',
-      body: {
-        appOutput: {
-          screenshotUrl: target.image,
-          domUrl: target.dom,
-          location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
-        },
-        regions: target.size && [{left: 0, top: 0, ...utils.geometry.round(target.size), expected: settings.hint}],
-        minMatch: settings.minMatch,
-        language: settings.language,
-      },
-      expected: 200,
-      logger,
-    })
-    const result = await response.json()
-    logger.log('Request "extractText" finished successfully with body', result)
-    return result
-  }
-
   async function close({
     settings,
     logger = defaultLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
-    if (aborted || closed) {
+    if (resultsPromise) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
-      return null as never
+      return
     }
-    closed = true
     const reportPromise = report({settings, logger})
-    const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'close',
       method: 'DELETE',
       query: {
@@ -511,16 +518,17 @@ export function makeEyesRequests({
       },
       expected: 200,
       logger,
+    }).then(async response => {
+      const result: Mutable<TestResult> = await response.json()
+      result.userTestId = test.userTestId
+      result.url = test.resultsUrl
+      result.isNew = test.isNew
+      // for backwards compatibility with outdated servers
+      result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
+      logger.log('Request "close" finished successfully with body', result)
+      await reportPromise
+      return [result]
     })
-    const result: Mutable<TestResult> = await response.json()
-    result.userTestId = test.userTestId
-    result.url = test.resultsUrl
-    result.isNew = test.isNew
-    // for backwards compatibility with outdated servers
-    result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
-    logger.log('Request "close" finished successfully with body', result)
-    await reportPromise
-    return [result]
   }
 
   async function abort({
@@ -529,15 +537,14 @@ export function makeEyesRequests({
   }: {
     settings?: AbortSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
-    if (aborted || closed) {
+    if (resultsPromise) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
-      return null as never
+      return
     }
-    aborted = true
     const reportPromise = report({settings, logger})
-    const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'abort',
       method: 'DELETE',
       query: {
@@ -545,19 +552,37 @@ export function makeEyesRequests({
       },
       expected: 200,
       logger,
+    }).then(async response => {
+      const result: Mutable<TestResult> = await response.json()
+      result.userTestId = test.userTestId
+      logger.log('Request "abort" finished successfully with body', result)
+      await reportPromise
+      return [result]
     })
-    const result: Mutable<TestResult> = await response.json()
-    result.userTestId = test.userTestId
-    logger.log('Request "abort" finished successfully with body', result)
-    await reportPromise
-    return [result]
+  }
+
+  async function getResults({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: GetResultsSettings
+    logger?: Logger
+  } = {}): Promise<TestResult[]> {
+    logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
+    if (!resultsPromise) {
+      logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
+      await abort({settings, logger})
+    }
+    const results = await resultsPromise!
+    logger.log('Request "getResults" finished successfully with body', results)
+    return results
   }
 
   async function report({
     settings,
     logger = defaultLogger,
   }: {
-    settings?: TestReportSettings
+    settings?: ReportSettings
     logger?: Logger
   }): Promise<void> {
     logger.log(`Request "report" called for test ${test.testId} with settings`, settings)

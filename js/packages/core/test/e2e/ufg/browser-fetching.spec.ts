@@ -37,7 +37,8 @@ describe('browser-fetching', () => {
       },
     })
     await eyes.check({settings: {renderers: [{name: 'chrome', width: 800, height: 600}], disableBrowserFetching: true}})
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
 
     assert.strictEqual(result.status, 'Passed')
   })

@@ -33,7 +33,8 @@ describe('vhs - android', () => {
         renderers: [{androidDeviceInfo: {deviceName: 'Pixel 4 XL', version: 'latest'}}],
       },
     })
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })

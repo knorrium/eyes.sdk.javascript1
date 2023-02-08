@@ -1,24 +1,24 @@
 import type {Target, DriverTarget, Eyes, Config, CheckSettings, CheckResult} from './types'
 import {type Logger} from '@applitools/logger'
-import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
+import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 import chalk from 'chalk'
 
-type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   type?: TType
-  eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+  eyes: Eyes<TSpec, TType>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
+export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic' | 'ufg'>({
   type: defaultType = 'classic' as TDefaultType,
   eyes,
   target: defaultTarget,
   spec,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
+}: Options<TSpec, TDefaultType>) {
   let stepIndex = 0
   return async function check<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
@@ -28,9 +28,9 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
     logger = defaultLogger,
   }: {
     type?: TType
-    target?: Target<TDriver, TContext, TElement, TSelector, TType>
-    settings?: CheckSettings<TElement, TSelector, TType>
-    config?: Config<TElement, TSelector, TType>
+    target?: Target<TSpec, TType>
+    settings?: CheckSettings<TSpec, TType>
+    config?: Config<TSpec, TType>
     logger?: Logger
   } = {}): Promise<CheckResult<TType>[]> {
     settings = {...config?.screenshot, ...config?.check, ...settings}
@@ -46,7 +46,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
       eyes.test.account.rcaEnabled || settings.matchLevel === 'Layout' || settings.enablePatterns || settings.useDom
     settings.autProxy ??= eyes.test.server.proxy
     settings.useDom ??= false
-    ;(settings as CheckSettings<TElement, TSelector, 'classic'>).retryTimeout ??= 2000
+    ;(settings as CheckSettings<TSpec, 'classic'>).retryTimeout ??= 2000
     settings.lazyLoad = settings.lazyLoad === true ? {} : settings.lazyLoad
     if (settings.lazyLoad) {
       settings.lazyLoad.scrollLength ??= 300
@@ -66,14 +66,11 @@ export function makeCheck<TDriver, TContext, TElement, TSelector, TDefaultType e
     const typedEyes = await eyes.getTypedEyes({
       type,
       settings: driver
-        ? {
-            type: driver.isNative ? 'native' : 'web',
-            renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers!,
-          }
+        ? {type: driver.isNative ? 'native' : 'web', renderers: (settings as CheckSettings<TSpec, 'ufg'>).renderers}
         : undefined,
       logger,
     })
     const results = await typedEyes.check({target: driver ?? target, settings, logger})
-    return results
+    return results as CheckResult<TType>[]
   }
 }

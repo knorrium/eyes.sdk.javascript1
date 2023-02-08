@@ -14,14 +14,21 @@ export interface ImageTarget {
   /** @internal */
   isTransformed?: boolean
 }
+export type Target = ImageTarget
 
-export interface Core<TEyes = Eyes> {
+export interface Core<TTarget = Target, TEyes extends Eyes<TTarget> = Eyes<TTarget>> {
   openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<TEyes>
   locate<TLocator extends string>(options: {
-    target: ImageTarget
+    target: TTarget
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>>
+  locateText<TPattern extends string>(options: {
+    target: TTarget
+    settings: LocateTextSettings<TPattern>
+    logger?: Logger
+  }): Promise<LocateTextResult<TPattern>>
+  extractText(options: {target: TTarget; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
   getAccountInfo(options: {settings: ServerSettings; logger?: Logger}): Promise<AccountInfo>
   closeBatch(options: {settings: MaybeArray<CloseBatchSettings>; logger?: Logger}): Promise<void>
   deleteTest(options: {settings: MaybeArray<DeleteTestSettings>; logger?: Logger}): Promise<void>
@@ -29,25 +36,18 @@ export interface Core<TEyes = Eyes> {
   logEvent(options: {settings: MaybeArray<LogEventSettings>; logger?: Logger}): Promise<void>
 }
 
-export interface Eyes<TTarget = ImageTarget> {
+export interface Eyes<TTarget = Target> {
   readonly test: TestInfo
   readonly running: boolean
-  readonly aborted: boolean
-  readonly closed: boolean
   check(options: {target: TTarget; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
   checkAndClose(options: {
     target: TTarget
     settings?: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]>
-  locateText<TPattern extends string>(options: {
-    target: TTarget
-    settings: LocateTextSettings<TPattern>
-    logger?: Logger
-  }): Promise<LocateTextResult<TPattern>>
-  extractText(options: {target: TTarget; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
-  close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<TestResult[]>
-  abort(options?: {settings?: AbortSettings; logger?: Logger}): Promise<TestResult[]>
+  close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<void>
+  abort(options?: {settings?: AbortSettings; logger?: Logger}): Promise<void>
+  getResults(options?: {settings?: GetResultsSettings; logger?: Logger}): Promise<TestResult[]>
 }
 
 export interface TestInfo {
@@ -140,6 +140,27 @@ export interface LocateSettings<TLocator extends string, TRegion = Region>
 }
 
 export type LocateResult<TLocator extends string> = Record<TLocator, Region[]>
+
+export interface LocateTextSettings<TPattern extends string, TRegion = Region>
+  extends ServerSettings,
+    ImageSettings<TRegion> {
+  patterns: TPattern[]
+  ignoreCase?: boolean
+  firstOnly?: boolean
+  language?: string
+  /** @internal */
+  userCommandId?: string
+}
+
+export type LocateTextResult<TPattern extends string> = Record<TPattern, (Region & {text: string})[]>
+
+export interface ExtractTextSettings<TRegion = Region> extends ServerSettings, ImageSettings<TRegion> {
+  hint?: string
+  minMatch?: number
+  language?: string
+  /** @internal */
+  userCommandId?: string
+}
 
 export interface CloseBatchSettings extends ServerSettings {
   batchId: string
@@ -235,42 +256,23 @@ export interface CheckResult {
   readonly userTestId: string
 }
 
-export interface LocateTextSettings<TPattern extends string, TRegion = Region> extends ImageSettings<TRegion> {
-  patterns: TPattern[]
-  ignoreCase?: boolean
-  firstOnly?: boolean
-  language?: string
-  /** @internal */
-  userCommandId?: string
-}
-
-type TextRegion = Region & {text: string}
-export type LocateTextResult<TPattern extends string> = Record<TPattern, TextRegion[]>
-
-export interface ExtractTextSettings<TRegion = Region> extends ImageSettings<TRegion> {
-  hint?: string
-  minMatch?: number
-  language?: string
-  /** @internal */
-  userCommandId?: string
-}
-
-export type SelfHealingReport = {
-  operations: {timestamp: string; old: {using: string; value: string}; new: {using: string; value: string}}[]
-}
-
-export interface TestReportSettings {
+export interface ReportSettings {
   testMetadata?: Record<string, any>[]
 }
 
-export interface CloseSettings extends TestReportSettings {
+export interface CloseSettings extends ReportSettings {
   updateBaselineIfNew?: boolean
   updateBaselineIfDifferent?: boolean
   /** @internal */
   userCommandId?: string
 }
 
-export interface AbortSettings extends TestReportSettings {
+export interface AbortSettings extends ReportSettings {
+  /** @internal */
+  userCommandId?: string
+}
+
+export interface GetResultsSettings {
   /** @internal */
   userCommandId?: string
 }

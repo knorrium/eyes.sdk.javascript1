@@ -1,6 +1,6 @@
 import type {Size} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
-import {type Driver} from '@applitools/driver'
+import {type SpecType, type Driver} from '@applitools/driver'
 import {
   type DomSnapshot,
   type Renderer,
@@ -20,14 +20,14 @@ export type DomSnapshotsSettings = DomSnapshotSettings & {
   layoutBreakpoints?: number[] | boolean
 }
 
-export async function takeDomSnapshots<TDriver extends Driver<unknown, unknown, unknown, unknown>>({
+export async function takeDomSnapshots<TSpec extends SpecType>({
   driver,
   settings,
   hooks,
   provides,
   logger,
 }: {
-  driver: TDriver
+  driver: Driver<TSpec>
   settings: DomSnapshotsSettings
   hooks?: {beforeSnapshots?(): void | Promise<void>; beforeEachSnapshot?(): void | Promise<void>}
   provides?: {

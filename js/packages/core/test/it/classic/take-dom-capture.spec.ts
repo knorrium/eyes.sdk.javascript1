@@ -1,4 +1,4 @@
-import {makeDriver, type Driver} from '@applitools/driver'
+import {makeDriver, type SpecType, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {Response} from '@applitools/req'
 import {makeLogger} from '@applitools/logger'
@@ -7,7 +7,7 @@ import assert from 'assert'
 
 describe('take-dom-capture', () => {
   const logger = makeLogger()
-  let mock: MockDriver, driver: Driver<MockDriver, unknown, unknown, unknown>
+  let mock: MockDriver, driver: Driver<SpecType<MockDriver>>
 
   function createDomCapture(domCapture: string) {
     const tokens = {

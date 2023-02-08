@@ -1,5 +1,5 @@
 import type {Core} from './types'
-import {type SpecDriver} from '@applitools/driver'
+import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore, type Core as BaseCore} from '@applitools/core-base'
 import {makeGetViewportSize} from '../automation/get-viewport-size'
@@ -8,21 +8,21 @@ import {makeLocate} from '../automation/locate'
 import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  spec?: SpecDriver<TSpec>
   core?: BaseCore
   agentId?: string
   cwd?: string
   logger?: Logger
 }
 
-export function makeCore<TDriver, TContext, TElement, TSelector>({
+export function makeCore<TSpec extends SpecType>({
   spec,
   core,
   agentId = 'core-classic',
   cwd = process.cwd(),
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TContext, TElement, TSelector> {
+}: Options<TSpec>): Core<TSpec> {
   const logger = defaultLogger?.extend({label: 'core-classic'}) ?? makeLogger({label: 'core-classic'})
   logger.log(`Core classic is initialized ${core ? 'with' : 'without'} custom base core`)
   core ??= makeBaseCore({agentId, cwd, logger})

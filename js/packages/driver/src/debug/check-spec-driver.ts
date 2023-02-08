@@ -1,12 +1,9 @@
-import {type SpecDriver} from '../spec-driver'
+import {SpecType, type SpecDriver} from '../spec-driver'
 import {strict as assert} from 'assert'
 
 const snippets = require('@applitools/snippets')
 
-export async function checkSpecDriver<TDriver, TContext, TElement, TSelector>(options: {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  driver: TDriver
-}) {
+export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDriver<T>; driver: T['driver']}) {
   const {spec, driver} = options
   const context = extractContext(driver)
 
@@ -225,18 +222,18 @@ export async function checkSpecDriver<TDriver, TContext, TElement, TSelector>(op
 
   return report
 
-  function isEqualElements(context: TContext, element1: TElement, element2: TElement): Promise<boolean> {
+  function isEqualElements(context: T['context'], element1: T['element'], element2: T['element']): Promise<boolean> {
     return (
       spec.isEqualElements?.(context, element1, element2) ??
       spec.executeScript(context, snippets.isEqualElements, [element1, element2]).catch(() => false)
     )
   }
 
-  function extractContext(driver: TDriver): TContext {
-    return spec.extractContext?.(driver) ?? (driver as unknown as TContext)
+  function extractContext(driver: T['driver']): T['context'] {
+    return spec.extractContext?.(driver) ?? (driver as T['context'])
   }
 
-  function transformSelector(selector: any): TSelector {
+  function transformSelector(selector: any): T['selector'] {
     return spec.transformSelector?.(selector) ?? selector
   }
 }

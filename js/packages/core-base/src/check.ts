@@ -1,4 +1,4 @@
-import type {ImageTarget, CheckSettings, CheckResult} from './types'
+import type {Target, CheckSettings, CheckResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
@@ -14,7 +14,7 @@ export function makeCheck({requests, logger: defaultLogger}: Options) {
     settings = {},
     logger = defaultLogger,
   }: {
-    target: ImageTarget
+    target: Target
     settings?: CheckSettings
     logger?: Logger
   }): Promise<CheckResult[]> {

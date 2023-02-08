@@ -87,7 +87,8 @@ describe('coded regions', () => {
         {left: 550, top: 520, width: 50, height: 50, regionId: '.region.three:nth-child(3n) (4)'}, // string that targets multiple elements
       ]
 
-      const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+      await eyes.close({settings: {updateBaselineIfNew: false}})
+      const [result] = await eyes.getResults()
       const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
       assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, expectedRegions)
       assert.deepStrictEqual(info.actualAppOutput[1].imageMatchSettings.layout, expectedRegions)
@@ -114,7 +115,8 @@ describe('coded regions', () => {
 
     await eyes.check({settings: {fully: false, ignoreRegions: ['.region.one:nth-child(1)', '.made.up.region']}})
 
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     const info = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, [
       {left: 30, top: 30, width: 100, height: 100, regionId: '.region.one:nth-child(1)'},

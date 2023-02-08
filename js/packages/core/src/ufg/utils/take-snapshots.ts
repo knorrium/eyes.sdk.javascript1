@@ -1,6 +1,6 @@
 import type {Size} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
-import {type Driver} from '@applitools/driver'
+import {type SpecType, type Driver} from '@applitools/driver'
 import {
   type DomSnapshot,
   type AndroidSnapshot,
@@ -17,14 +17,14 @@ import {extractBrokerUrl} from './extract-broker-url'
 export * from './take-dom-snapshots'
 export * from './take-vhses'
 
-export async function takeSnapshots<TDriver extends Driver<unknown, unknown, unknown, unknown>>({
+export async function takeSnapshots<TSpec extends SpecType>({
   driver,
   settings,
   hooks,
   provides,
   logger,
 }: {
-  driver: TDriver
+  driver: Driver<TSpec>
   settings: DomSnapshotsSettings & VHSesSettings
   hooks: {beforeSnapshots?(): void | Promise<void>; beforeEachSnapshot?(): void | Promise<void>}
   provides: {

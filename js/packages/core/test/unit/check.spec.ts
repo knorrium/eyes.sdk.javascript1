@@ -16,7 +16,7 @@ describe('check', () => {
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
     const check = makeCheck({
-      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      eyes: fakeEyes as Eyes<any, 'classic'>,
       logger: makeLogger(),
     })
 
@@ -39,7 +39,7 @@ describe('check', () => {
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
 
     const check = makeCheck({
-      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      eyes: fakeEyes as Eyes<any, 'classic'>,
       logger: makeLogger(),
     })
 
@@ -63,7 +63,7 @@ describe('check', () => {
     })
     const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
     const check = makeCheck({
-      eyes: fakeEyes as Eyes<unknown, unknown, unknown, unknown, 'classic'>,
+      eyes: fakeEyes as Eyes<any, 'classic'>,
       logger: makeLogger(),
     })
     for (const [stepIndex, overlap] of overlaps.entries()) {

@@ -40,7 +40,8 @@ describe('requests', () => {
       },
     })
 
-    const [result] = await eyes.close()
+    await eyes.close()
+    const [result] = await eyes.getResults()
     const info = await getTestInfo(result)
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, [
       {left: 0, top: 0, width: 100, height: 100},

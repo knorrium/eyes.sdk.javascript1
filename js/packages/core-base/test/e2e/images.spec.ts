@@ -31,7 +31,8 @@ describe('images', () => {
       },
     })
 
-    const [result] = await eyes.close()
+    await eyes.close()
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 
@@ -57,7 +58,8 @@ describe('images', () => {
       },
     })
 
-    const [result] = await eyes.close()
+    await eyes.close()
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 
@@ -83,7 +85,8 @@ describe('images', () => {
       },
     })
 
-    const [result] = await eyes.close()
+    await eyes.close()
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })

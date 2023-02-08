@@ -1,7 +1,7 @@
 import type {Core} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type UFGClient} from '@applitools/ufg-client'
-import {type SpecDriver} from '@applitools/driver'
+import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore} from '@applitools/core-base'
 import {makeGetViewportSize} from '../automation/get-viewport-size'
@@ -11,9 +11,9 @@ import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 import throat from 'throat'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
+type Options<TSpec extends SpecType> = {
   concurrency: number
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+  spec?: SpecDriver<TSpec>
   client?: UFGClient
   core?: BaseCore
   agentId?: string
@@ -21,7 +21,7 @@ type Options<TDriver, TContext, TElement, TSelector> = {
   logger?: Logger
 }
 
-export function makeCore<TDriver, TContext, TElement, TSelector>({
+export function makeCore<TSpec extends SpecType>({
   concurrency,
   spec,
   client,
@@ -29,7 +29,7 @@ export function makeCore<TDriver, TContext, TElement, TSelector>({
   agentId = 'core-ufg',
   cwd = process.cwd(),
   logger,
-}: Options<TDriver, TContext, TElement, TSelector>): Core<TDriver, TContext, TElement, TSelector> {
+}: Options<TSpec>): Core<TSpec> {
   logger = logger?.extend({label: 'core-ufg'}) ?? makeLogger({label: 'core-ufg'})
   logger.log(`Core ufg is initialized ${core ? 'with' : 'without'} custom base core`)
 

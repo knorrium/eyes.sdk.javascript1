@@ -2,6 +2,77 @@ import type {Location, Size, Region} from '@applitools/utils'
 import type {ScreenOrientation, Cookie} from './types'
 import {type Selector} from './selector'
 
+export type SpecType<TDriver = unknown, TContext = unknown, TElement = unknown, TSelector = unknown> = {
+  driver: TDriver
+  context: TContext
+  element: TElement
+  selector: TSelector
+}
+
+export interface SpecDriver<T extends SpecType> {
+  // #region UTILITY
+  isDriver(driver: any): driver is T['driver']
+  isContext?(context: any): context is T['context']
+  isElement(element: any): element is T['element']
+  isSelector(selector: any): selector is T['selector']
+  transformDriver?(driver: any): T['driver']
+  transformElement?(element: any): T['element']
+  transformSelector?(selector: Selector<T>): T['selector']
+  untransformSelector?(selector: T['selector'] | Selector<T>): Selector | null
+  extractContext?(element: T['driver'] | T['context']): T['context']
+  extractSelector?(element: T['element']): T['selector']
+  isStaleElementError(error: any, selector?: T['selector']): boolean
+  isEqualElements?(context: T['context'], element1: T['element'], element2: T['element']): Promise<boolean>
+  extractHostName?(driver: T['driver']): string | null
+  // #endregion
+
+  // #region COMMANDS
+  mainContext(context: T['context']): Promise<T['context']>
+  parentContext?(context: T['context']): Promise<T['context']>
+  childContext(context: T['context'], element: T['element']): Promise<T['context']>
+  executeScript(context: T['context'], script: ((arg?: any) => any) | string, arg?: any): Promise<any>
+  findElement(context: T['context'], selector: T['selector'], parent?: T['element']): Promise<T['element'] | null>
+  findElements(context: T['context'], selector: T['selector'], parent?: T['element']): Promise<T['element'][]>
+  waitForSelector?(
+    context: T['context'],
+    selector: T['selector'],
+    parent?: T['element'],
+    options?: WaitOptions,
+  ): Promise<T['element'] | null>
+  setElementText?(context: T['context'], element: T['element'], text: string): Promise<void>
+  getElementText?(context: T['context'], element: T['element']): Promise<string>
+  setWindowSize?(driver: T['driver'], size: Size): Promise<void>
+  getWindowSize?(driver: T['driver']): Promise<Size>
+  setViewportSize?(driver: T['driver'], size: Size): Promise<void>
+  getViewportSize?(driver: T['driver']): Promise<Size>
+  getCookies?(driver: T['driver'] | T['context'], context?: boolean): Promise<Cookie[]>
+  getDriverInfo?(driver: T['driver']): Promise<DriverInfo>
+  getCapabilities?(driver: T['driver']): Promise<Record<string, any>>
+  getTitle(driver: T['driver']): Promise<string>
+  getUrl(driver: T['driver']): Promise<string>
+  takeScreenshot(driver: T['driver']): Promise<Buffer | string>
+  click?(context: T['context'], element: T['element'] | T['selector']): Promise<void>
+  visit?(driver: T['driver'], url: string): Promise<void>
+  // #endregion
+
+  // #region MOBILE COMMANDS
+  getOrientation?(driver: T['driver']): Promise<ScreenOrientation>
+  setOrientation?(driver: T['driver'], orientation: ScreenOrientation): Promise<void>
+  getSystemBars?(driver: T['driver']): Promise<{
+    statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
+    navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
+  }>
+  getElementRegion?(driver: T['driver'], element: T['element']): Promise<Region>
+  getElementAttribute?(driver: T['driver'], element: T['element'], attr: string): Promise<string>
+  performAction?(driver: T['driver'], steps: any[]): Promise<void>
+  getCurrentWorld?(driver: T['driver']): Promise<string>
+  getWorlds?(driver: T['driver']): Promise<string[]>
+  switchWorld?(driver: T['driver'], id: string): Promise<void>
+  // #endregion
+
+  getSessionMetadata?(driver: T['driver']): Promise<any>
+}
+
 export type DriverInfo = {
   sessionId?: string
   remoteHostname?: string
@@ -43,68 +114,4 @@ export type WaitOptions = {
   state?: 'exist' | 'visible'
   interval?: number
   timeout?: number
-}
-
-export interface SpecDriver<TDriver, TContext, TElement, TSelector> {
-  // #region UTILITY
-  isDriver(driver: any): driver is TDriver
-  isContext?(context: any): context is TContext
-  isElement(element: any): element is TElement
-  isSelector(selector: any): selector is TSelector
-  transformDriver?(driver: any): TDriver
-  transformElement?(element: any): TElement
-  transformSelector?(selector: Selector<TSelector>): TSelector
-  untransformSelector?(selector: TSelector | Selector<TSelector>): Selector | null
-  extractContext?(element: TDriver | TContext): TContext
-  extractSelector?(element: TElement): TSelector
-  isStaleElementError(error: any, selector?: TSelector): boolean
-  isEqualElements?(context: TContext, element1: TElement, element2: TElement): Promise<boolean>
-  extractHostName?(driver: TDriver): string | null
-  // #endregion
-
-  // #region COMMANDS
-  mainContext(context: TContext): Promise<TContext>
-  parentContext?(context: TContext): Promise<TContext>
-  childContext(context: TContext, element: TElement): Promise<TContext>
-  executeScript(context: TContext, script: ((arg?: any) => any) | string, arg?: any): Promise<any>
-  findElement(context: TContext, selector: TSelector, parent?: TElement): Promise<TElement | null>
-  findElements(context: TContext, selector: TSelector, parent?: TElement): Promise<TElement[]>
-  waitForSelector?(
-    context: TContext,
-    selector: TSelector,
-    parent?: TElement,
-    options?: WaitOptions,
-  ): Promise<TElement | null>
-  setElementText?(context: TContext, element: TElement, text: string): Promise<void>
-  getElementText?(context: TContext, element: TElement): Promise<string>
-  setWindowSize?(driver: TDriver, size: Size): Promise<void>
-  getWindowSize?(driver: TDriver): Promise<Size>
-  setViewportSize?(driver: TDriver, size: Size): Promise<void>
-  getViewportSize?(driver: TDriver): Promise<Size>
-  getCookies?(driver: TDriver | TContext, context?: boolean): Promise<Cookie[]>
-  getDriverInfo?(driver: TDriver): Promise<DriverInfo>
-  getCapabilities?(driver: TDriver): Promise<Record<string, any>>
-  getTitle(driver: TDriver): Promise<string>
-  getUrl(driver: TDriver): Promise<string>
-  takeScreenshot(driver: TDriver): Promise<Buffer | string>
-  click?(context: TContext, element: TElement | TSelector): Promise<void>
-  visit?(driver: TDriver, url: string): Promise<void>
-  // #endregion
-
-  // #region MOBILE COMMANDS
-  getOrientation?(driver: TDriver): Promise<ScreenOrientation>
-  setOrientation?(driver: TDriver, orientation: ScreenOrientation): Promise<void>
-  getSystemBars?(driver: TDriver): Promise<{
-    statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
-    navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
-  }>
-  getElementRegion?(driver: TDriver, element: TElement): Promise<Region>
-  getElementAttribute?(driver: TDriver, element: TElement, attr: string): Promise<string>
-  performAction?(driver: TDriver, steps: any[]): Promise<void>
-  getCurrentWorld?(driver: TDriver): Promise<string>
-  getWorlds?(driver: TDriver): Promise<string[]>
-  switchWorld?(driver: TDriver, id: string): Promise<void>
-  // #endregion
-
-  getSessionMetadata?(driver: TDriver): Promise<any>
 }

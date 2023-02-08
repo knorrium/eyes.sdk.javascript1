@@ -27,6 +27,26 @@ export function makeFakeCore({
     locate: null as never,
     closeBatch: null as never,
     deleteTest: null as never,
+    async locateText(options) {
+      emitter.emit('beforeLocateText', options)
+      try {
+        await utils.general.sleep(10)
+        await hooks?.locateText?.(options)
+        return Object.fromEntries(options.settings.patterns.map(pattern => [pattern as any, [] as any[]]))
+      } finally {
+        emitter.emit('afterLocateText', options)
+      }
+    },
+    async extractText(options) {
+      emitter.emit('beforeExtractText', options)
+      try {
+        await utils.general.sleep(10)
+        await hooks?.extractText?.(options)
+        return [] as string[]
+      } finally {
+        emitter.emit('afterExtractText', options)
+      }
+    },
     async openEyes(options) {
       emitter.emit('beforeOpenEyes', options)
       try {
@@ -34,6 +54,7 @@ export function makeFakeCore({
         await hooks?.openEyes?.(options)
         const environment = options.settings.environment
         const steps = [] as any[]
+        const results = [] as any[]
         let aborted = false
         let closed = false
         return {
@@ -65,26 +86,6 @@ export function makeFakeCore({
           },
           async getTypedEyes() {
             return this
-          },
-          async locateText(options) {
-            emitter.emit('beforeLocateText', options)
-            try {
-              await utils.general.sleep(10)
-              await hooks?.locateText?.(options)
-              return Object.fromEntries(options.settings.patterns.map(pattern => [pattern as any, [] as any[]]))
-            } finally {
-              emitter.emit('afterLocateText', options)
-            }
-          },
-          async extractText(options) {
-            emitter.emit('beforeExtractText', options)
-            try {
-              await utils.general.sleep(10)
-              await hooks?.extractText?.(options)
-              return [] as string[]
-            } finally {
-              emitter.emit('afterExtractText', options)
-            }
           },
           async check(options) {
             emitter.emit('beforeCheck', options)
@@ -134,12 +135,10 @@ export function makeFakeCore({
               closed = true
               await utils.general.sleep(10)
               await hooks?.close?.(options)
-              return [
-                {
-                  status: steps.every(result => result.asExpected) ? ('Passed' as const) : ('Unresolved' as const),
-                  stepsInfo: steps,
-                },
-              ]
+              results.push({
+                status: steps.every(result => result.asExpected) ? ('Passed' as const) : ('Unresolved' as const),
+                stepsInfo: steps,
+              })
             } finally {
               emitter.emit('afterClose', options)
             }
@@ -150,9 +149,19 @@ export function makeFakeCore({
               aborted = true
               await utils.general.sleep(10)
               await hooks?.abort?.(options)
-              return [{isAborted: true}]
+              results.push({isAborted: true})
             } finally {
               emitter.emit('afterAbort', options)
+            }
+          },
+          async getResults(options) {
+            emitter.emit('beforeGetResults', options)
+            try {
+              await utils.general.sleep(40)
+              await hooks?.getResults?.(options)
+              return results
+            } finally {
+              emitter.emit('afterGetResults', options)
             }
           },
         }

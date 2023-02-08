@@ -1,12 +1,12 @@
-import type {ImageTarget, ExtractTextSettings} from './types'
+import type {Target, ExtractTextSettings} from './types'
 import {type MaybeArray} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
-import {type EyesRequests} from './server/requests'
+import {type CoreRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
 import * as utils from '@applitools/utils'
 
 type Options = {
-  requests: EyesRequests
+  requests: CoreRequests
   logger: Logger
 }
 
@@ -16,7 +16,7 @@ export function makeExtractText({requests, logger: defaultLogger}: Options) {
     settings,
     logger = defaultLogger,
   }: {
-    target: ImageTarget
+    target: Target
     settings: MaybeArray<ExtractTextSettings>
     logger?: Logger
   }): Promise<string[]> {

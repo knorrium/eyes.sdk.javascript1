@@ -1,31 +1,27 @@
 import type {Region} from '@applitools/utils'
-import type {DriverTarget, ImageTarget, Config, LocateSettings} from './types'
+import type {Target, Config, LocateSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
-import {type SpecDriver} from '@applitools/driver'
+import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
 import * as utils from '@applitools/utils'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  spec?: SpecDriver<TSpec>
   core: BaseCore
   logger: Logger
 }
 
-export function makeLocate<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'>({
-  spec,
-  core,
-  logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
+export function makeLocate<TSpec extends SpecType>({spec, core, logger: defaultLogger}: Options<TSpec>) {
   return async function locate<TLocator extends string>({
     target,
     settings,
     config,
     logger = defaultLogger,
   }: {
-    target: DriverTarget<TDriver, TContext, TElement, TSelector> | ImageTarget
-    settings: LocateSettings<TLocator, TElement, TSelector>
-    config?: Config<TElement, TSelector, TType>
+    target: Target<TSpec, 'classic'>
+    settings: LocateSettings<TLocator, TSpec>
+    config?: Config<TSpec, 'classic'>
     logger?: Logger
   }): Promise<Record<TLocator, Region[]>> {
     settings = {...config?.open, ...config?.screenshot, ...settings}

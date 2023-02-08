@@ -20,26 +20,18 @@ describe('concurrency', () => {
         },
       },
     })
-
-    const fakeClient = {
-      async createRenderTarget() {
-        return {}
+    const fakeClient = makeFakeClient({
+      hooks: {
+        async bookRenderer() {
+          await utils.general.sleep(50)
+          counters.bookRenderer++
+        },
+        async render() {
+          await utils.general.sleep(50)
+          counters.render++
+        },
       },
-      async bookRenderer() {
-        await utils.general.sleep(50)
-        counters.bookRenderer++
-        return {rendererId: 'renderer-id'}
-      },
-      async render() {
-        await utils.general.sleep(50)
-        counters.render++
-        return {
-          renderId: 'render-id',
-          status: 'rendered',
-          image: 'image-url',
-        }
-      },
-    }
+    })
 
     const core = makeCore({concurrency: 1, core: fakeCore as any, client: fakeClient as any})
 
@@ -68,6 +60,7 @@ describe('concurrency', () => {
     assert.deepStrictEqual(counters, {baseOpenEyes: 1, baseCheck: 1, bookRenderer: 1, render: 1})
 
     await eyes.close()
+    await eyes.getResults()
   })
 
   it('prevents base eyes from open if concurrency slot is not available', async () => {
@@ -77,22 +70,7 @@ describe('concurrency', () => {
     fakeCore.emitter.on('beforeOpenEyes', ({settings}) => {
       counters.openEyes[settings.testName as 1 | 2 | 3] += 1
     })
-
-    const fakeClient = {
-      async createRenderTarget() {
-        return {}
-      },
-      async bookRenderer() {
-        return {rendererId: 'renderer-id'}
-      },
-      async render() {
-        return {
-          renderId: 'render-id',
-          status: 'rendered',
-          image: 'image-url',
-        }
-      },
-    }
+    const fakeClient = makeFakeClient()
 
     const core = makeCore({concurrency: 2, core: fakeCore as any, client: fakeClient as any})
 
@@ -106,14 +84,18 @@ describe('concurrency', () => {
     await eyes[0].check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
     await eyes[1].check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
     await eyes[2].check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
+    await utils.general.sleep(0)
     assert.deepStrictEqual(counters, {openEyes: {1: 1, 2: 1, 3: 0}})
 
     // t2 - releasing concurrency slot by closing one of the previously opened eyes
     await eyes[1].close()
+    await eyes[1].getResults()
     assert.deepStrictEqual(counters, {openEyes: {1: 1, 2: 1, 3: 1}})
 
     await eyes[0].close()
+    await eyes[0].getResults()
     await eyes[2].close()
+    await eyes[2].getResults()
   })
 
   it('releases concurrency slot if eyes throw during close', async () => {
@@ -124,22 +106,7 @@ describe('concurrency', () => {
         },
       },
     })
-
-    const fakeClient = {
-      async createRenderTarget() {
-        return {}
-      },
-      async bookRenderer() {
-        return {rendererId: 'renderer-id'}
-      },
-      async render() {
-        return {
-          renderId: 'render-id',
-          status: 'rendered',
-          image: 'image-url',
-        }
-      },
-    }
+    const fakeClient = makeFakeClient()
 
     const core = makeCore({concurrency: 1, core: fakeCore as any, client: fakeClient as any})
 
@@ -148,35 +115,32 @@ describe('concurrency', () => {
     })
 
     await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
-
-    await assert.rejects(eyes1.close(), error => error.message === 'close')
+    await eyes1.close()
+    const [result1] = await eyes1.getResults()
+    assert.strictEqual(result1.isAborted, true)
 
     const eyes2 = await Promise.race([
       core.openEyes({
         settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
       }),
-      utils.general.sleep(100).then(() => assert.fail('not resolved')),
+      utils.general.sleep(100)!.then(() => assert.fail('not resolved')),
     ])
 
     await eyes2.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
-
-    await assert.rejects(eyes2.close(), error => error.message === 'close')
+    await eyes2.close()
+    const [result2] = await eyes2.getResults()
+    assert.strictEqual(result2.isAborted, true)
   })
 
   it('releases concurrency slot if ufg client throw during render', async () => {
     const fakeCore = makeFakeCore()
-
-    const fakeClient = {
-      async createRenderTarget() {
-        return {}
+    const fakeClient = makeFakeClient({
+      hooks: {
+        async render() {
+          throw new Error('render')
+        },
       },
-      async bookRenderer() {
-        return {rendererId: 'renderer-id'}
-      },
-      async render() {
-        throw new Error('render')
-      },
-    }
+    })
 
     const core = makeCore({concurrency: 1, core: fakeCore as any, client: fakeClient as any})
 
@@ -185,24 +149,25 @@ describe('concurrency', () => {
     })
 
     await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
+    await eyes1.close()
 
-    await assert.rejects(eyes1.close(), error => error.message === 'render')
+    await assert.rejects(eyes1.getResults(), error => error.message === 'render')
 
     const eyes2 = await Promise.race([
       core.openEyes({
         settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
       }),
-      utils.general.sleep(100).then(() => assert.fail('not resolved')),
+      utils.general.sleep(100)!.then(() => assert.fail('not resolved')),
     ])
 
     await eyes2.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
+    await eyes2.close()
 
-    await assert.rejects(eyes2.close(), error => error.message === 'render')
+    await assert.rejects(eyes2.getResults(), error => error.message === 'render')
   })
 
   it('releases concurrency slot when all steps are finished', async () => {
     const fakeCore = makeFakeCore()
-
     const fakeClient = makeFakeClient()
 
     const core = makeCore({concurrency: 2, core: fakeCore as any, client: fakeClient as any})

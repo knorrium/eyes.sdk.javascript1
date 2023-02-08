@@ -1,4 +1,4 @@
-import type {CloseSettings, TestResult} from './types'
+import type {CloseSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 
@@ -14,9 +14,8 @@ export function makeClose({requests, logger: defaultLogger}: Options) {
   }: {
     settings?: CloseSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     logger.log('Command "close" is called with settings', settings)
-    const results = await requests.close({settings, logger})
-    return results
+    await requests.close({settings, logger})
   }
 }

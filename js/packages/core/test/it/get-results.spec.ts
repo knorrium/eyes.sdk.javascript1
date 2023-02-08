@@ -1,12 +1,13 @@
 import type {Core} from '../../src/types'
+import {type SpecType} from '@applitools/driver'
 import {makeCore} from '../../src/core'
 import {generateScreenshot} from '../utils/generate-screenshot'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {makeFakeCore} from '../utils/fake-base-core'
 import assert from 'assert'
 
-describe('close', async () => {
-  let driver: MockDriver, core: Core<MockDriver, unknown, unknown, unknown>
+describe('get results', async () => {
+  let driver: MockDriver, core: Core<SpecType<MockDriver>, 'classic' | 'ufg'>
 
   before(async () => {
     driver = new MockDriver()
@@ -23,16 +24,18 @@ describe('close', async () => {
     core = makeCore({spec, core: fakeCore})
   })
 
-  it('should not throw on close', async () => {
+  it('should not throw on get results', async () => {
     const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
     await eyes.check({settings: {name: 'diff'}})
-    const results = await eyes.close({settings: {throwErr: false}})
+    await eyes.close()
+    const results = await eyes.getResults({settings: {throwErr: false}})
     assert.ok(Array.isArray(results))
   })
 
-  it('should throw on close', async () => {
+  it('should throw on get results', async () => {
     const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
     await eyes.check({settings: {name: 'diff'}})
-    await assert.rejects(eyes.close({settings: {throwErr: true}}))
+    await eyes.close()
+    await assert.rejects(eyes.getResults({settings: {throwErr: true}}))
   })
 })

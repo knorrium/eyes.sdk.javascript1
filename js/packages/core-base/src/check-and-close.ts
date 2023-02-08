@@ -1,4 +1,4 @@
-import type {ImageTarget, CheckSettings, CloseSettings, TestResult} from './types'
+import type {Target, CheckSettings, CloseSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
@@ -14,7 +14,7 @@ export function makeCheckAndClose({requests, logger: defaultLogger}: Options) {
     settings,
     logger = defaultLogger,
   }: {
-    target: ImageTarget
+    target: Target
     settings?: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {

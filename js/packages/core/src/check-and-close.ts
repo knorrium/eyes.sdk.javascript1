@@ -1,28 +1,22 @@
 import type {Target, DriverTarget, Eyes, Config, CheckSettings, CloseSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
-import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
+import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 
-type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   type?: TType
-  eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+  eyes: Eyes<TSpec, TType>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeCheckAndClose<
-  TDriver,
-  TContext,
-  TElement,
-  TSelector,
-  TDefaultType extends 'classic' | 'ufg' = 'classic',
->({
+export function makeCheckAndClose<TSpec extends SpecType, TDefaultType extends 'classic' | 'ufg'>({
   type: defaultType = 'classic' as TDefaultType,
   eyes,
   target: defaultTarget,
   spec,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector, TDefaultType>) {
+}: Options<TSpec, TDefaultType>) {
   return async function checkAndClose<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
     target = defaultTarget,
@@ -31,12 +25,12 @@ export function makeCheckAndClose<
     logger = defaultLogger,
   }: {
     type?: TType
-    target?: Target<TDriver, TContext, TElement, TSelector, TType>
-    settings?: CheckSettings<TElement, TSelector, TDefaultType> &
+    target?: Target<TSpec, TType>
+    settings?: CheckSettings<TSpec, TDefaultType> &
       CloseSettings<TDefaultType> &
-      CheckSettings<TElement, TSelector, TType> &
+      CheckSettings<TSpec, TType> &
       CloseSettings<TType>
-    config?: Config<TElement, TSelector, TDefaultType> & Config<TElement, TSelector, TType>
+    config?: Config<TSpec, TDefaultType> & Config<TSpec, TType>
     logger?: Logger
   } = {}): Promise<TestResult<TType>[]> {
     settings = {...config?.screenshot, ...config?.check, ...config?.close, ...settings}
@@ -47,12 +41,12 @@ export function makeCheckAndClose<
       settings: driver
         ? {
             type: driver.isNative ? 'native' : 'web',
-            renderers: (settings as CheckSettings<TElement, TSelector, 'ufg'>).renderers!,
+            renderers: (settings as CheckSettings<TSpec, 'ufg'>).renderers!,
           }
         : undefined,
       logger,
     })
     const results = await typedEyes.checkAndClose({target: driver ?? target, settings, logger})
-    return results
+    return results as TestResult<TType>[]
   }
 }

@@ -1,29 +1,39 @@
-import type {Eyes, CloseBatchSettings, TestResult, TestResultContainer, TestResultSummary} from './types'
+import type {
+  Eyes,
+  GetResultsSettings,
+  CloseBatchSettings,
+  TestResult,
+  TestResultContainer,
+  TestResultSummary,
+} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
+import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 import {InternalError} from './errors/internal-error'
 
-type Options<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg'> = {
+type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   core: BaseCore<unknown>
-  storage: {eyes: Eyes<TDriver, TContext, TElement, TSelector, TType>; promise?: Promise<TestResult<TType>[]>}[]
+  storage: Eyes<TSpec, TType>[]
   logger: Logger
 }
 
-export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType extends 'classic' | 'ufg' = 'classic'>({
+export function makeGetManagerResults<TSpec extends SpecType, TType extends 'classic' | 'ufg'>({
   core,
   storage,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector, TType>) {
-  return async function closeManager({
+}: Options<TSpec, TType>) {
+  return async function getManagerResults({
     settings,
     logger = defaultLogger,
-  }: {settings?: {throwErr?: boolean}; logger?: Logger} = {}): Promise<TestResultSummary<TType>> {
+  }: {
+    settings?: GetResultsSettings<TType>
+    logger?: Logger
+  } = {}): Promise<TestResultSummary<TType>> {
     const containers: TestResultContainer<TType>[][] = await Promise.all(
-      storage.map(async ({eyes, promise}) => {
-        if (!promise) logger.warn(`The eyes with id "${eyes.test.userTestId}" are going to be auto aborted`)
+      storage.map(async eyes => {
         try {
-          const results: TestResult<TType>[] = await (promise ?? eyes.abort({logger}))
+          const results = await eyes.getResults({settings, logger})
           return results.map(result => {
             return {
               result,
@@ -38,7 +48,7 @@ export function makeCloseManager<TDriver, TContext, TElement, TSelector, TType e
       }),
     )
 
-    const batches = storage.reduce((batches, {eyes}) => {
+    const batches = storage.reduce((batches, eyes) => {
       if (!eyes.test.keepBatchOpen) {
         const settings = {...eyes.test.server, batchId: eyes.test.batchId}
         batches[`${settings.serverUrl}:${settings.apiKey}:${settings.batchId}`] = settings

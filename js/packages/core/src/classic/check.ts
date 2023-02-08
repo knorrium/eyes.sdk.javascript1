@@ -1,33 +1,33 @@
-import type {ClassicTarget, DriverTarget, ImageTarget, Eyes, CheckSettings, CheckResult} from './types'
-import type {CheckSettings as BaseCheckSettings} from '@applitools/core-base'
+import type {Target, DriverTarget, Eyes, CheckSettings, CheckResult} from './types'
+import type {Target as BaseTarget, CheckSettings as BaseCheckSettings} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
-import {makeDriver, isDriver, type SpecDriver} from '@applitools/driver'
+import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from '../automation/utils/take-screenshot'
 import {takeDomCapture} from './utils/take-dom-capture'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import * as utils from '@applitools/utils'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  eyes: Eyes<TDriver, TContext, TElement, TSelector>
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  eyes: Eyes<TSpec>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeCheck<TDriver, TContext, TElement, TSelector>({
+export function makeCheck<TSpec extends SpecType>({
   eyes,
   target: defaultTarget,
   spec,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
+}: Options<TSpec>) {
   return async function check({
     target = defaultTarget,
     settings = {},
     logger = defaultLogger,
   }: {
-    target?: ClassicTarget<TDriver, TContext, TElement, TSelector>
-    settings?: CheckSettings<TElement, TSelector>
+    target?: Target<TSpec>
+    settings?: CheckSettings<TSpec>
     logger?: Logger
   } = {}): Promise<CheckResult[]> {
     logger.log('Command "check" is called with settings', settings)
@@ -55,7 +55,7 @@ export function makeCheck<TDriver, TContext, TElement, TSelector>({
     // TODO it actually could be different per eyes
     const shouldRunOnce = true
     const finishAt = Date.now() + (settings.retryTimeout ?? 0)
-    let baseTarget: ImageTarget
+    let baseTarget: BaseTarget
     let baseSettings: BaseCheckSettings
     let results: CheckResult[]
     const {elementReferencesToCalculate, getBaseCheckSettings} = toBaseCheckSettings({settings})

@@ -1,5 +1,6 @@
 import {makeCore, type Core, type ECClient} from '../../src/index'
 import {getTestInfo} from '@applitools/test-utils'
+import {type SpecType} from '@applitools/driver'
 import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
@@ -14,11 +15,11 @@ describe('self-healing', () => {
   let driver: spec.Driver,
     destroyDriver: () => Promise<void>,
     client: ECClient,
-    core: Core<spec.Driver, spec.Driver, spec.Element, spec.Selector>
+    core: Core<SpecType<spec.Driver, spec.Driver, spec.Element, spec.Selector>, 'classic' | 'ufg'>
   const serverUrl = 'https://eyesapi.applitools.com'
 
   before(async () => {
-    core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec, concurrency: 10})
+    core = makeCore({spec, concurrency: 10})
     client = await core.makeECClient({
       settings: {capabilities: {eyesServerUrl: serverUrl, useSelfHealing: true}},
     })
@@ -37,10 +38,9 @@ describe('self-healing', () => {
       target: driver,
       settings: {appName: 'core e2e', testName: 'ufg - self-healing'},
     })
-
-    await eyes.check({})
-
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.check()
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
       assert.deepStrictEqual(result.old.value, '#log-in')
@@ -55,9 +55,9 @@ describe('self-healing', () => {
       target: driver,
       settings: {appName: 'core e2e', testName: 'ufg - self-healing'},
     })
-    await eyes.check({})
-
-    const [result] = await eyes.abort()
+    await eyes.check()
+    await eyes.abort()
+    const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
       assert.deepStrictEqual(result.old.value, '#log-in')
@@ -71,9 +71,9 @@ describe('self-healing', () => {
       target: driver,
       settings: {appName: 'core e2e', testName: 'classic - self-healing'},
     })
-    await eyes.check({})
-
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.check()
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
       assert.deepStrictEqual(result.old.value, '#log-in')
@@ -87,9 +87,9 @@ describe('self-healing', () => {
       target: driver,
       settings: {appName: 'core e2e', testName: 'classic - self-healing'},
     })
-    await eyes.check({})
-
-    const [result] = await eyes.abort()
+    await eyes.check()
+    await eyes.abort()
+    const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
       assert.deepStrictEqual(result.old.value, '#log-in')

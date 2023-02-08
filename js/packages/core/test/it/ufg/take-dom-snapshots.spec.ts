@@ -1,13 +1,13 @@
 import {takeDomSnapshots} from '../../../src/ufg/utils/take-dom-snapshots'
 import {makeLogger, type Logger} from '@applitools/logger'
-import {makeDriver, type Driver} from '@applitools/driver'
+import {makeDriver, type SpecType, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {generateDomSnapshot} from '../../utils/generate-dom-snapshot'
 import chalk from 'chalk'
 import assert from 'assert'
 
 describe('take-dom-snapshots', () => {
-  let driver: Driver<MockDriver, unknown, unknown, unknown>, logger: Logger, output: string[]
+  let driver: Driver<SpecType<MockDriver>>, logger: Logger, output: string[]
 
   beforeEach(async () => {
     const mock = new MockDriver({viewport: {width: 600, height: 700}})

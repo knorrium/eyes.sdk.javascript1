@@ -2,7 +2,7 @@ import * as spec from '@applitools/spec-driver-webdriverio'
 import {makeCore} from '../../src/index'
 import assert from 'assert'
 
-describe('close-manager', () => {
+describe('get manager results', () => {
   let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
@@ -13,7 +13,7 @@ describe('close-manager', () => {
     await destroyDriver?.()
   })
 
-  it('aborts unclosed tests when close manager', async () => {
+  it('aborts unclosed tests when getting manager results', async () => {
     const core = makeCore({spec})
     const manager = await core.makeManager()
     const eyes = await manager.openEyes({
@@ -22,7 +22,7 @@ describe('close-manager', () => {
     })
 
     await eyes.check({settings: {fully: false}})
-    const summary = await manager.closeManager()
+    const summary = await manager.getResults()
     assert.ok(summary.results)
     assert.ok(summary.results.length === 1)
     assert.ok(summary.results[0].result?.isAborted)
@@ -40,7 +40,7 @@ describe('close-manager', () => {
     })
 
     await eyes.check({settings: {fully: false}})
-    const summary = await manager.closeManager()
+    const summary = await manager.getResults()
     assert.strictEqual((summary.results[0].error as any).reason, 'test new')
   })
 
@@ -54,7 +54,7 @@ describe('close-manager', () => {
     })
 
     await eyes.check({settings: {fully: false, renderers: [{name: 'firefox-3' as 'firefox', width: 640, height: 480}]}})
-    const summary = await manager.closeManager()
+    const summary = await manager.getResults()
     assert.strictEqual((summary.results[0].error as any).reason, 'internal')
   })
 })

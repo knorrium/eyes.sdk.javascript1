@@ -41,7 +41,8 @@ describe('cross origin frames', () => {
       },
     })
     await eyes.check()
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })

@@ -1,7 +1,7 @@
 import type {Size, Region} from '@applitools/utils'
 import type {ScreenOrientation, Cookie} from './types'
 import {type Selector} from './selector'
-import {type SpecDriver, type DriverInfo, type WaitOptions} from './spec-driver'
+import {type SpecType, type SpecDriver, type DriverInfo, type WaitOptions} from './spec-driver'
 import {type Element} from './element'
 import {Context, type ContextReference} from './context'
 import {makeLogger, type Logger} from '@applitools/logger'
@@ -15,31 +15,28 @@ import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
 
-type DriverOptions<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  driver: TDriver
+type DriverOptions<T extends SpecType> = {
+  spec: SpecDriver<T>
+  driver: T['driver']
   logger?: Logger
   customConfig?: {useCeilForViewportSize?: boolean; disableHelper?: boolean}
 }
 
 // eslint-disable-next-line
-export class Driver<TDriver, TContext, TElement, TSelector> {
-  private _target: TDriver
+export class Driver<T extends SpecType> {
+  private _target: T['driver']
 
-  private _mainContext: Context<TDriver, TContext, TElement, TSelector>
-  private _currentContext: Context<TDriver, TContext, TElement, TSelector>
+  private _mainContext: Context<T>
+  private _currentContext: Context<T>
   private _driverInfo: DriverInfo = {}
   private _logger: Logger
   private _customConfig: {useCeilForViewportSize?: boolean; disableHelper?: boolean} = {}
-  private _helper?:
-    | HelperAndroid<TDriver, TContext, TElement, TSelector>
-    | HelperIOS<TDriver, TContext, TElement, TSelector>
-    | null
+  private _helper?: HelperAndroid<T> | HelperIOS<T> | null
   private _previousWorld?: string
 
-  protected readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  protected readonly _spec: SpecDriver<T>
 
-  constructor(options: DriverOptions<TDriver, TContext, TElement, TSelector>) {
+  constructor(options: DriverOptions<T>) {
     this._customConfig = options.customConfig ?? {}
     this._spec = options.spec
     this._logger = options.logger?.extend({label: 'driver'}) ?? makeLogger({label: 'driver'})
@@ -51,20 +48,20 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
 
     this._mainContext = new Context({
       spec: this._spec,
-      context: this._spec.extractContext?.(this._target) ?? (this._target as unknown as TContext),
+      context: this._spec.extractContext?.(this._target) ?? (this._target as T['context']),
       driver: this,
       logger: this._logger,
     })
     this._currentContext = this._mainContext
   }
 
-  get target(): TDriver {
+  get target(): T['driver'] {
     return this._target
   }
-  get currentContext(): Context<TDriver, TContext, TElement, TSelector> {
+  get currentContext(): Context<T> {
     return this._currentContext
   }
-  get mainContext(): Context<TDriver, TContext, TElement, TSelector> {
+  get mainContext(): Context<T> {
     return this._mainContext
   }
   get helper() {
@@ -159,7 +156,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     return this._driverInfo?.remoteHostname
   }
 
-  updateCurrentContext(context: Context<TDriver, TContext, TElement, TSelector>): void {
+  updateCurrentContext(context: Context<T>): void {
     this._currentContext = context
   }
 
@@ -433,7 +430,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     if (this.isECClient) return await this._spec.getSessionMetadata?.(this.target)
   }
 
-  async refreshContexts(): Promise<Context<TDriver, TContext, TElement, TSelector>> {
+  async refreshContexts(): Promise<Context<T>> {
     if (this.isNative) return this.currentContext
 
     const spec = this._spec
@@ -457,28 +454,32 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     this._currentContext = this._mainContext
     return this.switchToChildContext(...path)
 
-    function transformSelector(selector: Selector<TSelector>) {
+    function transformSelector(selector: Selector<T>) {
       return specUtils.transformSelector(spec, selector, {isWeb: true})
     }
 
-    async function getContextInfo(context: TContext): Promise<any> {
+    async function getContextInfo(context: T['context']): Promise<any> {
       const [documentElement, selector, isRoot, isCORS] = await spec.executeScript(context, snippets.getContextInfo)
       return {documentElement, selector, isRoot, isCORS}
     }
 
-    async function getChildContextsInfo(context: TContext): Promise<any[]> {
+    async function getChildContextsInfo(context: T['context']): Promise<any[]> {
       const framesInfo = await spec.executeScript(context, snippets.getChildFramesInfo)
-      return framesInfo.map(([contextElement, isCORS]: [TElement, boolean]) => ({
+      return framesInfo.map(([contextElement, isCORS]: [T['element'], boolean]) => ({
         contextElement,
         isCORS,
       }))
     }
 
-    async function isEqualElements(context: TContext, element1: TElement, element2: TElement): Promise<boolean> {
+    async function isEqualElements(
+      context: T['context'],
+      element1: T['element'],
+      element2: T['element'],
+    ): Promise<boolean> {
       return spec.executeScript(context, snippets.isEqualElements, [element1, element2]).catch(() => false)
     }
 
-    async function findContextReference(context: TContext, contextInfo: any): Promise<TElement | null> {
+    async function findContextReference(context: T['context'], contextInfo: any): Promise<T['element'] | null> {
       if (contextInfo.selector) {
         const contextElement = await spec.findElement(
           context,
@@ -498,10 +499,10 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     }
 
     async function findContextPath(
-      context: TContext,
+      context: T['context'],
       contextInfo: any,
-      contextPath: TElement[] = [],
-    ): Promise<TElement[] | undefined> {
+      contextPath: T['element'][] = [],
+    ): Promise<T['element'][] | undefined> {
       const contentDocument = await spec.findElement(context, transformSelector('html'))
       if (await isEqualElements(context, contentDocument!, contextInfo.documentElement)) {
         return contextPath
@@ -521,9 +522,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  async switchTo(
-    context: Context<TDriver, TContext, TElement, TSelector>,
-  ): Promise<Context<TDriver, TContext, TElement, TSelector>> {
+  async switchTo(context: Context<T>): Promise<Context<T>> {
     if (await this.currentContext.equals(context)) {
       return (this._currentContext = context)
     }
@@ -566,7 +565,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  async switchToMainContext(): Promise<Context<TDriver, TContext, TElement, TSelector>> {
+  async switchToMainContext(): Promise<Context<T>> {
     if (this.isNative) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to the main context')
@@ -574,7 +573,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     return (this._currentContext = this._mainContext)
   }
 
-  async switchToParentContext(elevation = 1): Promise<Context<TDriver, TContext, TElement, TSelector>> {
+  async switchToParentContext(elevation = 1): Promise<Context<T>> {
     if (this.isNative) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to a parent context with elevation:', elevation)
@@ -599,9 +598,7 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     return this.currentContext
   }
 
-  async switchToChildContext(
-    ...references: ContextReference<TDriver, TContext, TElement, TSelector>[]
-  ): Promise<Context<TDriver, TContext, TElement, TSelector>> {
+  async switchToChildContext(...references: ContextReference<T>[]): Promise<Context<T>> {
     if (this.isNative) throw new Error('Contexts are supported only for web drivers')
     this._logger.log('Switching to a child context with depth:', references.length)
     for (const reference of references) {
@@ -636,23 +633,20 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
     return normalizedRegion
   }
 
-  async getRegionInViewport(context: Context<TDriver, TContext, TElement, TSelector>, region: Region): Promise<Region> {
+  async getRegionInViewport(context: Context<T>, region: Region): Promise<Region> {
     await context.focus()
     return context.getRegionInViewport(region)
   }
 
-  async element(selector: Selector<TSelector>): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
+  async element(selector: Selector<T>): Promise<Element<T> | null> {
     return this.currentContext.element(selector)
   }
 
-  async elements(selector: Selector<TSelector>): Promise<Element<TDriver, TContext, TElement, TSelector>[]> {
+  async elements(selector: Selector<T>): Promise<Element<T>[]> {
     return this.currentContext.elements(selector)
   }
 
-  async waitFor(
-    selector: Selector<TSelector>,
-    options?: WaitOptions,
-  ): Promise<Element<TDriver, TContext, TElement, TSelector> | null> {
+  async waitFor(selector: Selector<T>, options?: WaitOptions): Promise<Element<T> | null> {
     return this.currentContext.waitFor(selector, options)
   }
 
@@ -823,23 +817,17 @@ export class Driver<TDriver, TContext, TElement, TSelector> {
   }
 }
 
-export function isDriver<TDriver>(
-  driver: any,
-  spec?: SpecDriver<TDriver, any, any, any>,
-): driver is Driver<TDriver, any, any, any> | TDriver {
+export function isDriver<T extends SpecType>(driver: any, spec?: SpecDriver<T>): driver is Driver<T> | T['driver'] {
   return driver instanceof Driver || !!spec?.isDriver(driver)
 }
 
-export async function makeDriver<TDriver, TContext, TElement, TSelector>(options: {
-  driver: TDriver | Driver<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+export async function makeDriver<T extends SpecType>(options: {
+  driver: Driver<T> | T['driver']
+  spec?: SpecDriver<T>
   logger?: Logger
   customConfig?: {useCeilForViewportSize?: boolean; disableHelper?: boolean}
-}): Promise<Driver<TDriver, TContext, TElement, TSelector>> {
-  const driver =
-    options.driver instanceof Driver
-      ? options.driver
-      : new Driver(options as DriverOptions<TDriver, TContext, TElement, TSelector>)
+}): Promise<Driver<T>> {
+  const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
   await driver.init()
   await driver.refreshContexts()
   return driver

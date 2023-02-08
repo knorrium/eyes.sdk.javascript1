@@ -14,7 +14,7 @@ describe('open eyes classic', () => {
   })
 
   it('should preserve original frame after opening', async () => {
-    const core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
+    const core = makeCore({spec})
 
     await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
 
@@ -42,6 +42,7 @@ describe('open eyes classic', () => {
       'frame url baseline should be equals to frame url after open eyes',
     )
 
-    await eyes.close({})
+    await eyes.close()
+    await eyes.getResults()
   })
 })

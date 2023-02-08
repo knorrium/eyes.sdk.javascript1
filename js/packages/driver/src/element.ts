@@ -1,5 +1,5 @@
 import type {Location, Size, Region} from '@applitools/utils'
-import {type SpecDriver} from './spec-driver'
+import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Context} from './context'
 import {type Selector} from './selector'
 import {type Logger} from '@applitools/logger'
@@ -8,40 +8,37 @@ import * as specUtils from './spec-utils'
 
 const snippets = require('@applitools/snippets')
 
-export type ElementReference<TElement, TSelector> = TElement | Selector<TSelector>
+export type ElementReference<T extends SpecType> = T['element'] | Selector<T>
 
-type ElementState<TElement> = {
+type ElementState = {
   contentSize?: Size
   scrollOffset?: Location
   transforms?: any
   attributes?: Record<string, string | Error>
   touchPadding?: number
-  containedElements?: Map<TElement, boolean>
+  containedElements?: Map<any, boolean>
 }
 
-type ElementOptions<TDriver, TContext, TElement, TSelector> = {
-  spec: SpecDriver<TDriver, TContext, TElement, TSelector>
-  context?: Context<TDriver, TContext, TElement, TSelector>
+type ElementOptions<T extends SpecType> = {
+  spec: SpecDriver<T>
+  context?: Context<T>
   logger: Logger
-} & (
-  | {element: TElement; selector?: Selector<TSelector>; index?: number}
-  | {selector: Selector<TSelector>; index?: number}
-)
+} & ({element: T['element']; selector?: Selector<T>; index?: number} | {selector: Selector<T>; index?: number})
 
-export class Element<TDriver, TContext, TElement, TSelector> {
-  private _target?: TElement
+export class Element<T extends SpecType> {
+  private _target?: T['element']
 
-  private _context?: Context<TDriver, TContext, TElement, TSelector>
-  private _selector?: Selector<TSelector>
+  private _context?: Context<T>
+  private _selector?: Selector<T>
   private _commonSelector: Selector | null
   private _index?: number
-  private _state: ElementState<TElement> = {}
+  private _state: ElementState = {}
   private _originalOverflow: any
   private _logger: Logger
 
-  protected readonly _spec: SpecDriver<TDriver, TContext, TElement, TSelector>
+  protected readonly _spec: SpecDriver<T>
 
-  constructor(options: ElementOptions<TDriver, TContext, TElement, TSelector>) {
+  constructor(options: ElementOptions<T>) {
     this._spec = options.spec
     this._context = options.context
     this._logger = options.logger
@@ -100,7 +97,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     return this.context?.isRef || !this.target
   }
 
-  async equals(element: Element<TDriver, TContext, TElement, TSelector> | TElement): Promise<boolean> {
+  async equals(element: Element<T> | T['element']): Promise<boolean> {
     if (this.isRef) return false
 
     element = element instanceof Element ? element.target : element
@@ -113,7 +110,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  async contains(innerElement: Element<TDriver, TContext, TElement, TSelector> | TElement): Promise<boolean> {
+  async contains(innerElement: Element<T> | T['element']): Promise<boolean> {
     const contains = await this.withRefresh(async () => {
       innerElement = innerElement instanceof Element ? innerElement.target : innerElement
       if (this.driver.isWeb) {
@@ -137,7 +134,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     return contains
   }
 
-  async init(context: Context<TDriver, TContext, TElement, TSelector>): Promise<this> {
+  async init(context: Context<T>): Promise<this> {
     this._context = context
     this._logger = (context as any)._logger
     if (this._target) return this
@@ -325,7 +322,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     })
   }
 
-  async getShadowRoot(): Promise<TElement | null> {
+  async getShadowRoot(): Promise<T['element'] | null> {
     if (!this.driver.isWeb) return null
     return this._spec.executeScript(this.context.target, snippets.getShadowRoot, [this.target])
   }
@@ -626,7 +623,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     await this._spec.setElementText?.(this.context.target, this.target, value)
   }
 
-  async preserveState(): Promise<ElementState<TElement>> {
+  async preserveState(): Promise<ElementState> {
     const scrollOffset = await this.getScrollOffset()
     const transforms = this.driver.isWeb
       ? await this.context.execute(snippets.getElementStyleProperties, [this, ['transform', '-webkit-transform']])
@@ -638,7 +635,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     return {scrollOffset, transforms}
   }
 
-  async restoreState(state: ElementState<TElement> = this._state): Promise<void> {
+  async restoreState(state: ElementState = this._state): Promise<void> {
     if (state.scrollOffset) await this.scrollTo(state.scrollOffset)
     if (state.transforms) await this.context.execute(snippets.setElementStyleProperties, [this, state.transforms])
     if (state === this._state) {
@@ -665,9 +662,9 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     })
   }
 
-  async refresh(freshElement?: TElement): Promise<boolean> {
-    if (this._spec.isElement(freshElement)) {
-      this._target = freshElement
+  async refresh(freshTarget?: T['element']): Promise<boolean> {
+    if (this._spec.isElement(freshTarget)) {
+      this._target = freshTarget
       return true
     }
     if (!this._selector) return false
@@ -686,7 +683,7 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     try {
       const result = await operation()
       // Some frameworks could handle stale element reference error by itself or doesn't throw an error
-      if (this._spec.isStaleElementError(result, this.selector as TSelector)) {
+      if (this._spec.isStaleElementError(result, this.selector as T['selector'])) {
         const refreshed = await this.refresh()
         if (!refreshed) {
           throw result
@@ -703,14 +700,14 @@ export class Element<TDriver, TContext, TElement, TSelector> {
     }
   }
 
-  toJSON(): TElement {
+  toJSON(): T['element'] {
     return this.target
   }
 }
 
-export function isElementReference<TElement, TSelector>(
+export function isElementReference<T extends SpecType>(
   reference: any,
-  spec?: SpecDriver<unknown, unknown, TElement, TSelector>,
-): reference is ElementReference<TElement, TSelector> {
+  spec?: SpecDriver<T>,
+): reference is ElementReference<T> {
   return !!spec && (spec.isElement(reference) || specUtils.isSelector(spec, reference))
 }

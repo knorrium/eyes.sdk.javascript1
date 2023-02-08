@@ -353,18 +353,7 @@ describe('requests', () => {
 
   it('extractText', async () => {
     const requests = makeCoreRequests({agentId: 'test-core'})
-
-    const eyes = await requests.openEyes({
-      settings: {
-        serverUrl: 'https://localhost:3000',
-        apiKey: 'my0api0key',
-        agentId: 'custom-agent',
-        appName: 'My wonderful app',
-        testName: 'My great test',
-      },
-    })
-
-    const [result] = await eyes.extractText({
+    const [result] = await requests.extractText({
       target: {
         image: 'https://localhost:3000/image.png',
         size: {width: 100.25, height: 200.75},
@@ -372,6 +361,9 @@ describe('requests', () => {
         locationInViewport: {x: 10.25, y: 20.75},
       },
       settings: {
+        serverUrl: 'https://localhost:3000',
+        apiKey: 'my0api0key',
+        agentId: 'custom-agent',
         hint: 'HiNt',
         minMatch: 0,
         language: 'en',

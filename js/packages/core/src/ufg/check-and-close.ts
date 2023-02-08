@@ -1,10 +1,10 @@
 import type {Region} from '@applitools/utils'
-import type {DriverTarget, UFGTarget, Eyes, CheckSettings, TestResult, CloseSettings} from './types'
+import type {DriverTarget, Target, Eyes, CheckSettings, TestResult, CloseSettings} from './types'
 import {type DomSnapshot, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
 import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {type UFGClient} from '@applitools/ufg-client'
-import {makeDriver, isDriver, type SpecDriver, type Selector, type Cookie} from '@applitools/driver'
+import {makeDriver, isDriver, type SpecType, type SpecDriver, type Selector, type Cookie} from '@applitools/driver'
 import {takeSnapshots} from './utils/take-snapshots'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
@@ -14,30 +14,30 @@ import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
 import chalk from 'chalk'
 
-type Options<TDriver, TContext, TElement, TSelector> = {
-  eyes: Eyes<TDriver, TContext, TElement, TSelector>
+type Options<TSpec extends SpecType> = {
+  eyes: Eyes<TSpec>
   client: UFGClient
-  target?: DriverTarget<TDriver, TContext, TElement, TSelector>
-  spec?: SpecDriver<TDriver, TContext, TElement, TSelector>
+  target?: DriverTarget<TSpec>
+  spec?: SpecDriver<TSpec>
   signal?: AbortSignal
   logger: Logger
 }
 
-export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
+export function makeCheckAndClose<TSpec extends SpecType>({
   spec,
   eyes,
   client,
   signal,
   target: defaultTarget,
   logger: defaultLogger,
-}: Options<TDriver, TContext, TElement, TSelector>) {
+}: Options<TSpec>) {
   return async function checkAndClose({
     target = defaultTarget,
     settings = {},
     logger = defaultLogger,
   }: {
-    target?: UFGTarget<TDriver, TContext, TElement, TSelector>
-    settings?: CheckSettings<TElement, TSelector> & CloseSettings
+    target?: Target<TSpec>
+    settings?: CheckSettings<TSpec> & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {
     logger.log('Command "checkAndClose" is called with settings', settings)
@@ -165,7 +165,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
           if (signal?.aborted) {
             logger.warn('Command "check" was aborted before rendering')
             throw new AbortError('Command "check" was aborted before rendering')
-          } else if (baseEyes.aborted) {
+          } else if (!baseEyes.running) {
             logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
@@ -177,7 +177,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
           if (signal?.aborted) {
             logger.warn('Command "check" was aborted before rendering')
             throw new AbortError('Command "check" was aborted before rendering')
-          } else if (baseEyes.aborted) {
+          } else if (!baseEyes.running) {
             logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
@@ -211,7 +211,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
           if (signal?.aborted) {
             logger.warn('Command "check" was aborted after rendering')
             throw new AbortError('Command "check" was aborted after rendering')
-          } else if (baseEyes.aborted) {
+          } else if (!baseEyes.running) {
             logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
@@ -224,7 +224,7 @@ export function makeCheckAndClose<TDriver, TContext, TElement, TSelector>({
             logger,
           })
 
-          if (baseEyes.aborted) {
+          if (!baseEyes.running) {
             logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,

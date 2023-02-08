@@ -4,10 +4,9 @@ import {type CoreRequests} from './server/requests'
 import {extractBranchingTimestamp} from './utils/extract-branching-timestamp'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
-import {makeLocateText} from './locate-text'
-import {makeExtractText} from './extract-text'
 import {makeClose} from './close'
 import {makeAbort} from './abort'
+import {makeGetResults} from './get-results'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -57,13 +56,12 @@ export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogg
         return Promise.race([check(options), aborted]).finally(queue[index].resolve)
       }),
       checkAndClose: makeCheckAndClose({requests: eyesRequests, logger}),
-      locateText: makeLocateText({requests: eyesRequests, logger}),
-      extractText: makeExtractText({requests: eyesRequests, logger}),
       close: makeClose({requests: eyesRequests, logger}),
       abort: utils.general.wrap(makeAbort({requests: eyesRequests, logger}), async (abort, options) => {
         aborted.reject(new Error('Command "check" was aborted due to possible error in previous step'))
         return abort(options)
       }),
+      getResults: makeGetResults({requests: eyesRequests, logger}),
     })
   }
 }

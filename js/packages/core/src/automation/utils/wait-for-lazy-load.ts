@@ -1,5 +1,5 @@
 import {type Logger} from '@applitools/logger'
-import {type Context} from '@applitools/driver'
+import {type SpecType, type Context} from '@applitools/driver'
 
 const {lazyLoad} = require('@applitools/snippets')
 
@@ -11,12 +11,12 @@ export type LazyLoadSettings = {
   pollTimeout?: number
 }
 
-export async function waitForLazyLoad<TContext extends Context<unknown, unknown, unknown, unknown>>({
+export async function waitForLazyLoad<TSpec extends SpecType>({
   context,
   settings,
   logger,
 }: {
-  context: TContext
+  context: Context<TSpec>
   settings: LazyLoadSettings
   logger: Logger
 }) {

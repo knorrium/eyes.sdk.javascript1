@@ -1,4 +1,4 @@
-import {type Driver, type Context} from '@applitools/driver'
+import {type SpecType, type Driver, type Context} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {req, type Fetch} from '@applitools/req'
 
@@ -16,12 +16,12 @@ export type DomCaptureSettings = {
   chunkByteLength?: number
 }
 
-export async function takeDomCapture({
+export async function takeDomCapture<TSpec extends SpecType>({
   driver,
   settings,
   logger,
 }: {
-  driver: Driver<unknown, unknown, unknown, unknown>
+  driver: Driver<TSpec>
   settings?: DomCaptureSettings
   logger: Logger
 }) {
@@ -48,7 +48,7 @@ export async function takeDomCapture({
   // TODO save debug DOM like we have for debug screenshots
   return dom
 
-  async function captureContextDom(context: Context<unknown, unknown, unknown, unknown>): Promise<string> {
+  async function captureContextDom(context: Context<TSpec>): Promise<string> {
     const capture: string = await context.executePoll(scripts, {
       main: arg,
       poll: arg,

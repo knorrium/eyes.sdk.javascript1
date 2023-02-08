@@ -14,7 +14,7 @@ describe('default scroll root element', () => {
   })
 
   it('uses html or body as default scroll root elements', async () => {
-    const core = makeCore<spec.Driver, spec.Driver, spec.Element, spec.Selector>({spec})
+    const core = makeCore({spec})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
@@ -28,7 +28,8 @@ describe('default scroll root element', () => {
     await eyes.check({settings: {name: 'body scrolling element', fully: true, hideScrollbars: true}})
     await driver.url('https://applitools.github.io/demo/TestPages/ScrollingElement/html.html')
     await eyes.check({settings: {name: 'html scrolling element', fully: true, hideScrollbars: true}})
-    const [result] = await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    const [result] = await eyes.getResults()
     assert.strictEqual(result.status, 'Passed')
   })
 })
