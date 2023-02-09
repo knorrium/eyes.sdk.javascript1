@@ -1,4 +1,5 @@
 import {makeCore} from '../../src/core'
+import {readFileSync} from 'fs'
 import nock from 'nock'
 import assert from 'assert'
 
@@ -7,7 +8,9 @@ describe('check', () => {
     nock('https://localhost:3000').get('/api/sessions/renderinfo').query({apiKey: 'my0api0key'}).reply(200, {})
     nock('https://localhost:3000')
       .post('/api/sessions/running')
-      .query({apiKey: 'my0api0key'})
+      .query(query => {
+        return typeof query.apiKey !== 'undefined'
+      })
       .reply((_url, body) => {
         return [
           201,
@@ -118,5 +121,58 @@ describe('check', () => {
     )
 
     assert.strictEqual(checked, 1)
+  })
+
+  it('crop image base on account info "maxImageHeight" and "maxImageArea"', async () => {
+    const apiKey = 'my0api0key-with-crop'
+    const uploadUrl = 'https://localhost:3001'
+    const image = readFileSync('./test/fixtures/screenshot.png')
+    const cropImage = readFileSync('./test/fixtures/screenshot-crop.png')
+
+    nock('https://localhost:3000').get('/api/sessions/renderinfo').query({apiKey}).reply(200, {
+      maxImageHeight: 200,
+      maxImageArea: 400000,
+      uploadUrl,
+    })
+    nock('https://localhost:3000')
+      .post('/api/sessions/running/test-id')
+      .query({apiKey})
+      .once()
+      .reply((_url, body) => {
+        return [200, {windowId: JSON.stringify(body), asExpected: true}]
+      })
+    nock(uploadUrl)
+      .put(/.*/)
+      .once()
+      .reply(async (_url, body) => {
+        // write crop image to file
+        // const fs = await import('fs')
+        // fs.writeFileSync('./test/fixtures/screenshot-crop.png', Buffer.from(body as string, 'hex'))
+
+        const bufferImageSentToUpload = Buffer.from(body as string, 'hex')
+        assert.strictEqual(
+          // comparing the cropImage from fixture
+          // to the image that sent to upload
+          Buffer.compare(cropImage, bufferImageSentToUpload) === 0,
+          true,
+          'crop image need to be the same as the image sent to upload',
+        )
+        return [201, {}]
+      })
+
+    const core = makeCore({agentId: 'test-core'})
+    const eyes = await core.openEyes({
+      settings: {
+        serverUrl: 'https://localhost:3000',
+        apiKey,
+        agentId: 'custom-agent',
+        appName: 'My wonderful app',
+        testName: 'My great test',
+      },
+    })
+    await eyes.check({
+      target: {image},
+      settings: {stepIndex: 0},
+    })
   })
 })

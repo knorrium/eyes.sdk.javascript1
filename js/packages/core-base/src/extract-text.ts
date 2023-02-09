@@ -24,6 +24,12 @@ export function makeExtractText({requests, logger: defaultLogger}: Options) {
     settings = utils.types.isArray(settings) ? settings : [settings]
     const results = await Promise.all(
       settings.map(async settings => {
+        const account = await requests.getAccountInfo({settings, logger})
+        settings.normalization ??= {}
+        settings.normalization.limit = {
+          maxImageHeight: Math.min(settings.normalization.limit?.maxImageHeight ?? Infinity, account.maxImageHeight),
+          maxImageArea: Math.min(settings.normalization.limit?.maxImageArea ?? Infinity, account.maxImageArea),
+        }
         target = await transformTarget({target, settings})
         return requests.extractText({target, settings, logger})
       }),

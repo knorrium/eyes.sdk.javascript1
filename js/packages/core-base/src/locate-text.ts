@@ -18,6 +18,12 @@ export function makeLocateText({requests, logger: defaultLogger}: Options) {
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
+    const account = await requests.getAccountInfo({settings, logger})
+    settings.normalization ??= {}
+    settings.normalization.limit = {
+      maxImageHeight: Math.min(settings.normalization.limit?.maxImageHeight ?? Infinity, account.maxImageHeight),
+      maxImageArea: Math.min(settings.normalization.limit?.maxImageArea ?? Infinity, account.maxImageArea),
+    }
     logger.log('Command "locateText" is called with settings', settings)
     target = await transformTarget({target, settings})
     const results = await requests.locateText({target, settings, logger})

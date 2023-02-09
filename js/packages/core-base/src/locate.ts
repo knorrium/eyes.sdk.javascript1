@@ -18,6 +18,12 @@ export function makeLocate({requests, logger: defaultLogger}: Options) {
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {
+    const account = await requests.getAccountInfo({settings, logger})
+    settings.normalization ??= {}
+    settings.normalization.limit = {
+      maxImageHeight: Math.min(settings.normalization.limit?.maxImageHeight ?? Infinity, account.maxImageHeight),
+      maxImageArea: Math.min(settings.normalization.limit?.maxImageArea ?? Infinity, account.maxImageArea),
+    }
     logger.log('Command "locate" is called with settings', settings)
     target = await transformTarget({target, settings})
     const results = await requests.locate({target, settings, logger})

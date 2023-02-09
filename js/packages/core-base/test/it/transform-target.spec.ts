@@ -1,5 +1,5 @@
 import {readFileSync} from 'fs'
-import {makeImage} from '@applitools/image'
+import {makeImage, type Image} from '@applitools/image'
 import {resolve as resolvePath} from 'path'
 import {pathToFileURL} from 'url'
 import {testServer} from '@applitools/test-server'
@@ -166,6 +166,64 @@ describe('transform-target', () => {
       const result = await transformTarget({target: {image: resolvePath('./test/fixtures/screenshot.bmp')}})
       assert(Buffer.compare(result.image as Buffer, expected.bmp) === 0)
       assert.strict.deepEqual(result.size, {width: 1079, height: 3415})
+    })
+
+    describe('limit', () => {
+      let imageBase: Image
+      beforeEach(() => {
+        imageBase = makeImage('./test/fixtures/screenshot.png')
+      })
+
+      it('image height greater then limit but area in the limit', async () => {
+        const limit = {
+          maxImageHeight: imageBase.height - 10,
+          maxImageArea: imageBase.width * imageBase.height,
+        }
+
+        const result = await transformTarget({
+          target: {image: await imageBase.toPng()},
+          settings: {normalization: {limit}},
+        })
+        assert.strict.deepEqual(
+          result.size,
+          {width: imageBase.width, height: imageBase.height - 10},
+          'should crop the height',
+        )
+      })
+
+      it('image height in the limit but area greater then limit', async () => {
+        const limit = {
+          maxImageHeight: imageBase.height,
+          maxImageArea: imageBase.width * (imageBase.height - 10),
+        }
+
+        const result = await transformTarget({
+          target: {image: await imageBase.toPng()},
+          settings: {normalization: {limit}},
+        })
+        assert.strict.deepEqual(
+          result.size,
+          {width: imageBase.width, height: imageBase.height - 10},
+          'should crop the height',
+        )
+      })
+
+      it('image area and height greater then limit but crop height enough for area', async () => {
+        const limit = {
+          maxImageHeight: imageBase.height - 100,
+          maxImageArea: (imageBase.width - 10) * (imageBase.height - 10),
+        }
+
+        const result = await transformTarget({
+          target: {image: await imageBase.toPng()},
+          settings: {normalization: {limit}},
+        })
+        assert.strict.deepEqual(
+          result.size,
+          {width: imageBase.width, height: imageBase.height - 100},
+          'it should crop **only** the height',
+        )
+      })
     })
 
     it('image file url object in bmp format', async () => {

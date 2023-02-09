@@ -18,10 +18,20 @@ export function makeCheckAndClose({requests, logger: defaultLogger}: Options) {
     settings?: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {
-    logger.log('Command "checkAndClose" is called with settings', settings)
-    if (!target.isTransformed) {
-      target = await transformTarget({target, settings})
+    settings ??= {}
+    settings.normalization ??= {}
+    settings.normalization.limit = {
+      maxImageHeight: Math.min(
+        settings.normalization.limit?.maxImageHeight ?? Infinity,
+        requests.test.account.maxImageHeight,
+      ),
+      maxImageArea: Math.min(
+        settings.normalization.limit?.maxImageArea ?? Infinity,
+        requests.test.account.maxImageArea,
+      ),
     }
+    logger.log('Command "checkAndClose" is called with settings', settings)
+    target = await transformTarget({target, settings})
     const results = await requests.checkAndClose({target, settings, logger})
     return results
   }

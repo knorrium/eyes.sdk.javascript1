@@ -11,22 +11,24 @@ Apollo SDK:
 "@applitools/eyes-universal":
   feature:
     - Add NML support for Android
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-selenium":
   feature:
     - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
     - Add NML support for Android
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-playwright":
   feature:
-    - 
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-protractor":
@@ -46,6 +48,7 @@ Apollo SDK:
     - Added `nmgOptions` to `CheckSettings`
     - Additional internal event logs
     - Add support for NML Android
+    - Crop screenshot image base on account info
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Fixed the issue with screenshots being taken on chrome-emulated devices
@@ -56,6 +59,7 @@ Apollo SDK:
 "@applitools/eyes-puppeteer":
   feature:
     - Additional internal event logs
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
@@ -71,6 +75,7 @@ Apollo SDK:
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Additional internal event logs
     - Add NML support for Android
+    - Crop screenshot image base on account info
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
@@ -79,15 +84,17 @@ Apollo SDK:
   feature:
     - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
     - Add NML support for Android
+    - Crop screenshot image base on account info
   bug-fix:
     - Fixed issue with sessionId on ufg
 "@applitools/eyes-cypress":
   feature:
-    - 
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 "@applitools/eyes-storybook":
   feature:
+    - Crop screenshot image base on account info
     - Add the option to send external http headers to Puppeteer Page object
   bug-fix:
     - 
@@ -109,6 +116,7 @@ Apollo SDK:
     - Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
     - Use user agent metadata to improve browser environment detection logic
     - Additional internal event logs
+    - Crop screenshot image base on account info
   bug-fix:
     - |
       `extractText` now supports regions that don't use hints while using `x`/`y` coordinates
@@ -167,6 +175,7 @@ eyes-browser-extension:
     - Added typescript support
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Additional internal event logs
+    - Crop screenshot image base on account info
   bug-fix:
     - 
 applitools-for-selenium-ide:

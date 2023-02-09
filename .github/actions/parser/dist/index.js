@@ -10054,8 +10054,8 @@ function changedInCurrentBranch() {
   const changedFiles = (0,child_process__WEBPACK_IMPORTED_MODULE_4__.execSync)('git --no-pager diff --name-only origin/master', {encoding: 'utf8'})
   const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
     const changedPackage = Object.values(packages).find(changedPackage => {
-      const changedFilePath = path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), changedFile)
-      return changedFilePath.startsWith(changedPackage.path)
+      const changedFilePath = path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), changedFile, './')
+      return changedFilePath.startsWith(changedPackage.path + '/')
     })
     if (changedPackage) changedPackageNames.add(changedPackage.jobName)
     return changedPackageNames

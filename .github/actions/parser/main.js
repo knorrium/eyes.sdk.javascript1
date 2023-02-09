@@ -251,8 +251,8 @@ function changedInCurrentBranch() {
   const changedFiles = execSync('git --no-pager diff --name-only origin/master', {encoding: 'utf8'})
   const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
     const changedPackage = Object.values(packages).find(changedPackage => {
-      const changedFilePath = path.resolve(process.cwd(), changedFile)
-      return changedFilePath.startsWith(changedPackage.path)
+      const changedFilePath = path.resolve(process.cwd(), changedFile, './')
+      return changedFilePath.startsWith(changedPackage.path + '/')
     })
     if (changedPackage) changedPackageNames.add(changedPackage.jobName)
     return changedPackageNames

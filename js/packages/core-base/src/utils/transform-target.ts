@@ -1,7 +1,7 @@
 import type {ImageTarget, ImageSettings} from '../types'
 import {promises as fs} from 'fs'
 import {req} from '@applitools/req'
-import {makeImage} from '@applitools/image'
+import {type Image, makeImage} from '@applitools/image'
 import * as utils from '@applitools/utils'
 
 export async function transformTarget({
@@ -11,6 +11,7 @@ export async function transformTarget({
   target: ImageTarget
   settings?: ImageSettings
 }): Promise<ImageTarget> {
+  if (target.isTransformed) return target
   if (target.image instanceof URL) target.image = target.image.href
   if (utils.types.isString(target.image)) {
     const str = target.image // we need this var because ts-wise all our string formats checkers (isHttpUrl/isBase64) are string type guards
@@ -34,7 +35,12 @@ export async function transformTarget({
       image.crop(settings.region)
       await image.debug({...settings.debugImages, suffix: 'region'})
     }
+    if (settings.normalization?.limit) {
+      const height = cropToHeightLimit(image, settings.normalization.limit)
+      image.crop({y: 0, x: 0, width: image.width, height})
+    }
   }
+
   target.image = await image.toPng()
 
   if (!target.size || settings?.normalization || settings?.region) {
@@ -42,4 +48,12 @@ export async function transformTarget({
   }
 
   return target
+}
+
+function cropToHeightLimit(image: Image, limit: {maxImageHeight: number; maxImageArea: number}): number {
+  const {maxImageHeight, maxImageArea} = limit
+  if (image.height > maxImageHeight || image.height * image.width > maxImageArea) {
+    return Math.min(maxImageArea / image.width, maxImageHeight)
+  }
+  return image.height
 }

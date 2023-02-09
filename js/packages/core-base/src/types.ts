@@ -206,6 +206,7 @@ export interface ImageSettings<TRegion = Region> {
     cut?: ImageCropRect | ImageCropRegion
     rotation?: ImageRotation
     scaleRatio?: number
+    limit?: {maxImageArea: number; maxImageHeight: number}
   }
   autProxy?: Proxy
   debugImages?: {path: string; prefix?: string}
