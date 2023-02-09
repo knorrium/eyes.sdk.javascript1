@@ -18,21 +18,28 @@ export function makeClose<TSpec extends SpecType>({storage, target, spec, logger
     logger?: Logger
   } = {}): Promise<void> {
     logger.log('Command "close" is called with settings', settings)
-    const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
-    const testMetadata = await driver?.getSessionMetadata()
+    settings ??= {}
+    if (!settings.testMetadata) {
+      try {
+        const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+        settings.testMetadata = await driver?.getSessionMetadata()
+      } catch (error: any) {
+        logger.warn('Command "close" received an error during extracting driver metadata', error)
+      }
+    }
 
     storage.forEach(async promises => {
       try {
         const [{eyes}] = await Promise.all(promises)
         try {
-          await eyes.close({settings: {...settings, testMetadata}, logger})
+          await eyes.close({settings, logger})
         } catch (error) {
           logger.warn('Command "close" received an error during performing, trying to perform abort instead', error)
-          await eyes.abort({settings: {...settings, testMetadata}, logger})
+          await eyes.abort({settings, logger})
         }
       } catch (error: any) {
         logger.warn('Command "close" received an error during waiting for eyes instances in background', error)
-        await error.info?.eyes?.abort({settings: {...settings, testMetadata}, logger})
+        await error.info?.eyes?.abort({settings, logger})
       }
     })
   }

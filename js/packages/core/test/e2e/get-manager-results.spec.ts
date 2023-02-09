@@ -28,6 +28,23 @@ describe('get manager results', () => {
     assert.ok(summary.results[0].result?.isAborted)
   })
 
+  it('should throw new test error', async () => {
+    const core = makeCore({spec})
+    const manager = await core.makeManager()
+
+    await driver.url('https://applitools.com/helloworld')
+
+    const eyes = await manager.openEyes({
+      target: driver,
+      settings: {appName: 'core e2e', testName: 'should set NewTestError to TestResultContainer Exception'},
+    })
+
+    await eyes.check({settings: {fully: false}})
+    await assert.rejects(manager.getResults({settings: {throwErr: true}}), error => {
+      return error.reason === 'test new'
+    })
+  })
+
   it('should add new test error to the summary', async () => {
     const core = makeCore({spec})
     const manager = await core.makeManager()

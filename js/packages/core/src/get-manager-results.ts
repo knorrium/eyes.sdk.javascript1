@@ -33,7 +33,7 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
     const containers: TestResultContainer<TType>[][] = await Promise.all(
       storage.map(async eyes => {
         try {
-          const results = await eyes.getResults({settings, logger})
+          const results = await eyes.getResults({settings: {...settings, throwErr: false}, logger})
           return results.map(result => {
             return {
               result,
