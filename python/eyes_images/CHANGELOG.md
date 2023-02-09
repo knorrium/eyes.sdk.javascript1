@@ -1,3 +1,7 @@
+## [vNext]
+### Added
+- Execution Cloud support
+
 ## [5.13.1] - 2022-12-06
 ### Fixed
 - BatchClose() didn't actually close batches [Trello 3087](https://trello.com/c/wJPpVSsS)
