@@ -9,6 +9,7 @@ test/fixtures/jsLayoutStorybook
 test/fixtures/jsLayoutStorybookLocal
 test/fixtures/waitBeforeCapture
 test/fixtures/customFont
+test/fixtures/appWithCustomHttpHeaders
 test/fixtures/fakeIE
 test/fixtures/globalQueryParams
 test/fixtures/zeroStoriesRetry
