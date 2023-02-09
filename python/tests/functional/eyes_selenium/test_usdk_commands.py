@@ -59,14 +59,15 @@ def test_usdk_commands_open_close_eyes(local_chrome_driver):
 
     assert "applitools-ref-id" in mgr
 
-    eyes_close_result = commands.eyes_close_eyes(eyes, False, Configuration(), True)
+    commands.eyes_close(eyes, False, Configuration())
+    eyes_close_result = commands.eyes_get_results(eyes, False)
     test_result = eyes_close_result[0]
 
     assert len(eyes_close_result) == 1
     assert test_result["appName"] == "USDK Test"
     assert test_result["name"] == "USDK Commands open close"
 
-    manager_close_result = commands.manager_close_manager(mgr, False, 100)
+    manager_close_result = commands.manager_get_results(mgr, False, 100)
 
     assert manager_close_result == {
         "exceptions": 0,
@@ -94,14 +95,16 @@ def test_usdk_commands_open_abort_eyes(local_chrome_driver):
 
     assert "applitools-ref-id" in mgr
 
-    eyes_abort_result = commands.eyes_abort_eyes(eyes, True)
+    commands.eyes_abort(eyes)
+    eyes_abort_result = commands.eyes_get_results(eyes, False)
+
     test_result = eyes_abort_result[0]
 
     assert len(eyes_abort_result) == 1
     assert test_result["appName"] == "USDK Test"
     assert test_result["name"] == "USDK Commands open abort"
 
-    manager_close_result = commands.manager_close_manager(mgr, False, 100)
+    manager_close_result = commands.manager_get_results(mgr, False, 100)
 
     assert manager_close_result == {
         "exceptions": 1,
@@ -147,7 +150,8 @@ def test_usdk_commands_open_check_close_eyes(local_chrome_driver):
         eyes, local_chrome_driver, SeleniumCheckSettings(), config
     )
 
-    eyes_close_result = commands.eyes_close_eyes(eyes, False, Configuration(), True)
+    commands.eyes_close(eyes, False, Configuration())
+    eyes_close_result = commands.eyes_get_results(eyes, False)
     test_result = eyes_close_result[0]
 
     assert "applitools-ref-id" in mgr
@@ -156,7 +160,7 @@ def test_usdk_commands_open_check_close_eyes(local_chrome_driver):
     assert test_result["appName"] == "USDK Test"
     assert test_result["name"] == "USDK Commands open check close"
 
-    manager_close_result = commands.manager_close_manager(mgr, True, 100)
+    manager_close_result = commands.manager_get_results(mgr, True, 100)
 
     assert manager_close_result == {
         "exceptions": 0,

@@ -338,3 +338,13 @@ def test_user_test_id_is_in_test_results(local_chrome_driver):
     test_results_container = results.results[0]
     assert test_results_container.user_test_id == user_test_id
     assert test_results_container.test_results.user_test_id == user_test_id
+
+
+def test_ec_client_driver():
+    eyes = Eyes()
+    ec_url = Eyes.get_execution_cloud_url()
+    driver = webdriver.Remote(ec_url)
+    driver.get("https://applitools.github.io/demo/TestPages/SimpleTestPage")
+    eyes.open(driver, "USDK Tests", "Execution cloud driver creation test")
+    eyes.check_window()
+    eyes.close()

@@ -51,7 +51,7 @@ class EyesRunner(object):
         # type: (bool, Optional[int]) -> TestResultsSummary
         try:
             # Do not pass should_raise_exception because USDK raises untyped exceptions
-            results = self._commands.manager_close_manager(
+            results = self._commands.manager_get_results(
                 self._ref, should_raise_exception, timeout
             )
         except TimeoutError:

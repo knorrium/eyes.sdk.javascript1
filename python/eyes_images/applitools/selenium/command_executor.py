@@ -15,6 +15,7 @@ from .schema import (
     marshal_check_settings,
     marshal_configuration,
     marshal_delete_test_settings,
+    marshal_ec_client_settings,
     marshal_enabled_batch_close,
     marshal_image_target,
     marshal_locate_settings,
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
     from ..common.utils.custom_types import ViewPort
     from ..core import TextRegionSettings, VisualLocatorSettings
     from ..core.batch_close import _EnabledBatchClose  # noqa
+    from ..core.ec_client_settings import ECClientSettings
     from ..core.extract_text import OCRRegion
     from .fluent import SeleniumCheckSettings
     from .optional_deps import WebDriver
@@ -73,6 +75,11 @@ class CommandExecutor(object):
             "Core.makeCore",
             {"name": name, "version": version, "cwd": cwd, "protocol": "webdriver"},
         )
+
+    def core_make_ec_client(self, ec_client_settings):
+        # type: (ECClientSettings) -> Text
+        settings = marshal_ec_client_settings(ec_client_settings)
+        return self._checked_command("Core.makeECClient", {"settings": settings})
 
     def core_make_manager(
         self, manager_type, concurrency=None, legacy_concurrency=None, agent_id=None
@@ -122,10 +129,10 @@ class CommandExecutor(object):
             payload["config"] = marshal_configuration(config)
         return self._checked_command("EyesManager.openEyes", payload)
 
-    def manager_close_manager(self, manager, raise_ex, timeout):
+    def manager_get_results(self, manager, raise_ex, timeout):
         # type: (dict, bool, float) -> List[dict]
         return self._checked_command(
-            "EyesManager.closeManager",
+            "EyesManager.getResults",
             {"manager": manager, "settings": {"throwErr": raise_ex}},
             wait_timeout=timeout,
         )
@@ -158,16 +165,14 @@ class CommandExecutor(object):
         }
         return self._checked_command("Core.locate", payload)
 
-    def eyes_extract_text(
+    def core_extract_text(
         self,
-        eyes,  # type: dict
         target,  # type: Union[WebDriver, ImageTarget]
         settings,  # type: Tuple[OCRRegion]
         config,  # type: Configuration
     ):
         # type: (...) -> List[Text]
         payload = {
-            "eyes": eyes,
             "settings": marshal_ocr_extract_settings(settings),
             "config": marshal_configuration(config),
         }
@@ -175,18 +180,16 @@ class CommandExecutor(object):
             payload["target"] = marshal_image_target(target)
         else:
             payload["target"] = marshal_webdriver_ref(target)
-        return self._checked_command("Eyes.extractText", payload)
+        return self._checked_command("Core.extractText", payload)
 
-    def eyes_locate_text(
+    def core_locate_text(
         self,
-        eyes,  # type: dict
         target,  # type: Union[WebDriver, ImageTarget]
         settings,  # type: TextRegionSettings
         config,  # type: Configuration
     ):
         # type: (...) -> dict
         payload = {
-            "eyes": eyes,
             "settings": marshal_ocr_search_settings(settings),
             "config": marshal_configuration(config),
         }
@@ -194,20 +197,27 @@ class CommandExecutor(object):
             payload["target"] = marshal_image_target(target)
         else:
             payload["target"] = marshal_webdriver_ref(target)
-        return self._checked_command("Eyes.locateText", payload)
+        return self._checked_command("Core.locateText", payload)
 
-    def eyes_close_eyes(self, eyes, throw_err, config, wait_result):
-        # type: (dict, bool, Configuration, bool) -> List[dict]
+    def eyes_close(self, eyes, throw_err, config):
+        # type: (dict, bool, Configuration) -> List[dict]
         payload = {
             "eyes": eyes,
             "settings": {"throwErr": throw_err},
             "config": marshal_configuration(config),
         }
-        return self._checked_command("Eyes.close", payload, wait_result)
+        return self._checked_command("Eyes.close", payload)
 
-    def eyes_abort_eyes(self, eyes, wait_result):
-        # type: (dict, bool) -> List[dict]
-        return self._checked_command("Eyes.abort", {"eyes": eyes}, wait_result)
+    def eyes_get_results(self, eyes, throw_err):
+        payload = {
+            "eyes": eyes,
+            "settings": {"throwErr": throw_err},
+        }
+        return self._checked_command("Eyes.getResults", payload)
+
+    def eyes_abort(self, eyes):
+        # type: (dict) -> List[dict]
+        return self._checked_command("Eyes.abort", {"eyes": eyes})
 
     def server_get_info(self):
         # type: () -> dict

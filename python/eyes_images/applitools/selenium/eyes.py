@@ -18,6 +18,7 @@ from applitools.common.selenium import Configuration
 from applitools.selenium.optional_deps import WebDriver, WebElement
 
 from ..common.utils.general_utils import get_env_with_prefix
+from ..core.ec_client_settings import ECClientCapabilities, ECClientSettings
 from .__version__ import __version__
 from .command_executor import CommandExecutor
 from .fluent.selenium_check_settings import SeleniumCheckSettings
@@ -160,8 +161,7 @@ class Eyes(object):
 
     def extract_text(self, *regions):
         # type: (*OCRRegion) -> List[Text]
-        return self._commands.eyes_extract_text(
-            self._eyes_ref,
+        return self._commands.core_extract_text(
             self.driver,
             regions,
             self.configure,
@@ -176,9 +176,7 @@ class Eyes(object):
 
     def locate_text(self, config):
         # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
-        return self._commands.eyes_locate_text(
-            self._eyes_ref, self.driver, config, self.configure
-        )
+        return self._commands.core_locate_text(self.driver, config, self.configure)
 
     def close(self, raise_ex=True):
         # type: (bool) -> Optional[TestResults]
@@ -279,6 +277,15 @@ class Eyes(object):
         caps["optionalIntentArguments"] = "--es APPLITOOLS '{}'".format(
             json.dumps(env_caps, sort_keys=True)
         )
+
+    @staticmethod
+    def get_execution_cloud_url(api_key=None, server_url=None, proxy=None):
+        # type: (Text, Text, ProxySettings) -> Text
+        cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
+        result = cmd.core_make_ec_client(
+            ECClientSettings(ECClientCapabilities(api_key, server_url), proxy)
+        )
+        return result["url"]
 
     @property
     def is_open(self):
@@ -503,12 +510,14 @@ class Eyes(object):
             return None
         if not self.is_open:
             raise EyesError("Eyes not open")
-        results = self._commands.eyes_close_eyes(
-            self._eyes_ref, raise_ex, self.configure, wait_result
-        )
+        self._commands.eyes_close(self._eyes_ref, raise_ex, self.configure)
+        if wait_result:
+            results = self._commands.eyes_get_results(self._eyes_ref, raise_ex)
+        else:
+            results = None
         self._eyes_ref = None
         self._driver = None
-        if wait_result:
+        if results is not None:
             results = demarshal_test_results(results, self.configure)
             if results:  # eyes are already aborted by closed runner
                 for r in results:
@@ -521,10 +530,14 @@ class Eyes(object):
         if self.configure.is_disabled:
             return None
         elif self.is_open:
-            results = self._commands.eyes_abort_eyes(self._eyes_ref, wait_result)
+            self._commands.eyes_abort(self._eyes_ref)
+            if wait_result:
+                results = self._commands.eyes_get_results(self._eyes_ref, False)
+            else:
+                results = None
             self._eyes_ref = None
             self._driver = None
-            if wait_result:
+            if results is not None:
                 if results:  # abort after close does not return results
                     results = demarshal_test_results(results, self.configure)
                     for r in results:

@@ -107,8 +107,7 @@ class Eyes(object):
         # type: (*OCRRegion) -> List[Text]
         image = regions[0].image
         assert all(r.image == image for r in regions), "All images same"
-        return self._commands.eyes_extract_text(
-            self._eyes_ref,
+        return self._commands.core_extract_text(
             ImageTarget(image),
             regions,
             self.configure,
@@ -123,8 +122,7 @@ class Eyes(object):
 
     def locate_text(self, config):
         # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
-        result = self._commands.eyes_locate_text(
-            self._eyes_ref,
+        result = self._commands.core_locate_text(
             ImageTarget(config._image),  # noqa
             config,
             self.configure,
@@ -141,9 +139,8 @@ class Eyes(object):
         """
         if not self.is_open:
             raise EyesError("Eyes not open")
-        results = self._commands.eyes_close_eyes(
-            self._eyes_ref, raise_ex, self.configure, True
-        )
+        self._commands.eyes_close(self._eyes_ref, raise_ex, self.configure)
+        results = self._commands.eyes_get_results(self._eyes_ref, raise_ex)
         self._eyes_ref = None
         results = demarshal_test_results(results, self.configure)
         if results:
@@ -158,7 +155,8 @@ class Eyes(object):
         if self.configure.is_disabled:
             return None
         elif self.is_open:
-            results = self._commands.eyes_abort_eyes(self._eyes_ref, True)
+            self._commands.eyes_abort(self._eyes_ref)
+            results = self._commands.eyes_get_results(self._eyes_ref, False)
             self._eyes_ref = None
             if results:  # abort after close does not return results
                 results = demarshal_test_results(results, self.configure)

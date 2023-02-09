@@ -16,7 +16,7 @@ from marshmallow.fields import (
 )
 from marshmallow.schema import BaseSchema, SchemaMeta, with_metaclass
 
-from applitools.core import extract_text
+from applitools.core import ec_client_settings, extract_text
 
 from .. import common
 from ..common import (
@@ -70,7 +70,8 @@ if t.TYPE_CHECKING:
 class USDKSchema(with_metaclass(SchemaMeta, BaseSchema)):
     __doc__ = BaseSchema.__doc__
     _always_skip_values = (None, [])
-    _keep_empty_objects = ("lazyLoad",)  # fields that are allowed to have {} value
+    # fields that are allowed to have {} value
+    _keep_empty_objects = ("lazyLoad",)
 
     @classmethod
     def should_keep(cls, key, value):
@@ -421,6 +422,16 @@ class DeleteTestSettings(USDKSchema):
     proxy = Nested(Proxy, attribute="_connection_config.proxy")
 
 
+class ECClientCapabilities(USDKSchema):
+    server_url = String(dump_to="serverUrl")
+    api_key = String(dump_to="apiKey")
+
+
+class ECClientSettings(USDKSchema):
+    capabilities = Nested(ECClientCapabilities)
+    proxy = Nested(Proxy)
+
+
 # De-marshaling schema
 class RectangleSize(Schema):
     width = Integer()
@@ -614,6 +625,11 @@ def marshal_locate_settings(locate_settings):
 def marshal_ocr_search_settings(search_settings):
     # type: (extract_text.TextRegionSettings) -> dict
     return check_error(OCRSearchSettings().dump(search_settings))
+
+
+def marshal_ec_client_settings(client_settings):
+    # type: (ec_client_settings.ECClientSettings) -> dict
+    return check_error(ECClientSettings().dump(client_settings))
 
 
 def marshal_ocr_extract_settings(extract_settings):
