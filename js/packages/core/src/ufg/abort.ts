@@ -1,10 +1,12 @@
-import type {DriverTarget, AbortSettings, CheckResult} from './types'
+import type {DriverTarget, AbortSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {type AbortController} from 'abort-controller'
 import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
+import {Renderer} from '@applitools/ufg-client'
+import {Eyes as baseEyes} from '@applitools/core-base'
 
 type Options<TSpec extends SpecType> = {
-  storage: Map<string, CheckResult['promise'][]>
+  storage: Map<string, Promise<{renderer: Renderer; eyes: baseEyes}>[]>
   controller: AbortController
   target?: DriverTarget<TSpec>
   spec?: SpecDriver<TSpec>

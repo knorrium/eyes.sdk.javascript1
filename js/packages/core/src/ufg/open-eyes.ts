@@ -1,8 +1,8 @@
-import type {CheckResult, DriverTarget, Eyes, OpenSettings, TestInfo} from './types'
+import type {DriverTarget, Eyes, OpenSettings, TestInfo} from './types'
 import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
-import {makeUFGClient, type UFGClient} from '@applitools/ufg-client'
+import {makeUFGClient, Renderer, type UFGClient} from '@applitools/ufg-client'
 import {makeGetBaseEyes} from './get-base-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
@@ -58,7 +58,8 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
 
     const getBaseEyes = makeGetBaseEyes({settings, eyes, core, client, logger})
     return utils.general.extend({}, eyes => {
-      const storage = new Map<string, CheckResult['promise'][]>()
+      const storage = new Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>()
+
       let running = true
 
       return {
@@ -86,14 +87,24 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
             return results
           },
         ),
-        checkAndClose: makeCheckAndClose({
-          eyes,
-          client: client!,
-          target: driver,
-          spec,
-          signal: controller.signal,
-          logger,
-        }),
+        checkAndClose: utils.general.wrap(
+          makeCheckAndClose({
+            eyes,
+            client: client!,
+            target: driver,
+            spec,
+            signal: controller.signal,
+            logger,
+          }),
+          async (checkAndClose, options = {}) => {
+            const results = await checkAndClose(options)
+            results.forEach(result => {
+              const key = JSON.stringify(result.renderer)
+              storage.set(key, [...(storage.get(key) ?? ([] as any[])), {eyes: result.eyes, renderer: result.renderer}])
+            })
+            return results
+          },
+        ),
         close: utils.general.wrap(makeClose({storage, target: driver, logger}), async (close, options) => {
           running = false
           return close(options)

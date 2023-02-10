@@ -462,7 +462,7 @@ export function makeEyesRequests({
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const matchOptions = transformCheckOptions({target, settings})
-    const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
+    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
       name: 'checkAndClose',
       method: 'POST',
       body: {
@@ -485,15 +485,17 @@ export function makeEyesRequests({
       },
       expected: 200,
       logger,
+    }).then(async response => {
+      if (response.status === 404) {
+        supportsCheckAndClose = false
+        return checkAndClose({target, settings})
+      }
+      const result: Mutable<TestResult> = await response.json()
+      result.userTestId = test.userTestId
+      logger.log('Request "checkAndClose" finished successfully with body', result)
+      return [result]
     })
-    if (response.status === 404) {
-      supportsCheckAndClose = false
-      return checkAndClose({target, settings})
-    }
-    const result: Mutable<TestResult> = await response.json()
-    result.userTestId = test.userTestId
-    logger.log('Request "checkAndClose" finished successfully with body', result)
-    return [result]
+    return resultsPromise
   }
 
   async function close({

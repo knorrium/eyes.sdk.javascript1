@@ -1,9 +1,11 @@
-import type {GetResultsSettings, CheckResult, TestResult} from './types'
+import type {GetResultsSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {AbortError} from '../errors/abort-error'
+import {Renderer} from '@applitools/ufg-client'
+import {Eyes as baseEyes} from '@applitools/core-base'
 
 type Options = {
-  storage: Map<string, CheckResult['promise'][]>
+  storage: Map<string, Promise<{renderer: Renderer; eyes: baseEyes}>[]>
   logger: Logger
 }
 

@@ -224,14 +224,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
             logger,
           })
 
-          if (!baseEyes.running) {
-            logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
-            throw new AbortError(
-              `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
-            )
-          }
-
-          return {...result, eyes, renderer}
+          return {...result, eyes: baseEyes, renderer}
         } catch (error: any) {
           await baseEyes.abort()
           error.info = {eyes: baseEyes}
@@ -247,7 +240,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       promises.map(async promise => {
         try {
           const result = await promise
-          return {...result, userTestId: eyes.test.userTestId, asExpected: true}
+          return {...result, userTestId: eyes.test.userTestId}
         } catch (error: any) {
           await error.info?.eyes?.abort({logger})
           throw error

@@ -61,4 +61,4 @@ export type CheckResult = AutomationCore.CheckResult & {
 
 export type TestResult = AutomationCore.TestResult & {
   readonly renderer: Renderer
-}
+} & {eyes: BaseCore.Eyes}
