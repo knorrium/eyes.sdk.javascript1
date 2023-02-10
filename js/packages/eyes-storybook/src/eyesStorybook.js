@@ -205,12 +205,12 @@ async function eyesStorybook({
         timeItAsync,
       }),
     );
-    const [errorCloseManager, testResultsSummary] = await presult(
-      manager.closeManager({throwErr: false}),
+    const [errorInGetResults, testResultsSummary] = await presult(
+      manager.getResults({throwErr: false}),
     );
 
-    if (errorCloseManager) {
-      logger.log('failed to close manager', errorCloseManager);
+    if (errorInGetResults) {
+      logger.log('failed to get results', errorInGetResults);
     }
 
     if (error) {
