@@ -68,7 +68,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: lts/*
+          node-version: 16
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Publish to NPM
