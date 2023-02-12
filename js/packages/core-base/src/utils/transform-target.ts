@@ -23,6 +23,11 @@ export async function transformTarget({
     }
   }
   const image = makeImage(target.image)
+  if (image.height === 0 || image.width === 0) {
+    await image.debug('image is empty, try to getObject')
+    await image.toObject()
+  }
+
   if (settings?.normalization || settings?.region) {
     await image.debug({...settings.debugImages, suffix: 'original'})
     if (settings.normalization) {
