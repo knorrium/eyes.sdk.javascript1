@@ -160,12 +160,9 @@ describe('webdriver spec driver', async () => {
       // when the driver does
       // TODO: replace w/ a proper e2e test
       const sessionId = driver.sessionId
-      nock('http://localhost:4444/wd/hub')
-        .persist()
-        .get(`/session/${sessionId}/applitools/metadata`)
-        .reply(200, {
-          value: []
-        })
+      nock('http://localhost:4444/wd/hub').persist().get(`/session/${sessionId}/applitools/metadata`).reply(200, {
+        value: [],
+      })
       nock('http://localhost:4444/wd/hub').persist().delete(`/session/${sessionId}`).reply(200, {value: null})
       assert.deepStrictEqual(await spec.getSessionMetadata(driver), [])
     })
