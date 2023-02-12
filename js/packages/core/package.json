@@ -56,7 +56,7 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/core-base": "1.1.34",
+    "@applitools/core-base": "1.1.35",
     "@applitools/dom-capture": "11.2.1",
     "@applitools/dom-snapshot": "4.7.3",
     "@applitools/driver": "1.11.29",
