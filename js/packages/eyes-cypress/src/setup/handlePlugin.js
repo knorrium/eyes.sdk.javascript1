@@ -25,7 +25,7 @@ export default ${chalk.green.bold('eyesPlugin(')}definedConfig({
   //...
 })${chalk.green.bold(')')}
 
-For more information, visit Eyes-Cypress documentation https://www.npmjs.com/package/@applitools/eyes-cypress (manual configuration section)
+For more information, visit Eyes-Cypress documentation https://applitools.com/docs/api-ref/sdk-api/cypress/typescript
 `,
         {padding: 1, borderColor: 'cyan'},
       ),
