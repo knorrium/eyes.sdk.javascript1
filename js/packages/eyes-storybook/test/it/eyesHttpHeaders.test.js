@@ -21,9 +21,9 @@ describe('eyesStorybook', () => {
   );
   before(async () => {
     closeTestServer = (
-      await testServerInProcess({port: 7272, staticPath, middlewares: ['httpHeaders']})
+      await testServerInProcess({port: 7273, staticPath, middlewares: ['httpHeaders']})
     ).close;
-    closeStorybook = await testStorybook({port: 9001, storybookConfigDir: staticPath});
+    closeStorybook = await testStorybook({port: 9007, storybookConfigDir: staticPath});
   });
 
   after(async () => {
@@ -39,10 +39,11 @@ describe('eyesStorybook', () => {
       config: {
         ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
-        storybookUrl: 'http://localhost:9001',
+        storybookUrl: 'http://localhost:9007',
         puppeteerExtraHTTPHeaders: {
           token: '12345',
         },
+        // puppeteerOptions: {headless: false, devTools: true}
       },
       logger,
       performance,

@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 storiesOf('Fake auth story', module).add('Story with fake auth', () => {
   return (
     <div id="div1">
-      <iframe src="http://localhost:7272"></iframe>
+      <iframe src="http://localhost:7273"></iframe>
     </div>
   );
 });

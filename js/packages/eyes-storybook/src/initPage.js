@@ -22,7 +22,7 @@ function makeInitPage({iframeUrl, config, browser, logger, getTransitiongIntoIE,
       });
     }
 
-    if (config.puppeteerExtraHTTPHeader) {
+    if (config.puppeteerExtraHTTPHeaders) {
       await page.setExtraHTTPHeaders(config.puppeteerExtraHTTPHeaders);
     }
 

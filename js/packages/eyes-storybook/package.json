@@ -43,7 +43,7 @@
     "test:e2e:versions": "npx mocha --no-timeouts --trace-warnings --require test/fixtures/storybook-versions/mochaHooks.js test/e2e/*.e2e.versions.test.js",
     "test:e2e:versions_local": "STORYBOOK_VERSION=latest npx mocha --no-timeouts --trace-warnings --require test/fixtures/storybook-versions/mochaHooks.js test/e2e/*.e2e.versions.test.js",
     "storybook": "start-storybook -c test/fixtures/appWithStorybook -p 9001 -s test/fixtures",
-    "storybook:httpHeaders": "start-storybook -c test/fixtures/appWithCustomHttpHeaders -p 9001 -s test/fixtures",
+    "storybook:httpHeaders": "start-storybook -c test/fixtures/appWithCustomHttpHeaders -p 9007",
     "storybook:jslayout": "start-storybook -c test/fixtures/jsLayoutStorybookLocal -p 9001 -s test/fixtures",
     "storybook:csf": "yarn storybook:csf-service && start-storybook -c test/fixtures/storybookCSF/.storybook-temp -p 9001",
     "storybook:csf-service": "cp -r test/fixtures/storybookCSF/.storybook/. test/fixtures/storybookCSF/.storybook-temp && rm test/fixtures/storybookCSF/.storybook-temp/config.js",
