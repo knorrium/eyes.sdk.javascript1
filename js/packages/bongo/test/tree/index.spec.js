@@ -156,20 +156,13 @@ describe('tree', () => {
     ])
   })
   it('works with "live" data', () => {
-    const {tree, packages} = makeDependencyTree(
-      makePackagesList(path.join(__dirname, 'fixtures', 'packages')),
-    )
+    const {tree, packages} = makeDependencyTree(makePackagesList(path.join(__dirname, 'fixtures', 'packages')))
     assert.deepStrictEqual(tree.flat().length, packages.length)
     assert.deepStrictEqual(
       [
         ['@applitools/bongo'],
         ['@applitools/snippets', '@applitools/types', '@applitools/utils'],
-        [
-          '@applitools/driver',
-          '@applitools/logger',
-          '@applitools/screenshoter',
-          '@applitools/sdk-fake-eyes-server',
-        ],
+        ['@applitools/driver', '@applitools/logger', '@applitools/screenshoter', '@applitools/sdk-fake-eyes-server'],
         ['@applitools/eyes-sdk-core', '@applitools/api-extractor'],
         [
           '@applitools/visual-grid-client',
@@ -211,62 +204,52 @@ describe('tree', () => {
     )
   })
   it('can filter by package name', () => {
-    const {tree, packages} = makeDependencyTree(
-      makePackagesList(path.join(__dirname, 'fixtures', 'packages')),
-    )
-    assert.deepStrictEqual(
-      filterDependencyTreeByPackageName('@applitools/snippets', {tree, packages}),
+    const {tree, packages} = makeDependencyTree(makePackagesList(path.join(__dirname, 'fixtures', 'packages')))
+    assert.deepStrictEqual(filterDependencyTreeByPackageName('@applitools/snippets', {tree, packages}), [
+      ['@applitools/snippets'],
+      ['@applitools/driver', '@applitools/screenshoter'],
+      ['@applitools/eyes-sdk-core'],
+      ['@applitools/visual-grid-client'],
+      ['@applitools/eyes-universal', '@applitools/eyes-webdriverio', '@applitools/eyes-images'],
       [
-        ['@applitools/snippets'],
-        ['@applitools/driver', '@applitools/screenshoter'],
-        ['@applitools/eyes-sdk-core'],
-        ['@applitools/visual-grid-client'],
-        ['@applitools/eyes-universal', '@applitools/eyes-webdriverio', '@applitools/eyes-images'],
-        [
-          'eyes-browser-extension',
-          '@applitools/eyes-cypress',
-          '@applitools/eyes-nightwatch',
-          '@applitools/eyes-playwright',
-          '@applitools/eyes-playwright-universal',
-          '@applitools/eyes-protractor',
-          '@applitools/eyes-puppeteer',
-          '@applitools/eyes-selenium',
-          '@applitools/eyes-selenium-universal',
-          '@applitools/eyes-storybook',
-          '@applitools/eyes-testcafe',
-          '@applitools/eyes-webdriverio5-service',
-          'applitools-for-selenium-ide',
-        ],
+        'eyes-browser-extension',
+        '@applitools/eyes-cypress',
+        '@applitools/eyes-nightwatch',
+        '@applitools/eyes-playwright',
+        '@applitools/eyes-playwright-universal',
+        '@applitools/eyes-protractor',
+        '@applitools/eyes-puppeteer',
+        '@applitools/eyes-selenium',
+        '@applitools/eyes-selenium-universal',
+        '@applitools/eyes-storybook',
+        '@applitools/eyes-testcafe',
+        '@applitools/eyes-webdriverio5-service',
+        'applitools-for-selenium-ide',
       ],
-    )
-    assert.deepStrictEqual(
-      filterDependencyTreeByPackageName('@applitools/eyes-sdk-core', {tree, packages}),
+    ])
+    assert.deepStrictEqual(filterDependencyTreeByPackageName('@applitools/eyes-sdk-core', {tree, packages}), [
+      ['@applitools/eyes-sdk-core'],
+      ['@applitools/visual-grid-client'],
+      ['@applitools/eyes-universal', '@applitools/eyes-webdriverio', '@applitools/eyes-images'],
       [
-        ['@applitools/eyes-sdk-core'],
-        ['@applitools/visual-grid-client'],
-        ['@applitools/eyes-universal', '@applitools/eyes-webdriverio', '@applitools/eyes-images'],
-        [
-          'eyes-browser-extension',
-          '@applitools/eyes-cypress',
-          '@applitools/eyes-nightwatch',
-          '@applitools/eyes-playwright',
-          '@applitools/eyes-playwright-universal',
-          '@applitools/eyes-protractor',
-          '@applitools/eyes-puppeteer',
-          '@applitools/eyes-selenium',
-          '@applitools/eyes-selenium-universal',
-          '@applitools/eyes-storybook',
-          '@applitools/eyes-testcafe',
-          '@applitools/eyes-webdriverio5-service',
-          'applitools-for-selenium-ide',
-        ],
+        'eyes-browser-extension',
+        '@applitools/eyes-cypress',
+        '@applitools/eyes-nightwatch',
+        '@applitools/eyes-playwright',
+        '@applitools/eyes-playwright-universal',
+        '@applitools/eyes-protractor',
+        '@applitools/eyes-puppeteer',
+        '@applitools/eyes-selenium',
+        '@applitools/eyes-selenium-universal',
+        '@applitools/eyes-storybook',
+        '@applitools/eyes-testcafe',
+        '@applitools/eyes-webdriverio5-service',
+        'applitools-for-selenium-ide',
       ],
-    )
+    ])
   })
   it.skip('filter by package name, include dev deps', () => {
-    const {tree, packages} = makeDependencyTree(
-      makePackagesList(path.join(__dirname, 'fixtures', 'packages')),
-    )
+    const {tree, packages} = makeDependencyTree(makePackagesList(path.join(__dirname, 'fixtures', 'packages')))
     assert.deepStrictEqual(
       filterDependencyTreeByPackageName('@applitools/types', {tree, packages, withDevDeps: true}),
       [
@@ -274,11 +257,7 @@ describe('tree', () => {
         ['@applitools/driver'],
         ['@applitools/screenshoter'],
         ['@applitools/eyes-sdk-core'],
-        [
-          '@applitools/visual-grid-client',
-          '@applitools/eyes-api',
-          '@applitools/spec-driver-webdriverio',
-        ],
+        ['@applitools/visual-grid-client', '@applitools/eyes-api', '@applitools/spec-driver-webdriverio'],
         [
           '@applitools/eyes-universal',
           '@applitools/spec-driver-playwright',

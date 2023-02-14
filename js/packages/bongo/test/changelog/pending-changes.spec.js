@@ -69,12 +69,9 @@ describe('pending changes', () => {
     )
   })
   it('verifies an entry has been made to a package by name', () => {
-    assert.doesNotThrow(() =>
-      verifyPendingChanges({packageName: '@applitools/eyes-selenium', pendingChangesFilePath}),
-    )
+    assert.doesNotThrow(() => verifyPendingChanges({packageName: '@applitools/eyes-selenium', pendingChangesFilePath}))
     assert.throws(
-      () =>
-        verifyPendingChanges({packageName: '@applitools/eyes-storybook', pendingChangesFilePath}),
+      () => verifyPendingChanges({packageName: '@applitools/eyes-storybook', pendingChangesFilePath}),
       /no pending changes entries found/i,
     )
   })
@@ -92,10 +89,9 @@ describe('pending changes', () => {
         packageName: '@applitools/eyes-selenium',
         pendingChangesFilePath,
       })
-      const expected = fs.readFileSync(
-        path.join(__dirname, 'fixtures/emit-pending-changes-output'),
-        {encoding: 'utf-8'},
-      )
+      const expected = fs.readFileSync(path.join(__dirname, 'fixtures/emit-pending-changes-output'), {
+        encoding: 'utf-8',
+      })
       assert.deepStrictEqual(emitPendingChangesEntry(entries), expected)
     })
     it('should emit empty blocks with headings', () => {
@@ -103,10 +99,9 @@ describe('pending changes', () => {
         packageName: '@applitools/eyes-storybook',
         pendingChangesFilePath,
       })
-      const expected = fs.readFileSync(
-        path.join(__dirname, 'fixtures/emit-pending-changes-output-when-empty'),
-        {encoding: 'utf-8'},
-      )
+      const expected = fs.readFileSync(path.join(__dirname, 'fixtures/emit-pending-changes-output-when-empty'), {
+        encoding: 'utf-8',
+      })
       assert.deepStrictEqual(emitPendingChangesEntry(entries), expected)
     })
   })
@@ -123,10 +118,9 @@ describe('pending changes', () => {
         () => verifyPendingChanges({packageName, pendingChangesFilePath}),
         /no pending changes entries found/i,
       )
-      const expectedYaml = fs.readFileSync(
-        path.join(__dirname, 'fixtures/expected-pending-changes.yaml'),
-        {encoding: 'utf-8'},
-      )
+      const expectedYaml = fs.readFileSync(path.join(__dirname, 'fixtures/expected-pending-changes.yaml'), {
+        encoding: 'utf-8',
+      })
       const updatedYaml = fs.readFileSync(pendingChangesFilePath, {encoding: 'utf-8'})
       assert.deepStrictEqual(updatedYaml, expectedYaml)
     })
@@ -138,18 +132,14 @@ describe('pending changes', () => {
         () => verifyPendingChanges({packageName, pendingChangesFilePath}),
         /no pending changes entries found/i,
       )
-      const expectedYaml = fs.readFileSync(
-        path.join(__dirname, 'fixtures/expected-pending-changes.yaml'),
-        {encoding: 'utf-8'},
-      )
+      const expectedYaml = fs.readFileSync(path.join(__dirname, 'fixtures/expected-pending-changes.yaml'), {
+        encoding: 'utf-8',
+      })
       const updatedYaml = fs.readFileSync(pendingChangesFilePath, {encoding: 'utf-8'})
       assert.deepStrictEqual(updatedYaml, expectedYaml)
     })
     it('preserves entries that are wide and contain free text', () => {
-      const pendingChangesFilePath = path.join(
-        __dirname,
-        'fixtures/pending-changes-with-markdown.yaml',
-      )
+      const pendingChangesFilePath = path.join(__dirname, 'fixtures/pending-changes-with-markdown.yaml')
       const originalYaml = fs.readFileSync(pendingChangesFilePath, {encoding: 'utf-8'})
       const packageName = '@applitools/eyes-selenium'
       try {
@@ -187,10 +177,9 @@ describe('pending changes', () => {
           .slice(0, 8)
           .join()
           .replace(/,/g, '\n')
-        const expectedChangelog = fs.readFileSync(
-          path.join(__dirname, 'fixtures/expected-changelog-unreleased.md'),
-          {encoding: 'utf-8'},
-        )
+        const expectedChangelog = fs.readFileSync(path.join(__dirname, 'fixtures/expected-changelog-unreleased.md'), {
+          encoding: 'utf-8',
+        })
         assert.deepStrictEqual(updatedChangelog, expectedChangelog)
       } finally {
         fs.writeFileSync(changelogPath, originalChangelog)
@@ -215,10 +204,9 @@ describe('pending changes', () => {
           .slice(0, 11)
           .join()
           .replace(/,/g, '\n')
-        const expectedChangelog = fs.readFileSync(
-          path.join(__dirname, 'fixtures/expected-changelog-released.md'),
-          {encoding: 'utf-8'},
-        )
+        const expectedChangelog = fs.readFileSync(path.join(__dirname, 'fixtures/expected-changelog-released.md'), {
+          encoding: 'utf-8',
+        })
         assert.deepStrictEqual(updatedChangelog, expectedChangelog)
       } finally {
         fs.writeFileSync(changelogPath, originalChangelog)

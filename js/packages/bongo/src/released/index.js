@@ -8,9 +8,7 @@ async function released({args}) {
   const versions = await findPackageVersionNumbers({cwd, packageName})
   const tag = version ? `${pkgName}@${version}` : `${pkgName}@${versions[versionsBack]}`
   const filterByCollection = filterBySDK ? getSDKPackageNames(pendingChangesFilePath) : undefined
-  const result = sha
-    ? await getTagsWith({sha, filterByCollection})
-    : await getTagsWith({tag, filterByCollection})
+  const result = sha ? await getTagsWith({sha, filterByCollection}) : await getTagsWith({tag, filterByCollection})
   console.log('bongo released output')
   if (!sha)
     console.log(

@@ -79,8 +79,7 @@ function checkPackagesForUniqueVersions(input, packageNames, {isNpmLs} = {isNpmL
         affectedPackages.push(packageName)
       }
     }
-    if (affectedPackages.length)
-      throw new Error(`Non-unique package versions found of ${affectedPackages.join(', ')}.`)
+    if (affectedPackages.length) throw new Error(`Non-unique package versions found of ${affectedPackages.join(', ')}.`)
   }
 }
 
@@ -136,10 +135,18 @@ async function npmLs() {
 }
 
 function findPackageInPackageLock({packageLock, packageName}) {
-  const dependencies = packageLock.dependencies
+  const dependencies =
+    packageLock.dependencies ||
+    // support to `package-lock.json` v3
+    Object.entries(packageLock.packages).reduce(
+      (obj, [key, value]) => ({...obj, [key && key.replace('node_modules/', '')]: value}),
+      {},
+    )
   let found = []
   for (const depName in dependencies) {
-    const {requires, version} = dependencies[depName]
+    let {requires, version} = dependencies[depName]
+    if (!requires) requires = dependencies[depName].dependencies
+
     if (requires && requires[packageName]) {
       const result = {}
       result[`${depName}@${version}`] = `${packageName}@${requires[packageName]}`

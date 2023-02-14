@@ -119,7 +119,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: lts/*
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Run tests

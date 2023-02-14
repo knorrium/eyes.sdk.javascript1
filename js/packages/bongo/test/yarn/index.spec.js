@@ -33,10 +33,7 @@ describe('findUpgradedDeps', () => {
     expect(findUpgradedDeps({pkg2: 'x'}, {pkg1: 'y'})).to.eql([])
     expect(findUpgradedDeps({pkg1: 'x'}, {pkg1: 'y'})).to.eql([['pkg1', 'x', 'y']])
     expect(
-      findUpgradedDeps(
-        {pkg1: 'x', pkg2: 'y', pkg3: 'z', pkg5: 'w'},
-        {pkg1: '1', pkg2: 'y', pkg3: '3', pkg4: '4'},
-      ),
+      findUpgradedDeps({pkg1: 'x', pkg2: 'y', pkg3: 'z', pkg5: 'w'}, {pkg1: '1', pkg2: 'y', pkg3: '3', pkg4: '4'}),
     ).to.eql([
       ['pkg1', 'x', '1'],
       ['pkg3', 'z', '3'],

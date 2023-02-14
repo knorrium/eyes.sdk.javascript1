@@ -29,9 +29,7 @@ async function log(args) {
 
   console.log('bongo log output')
   console.log(`package: ${pkgName}`)
-  console.log(
-    `Looking ${versionsBack} versions back (specify a different number to look back with --n)`,
-  )
+  console.log(`Looking ${versionsBack} versions back (specify a different number to look back with --n)`)
   if (versionsBack && lowerVersion)
     console.log(
       `arguments 'versionsBack' and 'lowerVersion' both provided, using 'lowerVersion' and ignoring 'versionsBack'`,

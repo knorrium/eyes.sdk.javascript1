@@ -120,9 +120,7 @@ describe('git', () => {
     })
     it('should work when transitive dependencies updated', async () => {
       assert.deepStrictEqual(
-        await expandAutoCommitLogEntry(
-          'cf8702f6f [auto commit] @applitools/snippets: upgrade deps',
-        ),
+        await expandAutoCommitLogEntry('cf8702f6f [auto commit] @applitools/snippets: upgrade deps'),
         [],
       )
     })
@@ -143,9 +141,7 @@ describe('git', () => {
           upperVersion: '12.24.13',
           expandAutoCommitLogEntries: true,
         }),
-        [
-          '74e991ad1 handle case with `spec.getCookies` throws an error when trying to get cookies of the browser',
-        ],
+        ['74e991ad1 handle case with `spec.getCookies` throws an error when trying to get cookies of the browser'],
       )
     })
     it.skip('should include external dep updates in consolidated list of commits', async () => {
@@ -161,10 +157,7 @@ describe('git', () => {
   })
   describe('status', () => {
     afterEach(async () => {
-      await fs.writeFile(
-        path.join(__dirname, 'fixtures/changed.json'),
-        JSON.stringify(jsonFile, null, 2),
-      )
+      await fs.writeFile(path.join(__dirname, 'fixtures/changed.json'), JSON.stringify(jsonFile, null, 2))
     })
 
     it('should get changed files', async () => {

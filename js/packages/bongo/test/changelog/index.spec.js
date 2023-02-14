@@ -139,17 +139,13 @@ describe('verify-changelog', () => {
     `
   })
   it('should get entries for an explicit heading', () => {
-    assert.deepStrictEqual(
-      getEntriesForHeading({changelogContents, targetHeading: '## Unreleased'}),
-      [
-        {entry: '      - blah', index: 5},
-        {entry: '      - also blah', index: 6},
-      ],
-    )
-    assert.deepStrictEqual(
-      getEntriesForHeading({changelogContents, targetHeading: '## 1.2.3 - date'}),
-      [{entry: '      - more blah', index: 10}],
-    )
+    assert.deepStrictEqual(getEntriesForHeading({changelogContents, targetHeading: '## Unreleased'}), [
+      {entry: '      - blah', index: 5},
+      {entry: '      - also blah', index: 6},
+    ])
+    assert.deepStrictEqual(getEntriesForHeading({changelogContents, targetHeading: '## 1.2.3 - date'}), [
+      {entry: '      - more blah', index: 10},
+    ])
   })
   it('should get latest release heading', () => {
     const result = getLatestReleaseHeading(changelogContents)

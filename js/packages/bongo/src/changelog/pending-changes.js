@@ -8,9 +8,7 @@ function getSDKPackageNames(pendingChangesFilePath) {
 }
 
 function loadPendingChanges(pendingChangesFilePath) {
-  return JSON.parse(
-    JSON.stringify(yaml.load(fs.readFileSync(pendingChangesFilePath))).replace(/null/g, ''),
-  )
+  return JSON.parse(JSON.stringify(yaml.load(fs.readFileSync(pendingChangesFilePath))).replace(/null/g, ''))
 }
 
 function getPendingChanges({packageName, cwd, pendingChangesFilePath} = {}) {

@@ -210,46 +210,29 @@ yargs
     },
   )
   .command(['lint', 'l'], 'Static code analysis ftw', {}, async ({cwd}) => await lint(cwd))
-  .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries', {}, ({cwd}) =>
-    verifyChangelog(cwd),
-  )
+  .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries', {}, ({cwd}) => verifyChangelog(cwd))
   .command(
     ['verify-commits', 'vco'],
     'Verify no unreleased changes for internal dependencies exist',
     {},
     async ({cwd}) => await verifyCommits({pkgPath: cwd}),
   )
-  .command(
-    ['verify-versions', 'vv'],
-    'Verify consistent versions in relevant packages',
-    {},
-    async ({cwd}) => {
-      try {
-        verifyVersions({pkgPath: cwd})
-      } catch (err) {
-        console.log(chalk.yellow(err.message))
-      }
-    },
-  )
-  .command(
-    ['verify-installed-versions', 'viv'],
-    'Verify correct dependencies are installable',
-    {},
-    async ({cwd}) => {
-      createDotFolder(cwd)
-      await packInstall(cwd)
-      await verifyInstalledVersions({
-        pkgPath: cwd,
-        installedDirectory: path.join('.bongo', 'dry-run'),
-      })
-    },
-  )
-  .command(
-    ['ls-dry-run', 'ls'],
-    'Display dependencies from a verify-installed-versions run',
-    {},
-    () => lsDryRun(),
-  )
+  .command(['verify-versions', 'vv'], 'Verify consistent versions in relevant packages', {}, async ({cwd}) => {
+    try {
+      verifyVersions({pkgPath: cwd})
+    } catch (err) {
+      console.log(chalk.yellow(err.message))
+    }
+  })
+  .command(['verify-installed-versions', 'viv'], 'Verify correct dependencies are installable', {}, async ({cwd}) => {
+    createDotFolder(cwd)
+    await packInstall(cwd)
+    await verifyInstalledVersions({
+      pkgPath: cwd,
+      installedDirectory: path.join('.bongo', 'dry-run'),
+    })
+  })
+  .command(['ls-dry-run', 'ls'], 'Display dependencies from a verify-installed-versions run', {}, () => lsDryRun())
   .command(
     ['send-release-notification', 'hello-world'],
     'Send a notification that an sdk has been released',

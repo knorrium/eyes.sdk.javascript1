@@ -2,10 +2,7 @@ const path = require('path')
 const {convertSdkNameToReportName, sendNotification} = require('./send-report-util')
 const {getLatestReleaseEntries} = require('../changelog')
 
-async function sendReleaseNotification(
-  {sdkName, sdkVersion, changeLog, testCoverageGap},
-  recipient,
-) {
+async function sendReleaseNotification({sdkName, sdkVersion, changeLog, testCoverageGap}, recipient) {
   const payload = {
     sdk: sdkName,
     version: sdkVersion,

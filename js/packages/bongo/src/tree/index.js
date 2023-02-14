@@ -5,10 +5,7 @@ function amendPackagesList(packages, {ignoreLegacy = true} = {}) {
   const pkgs = packages
     .map(pkg => {
       if (!pkg.dependencies) {
-        const {dependencies = {}, devDependencies = {}} = require(path.join(
-          pkg.path,
-          'package.json',
-        ))
+        const {dependencies = {}, devDependencies = {}} = require(path.join(pkg.path, 'package.json'))
         const internalDeps = Object.entries(dependencies).filter(
           ([depName, _depVersion]) => pkg.name !== depName && pkgNames.includes(depName),
         )
@@ -21,9 +18,7 @@ function amendPackagesList(packages, {ignoreLegacy = true} = {}) {
       return pkg
     })
     .map(pkg => {
-      pkg.dependent_of = packages
-        .filter(p => Object.keys(p.dependencies).includes(pkg.name))
-        .map(p => p && p.name)
+      pkg.dependent_of = packages.filter(p => Object.keys(p.dependencies).includes(pkg.name)).map(p => p && p.name)
       pkg.dev_dependent_of = packages
         .filter(p => p.devDependencies && Object.keys(p.devDependencies).includes(pkg.name))
         .map(p => p && p.name)
@@ -103,9 +98,7 @@ function filterDependencyTreeByPackageName(packageName, {packages, tree, withDev
     const pkg = packages.find(pkg => pkg.name === packageName)
     packages = packages.filter(pkg => pkg.name !== packageName)
     if (!pkg) return
-    const pkgDeps = withDevDeps
-      ? [...pkg.dev_dependent_of, ...pkg.dependent_of]
-      : [...pkg.dependent_of]
+    const pkgDeps = withDevDeps ? [...pkg.dev_dependent_of, ...pkg.dependent_of] : [...pkg.dependent_of]
     if (pkgDeps.length) {
       let results = [packageName, ...pkgDeps]
       pkgDeps.forEach(depName => {

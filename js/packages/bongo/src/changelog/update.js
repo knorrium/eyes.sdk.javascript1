@@ -8,8 +8,7 @@ function addReleaseEntryForUnreleasedItems({changelogContents, version}) {
     changelogContents,
     targetHeading: '## Unreleased',
   })
-  const indentationCount =
-    unreleasedEntries[0].entry.length - unreleasedEntries[0].entry.trim().length
+  const indentationCount = unreleasedEntries[0].entry.length - unreleasedEntries[0].entry.trim().length
   const padding = new Array(indentationCount + 1).join(' ')
   const releaseEntry = [`${padding}## ${version}\n`, ...unreleasedEntries.map(entry => entry.entry)]
   const latestReleaseHeadingIndex = getLatestReleaseHeading(changelogContents).index
@@ -48,9 +47,7 @@ function removeUnreleasedItems({changelogContents}) {
 function createReleaseEntry({changelogContents, version, withDate}) {
   let mutableChangelogContents = changelogContents
   const now = new Date()
-  let _version = withDate
-    ? version + ` - ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`
-    : version
+  let _version = withDate ? version + ` - ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}` : version
   mutableChangelogContents = addReleaseEntryForUnreleasedItems({
     changelogContents: mutableChangelogContents,
     version: _version,

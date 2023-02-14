@@ -31,10 +31,7 @@ async function verifyCommits({pkgPath}) {
   }
 }
 
-async function verifyInstalledVersions(
-  {pkgPath, installedDirectory},
-  {isNpmLs} = {isNpmLs: false},
-) {
+async function verifyInstalledVersions({pkgPath, installedDirectory}, {isNpmLs} = {isNpmLs: false}) {
   const internalPackages = makePackagesList()
   const {dependencies} = JSON.parse(fs.readFileSync(path.join(pkgPath, 'package.json')))
   const filteredPackageNames = Object.keys(dependencies).filter(pkgName =>
@@ -46,8 +43,8 @@ async function verifyInstalledVersions(
   } else {
     const packageLock = require(path.resolve(installedDirectory, 'package-lock.json'))
     packageLock.dependencies = Object.fromEntries(
-      Object.entries(packageLock.dependencies).filter(([depName]) => {
-        return internalPackages.some(({name}) => name === depName)
+      Object.entries(packageLock.packages).filter(([depName]) => {
+        return internalPackages.some(({name}) => 'node_modules/' + name === depName)
       }),
     )
     checkPackagesForUniqueVersions(packageLock, filteredPackageNames, {
