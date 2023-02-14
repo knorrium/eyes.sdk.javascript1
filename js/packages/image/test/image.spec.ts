@@ -18,6 +18,13 @@ describe('image', () => {
     assert.strictEqual(image.height, 512)
   })
 
+  it('should provide access to progressive jpeg image width/height before it parsed', async () => {
+    const buffer = fs.readFileSync('./test/fixtures/house.progressive.jpeg')
+    const image = makeImage(buffer)
+    assert.strictEqual(image.width, 612)
+    assert.strictEqual(image.height, 512)
+  })
+
   it('should provide access to bmp image width/height before it parsed', async () => {
     const buffer = fs.readFileSync('./test/fixtures/house.bmp')
     const image = makeImage(buffer)

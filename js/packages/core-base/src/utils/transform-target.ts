@@ -1,7 +1,7 @@
 import type {ImageTarget, ImageSettings} from '../types'
 import {promises as fs} from 'fs'
 import {req} from '@applitools/req'
-import {type Image, makeImage} from '@applitools/image'
+import {makeImage} from '@applitools/image'
 import * as utils from '@applitools/utils'
 
 export async function transformTarget({
@@ -23,10 +23,6 @@ export async function transformTarget({
     }
   }
   const image = makeImage(target.image)
-  if (image.height === 0 || image.width === 0) {
-    await image.debug('image is empty, try to getObject')
-    await image.toObject()
-  }
 
   if (settings?.normalization || settings?.region) {
     await image.debug({...settings.debugImages, suffix: 'original'})
@@ -41,8 +37,13 @@ export async function transformTarget({
       await image.debug({...settings.debugImages, suffix: 'region'})
     }
     if (settings.normalization?.limit) {
-      const height = cropToHeightLimit(image, settings.normalization.limit)
-      image.crop({y: 0, x: 0, width: image.width, height})
+      const maxHeight = Math.min(
+        image.height,
+        settings.normalization.limit.maxImageArea / image.width,
+        settings.normalization.limit.maxImageHeight,
+      )
+      image.crop({left: 0, right: 0, top: 0, bottom: image.height - maxHeight})
+      await image.debug({...settings.debugImages, suffix: 'limited'})
     }
   }
 
@@ -53,12 +54,4 @@ export async function transformTarget({
   }
 
   return target
-}
-
-function cropToHeightLimit(image: Image, limit: {maxImageHeight: number; maxImageArea: number}): number {
-  const {maxImageHeight, maxImageArea} = limit
-  if (image.height > maxImageHeight || image.height * image.width > maxImageArea) {
-    return Math.min(maxImageArea / image.width, maxImageHeight)
-  }
-  return image.height
 }

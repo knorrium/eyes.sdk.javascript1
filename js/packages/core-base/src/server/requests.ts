@@ -510,7 +510,7 @@ export function makeEyesRequests({
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
       return
     }
-    const reportPromise = report({settings, logger})
+    await report({settings, logger})
     resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'close',
       method: 'DELETE',
@@ -528,7 +528,6 @@ export function makeEyesRequests({
       // for backwards compatibility with outdated servers
       result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
       logger.log('Request "close" finished successfully with body', result)
-      await reportPromise
       return [result]
     })
   }
@@ -545,7 +544,7 @@ export function makeEyesRequests({
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
       return
     }
-    const reportPromise = report({settings, logger})
+    await report({settings, logger})
     resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'abort',
       method: 'DELETE',
@@ -558,7 +557,6 @@ export function makeEyesRequests({
       const result: Mutable<TestResult> = await response.json()
       result.userTestId = test.userTestId
       logger.log('Request "abort" finished successfully with body', result)
-      await reportPromise
       return [result]
     })
   }

@@ -230,8 +230,8 @@ function extractJpegSize(buffer: Buffer): Size {
   while (buffer.length > offset) {
     // extract length of the block
     offset += buffer.readUInt16BE(offset)
-    // if next segment is SOF extract size
-    if (buffer[offset + 1] === 0xc0) {
+    // if next segment is SOF0 or SOF2 extract size
+    if (buffer[offset + 1] === 0xc0 || buffer[offset + 1] === 0xc2) {
       return {width: buffer.readUInt16BE(offset + 7), height: buffer.readUInt16BE(offset + 5)}
     } else {
       // skip block signature
