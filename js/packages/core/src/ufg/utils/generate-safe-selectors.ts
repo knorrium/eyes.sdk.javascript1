@@ -29,10 +29,8 @@ export async function generateSafeSelectors<TSpec extends SpecType>({
   const selectors = mapping.elements.map((elements, index) => {
     if (elements.length === 0)
       return {safeSelector: null, originalSelector: null, elementReference: elementReferences[index]}
-    const safeSelector = generatedSelectors[offset].reduce<CommonSelector>((selector, value) => {
-      return utils.types.isObject(selector)
-        ? {...selector, shadow: {type: 'css', selector: value}}
-        : {type: 'css', selector: value}
+    const safeSelector = generatedSelectors[offset].reduceRight<CommonSelector>((selector, value) => {
+      return selector ? {type: 'css', selector: value, shadow: selector} : {type: 'css', selector: value}
     }, undefined as never)
     offset += elements.length
     return {safeSelector, originalSelector: elements[0].commonSelector, elementReference: elementReferences[index]}

@@ -3,6 +3,8 @@ import {makeDriver} from '@applitools/driver'
 import {generateSafeSelectors} from '../../../src/ufg/utils/generate-safe-selectors'
 import assert from 'assert'
 
+const {addElementIds} = require('@applitools/snippets')
+
 describe('generate-safe-selectors', () => {
   it('handles selectors', async () => {
     const mockDriver = new MockDriver()
@@ -37,5 +39,40 @@ describe('generate-safe-selectors', () => {
         {type: 'css', selector: 'element3'},
       ],
     )
+  })
+
+  it('handles nested selectors', async () => {
+    const mockDriver = new MockDriver()
+    mockDriver.mockElements([{selector: 'element0', rect: {x: 1, y: 2, width: 500, height: 501}}])
+    mockDriver.mockScript(addElementIds, () => {
+      return [['shadow-host-1', 'shadow-host-2', 'element']]
+    })
+    const driver = await makeDriver({spec, driver: mockDriver})
+
+    const {selectors} = await generateSafeSelectors({
+      context: driver.mainContext,
+      elementReferences: ['element0'],
+    })
+
+    assert.strictEqual(selectors.length, 1)
+    assert.deepStrictEqual(selectors[0].safeSelector, {
+      type: 'css',
+      selector: 'shadow-host-1',
+      shadow: {
+        type: 'css',
+        selector: 'shadow-host-2',
+        shadow: {type: 'css', selector: 'element'},
+      },
+    })
+    // assert.deepStrictEqual(
+    //   selectors.map(selector => selector.originalSelector),
+    //   [
+    //     {type: 'css', selector: 'element0'},
+    //     {type: 'css', selector: 'element1'},
+    //     {type: 'css', selector: 'element2'},
+    //     {type: 'css', selector: 'element3'},
+    //     {type: 'css', selector: 'element3'},
+    //   ],
+    // )
   })
 })
