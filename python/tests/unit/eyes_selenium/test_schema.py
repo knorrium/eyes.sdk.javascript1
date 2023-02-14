@@ -632,3 +632,14 @@ def test_test_results_summary_demarshal():
         ],
     )
     assert result[1].exception.args == ("error message",)
+
+
+def test_configuration_schema_allows_strings_instead_of_enums():
+    conf = Configuration()
+    conf.stitch_mode = "CSS"
+    serializer = schema.EyesConfig()
+
+    json, errors = serializer.dump(conf)
+
+    assert errors == {}
+    assert json == {"stitchMode": "CSS"}

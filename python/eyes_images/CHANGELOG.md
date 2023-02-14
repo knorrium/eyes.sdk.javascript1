@@ -1,6 +1,8 @@
 ## [vNext]
 ### Added
 - Playwright support [Trello 3108](https://trello.com/c/ptnJGLST)
+### Fixed
+- Permit string values of enums in Configuration objects [Trello 3141](https://trello.com/c/q6M8GsqV)
 
 ## [5.14.0] - 2023-02-09
 ### Added

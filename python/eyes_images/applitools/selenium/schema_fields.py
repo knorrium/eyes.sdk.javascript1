@@ -39,11 +39,13 @@ class Enum(Field):
         self.enum_type = enum_type
 
     def _serialize(self, value, *_):
-        # type: (enum.Enum, *t.Any) -> t.Optional[enum.Enum.value]
+        # type: (t.Union[enum.Enum, t.Text], *t.Any) -> t.Optional[enum.Enum.value]
         if value is None:
             return None
-        else:
+        elif isinstance(value, self.enum_type):
             return value.value
+        else:
+            return self.enum_type(value).value
 
     def _deserialize(self, value, *_):
         # type: (t.Any, *t.Any) -> t.Optional[enum.Enum]
