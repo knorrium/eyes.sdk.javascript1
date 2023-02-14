@@ -1,4 +1,4 @@
-from mock import call, patch
+from mock import ANY, call, patch
 
 from applitools.common import ProxySettings
 from applitools.core import BatchClose
@@ -12,6 +12,7 @@ def test_pass_multiple_batches_ids(monkeypatch):
         BatchClose().set_batch_ids("test batch-id", "test-batch-second").close()
         assert c.mock_calls == [
             call(
+                ANY,
                 "Core.closeBatch",
                 {
                     "settings": [
@@ -33,6 +34,7 @@ def test_batch_close_uses_proxy(monkeypatch):
         ).close()
         assert c.mock_calls == [
             call(
+                ANY,
                 "Core.closeBatch",
                 {
                     "settings": [

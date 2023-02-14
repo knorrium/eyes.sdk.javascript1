@@ -1,6 +1,6 @@
 export APPLITOOLS_BATCH_ID=$(shell python -c "import uuid;print(str(uuid.uuid4()))")
 
-install_dev_requirements: install_test_requirements install_packages_editable
+install_dev_requirements: install_installation_tests_requirements install_packages_editable
 	python -m pip install --upgrade pre-commit
 
 
@@ -24,8 +24,24 @@ install_eyes_robotframework: eyes_robotframework/dist install_eyes_selenium
 	python -m pip install eyes_robotframework/dist/*
 
 
-install_test_requirements:
-	python -m pip install --requirement requirements-test.txt
+install_unit_tests_requirements:
+	python -m pip install 'pytest<8' 'pytest-xdist<3' 'mock' 'psutil'
+
+
+install_functional_tests_requirements: install_unit_tests_requirements
+	python -m pip install 'pillow' 'requests' "webdriver-manager==3.7.0; python_version>='3'"
+
+
+install_installation_tests_requirements: install_unit_tests_requirements
+	python -m pip install 'pytest-venv==0.2.1' 'virtualenv==20.11'
+
+
+install_selenium_generated_tests_requirements: install_functional_tests_requirements
+	python -m pip install 'webdriver-manager==3.7.0'
+
+
+install_publish_requirements:
+	python -m pip install twine
 
 
 uninstall:
@@ -58,10 +74,6 @@ publish_eyes_universal: eyes_universal/dist install_publish_requirements
 
 publish_testing_eyes_universal: eyes_universal/dist install_publish_requirements
 	twine upload --verbose --repository testpypi eyes_universal/dist/*
-
-
-install_publish_requirements:
-	python -m pip install twine
 
 
 dist: eyes_universal/dist eyes_images/dist eyes_selenium/dist eyes_robotframework/dist
@@ -97,34 +109,42 @@ gen_robot_docs:
 	python -m robot.libdoc --format html EyesLibrary docs/eyes_robotframework/keywords.html
 
 
-eyes_selenium_unit_tests: install_eyes_robotframework install_test_requirements
+eyes_selenium_unit_tests: install_eyes_robotframework install_unit_tests_requirements
 	pytest -n6 tests/unit
 
 
-eyes_selenium_installation_tests: install_eyes_robotframework install_test_requirements
+eyes_selenium_installation_tests: install_eyes_robotframework install_installation_tests_requirements
 	pytest tests/test_installation.py
 
 
-eyes_selenium_generated_tests: install_eyes_selenium install_test_requirements
+eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements
 	chmod a+x ./coverage-tests/python_tests.sh
 	npm run python:tests --prefix ./coverage-tests
 
 
-eyes_images_functional_tests: install_eyes_images install_test_requirements
+eyes_playwright_generated_tests: install_eyes_images install_functional_tests_requirements
+	python -m pip install playwright
+	python -m playwright install
+	cd coverage-tests && npm install
+	npm run python:generate:playwright --prefix ./coverage-tests
+	npm run python:run:parallel --prefix ./coverage-tests
+
+
+eyes_images_functional_tests: install_eyes_images install_functional_tests_requirements
 	pytest -n8 tests/functional/eyes_images/
 
 
-eyes_robotframework_functional_tests: install_eyes_robotframework install_test_requirements
+eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements
 	pytest -n8 -m "not sauce" tests/functional/eyes_robotframework/test_integration.py
 
 
-eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_test_requirements
+eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_functional_tests_requirements
 	pytest -n4 -m sauce tests/functional/eyes_robotframework/test_integration.py
 
 
-eyes_selenium_functional_tests: install_eyes_selenium install_test_requirements
+eyes_selenium_functional_tests: install_eyes_selenium install_functional_tests_requirements
 	pytest -n8 -m "not sauce" tests/functional/eyes_selenium/
 
 
-eyes_selenium_sauce_functional_tests: install_eyes_selenium install_test_requirements
+eyes_selenium_sauce_functional_tests: install_eyes_selenium install_functional_tests_requirements
 	pytest -n4 -m sauce tests/functional/eyes_selenium/

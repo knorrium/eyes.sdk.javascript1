@@ -1,3 +1,7 @@
+## [vNext]
+### Added
+- Playwright support [Trello 3108](https://trello.com/c/ptnJGLST)
+
 ## [5.14.0] - 2023-02-09
 ### Added
 - Execution Cloud support

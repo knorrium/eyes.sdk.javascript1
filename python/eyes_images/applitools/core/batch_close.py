@@ -36,7 +36,9 @@ class _EnabledBatchClose(object):
         from applitools.selenium.command_executor import CommandExecutor
         from applitools.selenium.eyes import EyesRunner
 
-        cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
+        cmd = CommandExecutor.get_instance(
+            EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, __version__
+        )
         cmd.core_close_batch(self)
 
 

@@ -92,7 +92,7 @@ class VisualGridOptions(Field):
 class ElementReference(Dict):
     def _serialize(self, locator, _, __):
         # type: (t.Any, t.Any, target_path.TargetPathLocator) -> t.Optional[dict]
-        return None if locator is None else locator.to_dict()
+        return None if locator is None else locator.to_dict(self.context["registry"])
 
 
 class FrameReference(Field):
@@ -105,7 +105,7 @@ class FrameReference(Field):
         elif frame.frame_name_or_id is not None:
             return frame.frame_name_or_id
         else:
-            return frame.frame_locator.to_dict()
+            return frame.frame_locator.to_dict(self.context["registry"])
 
 
 class NormalizationField(Field):
@@ -130,7 +130,7 @@ class TargetReference(Field):
     def _serialize(self, _, __, check_settings):
         # type: (t.Any, t.Any, cs.SeleniumCheckSettingsValues) -> t.Optional[dict]
         if check_settings.target_locator:
-            return check_settings.target_locator.to_dict()
+            return check_settings.target_locator.to_dict(self.context["registry"])
         elif check_settings.target_region:
             from .schema import Region
 
@@ -150,7 +150,7 @@ class RegionReference(Field):
             obj,
             (RegionBySelector, FloatingRegionBySelector, AccessibilityRegionBySelector),
         ):
-            return obj._target_path.to_dict()  # noqa
+            return obj._target_path.to_dict(self.context["registry"])  # noqa
         elif isinstance(obj, RegionByRectangle):
             return check_error(Region().dump(obj._region))  # noqa
         elif isinstance(
@@ -159,7 +159,7 @@ class RegionReference(Field):
             return check_error(Region().dump(obj._rect))  # noqa
         elif isinstance(obj, OCRRegion):
             if isinstance(obj.target, RegionLocator):
-                return obj.target.to_dict()
+                return obj.target.to_dict(self.context["registry"])
             else:
                 return check_error(Region().dump(obj.target))
         else:

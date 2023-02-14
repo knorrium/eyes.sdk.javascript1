@@ -218,6 +218,33 @@ jobs:
           RELEASING_PACKAGE: ${{ inputs.releasing_package }}
           TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
+  generated-tests-playwright:
+    needs: dist-build
+    if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.generated_tests }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/download-artifact@v3
+        with:
+          name: packages
+      - run: make eyes_playwright_generated_tests
+        working-directory: python
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+          APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
+          RELEASING_PACKAGE: ${{ inputs.releasing_package }}
+          SAUCE_LIMITS: "{}"
+          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
+
   functional-tests:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.functional_tests }}

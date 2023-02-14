@@ -39,3 +39,8 @@ def getNodesByAttribute(node, attribute):
     for n in node.get("childNodes", []):
         nodes.extend(getNodesByAttribute(n, attribute))
     return nodes
+
+
+class By(object):
+    CSS_SELECTOR = "css selector"
+    XPATH = "xpath"

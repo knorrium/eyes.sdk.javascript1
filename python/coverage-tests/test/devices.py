@@ -2,7 +2,6 @@ import os
 import warnings
 
 import pytest
-from appium import webdriver as appium_webdriver
 
 from . import sauce
 
@@ -99,6 +98,8 @@ def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
 
 
 def appium(desired_caps, sauce_url, app="", browser_name=""):
+    from appium.webdriver import Remote
+
     if app and browser_name:
         raise Exception("Appium drivers shouldn't contain both app and browserName")
     if not app and not browser_name:
@@ -118,6 +119,4 @@ def appium(desired_caps, sauce_url, app="", browser_name=""):
             "desired_capabilities has been deprecated",
             category=DeprecationWarning,
         )
-        return appium_webdriver.Remote(
-            command_executor=selenium_url, desired_capabilities=desired_caps
-        )
+        return Remote(command_executor=selenium_url, desired_capabilities=desired_caps)

@@ -33,6 +33,7 @@ if TYPE_CHECKING:
 class Eyes(object):
     def __init__(self):
         self.configure = Configuration()
+        self._object_registry = None
         self._runner = ClassicRunner()
         self._commands = self._runner._commands  # noqa
         self._eyes_ref = None
@@ -51,7 +52,9 @@ class Eyes(object):
             raise ValueError("test_name should be set via configuration or an argument")
 
         self._runner._set_connection_config(self.configure)  # noqa, friend
+        self._object_registry = self._runner.Protocol.object_registry()
         self._eyes_ref = self._commands.manager_open_eyes(
+            self._object_registry,
             self._runner._ref,  # noqa
             config=self.configure,
         )
@@ -76,6 +79,7 @@ class Eyes(object):
             check_settings = check_settings.with_name(name)
 
         results = self._commands.eyes_check(
+            self._object_registry,
             self._eyes_ref,
             ImageTarget(check_settings.values.image),
             check_settings,
@@ -139,7 +143,9 @@ class Eyes(object):
         """
         if not self.is_open:
             raise EyesError("Eyes not open")
-        self._commands.eyes_close(self._eyes_ref, raise_ex, self.configure)
+        self._commands.eyes_close(
+            self._object_registry, self._eyes_ref, raise_ex, self.configure
+        )
         results = self._commands.eyes_get_results(self._eyes_ref, raise_ex)
         self._eyes_ref = None
         results = demarshal_test_results(results, self.configure)
@@ -155,7 +161,7 @@ class Eyes(object):
         if self.configure.is_disabled:
             return None
         elif self.is_open:
-            self._commands.eyes_abort(self._eyes_ref)
+            self._commands.eyes_abort(self._object_registry, self._eyes_ref)
             results = self._commands.eyes_get_results(self._eyes_ref, False)
             self._eyes_ref = None
             if results:  # abort after close does not return results

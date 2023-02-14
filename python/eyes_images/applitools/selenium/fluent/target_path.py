@@ -2,12 +2,15 @@ from typing import TYPE_CHECKING
 
 from six import string_types
 
-from applitools.selenium.optional_deps import By
-
 if TYPE_CHECKING:
     from typing import Optional, Text, Union
 
     from applitools.selenium.optional_deps import WebElement
+
+    from ..object_registry import ObjectRegistry
+
+
+BY_CSS_SELECTOR = "css selector"
 
 
 class PathNodeValue(object):
@@ -29,16 +32,16 @@ class ElementReference(PathNodeValue):
         # type: (bool) -> Text
         return repr(self.element)
 
-    def _to_dict(self):
-        # type: () -> dict
-        return {"elementId": self.element._id}  # noqa
+    def _to_dict(self, registry):
+        # type: (ObjectRegistry) -> dict
+        return registry.marshal_element(self.element)
 
 
 class ElementSelector(PathNodeValue):
     def __init__(self, selector_or_by, selector=None):
         # type: (Text, Optional[Text]) -> None
         if selector is None:
-            self.by = By.CSS_SELECTOR
+            self.by = BY_CSS_SELECTOR
             self.selector = selector_or_by
         else:
             self.by = selector_or_by
@@ -46,13 +49,13 @@ class ElementSelector(PathNodeValue):
 
     def _repr_args(self, skip_default_css_selector_type):
         # type: (bool) -> Text
-        if self.by == By.CSS_SELECTOR and skip_default_css_selector_type:
+        if self.by == BY_CSS_SELECTOR and skip_default_css_selector_type:
             return repr(self.selector)
         else:
-            return "{}, {!r}".format(_BY_REPR[self.by], self.selector)
+            return "{}, {!r}".format(_by_repr(self.by), self.selector)
 
-    def _to_dict(self):
-        # type: () -> dict
+    def _to_dict(self, _):
+        # type: (ObjectRegistry) -> dict
         return {"type": self.by, "selector": self.selector}
 
 
@@ -65,8 +68,8 @@ class FrameSelector(PathNodeValue):
         # type: (bool) -> Text
         return repr(self.number_or_id_or_name)
 
-    def _to_dict(self):
-        # type: () -> dict
+    def _to_dict(self, _):
+        # type: (ObjectRegistry) -> dict
         return {"selector": self.number_or_id_or_name}
 
 
@@ -76,13 +79,13 @@ class TargetPathLocator(object):
         self.parent = parent
         self.value = value
 
-    def to_dict(self):
-        # type: () -> dict
-        converted = self.value._to_dict()  # noqa
+    def to_dict(self, registry):
+        # type: (ObjectRegistry) -> dict
+        converted = self.value._to_dict(registry)  # noqa
         parent = self.parent
         while parent:
             converted = {parent.FACTORY_METHOD: converted}
-            converted.update(parent.value._to_dict())  # noqa
+            converted.update(parent.value._to_dict(registry))  # noqa
             parent = parent.parent
         return converted
 
@@ -170,7 +173,7 @@ def _shadow(parent, element_or_selector_or_by, selector=None):
         return ShadowDomLocator(parent, ElementSelector(by, selector))
     elif isinstance(element_or_selector_or_by, string_types):
         selector = element_or_selector_or_by
-        return ShadowDomLocator(parent, ElementSelector(By.CSS_SELECTOR, selector))
+        return ShadowDomLocator(parent, ElementSelector(BY_CSS_SELECTOR, selector))
     else:
         element = element_or_selector_or_by
         return ShadowDomLocator(parent, ElementReference(element))
@@ -182,7 +185,7 @@ def _region(parent, element_or_selector_or_by, selector=None):
         return RegionLocator(parent, ElementSelector(by, selector))
     elif isinstance(element_or_selector_or_by, string_types):
         selector = element_or_selector_or_by
-        return RegionLocator(parent, ElementSelector(By.CSS_SELECTOR, selector))
+        return RegionLocator(parent, ElementSelector(BY_CSS_SELECTOR, selector))
     else:
         element = element_or_selector_or_by
         return RegionLocator(parent, ElementReference(element))
@@ -200,13 +203,22 @@ def _generate_by_repr_map():
             enumerations = [MobileBy]
         except ImportError:  # no appium installed, that's also fine
             enumerations = []
-    enumerations.append(By)
+    try:
+        from selenium.webdriver.common.by import By
+
+        enumerations.append(By)
+    except ImportError:
+        pass
 
     m = {}
     for by in enumerations:
         prefix = by.__name__ + "."
         m.update((v, prefix + k) for k, v in vars(by).items() if not k.startswith("_"))
     return m
+
+
+def _by_repr(val):
+    return _BY_REPR.get(val, repr(val))
 
 
 _BY_REPR = _generate_by_repr_map()

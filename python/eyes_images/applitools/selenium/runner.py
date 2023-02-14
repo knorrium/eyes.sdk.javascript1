@@ -1,7 +1,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import typing
-from concurrent.futures import TimeoutError
 
 from applitools.common import (
     DiffsFoundError,
@@ -12,8 +11,10 @@ from applitools.common import (
 )
 from applitools.common.config import DEFAULT_ALL_TEST_RESULTS_TIMEOUT
 
+from ..common.connection import TimeoutError
 from .__version__ import __version__
 from .command_executor import CommandExecutor, ManagerType
+from .protocol import SeleniumWebDriver
 from .schema import demarshal_close_manager_results, demarshal_server_info
 
 if typing.TYPE_CHECKING:
@@ -25,11 +26,14 @@ if typing.TYPE_CHECKING:
 class EyesRunner(object):
     AUTO_CLOSE_MODE_SYNC = True
     BASE_AGENT_ID = "eyes.sdk.python"
+    Protocol = SeleniumWebDriver
 
     def __init__(self, manager_type, concurrency=None, is_legacy=None):
         # type: (ManagerType, Optional[int], Optional[bool]) -> None
         self._connection_configuration = None
-        self._commands = CommandExecutor.get_instance(self.BASE_AGENT_ID, __version__)
+        self._commands = CommandExecutor.get_instance(
+            self.Protocol, self.BASE_AGENT_ID, __version__
+        )
         if is_legacy:
             self._ref = self._commands.core_make_manager(
                 manager_type, legacy_concurrency=concurrency
@@ -41,7 +45,7 @@ class EyesRunner(object):
 
     @classmethod
     def get_server_info(cls):
-        cmd = CommandExecutor.get_instance(cls.BASE_AGENT_ID, __version__)
+        cmd = CommandExecutor.get_instance(cls.Protocol, cls.BASE_AGENT_ID, __version__)
         result = cmd.server_get_info()
         return demarshal_server_info(result)
 

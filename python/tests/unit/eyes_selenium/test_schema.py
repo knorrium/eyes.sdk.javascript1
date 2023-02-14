@@ -44,6 +44,7 @@ from applitools.core.cut import FixedCutProvider
 from applitools.core.extract_text import OCRRegion
 from applitools.selenium import TargetPath, schema
 from applitools.selenium.fluent import SeleniumCheckSettings
+from applitools.selenium.object_registry import SeleniumWebdriverObjectRegistry
 
 
 class DummyElement(object):
@@ -52,27 +53,6 @@ class DummyElement(object):
 
     def __repr__(self):
         return "DummyElement({!r})".format(self._id)
-
-
-def test_driver_marshal():
-    serializer = schema.StaticDriver()
-
-    class DummyCommands(object):
-        _url = "https://url"
-
-    class DummyDriver:
-        session_id = "session id"
-        command_executor = DummyCommands()
-        capabilities = {"cap name": "cap value"}
-
-    json, errors = serializer.dump(DummyDriver())
-
-    assert errors == {}
-    assert json == {
-        "sessionId": "session id",
-        "serverUrl": "https://url",
-        "capabilities": {"cap name": "cap value"},
-    }
 
 
 def test_config_marshal(monkeypatch):
@@ -224,7 +204,9 @@ def test_config_marshal(monkeypatch):
 
 
 def test_check_settings_marshal():
-    serializer = schema.CheckSettings()
+    serializer = schema.CheckSettings(
+        context={"registry": SeleniumWebdriverObjectRegistry()}
+    )
     check_settings = (
         SeleniumCheckSettings()
         .with_name("name")
@@ -365,7 +347,9 @@ def test_text_region_settings_marshal():
 
 
 def test_ocrregion_marshal():
-    serializer = schema.ExtractTextSettings()
+    serializer = schema.ExtractTextSettings(
+        context={"registry": SeleniumWebdriverObjectRegistry()}
+    )
     settings_sel = OCRRegion("ocr selector").min_match(2).hint("hint")
     settings_region = OCRRegion(Region(1, 2, 3, 4))
 

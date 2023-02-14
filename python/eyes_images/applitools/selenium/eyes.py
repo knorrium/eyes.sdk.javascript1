@@ -15,7 +15,6 @@ from applitools.common import (
     deprecated,
 )
 from applitools.common.selenium import Configuration
-from applitools.selenium.optional_deps import WebDriver, WebElement
 
 from ..common.utils.general_utils import get_env_with_prefix
 from ..core.ec_client_settings import ECClientCapabilities, ECClientSettings
@@ -41,31 +40,37 @@ if typing.TYPE_CHECKING:
     from applitools.core.extract_text import PATTERN_TEXT_REGIONS
     from applitools.core.locators import LOCATORS_TYPE
     from applitools.selenium import OCRRegion
+    from applitools.selenium.optional_deps import WebDriver, WebElement
+
+    from ..playwright.optional_deps import ElementHandle, Page, PlaywrightLocator
 
 
 class Eyes(object):
+    DefaultRunner = ClassicRunner
+
     def __init__(self, runner=None):
         # type: (Union[None, EyesRunner, Text]) -> None
         self.configure = Configuration()
+        self._object_registry = None
         self._driver = None
         self._eyes_ref = None
         if runner is None:
-            self._runner = ClassicRunner()
+            self._runner = self.DefaultRunner()
         elif isinstance(runner, string_types):
             self.configure.server_url = runner
-            self._runner = ClassicRunner()
+            self._runner = self.DefaultRunner()
         else:
             self._runner = runner  # type: EyesRunner
         self._commands = self._runner._commands  # noqa
 
     def open(
         self,
-        driver,  # type: WebDriver
+        driver,  # type: Union[WebDriver, Page]
         app_name=None,  # type: Optional[Text]
         test_name=None,  # type: Optional[Text]
         viewport_size=None,  # type: Optional[ViewPort]
     ):
-        # type: (...) -> WebDriver
+        # type: (...) -> Union[WebDriver, Page]
         if app_name is not None:
             self.configure.app_name = app_name
         if test_name is not None:
@@ -81,8 +86,10 @@ class Eyes(object):
             pass
         else:
             self._runner._set_connection_config(self.configure)  # noqa, friend
+            self._object_registry = self._runner.Protocol.object_registry()
             self._driver = driver
             self._eyes_ref = self._commands.manager_open_eyes(
+                self._object_registry,
                 self._runner._ref,  # noqa
                 driver,
                 config=self.configure,
@@ -128,8 +135,9 @@ class Eyes(object):
             raise EyesError("you must call open() before checking")
 
         results = self._commands.eyes_check(
+            self._object_registry,
             self._eyes_ref,
-            self._driver,
+            None,
             check_settings,
             self.configure,
         )
@@ -206,17 +214,21 @@ class Eyes(object):
     def abort_if_not_closed(self):
         return self.abort()
 
-    @staticmethod
-    def get_viewport_size(driver):
-        # type: (WebDriver) -> RectangleSize
-        cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
+    @classmethod
+    def get_viewport_size(cls, driver):
+        # type: (Union[WebDriver, Page]) -> RectangleSize
+        cmd = CommandExecutor.get_instance(
+            cls.DefaultRunner.Protocol, cls.DefaultRunner.BASE_AGENT_ID, __version__
+        )
         result = cmd.core_get_viewport_size(driver)
         return RectangleSize.from_(result)
 
-    @staticmethod
-    def set_viewport_size(driver, viewport_size):
-        # type: (WebDriver, ViewPort) -> None
-        cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
+    @classmethod
+    def set_viewport_size(cls, driver, viewport_size):
+        # type: (Union[WebDriver, Page], ViewPort) -> None
+        cmd = CommandExecutor.get_instance(
+            cls.DefaultRunner.Protocol, cls.DefaultRunner.BASE_AGENT_ID, __version__
+        )
         cmd.core_set_viewport_size(driver, viewport_size)
 
     @property
@@ -278,10 +290,12 @@ class Eyes(object):
             json.dumps(env_caps, sort_keys=True)
         )
 
-    @staticmethod
-    def get_execution_cloud_url(api_key=None, server_url=None, proxy=None):
+    @classmethod
+    def get_execution_cloud_url(cls, api_key=None, server_url=None, proxy=None):
         # type: (Text, Text, ProxySettings) -> Text
-        cmd = CommandExecutor.get_instance(EyesRunner.BASE_AGENT_ID, __version__)
+        cmd = CommandExecutor.get_instance(
+            cls.DefaultRunner.Protocol, cls.DefaultRunner.BASE_AGENT_ID, __version__
+        )
         result = cmd.core_make_ec_client(
             ECClientSettings(ECClientCapabilities(api_key, server_url), proxy)
         )
@@ -387,7 +401,8 @@ class Eyes(object):
 
     def check_element(
         self,
-        element,  # type: Union[Text,List,Tuple,WebElement]
+        element,
+        # type: Union[Text,List,Tuple,WebElement,PlaywrightLocator,ElementHandle]
         tag=None,  # type: Optional[Text]
         match_timeout=-1,  # type: int
     ):
@@ -410,7 +425,8 @@ class Eyes(object):
     def check_region_in_frame(
         self,
         frame_reference,  # type: FrameReference
-        region,  # type: Union[Region, Text, List, Tuple, WebElement]
+        region,
+        # type: Union[Region,Text,List,Tuple,WebElement,PlaywrightLocator,ElementHandle]
         tag=None,  # type: Optional[Text]
         match_timeout=-1,  # type: int
         stitch_content=False,  # type: bool
@@ -510,13 +526,16 @@ class Eyes(object):
             return None
         if not self.is_open:
             raise EyesError("Eyes not open")
-        self._commands.eyes_close(self._eyes_ref, raise_ex, self.configure)
+        self._commands.eyes_close(
+            self._object_registry, self._eyes_ref, raise_ex, self.configure
+        )
         if wait_result:
             results = self._commands.eyes_get_results(self._eyes_ref, raise_ex)
         else:
             results = None
         self._eyes_ref = None
         self._driver = None
+        self._object_registry = None
         if results is not None:
             results = demarshal_test_results(results, self.configure)
             if results:  # eyes are already aborted by closed runner
@@ -530,13 +549,14 @@ class Eyes(object):
         if self.configure.is_disabled:
             return None
         elif self.is_open:
-            self._commands.eyes_abort(self._eyes_ref)
+            self._commands.eyes_abort(self._object_registry, self._eyes_ref)
             if wait_result:
                 results = self._commands.eyes_get_results(self._eyes_ref, False)
             else:
                 results = None
             self._eyes_ref = None
             self._driver = None
+            self._object_registry = None
             if results is not None:
                 if results:  # abort after close does not return results
                     results = demarshal_test_results(results, self.configure)

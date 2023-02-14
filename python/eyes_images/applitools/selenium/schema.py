@@ -16,7 +16,7 @@ from marshmallow.fields import (
 )
 from marshmallow.schema import BaseSchema, SchemaMeta, with_metaclass
 
-from applitools.core import ec_client_settings, extract_text
+from applitools.core import extract_text
 
 from .. import common
 from ..common import (
@@ -70,8 +70,7 @@ if t.TYPE_CHECKING:
 class USDKSchema(with_metaclass(SchemaMeta, BaseSchema)):
     __doc__ = BaseSchema.__doc__
     _always_skip_values = (None, [])
-    # fields that are allowed to have {} value
-    _keep_empty_objects = ("lazyLoad",)
+    _keep_empty_objects = ("lazyLoad",)  # fields that are allowed to have {} value
 
     @classmethod
     def should_keep(cls, key, value):
@@ -201,12 +200,6 @@ class Proxy(USDKSchema):
     url = String(required=True)
     username = String()
     password = String()
-
-
-class StaticDriver(Schema):
-    session_id = String(dump_to="sessionId")
-    server_url = String(attribute="command_executor._url", dump_to="serverUrl")
-    capabilities = Dict()
 
 
 class ImageTarget(USDKSchema):
@@ -592,64 +585,6 @@ class TestResultsSummary(Schema):
     @post_load
     def to_python(self, data, **_):
         return common.TestResultsSummary(**data)
-
-
-def marshal_webdriver_ref(driver):
-    # type: (WebDriver) -> dict
-    return check_error(StaticDriver().dump(driver))
-
-
-def marshal_image_target(image_target):
-    # type: (ics.ImageTarget) -> dict
-    return check_error(ImageTarget().dump(image_target))
-
-
-def marshal_configuration(configuration):
-    # type: (config.Configuration) -> dict
-    open = check_error(OpenSettings().dump(configuration))
-    config = check_error(EyesConfig().dump(configuration))
-    close = check_error(CloseSettings().dump(configuration))
-    return {"open": open, "screenshot": config, "check": config, "close": close}
-
-
-def marshal_check_settings(check_settings):
-    # type: (cs.SeleniumCheckSettings) -> dict
-    return check_error(CheckSettings().dump(check_settings.values))
-
-
-def marshal_locate_settings(locate_settings):
-    # type: (locators.VisualLocatorSettings) -> dict
-    return check_error(LocateSettings().dump(locate_settings.values))
-
-
-def marshal_ocr_search_settings(search_settings):
-    # type: (extract_text.TextRegionSettings) -> dict
-    return check_error(OCRSearchSettings().dump(search_settings))
-
-
-def marshal_ec_client_settings(client_settings):
-    # type: (ec_client_settings.ECClientSettings) -> dict
-    return check_error(ECClientSettings().dump(client_settings))
-
-
-def marshal_ocr_extract_settings(extract_settings):
-    # type: (t.Tuple[extract_text.OCRRegion, ...]) -> t.List[dict]
-    return [check_error(ExtractTextSettings().dump(s)) for s in extract_settings]
-
-
-def marshal_viewport_size(viewport_size):
-    # type: (ViewPort) -> dict
-    return check_error(Size().dump(viewport_size))
-
-
-def marshal_enabled_batch_close(close_batches):
-    # type: (batch_close._EnabledBatchClose) -> dict # noqa
-    return check_error(CloseBatchSettings().dump(close_batches))
-
-
-def marshal_delete_test_settings(test_results):
-    # type: (common.TestResults) -> dict
-    return check_error(DeleteTestSettings().dump(test_results))
 
 
 def demarshal_match_result(results_dict):

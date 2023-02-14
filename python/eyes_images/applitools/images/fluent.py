@@ -9,30 +9,10 @@ from applitools.selenium.fluent.selenium_check_settings import (
     SeleniumCheckSettingsValues,
 )
 
+from .optional_deps import Image, PathLike, fspath
+
 if TYPE_CHECKING:
     from applitools.common import Region
-
-try:
-    from os import PathLike, fspath
-except ImportError:
-
-    class PathLike(object):
-        """Dummy class to avoid conditions in Target methods"""
-
-
-try:
-    from PIL.Image import Image
-except ImportError:
-
-    class Image(object):
-        """Dummy class to avoid conditions in Target methods"""
-
-        def __init__(self):
-            raise RuntimeError("Please install pillow package if you need Image class.")
-
-        def save(self, _, __):
-            # type: (BytesIO, Text) -> binary_type
-            raise RuntimeError("Please install pillow package if you need Image class.")
 
 
 @attr.s

@@ -3,6 +3,7 @@ from mock import call, patch
 from applitools.selenium import ClassicRunner, RunnerOptions, VisualGridRunner
 from applitools.selenium.__version__ import __version__
 from applitools.selenium.command_executor import ManagerType
+from applitools.selenium.protocol import SeleniumWebDriver
 
 
 def test_visual_grid_runner_creation_default():
@@ -11,7 +12,7 @@ def test_visual_grid_runner_creation_default():
         VisualGridRunner()
 
         assert get_instance.mock_calls == [
-            call("eyes.selenium.visualgrid.python", __version__),
+            call(SeleniumWebDriver, "eyes.selenium.visualgrid.python", __version__),
             call().core_make_manager(ManagerType.UFG, concurrency=5),
         ]
 
@@ -22,7 +23,7 @@ def test_visual_grid_runner_creation_legacy_concurrency():
         VisualGridRunner(2)
 
         assert get_instance.mock_calls == [
-            call("eyes.selenium.visualgrid.python", __version__),
+            call(SeleniumWebDriver, "eyes.selenium.visualgrid.python", __version__),
             call().core_make_manager(ManagerType.UFG, legacy_concurrency=10),
         ]
 
@@ -33,7 +34,7 @@ def test_visual_grid_runner_creation_test_concurrency():
         VisualGridRunner(RunnerOptions().test_concurrency(3))
 
         assert get_instance.mock_calls == [
-            call("eyes.selenium.visualgrid.python", __version__),
+            call(SeleniumWebDriver, "eyes.selenium.visualgrid.python", __version__),
             call().core_make_manager(ManagerType.UFG, concurrency=3),
         ]
 

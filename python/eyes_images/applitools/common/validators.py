@@ -6,10 +6,20 @@ def is_list_or_tuple(elm):
 
 
 def is_webelement(elm):
+    from applitools.playwright.optional_deps import ElementHandle, PlaywrightLocator
     from applitools.selenium.optional_deps import (
         AppiumWebElement,
         EventFiringWebElement,
         WebElement,
     )
 
-    return isinstance(elm, (WebElement, AppiumWebElement, EventFiringWebElement))
+    return isinstance(
+        elm,
+        (
+            WebElement,
+            AppiumWebElement,
+            EventFiringWebElement,
+            PlaywrightLocator,
+            ElementHandle,
+        ),
+    )

@@ -11,17 +11,18 @@ import warnings
 # Make sure to wipe cached bytecode when verifying that modules still
 # produce these warnings.
 with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", "invalid escape", category=DeprecationWarning)
-    import selenium.webdriver
-
-from selenium.common.exceptions import WebDriverException
+    try:
+        warnings.filterwarnings("ignore", "invalid escape", category=DeprecationWarning)
+        import selenium.webdriver
+    except ImportError:
+        pass
 
 # Generate APPLITOOLS_BATCH_ID for xdist run in case it was not provided externally
 os.environ["APPLITOOLS_BATCH_ID"] = os.getenv("APPLITOOLS_BATCH_ID", str(uuid.uuid4()))
 # Keep batch open after runner termination
 os.environ["APPLITOOLS_DONT_CLOSE_BATCHES"] = "true"
 
-from applitools.selenium import BatchInfo, Eyes, StitchMode
+from applitools.selenium import BatchInfo, StitchMode
 
 from .browsers import *
 from .devices import *
@@ -75,6 +76,7 @@ def driver_setup(driver_builder):
     #     "Safari12": safari12,
     #     "ChromeEmulator": chrome_emulator,
     #
+    from selenium.common.exceptions import WebDriverException
 
     driver = driver_builder
     yield driver
@@ -86,14 +88,38 @@ def driver_setup(driver_builder):
         print("Driver was already closed")
 
 
+@pytest.fixture(scope="session")
+def playwright():
+    from playwright.sync_api import sync_playwright
+
+    with sync_playwright() as p:
+        yield p
+
+
+@pytest.fixture(scope="session")
+def pw_chrome(playwright):
+    browser = playwright.chromium
+    with browser.launch(ignore_default_args=["--hide-scrollbars"], headless=True) as b:
+        yield b
+
+
+@pytest.fixture(scope="session")
+def pw_firefox(playwright):
+    browser = playwright.firefox
+    with browser.launch(ignore_default_args=["--hide-scrollbars"], headless=True) as b:
+        yield b
+
+
+@pytest.fixture(scope="function")
+def page(pw_browser):
+    with pw_browser.new_context() as context:
+        yield context.new_page()
+
+
 @pytest.fixture(name="runner", scope="function")
 def runner_setup(eyes_runner_class):
     runner = eyes_runner_class
     yield runner
-
-
-#     all_test_results = runner.get_all_test_results()
-#     print(all_test_results)
 
 
 @pytest.fixture(scope="function")
@@ -114,7 +140,14 @@ def eyes_setup(runner, batch_info, stitch_mode, emulation):
     """
     Basic Eyes setup. It'll abort test if wasn't closed properly.
     """
-    eyes = Eyes(runner)
+    from applitools.playwright import ClassicRunner, Eyes, VisualGridRunner
+
+    if isinstance(runner, (ClassicRunner, VisualGridRunner)):
+        eyes = Eyes(runner)
+    else:
+        from applitools.selenium import Eyes
+
+        eyes = Eyes(runner)
     # Initialize the eyes SDK and set your private API key.
     eyes.api_key = os.environ["APPLITOOLS_API_KEY"]
     eyes.configure.batch = batch_info
