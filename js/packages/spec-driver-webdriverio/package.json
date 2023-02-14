@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriverio",
-  "version": "1.4.24",
+  "version": "1.4.25",
   "keywords": [
     "webdriverio",
     "wdio",
@@ -109,7 +109,7 @@
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
-    "@applitools/bongo": "^2.2.2",
+    "@applitools/bongo": "^2.2.5",
     "@applitools/test-utils": "1.5.12",
     "@types/mocha": "^9.1.1",
     "@types/node": "16",
