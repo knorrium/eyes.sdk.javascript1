@@ -44,7 +44,7 @@ export function makeMakeManager<TSpec extends SpecType>({
   } = {}): Promise<EyesManager<TSpec, TType>> {
     concurrency ??= utils.types.isInteger(legacyConcurrency) ? legacyConcurrency * 5 : 5
     batch ??= {}
-    batch.id ??= `generated-${utils.general.guid()}`
+    batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
     core ??= makeBaseCore({agentId, cwd, logger})
     const cores = {ufg: makeUFGCore({spec, core, concurrency, logger}), classic: makeClassicCore({spec, core, logger})}
     const storage = [] as Eyes<TSpec, TType>[]
