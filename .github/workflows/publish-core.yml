@@ -113,7 +113,7 @@ jobs:
         shell: bash
         working-directory: ./js/packages/core
         run: |
-          echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && rm -rf $HOME/.npmrc
+          echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && yarn deps && rm -rf $HOME/.npmrc
           yarn build:${{matrix.arch}}
       - name: Build arm64
         if: ${{matrix.arch == 'arm64'}}
@@ -133,7 +133,7 @@ jobs:
             npm install -g yarn
           run: |
             cd /src
-            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && rm -rf $HOME/.npmrc
+            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && yarn deps && rm -rf $HOME/.npmrc
             yarn build:${{matrix.arch}}
       - name: Upload building artifacts
         uses: actions/upload-artifact@v3
