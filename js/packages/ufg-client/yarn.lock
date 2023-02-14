@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.2.tgz#6bc9a030ee37af0c452bfcb781fc1c34f1134b3e"
-  integrity sha512-5t3fIxokMAi2LLWPAxNFsnqIx98cwExwZUd9dHXfhbqCcXdU2vfgHujbCZ521uAGLXuwIlKQlnqXal04HHkrNQ==
+"@applitools/bongo@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-2.2.5.tgz#26fb765428507f0eb64bb43cdfafa0a1d701dfb4"
+  integrity sha512-a0NRHM1pjZ4oblshU///slyl1vktVZAJ11toRxRdAArAa4d4Vgak5VsqukFGQFdlF85voZp/XJcJXYOZmKeAWQ==
   dependencies:
-    "@applitools/utils" "1.3.26"
+    "@applitools/utils" "1.3.30"
     chalk "3.0.0"
     compare-versions "4.1.3"
     js-yaml "4.1.0"
@@ -69,10 +69,10 @@
     node-fetch "2.6.7"
     proxy-agent "5.0.0"
 
-"@applitools/test-server@^1.1.24":
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.24.tgz#fb3d1af6cc253f68540d8c9a1f07f0c3a721fe66"
-  integrity sha512-4rPU2Z15egijaMH2cdJAnr85ym8N/VYG6QZdiubRlGnL4fLAHrU4VgC75WnM1gzb2wPrKlCGXpSDgYyQKtl2ng==
+"@applitools/test-server@^1.1.25":
+  version "1.1.25"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.25.tgz#ff426696009303cfed3469930073d1a329b909cc"
+  integrity sha512-GmaDj8bH3/6BMVTcB8RwmD7uxPmUol1VO8YhdnIVYoczqYn+LqhVTEG7jUrMnJUoBBQwEiiu034aqKGkHVrBug==
   dependencies:
     "@applitools/logger" "1.1.45"
     "@applitools/utils" "1.3.30"
@@ -93,11 +93,6 @@
   integrity sha512-7k11wlOQEvB+RhV1Cuxk3q4SCZkOSgfDpbOeHaGEgcJMGG5c3nXeynvG/r4yvFdafFybe/WlPP1AYRtMUskMRA==
   dependencies:
     node-fetch "2.6.1"
-
-"@applitools/utils@1.3.26":
-  version "1.3.26"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.26.tgz#cb0a8cd64676bb4545ac8f88a57581f8b23d018d"
-  integrity sha512-s5Q/tRJ5wjtzOXbIt0dWACcaOOz+cEh1jXsZLnCtrbMljnwsfjM/yVI88QnGSCr70grToxgo49X/E9Qnv1Nd/g==
 
 "@applitools/utils@1.3.30":
   version "1.3.30"

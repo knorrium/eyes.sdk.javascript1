@@ -55,8 +55,8 @@
     "throat": "6.0.1"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.2",
-    "@applitools/test-server": "^1.1.24",
+    "@applitools/bongo": "^2.2.5",
+    "@applitools/test-server": "^1.1.25",
     "@applitools/test-utils": "^1.5.12",
     "@types/mocha": "^9.1.1",
     "@types/node": "12",
