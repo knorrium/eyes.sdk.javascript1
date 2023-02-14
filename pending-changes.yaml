@@ -8,10 +8,9 @@ Apollo SDK:
     - Remove kitchen to accommodate space for PlayStation
     - |
       An example of how to inline `markdown code highlights`
-"@applitools/eyes-universal":
+"@applitools/core":
   feature:
-    - Add NML support for Android
-    - Crop screenshot image base on account info
+    - Integrate universal protocol to run core via transport
   bug-fix:
     - 
 "@applitools/eyes-selenium":

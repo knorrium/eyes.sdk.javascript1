@@ -1,38 +1,31 @@
 import {type Transport} from '../transport'
-import {createConnection, type Socket, type IpcSocketConnectOpts} from 'net'
+import {type Socket} from 'net'
 
-export const transport: Transport<Socket, IpcSocketConnectOpts> = {
-  isReady(socket): boolean {
+export const transport: Transport<Socket> = {
+  isReady(socket) {
     return !(socket as any).pending
   },
-  onReady(socket, callback: () => void): void {
+  onReady(socket, callback) {
     socket.on('ready', callback)
+    return () => socket.off('ready', callback)
   },
   onMessage(socket, callback) {
-    socket.on('data', data => splitMessages(data).forEach(data => callback(data)))
+    const handler = (data: string | Uint8Array) => splitMessages(data).forEach(data => callback(data))
+    socket.on('data', handler)
+    return () => socket.off('data', handler)
   },
   onClose(socket, callback) {
     socket.on('close', callback)
+    return () => socket.off('close', callback)
   },
   onError(socket, callback) {
     socket.on('error', callback)
+    return () => socket.off('error', callback)
   },
-  connect(options) {
-    return createConnection(options)
-  },
-  send(socket, data: Uint8Array | string) {
+  send(socket, data) {
     socket.write(data)
   },
-  destroy(socket) {
-    socket.destroy()
-  },
-  ref(socket) {
-    socket.ref()
-  },
-  unref(socket) {
-    socket.unref()
-  },
-  format(data: Uint8Array | string) {
+  format(data) {
     const header = Buffer.allocUnsafe(4)
     const buffer = Buffer.from(data)
     header.writeUint32BE(buffer.byteLength)

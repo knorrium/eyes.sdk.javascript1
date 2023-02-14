@@ -23,10 +23,10 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/execution-grid-tunnel@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.3.tgz#064a81774a2299cc3d7ed2d7109d75288bc5916a"
-  integrity sha512-h9BRZj0t5VNDvtFrEX4e/g11PgHZ6VgCBfrFciGS83lQBrVhnlkboWFkW3ACzNnTaiCGDscDnjh6Y5u2RVW7yQ==
+"@applitools/execution-grid-tunnel@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.4.tgz#b4b3b16580afb7f2289e697a93baab7bf861ed40"
+  integrity sha512-5Pp83yor4RjfkyT6+li//MuDjk+/4bRtB5qD04o7fPKrKvSlslPqegR7K6FPDjumlH+87WIsekY3NsxkXLOJOg==
   dependencies:
     "@applitools/eg-socks5-proxy-server" "^0.4.6"
     "@applitools/logger" "^1.0.12"

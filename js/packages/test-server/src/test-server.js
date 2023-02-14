@@ -4,7 +4,6 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 const {resolve} = require('path')
-const fs = require('fs')
 const cors = require('cors')
 const https = require('https')
 const utils = require('@applitools/utils')
@@ -62,25 +61,17 @@ function testServer(argv = {}) {
   return new Promise((resolve, reject) => {
     let server
     if (key && cert) {
-      server = https
-        .createServer(
-          {
-            key: fs.readFileSync(key),
-            cert: fs.readFileSync(cert),
-          },
-          app,
-        )
-        .listen(port, err => {
-          if (err) {
-            log('error starting test server', err)
-            reject(err)
-          } else {
-            const port = server.address().port
-            const close = server.close.bind(server)
-            log(`test server running at port: ${port}`)
-            resolve({port, close})
-          }
-        })
+      server = https.createServer({key, cert}, app).listen(port, err => {
+        if (err) {
+          log('error starting test server', err)
+          reject(err)
+        } else {
+          const port = server.address().port
+          const close = server.close.bind(server)
+          log(`test server running at port: ${port}`)
+          resolve({port, close})
+        }
+      })
     } else {
       server = app.listen(port, err => {
         if (err) {

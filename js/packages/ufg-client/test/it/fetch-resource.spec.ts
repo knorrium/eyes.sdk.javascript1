@@ -1,17 +1,14 @@
 import {makeFetchResource} from '../../src/resources/fetch-resource'
 import {makeResource} from '../../src/resources/resource'
-import {testServer} from '@applitools/test-server'
+import {makeTestServer, generateCertificate} from '@applitools/test-server'
 import assert from 'assert'
 
 describe('fetch-resource', () => {
   let server: any
 
   before(async () => {
-    server = await testServer({
-      cert: './test/fixtures/certificate.pem',
-      key: './test/fixtures/key.pem',
-      port: 12345,
-    })
+    const authority = await generateCertificate({days: 1})
+    server = await makeTestServer({...authority, port: 12345})
   })
 
   after(async () => {

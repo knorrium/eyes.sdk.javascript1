@@ -1,82 +1,100 @@
-import {type Logger} from '@applitools/logger'
+import {makeLogger, type Logger} from '@applitools/logger'
 import {type Transport} from './transport'
 import * as transports from './transports'
 import * as utils from '@applitools/utils'
 
-export interface Socket<TConnectOptions = never> {
-  connect(options: TConnectOptions): void
-  destroy(): void
+export type WaitOptions = {timeout: number}
+
+export interface Socket<TSocket = unknown> {
+  readonly ready: boolean
+  readonly target: TSocket
+  use(socket: TSocket): void
+  cleanup(): void
   emit(type: string | {name: string; key: string}, payload?: Record<string, any>): () => void
   on(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): () => void
   once(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): () => void
   off(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): boolean
   request(name: string, payload?: any): Promise<any>
   command(name: string, fn: (payload?: any) => any): () => void
-  create<TResult>(name: string, fn: (payload?: any) => TResult): PromiseLike<TResult>
-  ref(): () => void
-  unref(): () => void
+  wait(name: string, options?: WaitOptions): PromiseLike<void>
+  wait<TResult>(name: string, fn: (payload?: any) => TResult, options?: WaitOptions): PromiseLike<TResult>
 }
 
-export interface SocketOptions<TTransport extends keyof typeof transports | Transport<unknown, unknown>> {
+export interface SocketOptions<TTransport extends keyof typeof transports | Transport<unknown>> {
   transport: TTransport
   logger?: Logger
 }
 
 export function makeSocket<
-  TTransport extends keyof typeof transports | Transport<unknown, unknown>,
+  TTransport extends keyof typeof transports | Transport<unknown>,
   TSocket extends TTransport extends keyof typeof transports
-    ? (typeof transports)[TTransport] extends Transport<infer USocket, unknown>
+    ? (typeof transports)[TTransport] extends Transport<infer USocket>
       ? USocket
       : never
-    : TTransport extends Transport<infer USocket, unknown>
+    : TTransport extends Transport<infer USocket>
     ? USocket
     : never,
-  TConnectOptions extends TTransport extends keyof typeof transports
-    ? (typeof transports)[TTransport] extends Transport<unknown, infer UConnectOptions>
-      ? UConnectOptions
-      : never
-    : TTransport extends Transport<unknown, infer UConnectOptions>
-    ? UConnectOptions
-    : never,
->(socket: TSocket | null, options: SocketOptions<TTransport>): Socket<TConnectOptions> {
+>(target: TSocket, options: SocketOptions<TTransport>): Socket<TSocket> {
+  let ready = false
   const listeners = new Map<string, Set<(...args: any[]) => any>>()
   const queue = new Set<() => any>()
-  const transport: Transport<TSocket, unknown> = utils.types.isString(options.transport)
-    ? (transports[options.transport as keyof typeof transports] as Transport<TSocket, unknown>)
-    : (options.transport as Transport<TSocket, unknown>)
-  const logger = options.logger
+  const offs = new Set<() => any>()
+  const transport: Transport<TSocket> = utils.types.isString(options.transport)
+    ? (transports[options.transport as keyof typeof transports] as Transport<TSocket>)
+    : options.transport
+  const logger = options.logger?.extend({label: 'socket'}) ?? makeLogger({label: 'socket'})
 
-  if (socket) attach(socket)
+  use(target)
 
   return {
-    connect,
-    destroy,
+    get ready() {
+      return ready
+    },
+    get target() {
+      return target
+    },
+    use,
+    cleanup,
     emit,
     on,
     once,
     off,
     request,
     command,
-    create,
-    ref,
-    unref,
+    wait,
   }
 
-  function attach(sock: TSocket) {
-    if (!sock) return
-
-    transport.onError(sock, error => {
+  function use(socket: TSocket) {
+    cleanup()
+    target = socket
+    const offError = transport.onError(target, error => {
       const fns = listeners.get('error')
       if (fns) fns.forEach(fn => fn(error))
     })
+    offs.add(offError)
 
-    const attach = () => {
-      socket = sock
+    if (transport.isReady(target)) {
+      attach()
+    } else {
+      const offReady = transport.onReady(target, () => {
+        attach()
+        const fns = listeners.get('ready')
+        if (fns) fns.forEach(fn => fn())
+      })
+      offs.add(offReady)
+    }
+
+    function attach() {
+      ready = true
       queue.forEach(command => command())
       queue.clear()
 
-      transport.onMessage(socket, message => {
+      const offMessage = transport.onMessage(target, message => {
         const {name, key, payload} = deserialize(message as string)
+        logger?.log(
+          `Received event of type "${JSON.stringify({name, key})}" with payload`,
+          payload && JSON.stringify(payload, null, 4).slice(3000),
+        )
         const fns = listeners.get(name)
         if (fns) fns.forEach(fn => fn(payload, key))
         if (key) {
@@ -84,33 +102,30 @@ export function makeSocket<
           if (fns) fns.forEach(fn => fn(payload, key))
         }
       })
+      offs.add(offMessage)
 
-      transport.onClose(socket, () => {
+      const offClose = transport.onClose(target, () => {
         const fns = listeners.get('close')
         if (fns) fns.forEach(fn => fn())
       })
+      offs.add(offClose)
     }
-
-    if (transport.isReady(sock)) attach()
-    else transport.onReady(sock, () => attach())
   }
 
-  function connect(options: TConnectOptions) {
-    if (transport.connect) attach(transport.connect(options))
-  }
-
-  function destroy() {
-    if (!socket) return
-    if (transport.destroy) transport.destroy(socket)
-    socket = null
+  function cleanup() {
+    offs.forEach(off => off())
+    offs.clear()
   }
 
   function emit(type: string | {name: string; key?: string}, payload?: Record<string, any>): () => void {
     const command = () => {
-      logger?.log('[EMIT EVENT]', type, JSON.stringify(payload, null, 4))
-      transport.send(socket!, serialize(type, payload))
+      logger?.log(
+        `Emit event of type "${JSON.stringify(type)}" with payload`,
+        payload && JSON.stringify(payload, null, 4).slice(3000),
+      )
+      transport.send(target!, serialize(type, payload))
     }
-    if (socket) command()
+    if (ready) command()
     else queue.add(command)
     return () => queue.delete(command)
   }
@@ -144,30 +159,26 @@ export function makeSocket<
   function request(name: string, payload?: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const key = utils.general.guid()
-      emit({name, key}, payload)
       once({name, key}, response => {
         if (response.error) {
-          const error = new Error(response.error.message)
+          const error = new Error(response.error.message) as Error & {reason: string; info: Record<string, any>}
+          error.reason = response.error.reason ?? 'unknown'
+          error.info = response.error.info
           error.stack = response.error.stack
           return reject(error)
         }
         return resolve(response.result)
       })
+      emit({name, key}, payload)
     })
   }
 
   function command(name: string, fn: (payload?: any) => any): () => void {
     return on(name, async (payload, key) => {
-      logger?.log('[COMMAND]', name, JSON.stringify(payload, null, 4))
       try {
         const result = await fn(payload)
-        logger?.log(
-          `[COMMAND] ${name} finished successfully with result`,
-          result && JSON.stringify(result, null, 4).slice(0, 3000),
-        )
         emit({name, key}, {result})
       } catch (error: any) {
-        logger?.log(`[COMMAND] ${name} failed with an error`, error)
         emit(
           {name, key},
           {
@@ -183,44 +194,38 @@ export function makeSocket<
     })
   }
 
-  function create<TResult>(name: string, fn: (payload?: any) => TResult): PromiseLike<TResult> {
-    let temporary = utils.promises.makeControlledPromise<TResult>()
-    let result = temporary
-    on(name, async payload => {
-      logger?.log('[CREATE]', name, JSON.stringify(payload, null, 4))
-      result = temporary
+  function wait<TResult>(
+    name: string,
+    fnOrOptions?: ((payload?: any) => TResult) | WaitOptions,
+    options?: WaitOptions,
+  ): PromiseLike<TResult | void> {
+    const result = utils.promises.makeControlledPromise<TResult>()
+    let fn: (payload?: any) => TResult
+    if (utils.types.isFunction(fnOrOptions)) fn = fnOrOptions
+    else options = fnOrOptions
+
+    const off = on(name, async payload => {
       try {
-        result.resolve(await fn(payload))
+        result.resolve((await fn?.(payload)) as TResult)
       } catch (error: any) {
         result.reject(error)
-      } finally {
-        temporary = utils.promises.makeControlledPromise<TResult>()
       }
     })
+    if (options?.timeout) {
+      utils.general.sleep(options.timeout)!.then(() => {
+        off()
+        result.reject(new Error(`Event with name "${name}" wasn't emitted within ${options!.timeout}ms`))
+      })
+    }
     return {
       then: (onResolved, onRejected) => result.then(onResolved, onRejected),
     }
   }
 
-  function ref() {
-    if (!transport.ref) return () => undefined
-    const command = () => transport.ref!(socket!)
-    if (socket) command()
-    else queue.add(command)
-    return () => queue.delete(command)
-  }
-
-  function unref() {
-    if (!transport.unref) return () => undefined
-    const command = () => transport.unref!(socket!)
-    if (socket) command()
-    else queue.add(command)
-    return () => queue.delete(command)
-  }
-
   function serialize(type: string | {name: string; key?: string}, payload: any) {
     const message = utils.types.isString(type) ? {name: type, payload} : {name: type.name, key: type.key, payload}
-    return transport.format(JSON.stringify(message))
+    const data = JSON.stringify(message)
+    return transport.format?.(data) ?? data
   }
 
   function deserialize(message: string) {

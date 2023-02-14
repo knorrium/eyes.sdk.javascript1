@@ -27,6 +27,8 @@ on:
         required: true
       SAUCE_ACCESS_KEY:
         required: true
+      UNIVERSAL_SLACK_WEBHOOK_URL:
+        required: true
 
 env:
   FORCE_COLOR: 3
@@ -39,7 +41,30 @@ env:
   BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{steps.version.outputs.branch}}
+      version: ${{steps.version.outputs.version}}
+      tag: ${{steps.version.outputs.tag}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org/
+          always-auth: true
+      - name: Version
+        id: version
+        uses: ./.github/actions/version
+        with:
+          working-directory: ./js/packages/core
+          version: ${{inputs.version || github.event.inputs.version}}
   test:
+    needs: [prepare]
     strategy:
       matrix:
         node-version: ['12', '14', '16', '18']
@@ -54,25 +79,259 @@ jobs:
           node-version: ${{matrix.node-version}}
           registry-url: https://registry.npmjs.org/
           always-auth: true
+      - name: Download building artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: eyes-universal-${{needs.prepare.outputs.version}}-x64
+          path: ./js/packages/eyes-universal
       - name: Run tests
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/core
-  publish:
-    needs: [test]
-    name: Publish
+  build-bin:
+    needs: [prepare]
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, arm64]
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{needs.prepare.outputs.branch}}
       - name: Setup Node.js
+        if: ${{matrix.arch == 'x64'}}
         uses: actions/setup-node@v3
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org/
           always-auth: true
-      - name: Publish to NPM
-        uses: ./.github/actions/publish
+      - name: Build x64
+        if: ${{matrix.arch == 'x64'}}
+        shell: bash
+        working-directory: ./js/packages/core
+        run: |
+          echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn install && rm -rf $HOME/.npmrc
+          yarn build:${{matrix.arch}}
+      - name: Build arm64
+        if: ${{matrix.arch == 'arm64'}}
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          githubToken: ${{github.token}}
+          arch: aarch64
+          distro: ubuntu18.04
+          dockerRunArgs: |
+            --volume "${PWD}/js/packages/core/:/src"
+          shell: /bin/sh
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y curl zip tar
+            curl -sL https://deb.nodesource.com/setup_14.x | bash -
+            apt-get install -q -y nodejs
+            npm install -g yarn
+          run: |
+            cd /src
+            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn install && rm -rf $HOME/.npmrc
+            yarn build:${{matrix.arch}}
+      - name: Upload building artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: core-${{needs.prepare.outputs.version}}-${{matrix.arch}}
+          retention-days: 2
+          path:  |
+            ./js/packages/core/dist
+            ./js/packages/core/bin
+  test-bin:
+    needs: [prepare, build-bin]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: alpine
+            os: ubuntu-latest
+            container: node:lts-alpine # not just "alpine" because it is not possible to setup nodejs in a regular way
+            shell: ash -eo pipefail {0}
+            arch: x64
+          - name: ubuntu
+            os: ubuntu-latest
+            shell: bash
+            arch: x64
+          - name: windows
+            os: windows-latest
+            shell: bash
+            arch: x64
+          - name: macos
+            os: macos-latest
+            shell: bash
+            arch: x64
+          - name: linux-arm64
+            os: ubuntu-latest
+            shell: bash
+            arch: arm64
+    name: 'Test bin (os: ${{matrix.name}})'
+    runs-on: ${{matrix.os}}
+    container: ${{matrix.container}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{needs.prepare.outputs.branch}}
+      - name: Setup Node.js
+        if: ${{matrix.arch == 'x64'}}
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org/
+          always-auth: true
+      - name: Download building artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: core-${{needs.prepare.outputs.version}}-${{matrix.arch}}
+          path: ./js/packages/core
+      - name: Run tests x64
+        if: ${{matrix.arch == 'x64'}}
+        uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/core
-          version: ${{inputs.version || github.event.inputs.version}}
+          build-type: none
+          setup-type: none
+          test-type: bin
+          shell: ${{matrix.shell}}
+      - name: Run tests arm64
+        if: ${{matrix.arch == 'arm64'}}
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          githubToken: ${{github.token}}
+          arch: aarch64
+          distro: ubuntu18.04
+          dockerRunArgs: |
+            --volume "${PWD}/js/packages/core/:/src"
+          shell: /bin/sh
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y curl zip tar
+            curl -sL https://deb.nodesource.com/setup_14.x | bash -
+            apt-get install -q -y nodejs
+            npm install -g yarn
+          run: |
+            cd /src
+            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn install && rm -rf $HOME/.npmrc
+            yarn test:bin
+  # publish:
+  #   needs: [prepare, test, test-bin]
+  #   name: Publish
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check-out repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{needs.prepare.outputs.branch}}
+  #         fetch-depth: 0
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: lts/*
+  #         registry-url: https://registry.npmjs.org/
+  #         always-auth: true
+  #     - name: Download building artifacts arm64
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: core-${{needs.prepare.outputs.version}}-arm64
+  #         path: ./js/packages/core
+  #     - name: Download building artifacts x64
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: core-${{needs.prepare.outputs.version}}-x64
+  #         path: ./js/packages/core
+  #     - name: Create archives
+  #       shell: bash
+  #       working-directory: ./js/packages/core
+  #       run: yarn build:zip && yarn build:tgz
+  #     - name: Publish to NPM
+  #       id: publish
+  #       uses: ./.github/actions/publish
+  #       with:
+  #         working-directory: ./js/packages/core
+  #         version: ${{inputs.version || github.event.inputs.version}}
+  #         skip-build: true
+  #     - name: Publish to GitHub
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         body: |
+  #           ${{steps.publish.outputs.changelog}}
+  #         tag_name: ${{needs.prepare.outputs.tag}}
+  #         name: ${{needs.prepare.outputs.tag}}
+  #         files: |
+  #           ./js/packages/core/bin/core-alpine
+  #           ./js/packages/core/bin/core-linux
+  #           ./js/packages/core/bin/core-linux-arm64
+  #           ./js/packages/core/bin/core-macos
+  #           ./js/packages/core/bin/core-win.exe
+  #           ./js/packages/core/bin/core.zip
+  #           ./js/packages/core/bin/core.tar.gz
+  #     - name: Send slack notification
+  #       uses: slackapi/slack-github-action@v1.16.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "attachments": [
+  #               {
+  #                 "color": "#00a398",
+  #                 "blocks": [
+  #                   {
+  #                     "type":"section",
+  #                     "text": {"type": "mrkdwn", "text": "@channel *Universal Core* has been released under the tag <https://github.com/applitools/eyes.sdk.javascript1/releases/tag/${{needs.prepare.outputs.tag}}|${{needs.prepare.outputs.tag}}> 🎉 🎊 🥳"}
+  #                   },
+  #                   {
+  #                     "type": "header",
+  #                     "text": {"type": "plain_text", "text": "Changelog"}
+  #                   },
+  #                   {
+  #                     "type":"section",
+  #                     "text": {"type": "mrkdwn", "text": ${{toJSON(steps.publish.outputs.changelog)}}}
+  #                   },
+  #                   {"type": "divider"},
+  #                   {
+  #                     "type": "actions",
+  #                     "elements": [
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download for Mac 🍎"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-macos"
+  #                       },
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux 🐧"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux"
+  #                       },
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux arm64 🐧💪"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux-arm64"
+  #                       },
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download for Windows 🪟"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-win.exe"
+  #                       },
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download for Alpine 🏔️"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-alpine"
+  #                       },
+  #                       {
+  #                         "type": "button",
+  #                         "text": {"type": "plain_text", "emoji": true, "text": "Download archive 🗃️"},
+  #                         "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core.zip"
+  #                       }
+  #                     ]
+  #                   }
+  #                 ]
+  #               }
+  #             ]
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{secrets.UNIVERSAL_SLACK_WEBHOOK_URL}}
+  #         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

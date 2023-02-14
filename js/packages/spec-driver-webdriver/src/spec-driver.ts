@@ -1,6 +1,6 @@
 import type {Size, Region} from '@applitools/utils'
+import type {SpecType as BaseSpecType, Cookie, DriverInfo} from '@applitools/driver'
 import type * as WD from 'webdriver'
-import {type Cookie, DriverInfo} from '@applitools/driver'
 import {parse as urlToHttpOptions} from 'url'
 import * as utils from '@applitools/utils'
 import WebDriver, {command} from 'webdriver'
@@ -14,6 +14,7 @@ export type Driver = WD.Client & {original?: any} & ApplitoolsBrand
 export type Element = ({'element-6066-11e4-a52e-4f735466cecf': string} | {ELEMENT: string}) & ApplitoolsBrand
 export type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string} & ApplitoolsBrand
 export type Selector = {using: string; value: string} & ApplitoolsBrand
+export type SpecType = BaseSpecType<Driver, Driver, Element, Selector>
 
 export type StaticDriver = {
   sessionId: string

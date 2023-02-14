@@ -1,19 +1,67 @@
-# Core Remote Protocol
+# Core Universal Protocol
+
+- [Core Universal Protocol](#core-universal-protocol)
+  - [Events](#events)
+    - [Core.makeCore](#coremakecore)
+    - [Logger.log](#loggerlog)
+  - [Commands](#commands)
+    - [Core.closeBatch](#coreclosebatch)
+    - [Core.deleteTest](#coredeletetest)
+    - [Core.getViewportSize](#coregetviewportsize)
+    - [Core.setViewportSize](#coresetviewportsize)
+    - [Core.makeECClient](#coremakeecclient)
+    - [Core.makeManager](#coremakemanager)
+    - [Core.locate](#corelocate)
+    - [Core.locateText](#corelocatetext)
+    - [Core.extractText](#coreextracttext)
+    - [EyesManager.openEyes](#eyesmanageropeneyes)
+    - [EyesManager.getResults](#eyesmanagergetresults)
+    - [Eyes.check](#eyescheck)
+    - [Eyes.checkAndClose](#eyescheckandclose)
+    - [Eyes.close](#eyesclose)
+    - [Eyes.abort](#eyesabort)
+    - [Eyes.getResults](#eyesgetresults)
+  - [Type examples](#type-examples)
+    - [ImageTarget](#imagetarget)
+    - [DriverTarget](#drivertarget)
+    - [LocateSettings](#locatesettings)
+    - [LocateTextSettings](#locatetextsettings)
+    - [ExtractTextSettings](#extracttextsettings)
+    - [ECClientSettings](#ecclientsettings)
+    - [OpenSettings](#opensettings)
+    - [CheckSettings](#checksettings)
+    - [CloseSettings](#closesettings)
+    - [GetResultsSettings](#getresultssettings)
+    - [Config](#config)
+
+
+## Events
+Events don't imply any response. This is a one-way communication used in order to notify participants about some actions, usually post-factum. Some of the events are meant to be emitted by the server and listened to by the client and some are the other way around.
+
+### Core.makeCore
+This event will be listened by the server and meant to be emitted by the client.
+```ts
+interface MakeCorePayload {
+  agentId: string
+  cwd: string
+  spec: 'webdriver' | string[]
+}
+```
+
+### Logger.log
+This event will be emitted by the server and meant to be listened by the client.
+```ts
+interface LogPayload {
+  level: 'info' | 'warn' | 'error' | 'fatal',
+  message: string
+}
+```
 
 ## Commands
 
-Some commands payload has `settings` and `config` properties, this is done to simplify work on the clients, while user-facing api has a state an two levels of configuring a command (a.k.a. command settings and configuration), underlining logic of the core doesn't have a huge state with configuration and accepts only `settings` of each command at the moment it called. To avoid making clients to construct `settings` object out of command settings and global configuration we allow it to provide both and the core will do the merge. 
+Some command payloads have `settings` and `config` properties. This is done to simplify work on the clients.
 
-### Core.makeCore
-```ts
-interface MakeCorePayload {
-  name: string
-  version: string
-  cwd: string
-  protocol?: 'webdriver'
-  commands?: string[]
-}
-```
+The user-facing api has state and two levels of configuring a command (a.k.a. command settings and configuration). But the underlying logic of core doesn't have a large state with configuration (like it used to). It accepts only `settings` of each command at the moment it is called. To avoid making clients do more work (e.g., constructing `settings` objects out of command settings and global configuration) we instead allow them to provide both and the core will handle the merge automatically.
 
 ### Core.closeBatch
 ```ts

@@ -36,6 +36,7 @@
   "scripts": {
     "lint": "eslint . --ext .js",
     "build": "tsc",
+    "test:sanity": "#",
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
