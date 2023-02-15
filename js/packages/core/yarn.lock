@@ -64,6 +64,16 @@
     "@applitools/utils" "1.3.30"
     semver "7.3.7"
 
+"@applitools/driver@1.11.30":
+  version "1.11.30"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.30.tgz#3b08be61f939cd5ce96d473cba9b5458bd568921"
+  integrity sha512-sy59dOGGZ5NkNMHsfVgV5S42u/yzG4p8NW8vibMkNyxUs9EYlv1wPja33g1cVrVCoQvLk7CfVdsaI0+6hgrIZQ==
+  dependencies:
+    "@applitools/logger" "1.1.45"
+    "@applitools/snippets" "2.4.15"
+    "@applitools/utils" "1.3.30"
+    semver "7.3.7"
+
 "@applitools/ec-client@1.2.8":
   version "1.2.8"
   resolved "https://registry.npmjs.org/@applitools/ec-client/-/ec-client-1.2.8.tgz"
@@ -220,12 +230,12 @@
     "@applitools/driver" "1.11.29"
     "@applitools/utils" "1.3.30"
 
-"@applitools/spec-driver-webdriver@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.npmjs.org/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.7.tgz"
-  integrity sha512-9YaPEwcQGNAtV7TkkEzcXryxg58rkhXM6TX4EifyJjC7/XOxnY/jLgx1slkPnsqlCKGs9B4RcTqIb1+ctvQEJA==
+"@applitools/spec-driver-webdriver@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.8.tgz#f9d6b022a30ffd7c41b718b39b7acbe9ee71536c"
+  integrity sha512-gHpH6Aya7545SBxu3ijEw0z+jx2Kjwj6YNBxPtudjEh+Xt7gnJHHEXX1fwTnwcbesLsIroScYWnFk7X9w0sv1A==
   dependencies:
-    "@applitools/driver" "1.11.29"
+    "@applitools/driver" "1.11.30"
     "@applitools/utils" "1.3.30"
     proxy-agent "5.0.0"
 
