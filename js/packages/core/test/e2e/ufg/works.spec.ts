@@ -1,4 +1,4 @@
-import {testServer} from '@applitools/test-server'
+import {makeTestServer} from '@applitools/test-server'
 import {getTestInfo} from '@applitools/test-utils'
 import {makeLogger} from '@applitools/logger'
 import {makeDriver} from '@applitools/driver'
@@ -12,7 +12,7 @@ describe('works', () => {
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
-    server = await testServer()
+    server = await makeTestServer()
     baseUrl = `http://localhost:${server.port}`
   })
 

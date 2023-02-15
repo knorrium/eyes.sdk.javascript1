@@ -52,7 +52,7 @@ runs:
           git checkout -b $BRANCH
           git push -u origin $BRANCH
           echo "::notice::Publish branch - $BRANCH"
-          echo "::set-output name=branch::$BRANCH"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "::endgroup::"
         fi
 
@@ -80,14 +80,14 @@ runs:
         if [ ! -z "$TAG" ]
         then 
           echo "::notice::Publish tag - $TAG"
-          echo "::set-output name=tag::$TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
         fi
 
         CHANGELOG="$(npx -y -p @applitools/bongo bongo log --latest-changelog)"
         CHANGELOG="${CHANGELOG//'%'/'%25'}"
         CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
         CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-        echo "::set-output name=changelog::$CHANGELOG"
+        echo "changelog=$CHANGELOG" >> $GITHUB_OUTPUT
         echo "::endgroup::"
 
         echo "::group::Merge publish branch into ${{github.ref_name}}"

@@ -1,30 +1,36 @@
 import {spawn, type ChildProcess} from 'child_process'
-import {existsSync} from 'fs'
+import {existsSync, chmodSync} from 'fs'
 
 describe('bin works', () => {
-  let bin: string
-  if (process.platform === 'darwin') {
-    bin = './bin/core-macos'
-  } else if (process.platform === 'win32') {
-    bin = './bin/core-win'
-  } else if (process.platform === 'linux') {
-    if (process.arch === 'arm64') {
-      bin = './bin/core-linux-arm64'
+  let bin: string, server: ChildProcess
+
+  before(() => {
+    if (process.platform === 'darwin') {
+      bin = './bin/core-macos'
+    } else if (process.platform === 'win32') {
+      bin = './bin/core-win'
+    } else if (process.platform === 'linux') {
+      if (process.arch === 'arm64') {
+        bin = './bin/core-linux-arm64'
+      } else {
+        bin = `./bin/core-${existsSync('/etc/alpine-release') ? 'alpine' : 'linux'}`
+      }
     } else {
-      bin = `./bin/core-${existsSync('/etc/alpine-release') ? 'alpine' : 'linux'}`
+      throw new Error('Unknown platform')
     }
-  } else {
-    throw new Error('Unknown platform')
-  }
-  /* eslint-disable-next-line no-console */
-  console.log(bin)
-  let server: ChildProcess
+
+    if (process.platform !== 'win32') chmodSync(bin, 0o755)
+
+    /* eslint-disable-next-line no-console */
+    console.log(bin)
+  })
+
   afterEach(() => {
     server?.kill()
   })
 
   it('communicates universal ws port via stdout', async () => {
-    server = spawn(process.platform === 'win32' ? bin : `chmod +x ${bin} && ${bin} universal --shutdown stdin`, {
+    server = spawn(`${bin} universal --shutdown stdin`, {
       detached: true,
       shell: process.platform === 'win32' ? 'C:\\Program Files\\Git\\bin\\bash.exe' : '/bin/sh',
       stdio: ['ignore', 'pipe', 'inherit'],
@@ -46,7 +52,7 @@ describe('bin works', () => {
   })
 
   it('shuts universal with stdin', async () => {
-    server = spawn(process.platform === 'win32' ? bin : `chmod +x ${bin} && ${bin} universal --shutdown stdin`, {
+    server = spawn(`${bin} universal --shutdown stdin`, {
       detached: true,
       shell: process.platform === 'win32' ? 'C:\\Program Files\\Git\\bin\\bash.exe' : '/bin/sh',
       stdio: ['pipe', 'inherit', 'inherit'],

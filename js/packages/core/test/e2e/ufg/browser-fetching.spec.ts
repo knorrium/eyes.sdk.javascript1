@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/ufg/core'
-import {testServer} from '@applitools/test-server'
+import {makeTestServer} from '@applitools/test-server'
 import * as spec from '@applitools/spec-driver-puppeteer'
 import * as path from 'path'
 import assert from 'assert'
@@ -9,7 +9,7 @@ describe('browser-fetching', () => {
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
-    server = await testServer({
+    server = await makeTestServer({
       middlewares: [{path: path.resolve('./test/fixtures/middlewares/ua-middleware')}],
       userAgent: 'CustomUserAgent',
     })
@@ -17,7 +17,7 @@ describe('browser-fetching', () => {
   })
 
   after(async () => {
-    await server.close()
+    await server?.close()
     await destroyPage?.()
   })
 

@@ -46,7 +46,7 @@ runs:
         git checkout -b $BRANCH
         git push -u origin $BRANCH
         echo "::notice::Publish branch - $BRANCH"
-        echo "::set-output name=branch::$BRANCH"
+        echo "branch=$BRANCH" >> $GITHUB_OUTPUT
         echo "::endgroup::"
 
         echo "::group::Installing and updating dependencies"
@@ -56,11 +56,12 @@ runs:
         echo "::endgroup::"
 
         echo "::group::Version $PACKAGE_NAME"
-        yarn version "--${{inputs.version}}"
+        yarn version "--${{inputs.version}}" --no-commit-hooks
+        git push -u origin $BRANCH
         NEW_VERSION="$(cat ./package.json | jq -r .version)"
         echo "::notice::Bump version $CURRENT_VERSION -> $NEW_VERSION"
-        echo "::set-output name=version::$NEW_VERSION"
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         TAG="$(git describe --tags --abbrev=0)"
         echo "::notice::Publish tag $TAG"
-        echo "::set-output name=tag::$TAG"
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
         echo "::endgroup::"

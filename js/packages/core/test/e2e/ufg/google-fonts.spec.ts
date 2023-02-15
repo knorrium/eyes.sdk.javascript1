@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/ufg/core'
-import {testServer} from '@applitools/test-server'
+import {makeTestServer} from '@applitools/test-server'
 import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
@@ -8,7 +8,7 @@ describe('google fonts', () => {
 
   before(async () => {
     ;[page, destroyPage] = await spec.build({browser: 'chrome'})
-    server = await testServer()
+    server = await makeTestServer()
     baseUrl = `http://localhost:${server.port}`
   })
 

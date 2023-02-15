@@ -510,26 +510,29 @@ export function makeEyesRequests({
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
       return
     }
-    await report({settings, logger})
-    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-      name: 'close',
-      method: 'DELETE',
-      query: {
-        aborted: false,
-        updateBaseline: test.isNew ? settings?.updateBaselineIfNew : settings?.updateBaselineIfDifferent,
-      },
-      expected: 200,
-      logger,
-    }).then(async response => {
-      const result: Mutable<TestResult> = await response.json()
-      result.userTestId = test.userTestId
-      result.url = test.resultsUrl
-      result.isNew = test.isNew
-      // for backwards compatibility with outdated servers
-      result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
-      logger.log('Request "close" finished successfully with body', result)
-      return [result]
-    })
+    resultsPromise = report({settings, logger})
+      .then(() =>
+        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+          name: 'close',
+          method: 'DELETE',
+          query: {
+            aborted: false,
+            updateBaseline: test.isNew ? settings?.updateBaselineIfNew : settings?.updateBaselineIfDifferent,
+          },
+          expected: 200,
+          logger,
+        }),
+      )
+      .then(async response => {
+        const result: Mutable<TestResult> = await response.json()
+        result.userTestId = test.userTestId
+        result.url = test.resultsUrl
+        result.isNew = test.isNew
+        // for backwards compatibility with outdated servers
+        result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
+        logger.log('Request "close" finished successfully with body', result)
+        return [result]
+      })
   }
 
   async function abort({
@@ -544,21 +547,24 @@ export function makeEyesRequests({
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
       return
     }
-    await report({settings, logger})
-    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-      name: 'abort',
-      method: 'DELETE',
-      query: {
-        aborted: true,
-      },
-      expected: 200,
-      logger,
-    }).then(async response => {
-      const result: Mutable<TestResult> = await response.json()
-      result.userTestId = test.userTestId
-      logger.log('Request "abort" finished successfully with body', result)
-      return [result]
-    })
+    resultsPromise = report({settings, logger})
+      .then(() =>
+        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+          name: 'abort',
+          method: 'DELETE',
+          query: {
+            aborted: true,
+          },
+          expected: 200,
+          logger,
+        }),
+      )
+      .then(async response => {
+        const result: Mutable<TestResult> = await response.json()
+        result.userTestId = test.userTestId
+        logger.log('Request "abort" finished successfully with body', result)
+        return [result]
+      })
   }
 
   async function getResults({
