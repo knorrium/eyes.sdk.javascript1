@@ -36,7 +36,7 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
       ...(settings ? ['settings', settings] : []),
       eyes ? 'predefined eyes' : '',
     )
-    const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: {disableHelper: true}}))
+    const driver = target && (await makeDriver({spec, driver: target, logger}))
     if (driver && !eyes) {
       const currentContext = driver.currentContext
       settings.environment ??= {}

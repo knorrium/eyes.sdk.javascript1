@@ -8,7 +8,7 @@ describe('screenshoter androidx app', () => {
       type: 'android',
       app: 'androidx',
       logger,
-      customConfig: {disableHelper: true},
+      disableHelper: true,
     })
   })
 

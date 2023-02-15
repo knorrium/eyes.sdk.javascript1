@@ -19,7 +19,7 @@ type DriverOptions<T extends SpecType> = {
   spec: SpecDriver<T>
   driver: T['driver']
   logger?: Logger
-  customConfig?: {useCeilForViewportSize?: boolean; disableHelper?: boolean}
+  customConfig?: {useCeilForViewportSize?: boolean}
 }
 
 // eslint-disable-next-line
@@ -30,7 +30,7 @@ export class Driver<T extends SpecType> {
   private _currentContext: Context<T>
   private _driverInfo: DriverInfo = {}
   private _logger: Logger
-  private _customConfig: {useCeilForViewportSize?: boolean; disableHelper?: boolean} = {}
+  private _customConfig: {useCeilForViewportSize?: boolean} = {}
   private _helper?: HelperAndroid<T> | HelperIOS<T> | null
   private _previousWorld?: string
 
@@ -63,9 +63,6 @@ export class Driver<T extends SpecType> {
   }
   get mainContext(): Context<T> {
     return this._mainContext
-  }
-  get helper() {
-    return this._helper
   }
   get features() {
     return this._driverInfo?.features
@@ -185,15 +182,11 @@ export class Driver<T extends SpecType> {
       this._driverInfo.pixelRatio ??= browserInfo.pixelRatio
       this._driverInfo.viewportScale ??= browserInfo.viewportScale
 
-      if (browserInfo.userAgentData) {
-        this._driverInfo.isMobile ??= this._driverInfo.isMobile
-        this._driverInfo.isChromium ??= this._driverInfo.isChromium
-        if (this.isChromium) {
-          if (this.isWindows && Number.parseInt(this.browserVersion as string) >= 107) {
-            this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
-          } else if (this.isMac && Number.parseInt(this.browserVersion as string) >= 90) {
-            this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
-          }
+      if (browserInfo.userAgentData && this.isChromium) {
+        if (this.isWindows && Number.parseInt(this.browserVersion as string) >= 107) {
+          this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
+        } else if (this.isMac && Number.parseInt(this.browserVersion as string) >= 90) {
+          this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
         }
       }
 
@@ -327,20 +320,23 @@ export class Driver<T extends SpecType> {
           this._driverInfo.safeArea.height -= bottomOffset
         }
       }
-
-      // TODO: if user opts into NML, skip initializing the helpers
-      // init helper lib
-      if (!this._customConfig?.disableHelper) {
-        this._helper = this.isIOS
-          ? await HelperIOS.make({spec: this._spec, driver: this, logger: this._logger})
-          : await HelperAndroid.make({spec: this._spec, driver: this, logger: this._logger})
-      }
-      this._logger.log(`Helper set to ${this._helper?.name}`)
     }
 
     this._logger.log('Combined driver info', this._driverInfo)
 
     return this
+  }
+
+  async getHelper(): Promise<HelperAndroid<T> | HelperIOS<T> | null> {
+    if (this._helper === undefined) {
+      this._logger.log(`Extracting helper for ${this.isIOS ? 'ios' : 'android'}`)
+      this._helper = this.isIOS
+        ? await HelperIOS.make({spec: this._spec, driver: this, logger: this._logger})
+        : await HelperAndroid.make({spec: this._spec, driver: this, logger: this._logger})
+      this._logger.log(`Extracted helper of type ${this._helper?.name}`)
+    }
+    this._logger.log(`Returning helper for of type ${this._helper?.name ?? null}`)
+    return this._helper
   }
 
   // begin world
@@ -825,7 +821,7 @@ export async function makeDriver<T extends SpecType>(options: {
   driver: Driver<T> | T['driver']
   spec?: SpecDriver<T>
   logger?: Logger
-  customConfig?: {useCeilForViewportSize?: boolean; disableHelper?: boolean}
+  customConfig?: {useCeilForViewportSize?: boolean}
 }): Promise<Driver<T>> {
   const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
   await driver.init()

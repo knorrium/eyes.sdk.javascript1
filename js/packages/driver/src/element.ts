@@ -187,7 +187,8 @@ export class Element<T extends SpecType> {
   ): Promise<Region> {
     if (!this.driver.isNative) return null as never
     this._logger.log('Extracting content region of native element with selector', this.selector)
-    let contentRegion = await this.driver.helper?.getContentRegion(this, options)
+    const helper = await this.driver.getHelper()
+    let contentRegion = await helper?.getContentRegion(this, options)
     this._logger.log('Extracted content region using helper library', contentRegion)
 
     if (!contentRegion || !this.driver.isAndroid) {
@@ -332,8 +333,9 @@ export class Element<T extends SpecType> {
       if (this.driver.isWeb) this._state.touchPadding = 0
       else if (this.driver.isIOS) this._state.touchPadding = 10
       else if (this.driver.isAndroid) {
-        if (this.driver.helper?.name === 'android') {
-          this._state.touchPadding = await this.driver.helper.getTouchPadding()
+        const helper = await this.driver.getHelper()
+        if (helper?.name === 'android') {
+          this._state.touchPadding = await helper.getTouchPadding()
           this._logger.log('Touch padding extracted using helper library', this._state.touchPadding)
         }
         if (!this._state.touchPadding) {
@@ -422,10 +424,13 @@ export class Element<T extends SpecType> {
 
         if (!options?.force && utils.geometry.equals(offset, currentScrollOffset)) return currentScrollOffset
 
-        if (this.driver.helper?.name === 'android' && utils.geometry.equals(offset, {x: 0, y: 0})) {
-          await this.driver.helper.scrollToTop(this)
-          this._state.scrollOffset = offset
-          return this._state.scrollOffset
+        if (utils.geometry.equals(offset, {x: 0, y: 0}) && this.driver.isAndroid) {
+          const helper = await this.driver.getHelper()
+          if (helper?.name === 'android') {
+            await helper.scrollToTop(this)
+            this._state.scrollOffset = offset
+            return this._state.scrollOffset
+          }
         }
 
         const contentSize = await this.getContentSize()
