@@ -63,32 +63,7 @@ jobs:
         with:
           working-directory: ./js/packages/core
           version: ${{inputs.version || github.event.inputs.version}}
-  test:
-    needs: [prepare]
-    strategy:
-      matrix:
-        node-version: ['12', '14', '16', '18']
-    name: 'Test (node: ${{matrix.node-version}})'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{matrix.node-version}}
-          registry-url: https://registry.npmjs.org/
-          always-auth: true
-      - name: Download building artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: core-${{needs.prepare.outputs.version}}-x64
-          path: ./js/packages/core
-      - name: Run tests
-        uses: ./.github/actions/tests
-        with:
-          working-directory: ./js/packages/core
-  build-bin:
+  build:
     needs: [prepare]
     name: Build
     strategy:
@@ -113,7 +88,11 @@ jobs:
         shell: bash
         working-directory: ./js/packages/core
         run: |
-          echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && yarn deps && rm -rf $HOME/.npmrc
+          echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc
+          yarn --cwd ../../ install
+          yarn install
+          yarn deps
+          rm -rf $HOME/.npmrc
           yarn build:${{matrix.arch}}
       - name: Build arm64
         if: ${{matrix.arch == 'arm64'}}
@@ -123,28 +102,58 @@ jobs:
           arch: aarch64
           distro: ubuntu18.04
           dockerRunArgs: |
-            --volume "${PWD}/js/packages/core/:/src"
+            --volume "${PWD}/js/:/js"
           shell: /bin/sh
           install: |
             apt-get update -q -y
             apt-get install -q -y curl zip tar
-            curl -sL https://deb.nodesource.com/setup_14.x | bash -
+            curl -sL https://deb.nodesource.com/setup_18.x | bash -
             apt-get install -q -y nodejs
             npm install -g yarn
           run: |
-            cd /src
-            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn --cwd ../../ install && yarn install && yarn deps && rm -rf $HOME/.npmrc
+            cd /js/packages/core
+            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc
+            yarn --cwd ../../ install
+            yarn install
+            yarn deps
+            rm -rf $HOME/.npmrc
             yarn build:${{matrix.arch}}
       - name: Upload building artifacts
         uses: actions/upload-artifact@v3
         with:
           name: core-${{needs.prepare.outputs.version}}-${{matrix.arch}}
+          if-no-files-found: error
           retention-days: 2
           path:  |
             ./js/packages/core/dist
             ./js/packages/core/bin
+  test:
+    needs: [prepare, build]
+    strategy:
+      matrix:
+        node-version: ['12', '14', '16', '18']
+    name: 'Test (node: ${{matrix.node-version}})'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+          registry-url: https://registry.npmjs.org/
+          always-auth: true
+      - name: Download building artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: core-${{needs.prepare.outputs.version}}-x64
+          path: ./js/packages/core
+      - name: Run tests
+        uses: ./.github/actions/tests
+        with:
+          working-directory: ./js/packages/core
   test-bin:
-    needs: [prepare, build-bin]
+    needs: [prepare, build]
     strategy:
       fail-fast: false
       matrix:
@@ -154,10 +163,14 @@ jobs:
             container: node:lts-alpine # not just "alpine" because it is not possible to setup nodejs in a regular way
             shell: ash -eo pipefail {0}
             arch: x64
-          - name: ubuntu
+          - name: linux
             os: ubuntu-latest
             shell: bash
             arch: x64
+          - name: linux-arm64
+            os: ubuntu-latest
+            shell: bash
+            arch: arm64
           - name: windows
             os: windows-latest
             shell: bash
@@ -166,10 +179,6 @@ jobs:
             os: macos-latest
             shell: bash
             arch: x64
-          - name: linux-arm64
-            os: ubuntu-latest
-            shell: bash
-            arch: arm64
     name: 'Test bin (os: ${{matrix.name}})'
     runs-on: ${{matrix.os}}
     container: ${{matrix.container}}
@@ -194,11 +203,11 @@ jobs:
         if: ${{matrix.arch == 'x64'}}
         uses: ./.github/actions/tests
         with:
+          shell: ${{matrix.shell}}
           working-directory: ./js/packages/core
           build-type: none
           setup-type: none
           test-type: bin
-          shell: ${{matrix.shell}}
       - name: Run tests arm64
         if: ${{matrix.arch == 'arm64'}}
         uses: uraimo/run-on-arch-action@v2
@@ -217,7 +226,9 @@ jobs:
             npm install -g yarn
           run: |
             cd /src
-            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc && yarn install && rm -rf $HOME/.npmrc
+            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc
+            yarn install
+            rm -rf $HOME/.npmrc
             yarn test:bin
   publish:
     needs: [prepare, test, test-bin]
@@ -248,7 +259,7 @@ jobs:
       - name: Create archives
         shell: bash
         working-directory: ./js/packages/core
-        run: yarn build:zip && yarn build:tgz
+        run: yarn build:bin:zip && yarn build:bin:tgz
       - name: Publish to NPM
         id: publish
         uses: ./.github/actions/publish
