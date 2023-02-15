@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.31.0 - 2023/2/15
+
+### Features
+- Crop screenshot image base on account info
+- Add the option to send external http headers to Puppeteer Page object
+### Bug fixes
+
 ## 3.30.2 - 2023/1/23
 
 ### Features
