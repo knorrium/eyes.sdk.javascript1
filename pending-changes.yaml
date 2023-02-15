@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Avoid helper initialization on native devices before it required
   bug-fix:
     - 
 "@applitools/eyes-selenium":
