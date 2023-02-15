@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.1 - 2023/2/15
+
+### Features
+- Avoid helper initialization on native devices before it required
+### Bug fixes
+
 ## 2.3.0 - 2023/2/15
 
 ### Features
