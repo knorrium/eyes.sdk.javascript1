@@ -231,7 +231,7 @@ jobs:
             rm -rf $HOME/.npmrc
             yarn test:bin
   publish:
-    needs: [prepare, build]
+    needs: [prepare, test, test-bin]
     name: Publish
     runs-on: ubuntu-latest
     steps:
