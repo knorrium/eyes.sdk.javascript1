@@ -16,7 +16,7 @@ describe('socket', () => {
     server.command('getData', () => {
       return {data: true}
     })
-    const data = await client.request('getData')
+    const data = await client.request('getData', {data: true})
 
     assert.deepStrictEqual(data, {data: true})
   })
