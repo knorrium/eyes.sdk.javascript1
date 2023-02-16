@@ -224,6 +224,8 @@ jobs:
         req,
         screenshoter,
         snippets,
+        socket,
+        spec-webdriver,
         ufg-client,
         utils,
         spec-puppeteer,
@@ -243,30 +245,6 @@ jobs:
         with:
           workflow: publish-core.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core.version}}"}'
-  core-legacy:
-    needs:
-      [
-        setup,
-        core,
-        driver,
-        ec-client,
-        utils,
-        snippets,
-        spec-selenium,
-        test-server,
-        test-utils
-      ]
-    if: ${{fromJSON(needs.setup.outputs.packages).core-legacy && !failure() && !cancelled()}}
-    name: core-legacy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
-      - name: Run remote workflow
-        uses: ./.github/actions/run
-        with:
-          workflow: publish-core-legacy.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core-legacy.version}}"}'
   ufg-client:
     needs: [ setup, logger, req, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).ufg-client && !failure() && !cancelled()}}
@@ -281,7 +259,7 @@ jobs:
           workflow: publish-ufg-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.version}}"}'
   ec-client:
-    needs: [ setup, logger, req, socket, test-server, utils ]
+    needs: [ setup, logger, req, socket, utils, test-server ]
     if: ${{fromJSON(needs.setup.outputs.packages).ec-client && !failure() && !cancelled()}}
     name: ec-client
     runs-on: ubuntu-latest
@@ -300,7 +278,7 @@ jobs:
         logger,
         req,
         utils,
-        spec-selenium,
+        spec-webdriverio,
         test-server,
         test-utils
       ]
@@ -315,34 +293,8 @@ jobs:
         with:
           workflow: publish-nml-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nml-client.version}}"}'
-  universal:
-    needs:
-      [
-        setup,
-        core,
-        driver,
-        ec-client,
-        core-legacy,
-        logger,
-        utils,
-        api,
-        spec-selenium,
-        test-server,
-        test-utils
-      ]
-    if: ${{fromJSON(needs.setup.outputs.packages).universal && !failure() && !cancelled()}}
-    name: universal
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
-      - name: Run remote workflow
-        uses: ./.github/actions/run
-        with:
-          workflow: publish-universal.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).universal.version}}"}'
   api:
-    needs: [ setup, core, logger, utils ]
+    needs: [ setup, core, logger, utils, req ]
     if: ${{fromJSON(needs.setup.outputs.packages).api && !failure() && !cancelled()}}
     name: api
     runs-on: ubuntu-latest
@@ -383,7 +335,7 @@ jobs:
           workflow: publish-spec-puppeteer.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-puppeteer.version}}"}'
   spec-webdriver:
-    needs: [ setup, driver, utils, test-utils ]
+    needs: [ setup, driver, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-webdriver && !failure() && !cancelled()}}
     name: spec-webdriver
     runs-on: ubuntu-latest
@@ -475,19 +427,6 @@ jobs:
         with:
           workflow: publish-webdriverio.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).webdriverio.version}}"}'
-  webdriverio-service:
-    needs: [ setup, webdriverio, test-utils ]
-    if: ${{fromJSON(needs.setup.outputs.packages).webdriverio-service && !failure() && !cancelled()}}
-    name: webdriverio-service
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
-      - name: Run remote workflow
-        uses: ./.github/actions/run
-        with:
-          workflow: publish-webdriverio-service.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).webdriverio-service.version}}"}'
   selenium:
     needs: [ setup, core, api, spec-selenium, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).selenium && !failure() && !cancelled()}}
@@ -501,19 +440,6 @@ jobs:
         with:
           workflow: publish-selenium.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).selenium.version}}"}'
-  protractor:
-    needs: [ setup, api, core-legacy, utils, test-utils ]
-    if: ${{fromJSON(needs.setup.outputs.packages).protractor && !failure() && !cancelled()}}
-    name: protractor
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check-out repository
-        uses: actions/checkout@v3
-      - name: Run remote workflow
-        uses: ./.github/actions/run
-        with:
-          workflow: publish-protractor.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).protractor.version}}"}'
   nightwatch:
     needs:
       [
@@ -537,15 +463,7 @@ jobs:
           workflow: publish-nightwatch.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nightwatch.version}}"}'
   testcafe:
-    needs:
-      [
-        setup,
-        api,
-        core-legacy,
-        utils,
-        test-server,
-        test-utils
-      ]
+    needs: [ setup, core, api, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).testcafe && !failure() && !cancelled()}}
     name: testcafe
     runs-on: ubuntu-latest
@@ -563,11 +481,10 @@ jobs:
         setup,
         core,
         api,
-        universal,
         logger,
+        utils,
         test-server,
-        test-utils,
-        utils
+        test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).cypress && !failure() && !cancelled()}}
     name: cypress
@@ -584,7 +501,10 @@ jobs:
     needs:
       [
         setup,
-        core-legacy,
+        core,
+        driver,
+        logger,
+        screenshoter,
         utils,
         spec-playwright,
         test-utils
