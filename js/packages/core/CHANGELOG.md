@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.2 - 2023/2/16
+
+### Features
+- Added arm64 binary
+### Bug fixes
+
 ## 2.3.1 - 2023/2/15
 
 ### Features
