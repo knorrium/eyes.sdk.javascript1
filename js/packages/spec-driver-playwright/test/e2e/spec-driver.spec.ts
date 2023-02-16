@@ -416,7 +416,7 @@ describe('spec driver', async () => {
       value: 'world',
       domain: 'google.com',
       path: '/',
-      expiry: 4025208067,
+      expiry: Math.floor((Date.now() + 60000) / 1000),
       sameSite: 'Lax',
       httpOnly: true,
       secure: true,
