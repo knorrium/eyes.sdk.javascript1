@@ -104,6 +104,7 @@ jobs:
           retention-days: 2
           path:  |
             ./js/packages/core/dist
+            ./js/packages/core/types
             ./js/packages/core/bin
   test:
     needs: [prepare, build]
