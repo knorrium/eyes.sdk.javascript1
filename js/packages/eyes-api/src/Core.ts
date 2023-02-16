@@ -1,4 +1,5 @@
 import type {
+  SpecType,
   Core,
   EyesManager,
   Eyes,
@@ -10,42 +11,22 @@ import type {
   TestResult,
 } from '@applitools/core'
 
-export type CoreSpec<TDriver = unknown, TElement = unknown, TSelector = unknown> = Core<
-  TDriver,
-  unknown,
-  TElement,
-  TSelector
->
+export {SpecType}
 
-export type CoreEyes<TDriver = unknown, TElement = unknown, TSelector = unknown> = Eyes<
-  TDriver,
-  unknown,
-  TElement,
-  TSelector,
-  'classic' | 'ufg'
->
+export type CoreSpec<TSpec extends SpecType = SpecType> = Core<TSpec, 'classic' | 'ufg'>
 
-export type CoreEyesManager<TDriver = unknown, TElement = unknown, TSelector = unknown> = EyesManager<
-  TDriver,
-  unknown,
-  TElement,
-  TSelector,
-  'classic' | 'ufg'
->
+export type CoreEyes<TSpec extends SpecType = SpecType> = Eyes<TSpec, 'classic' | 'ufg'>
+
+export type CoreEyesManager<TSpec extends SpecType = SpecType> = EyesManager<TSpec, 'classic' | 'ufg'>
 
 export type CoreTargetImage = ImageTarget
 
-export type CoreConfig<TElement = unknown, TSelector = unknown> = Config<TElement, TSelector, 'classic'> &
-  Config<TElement, TSelector, 'ufg'>
+export type CoreConfig<TSpec extends SpecType = SpecType> = Config<TSpec, 'classic'> & Config<TSpec, 'ufg'>
 
-export type CoreCheckSettingsAutomation<TElement = unknown, TSelector = unknown> = CheckSettings<
-  TElement,
-  TSelector,
-  'classic'
-> &
-  CheckSettings<TElement, TSelector, 'ufg'>
+export type CoreCheckSettingsAutomation<TSpec extends SpecType = SpecType> = CheckSettings<TSpec, 'classic'> &
+  CheckSettings<TSpec, 'ufg'>
 
-export type CoreCheckSettingsImage = CheckSettings<never, never, 'classic'>
+export type CoreCheckSettingsImage = CheckSettings<never, 'classic'>
 
 export type CoreTestResultSummary = TestResultSummary<'classic' | 'ufg'>
 

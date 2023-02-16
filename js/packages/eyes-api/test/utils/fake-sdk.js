@@ -37,7 +37,7 @@ function makeSDK(settings = {}) {
 
     history.push({command: 'makeManager', data: config})
 
-    return {openEyes, closeManager}
+    return {openEyes, getResults}
 
     function openEyes({target, config, on}) {
       assert.ok(isDriver(target), '"driver" is not a driver')
@@ -58,6 +58,7 @@ function makeSDK(settings = {}) {
         locateText,
         close,
         abort,
+        getResults,
       }
 
       function check({settings = {}, config = {}} = {}) {
@@ -69,53 +70,59 @@ function makeSDK(settings = {}) {
         return [{asExpected}]
       }
 
-      function extractText({regions, config}) {
-        history.push({command: 'extractText', data: {regions, config}})
-        return []
-      }
-
-      function locateText({settings, config}) {
-        history.push({command: 'locateText', data: {settings, config}})
-        return {}
-      }
-
-      function close({settings = {}} = {}) {
+      function close() {
         const isDifferent = test.steps.some(step => step.settings.region && step.settings.region.includes('diff'))
         const isNew = test.steps.some(step => step.settings.region && step.settings.region.includes('new'))
-        const result = {
-          id: 'test-id',
-          name: 'test',
-          batchId: 'batch-id',
-          batchName: 'batch-name',
-          duration: 0,
-          startedAt: new Date(),
-          appName: 'app',
-          status: isDifferent ? 'Unresolved' : 'Passed',
-          isNew,
-          isDifferent,
-          url: 'https://eyes.applitools.com',
-        }
+        test.results = [
+          {
+            id: 'test-id',
+            name: 'test',
+            batchId: 'batch-id',
+            batchName: 'batch-name',
+            duration: 0,
+            startedAt: new Date(),
+            appName: 'app',
+            status: isDifferent ? 'Unresolved' : 'Passed',
+            isNew,
+            isDifferent,
+            url: 'https://eyes.applitools.com',
+          },
+        ]
 
-        on('testEnded', {sessionId: 'session-id', result})
-
-        if (settings.throwErr && result.status === 'Unresolved') {
-          const error = new Error('error')
-          error.reason = 'test different'
-          error.info = {result}
-          throw error
-        }
-
-        return [result]
+        on('testEnded', {sessionId: 'session-id', result: test.results[0]})
       }
 
       function abort() {
         return {}
       }
+
+      function getResults({settings = {}} = {}) {
+        test.results.forEach(result => {
+          if (settings.throwErr && result.status === 'Unresolved') {
+            const error = new Error('error')
+            error.reason = 'test different'
+            error.info = {result}
+            throw error
+          }
+        })
+
+        return test.results
+      }
     }
 
-    function closeManager() {
+    function getResults() {
       return {results: []}
     }
+  }
+
+  function extractText({regions, config}) {
+    history.push({command: 'extractText', data: {regions, config}})
+    return []
+  }
+
+  function locateText({settings, config}) {
+    history.push({command: 'locateText', data: {settings, config}})
+    return {}
   }
 
   function locate({settings, config}) {

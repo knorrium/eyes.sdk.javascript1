@@ -1,5 +1,5 @@
 import * as utils from '@applitools/utils'
-import {CoreCheckSettingsAutomation, CoreCheckSettingsImage} from '../Core'
+import {CoreCheckSettingsAutomation, CoreCheckSettingsImage, SpecType} from '../Core'
 import {EyesSelector} from './EyesSelector'
 import {Image} from './Image'
 import {AccessibilityRegionType, AccessibilityRegionTypeEnum} from '../enums/AccessibilityRegionType'
@@ -8,13 +8,13 @@ import {Region, LegacyRegion} from './Region'
 import {Location} from './Location'
 import {LazyLoadOptions} from './LazyLoadOptions'
 
-type RegionReference<TElement, TSelector> = Region | ElementReference<TElement, TSelector>
-type ElementReference<TElement, TSelector> = TElement | SelectorReference<TSelector>
-type SelectorReference<TSelector> = EyesSelector<TSelector>
-type FrameReference<TElement, TSelector> = ElementReference<TElement, TSelector> | string | number
-type ContextReference<TElement, TSelector> = {
-  frame: FrameReference<TElement, TSelector>
-  scrollRootElement?: ElementReference<TElement, TSelector>
+type RegionReference<TSpec extends SpecType> = Region | ElementReference<TSpec>
+type ElementReference<TSpec extends SpecType> = TSpec['element'] | SelectorReference<TSpec>
+type SelectorReference<TSpec extends SpecType> = EyesSelector<TSpec['selector']>
+type FrameReference<TSpec extends SpecType> = ElementReference<TSpec> | string | number
+type ContextReference<TSpec extends SpecType> = {
+  frame: FrameReference<TSpec>
+  scrollRootElement?: ElementReference<TSpec>
 }
 
 type CodedRegion<TRegion = never> = {
@@ -58,10 +58,10 @@ export type CheckSettingsBase<TRegion = never> = {
 
 export type CheckSettingsImage = CheckSettingsBase
 
-export type CheckSettingsAutomation<TElement, TSelector> = CheckSettingsBase<RegionReference<TElement, TSelector>> & {
-  frames?: (ContextReference<TElement, TSelector> | FrameReference<TElement, TSelector>)[]
+export type CheckSettingsAutomation<TSpec extends SpecType> = CheckSettingsBase<RegionReference<TSpec>> & {
+  frames?: (ContextReference<TSpec> | FrameReference<TSpec>)[]
   webview?: boolean | string
-  scrollRootElement?: ElementReference<TElement, TSelector>
+  scrollRootElement?: ElementReference<TSpec>
   fully?: boolean
   disableBrowserFetching?: boolean
   layoutBreakpoints?: boolean | number[]
@@ -410,23 +410,23 @@ export class CheckSettingsImageFluent extends CheckSettingsBaseFluent {
   }
 }
 
-type CheckSettingsAutomationSpec<TElement = unknown, TSelector = unknown> = {
-  isElement?(value: any): value is TElement
-  isSelector?(value: any): value is TSelector
+type CheckSettingsAutomationSpec<TSpec extends SpecType = SpecType> = {
+  isElement?(value: any): value is TSpec['element']
+  isSelector?(value: any): value is TSpec['selector']
 }
 
-export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unknown> extends CheckSettingsBaseFluent<
-  RegionReference<TElement, TSelector>
+export class CheckSettingsAutomationFluent<TSpec extends SpecType = SpecType> extends CheckSettingsBaseFluent<
+  RegionReference<TSpec>
 > {
-  protected _settings: CheckSettingsAutomation<TElement, TSelector>
-  protected static readonly _spec: CheckSettingsAutomationSpec<any, any>
-  protected _spec: CheckSettingsAutomationSpec<TElement, TSelector>
+  protected _settings: CheckSettingsAutomation<TSpec>
+  protected static readonly _spec: CheckSettingsAutomationSpec<SpecType>
+  protected _spec: CheckSettingsAutomationSpec<TSpec>
 
-  protected _isElementReference(value: any): value is ElementReference<TSelector, TElement> {
+  protected _isElementReference(value: any): value is ElementReference<TSpec> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
     return !!spec.isElement?.(value) || this._isSelectorReference(value)
   }
-  protected _isSelectorReference(selector: any): selector is SelectorReference<TSelector> {
+  protected _isSelectorReference(selector: any): selector is SelectorReference<TSpec> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
     return (
       !!spec.isSelector?.(selector) ||
@@ -436,20 +436,20 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
         (utils.types.isString(selector.selector) || !!spec.isSelector?.(selector.selector)))
     )
   }
-  protected _isFrameReference(value: any): value is FrameReference<TSelector, TElement> {
+  protected _isFrameReference(value: any): value is FrameReference<TSpec> {
     return utils.types.isNumber(value) || utils.types.isString(value) || this._isElementReference(value)
   }
 
   constructor(
-    settings?: CheckSettingsAutomation<TElement, TSelector> | CheckSettingsAutomationFluent<TElement, TSelector>,
-    spec?: CheckSettingsAutomationSpec<TElement, TSelector>,
+    settings?: CheckSettingsAutomation<TSpec> | CheckSettingsAutomationFluent<TSpec>,
+    spec?: CheckSettingsAutomationSpec<TSpec>,
   ) {
     super(settings)
     this._spec = spec!
     this._settings ??= {}
   }
 
-  region(region: RegionReference<TElement, TSelector>) {
+  region(region: RegionReference<TSpec>) {
     if (
       this._isSelectorReference(region) &&
       this._isSelectorReference(this._settings.region) &&
@@ -463,7 +463,7 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
     return super.region(region)
   }
 
-  shadow(selector: SelectorReference<TSelector>): this {
+  shadow(selector: SelectorReference<TSpec>): this {
     selector = utils.types.has(selector, 'selector') ? selector : {selector}
 
     if (!this._settings.region) {
@@ -482,13 +482,13 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
     return this
   }
 
-  frame(context: ContextReference<TElement, TSelector>): this
-  frame(frame: FrameReference<TElement, TSelector>, scrollRootElement?: ElementReference<TElement, TSelector>): this
+  frame(context: ContextReference<TSpec>): this
+  frame(frame: FrameReference<TSpec>, scrollRootElement?: ElementReference<TSpec>): this
   frame(
-    contextOrFrame: ContextReference<TElement, TSelector> | FrameReference<TElement, TSelector>,
-    scrollRootElement?: ElementReference<TElement, TSelector>,
+    contextOrFrame: ContextReference<TSpec> | FrameReference<TSpec>,
+    scrollRootElement?: ElementReference<TSpec>,
   ): this {
-    const context: ContextReference<TElement, TSelector> =
+    const context: ContextReference<TSpec> =
       this._isFrameReference(contextOrFrame) || this._isSelectorReference(contextOrFrame)
         ? {frame: contextOrFrame, scrollRootElement}
         : contextOrFrame
@@ -502,9 +502,9 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
     return this
   }
 
-  scrollRootElement(scrollRootElement: ElementReference<TElement, TSelector>): this {
+  scrollRootElement(scrollRootElement: ElementReference<TSpec>): this {
     if (this._settings.frames && this._settings.frames.length > 0) {
-      const context = this._settings.frames[this._settings.frames.length - 1] as ContextReference<TElement, TSelector>
+      const context = this._settings.frames[this._settings.frames.length - 1] as ContextReference<TSpec>
       context.scrollRootElement = scrollRootElement
     }
     this._settings.scrollRootElement = scrollRootElement
@@ -595,7 +595,7 @@ export class CheckSettingsAutomationFluent<TElement = unknown, TSelector = unkno
   }
 
   /** @internal */
-  toJSON(): {target: undefined; settings: CoreCheckSettingsAutomation<TElement, TSelector>} {
+  toJSON(): {target: undefined; settings: CoreCheckSettingsAutomation<TSpec>} {
     return {
       target: undefined,
       settings: utils.general.removeUndefinedProps({
@@ -652,23 +652,18 @@ export type TargetImage = {
   url(imageUrl: URL | string): CheckSettingsImageFluent
 }
 
-export type TargetAutomation<TElement, TSelector> = {
-  window(): CheckSettingsAutomationFluent<TElement, TSelector>
-  region(
-    region: RegionReference<TElement, TSelector> | LegacyRegion,
-  ): CheckSettingsAutomationFluent<TElement, TSelector>
-  frame(context: ContextReference<TElement, TSelector>): CheckSettingsAutomationFluent<TElement, TSelector>
-  frame(
-    frame: FrameReference<TElement, TSelector>,
-    scrollRootElement?: ElementReference<TElement, TSelector>,
-  ): CheckSettingsAutomationFluent<TElement, TSelector>
-  shadow(selector: SelectorReference<TSelector>): CheckSettingsAutomationFluent<TSelector>
-  webview(webview?: string | boolean): CheckSettingsAutomationFluent<TElement, TSelector>
+export type TargetAutomation<TSpec extends SpecType = SpecType> = {
+  window(): CheckSettingsAutomationFluent<TSpec>
+  region(region: RegionReference<TSpec> | LegacyRegion): CheckSettingsAutomationFluent<TSpec>
+  frame(context: ContextReference<TSpec>): CheckSettingsAutomationFluent<TSpec>
+  frame(frame: FrameReference<TSpec>, scrollRootElement?: ElementReference<TSpec>): CheckSettingsAutomationFluent<TSpec>
+  shadow(selector: SelectorReference<TSpec>): CheckSettingsAutomationFluent<TSpec>
+  webview(webview?: string | boolean): CheckSettingsAutomationFluent<TSpec>
 }
 
-export type Target<TElement, TSelector> = TargetImage & TargetAutomation<TElement, TSelector>
+export type Target<TSpec extends SpecType = SpecType> = TargetImage & TargetAutomation<TSpec>
 
-export const Target: Target<unknown, unknown> & {spec?: CheckSettingsAutomationSpec} = {
+export const Target: Target<SpecType> & {spec?: CheckSettingsAutomationSpec} = {
   spec: null as never,
 
   image(image: Buffer | URL | string): CheckSettingsImageFluent {

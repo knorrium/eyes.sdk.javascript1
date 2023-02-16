@@ -1,8 +1,9 @@
+import type {SpecType} from '@applitools/core'
 import {EyesSelector} from './EyesSelector'
 import {Region} from './Region'
 
-export type OCRRegion<TElement = unknown, TSelector = unknown> = {
-  target: Region | TElement | EyesSelector<TSelector>
+export type OCRRegion<TSpec extends SpecType = SpecType> = {
+  target: Region | TSpec['element'] | EyesSelector<TSpec['selector']>
   hint?: string
   minMatch?: number
   language?: string

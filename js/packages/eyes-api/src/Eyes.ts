@@ -1,5 +1,5 @@
 import * as utils from '@applitools/utils'
-import {CoreSpec, CoreEyes, CoreTargetImage} from './Core'
+import {SpecType, CoreSpec, CoreEyes, CoreTargetImage} from './Core'
 import {EyesSelector} from './input/EyesSelector'
 import {SessionType, SessionTypeEnum} from './enums/SessionType'
 import {StitchMode, StitchModeEnum} from './enums/StitchMode'
@@ -41,22 +41,22 @@ import {SessionEventHandler, SessionEventHandlers} from './SessionEventHandlers'
 import {EyesRunner, ClassicRunner} from './Runners'
 import {Logger} from './Logger'
 
-export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
+export class Eyes<TSpec extends SpecType = SpecType> {
   protected static readonly _spec: CoreSpec
-  protected get _spec(): CoreSpec<TDriver, TElement, TSelector> {
-    return (this.constructor as typeof Eyes)._spec as CoreSpec<TDriver, TElement, TSelector>
+  protected get _spec(): CoreSpec<TSpec> {
+    return (this.constructor as typeof Eyes)._spec as CoreSpec<TSpec>
   }
 
   private _logger: Logger
-  private _config: ConfigurationData<TElement, TSelector>
+  private _config: ConfigurationData<TSpec>
   private _state: {appName?: string} = {}
   private _runner: EyesRunner
-  private _driver?: TDriver
-  private _eyes?: CoreEyes<TDriver, TElement, TSelector>
+  private _driver?: TSpec['driver']
+  private _eyes?: CoreEyes<TSpec>
   private _events: Map<string, Set<(...args: any[]) => any>> = new Map()
   private _handlers: SessionEventHandlers = new SessionEventHandlers()
 
-  static async getExecutionCloudUrl(config?: Configuration<unknown, unknown>): Promise<string> {
+  static async getExecutionCloudUrl(config?: Configuration): Promise<string> {
     const client = await this._spec.makeECClient({
       settings: {
         proxy: config?.proxy,
@@ -70,12 +70,9 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     await this._spec.setViewportSize?.({target: driver, size})
   }
 
-  constructor(runner?: EyesRunner, config?: Configuration<TElement, TSelector>)
-  constructor(config?: Configuration<TElement, TSelector>)
-  constructor(
-    runnerOrConfig?: EyesRunner | Configuration<TElement, TSelector>,
-    config?: Configuration<TElement, TSelector>,
-  ) {
+  constructor(runner?: EyesRunner, config?: Configuration<TSpec>)
+  constructor(config?: Configuration<TSpec>)
+  constructor(runnerOrConfig?: EyesRunner | Configuration<TSpec>, config?: Configuration<TSpec>) {
     if (utils.types.instanceOf(runnerOrConfig, EyesRunner)) {
       this._runner = runnerOrConfig
       this._config = new ConfigurationData(config, this._spec)
@@ -103,23 +100,23 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     return this.runner
   }
 
-  get driver(): TDriver {
+  get driver(): TSpec['driver'] {
     return this._driver!
   }
-  getDriver(): TDriver {
+  getDriver(): TSpec['driver'] {
     return this.driver
   }
 
-  get configuration(): Configuration<TElement, TSelector> {
+  get configuration(): Configuration<TSpec> {
     return this._config
   }
-  set configuration(config: Configuration<TElement, TSelector>) {
+  set configuration(config: Configuration<TSpec>) {
     this._config = new ConfigurationData(config, this._spec)
   }
-  getConfiguration(): ConfigurationData<TElement, TSelector> {
+  getConfiguration(): ConfigurationData<TSpec> {
     return this._config
   }
-  setConfiguration(config: Configuration<TElement, TSelector>) {
+  setConfiguration(config: Configuration<TSpec>) {
     this._config = new ConfigurationData(config, this._spec)
   }
 
@@ -182,15 +179,15 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     return (this.constructor as typeof Eyes).getExecutionCloudUrl(this._config)
   }
 
-  async open(driver: TDriver, config?: Configuration<TElement, TSelector>): Promise<TDriver>
+  async open(driver: TSpec['driver'], config?: Configuration<TSpec>): Promise<TSpec['driver']>
   async open(
-    driver: TDriver,
+    driver: TSpec['driver'],
     appName?: string,
     testName?: string,
     viewportSize?: RectangleSize,
     sessionType?: SessionType,
-  ): Promise<TDriver>
-  async open(config?: Configuration<TElement, TSelector>): Promise<void>
+  ): Promise<TSpec['driver']>
+  async open(config?: Configuration<TSpec>): Promise<void>
   async open(
     appName?: string,
     testName?: string,
@@ -198,19 +195,19 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     sessionType?: SessionType,
   ): Promise<void>
   async open(
-    driverOrConfigOrAppName?: TDriver | Configuration<TElement, TSelector> | string,
-    configOrAppNameOrTestName?: Configuration<TElement, TSelector> | string,
+    driverOrConfigOrAppName?: TSpec['driver'] | Configuration<TSpec> | string,
+    configOrAppNameOrTestName?: Configuration<TSpec> | string,
     testNameOrViewportSize?: string | RectangleSize,
     viewportSizeOrSessionType?: RectangleSize | SessionType,
     sessionType?: SessionType,
-  ): Promise<TDriver | void> {
+  ): Promise<TSpec['driver'] | void> {
     if (this._spec.isDriver?.(driverOrConfigOrAppName)) {
       this._driver = driverOrConfigOrAppName
     } else {
       sessionType = viewportSizeOrSessionType as SessionType
       viewportSizeOrSessionType = testNameOrViewportSize as RectangleSize
       testNameOrViewportSize = configOrAppNameOrTestName as string
-      configOrAppNameOrTestName = driverOrConfigOrAppName as Configuration<TElement, TSelector> | string
+      configOrAppNameOrTestName = driverOrConfigOrAppName as Configuration<TSpec> | string
     }
 
     if (this._config.isDisabled) return this._driver
@@ -267,13 +264,13 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
   async check(
     name: string,
-    checkSettings: CheckSettingsImageFluent | CheckSettingsAutomationFluent<TElement, TSelector>,
+    checkSettings: CheckSettingsImageFluent | CheckSettingsAutomationFluent<TSpec>,
   ): Promise<MatchResultData>
   async check(target: Image, checkSettings?: CheckSettingsImage): Promise<MatchResultData>
-  async check(checkSettings?: CheckSettingsAutomation<TElement, TSelector>): Promise<MatchResultData>
+  async check(checkSettings?: CheckSettingsAutomation<TSpec>): Promise<MatchResultData>
   async check(
-    checkSettingsOrTargetOrName?: CheckSettingsAutomation<TElement, TSelector> | Image | string,
-    checkSettings?: CheckSettingsImage | CheckSettingsImageFluent | CheckSettingsAutomationFluent<TElement, TSelector>,
+    checkSettingsOrTargetOrName?: CheckSettingsAutomation<TSpec> | Image | string,
+    checkSettings?: CheckSettingsImage | CheckSettingsImageFluent | CheckSettingsAutomationFluent<TSpec>,
   ): Promise<MatchResultData> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
@@ -281,10 +278,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     let serialized: {target?: Image; settings: any}
     if (utils.types.isString(checkSettingsOrTargetOrName)) {
       serialized = this._driver
-        ? new CheckSettingsAutomationFluent(
-            checkSettings as CheckSettingsAutomationFluent<TElement, TSelector>,
-            this._spec,
-          )
+        ? new CheckSettingsAutomationFluent(checkSettings as CheckSettingsAutomationFluent<TSpec>, this._spec)
             .name(checkSettingsOrTargetOrName)
             .toJSON()
         : new CheckSettingsImageFluent(checkSettings as CheckSettingsImageFluent)
@@ -297,7 +291,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
       ).toJSON()
     } else {
       serialized = new CheckSettingsAutomationFluent(
-        checkSettingsOrTargetOrName as CheckSettingsAutomation<TElement, TSelector>,
+        checkSettingsOrTargetOrName as CheckSettingsAutomation<TSpec>,
         this._spec,
       ).toJSON()
     }
@@ -321,15 +315,19 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     return this.check({name, timeout, fully})
   }
   /** @deprecated */
-  async checkFrame(element: TElement | EyesSelector<TSelector> | string | number, timeout?: number, name?: string) {
+  async checkFrame(
+    element: TSpec['element'] | EyesSelector<TSpec['selector']> | string | number,
+    timeout?: number,
+    name?: string,
+  ) {
     return this.check({name, frames: [element], timeout, fully: true})
   }
   /** @deprecated */
-  async checkElement(element: TElement, timeout?: number, name?: string) {
+  async checkElement(element: TSpec['element'], timeout?: number, name?: string) {
     return this.check({name, region: element, timeout, fully: true})
   }
   /** @deprecated */
-  async checkElementBy(selector: EyesSelector<TSelector>, timeout?: number, name?: string) {
+  async checkElementBy(selector: EyesSelector<TSpec['selector']>, timeout?: number, name?: string) {
     return this.check({name, region: selector, timeout, fully: true})
   }
   /** @deprecated */
@@ -355,17 +353,17 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
         )
   }
   /** @deprecated */
-  async checkRegionByElement(element: TElement, name?: string, timeout?: number) {
+  async checkRegionByElement(element: TSpec['element'], name?: string, timeout?: number) {
     return this.check({name, region: element, timeout})
   }
   /** @deprecated */
-  async checkRegionBy(selector: EyesSelector<TSelector>, name?: string, timeout?: number, fully = false) {
+  async checkRegionBy(selector: EyesSelector<TSpec['selector']>, name?: string, timeout?: number, fully = false) {
     return this.check({name, region: selector, timeout, fully})
   }
   /** @deprecated */
   async checkRegionInFrame(
-    frame: TElement | EyesSelector<TSelector> | string | number,
-    selector: EyesSelector<TSelector>,
+    frame: TSpec['element'] | EyesSelector<TSpec['selector']> | string | number,
+    selector: EyesSelector<TSpec['selector']>,
     timeout?: number,
     name?: string,
     fully = false,
@@ -418,21 +416,16 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
     const config = this._config.toJSON()
 
-    return this._eyes!.locateText!({target, settings: settings!, config})
+    return this._spec.locateText({target, settings: settings!, config})
   }
 
-  async extractText(target: CoreTargetImage, settings: OCRRegion<TElement, TSelector>[]): Promise<string[]>
+  async extractText(target: CoreTargetImage, settings: OCRRegion<TSpec>[]): Promise<string[]>
   /** @deprecated */
+  async extractText(settingsWithImage: (OCRRegion<never> & {image: CoreTargetImage['image']})[]): Promise<string[]>
+  async extractText(settings: OCRRegion<TSpec>[]): Promise<string[]>
   async extractText(
-    settingsWithImage: (OCRRegion<never, never> & {image: CoreTargetImage['image']})[],
-  ): Promise<string[]>
-  async extractText(settings: OCRRegion<TElement, TSelector>[]): Promise<string[]>
-  async extractText(
-    targetOrSettings:
-      | CoreTargetImage
-      | (OCRRegion<never, never> & {image?: CoreTargetImage['image']})[]
-      | OCRRegion<TElement, TSelector>[],
-    settings?: OCRRegion<TElement, TSelector>[],
+    targetOrSettings: CoreTargetImage | (OCRRegion<never> & {image?: CoreTargetImage['image']})[] | OCRRegion<TSpec>[],
+    settings?: OCRRegion<TSpec>[],
   ): Promise<string[]> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
@@ -459,7 +452,7 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
 
     return await settings.reduce((results, settings, index) => {
       return results.then(async results => {
-        return results.concat(await this._eyes!.extractText!({target: targets[index], settings: settings!, config}))
+        return results.concat(await this._spec.extractText({target: targets[index], settings: settings!, config}))
       })
     }, Promise.resolve([] as string[]))
   }
@@ -480,7 +473,8 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     try {
       const config = this._config.toJSON()
 
-      const [result] = await this._eyes!.close({settings: {throwErr}, config})
+      await this._eyes!.close({config})
+      const [result] = await this._eyes!.getResults({settings: {throwErr}})
       return new TestResultsData({result, deleteTest})
     } catch (err: any) {
       if (err.info?.result) {
@@ -506,7 +500,8 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
   async abort(): Promise<TestResultsData> {
     if (!this.isOpen || this._config.isDisabled) return null as never
     try {
-      const [result] = await this._eyes!.abort()
+      await this._eyes!.abort()
+      const [result] = await this._eyes!.getResults()
       return new TestResultsData({
         result,
         deleteTest: options =>
@@ -560,10 +555,10 @@ export class Eyes<TDriver = unknown, TElement = unknown, TSelector = unknown> {
     }
   }
 
-  getScrollRootElement(): TElement | EyesSelector<TSelector> {
+  getScrollRootElement(): TSpec['element'] | EyesSelector<TSpec['selector']> {
     return this._config.getScrollRootElement()
   }
-  setScrollRootElement(scrollRootElement: TElement | EyesSelector<TSelector>) {
+  setScrollRootElement(scrollRootElement: TSpec['element'] | EyesSelector<TSpec['selector']>) {
     this._config.setScrollRootElement(scrollRootElement)
   }
 

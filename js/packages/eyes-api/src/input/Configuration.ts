@@ -1,6 +1,6 @@
 import * as utils from '@applitools/utils'
 import {EyesSelector} from './EyesSelector'
-import {CoreConfig} from '../Core'
+import {CoreConfig, SpecType} from '../Core'
 import {SessionType, SessionTypeEnum} from '../enums/SessionType'
 import {StitchMode, StitchModeEnum} from '../enums/StitchMode'
 import {MatchLevel, MatchLevelEnum} from '../enums/MatchLevel'
@@ -36,9 +36,9 @@ type RenderInfo =
   | AndroidDeviceInfo
   | ChromeEmulationInfoLegacy
 
-type ConfigurationSpec<TElement = unknown, TSelector = unknown> = {
-  isElement?(element: any): element is TElement
-  isSelector?(selector: any): selector is TSelector
+type ConfigurationSpec<TSpec extends SpecType = SpecType> = {
+  isElement?(element: any): element is TSpec['element']
+  isSelector?(selector: any): selector is TSpec['selector']
 }
 
 export type GeneralConfiguration = {
@@ -91,13 +91,13 @@ export type CheckConfiguration = {
   forceFullPageScreenshot?: boolean
 }
 
-export type ClassicConfiguration<TElement = unknown, TSelector = unknown> = {
+export type ClassicConfiguration<TSpec extends SpecType = SpecType> = {
   waitBeforeScreenshots?: number
   stitchMode?: StitchMode
   hideScrollbars?: boolean
   hideCaret?: boolean
   stitchOverlap?: number
-  scrollRootElement?: TElement | EyesSelector<TSelector>
+  scrollRootElement?: TSpec['element'] | EyesSelector<TSpec['selector']>
   cut?: CutProvider
   rotation?: ImageRotation
   scaleRatio?: number
@@ -114,26 +114,24 @@ export type VGConfiguration = {
   waitBeforeCapture?: number
 }
 
-export type Configuration<TElement = unknown, TSelector = unknown> = GeneralConfiguration &
+export type Configuration<TSpec extends SpecType = SpecType> = GeneralConfiguration &
   OpenConfiguration &
   CheckConfiguration &
-  ClassicConfiguration<TElement, TSelector> &
+  ClassicConfiguration<TSpec> &
   VGConfiguration
 
-export class ConfigurationData<TElement = unknown, TSelector = unknown>
-  implements Required<Configuration<TElement, TSelector>>
-{
-  protected static readonly _spec: ConfigurationSpec<any, any>
-  private _spec: ConfigurationSpec<TElement, TSelector>
+export class ConfigurationData<TSpec extends SpecType = SpecType> implements Required<Configuration<TSpec>> {
+  protected static readonly _spec: ConfigurationSpec
+  private _spec: ConfigurationSpec<TSpec>
 
-  private _config: Configuration<TElement, TSelector> = {}
+  private _config: Configuration<TSpec> = {}
 
-  private _isElementReference(value: any): value is TElement | EyesSelector<TSelector> {
+  private _isElementReference(value: any): value is TSpec['element'] | EyesSelector<TSpec['selector']> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
     return !!spec.isElement?.(value) || this._isSelectorReference(value)
   }
 
-  private _isSelectorReference(selector: any): selector is EyesSelector<TSelector> {
+  private _isSelectorReference(selector: any): selector is EyesSelector<TSpec['selector']> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
     return (
       !!spec.isSelector?.(selector) ||
@@ -144,7 +142,7 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
     )
   }
 
-  constructor(config?: Configuration<TElement, TSelector>, spec?: ConfigurationSpec<TElement, TSelector>) {
+  constructor(config?: Configuration<TSpec>, spec?: ConfigurationSpec<TSpec>) {
     config = utils.types.instanceOf(config, ConfigurationData) ? config.toObject() : config ?? {}
     this._spec = spec!
     for (const [key, value] of Object.entries(config)) {
@@ -868,10 +866,10 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
     return this
   }
 
-  get scrollRootElement(): TElement | EyesSelector<TSelector> {
+  get scrollRootElement(): TSpec['element'] | EyesSelector<TSpec['selector']> {
     return this._config.scrollRootElement!
   }
-  set scrollRootElement(scrollRootElement: TElement | EyesSelector<TSelector>) {
+  set scrollRootElement(scrollRootElement: TSpec['element'] | EyesSelector<TSpec['selector']>) {
     utils.guard.custom(scrollRootElement, value => this._isElementReference(value), {
       name: 'scrollRootElement',
       message: 'must be element or selector',
@@ -879,10 +877,10 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
     })
     this._config.scrollRootElement = scrollRootElement
   }
-  getScrollRootElement(): TElement | EyesSelector<TSelector> {
+  getScrollRootElement(): TSpec['element'] | EyesSelector<TSpec['selector']> {
     return this.scrollRootElement
   }
-  setScrollRootElement(scrollRootElement: TElement | EyesSelector<TSelector>): this {
+  setScrollRootElement(scrollRootElement: TSpec['element'] | EyesSelector<TSpec['selector']>): this {
     this.scrollRootElement = scrollRootElement
     return this
   }
@@ -1087,12 +1085,12 @@ export class ConfigurationData<TElement = unknown, TSelector = unknown>
   }
 
   /** @internal */
-  toObject(): Configuration<TElement, TSelector> {
+  toObject(): Configuration<TSpec> {
     return this._config
   }
 
   /** @internal */
-  toJSON(): CoreConfig<TElement, TSelector> {
+  toJSON(): CoreConfig<TSpec> {
     return utils.general.toJSON({
       open: utils.general.removeUndefinedProps({
         serverUrl: this.serverUrl,
