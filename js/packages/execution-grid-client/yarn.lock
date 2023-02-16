@@ -23,13 +23,12 @@
   dependencies:
     binary "^0.3.0"
 
-"@applitools/execution-grid-tunnel@1.0.8", "@applitools/execution-grid-tunnel@^1.0.5-beta.0":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.8.tgz#443944b205f3adc160bcb42dee7b7bdbd4d804c6"
-  integrity sha512-doP5rkEv5sQpDVxvnPHgyw+YE1MI4z5RAKH8WQHN9qqFwa+m/ff7jhotUnhKcHCodf+r2jSPdQvsNOI/wU0C7w==
+"@applitools/execution-grid-tunnel@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.13.tgz#8c8d593c6dbfa7e96196afaf81cbe9617d31a86a"
+  integrity sha512-S/DRfQ7gHxJML0YAfuod0FmzhWttSv0TIaogz/IaemVyRJ8188V5pZ2AD9af4yKL8ZFh5/6lhOZjEG85fJhRrw==
   dependencies:
     "@applitools/eg-socks5-proxy-server" "^0.4.6"
-    "@applitools/execution-grid-tunnel" "^1.0.5-beta.0"
     "@applitools/logger" "^1.0.12"
     dotenv "^16.0.0"
     fastify "^3.24.1"
@@ -41,10 +40,10 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/logger@1.1.45":
-  version "1.1.45"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.45.tgz#b29b1d1321c35a3eee0f92af89a00375ae7a7d16"
-  integrity sha512-Q99gYtqHDoylxVaOdbeX2wQ20JIeuGaf5N66G1Sq4pDUxofctdQdFKAa/aNkeqztDMvL9UBlu8XumIw1oBq0AA==
+"@applitools/logger@1.1.46":
+  version "1.1.46"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.46.tgz#88563df0bf8216d079f8f659742521e663287a4d"
+  integrity sha512-TMKy8sZT8k99a7QGTPYN0Iwxvi0evIv0apAJe37hQ792xUHVKjpLJ1U9LtLQqXqVzz5QCRw0jSx+1ssYWvMEKg==
   dependencies:
     "@applitools/utils" "1.3.30"
     chalk "4.1.2"
@@ -70,20 +69,20 @@
     node-fetch "2.6.7"
     proxy-agent "5.0.0"
 
-"@applitools/socket@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.6.tgz#e23b52ca4743160f859d82c9c650fe95ba813ede"
-  integrity sha512-17lfKnNAsA7sLnQv6bMhF15lL7VinHKeuJ23wTsTgzzwyudwCpWv7QJ6+MrWqz321romg3f5GIIMlhadPRpgGw==
+"@applitools/socket@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.7.tgz#aacc0a96d20087638d06c3dee5130c4c1539fd89"
+  integrity sha512-fQnp6zzBh+xyqsEy4FoOhqwQwAH35/wrM3KRvwDIBMFu1XR6/dNXgLlfZ+LnXJKs/rFsKgQ4LX2JDRjveVVlgw==
   dependencies:
-    "@applitools/logger" "1.1.45"
+    "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
 
-"@applitools/test-server@^1.1.25":
-  version "1.1.25"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.25.tgz#ff426696009303cfed3469930073d1a329b909cc"
-  integrity sha512-GmaDj8bH3/6BMVTcB8RwmD7uxPmUol1VO8YhdnIVYoczqYn+LqhVTEG7jUrMnJUoBBQwEiiu034aqKGkHVrBug==
+"@applitools/test-server@^1.1.26":
+  version "1.1.26"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.26.tgz#7e4aa2ddb5d0ccedc01f5af1a9136a1b03f4295b"
+  integrity sha512-hkb50cJDh6GEz5oWs3Hvk0nxKn7liWAVO7+xnwu9NoseDLS5sKejxI4CrxXcStxXc8Hu6IZGCCCSV+j1PX4CHw==
   dependencies:
-    "@applitools/logger" "1.1.45"
+    "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
     body-parser "1.20.0"
     chalk "3.0.0"
