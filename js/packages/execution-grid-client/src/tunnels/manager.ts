@@ -1,7 +1,7 @@
 import {type Logger} from '@applitools/logger'
 import {makeReq} from '@applitools/req'
 //@ts-ignore
-import makeTunnel from '@applitools/execution-grid-tunnel'
+import makeTunnelServer from '@applitools/execution-grid-tunnel'
 
 import * as utils from '@applitools/utils'
 
@@ -39,15 +39,9 @@ export async function makeTunnelManager({
   settings?: TunnelManagerSettings
   logger: Logger
 }): Promise<TunnelManager & {cleanup(): Promise<void>}> {
-  let cleanup = () => Promise.resolve()
-  if (!settings || !settings?.serverUrl) {
-    const tunnelServer = await makeTunnel({logger: null})
-    settings ??= {}
-    settings.serverUrl = `http://0.0.0.0:${tunnelServer.port}`
-    cleanup = tunnelServer.cleanupFunction
-  }
+  let server: {port: number; close: () => Promise<void>} | undefined
+
   const req = makeReq({
-    baseUrl: settings?.serverUrl,
     retry: {
       validate: async ({response}) => {
         if (!response) return false
@@ -92,8 +86,14 @@ export async function makeTunnelManager({
   }
 
   async function create(credentials: TunnelCredentials): Promise<Tunnel> {
+    if (!settings?.serverUrl) {
+      settings ??= {}
+      settings.serverUrl = await open()
+    }
+
     const response = await req('/tunnels', {
       method: 'POST',
+      baseUrl: settings!.serverUrl,
       headers: {
         'x-eyes-api-key': credentials.apiKey,
         'x-eyes-server-url': credentials.eyesServerUrl,
@@ -108,8 +108,14 @@ export async function makeTunnelManager({
   }
 
   async function destroy(tunnel: Tunnel): Promise<void> {
+    if (!settings?.serverUrl) {
+      settings ??= {}
+      settings.serverUrl = await open()
+    }
+
     const response = await req(`/tunnels/${tunnel.tunnelId}`, {
       method: 'DELETE',
+      baseUrl: settings!.serverUrl,
       headers: {
         'x-eyes-api-key': tunnel.credentials.apiKey,
         'x-eyes-server-url': tunnel.credentials.eyesServerUrl,
@@ -121,6 +127,16 @@ export async function makeTunnelManager({
 
     logger.error(`Failed to delete tunnel with status ${response.status} and code ${body?.message ?? 'UNKNOWN_ERROR'}`)
     throw new Error(`Failed to delete tunnel with code ${body?.message ?? 'UNKNOWN_ERROR'}`)
+  }
+
+  async function open(): Promise<string> {
+    const {port, cleanupFunction} = await makeTunnelServer({logger})
+    server = {port, close: cleanupFunction}
+    return `http://0.0.0.0:${port}`
+  }
+
+  async function cleanup() {
+    await server?.close()
   }
 }
 

@@ -29,8 +29,8 @@ export async function makeTunnelManagerServer({
     server.on('listening', () => resolve(server))
   })
   const logger = makeLogger({
-    handler: {type: 'rolling file', name: 'eyes', dirname: LOG_DIRNAME},
-    label: 'eg-tunnel-manager',
+    handler: {type: 'rolling file', name: 'ec-tunnel-manager', dirname: LOG_DIRNAME},
+    label: 'ec-tunnel-manager',
     level: 'info',
     colors: false,
   })

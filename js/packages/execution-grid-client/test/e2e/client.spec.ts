@@ -78,7 +78,7 @@ describe('client', () => {
       assert.strictEqual(title, 'My local page')
     })
 
-    it('throws when eg is not enabled', async () => {
+    it('throws when ec is not enabled', async () => {
       client = await makeECClient({settings: {capabilities: {eyesServerUrl: 'https://testeyes.applitools.com'}}})
       await assert.rejects(
         new Builder()
