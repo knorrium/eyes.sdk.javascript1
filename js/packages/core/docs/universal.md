@@ -21,6 +21,7 @@
     - [Eyes.close](#eyesclose)
     - [Eyes.abort](#eyesabort)
     - [Eyes.getResults](#eyesgetresults)
+    - [Debug.getHistory](#debuggethistory)
   - [Type examples](#type-examples)
     - [ImageTarget](#imagetarget)
     - [DriverTarget](#drivertarget)
@@ -247,6 +248,11 @@ interface GetEyesResultsPayload {
 }
 
 type GetEyesResultsResponsePayload = TestResult[]
+```
+
+### Debug.getHistory
+```ts
+type GetHistoryResponsePayload = Record<string, any>
 ```
 
 ## Type examples

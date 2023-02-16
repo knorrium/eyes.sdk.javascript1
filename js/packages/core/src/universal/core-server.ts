@@ -6,6 +6,7 @@ import {makeServer, type ServerOptions} from './ws-server'
 import {makeLogger} from '@applitools/logger'
 import {makeCore as makeMainCore} from '../core'
 import {makeRefer} from './refer'
+import {withHistory} from './history'
 import os from 'os'
 import path from 'path'
 
@@ -66,6 +67,7 @@ export async function makeCoreServer({
       transport: 'ws',
       logger: baseLogger,
     }) as ServerSocket<CustomSpecType | WDSpecType, 'classic' | 'ufg'> & Socket<typeof client>
+    const getHistory = debug ? withHistory(socket) : () => null
 
     if (shutdownMode === 'lazy' && idleTimeout) {
       clearTimeout(idle)
@@ -91,6 +93,7 @@ export async function makeCoreServer({
         agentId: `eyes-universal/${require('../../package.json').version}/${agentId}`,
         spec: spec === 'webdriver' ? wdSpec : makeSpec({socket, spec}),
         cwd,
+        logger,
       })
     })
 
@@ -150,6 +153,10 @@ export async function makeCoreServer({
       const results = refer.deref(eyes)?.getResults(options)
       refer.destroy(eyes)
       return results
+    })
+
+    socket.command('Debug.getHistory', async () => {
+      return getHistory()
     })
   })
 
