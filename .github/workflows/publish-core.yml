@@ -145,10 +145,10 @@ jobs:
             arch: x64
             runner: ubuntu-latest
             shell: bash
-          # - os: linux
-          #   arch: arm64
-          #   runner: ubuntu-latest
-          #   shell: bash
+          - os: linux
+            arch: arm64
+            runner: buildjet-2vcpu-ubuntu-2204-arm
+            shell: bash
           - os: windows
             arch: x64
             runner: windows-latest
@@ -223,11 +223,11 @@ jobs:
           node-version: lts/*
           registry-url: https://registry.npmjs.org/
           always-auth: true
-      # - name: Download building artifacts arm64
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: core-${{needs.prepare.outputs.version}}-arm64
-      #     path: ./js/packages/core
+      - name: Download building artifacts arm64
+        uses: actions/download-artifact@v3
+        with:
+          name: core-${{needs.prepare.outputs.version}}-arm64
+          path: ./js/packages/core
       - name: Download building artifacts x64
         uses: actions/download-artifact@v3
         with:
@@ -285,27 +285,27 @@ jobs:
                       "elements": [
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Mac 🍎"},
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Mac (amd) 🍎"},
                           "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-macos"
                         },
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux 🐧"},
-                          "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux"
-                        },
-                        {
-                          "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux arm64 🐧💪"},
-                          "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux-arm64"
-                        },
-                        {
-                          "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Windows 🪟"},
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Windows (amd) 🪟"},
                           "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-win.exe"
                         },
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Alpine 🏔️"},
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux (amd) 🐧"},
+                          "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux"
+                        },
+                        {
+                          "type": "button",
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Linux (arm) 🐧"},
+                          "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-linux-arm64"
+                        },
+                        {
+                          "type": "button",
+                          "text": {"type": "plain_text", "emoji": true, "text": "Download for Alpine (amd) 🏔️"},
                           "url": "https://github.com/applitools/eyes.sdk.javascript1/releases/download/${{needs.prepare.outputs.tag}}/core-alpine"
                         },
                         {
