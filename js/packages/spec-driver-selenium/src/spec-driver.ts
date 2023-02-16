@@ -1,21 +1,29 @@
 /* eslint @typescript-eslint/ban-types: ["error", {"types": {"Function": false}}] */
 import type {Size, Region} from '@applitools/utils'
-import {type Cookie, type DriverInfo, type WaitOptions, type ScreenOrientation} from '@applitools/driver'
+import type {
+  SpecType as BaseSpecType,
+  CommonSelector,
+  Cookie,
+  DriverInfo,
+  WaitOptions,
+  ScreenOrientation,
+} from '@applitools/driver'
 import {Command} from 'selenium-webdriver/lib/command'
 import * as Selenium from 'selenium-webdriver'
-
 import * as utils from '@applitools/utils'
 
-export type Driver = Selenium.WebDriver & {__applitoolsBrand?: never}
-export type Element = Selenium.WebElement & {__applitoolsBrand?: never}
+type ApplitoolsBrand = {__applitoolsBrand?: never}
+
+export type Driver = Selenium.WebDriver & ApplitoolsBrand
+export type Element = Selenium.WebElement & ApplitoolsBrand
+export type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string}
 export type Selector = (
   | Exclude<Selenium.Locator, Function>
   | ((webdriver: Selenium.WebDriver) => Promise<any>)
   | {using: string; value: string}
-) & {__applitoolsBrand?: never}
-
-type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string}
-type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
+) &
+  ApplitoolsBrand
+export type SpecType = BaseSpecType<Driver, Driver, Element, Selector>
 
 // #region HELPERS
 
@@ -77,7 +85,7 @@ export function transformDriver(driver: Driver): Driver {
   }
   return driver
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function transformSelector(selector: CommonSelector<SpecType>): Selector {
   if (utils.types.isString(selector)) {
     return {css: selector}
   } else if (utils.types.has(selector, 'selector')) {

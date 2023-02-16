@@ -322,9 +322,9 @@ describe('spec driver', async () => {
       domain: 'google.com',
       path: '/',
       expiry: Math.floor((Date.now() + 60000) / 1000),
+      sameSite: 'Lax',
       httpOnly: true,
       secure: true,
-      sameSite: 'Lax',
     }
     await page.setCookie({...cookie, expires: cookie.expiry})
     const cookies = await spec.getCookies(page)

@@ -1,5 +1,5 @@
 import type {Size, Region} from '@applitools/utils'
-import type {SpecType as BaseSpecType, Cookie, DriverInfo} from '@applitools/driver'
+import type {SpecType as BaseSpecType, CommonSelector, Cookie, DriverInfo} from '@applitools/driver'
 import type * as WD from 'webdriver'
 import {parse as urlToHttpOptions} from 'url'
 import * as utils from '@applitools/utils'
@@ -23,7 +23,6 @@ export type StaticDriver = {
   proxy?: {url: string}
 }
 export type StaticElement = {elementId: string}
-type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
 
 // #region HELPERS
 
@@ -168,7 +167,7 @@ export function transformElement(element: Element | StaticElement): Element {
   const elementId = utils.types.has(element, 'elementId') ? element.elementId : extractElementId(element)
   return {[ELEMENT_ID]: elementId, [LEGACY_ELEMENT_ID]: elementId}
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function transformSelector(selector: CommonSelector<SpecType>): Selector {
   if (utils.types.isString(selector)) {
     return {using: 'css selector', value: selector}
   } else if (utils.types.has(selector, 'selector')) {

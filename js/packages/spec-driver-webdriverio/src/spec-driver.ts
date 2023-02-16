@@ -1,17 +1,19 @@
 import type {Size, Region} from '@applitools/utils'
-import {type Cookie, type DriverInfo, type ScreenOrientation} from '@applitools/driver'
+import type {SpecType as BaseSpecType, CommonSelector, Cookie, DriverInfo, ScreenOrientation} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
-export type Driver = Applitools.WebdriverIO.Browser & {__applitoolsBrand?: never}
+type ApplitoolsBrand = {__applitoolsBrand?: never}
+
+export type Driver = Applitools.WebdriverIO.Browser & ApplitoolsBrand
 export type Element = (
   | Applitools.WebdriverIO.Element
   | {ELEMENT: string}
   | {'element-6066-11e4-a52e-4f735466cecf': string}
-) & {__applitoolsBrand?: never}
-export type Selector = (Applitools.WebdriverIO.Selector | {using: string; value: string}) & {__applitoolsBrand?: never}
-
-type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string}
-type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
+) &
+  ApplitoolsBrand
+export type ShadowRoot = {'shadow-6066-11e4-a52e-4f735466cecf': string}
+export type Selector = (Applitools.WebdriverIO.Selector | {using: string; value: string}) & ApplitoolsBrand
+export type SpecType = BaseSpecType<Driver, Driver, Element, Selector>
 
 // #region HELPERS
 
@@ -137,7 +139,7 @@ export function transformElement(element: Element): Element {
   const elementId = extractElementId(element)
   return {[ELEMENT_ID]: elementId, [LEGACY_ELEMENT_ID]: elementId}
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function transformSelector(selector: CommonSelector<SpecType>): Selector {
   if (utils.types.has(selector, 'selector')) {
     if (!utils.types.has(selector, 'type')) return selector.selector
     if (selector.type === 'css') return `css selector:${selector.selector}`

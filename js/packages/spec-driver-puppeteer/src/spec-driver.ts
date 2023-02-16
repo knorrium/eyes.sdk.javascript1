@@ -1,16 +1,15 @@
 import type {Size} from '@applitools/utils'
+import type {SpecType as BaseSpecType, CommonSelector, Cookie, DriverInfo} from '@applitools/driver'
 import type * as Puppeteer from 'puppeteer'
-import {type Cookie, type DriverInfo} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
-export type Driver = Puppeteer.Page & {__applitoolsBrand?: never}
-export type Context = Puppeteer.Frame & {__applitoolsBrand?: never}
-export type Element<T extends globalThis.Element = globalThis.Element> = Puppeteer.ElementHandle<T> & {
-  __applitoolsBrand?: never
-}
-export type Selector = string & {__applitoolsBrand?: never}
+type ApplitoolsBrand = {__applitoolsBrand?: never}
 
-type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
+export type Driver = Puppeteer.Page & ApplitoolsBrand
+export type Context = Puppeteer.Frame & ApplitoolsBrand
+export type Element<T extends globalThis.Element = globalThis.Element> = Puppeteer.ElementHandle<T> & ApplitoolsBrand
+export type Selector = string & ApplitoolsBrand
+export type SpecType = BaseSpecType<Driver, Context, Element, Selector>
 
 // #region HELPERS
 
@@ -103,7 +102,7 @@ export function isElement(element: any): element is Element {
 export function isSelector(selector: any): selector is Selector {
   return utils.types.isString(selector)
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function transformSelector(selector: CommonSelector<SpecType>): Selector {
   if (utils.types.has(selector, 'selector')) return selector.selector
   return selector
 }

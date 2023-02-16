@@ -1,19 +1,18 @@
 import type {Size} from '@applitools/utils'
+import type {SpecType as BaseSpecType, CommonSelector, Cookie, DriverInfo} from '@applitools/driver'
 import type * as Playwright from 'playwright'
-import {type Cookie, type DriverInfo} from '@applitools/driver'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as utils from '@applitools/utils'
 
-export type Driver = Playwright.Page & {__applitoolsBrand?: never}
-export type Context = Playwright.Frame & {__applitoolsBrand?: never}
-export type Element<T = Node> = Playwright.ElementHandle<T> & {__applitoolsBrand?: never}
-export type Selector = (string | Playwright.Locator) & {__applitoolsBrand?: never}
+type ApplitoolsBrand = {__applitoolsBrand?: never}
 
-BigInt
-
-type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
+export type Driver = Playwright.Page & ApplitoolsBrand
+export type Context = Playwright.Frame & ApplitoolsBrand
+export type Element<T = Node> = Playwright.ElementHandle<T> & ApplitoolsBrand
+export type Selector = (string | Playwright.Locator) & ApplitoolsBrand
+export type SpecType = BaseSpecType<Driver, Context, Element, Selector>
 
 // #region HELPERS
 
@@ -54,7 +53,7 @@ export function isSelector(selector: any): selector is Selector {
   if (!selector) return false
   return utils.types.isString(selector) || utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function transformSelector(selector: CommonSelector<SpecType>): Selector {
   if (utils.types.has(selector, 'selector')) {
     if (!utils.types.has(selector, 'type')) return selector.selector
     else return `${selector.type}=${selector.selector}`
