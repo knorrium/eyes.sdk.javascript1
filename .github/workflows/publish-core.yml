@@ -176,8 +176,10 @@ jobs:
         with:
           name: core-${{needs.prepare.outputs.version}}-${{matrix.arch}}
           path: ./js/packages/core
-      - name: Run tests x64
+      - name: Run tests
         uses: ./.github/actions/tests
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: true
         with:
           shell: ${{matrix.shell}}
           working-directory: ./js/packages/core
