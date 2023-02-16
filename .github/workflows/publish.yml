@@ -546,7 +546,7 @@ jobs:
 
   # PYTHON BINDING
   python-universal:
-    needs: [ setup, universal ]
+    needs: [ setup, core ]
     if: ${{fromJSON(needs.setup.outputs.packages).python-universal && !failure() && !cancelled()}}
     runs-on: ubuntu-latest
     steps:
