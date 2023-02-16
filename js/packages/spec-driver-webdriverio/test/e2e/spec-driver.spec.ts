@@ -152,6 +152,9 @@ describe('spec driver', async () => {
     it('setElementText(element, text)', async () => {
       await setElementText({input: {element: await browser.$('input'), text: 'Ad multos annos'}})
     })
+    it('takeScreenshot()', async () => {
+      await takeScreenshot()
+    })
     it('getWindowSize()', async () => {
       await getWindowSize()
     })
@@ -315,6 +318,9 @@ describe('spec driver', async () => {
     })
     it('findElements(non-existent)', async () => {
       await findElements({input: {selector: 'non-existent'}, expected: []})
+    })
+    it('takeScreenshot()', async () => {
+      await takeScreenshot()
     })
     it('setElementText(element, text)', async () => {
       await setElementText({input: {element: await browser.$('input'), text: 'Ad multos annos'}})
@@ -588,6 +594,10 @@ describe('spec driver', async () => {
     for (const [index, element] of elements.entries()) {
       assert.ok(await equalElements(browser, element, (expected as any)[index]))
     }
+  }
+  async function takeScreenshot() {
+    const screenshot = await spec.takeScreenshot(browser)
+    assert.ok(Buffer.isBuffer(screenshot) || utils.types.isArray)
   }
   async function setElementText({input}: {input: {element: Applitools.WebdriverIO.Element; text: string}}) {
     const element = await browser.$(input.element)

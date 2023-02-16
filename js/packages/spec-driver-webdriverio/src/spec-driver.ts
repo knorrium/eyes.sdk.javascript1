@@ -312,8 +312,8 @@ export async function takeScreenshot(browser: Driver): Promise<string | Buffer> 
   if (browser.isDevTools) {
     const puppeteer = await browser.getPuppeteer()
     const [page] = await puppeteer.pages!()
-    const scr = await (page as any)._client.send('Page.captureScreenshot')
-    return scr.data
+    const result = await page.screenshot({captureBeyondViewport: false})
+    return result
   }
   return browser.takeScreenshot()
 }
