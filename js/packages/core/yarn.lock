@@ -214,12 +214,12 @@
     "@applitools/logger" "1.1.45"
     "@applitools/utils" "1.3.30"
 
-"@applitools/spec-driver-puppeteer@^1.1.40":
-  version "1.1.40"
-  resolved "https://registry.npmjs.org/@applitools/spec-driver-puppeteer/-/spec-driver-puppeteer-1.1.40.tgz"
-  integrity sha512-JlfTzONOZtd9yPKX/HZiqyG1u4MCPLUHynwm1XEwfqCmMDaNwizEe63csH/XOG0WrcOrZkk00gSTp4WfDGrtzQ==
+"@applitools/spec-driver-puppeteer@^1.1.41":
+  version "1.1.41"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-puppeteer/-/spec-driver-puppeteer-1.1.41.tgz#e96a3e40e7f15865df0121ef895b5e1e98b697c9"
+  integrity sha512-P+V68Bmxd7NACWgekzMgCGq6j0YHMjgNqG3wQ5NJI/eWCvuE//sQ+3Z6tLs2XLldTxJ0/xkvmBCtRu6Ika9+nA==
   dependencies:
-    "@applitools/driver" "1.11.29"
+    "@applitools/driver" "1.11.30"
     "@applitools/utils" "1.3.30"
 
 "@applitools/spec-driver-selenium@^1.5.27":
