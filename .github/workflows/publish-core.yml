@@ -166,7 +166,6 @@ jobs:
         with:
           ref: ${{needs.prepare.outputs.branch}}
       - name: Setup Node.js
-        if: ${{matrix.arch == 'x64'}}
         uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -178,7 +177,6 @@ jobs:
           name: core-${{needs.prepare.outputs.version}}-${{matrix.arch}}
           path: ./js/packages/core
       - name: Run tests x64
-        if: ${{matrix.arch == 'x64'}}
         uses: ./.github/actions/tests
         with:
           shell: ${{matrix.shell}}
@@ -186,27 +184,6 @@ jobs:
           build-type: none
           setup-type: none
           test-type: bin
-      - name: Run tests arm64
-        if: ${{matrix.arch == 'arm64'}}
-        uses: uraimo/run-on-arch-action@v2
-        with:
-          arch: none
-          distro: none
-          base_image: arm64v8/node:lts
-          githubToken: ${{github.token}}
-          dockerRunArgs: |
-            --volume "${PWD}/js/packages/core/:/src"
-          shell: /bin/sh
-          install: |
-            apt-get update -q -y
-            apt-get install -q -y curl zip tar
-          run: |
-            cd /src
-            echo //registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}} > $HOME/.npmrc
-            export PUPPETEER_SKIP_DOWNLOAD=true 
-            yarn install
-            rm -rf $HOME/.npmrc
-            yarn test:bin
   publish:
     needs: [prepare, test, test-bin]
     name: Publish
