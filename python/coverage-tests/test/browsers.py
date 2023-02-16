@@ -28,7 +28,9 @@ def chrome(execution_grid):
         if LEGACY_SELENIUM:
             options.capabilities.pop("platform")
             options.capabilities.pop("version")
-        url = os.environ.get("EXECUTION_GRID_URL")
+        from applitools.selenium import Eyes
+
+        url = Eyes.get_execution_cloud_url()
         return webdriver.Remote(command_executor=url, options=options)
     else:
         return start_chrome_driver(options)

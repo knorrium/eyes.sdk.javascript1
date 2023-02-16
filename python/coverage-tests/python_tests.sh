@@ -15,24 +15,12 @@ if [ $? -ne 0 ]; then
     echo "${MESSAGE}"
 fi
 
-# start eg client and save process id
-# commented out if need eg client logs
-#export APPLITOOLS_SHOW_LOGS=true
-npm run universal:eg &
-EG_PID="$!"
-export EXECUTION_GRID_URL=http://localhost:8080
-echo $EXECUTION_GRID_URL
-
 npm run python:run:parallel
 if [ $? -ne 0 ]; then
     ((RESULT+=1))
     MESSAGE+=$'npm run python:run:parallel have failed'
     echo "${MESSAGE}"
 fi
-
-# Kill eg client by the process id
-echo $EG_PID
-kill $EG_PID
 
 npm run python:report
 if [ $? -ne 0 ]; then
