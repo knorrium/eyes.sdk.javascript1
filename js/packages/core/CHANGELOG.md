@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.4 - 2023/2/16
+
+### Features
+### Bug fixes
+- Fixed ws types
+
 ## 2.3.3 - 2023/2/16
 
 ### Features
