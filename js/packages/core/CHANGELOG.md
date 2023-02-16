@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.3.3 - 2023/2/16
+
+### Features
+### Bug fixes
+- Fixed debug mode
+- Fixed logs
+
 ## 2.3.2 - 2023/2/16
 
 ### Features
