@@ -109,6 +109,7 @@ jobs:
   test:
     needs: [prepare, build]
     strategy:
+      fail-fast: false
       matrix:
         node-version: ['14', '16', '18']
     name: 'Test (node: ${{matrix.node-version}})'
