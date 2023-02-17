@@ -404,11 +404,13 @@ export class Eyes<TSpec extends SpecType = SpecType> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let target: CoreTargetImage | undefined
+    let target: CoreTargetImage | TSpec['driver']
     if (utils.types.has(targetOrSettings, 'patterns')) {
       settings = targetOrSettings
       if (utils.types.has(targetOrSettings, 'image')) {
         target = {image: targetOrSettings.image!}
+      } else {
+        target = this._driver
       }
     } else {
       target = targetOrSettings
@@ -430,11 +432,11 @@ export class Eyes<TSpec extends SpecType = SpecType> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let targets: (CoreTargetImage | undefined)[]
+    let targets: (CoreTargetImage | TSpec['driver'])[]
     if (utils.types.isArray(targetOrSettings)) {
       settings = targetOrSettings
       targets = targetOrSettings.map(settings => {
-        return utils.types.has(settings, 'image') ? {image: settings.image as CoreTargetImage['image']} : undefined
+        return utils.types.has(settings, 'image') ? {image: settings.image as CoreTargetImage['image']} : this._driver
       })
     } else {
       targets = Array(settings!.length).fill(targetOrSettings)
