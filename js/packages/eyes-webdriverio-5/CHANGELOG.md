@@ -10,6 +10,12 @@
 
 
 
+## 5.42.0 - 2023/2/17
+
+### Features
+- Crop screenshot image base on account info
+### Bug fixes
+
 ## 5.41.1 - 2023/2/6
 
 ### Features
