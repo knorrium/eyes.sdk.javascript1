@@ -31,23 +31,23 @@
     "@applitools/req" "1.1.30"
     "@applitools/utils" "1.3.30"
 
-"@applitools/core@2.3.4":
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.4.tgz#2ecc4353d1b65338d4fe1501c43e4185dce415b1"
-  integrity sha512-3mr6FuGQ67+2cioPvfIXTX2FqURrlg7ySuw41GihJP4hi5jDCSu6zsFWxGkUdLkQn6H2MxXni2Sk6ASrGuedow==
+"@applitools/core@2.3.6":
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.6.tgz#05542ccfe30d23bebf9ce7e7961839e86fe3721e"
+  integrity sha512-XTBIUmxzkTsuI+VhHKI3Ve3zsWL1o0bmG0l+/s3GuflnM11/bzSZA3KAGw6rtDm3pvgpC8UJRqU5CR1f/NVvGw==
   dependencies:
     "@applitools/core-base" "1.1.38"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.3"
-    "@applitools/driver" "1.11.31"
-    "@applitools/ec-client" "1.2.9"
+    "@applitools/driver" "1.11.32"
+    "@applitools/ec-client" "1.2.10"
     "@applitools/logger" "1.1.46"
     "@applitools/nml-client" "1.3.35"
     "@applitools/req" "1.1.30"
     "@applitools/screenshoter" "3.7.27"
     "@applitools/snippets" "2.4.15"
-    "@applitools/socket" "1.0.7"
-    "@applitools/spec-driver-webdriver" "1.0.10"
+    "@applitools/socket" "1.0.8"
+    "@applitools/spec-driver-webdriver" "1.0.12"
     "@applitools/ufg-client" "1.1.26"
     "@applitools/utils" "1.3.30"
     "@types/ws" "8.5.4"
@@ -87,25 +87,25 @@
     css-tree "2.3.1"
     pako "1.0.11"
 
-"@applitools/driver@1.11.31":
-  version "1.11.31"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.31.tgz#a20b292ed53b7ec01459c76623adb96a7813b2fb"
-  integrity sha512-DlLhTCRwTvmA7gz42QOQlAGDgQzcw8rCjrbdxg0++FVVLJ7BM5+rsSgJCLsjl89Ka/ptLuEFRi5S9hkiIL+NHQ==
+"@applitools/driver@1.11.32":
+  version "1.11.32"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.32.tgz#6fa0970ffcf0aef8b06324740f5170e05b513db5"
+  integrity sha512-Q3TBD/R7MUhE8ukFkmhV5RwMuwv0F5lAG6gCcQLKgNqI052zZnz8CX3j6MIgntx/E5fVMB9AymKP5ZgMuL0xXg==
   dependencies:
     "@applitools/logger" "1.1.46"
     "@applitools/snippets" "2.4.15"
     "@applitools/utils" "1.3.30"
     semver "7.3.7"
 
-"@applitools/ec-client@1.2.9":
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.9.tgz#1c54241ad6acabbacc210fbbb35f688a1c0fea7d"
-  integrity sha512-azXAJbzz8kIP60PSUlQXKKX1uOMcIj074PoLLK1icUy4Lyyb62fWpG6+HGZ8WMrz7CDD4XMvA2IPueS+v+083A==
+"@applitools/ec-client@1.2.10":
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.10.tgz#49259cba79ab046841fab26c09d72652e9878661"
+  integrity sha512-GsXAH9oofLl0OrukRqEQJtliUDMTwGzb3g/Ji0VxwAZIiWext/r0ciyPzxUwEUXaJjy3rq35oY1/eL7FKIduwA==
   dependencies:
     "@applitools/execution-grid-tunnel" "1.0.13"
     "@applitools/logger" "1.1.46"
     "@applitools/req" "1.1.30"
-    "@applitools/socket" "1.0.7"
+    "@applitools/socket" "1.0.8"
     "@applitools/utils" "1.3.30"
     abort-controller "3.0.0"
     yargs "17.6.2"
@@ -134,12 +134,12 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/eyes-api@1.13.3":
-  version "1.13.3"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.13.3.tgz#f43d432c9785d74951d13613c61ad45dde55ed44"
-  integrity sha512-ty45wQTxRczFAX8Xz0rKUr3W8Edog2SSIpzWZIKT/PXOxnAGZtHZm7T65PnUKKgmaHNr4dv5++CMzXRm+/K+JA==
+"@applitools/eyes-api@1.13.6":
+  version "1.13.6"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-api/-/eyes-api-1.13.6.tgz#8446e163fc12ff930fe49e754e891cce94279077"
+  integrity sha512-/Ug8JaEBcfsRHaCJv596NlUdyBZHJxcT+9I+eWvB7OdvxOnYA3p3slMZ2YHzHdrpCbepkqjTgTL8vwIt7JSGrQ==
   dependencies:
-    "@applitools/core" "2.3.4"
+    "@applitools/core" "2.3.6"
     "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
 
@@ -261,29 +261,29 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.15.tgz#b62d4d425668f16d7f0f13efbbe4d81a764af49e"
   integrity sha512-Yjta4HTmdcvK4w9u7uBQxKUDduRM1nwUb8Q/AHol/+dneJF+NVK2zBOw5c8fZn4+YEURsNx8sUTaqeN/5TZmzQ==
 
-"@applitools/socket@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.7.tgz#aacc0a96d20087638d06c3dee5130c4c1539fd89"
-  integrity sha512-fQnp6zzBh+xyqsEy4FoOhqwQwAH35/wrM3KRvwDIBMFu1XR6/dNXgLlfZ+LnXJKs/rFsKgQ4LX2JDRjveVVlgw==
+"@applitools/socket@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.8.tgz#e0a9f242a8948d550f170298c6bed8cf653ac03a"
+  integrity sha512-TsuPeIByNsP18wTqrSwbTya+A2n0zjOPvt82A3BQUid/37R5K3wQv3UnKFIvOsPwPTuKEjGlv0YS0xSj5j+foA==
   dependencies:
     "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
 
-"@applitools/spec-driver-webdriver@1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.10.tgz#500d0909a261cfa7e9f19b38e1710fa448a69ffc"
-  integrity sha512-LBcFZFmVbGL93PowyVRzof/D0iMTbDburq54HsD7eUwpiBmIFZLrWihJwErrnOfGG3tE88VfAE8NMTA1htEO6A==
+"@applitools/spec-driver-webdriver@1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.12.tgz#593e738982be27b76cc79b413db572df03bedf00"
+  integrity sha512-GPxKutO/jzfz4fm4bsL15rs/WGTHjqL4VLj4XTiD4bzODCBUaaUEiGzkImmPwQammc/2+G6VFU1Ukptpef2uQg==
   dependencies:
-    "@applitools/driver" "1.11.31"
+    "@applitools/driver" "1.11.32"
     "@applitools/utils" "1.3.30"
     proxy-agent "5.0.0"
 
-"@applitools/spec-driver-webdriverio@1.4.26":
-  version "1.4.26"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.26.tgz#14c2b6992d0d7bf6e2efee1186f3083e1d0e6fea"
-  integrity sha512-uQ69HLTL5meltD78U72eRuz7gQR6a4AIsvYCONLiFEENfwR7styouz28LCv/ClNElfMMUBoEKWxatZgIICyBZw==
+"@applitools/spec-driver-webdriverio@1.4.27":
+  version "1.4.27"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.27.tgz#71d7370d2070d82b0ca4888a4a120ea8cc26c5b0"
+  integrity sha512-ZfgY/2O6oqndSrU/OsTzjEQ13alkVcKk8m394ywt7ZOxU9fFuhRG3xVZMQANmGGEG00FcaQ5FosaDwIdU5GebA==
   dependencies:
-    "@applitools/driver" "1.11.31"
+    "@applitools/driver" "1.11.32"
     "@applitools/utils" "1.3.30"
 
 "@applitools/test-utils@1.5.12":
