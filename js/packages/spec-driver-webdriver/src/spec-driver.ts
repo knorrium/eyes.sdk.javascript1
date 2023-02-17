@@ -79,13 +79,13 @@ function extractEnvironment(capabilities: Record<string, any>) {
 
 // #region UTILITY
 
-export function isDriver(driver: any): driver is Driver {
+export function isDriver(driver: any): driver is Driver /* or StaticDriver */ {
   if (!driver) return false
-  return utils.types.instanceOf<WD.Client>(driver, 'Browser')
+  return utils.types.has(driver, ['sessionId', 'serverUrl']) || utils.types.instanceOf<WD.Client>(driver, 'Browser')
 }
-export function isElement(element: any): element is Element {
+export function isElement(element: any): element is Element /* or StaticElement */ {
   if (!element) return false
-  return Boolean(extractElementId(element))
+  return Boolean(element.elementId ?? extractElementId(element))
 }
 export function isShadowRoot(shadowRoot: any): shadowRoot is ShadowRoot {
   if (!shadowRoot) return false

@@ -92,7 +92,7 @@ export function makeSocket<
       const offMessage = transport.onMessage(target, message => {
         const {name, key, payload} = deserialize(message as string)
         logger.log(
-          `Received event of type "${JSON.stringify({name, key})}" with payload`,
+          `Received event of type ${JSON.stringify({name, key})} with payload`,
           payload && JSON.stringify(payload, null, 4).slice(0, 5000),
         )
         const fns = listeners.get(name)
@@ -120,7 +120,7 @@ export function makeSocket<
   function emit(type: string | {name: string; key?: string}, payload?: Record<string, any>): () => void {
     const command = () => {
       logger.log(
-        `Emit event of type "${JSON.stringify(type)}" with payload`,
+        `Emit event of type ${JSON.stringify(type)} with payload`,
         payload && JSON.stringify(payload, null, 4).slice(0, 5000),
       )
       transport.send(target!, serialize(type, payload))

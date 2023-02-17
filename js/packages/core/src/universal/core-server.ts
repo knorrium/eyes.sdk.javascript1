@@ -26,10 +26,17 @@ export async function makeCoreServer({
 }: Options = {}): Promise<{port: number; close?: () => void}> {
   const logDirname = process.env.APPLITOOLS_LOG_DIR ?? path.resolve(os.tmpdir(), `applitools-logs`)
   const baseLogger = makeLogger({
-    handler: {type: 'rolling file', name: 'eyes', dirname: logDirname},
-    label: 'eyes',
+    handler: {type: 'rolling file', name: 'universal', dirname: logDirname},
+    label: 'core-universal',
     level: 'info',
     colors: false,
+  })
+  baseLogger.log('Core universal is going to be initialized with options', {
+    debug,
+    shutdownMode,
+    idleTimeout,
+    printStdout,
+    ...handlerOptions,
   })
   const {server, port} = await makeServer({...handlerOptions, debug})
   // eslint-disable-next-line no-console
@@ -41,7 +48,7 @@ export async function makeCoreServer({
   }
   if (!printStdout) process.stdout.write = () => true // NOTE: prevent any write to stdout
 
-  baseLogger.log('Universal core is initialized on port', port)
+  baseLogger.log('Core universal is started on port', port)
 
   let idle: any
   let serverClosed = false
@@ -88,7 +95,7 @@ export async function makeCoreServer({
 
     logger.console.log(`Logs saved in: ${logDirname}`)
 
-    const core = await socket.wait('Core.makeCore', ({agentId, cwd, spec}) => {
+    const corePromise = socket.wait('Core.makeCore', ({agentId, cwd, spec}) => {
       return makeMainCore<CustomSpecType | WDSpecType>({
         agentId: `eyes-universal/${require('../../package.json').version}/${agentId}`,
         spec: spec === 'webdriver' ? wdSpec : makeSpec({socket, spec}),
@@ -98,34 +105,44 @@ export async function makeCoreServer({
     })
 
     socket.command('Core.getAccountInfo', async options => {
+      const core = await corePromise
       return core.getAccountInfo(options)
     })
     socket.command('Core.getViewportSize', async options => {
+      const core = await corePromise
       return core.getViewportSize?.(options)
     })
     socket.command('Core.setViewportSize', async options => {
+      const core = await corePromise
       return core.setViewportSize?.(options)
     })
     socket.command('Core.closeBatch', async options => {
+      const core = await corePromise
       return core.closeBatch(options)
     })
     socket.command('Core.deleteTest', async options => {
+      const core = await corePromise
       return core.deleteTest(options)
     })
     socket.command('Core.locate', async options => {
+      const core = await corePromise
       return core.locate(options)
     })
     socket.command('Core.locateText', async options => {
+      const core = await corePromise
       return core.locateText(options)
     })
     socket.command('Core.extractText', async options => {
+      const core = await corePromise
       return core.extractText(options)
     })
     socket.command('Core.makeECClient', async options => {
+      const core = await corePromise
       const client = await core.makeECClient(options)
       return {url: client.url} as any
     })
     socket.command('Core.makeManager', async options => {
+      const core = await corePromise
       return refer.ref(await core.makeManager(options))
     })
 
@@ -142,6 +159,9 @@ export async function makeCoreServer({
 
     socket.command('Eyes.check', async ({eyes, ...options}) => {
       return refer.deref(eyes)?.check(options)
+    })
+    socket.command('Eyes.checkAndClose', async ({eyes, ...options}) => {
+      return refer.deref(eyes)?.checkAndClose(options)
     })
     socket.command('Eyes.close', async ({eyes, ...options}) => {
       return refer.deref(eyes)?.close(options)

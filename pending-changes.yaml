@@ -10,9 +10,10 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Improve logging in core server
   bug-fix:
-    - 
+    - Fixed issue when core server was hanging if any command was called immediately after `Core.makeCore` command
+    - Fixed issue when `StaticDriver` and `StaticElement` were not recognized as a valid driver or element objects
 "@applitools/eyes-selenium":
   feature:
     - Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
