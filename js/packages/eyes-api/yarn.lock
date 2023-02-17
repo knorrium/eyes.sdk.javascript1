@@ -26,15 +26,15 @@
     "@applitools/req" "1.1.30"
     "@applitools/utils" "1.3.30"
 
-"@applitools/core@2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.5.tgz#f23c9486779a88ec77072b7df837187ab5d816d9"
-  integrity sha512-dAiO0AAL+CiFGafe3FVIdhfeCfB4wxeSyP5qjKo5kZg1z7c+5ga7OouV2Ql500O/NPHqJ2dC1K458DOXFTYv6Q==
+"@applitools/core@2.3.6":
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.6.tgz#05542ccfe30d23bebf9ce7e7961839e86fe3721e"
+  integrity sha512-XTBIUmxzkTsuI+VhHKI3Ve3zsWL1o0bmG0l+/s3GuflnM11/bzSZA3KAGw6rtDm3pvgpC8UJRqU5CR1f/NVvGw==
   dependencies:
     "@applitools/core-base" "1.1.38"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.3"
-    "@applitools/driver" "1.11.31"
+    "@applitools/driver" "1.11.32"
     "@applitools/ec-client" "1.2.10"
     "@applitools/logger" "1.1.46"
     "@applitools/nml-client" "1.3.35"
@@ -42,7 +42,7 @@
     "@applitools/screenshoter" "3.7.27"
     "@applitools/snippets" "2.4.15"
     "@applitools/socket" "1.0.8"
-    "@applitools/spec-driver-webdriver" "1.0.11"
+    "@applitools/spec-driver-webdriver" "1.0.12"
     "@applitools/ufg-client" "1.1.26"
     "@applitools/utils" "1.3.30"
     "@types/ws" "8.5.4"
@@ -82,10 +82,10 @@
     css-tree "2.3.1"
     pako "1.0.11"
 
-"@applitools/driver@1.11.31":
-  version "1.11.31"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.31.tgz#a20b292ed53b7ec01459c76623adb96a7813b2fb"
-  integrity sha512-DlLhTCRwTvmA7gz42QOQlAGDgQzcw8rCjrbdxg0++FVVLJ7BM5+rsSgJCLsjl89Ka/ptLuEFRi5S9hkiIL+NHQ==
+"@applitools/driver@1.11.32":
+  version "1.11.32"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.32.tgz#6fa0970ffcf0aef8b06324740f5170e05b513db5"
+  integrity sha512-Q3TBD/R7MUhE8ukFkmhV5RwMuwv0F5lAG6gCcQLKgNqI052zZnz8CX3j6MIgntx/E5fVMB9AymKP5ZgMuL0xXg==
   dependencies:
     "@applitools/logger" "1.1.46"
     "@applitools/snippets" "2.4.15"
@@ -239,12 +239,12 @@
     "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
 
-"@applitools/spec-driver-webdriver@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.11.tgz#a790f15c77bc56618e71978542bb5d33528cab26"
-  integrity sha512-Nl9jJWP9cL8WLTkwZCzLF0fQ9LNcVyLhNM2UIYRZWGD4dr6XFyVt//x3h1Re9bAOsFXIkLxKMexJNcW7WQkaSw==
+"@applitools/spec-driver-webdriver@1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.12.tgz#593e738982be27b76cc79b413db572df03bedf00"
+  integrity sha512-GPxKutO/jzfz4fm4bsL15rs/WGTHjqL4VLj4XTiD4bzODCBUaaUEiGzkImmPwQammc/2+G6VFU1Ukptpef2uQg==
   dependencies:
-    "@applitools/driver" "1.11.31"
+    "@applitools/driver" "1.11.32"
     "@applitools/utils" "1.3.30"
     proxy-agent "5.0.0"
 
