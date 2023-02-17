@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.6 - 2023/2/17
+
+### Features
+### Bug fixes
+- Update some type declarations
+
 ## 2.3.5 - 2023/2/17
 
 ### Features
