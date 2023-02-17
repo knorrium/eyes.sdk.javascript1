@@ -69,10 +69,10 @@
     node-fetch "2.6.7"
     proxy-agent "5.0.0"
 
-"@applitools/socket@1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.7.tgz#aacc0a96d20087638d06c3dee5130c4c1539fd89"
-  integrity sha512-fQnp6zzBh+xyqsEy4FoOhqwQwAH35/wrM3KRvwDIBMFu1XR6/dNXgLlfZ+LnXJKs/rFsKgQ4LX2JDRjveVVlgw==
+"@applitools/socket@1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.0.8.tgz#e0a9f242a8948d550f170298c6bed8cf653ac03a"
+  integrity sha512-TsuPeIByNsP18wTqrSwbTya+A2n0zjOPvt82A3BQUid/37R5K3wQv3UnKFIvOsPwPTuKEjGlv0YS0xSj5j+foA==
   dependencies:
     "@applitools/logger" "1.1.46"
     "@applitools/utils" "1.3.30"
