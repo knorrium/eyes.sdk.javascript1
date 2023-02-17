@@ -102,7 +102,7 @@ export function isElement(element: any): element is Element {
 export function isSelector(selector: any): selector is Selector {
   return utils.types.isString(selector)
 }
-export function transformSelector(selector: CommonSelector<SpecType>): Selector {
+export function transformSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.has(selector, 'selector')) return selector.selector
   return selector
 }

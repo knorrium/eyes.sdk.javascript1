@@ -60,15 +60,15 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core": "1.4.6",
-    "@applitools/eyes-api": "1.13.1",
-    "@applitools/spec-driver-selenium": "1.5.25"
+    "@applitools/core": "2.3.5",
+    "@applitools/eyes-api": "1.13.3",
+    "@applitools/spec-driver-selenium": "1.5.28"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
-    "@applitools/bongo": "^2.2.2",
+    "@applitools/bongo": "^2.2.5",
     "@applitools/sdk-coverage-tests": "2.7.10",
-    "@applitools/test-utils": "1.5.11",
+    "@applitools/test-utils": "1.5.12",
     "@types/node": "12",
     "@types/selenium-webdriver": "^4.1.1",
     "chromedriver": "105.0.1",

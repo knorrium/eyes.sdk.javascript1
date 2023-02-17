@@ -96,7 +96,7 @@ jobs:
           SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
           AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
       - name: Save testing artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-tests-report-${{matrix.name}}
           retention-days: 2

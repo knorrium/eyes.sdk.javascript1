@@ -104,7 +104,7 @@ jobs:
           remote: ${{matrix.remote}}
       - name: Upload testing artifacts
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: screenshoter-test-results-${{matrix.name}}
           retention-days: 2

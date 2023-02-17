@@ -167,7 +167,7 @@ export class Context<T extends SpecType> {
       if (element) elements = [element]
     }
 
-    if (specUtils.isCommonSelector(this._spec, selector)) {
+    if (specUtils.isObjectCommonSelector(this._spec, selector)) {
       if (elements.length > 0) {
         if (selector.child) {
           elements = await elements.reduce((result, element) => {

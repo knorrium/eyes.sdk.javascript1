@@ -1,12 +1,14 @@
 import {type SpecType} from './spec-driver'
 
-export type Selector<T extends SpecType = never> = T['selector'] | string | CommonSelector<T>
+export type Selector<T extends SpecType = never> = T['selector'] | CommonSelector<T['selector']>
 
-export type CommonSelector<T extends SpecType = never> = {
-  selector: T['selector'] | string
+export type CommonSelector<TSelector = never> = string | ComplexSelector<TSelector>
+
+type ComplexSelector<TSelector> = {
+  selector: TSelector | string
   type?: string
-  child?: T['selector'] | string | CommonSelector<T>
-  shadow?: T['selector'] | string | CommonSelector<T>
-  frame?: T['selector'] | string | CommonSelector<T>
-  fallback?: T['selector'] | string | CommonSelector<T>
+  child?: TSelector | string | CommonSelector<TSelector>
+  shadow?: TSelector | string | CommonSelector<TSelector>
+  frame?: TSelector | string | CommonSelector<TSelector>
+  fallback?: TSelector | string | CommonSelector<TSelector>
 }

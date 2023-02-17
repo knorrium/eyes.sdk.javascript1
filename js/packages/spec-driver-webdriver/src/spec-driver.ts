@@ -167,7 +167,7 @@ export function transformElement(element: Element | StaticElement): Element {
   const elementId = utils.types.has(element, 'elementId') ? element.elementId : extractElementId(element)
   return {[ELEMENT_ID]: elementId, [LEGACY_ELEMENT_ID]: elementId}
 }
-export function transformSelector(selector: CommonSelector<SpecType>): Selector {
+export function transformSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.isString(selector)) {
     return {using: 'css selector', value: selector}
   } else if (utils.types.has(selector, 'selector')) {

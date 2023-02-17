@@ -1,7 +1,7 @@
 import type {Location, Size, Region} from '@applitools/utils'
 import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Context} from './context'
-import {type Selector} from './selector'
+import {type Selector, type CommonSelector} from './selector'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 import * as specUtils from './spec-utils'
@@ -30,7 +30,7 @@ export class Element<T extends SpecType> {
 
   private _context?: Context<T>
   private _selector?: Selector<T>
-  private _commonSelector: Selector | null
+  private _commonSelector: CommonSelector | null
   private _index?: number
   private _state: ElementState = {}
   private _originalOverflow: any
@@ -56,7 +56,7 @@ export class Element<T extends SpecType> {
       throw new TypeError('Element constructor called with argument of unknown type!')
     }
 
-    if (specUtils.isSimpleCommonSelector(this._selector)) {
+    if (specUtils.isSimpleCommonSelector(this._selector) && !utils.types.isString(this._selector)) {
       this._commonSelector = this._selector
     } else if (this._selector && this._spec.untransformSelector) {
       this._commonSelector = this._spec.untransformSelector(

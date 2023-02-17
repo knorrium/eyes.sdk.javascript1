@@ -96,7 +96,7 @@ jobs:
         with:
           working-directory: ./js/packages/eyes-protractor
       - name: Upload testing artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: protractor-test-results-node-${{matrix.node-version}}
           retention-days: 2
@@ -117,7 +117,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Download testing artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: protractor-test-results-node-16
           path: ./js/packages/eyes-protractor

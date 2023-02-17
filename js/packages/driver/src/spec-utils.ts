@@ -3,22 +3,18 @@ import {type Selector, type CommonSelector} from './selector'
 import * as utils from '@applitools/utils'
 
 export function isSimpleCommonSelector(selector: any): selector is CommonSelector {
-  return (
-    utils.types.isPlainObject(selector) &&
-    utils.types.has(selector, 'selector') &&
-    utils.types.isString(selector.selector)
-  )
+  return utils.types.isString(selector) || isObjectCommonSelector(null, selector)
 }
 
-export function isCommonSelector<T extends SpecType>(
-  spec: Pick<SpecDriver<T>, 'isSelector'>,
+export function isObjectCommonSelector<T extends SpecType>(
+  spec: Pick<SpecDriver<T>, 'isSelector'> | null,
   selector: any,
-): selector is CommonSelector<T> {
+): selector is Exclude<CommonSelector<T['selector']>, string> {
   return (
     utils.types.isPlainObject(selector) &&
     utils.types.has(selector, 'selector') &&
     Object.keys(selector).every(key => ['selector', 'type', 'frame', 'shadow', 'child', 'fallback'].includes(key)) &&
-    (utils.types.isString(selector.selector) || spec.isSelector(selector.selector))
+    (utils.types.isString(selector.selector) || !!spec?.isSelector(selector.selector))
   )
 }
 
@@ -26,7 +22,7 @@ export function isSelector<T extends SpecType>(
   spec: Pick<SpecDriver<T>, 'isSelector'>,
   selector: any,
 ): selector is Selector<T> {
-  return spec.isSelector(selector) || utils.types.isString(selector) || isCommonSelector(spec, selector)
+  return spec.isSelector(selector) || utils.types.isString(selector) || isObjectCommonSelector(spec, selector)
 }
 
 export function transformSelector<T extends SpecType>(
@@ -34,12 +30,13 @@ export function transformSelector<T extends SpecType>(
   selector: Selector<T>,
   environment?: {isWeb?: boolean; isNative?: boolean; isIOS?: boolean; isAndroid?: boolean},
 ): T['selector'] {
-  if (environment?.isWeb && isCommonSelector(spec, selector)) {
+  if (environment?.isWeb && isObjectCommonSelector(spec, selector)) {
     if (selector.type === 'id') selector = {type: 'css', selector: `#${selector.selector}`}
     else if (selector.type === 'name') selector = {type: 'css', selector: `[name="${selector.selector}"]`}
     else if (selector.type === 'class name') selector = {type: 'css', selector: `.${selector.selector}`}
     else if (selector.type === 'tag name') selector = {type: 'css', selector: `${selector.selector}`}
   }
+  selector
   return spec.transformSelector?.(selector) ?? (selector as T['selector'])
 }
 
@@ -51,23 +48,23 @@ export function splitSelector<T extends SpecType>(
   elementSelector: Selector<T>
 } {
   let targetSelector: Selector<T> | null = selector
-  let activeSelector = {} as CommonSelector<T>
+  let activeSelector = {} as Exclude<CommonSelector<T['selector']>, string>
   let elementSelector = activeSelector
   const contextSelectors = [] as Selector<T>[]
   while (targetSelector) {
-    if (isCommonSelector(spec, targetSelector)) {
+    if (isObjectCommonSelector(spec, targetSelector)) {
       activeSelector.selector = targetSelector.selector
       if (targetSelector.type) activeSelector.type = targetSelector.type
 
       if (targetSelector.child) {
-        activeSelector = activeSelector.child = {} as CommonSelector<T>
+        activeSelector = activeSelector.child = {} as Exclude<CommonSelector<T['selector']>, string>
         targetSelector = targetSelector.child
       } else if (targetSelector.shadow) {
-        activeSelector = activeSelector.shadow = {} as CommonSelector<T>
+        activeSelector = activeSelector.shadow = {} as Exclude<CommonSelector<T['selector']>, string>
         targetSelector = targetSelector.shadow
       } else if (targetSelector.frame) {
         contextSelectors.push(elementSelector)
-        elementSelector = activeSelector = {} as CommonSelector<T>
+        elementSelector = activeSelector = {} as Exclude<CommonSelector<T['selector']>, string>
         targetSelector = targetSelector.frame
       } else {
         targetSelector = null

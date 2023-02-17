@@ -101,7 +101,7 @@ jobs:
         with:
           working-directory: ./js/packages/eyes-webdriverio-5
       - name: Upload testing artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wdio-test-results-framework-${{matrix.framework-version}}-node-${{matrix.node-version}}
           retention-days: 2
@@ -122,7 +122,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Download testing artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: wdio-test-results-framework-8-node-18
           path: ./js/packages/eyes-webdriverio-5

@@ -139,7 +139,7 @@ export function transformElement(element: Element): Element {
   const elementId = extractElementId(element)
   return {[ELEMENT_ID]: elementId, [LEGACY_ELEMENT_ID]: elementId}
 }
-export function transformSelector(selector: CommonSelector<SpecType>): Selector {
+export function transformSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.has(selector, 'selector')) {
     if (!utils.types.has(selector, 'type')) return selector.selector
     if (selector.type === 'css') return `css selector:${selector.selector}`

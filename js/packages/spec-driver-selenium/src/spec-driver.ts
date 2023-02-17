@@ -85,7 +85,7 @@ export function transformDriver(driver: Driver): Driver {
   }
   return driver
 }
-export function transformSelector(selector: CommonSelector<SpecType>): Selector {
+export function transformSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.isString(selector)) {
     return {css: selector}
   } else if (utils.types.has(selector, 'selector')) {

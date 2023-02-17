@@ -45,7 +45,7 @@ runs:
         BRANCH="${PACKAGE_NAME}_$(date +%F_%H-%M)"
         git checkout -b $BRANCH
         git push -u origin $BRANCH
-        echo "::notice::Publish branch - $BRANCH"
+        echo "::notice::Version branch - $BRANCH"
         echo "branch=$BRANCH" >> $GITHUB_OUTPUT
         echo "::endgroup::"
 
@@ -62,6 +62,6 @@ runs:
         echo "::notice::Bump version $CURRENT_VERSION -> $NEW_VERSION"
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
         TAG="$(git describe --tags --abbrev=0)"
-        echo "::notice::Publish tag $TAG"
+        echo "::notice::Version tag - $TAG"
         echo "tag=$TAG" >> $GITHUB_OUTPUT
         echo "::endgroup::"

@@ -1,6 +1,6 @@
 import type {Location, Size, Region} from '@applitools/utils'
 import type {ScreenOrientation, Cookie} from './types'
-import {type Selector} from './selector'
+import {type CommonSelector} from './selector'
 
 export type SpecType<TDriver = unknown, TContext = unknown, TElement = unknown, TSelector = unknown> = {
   driver: TDriver
@@ -17,8 +17,8 @@ export interface SpecDriver<T extends SpecType> {
   isSelector(selector: any): selector is T['selector']
   transformDriver?(driver: any): T['driver']
   transformElement?(element: any): T['element']
-  transformSelector?(selector: Selector<T>): T['selector']
-  untransformSelector?(selector: T['selector'] | Selector<T>): Selector | null
+  transformSelector?(selector: CommonSelector<T['selector']> | T['selector']): T['selector']
+  untransformSelector?(selector: T['selector']): CommonSelector | null
   extractContext?(element: T['driver'] | T['context']): T['context']
   extractSelector?(element: T['element']): T['selector']
   isStaleElementError(error: any, selector?: T['selector']): boolean

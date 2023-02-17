@@ -7,15 +7,15 @@ const core = makeCore({
 
 export * from '@applitools/eyes-api'
 
-export class Eyes extends api.Eyes<never, never, never> {
+export class Eyes extends api.Eyes<never> {
   protected static readonly _spec = core
 }
 
-export type ConfigurationPlain = api.ConfigurationPlain<never, never>
+export type ConfigurationPlain = api.ConfigurationPlain<never>
 
-export class Configuration extends api.Configuration<never, never> {}
+export class Configuration extends api.Configuration<never> {}
 
-export type OCRRegion = api.OCRRegion<never, never>
+export type OCRRegion = api.OCRRegion<never>
 
 export class CheckSettings extends api.CheckSettingsImage {}
 
