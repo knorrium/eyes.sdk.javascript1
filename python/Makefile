@@ -112,7 +112,7 @@ eyes_robotframework/dist:
 
 
 clean:
-	for PACK in eyes_universal eyes_images eyes_selenium eyes_robotframework; \
+	for PACK in eyes_universal eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
 	do rm -rf $$PACK/dist $$PACK/build $$PACK/$$PACK.egg-info; done
 
 
