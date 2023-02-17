@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 2.3.5 - 2023/2/17
+
+### Features
+- Improve logging in core server
+### Bug fixes
+- Fixed issue when core server was hanging if any command was called immediately after `Core.makeCore` command
+- Fixed issue when `StaticDriver` and `StaticElement` were not recognized as a valid driver or element objects
+
 ## 2.3.4 - 2023/2/16
 
 ### Features
