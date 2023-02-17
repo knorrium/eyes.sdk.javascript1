@@ -21,8 +21,8 @@ Usage
 
 Please check the applitools website for usage instructions:
 
--  Python Images documentation:
-   https://applitools.com/docs/api-ref/sdk-api/images/python_sdk4/eyes
+-  Python Images API documentation:
+   https://applitools.com/docs/api-ref/category/images-python
 
 -  Selenium Python example:
    https://applitools.com/resources/tutorial/selenium/python#step-2

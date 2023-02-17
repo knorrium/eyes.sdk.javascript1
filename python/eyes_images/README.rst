@@ -32,6 +32,9 @@ Please check the applitools website for usage instructions:
 -  Python Appium web example:
    https://applitools.com/resources/tutorial/appium/python#step-2
 
+-  Playwright Eyes tutorial:
+   https://applitools.com/tutorials/quickstart/web/playwright/python
+
 .. _Change log: https://github.com/applitools/eyes.sdk.javascript1/blob/master/python/eyes_images/CHANGELOG.md
 .. |Black Formatter| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black

@@ -4,8 +4,9 @@ install_dev_requirements: install_installation_tests_requirements install_packag
 	python -m pip install --upgrade pre-commit
 
 
-install_packages_editable: eyes_universal eyes_images eyes_selenium eyes_robotframework
+install_packages_editable: eyes_universal eyes_images eyes_selenium eyes_playwright eyes_robotframework
 	set -e; for PACK in $^; do python -m pip install --upgrade --editable $$PACK; done
+	python -m playwright install
 
 
 install_eyes_universal: eyes_universal/dist
@@ -15,6 +16,10 @@ install_eyes_universal: eyes_universal/dist
 install_eyes_images: eyes_images/dist install_eyes_universal
 	python -m pip install eyes_images/dist/*
 
+
+install_eyes_playwright: eyes_playwright/dist install_eyes_images
+	python -m pip install eyes_playwright/dist/*
+	python -m playwright install
 
 install_eyes_selenium: eyes_selenium/dist install_eyes_images
 	python -m pip install eyes_selenium/dist/*
@@ -45,17 +50,17 @@ install_publish_requirements:
 
 
 uninstall:
-	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes-images eyes-universal
+	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes_playwright eyes-images eyes-universal
 
 
-publish_eyes_selenium: eyes_images/dist eyes_selenium/dist install_publish_requirements
+publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
 	bash ./ci_scripts/send_mail.sh python ${SDK_VERSION} eyes_images/CHANGELOG.md
-	twine upload --verbose eyes_images/dist/* eyes_selenium/dist/*
+	twine upload --verbose eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
-publish_testing_eyes_selenium: eyes_images/dist eyes_selenium/dist install_publish_requirements
+publish_testing_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
 	echo bash ./ci_scripts/send_mail.sh python ${SDK_VERSION} eyes_images/CHANGELOG.md
-	twine upload --verbose --repository testpypi eyes_images/dist/* eyes_selenium/dist/*
+	twine upload --verbose --repository testpypi eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
 publish_eyes_robotframework: eyes_robotframework/dist install_publish_requirements
@@ -76,7 +81,7 @@ publish_testing_eyes_universal: eyes_universal/dist install_publish_requirements
 	twine upload --verbose --repository testpypi eyes_universal/dist/*
 
 
-dist: eyes_universal/dist eyes_images/dist eyes_selenium/dist eyes_robotframework/dist
+dist: eyes_universal/dist eyes_images/dist eyes_playwright/dist eyes_selenium/dist eyes_robotframework/dist
 
 
 eyes_universal/dist:
@@ -89,6 +94,12 @@ eyes_universal/dist:
 eyes_images/dist:
 	python -m pip install --upgrade wheel
 	cd eyes_images && python setup.py bdist_wheel
+
+
+eyes_playwright/dist:
+	python -m pip install --upgrade wheel
+	cd eyes_playwright && python setup.py bdist_wheel
+
 
 eyes_selenium/dist:
 	python -m pip install --upgrade wheel
@@ -122,9 +133,7 @@ eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_
 	npm run python:tests --prefix ./coverage-tests
 
 
-eyes_playwright_generated_tests: install_eyes_images install_functional_tests_requirements
-	python -m pip install playwright
-	python -m playwright install
+eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements
 	cd coverage-tests && npm install
 	npm run python:generate:playwright --prefix ./coverage-tests
 	npm run python:run:parallel --prefix ./coverage-tests
