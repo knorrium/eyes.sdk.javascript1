@@ -1,13 +1,28 @@
 export APPLITOOLS_BATCH_ID=$(shell python -c "import uuid;print(str(uuid.uuid4()))")
 
-install_dev_requirements: install_installation_tests_requirements install_packages_editable
+install_dev_requirements: ensure_dev_venv install_installation_tests_requirements
+	python -m pip install --upgrade --editable eyes_universal
+	python -m pip install --upgrade --editable eyes_images
+	python -m pip install --upgrade --editable eyes_selenium
+	python -m pip install --upgrade --editable eyes_robotframework
+ifeq ($(shell python -c 'import sys; print(sys.version_info >= (3,7))'),True)
+	python -m pip install --upgrade --editable eyes_playwright
+	python -m playwright install
+else
+	@echo Playwright is not available in `python --version`
+endif
 	python -m pip install --upgrade pre-commit
 
-
-install_packages_editable: eyes_universal eyes_images eyes_selenium eyes_playwright eyes_robotframework
-	set -e; for PACK in $^; do python -m pip install --upgrade --editable $$PACK; done
-	python -m playwright install
-
+ensure_dev_venv:
+ifdef VIRTUAL_ENV
+	@echo Using Python from ${VIRTUAL_ENV}
+else
+	@echo Creating development virtualenvs
+	python2.7 -m virtualenv venv/2.7
+	python3.6 -m venv venv/3.6
+	python3.11 -m venv venv/3.11 --upgrade-deps
+	@echo Please activate a virtualenv && false
+endif
 
 install_eyes_universal: eyes_universal/dist
 	python -m pip install --no-index --find-links=file:eyes_universal/dist/ eyes_universal
