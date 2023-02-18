@@ -1,5 +1,6 @@
 from itertools import count
 from typing import TYPE_CHECKING
+from uuid import uuid1
 
 if TYPE_CHECKING:
     from typing import Text
@@ -22,11 +23,9 @@ class RefId(object):
 
 
 class ObjectRegistry(object):
-    _object_registry_id_gen = count(1)
-
     def __init__(self):
         # type: () -> None
-        self.id = str(next(self._object_registry_id_gen))
+        self.id = str(uuid1())
         self._command_key_gen = count(1)
 
     def next_command_key(self):

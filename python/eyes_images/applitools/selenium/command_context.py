@@ -9,8 +9,6 @@ if TYPE_CHECKING:
 
 
 class CommandContext(object):
-    _key_gen = count(1)
-
     def __init__(self, connection, object_registry):
         # type: (USDKConnection, ObjectRegistry) -> None
         self._connection = connection

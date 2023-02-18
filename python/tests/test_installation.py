@@ -4,7 +4,7 @@ from subprocess import call, check_call, check_output
 
 import pytest
 
-from applitools.eyes_universal import __version__ as eyes_universal_version
+from applitools.core_universal import __version__ as core_universal_version
 from applitools.images.__version__ import __version__ as eyes_images_version
 from EyesLibrary.__version__ import __version__ as eyes_robotframework_version
 
@@ -37,15 +37,15 @@ def _get_venv_packages(venv):
 
 
 @pytest.fixture
-def eyes_universal_installed(venv):
+def core_universal_installed(venv):
     call([venv.python, "-m", "pip", "uninstall", "-y", "wheel"], env=env)
-    wheels = os.path.join(root_dir, "eyes_universal", "dist")
+    wheels = os.path.join(root_dir, "core_universal", "dist")
     pip = [venv.python, "-m", "pip", "install", "--no-index", "--find-links", wheels]
-    check_call(pip + ["eyes_universal==" + eyes_universal_version], env=env)
+    check_call(pip + ["core_universal==" + core_universal_version], env=env)
 
 
 @pytest.fixture
-def eyes_images_installed(venv, eyes_universal_installed):
+def eyes_images_installed(venv, core_universal_installed):
     file_name = "eyes_images-{}-py2.py3-none-any.whl".format(eyes_images_version)
     eyes_images = os.path.join(root_dir, "eyes_images", "dist", file_name)
     pip = [venv.python, "-m", "pip", "install"]
@@ -70,18 +70,18 @@ def eyes_robotframework_installed(venv, eyes_selenium_installed):
     check_call(pip + [eyes_robot], env=env)
 
 
-def test_setup_eyes_universal(venv, eyes_universal_installed):
-    assert str(venv.get_version("eyes-universal")) == eyes_universal_version
-    get_version = [venv.python, "-m", "applitools.eyes_universal", "--version"]
+def test_setup_core_universal(venv, core_universal_installed):
+    assert str(venv.get_version("core-universal")) == core_universal_version
+    get_version = [venv.python, "-m", "applitools.core_universal", "--version"]
     # drop post-version part, that might only be present in package version
-    binary_version = ".".join(eyes_universal_version.split(".")[:3])
+    binary_version = ".".join(core_universal_version.split(".")[:3])
     assert binary_version.encode() == check_output(get_version, env=env).rstrip()
     all_packages = _get_venv_packages(venv)
-    assert set(all_packages.keys()) == {"eyes-universal"}
+    assert set(all_packages.keys()) == {"core-universal"}
 
 
-def test_eyes_universal_has_license(venv, eyes_universal_installed):
-    license = _get_venv_package_license(venv, "eyes-universal")
+def test_core_universal_has_license(venv, core_universal_installed):
+    license = _get_venv_package_license(venv, "core-universal")
     assert "SDK LICENSE AGREEMENT" in license
 
 

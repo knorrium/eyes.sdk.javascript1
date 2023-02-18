@@ -3,7 +3,7 @@ from io import BytesIO
 import pytest
 from mock import Mock
 
-from applitools.eyes_universal.server import SDKServer
+from applitools.core_universal.server import SDKServer
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def popen_mock(monkeypatch):
     def constructor(_, stdout, stdin):
         return popen_mock
 
-    monkeypatch.setattr("applitools.eyes_universal.server.Popen", constructor)
+    monkeypatch.setattr("applitools.core_universal.server.Popen", constructor)
     return popen_mock
 
 

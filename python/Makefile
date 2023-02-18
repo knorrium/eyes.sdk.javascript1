@@ -1,7 +1,7 @@
 export APPLITOOLS_BATCH_ID=$(shell python -c "import uuid;print(str(uuid.uuid4()))")
 
 install_dev_requirements: ensure_dev_venv install_installation_tests_requirements
-	python -m pip install --upgrade --editable eyes_universal
+	python -m pip install --upgrade --editable core_universal
 	python -m pip install --upgrade --editable eyes_images
 	python -m pip install --upgrade --editable eyes_selenium
 	python -m pip install --upgrade --editable eyes_robotframework
@@ -24,11 +24,11 @@ else
 	@echo Please activate a virtualenv && false
 endif
 
-install_eyes_universal: eyes_universal/dist
-	python -m pip install --no-index --find-links=file:eyes_universal/dist/ eyes_universal
+install_core_universal: core_universal/dist
+	python -m pip install --no-index --find-links=file:core_universal/dist/ core_universal
 
 
-install_eyes_images: eyes_images/dist install_eyes_universal
+install_eyes_images: eyes_images/dist install_core_universal
 	python -m pip install eyes_images/dist/*
 
 
@@ -65,7 +65,7 @@ install_publish_requirements:
 
 
 uninstall:
-	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes_playwright eyes-images eyes-universal
+	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes_playwright eyes-images core-universal
 
 
 publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
@@ -88,20 +88,20 @@ publish_testing_eyes_robotframework: eyes_robotframework/dist install_publish_re
 	twine upload --verbose --repository testpypi eyes_robotframework/dist/*
 
 
-publish_eyes_universal: eyes_universal/dist install_publish_requirements
-	twine upload --verbose eyes_universal/dist/*
+publish_core_universal: core_universal/dist install_publish_requirements
+	twine upload --verbose core_universal/dist/*
 
 
-publish_testing_eyes_universal: eyes_universal/dist install_publish_requirements
-	twine upload --verbose --repository testpypi eyes_universal/dist/*
+publish_testing_core_universal: core_universal/dist install_publish_requirements
+	twine upload --verbose --repository testpypi core_universal/dist/*
 
 
-dist: eyes_universal/dist eyes_images/dist eyes_playwright/dist eyes_selenium/dist eyes_robotframework/dist
+dist: core_universal/dist eyes_images/dist eyes_playwright/dist eyes_selenium/dist eyes_robotframework/dist
 
 
-eyes_universal/dist:
+core_universal/dist:
 	python -m pip install --upgrade wheel
-	set -e; cd eyes_universal; \
+	set -e; cd core_universal; \
 	for PLAT in macosx_10_7_x86_64 macosx_11_0_arm64 manylinux1_x86_64 manylinux2014_aarch64 musllinux_1_2_x86_64 win_amd64; \
 	do python setup.py bdist_wheel --usdk-build-dir=${USDK_BUILD_DIR} --plat-name=$$PLAT; rm -rf build; done
 
@@ -127,7 +127,7 @@ eyes_robotframework/dist:
 
 
 clean:
-	for PACK in eyes_universal eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
+	for PACK in core_universal eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
 	do rm -rf $$PACK/dist $$PACK/build $$PACK/$$PACK.egg-info; done
 
 

@@ -78,12 +78,12 @@ def b64_encoded_url_md5(url):
 
 def download(executable, version, dry_run):
     ext = ".exe" if executable == "win" else ""
-    package_bin_name = "bin/eyes-universal" + ext
+    package_bin_name = "bin/core" + ext
     if not dry_run:
-        relative_bin_name = "applitools/eyes_universal/" + package_bin_name
+        relative_bin_name = "applitools/core_universal/" + package_bin_name
         url_template = (
             "https://github.com/applitools/eyes.sdk.javascript1/releases/download/"
-            "%40applitools%2Feyes-universal%40{version}/eyes-universal-{exe}{ext}"
+            "%40applitools%2Fcore%40{version}/core-{exe}{ext}"
         )
         url = url_template.format(version=version, exe=executable, ext=ext)
         existing_md5 = b64_encoded_file_md5(relative_bin_name)
@@ -104,10 +104,10 @@ def download(executable, version, dry_run):
 
 def copy_built(build_dir, executable, dry_run):
     ext = ".exe" if executable == "win" else ""
-    package_bin_name = "bin/eyes-universal" + ext
+    package_bin_name = "bin/core" + ext
     if not dry_run:
-        relative_bin_name = "applitools/eyes_universal/" + package_bin_name
-        built_file_name = "{build_dir}/eyes-universal-{exe}{ext}".format(
+        relative_bin_name = "applitools/core_universal/" + package_bin_name
+        built_file_name = "{build_dir}/core-{exe}{ext}".format(
             build_dir=build_dir, exe=executable, ext=ext
         )
         copy(built_file_name, relative_bin_name)
@@ -165,7 +165,7 @@ class build_py(_build_py):  # noqa
         if selected_executable:
             version = self.distribution.get_version()
             version = ".".join(version.split(".")[:3])  # drop post-build number
-            self.mkpath("applitools/eyes_universal/bin")
+            self.mkpath("applitools/core_universal/bin")
             if usdk_build_dir:
                 self.announce(
                     "copying %s executable from %s"

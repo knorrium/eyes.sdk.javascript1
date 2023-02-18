@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from six import moves
 from websocket import WebSocket
 
-from applitools.eyes_universal import get_instance
+from applitools.core_universal import get_instance
 
 from .object_registry import RefId
 
@@ -115,7 +115,7 @@ class USDKConnection(object):
                 if command_name.startswith("Driver."):  # specdriver callback
                     key = command_key(response)
                     response_queues[key.object_registry_id].put(("callback", response))
-                elif command_name == "Server.log":
+                elif command_name == "Logger.log":
                     entry = response["payload"]
                     level = logging.getLevelName(entry["level"].upper())
                     _logger.log(level, entry["message"])

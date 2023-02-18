@@ -196,7 +196,7 @@ def test_check_image_with_viewport_size_set(eyes):
     assert result.host_display_size.height == 400
 
 
-@pytest.mark.skip("Not supported by eyes-universal yet")
+@pytest.mark.skip("Not supported by core-universal yet")
 def test_check_image_without_viewport_size_set(eyes):
     eyes.open(
         "images",

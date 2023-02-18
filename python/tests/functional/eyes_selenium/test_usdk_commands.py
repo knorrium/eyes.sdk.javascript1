@@ -16,7 +16,7 @@ from applitools.selenium.protocol import SeleniumWebDriver
 
 def test_usdk_commands_make_manager():
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
 
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
 
@@ -28,7 +28,7 @@ def test_usdk_commands_open_eyes(local_chrome_driver):
     local_chrome_driver.get("https://demo.applitools.com")
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
 
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
 
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
 
@@ -44,7 +44,7 @@ def test_usdk_commands_open_eyes(local_chrome_driver):
 
 def test_usdk_commands_set_get_viewport_size(local_chrome_driver):
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
 
     commands.core_set_viewport_size(local_chrome_driver, {"width": 800, "height": 600})
     returned_size = commands.core_get_viewport_size(local_chrome_driver)
@@ -61,7 +61,7 @@ def test_usdk_commands_open_close_eyes(local_chrome_driver):
     )
     objreg = SeleniumWebdriverObjectRegistry()
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
     eyes = commands.manager_open_eyes(objreg, mgr, local_chrome_driver, config=config)
 
@@ -98,7 +98,7 @@ def test_usdk_commands_open_abort_eyes(local_chrome_driver):
     )
     objreg = SeleniumWebdriverObjectRegistry()
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
     eyes = commands.manager_open_eyes(objreg, mgr, local_chrome_driver, config=config)
 
@@ -152,7 +152,7 @@ def test_usdk_commands_open_check_close_eyes(local_chrome_driver):
 
     objreg = SeleniumWebdriverObjectRegistry()
     commands = CommandExecutor(SeleniumWebDriver, USDKConnection.create())
-    commands.make_core("sdk_name", "sdk_version", getcwd())
+    commands.make_core("sdk_name/sdk_version", getcwd())
     mgr = commands.core_make_manager(ManagerType.CLASSIC)
     eyes = commands.manager_open_eyes(objreg, mgr, local_chrome_driver, config=config)
 

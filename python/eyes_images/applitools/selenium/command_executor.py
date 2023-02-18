@@ -42,7 +42,7 @@ class CommandExecutor(object):
     def create(cls, protocol, name, version):
         # type: (Type[USDKProtocol], Text, Text) -> CommandExecutor
         commands = cls(protocol, USDKConnection.create())
-        commands.make_core(name, version, getcwd())
+        commands.make_core("{}/{}".format(name, version), getcwd())
         return commands
 
     @classmethod
@@ -60,16 +60,15 @@ class CommandExecutor(object):
         self._protocol = protocol
         self._connection = connection
 
-    def make_core(self, name, version, cwd):
-        # type: (Text, Text, Text) -> None
+    def make_core(self, agent_id, cwd):
+        # type: (Text, Text) -> None
+        spec = self._protocol.COMMANDS if self._protocol.COMMANDS else "webdriver"
         self._connection.notification(
             "Core.makeCore",
             {
-                "name": name,
-                "version": version,
+                "agentId": agent_id,
                 "cwd": cwd,
-                "protocol": self._protocol.KIND,
-                "commands": self._protocol.COMMANDS,
+                "spec": spec,
             },
         )
 

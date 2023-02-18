@@ -1,3 +1,7 @@
+## [vNext]
+### Updated
+- Switch to core-universal server package
+
 ## [5.15.0] - 2023-02-14
 ### Added
 - Playwright support [Trello 3108](https://trello.com/c/ptnJGLST)

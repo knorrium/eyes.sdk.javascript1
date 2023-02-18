@@ -6,7 +6,7 @@ on:
       package:
         description: package name
         type: choice
-        options: [eyes_universal, eyes_selenium, eyes_robotframework]
+        options: [core_universal, eyes_selenium, eyes_robotframework]
         required: true
       version:
         description: version increment type

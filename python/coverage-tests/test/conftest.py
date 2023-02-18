@@ -164,5 +164,3 @@ def eyes_setup(runner, batch_info, stitch_mode, emulation):
     yield eyes
     # If the test was aborted before eyes.close was called, ends the test as aborted.
     eyes.abort()
-    if runner is not None:
-        runner.get_all_test_results(False)
