@@ -129,7 +129,7 @@ async function getPackages() {
     packageInfo.dependencies = packageInfo.dependencies.filter(depName => pyPackages[depName])
   })
 
-  pyPackages['eyes-universal'].dependencies.push('@applitools/eyes-universal')
+  pyPackages['core-universal'].dependencies.push('@applitools/core')
 
   return {...pyPackages, ...jsPackages}
 }
