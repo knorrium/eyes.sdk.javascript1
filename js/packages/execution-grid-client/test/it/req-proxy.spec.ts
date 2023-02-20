@@ -10,7 +10,7 @@ describe('req-proxy', () => {
 
   async function createServer({port}: {port: number}): Promise<HttpServer> {
     return new Promise((resolve, reject) => {
-      const server = createHttpServer().listen(port, 'localhost')
+      const server = createHttpServer().listen({port, hostname: 'localhost'})
       server.on('listening', () => resolve(server))
       server.on('error', reject)
     })

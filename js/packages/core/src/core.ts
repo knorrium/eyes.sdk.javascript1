@@ -46,7 +46,7 @@ export function makeCore<TSpec extends SpecType>({
     locateText: makeLocateText({spec, core, logger}),
     extractText: makeExtractText({spec, core, logger}),
     openEyes: makeOpenEyes({spec, core, concurrency, logger}),
-    makeManager: makeMakeManager({spec, concurrency, agentId, logger}),
+    makeManager: makeMakeManager({spec, core, concurrency, agentId, logger}),
     closeBatch: makeCloseBatch({core, logger}),
     deleteTest: makeDeleteTest({core, logger}),
     makeECClient: makeMakeECClient({core, logger}),

@@ -16,21 +16,24 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
-"@applitools/eg-socks5-proxy-server@^0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@applitools/eg-socks5-proxy-server/-/eg-socks5-proxy-server-0.4.6.tgz#5852db771ff503b1549387aefa79e091077a223a"
-  integrity sha512-EOuR47cE8VN4tl1h+E9+eTKQ0cA/UsvOYaajNWirBJn/Cg41tue7NcFodY7iuuuZfMp1maSedhsl1wlfAjQ12w==
+"@applitools/eg-socks5-proxy-server@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@applitools/eg-socks5-proxy-server/-/eg-socks5-proxy-server-0.5.4.tgz#d6ce67e5fabfb413a521406ea6b6994617da7550"
+  integrity sha512-LEucOmy1MXft6c07CkqKPS1Ov9Zg9WyHV2vI1SbbHR3AG4cEM2M3N0qcWlytxjzef9t22+1tOpEJhrBS65bSQw==
   dependencies:
     binary "^0.3.0"
+    is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.13":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.13.tgz#8c8d593c6dbfa7e96196afaf81cbe9617d31a86a"
-  integrity sha512-S/DRfQ7gHxJML0YAfuod0FmzhWttSv0TIaogz/IaemVyRJ8188V5pZ2AD9af4yKL8ZFh5/6lhOZjEG85fJhRrw==
+"@applitools/execution-grid-tunnel@1.0.15", "@applitools/execution-grid-tunnel@^1.0.14":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.15.tgz#9d63d89b64faed22e7b7e5ee762869d778d6a180"
+  integrity sha512-TgaQTYUNabSLbOxSB9opbyuMV6l4FelD/XqzA/I21UsJDVuJx6ymbQ6gSlFypQm+9Omzwdu0hFRYqkIufdYaKA==
   dependencies:
-    "@applitools/eg-socks5-proxy-server" "^0.4.6"
+    "@applitools/eg-socks5-proxy-server" "^0.5.4"
+    "@applitools/execution-grid-tunnel" "^1.0.14"
     "@applitools/logger" "^1.0.12"
     dotenv "^16.0.0"
+    encoding "^0.1.13"
     fastify "^3.24.1"
     fastify-plugin "^3.0.1"
     find-process "^1.4.7"
@@ -686,6 +689,13 @@ encodeurl@~1.0.2:
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
   integrity sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==
 
+encoding@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.13.tgz#56574afdd791f54a8e9b2785c0582a2d26210fa9"
+  integrity sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==
+  dependencies:
+    iconv-lite "^0.6.2"
+
 escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
@@ -1123,6 +1133,13 @@ iconv-lite@0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
+iconv-lite@^0.6.2:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.3.tgz#a52f80bf38da1952eb5c681790719871a1a72501"
+  integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
+  dependencies:
+    safer-buffer ">= 2.1.2 < 3.0.0"
+
 immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
@@ -1179,6 +1196,11 @@ is-glob@^4.0.1, is-glob@~4.0.1:
   integrity sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==
   dependencies:
     is-extglob "^2.1.1"
+
+is-localhost-ip@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/is-localhost-ip/-/is-localhost-ip-2.0.0.tgz#c2bf11faa0973657fd6e29e4e848348aeb09a1cd"
+  integrity sha512-vlgs2cSgMOfnKU8c1ewgKPyum9rVrjjLLW2HBdL5i0iAJjOs8NY55ZBd/hqUTaYR0EO9CKZd3hVSC2HlIbygTQ==
 
 is-number@^7.0.0:
   version "7.0.0"
@@ -1870,7 +1892,7 @@ safe-regex2@^2.0.0:
   dependencies:
     ret "~0.2.0"
 
-"safer-buffer@>= 2.1.2 < 3":
+"safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==

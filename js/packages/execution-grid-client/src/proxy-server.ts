@@ -97,7 +97,7 @@ export async function makeServer({settings, logger}: {settings: ECClientSettings
     }
   })
 
-  server.listen(settings.port ?? 0)
+  server.listen({port: settings.port ?? 0, hostname: 'localhost'})
 
   return new Promise<{url: string; port: number; close(): void}>((resolve, reject) => {
     server.on('listening', () => {

@@ -6,7 +6,7 @@ import {MockDriver, spec} from '@applitools/driver/fake'
 import {makeFakeCore} from '../utils/fake-base-core'
 import assert from 'assert'
 
-describe('get eyes results', async () => {
+describe('get manager results', async () => {
   let driver: MockDriver, core: Core<SpecType<MockDriver>, 'classic' | 'ufg'>
 
   before(async () => {
@@ -25,28 +25,31 @@ describe('get eyes results', async () => {
   })
 
   it('should not throw on get results', async () => {
-    const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
+    const manager = await core.makeManager()
+    const eyes = await manager.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
     await eyes.check({settings: {name: 'diff'}})
     await eyes.close()
-    const results = await eyes.getResults({settings: {throwErr: false}})
-    assert.ok(Array.isArray(results))
+    const summary = await manager.getResults({settings: {throwErr: false}})
+    assert.ok(Array.isArray(summary.results))
   })
 
   it('should throw on get results', async () => {
-    const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
+    const manager = await core.makeManager()
+    const eyes = await manager.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
     await eyes.check({settings: {name: 'diff'}})
     await eyes.close()
-    await assert.rejects(eyes.getResults({settings: {throwErr: true}}))
+    await assert.rejects(manager.getResults({settings: {throwErr: true}}))
   })
 
   it('should return results multiple times', async () => {
-    const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
-    await eyes.check({settings: {name: 'diff'}})
+    const manager = await core.makeManager()
+    const eyes = await manager.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
+    await eyes.check()
     await eyes.close()
-    const results1 = await eyes.getResults()
-    assert.ok(Array.isArray(results1))
-    assert.strictEqual(results1[0].status, 'Unresolved')
-    const results2 = await eyes.getResults()
-    assert.deepStrictEqual(results1, results2)
+    const summary1 = await manager.getResults()
+    assert.strictEqual(summary1.passed, 1)
+    assert.strictEqual(summary1.results[0].result!.status, 'Passed')
+    const summary2 = await manager.getResults()
+    assert.deepStrictEqual(summary1, summary2)
   })
 })

@@ -21,12 +21,15 @@ export function makeFakeCore({
       await hooks?.getAccountInfo?.(options)
       return account as AccountInfo
     },
+    async closeBatch(options) {
+      emitter.emit('closeBatch', options)
+      await hooks?.closeBatch?.(options)
+    },
+    deleteTest: null as never,
     async logEvent() {
       emitter.emit('logEvent')
     },
     locate: null as never,
-    closeBatch: null as never,
-    deleteTest: null as never,
     async locateText(options) {
       emitter.emit('beforeLocateText', options)
       try {

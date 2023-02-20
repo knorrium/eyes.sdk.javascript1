@@ -152,9 +152,7 @@ export async function makeCoreServer({
       return eyesRef
     })
     socket.command('EyesManager.getResults', async ({manager, ...options}) => {
-      const results = refer.deref(manager)?.getResults(options)
-      refer.destroy(manager)
-      return results
+      return refer.deref(manager)?.getResults(options)
     })
 
     socket.command('Eyes.check', async ({eyes, ...options}) => {
@@ -170,9 +168,7 @@ export async function makeCoreServer({
       return refer.deref(eyes)?.abort(options)
     })
     socket.command('Eyes.getResults', async ({eyes, ...options}) => {
-      const results = refer.deref(eyes)?.getResults(options)
-      refer.destroy(eyes)
-      return results
+      return refer.deref(eyes)?.getResults(options)
     })
 
     socket.command('Debug.getHistory', async () => {
