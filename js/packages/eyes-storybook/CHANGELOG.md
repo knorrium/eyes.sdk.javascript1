@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.31.1 - 2023/2/21
+
+### Features
+### Bug fixes
+- Make sure to send http headers in the main storybook tab
+
 ## 3.31.0 - 2023/2/15
 
 ### Features

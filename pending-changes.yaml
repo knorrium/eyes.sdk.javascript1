@@ -95,7 +95,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Make sure to send http headers in the main storybook tab
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
