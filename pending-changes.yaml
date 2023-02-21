@@ -28,7 +28,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-playwright":
   feature:
-    - Crop screenshot image base on account info
+    - 
   bug-fix:
     - 
 "@applitools/eyes-protractor":
