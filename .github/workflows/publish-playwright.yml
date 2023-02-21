@@ -54,6 +54,7 @@ jobs:
         shell: bash
         working-directory: ./js/packages/eyes-playwright
         run: |
+          yarn --cwd ../.. install
           yarn install
           npx bongo release-pre-check --skip-deps --skip-commit --skip-verify-installed-versions
           npx bongo verify-changelog
