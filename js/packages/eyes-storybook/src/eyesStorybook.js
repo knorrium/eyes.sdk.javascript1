@@ -61,6 +61,8 @@ async function eyesStorybook({
   const browser = await puppeteer.launch(config.puppeteerOptions);
   logger.log('browser launched');
   const page = await browser.newPage();
+  // we send http headers here and in init page
+  page.setExtraHTTPHeaders(config.puppeteerExtraHTTPHeaders);
   const core = await makeCore({
     spec,
     concurrency: testConcurrency,
