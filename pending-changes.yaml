@@ -58,8 +58,7 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-puppeteer":
   feature:
-    - Additional internal event logs
-    - Crop screenshot image base on account info
+    - 
   bug-fix:
     - 
 "@applitools/eyes-testcafe":

@@ -11,6 +11,13 @@
 
 
 
+## 1.14.0 - 2023/2/21
+
+### Features
+- Additional internal event logs
+- Crop screenshot image base on account info
+### Bug fixes
+
 ## 1.13.0 - 2022/12/20
 
 ### Features
