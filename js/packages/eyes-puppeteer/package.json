@@ -54,9 +54,9 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core": "2.3.5",
-    "@applitools/eyes-api": "1.13.3",
-    "@applitools/spec-driver-puppeteer": "1.1.43"
+    "@applitools/core": "2.3.6",
+    "@applitools/eyes-api": "1.13.6",
+    "@applitools/spec-driver-puppeteer": "1.1.44"
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.11",
