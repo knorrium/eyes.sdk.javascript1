@@ -50,7 +50,7 @@
     "build:bin:arm64": "pkg . --target node14-linux-arm64 --output ./bin/core-linux-arm64",
     "build:bin:zip": "zip -j ./bin/core.zip $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "build:bin:tgz": "tar -czf ./bin/core.tar.gz $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
-    "test": "mocha --no-timeouts -r ts-node/register --parallel --jobs 15 --exit --exclude './test/bin/**' './test/**/*.spec.ts'",
+    "test": "mocha --config .mocharc.cvg.js",
     "test:sanity": "yarn test:unit",
     "test:bin": "mocha --no-timeouts -r ts-node/register --parallel --jobs 15 './test/bin/**/*.spec.ts'",
     "test:e2e": "mocha --no-timeouts -r ts-node/register --parallel --jobs 15 './test/e2e/**/*.spec.ts'",
@@ -59,10 +59,11 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
+    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'core'",
     "deps": "bongo deps",
     "preversion": "bongo preversion --verify-pending-changes --skip-deps",
     "version": "bongo version --with-pending-changes",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "pkg": {
     "scripts": "./dist/cli/cli.js",
@@ -98,6 +99,7 @@
   },
   "devDependencies": {
     "@applitools/bongo": "^2.2.5",
+    "@applitools/sdk-coverage-tests": "^2.7.10",
     "@applitools/spec-driver-puppeteer": "^1.1.44",
     "@applitools/spec-driver-selenium": "^1.5.29",
     "@applitools/spec-driver-webdriverio": "^1.4.27",
@@ -109,6 +111,7 @@
     "@types/yargs": "^17.0.22",
     "chromedriver": "^106.0.0",
     "mocha": "^10.0.0",
+    "mocha-multi": "^1.1.7",
     "nock": "^13.2.8",
     "pkg": "^5.8.0",
     "png-async": "^0.9.4",
