@@ -58,6 +58,11 @@ const checkConfig = {
     type: 'boolean',
     default: false,
   },
+  lazyLoad: {
+    describe: 'when specified, perform loading of the lazy load content first',
+    type: 'boolean',
+    default: false,
+  },
   layoutBreakpoints: {
     describe: 'comma-separated list of breakpoints (widths) for js layouts',
     type: 'string',
@@ -504,6 +509,7 @@ function argsToCheckConfig(args) {
     ignoreRegions: args.ignoreRegions,
     layoutRegions: args.layoutRegions,
     layoutBreakpoints: args.layoutBreakpoints,
+    lazyLoad: args.lazyLoad,
     ignoreDisplacements: args.ignoreDisplacements,
     timeout: args.matchTimeout,
     fully: args.fully,
