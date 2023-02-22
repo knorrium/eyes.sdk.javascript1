@@ -92,7 +92,7 @@ function handleUnexpectedResponse(): Hooks<ReqUFGOptions> {
           : options.expected !== response.status)
       ) {
         throw new Error(
-          `Request "${name}" that was sent to the address "[${request.method}]${
+          `Request "${options?.name}" that was sent to the address "[${request.method}]${
             request.url
           }" failed due to unexpected status ${response.statusText}(${response.status}) with body ${JSON.stringify(
             await response.clone().text(),
