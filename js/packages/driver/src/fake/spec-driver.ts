@@ -47,11 +47,14 @@ export async function isEqualElements(_driver: Driver, element1: Element, elemen
 export async function executeScript(driver: Driver, script: ((arg: any) => any) | string, arg: any): Promise<any> {
   return driver.executeScript(script, [arg])
 }
-export async function findElement(driver: Driver, selector: Selector, parent?: Element): Promise<Element> {
+export async function findElement(driver: Driver, selector: Selector, parent?: Element): Promise<Element | null> {
   return driver.findElement(selector, parent)
 }
 export async function findElements(driver: Driver, selector: Selector, parent?: Element): Promise<Element[]> {
   return driver.findElements(selector, parent)
+}
+export async function getElementText(_driver: Driver, element: Element): Promise<string> {
+  return element.attrs?.text
 }
 export async function mainContext(driver: Driver): Promise<Driver> {
   return driver.switchToFrame(null)

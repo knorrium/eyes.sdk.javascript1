@@ -6,7 +6,7 @@ import {Driver} from '../../src/index'
 const logger = makeLogger()
 
 describe('driver', () => {
-  let mock: spec.Driver, driver: Driver<spec.Driver, spec.Driver, spec.Element, spec.Selector>
+  let mock: spec.Driver, driver: Driver<any>
 
   before(async () => {
     mock = new MockDriver()
@@ -322,7 +322,7 @@ describe('driver', () => {
 })
 
 describe('driver native', () => {
-  let driver: Driver<any, any, any, any>
+  let driver: Driver<any>
 
   before(async () => {
     driver = new Driver({logger, spec, driver: new MockDriver({device: {isNative: true}})})
@@ -330,7 +330,7 @@ describe('driver native', () => {
   })
 
   describe('from driver info', () => {
-    let driver: Driver<any, any, any, any>
+    let driver: Driver<any>
 
     before(async () => {
       driver = new Driver({
@@ -406,11 +406,53 @@ describe('driver native', () => {
   it('should return correct viewport size', async () => {
     assert.deepStrictEqual(await driver.getViewportSize(), {width: 1000, height: 1000})
   })
+
+  describe('with nml lib', () => {
+    let driver: Driver<any>, mock: MockDriver
+
+    beforeEach(async () => {
+      mock = new MockDriver({device: {isNative: true, name: 'MobilePhone'}})
+      driver = new Driver({logger, spec, driver: mock})
+      await driver.init()
+    })
+
+    it('should extract broker url', async () => {
+      mock.mockElement('Applitools_View', {attrs: {text: '{"error":"","nextPath":"http://blah"}'}})
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah')
+    })
+
+    it('should retry when extract broker url', async () => {
+      let count = 0
+      mock.mockElement('Applitools_View', {
+        attrs: {
+          get text() {
+            return ++count < 3 ? '{"error":"","nextPath":null}' : '{"error":"","nextPath":"http://blah"}'
+          },
+        },
+      })
+
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah')
+    })
+
+    it('should cache broker url', async () => {
+      let count = 0
+      mock.mockElement('Applitools_View', {
+        attrs: {
+          get text() {
+            return `{"error":"","nextPath":"http://blah${++count}"}`
+          },
+        },
+      })
+
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah1')
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah1')
+    })
+  })
 })
 
 describe('driver mobile', () => {
   it('from driver info', async () => {
-    const driver: Driver<any, any, any, any> = await new Driver({
+    const driver: Driver<any> = await new Driver({
       logger,
       spec,
       driver: new MockDriver({
@@ -439,7 +481,7 @@ describe('driver mobile', () => {
   })
 
   it('from ua info', async () => {
-    const driver: Driver<any, any, any, any> = await new Driver({
+    const driver: Driver<any> = await new Driver({
       logger,
       spec,
       driver: new MockDriver({
@@ -465,7 +507,7 @@ describe('driver mobile', () => {
   })
 
   it('from driver info and ua info', async () => {
-    const driver: Driver<any, any, any, any> = await new Driver({
+    const driver: Driver<any> = await new Driver({
       logger,
       spec,
       driver: new MockDriver({
@@ -494,7 +536,7 @@ describe('driver mobile', () => {
   })
 
   it('should work with lower case platformName: ios', async () => {
-    const driver: Driver<any, any, any, any> = await new Driver({
+    const driver: Driver<any> = await new Driver({
       logger,
       spec,
       driver: new MockDriver({
@@ -509,7 +551,7 @@ describe('driver mobile', () => {
   })
 
   it('should work with lower case platformName: android', async () => {
-    const driver: Driver<any, any, any, any> = await new Driver({
+    const driver: Driver<any> = await new Driver({
       logger,
       spec,
       driver: new MockDriver({

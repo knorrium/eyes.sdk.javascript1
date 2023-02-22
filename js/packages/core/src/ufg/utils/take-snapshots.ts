@@ -12,7 +12,6 @@ import {
 import {takeDomSnapshots, type DomSnapshotsSettings} from './take-dom-snapshots'
 import {takeVHSes, type VHSesSettings} from './take-vhses'
 import {takeSnapshots as takeSnapshotsWithNml} from '@applitools/nml-client'
-import {extractBrokerUrl} from './extract-broker-url'
 
 export * from './take-dom-snapshots'
 export * from './take-vhses'
@@ -36,7 +35,7 @@ export async function takeSnapshots<TSpec extends SpecType>({
   if (driver.isWeb) {
     return takeDomSnapshots({driver, settings, hooks, provides, logger})
   } else {
-    const brokerUrl = await extractBrokerUrl({driver, logger})
+    const brokerUrl = await driver.extractBrokerUrl()
     if (brokerUrl) {
       return (await takeSnapshotsWithNml({url: brokerUrl, settings, logger})) as AndroidSnapshot[] | IOSSnapshot[]
     } else {

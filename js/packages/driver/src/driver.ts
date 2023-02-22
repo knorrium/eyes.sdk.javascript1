@@ -15,6 +15,11 @@ import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
 
+type DriverState = {
+  world?: string
+  brokerUrl?: string
+}
+
 type DriverOptions<T extends SpecType> = {
   spec: SpecDriver<T>
   driver: T['driver']
@@ -29,10 +34,11 @@ export class Driver<T extends SpecType> {
   private _mainContext: Context<T>
   private _currentContext: Context<T>
   private _driverInfo: DriverInfo = {}
-  private _logger: Logger
-  private _customConfig: {useCeilForViewportSize?: boolean} = {}
   private _helper?: HelperAndroid<T> | HelperIOS<T> | null
-  private _previousWorld?: string
+  private _state: DriverState = {}
+  private _logger: Logger
+
+  private _customConfig: {useCeilForViewportSize?: boolean} = {}
 
   protected readonly _spec: SpecDriver<T>
 
@@ -172,8 +178,13 @@ export class Driver<T extends SpecType> {
     if (this.isMobile) {
       this._driverInfo.orientation =
         (await this.getOrientation().catch(() => undefined)) ?? this._driverInfo.orientation
-      const world = await this.getCurrentWorld()
-      this._driverInfo.isWebView = !!world?.isWebView
+      if (this.isWeb) {
+        const world = await this.getCurrentWorld()
+        if (world) {
+          const [home] = (await this.getWorlds())!
+          this._driverInfo.isWebView = world !== home
+        }
+      }
     }
 
     if (this.isWeb) {
@@ -339,6 +350,31 @@ export class Driver<T extends SpecType> {
     return this._helper
   }
 
+  async extractBrokerUrl(): Promise<string | null> {
+    if (this._state.brokerUrl) return this._state.brokerUrl
+    if (!this.isNative) return null
+    this._logger.log('Broker url extraction is started')
+    const element = await this.element({type: 'accessibility id', selector: 'Applitools_View'})
+    if (!element) return null
+    try {
+      let result: {error: string; nextPath: string | null}
+      do {
+        result = JSON.parse(await element.getText())
+        if (result.nextPath) {
+          this._logger.log('Broker url was extraction finished successfully with value', result.nextPath)
+          this._state.brokerUrl = result.nextPath
+          return this._state.brokerUrl
+        }
+        await utils.general.sleep(1000)
+      } while (!result.error)
+      this._logger.error('Broker url extraction has failed with error', result.error)
+      return null
+    } catch (error) {
+      this._logger.error('Broker url extraction has failed with error', error)
+      return null
+    }
+  }
+
   // begin world
   //
   // About the concept of a  "World":
@@ -356,71 +392,63 @@ export class Driver<T extends SpecType> {
   //    (with the `restoreState` option)
   // - the native app world can be switched to (with the `goHome` option)
   async switchWorld(options?: {id?: string; restoreState?: boolean; goHome?: boolean}) {
-    if (options?.restoreState && !this._previousWorld) return
+    if (options?.restoreState && !this._state.world) return
     if (!this._spec.getCurrentWorld || !this._spec.switchWorld) {
       this._logger.warn('world switching not implemented in the spec driver, skipping')
       return
     }
     this._logger.log('switchWorld called with', options ? options : 'no options')
-    const {id, home, next} = await this.getCurrentWorld()
-    if (!this._previousWorld) {
-      this._logger.log('storing current world id for future restoration', id)
-      this._previousWorld = id
+    const current = (await this.getCurrentWorld())!
+    if (!this._state.world) {
+      this._logger.log('storing current world id for future restoration', current)
+      this._state.world = current
     }
-    const providedTarget = options?.restoreState
-      ? this._previousWorld
-      : options?.goHome
-      ? home
-      : options?.id
-      ? options.id
-      : next!
-    this._logger.log('switching world with', providedTarget ? providedTarget : 'no id')
+    let world: string
+    if (options?.id) world = options.id
+    else if (options?.restoreState) world = this._state.world
+    else {
+      const [home, next] = (await this.getWorlds())!
+      if (options?.goHome) world = home
+      else world = next
+    }
+    this._logger.log('switching world with', world)
     try {
-      await this._spec.switchWorld?.(this.target, providedTarget)
+      await this._spec.switchWorld?.(this.target, world)
       await this.init()
     } catch (error: any) {
       throw new Error(`Unable to switch worlds, the original error was: ${error.message}`)
     }
   }
 
-  async getWorlds(attempt = 1): Promise<string[]> {
-    if (!this._spec.getWorlds) return []
-    this._logger.log('attempting to find worlds')
-    await utils.general.sleep(500)
-    const worlds = await this._spec.getWorlds?.(this.target)
-    if (!worlds[1]) {
-      if (attempt > 5) {
-        this._logger.warn(`just one world found - ${worlds}. done looking.`)
-        return worlds
+  async getWorlds(): Promise<string[] | null> {
+    if (!this._spec.getWorlds) return null
+    this._logger.log('Extracting worlds')
+    try {
+      let worlds = [] as string[]
+      for (let attempt = 0; worlds.length <= 1 && attempt < 5; ++attempt) {
+        if (attempt > 0) await utils.general.sleep(500)
+        worlds = await this._spec.getWorlds(this.target)
       }
-      this._logger.log(`just one world found, retrying to see if there are others (attempt #${attempt})`)
-      await this.getWorlds(attempt + 1)
+      this._logger.log('Worlds were extracted', worlds)
+      return worlds
+    } catch (error) {
+      this._logger.warn('Worlds were not extracted due to the error', error)
+      return null
     }
-    this._logger.log(`worlds found - ${worlds}`)
-    return worlds
   }
 
-  async getCurrentWorld(): Promise<{
-    id: string
-    home: string
-    next?: string
-    isNative: boolean
-    isWebView: boolean
-  }> {
-    if (!this._spec.getCurrentWorld) return undefined as never
-    const [origin, next] = await this.getWorlds()
-    const currentWorld = await this._spec.getCurrentWorld?.(this.target)
-    const result = {
-      id: currentWorld,
-      home: origin,
-      next,
-      isNative: currentWorld === origin,
-      isWebView: currentWorld !== origin,
+  async getCurrentWorld(): Promise<string | null> {
+    if (!this._spec.getCurrentWorld) return null
+    try {
+      this._logger.log('Extracting current world')
+      const current = await this._spec.getCurrentWorld?.(this.target)
+      this._logger.log('Current world was extracted', current)
+      return current
+    } catch (error) {
+      this._logger.warn('Current world was not extracted due to the error', error)
+      return null
     }
-    this._logger.log('current world', result)
-    return result
   }
-  // end world
 
   async getSessionMetadata(): Promise<any> {
     if (this.isECClient) return await this._spec.getSessionMetadata?.(this.target)
