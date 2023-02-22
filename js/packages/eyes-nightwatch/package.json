@@ -79,7 +79,7 @@
     "@types/mocha": "^9.1.1",
     "@types/nightwatch": "^2.3.16",
     "@types/node": "12",
-    "chromedriver": "^108.0.0",
+    "chromedriver": "^110.0.0",
     "cucumber": "6.0.7",
     "geckodriver": "^3.0.1",
     "mocha": "^10.0.0",

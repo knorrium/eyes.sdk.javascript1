@@ -159,7 +159,7 @@ const browserOptionsNames: Record<string, string> = {
   chrome: 'goog:chromeOptions',
   firefox: 'moz:firefoxOptions',
 }
-export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
+export async function build(env: any): Promise<[NWDriver, () => Promise<void>]> {
   const Nightwatch = require('nightwatch')
   const parseEnv = require('@applitools/test-utils/src/parse-env')
 
@@ -173,7 +173,6 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
     logLevel = 'silent',
   } = parseEnv({...env, legacy: env.legacy ?? process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1'})
   const options: any = {
-    output: logLevel !== 'silent',
     capabilities: {browserName: browser, ...capabilities},
     webdriver: {
       host: url.hostname,
@@ -186,6 +185,7 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
       start_session: true,
       start_process: false,
     },
+    output: logLevel !== 'silent',
     useAsync: true,
   }
   if (configurable) {

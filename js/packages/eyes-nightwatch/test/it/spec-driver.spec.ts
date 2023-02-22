@@ -13,7 +13,7 @@ function extractElementId(element: any) {
   )
 }
 
-async function equalElements(driver: spec.Driver, element1: spec.Element, element2: spec.Element): Promise<boolean> {
+async function equalElements(driver: spec.NWDriver, element1: spec.Element, element2: spec.Element): Promise<boolean> {
   try {
     let result = await driver.execute<boolean>('return arguments[0] === arguments[1]', [element1, element2])
     if (Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2) {
@@ -26,7 +26,7 @@ async function equalElements(driver: spec.Driver, element1: spec.Element, elemen
 }
 
 describe('spec driver', async () => {
-  let driver: spec.Driver, destroyDriver: null | (() => Promise<void>)
+  let driver: spec.NWDriver, destroyDriver: null | (() => Promise<void>)
   const url = 'https://applitools.github.io/demo/TestPages/SnippetsTestPage/'
 
   describe('headless desktop', async () => {
@@ -47,7 +47,7 @@ describe('spec driver', async () => {
       await isDriver({input: spec.transformDriver(driver), expected: true})
     })
     it('isDriver(wrong)', async () => {
-      await isDriver({input: {} as spec.Driver, expected: false})
+      await isDriver({input: {} as spec.NWDriver, expected: false})
     })
     it('isElement(nw-element/wd-element)', async () => {
       let element = await driver.element('css selector', 'div')
@@ -104,7 +104,7 @@ describe('spec driver', async () => {
       })
     })
     it('untransformSelector(string)', async () => {
-      await untransformSelector({input: '.class', expected: '.class'})
+      await untransformSelector({input: '.class', expected: {selector: '.class'}})
     })
     it('untransformSelector(common-selector)', async () => {
       await untransformSelector({
@@ -190,25 +190,25 @@ describe('spec driver', async () => {
     })
   })
 
-  async function isDriver({input, expected}: {input: spec.Driver | spec.WDDriver; expected: boolean}) {
+  async function isDriver({input, expected}: {input: spec.NWDriver | spec.Driver; expected: boolean}) {
     const result = await spec.isDriver(input)
     assert.strictEqual(result, expected)
   }
-  async function isElement({input, expected}: {input: spec.Element | spec.WDElement; expected: boolean}) {
+  async function isElement({input, expected}: {input: spec.NWElement | spec.Element; expected: boolean}) {
     const result = await spec.isElement(input)
     assert.strictEqual(result, expected)
   }
-  async function isSelector({input, expected}: {input: spec.Selector | spec.WDSelector; expected: boolean}) {
+  async function isSelector({input, expected}: {input: spec.NWSelector | spec.Selector; expected: boolean}) {
     const result = await spec.isSelector(input)
     assert.strictEqual(result, expected)
   }
-  async function transformDriver({input}: {input: spec.Driver}) {
+  async function transformDriver({input}: {input: spec.NWDriver}) {
     const transformedDriver = spec.transformDriver(input)
     const result = await transformedDriver.getUrl()
     const expected = await driver.url()
     assert.deepStrictEqual(result, expected)
   }
-  async function transformElement({input}: {input: spec.Element | spec.ResponseElement}) {
+  async function transformElement({input}: {input: spec.NWElement | spec.NWResponseElement}) {
     const result = spec.transformElement(input)
     assert.deepStrictEqual(spec.isElement(result), true)
   }
@@ -216,8 +216,8 @@ describe('spec driver', async () => {
     input,
     expected,
   }: {
-    input: spec.Selector | {type: string; selector: string} | string | null
-    expected: {type: string; selector: string} | string | null
+    input: spec.NWSelector | {type: string; selector: string} | string | null
+    expected: {type?: string; selector: string} | string | null
   }) {
     assert.deepStrictEqual(spec.untransformSelector(input as spec.Selector), expected)
   }
@@ -225,7 +225,7 @@ describe('spec driver', async () => {
     input,
     expected,
   }: {
-    input: {selector: spec.Selector; parent?: spec.Element}
+    input: {selector: spec.NWSelector; parent?: spec.NWElement}
     expected?: spec.Element | null
   }) {
     if (expected === undefined) {
@@ -254,7 +254,7 @@ describe('spec driver', async () => {
     input,
     expected,
   }: {
-    input: {selector: spec.Selector; parent?: spec.Element}
+    input: {selector: spec.NWSelector; parent?: spec.NWElement}
     expected?: spec.Element[]
   }) {
     if (expected === undefined) {
