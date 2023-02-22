@@ -494,9 +494,10 @@ export class Eyes<TSpec extends SpecType = SpecType> {
       this._eyes = undefined
     }
   }
-  /** @deprecated */
   async closeAsync(): Promise<void> {
-    await this.close(false)
+    if (this._config.isDisabled) return null as never
+    const config = this._config.toJSON()
+    await this._eyes?.close({config})
   }
 
   async abort(): Promise<TestResultsData> {
@@ -521,9 +522,9 @@ export class Eyes<TSpec extends SpecType = SpecType> {
       this._eyes = undefined
     }
   }
-  /** @deprecated */
   async abortAsync(): Promise<void> {
-    await this.abort()
+    if (!this.isOpen || this._config.isDisabled) return null as never
+    await this._eyes?.abort()
   }
   /** @deprecated */
   async abortIfNotClosed(): Promise<TestResults> {
