@@ -97,6 +97,11 @@ describe('requests', () => {
         ignoreBaseline: false,
         saveDiffs: false,
         abortIdleTestTimeout: 60_000,
+        densityMetrics: {
+          xdpi: 12,
+          ydpi: 12,
+          scaleRatio: 1.2,
+        },
       },
     })
 
@@ -286,6 +291,11 @@ describe('requests', () => {
         ignoreCaret: true,
         ignoreDisplacements: false,
         pageId: 'My page unique id',
+        densityMetrics: {
+          xdpi: 12,
+          ydpi: 12,
+          scaleRatio: 1.2,
+        },
       },
     })
 
@@ -344,6 +354,11 @@ describe('requests', () => {
           enablePatterns: true,
           matchLevel: 'Layout',
           useDom: true,
+          densityMetrics: {
+            xdpi: 12,
+            ydpi: 12,
+            scaleRatio: 1.2,
+          },
         },
         name: 'First step',
         source: 'https://localhost:8080/my-beautiful-page.html',

@@ -275,6 +275,7 @@ Applitools will take screenshots and perform the visual comparisons in the backg
         - [`visualGridOptions`](#visualgridoptions)
         - [`coded regions-regionId`](#regionId)
         - [`lazy loading`](#lazy-loading)
+        - [Density metrics](#density-metrics-densitymetrics)
       - [Close](#close)
       - [GetAllTestResults](#getalltestresults)
       - [deleteTestResults](#deletetestresults)
@@ -757,7 +758,7 @@ It's possible to have the SDK scroll the entire page (or a specific length of th
 
 ```js
 // lazy loads with sensible defaults
-cy.eyesCheckWindow(lazyload:{})
+cy.eyesCheckWindow({lazyload:{}})
 
 // lazy loads with options specified
 cy.eyesCheckWindow({lazyLoad: {
@@ -767,6 +768,23 @@ cy.eyesCheckWindow({lazyLoad: {
 }})
 ```
 
+##### Density metrics (`densityMetrics`)
+
+In order to set the density metrics for the screenshot, use the `densityMetrics` method. This method accepts a object value with the following properties:
+
+- `xdpi` - The exact physical pixels per inch of the screen in the X dimension.
+- `ydpi` - The exact physical pixels per inch of the screen in the Y dimension.
+- `scaleRatio` - The scale ratio.
+
+```js
+// set density metrics
+cy.eyesCheckWindow({
+  densityMetrics:
+    xdpi: 100,
+    ydpi: 100,
+    scaleRatio: 1
+})
+```
 
 #### Close
 

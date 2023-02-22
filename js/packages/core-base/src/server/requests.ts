@@ -638,6 +638,7 @@ function transformCheckOptions({target, settings}: {target: ImageTarget; setting
         enablePatterns: settings.enablePatterns,
         matchLevel: settings.matchLevel ?? 'Strict',
         useDom: settings.useDom ?? false,
+        densityMetrics: settings.densityMetrics,
       },
       name: settings.name,
       source: target.source,

@@ -7,6 +7,7 @@ import {MatchLevel, MatchLevelEnum} from '../enums/MatchLevel'
 import {Region, LegacyRegion} from './Region'
 import {Location} from './Location'
 import {LazyLoadOptions} from './LazyLoadOptions'
+import {DensityMetrics} from './DensityMetrics'
 
 type RegionReference<TSpec extends SpecType> = Region | ElementReference<TSpec>
 type ElementReference<TSpec extends SpecType> = TSpec['element'] | SelectorReference<TSpec>
@@ -54,6 +55,7 @@ export type CheckSettingsBase<TRegion = never> = {
   accessibilityRegions?: (CodedAccessibilityRegion<TRegion> | Region | TRegion)[]
   pageId?: string
   variationGroupId?: string
+  densityMetrics?: DensityMetrics
 }
 
 export type CheckSettingsImage = CheckSettingsBase
@@ -594,6 +596,11 @@ export class CheckSettingsAutomationFluent<TSpec extends SpecType = SpecType> ex
     return this
   }
 
+  densityMetrics(options: DensityMetrics): this {
+    this._settings.densityMetrics = options
+    return this
+  }
+
   /** @internal */
   toJSON(): {target: undefined; settings: CoreCheckSettingsAutomation<TSpec>} {
     return {
@@ -639,6 +646,7 @@ export class CheckSettingsAutomationFluent<TSpec extends SpecType = SpecType> ex
         waitBeforeCapture: this._settings.waitBeforeCapture,
         retryTimeout: this._settings.timeout,
         userCommandId: this._settings.variationGroupId,
+        densityMetrics: this._settings.densityMetrics,
       }),
     }
   }

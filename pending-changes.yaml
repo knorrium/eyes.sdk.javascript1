@@ -11,6 +11,7 @@ Apollo SDK:
 "@applitools/core":
   feature:
     - Added caching for broker url to avoid looking for the nml element multiple times
+    - Passing density metric for PPI support in the sdk
   bug-fix:
     - Fixed issue with universal protocol when manager ref was deleted once `EyesManager.getResults` was called
     - Fixed vulnerabilities of EC client
@@ -174,6 +175,7 @@ eyes-browser-extension:
     - Added `ignoreColors` method to `CheckSettings` to set a match level
     - Additional internal event logs
     - Crop screenshot image base on account info
+    - Passing density metric for PPI support in the sdk
   bug-fix:
     - 
 applitools-for-selenium-ide:

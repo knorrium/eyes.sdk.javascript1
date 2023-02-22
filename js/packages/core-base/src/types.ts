@@ -234,6 +234,11 @@ export interface CheckSettings<TRegion = Region> extends ImageSettings<TRegion> 
   enablePatterns?: boolean
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean
+  densityMetrics?: {
+    scaleRatio?: number
+    xdpi?: number
+    ydpi?: number
+  }
   pageId?: string
   /** @internal */
   stepIndex?: number

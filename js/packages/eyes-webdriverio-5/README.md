@@ -397,6 +397,23 @@ eyes.check(Target.webview('webview-id'))
 
 After the check command, the SDK will switch the driver back to the app context that it was prior to performing the check.
 
+##### Density metrics (`densityMetrics`)
+
+In order to set the density metrics for the screenshot, use the `densityMetrics` method. This method accepts a object value with the following properties:
+
+- `xdpi` - The exact physical pixels per inch of the screen in the X dimension.
+- `ydpi` - The exact physical pixels per inch of the screen in the Y dimension.
+- `scaleRatio` - The scale ratio.
+
+```js
+// set density metrics
+eyes.check(Target.window().densityMetrics({
+  xdpi: 100,
+  ydpi: 100,
+  scaleRatio: 1
+}))
+```
+
 ###### Other checkSettings configuration
 
 <!-- TODO add explanation -->

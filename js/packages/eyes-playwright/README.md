@@ -29,6 +29,7 @@
       - [Scroll root element](#scroll-root-element)
       - [Tag (`withName`)](#tag-withname)
       - [Lazy loading (`lazyLoad`)](#lazy-loading-lazyload)
+      - [Density metrics](#density-metrics-densitymetrics)
         - [Other checkSettings configuration](#other-checksettings-configuration)
   - [close](#close)
 - [Runners](#runners)
@@ -395,6 +396,23 @@ Other details:
 - `ignoreDisplacements`
 - `useDom`
 - `enablePatterns`
+
+##### Density metrics (`densityMetrics`)
+
+In order to set the density metrics for the screenshot, use the `densityMetrics` method. This method accepts a object value with the following properties:
+
+- `xdpi` - The exact physical pixels per inch of the screen in the X dimension.
+- `ydpi` - The exact physical pixels per inch of the screen in the Y dimension.
+- `scaleRatio` - The scale ratio.
+
+```js
+// set density metrics
+eyes.check(Target.window().densityMetrics({
+  xdpi: 100,
+  ydpi: 100,
+  scaleRatio: 1
+}))
+```
 
 ### close
 

@@ -29,6 +29,7 @@
       - [Scroll root element](#scroll-root-element)
       - [Tag (`withName`)](#tag-withname)
       - [Lazy loading (`lazyLoad`)](#lazy-loading-lazyload)
+      - [Density metrics](#density-metrics-densitymetrics)
         - [Other checkSettings configuration](#other-checksettings-configuration)
   - [close](#close)
 - [Runners](#runners)
@@ -385,6 +386,23 @@ Other details:
 - If an option is omitted, the sensible default for that value will be used
 - The SDK will repeatedly scroll the page using the `scrollLength` until either the page cannot be scrolled further or the `maxAmountToScroll` has been reached (whichever happens first)
 - If more time is needed for additional content to load, then increase the waitingTime to a value higher than 500 milliseconds. If better performance is desired and additional content lazily loads faster than the default waitingTime, then reduce it to a value below 500 milliseconds
+
+##### Density metrics (`densityMetrics`)
+
+In order to set the density metrics for the screenshot, use the `densityMetrics` method. This method accepts a object value with the following properties:
+
+- `xdpi` - The exact physical pixels per inch of the screen in the X dimension.
+- `ydpi` - The exact physical pixels per inch of the screen in the Y dimension.
+- `scaleRatio` - The scale ratio.
+
+```js
+// set density metrics
+eyes.check(Target.window().densityMetrics({
+  xdpi: 100,
+  ydpi: 100,
+  scaleRatio: 1
+}))
+```
 
 ###### Other checkSettings configuration
 

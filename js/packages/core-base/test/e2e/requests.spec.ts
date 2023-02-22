@@ -37,6 +37,7 @@ describe('requests', () => {
         strictRegions: [{region: {x: 300, y: 300, width: 100, height: 100}, regionId: 'my-id'}],
         floatingRegions: [{region: {x: 400, y: 400, width: 100, height: 100}, offset: {top: 10, left: 20}}],
         accessibilityRegions: [{region: {x: 500, y: 500, width: 100, height: 100}, type: 'BoldText'}],
+        densityMetrics: {scaleRatio: 1, xdpi: 210, ydpi: 700},
       },
     })
 
@@ -70,5 +71,10 @@ describe('requests', () => {
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.accessibility, [
       {left: 500, top: 500, width: 100, height: 100, type: 'BoldText', isDisabled: false},
     ])
+    assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.densityMetrics, {
+      scaleRatio: 1,
+      xdpi: 210,
+      ydpi: 700,
+    })
   })
 })

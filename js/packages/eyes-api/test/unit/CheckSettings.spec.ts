@@ -5,7 +5,7 @@ import * as api from '../../src'
 const makeSDK = require('../utils/fake-sdk')
 
 describe('CheckSettings', () => {
-  let sdk: core.Core<any, any, any, any> & {history: Record<string, any>[]; settings: Record<string, any>}
+  let sdk: core.Core<any, any> & {history: Record<string, any>[]; settings: Record<string, any>}
 
   class CheckSettings extends api.CheckSettingsAutomation {
     protected static get _spec() {
@@ -74,5 +74,12 @@ describe('CheckSettings', () => {
     const id = 'blah-blah'
     const settings = Target.webview(id)
     assert.equal(settings.toJSON().settings.webview, id)
+  })
+
+  it('set densityMetrics', () => {
+    const expected = {scaleRatio: 10, xdpi: 10, ydpi: 10}
+    const checkSettings = new CheckSettings().densityMetrics(expected)
+    const actual = checkSettings.toJSON().settings.densityMetrics
+    assert.deepStrictEqual(actual, expected)
   })
 })
