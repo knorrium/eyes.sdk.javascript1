@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Added caching for broker url to avoid looking for the nml element multiple times
   bug-fix:
     - Fixed issue with universal protocol when manager ref was deleted once `EyesManager.getResults` was called
     - Fixed vulnerabilities of EC client
