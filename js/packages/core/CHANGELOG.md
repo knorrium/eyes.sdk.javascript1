@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 2.3.7 - 2023/2/23
+
+### Features
+- Added caching for broker url to avoid looking for the nml element multiple times
+- Passing density metric for PPI support in the sdk
+### Bug fixes
+- Fixed issue with universal protocol when manager ref was deleted once `EyesManager.getResults` was called
+- Fixed vulnerabilities of EC client
+
 ## 2.3.6 - 2023/2/17
 
 ### Features
