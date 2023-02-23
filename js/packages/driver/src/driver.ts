@@ -169,7 +169,7 @@ export class Driver<T extends SpecType> {
     const capabilities = await this._spec.getCapabilities?.(this.target)
     this._logger.log('Driver capabilities', capabilities)
 
-    const capabilitiesInfo = capabilities ? parseCapabilities(capabilities) : undefined
+    const capabilitiesInfo = capabilities && parseCapabilities(capabilities)
     const driverInfo = await this._spec.getDriverInfo?.(this.target)
 
     this._driverInfo = {...capabilitiesInfo, ...driverInfo}
@@ -178,12 +178,10 @@ export class Driver<T extends SpecType> {
     if (this.isMobile) {
       this._driverInfo.orientation =
         (await this.getOrientation().catch(() => undefined)) ?? this._driverInfo.orientation
-      if (this.isWeb) {
-        const world = await this.getCurrentWorld()
-        if (world) {
-          const [home] = (await this.getWorlds())!
-          this._driverInfo.isWebView = world !== home
-        }
+      const world = await this.getCurrentWorld()
+      if (world) {
+        const [home] = (await this.getWorlds())!
+        this._driverInfo.isWebView = world !== home
       }
     }
 
