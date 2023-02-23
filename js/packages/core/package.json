@@ -59,7 +59,6 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'core'",
     "deps": "bongo deps",
     "preversion": "bongo preversion --verify-pending-changes --skip-deps",
     "version": "bongo version --with-pending-changes",
