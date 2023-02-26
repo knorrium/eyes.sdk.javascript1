@@ -348,3 +348,34 @@ def test_ec_client_driver():
     eyes.open(driver, "USDK Tests", "Execution cloud driver creation test")
     eyes.check_window()
     eyes.close()
+
+
+def test_runner_call_get_results_two_times(local_chrome_driver):
+    local_chrome_driver.get(
+        "https://applitools.github.io/demo/TestPages/SimpleTestPage"
+    )
+    runner = VisualGridRunner()
+    eyes1 = Eyes(runner)
+    eyes1.open(
+        local_chrome_driver,
+        "USDK Test",
+        "Test get all vg test results 1",
+        {"width": 800, "height": 600},
+    )
+    eyes1.check_window()
+    eyes1.close()
+    all_results1 = runner.get_all_test_results()
+    eyes2 = Eyes(runner)
+    eyes2.open(
+        local_chrome_driver,
+        "USDK Test",
+        "Test get all vg test results 2",
+        {"width": 800, "height": 600},
+    )
+    eyes2.check_window()
+    eyes2.close()
+
+    all_results2 = runner.get_all_test_results()
+
+    assert len(all_results1) == 1
+    assert len(all_results2) == 2
