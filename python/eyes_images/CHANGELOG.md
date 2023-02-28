@@ -1,4 +1,4 @@
-## [vNext]
+## [5.15.1] - 2023-02-28
 ### Updated
 - Switch to core-universal server package
 
