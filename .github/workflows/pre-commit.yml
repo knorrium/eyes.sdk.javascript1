@@ -3,8 +3,12 @@ name: pre-commit
 on:
     pull_request:
         branches-ignore: ['dependabot/**', 'draft/**', 'play/**']
+        paths:
+            - 'python/**'
     push:
         branches: [master, develop]
+        paths:
+            - 'python/**'
 
 jobs:
     pre-commit:
