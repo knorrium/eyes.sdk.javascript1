@@ -1,10 +1,10 @@
 const transformConfig = require('./utils/transform-config')
 
-function makeExtractText({eyes, config: defaultConfig}) {
+function makeExtractText({core, config: defaultConfig, target}) {
   return async function extractText({regions, config = defaultConfig} = {}) {
     const transformedConfig = transformConfig(config)
     const settings = regions.map(region => ({...region, region: region.target}))
-    return eyes.extractText({settings, config: transformedConfig})
+    return core.extractText({settings, config: transformedConfig, target})
   }
 }
 

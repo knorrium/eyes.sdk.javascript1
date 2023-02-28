@@ -14,8 +14,8 @@ function makeOpenEyes({manager, core}) {
     return {
       check: makeCheck({eyes, config}),
       locate: makeLocate({core, config, driver}),
-      extractText: makeExtractText({eyes, config}),
-      extractTextRegions: makeExtractTextRegions({eyes, config}),
+      extractText: makeExtractText({core, config, target: driver}),
+      extractTextRegions: makeExtractTextRegions({core, config, target: driver}),
       close: makeClose({eyes, config}),
       abort: makeAbort({eyes, config}),
     }

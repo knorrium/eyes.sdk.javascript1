@@ -1,11 +1,17 @@
 const transformConfig = require('./utils/transform-config')
 const transformException = require('./utils/transform-exception')
 
+/**
+ * @typedef {import('@applitools/core/types').Eyes} Eyes
+ * @param {Object} options
+ * @param {Eyes} options.eyes
+ */
 function makeClose({eyes, config: defaultConfig}) {
   return async function close({throwErr = false, config = defaultConfig} = {}) {
     try {
       const transformedConfig = transformConfig(config)
-      const results = await eyes.close({settings: {throwErr}, config: transformedConfig})
+      await eyes.close({config: transformedConfig})
+      const results = await eyes.getResults({settings: {throwErr}})
       if (results.length > 0) return results
       else {
         return [
