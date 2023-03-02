@@ -19,7 +19,9 @@ type Selector = {selector: string; type?: 'css' | 'xpath'; nodeType?: 'element' 
 type Element = HTMLElement | JQuery<HTMLElement>
 type ElementWithOptions = {element: Element; regionId?: string; padding?: any}
 
-export type CypressCheckSettings = api.CheckSettingsAutomationPlain<Element, Selector> & {
+export type SpecType = {driver: unknown; context: unknown; element: Element; selector: Selector}
+
+export type CypressCheckSettings = api.CheckSettingsAutomationPlain<SpecType> & {
   tag?: CypressCheckSettings['name']
 
   target?: 'window' | 'region'
@@ -47,7 +49,7 @@ export type CypressCheckSettings = api.CheckSettingsAutomationPlain<Element, Sel
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean
 }
-export type CypressEyesConfig = api.ConfigurationPlain<Element, Selector> & {
+export type CypressEyesConfig = api.ConfigurationPlain<SpecType> & {
   browser?: MaybeArray<
     | NonNullable<CypressEyesConfig['browsersInfo']>[number]
     | {deviceName: string; screenOrientation?: api.ScreenOrientationPlain; name?: string}

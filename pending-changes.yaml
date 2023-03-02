@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - makeCoreServerProcess to the right cli file
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
@@ -63,6 +63,7 @@ Apollo SDK:
 "@applitools/eyes-cypress":
   feature:
     - Crop screenshot image base on account info
+    - Upgrade to core@v2
   bug-fix:
     - Fixed slowness during ufg tests
 "@applitools/eyes-storybook":

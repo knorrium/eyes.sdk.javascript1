@@ -35,7 +35,8 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
       return
     }
     await Promise.all(closePromiseArr)
-    const summary = await socket.request('EyesManager.closeManager', {manager, throwErr})
+    await socket.request('Eyes.close', {eyes, throwErr: false})
+    const summary = await socket.request('EyesManager.getResults', {manager, settings: {throwErr}})
 
     const deleteTest = ({settings: {testId, batchId, secretToken}}) => {
       const {serverUrl, proxy, apiKey} = Cypress.config('appliConfFile')
@@ -50,9 +51,6 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
         },
       })
     }
-    summary.results = summary.results.map(res => {
-      return {...res, result: res.testResults, error: res.exception, renderer: res.browserInfo}
-    })
     return new TestResultsSummary({summary, deleteTest})
   })
 })
@@ -74,7 +72,7 @@ if (shouldUseBrowserHooks || Cypress.config('eyesFailCypressOnDiff')) {
         shouldCreateTapFile: shouldUseBrowserHooks,
       }
       await Promise.all(closePromiseArr)
-      const summary = await socket.request('EyesManager.closeManager', {manager, throwErr})
+      const summary = await socket.request('EyesManager.getResults', {manager, settings: {throwErr}})
       const testResults = summary.results.map(({testResults}) => testResults)
       const message = await socket.request('Test.printTestResults', {testResults, resultConfig})
       if (
@@ -110,17 +108,17 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     if (!connectedToUniversal) {
       socket.connect(`wss://localhost:${Cypress.config('eyesPort')}/eyes`)
       connectedToUniversal = true
-      socket.emit('Core.makeSDK', {
-        name: 'eyes.cypress',
-        version: require('../../package.json').version,
-        commands: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']), // TODO fix spec.isSelector and spec.isDriver and spec.isElement in driver utils
+      socket.emit('Core.makeCore', {
+        agentId: 'eyes.cypress/' + require('../../package.json').version,
+        cwd: process.cwd(),
+        spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']),
       })
 
       manager =
         manager ||
         (await socket.request(
           'Core.makeManager',
-          Object.assign({}, {concurrency: Cypress.config('eyesTestConcurrency')}, {legacy: false, type: 'vg'}),
+          Object.assign({}, {concurrency: Cypress.config('eyesTestConcurrency')}, {type: 'ufg'}),
         ))
     }
 
@@ -136,7 +134,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
         name: 'chrome',
       },
     })
-    eyes = await socket.request('EyesManager.openEyes', {manager, driver, config})
+    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, config: {open: config}})
   })
 })
 
@@ -154,7 +152,7 @@ Cypress.Commands.add('eyesCheckWindow', (args = {}) =>
     return socket.request('Eyes.check', {
       eyes,
       settings: checkSettings,
-      driver,
+      target: driver,
     })
   }),
 )

@@ -1,7 +1,5 @@
 import connectSocket, {type SocketWithUniversal} from './webSocket'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import {makeServerProcess} from '@applitools/eyes-universal'
+import {makeCoreServerProcess} from '@applitools/core'
 import handleTestResults from './handleTestResults'
 import path from 'path'
 import fs from 'fs'
@@ -44,7 +42,7 @@ export default function makeStartServer({logger}: {logger: Logger}) {
       forkOptions.execPath = await which('node')
     }
 
-    const {port: universalPort, close: closeUniversalServer} = await makeServerProcess({
+    const {port: universalPort, close: closeUniversalServer} = await makeCoreServerProcess({
       idleTimeout: 0,
       shutdownMode: 'stdin',
       forkOptions,
@@ -126,16 +124,13 @@ export default function makeStartServer({logger}: {logger: Logger}) {
     function closeManager() {
       return Promise.all(
         managers.map(({manager, socketWithUniversal}) =>
-          socketWithUniversal.request('EyesManager.closeManager', {
-            manager,
-            throwErr: false,
-          }),
+          socketWithUniversal.request('EyesManager.getResults', {manager, settings: {throwErr: false}}),
         ),
       )
     }
     function closeBatches(settings: any) {
       if (socketWithUniversal)
-        return socketWithUniversal.request('Core.closeBatches', {settings}).catch((err: Error) => {
+        return socketWithUniversal.request('Core.closeBatch', {settings}).catch((err: Error) => {
           logger.log('@@@', err)
         })
     }

@@ -10,7 +10,7 @@ const cypressConfig = require('../fixtures/testApp/cypress')
 const {presult} = require('@applitools/functional-commons')
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
-const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-global-hooks')
+const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies1/testApp-global-hooks')
 
 async function runCypress(testFile) {
   return (
@@ -33,10 +33,11 @@ describe('global hooks', () => {
     await pexec(`npm install`, {
       maxBuffer: 1000000,
     })
+    throw new Error()
   })
 
   after(async () => {
-    fs.rmdirSync(targetTestAppPath, {recursive: true})
+    // fs.rmdirSync(targetTestAppPath, {recursive: true})
   })
 
   it('works with experimentalRunEvents flag', async () => {
