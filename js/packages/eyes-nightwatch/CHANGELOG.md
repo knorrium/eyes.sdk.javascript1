@@ -11,6 +11,15 @@
 
 
 
+## 1.14.0 - 2023/3/2
+
+### Features
+- Added new android devices Sony Xperia 1 II, Sony Xperia Ace II, Huawei P30 Lite, Xiaomi Redmi Note 10 JE
+- Add NML support for Android
+- Crop screenshot image base on account info
+### Bug fixes
+- Fixed issue with sessionId on ufg
+
 ## 1.13.0 - 2023/1/23
 
 ### Features
