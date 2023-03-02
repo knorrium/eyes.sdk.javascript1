@@ -8,6 +8,7 @@
  **/
 /// <reference types="cypress" />
 import type * as api from '@applitools/eyes-api'
+import type * as core from '@applitools/core'
 import {type EyesSelector, type TestResultsStatus} from '@applitools/eyes-api'
 
 export type {EyesSelector, TestResultsStatus}
@@ -18,8 +19,7 @@ type LegacyRegion = {left: number; top: number; width: number; height: number}
 type Selector = {selector: string; type?: 'css' | 'xpath'; nodeType?: 'element' | 'shadow-root'} | string
 type Element = HTMLElement | JQuery<HTMLElement>
 type ElementWithOptions = {element: Element; regionId?: string; padding?: any}
-
-export type SpecType = {driver: unknown; context: unknown; element: Element; selector: Selector}
+type SpecType = core.SpecType<unknown, unknown, Element, Selector>
 
 export type CypressCheckSettings = api.CheckSettingsAutomationPlain<SpecType> & {
   tag?: CypressCheckSettings['name']

@@ -35,7 +35,6 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
       return
     }
     await Promise.all(closePromiseArr)
-    await socket.request('Eyes.close', {eyes, throwErr: false})
     const summary = await socket.request('EyesManager.getResults', {manager, settings: {throwErr}})
 
     const deleteTest = ({settings: {testId, batchId, secretToken}}) => {
@@ -109,7 +108,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
       socket.connect(`wss://localhost:${Cypress.config('eyesPort')}/eyes`)
       connectedToUniversal = true
       socket.emit('Core.makeCore', {
-        agentId: 'eyes.cypress/' + require('../../package.json').version,
+        agentId: `eyes.cypress/${require('../../package.json').version}`,
         cwd: process.cwd(),
         spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']),
       })
@@ -123,7 +122,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
-    const config = eyesOpenMapValues({
+    const settings = eyesOpenMapValues({
       args,
       appliConfFile,
       testName,
@@ -134,7 +133,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
         name: 'chrome',
       },
     })
-    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, config: {open: config}})
+    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings})
   })
 })
 
