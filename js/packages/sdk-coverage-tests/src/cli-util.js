@@ -10,9 +10,7 @@ function sortErrorsByType(errors) {
 
 function getTestIndexesFromErrors(errors) {
   if (!errors) return undefined
-  const indexes = errors
-    .filter(error => error.hasOwnProperty('testIndex'))
-    .map(entry => entry.testIndex)
+  const indexes = errors.filter(error => error.hasOwnProperty('testIndex')).map(entry => entry.testIndex)
   return indexes.length ? indexes : undefined
 }
 

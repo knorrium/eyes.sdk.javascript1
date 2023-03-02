@@ -1,11 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const {createReport, convertSdkNameToReportName} = require('../src/report/create')
-const {
-  parseBareTestName,
-  parseJunitXmlForTests,
-  convertJunitXmlToResultSchema,
-} = require('../src/report/xml')
+const {parseBareTestName, parseJunitXmlForTests, convertJunitXmlToResultSchema} = require('../src/report/xml')
 const assert = require('assert')
 
 function loadFixture(fileName) {
@@ -85,10 +81,7 @@ describe('Report', () => {
   })
   it('should parse the bare test name', () => {
     assert.deepStrictEqual(parseBareTestName('Coverage Tests TestCheckWindow'), 'TestCheckWindow')
-    assert.deepStrictEqual(
-      parseBareTestName('Coverage Tests Test Check Window'),
-      'Test Check Window',
-    )
+    assert.deepStrictEqual(parseBareTestName('Coverage Tests Test Check Window'), 'Test Check Window')
     assert.deepStrictEqual(
       parseBareTestName(
         'TestCheckWindow_Fluent (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-abe4123e-d970-44da-8c3c-220fb9b47640/screenshot.png)',
@@ -231,72 +224,69 @@ describe('Report', () => {
   })
 
   it('should create a report payload with id', () => {
-    assert.deepStrictEqual(
-      createReport({reportId: '111111', name: 'eyes-selenium', metadata, junit}),
-      {
-        sdk: 'js_selenium_4',
-        group: 'selenium',
-        sandbox: false,
-        results: [
-          {
-            test_name: 'test check window with vg',
-            parameters: {
-              browser: 'chrome',
-              mode: 'visualgrid',
-              api: undefined,
-            },
-            passed: false,
-            isSkipped: false,
-            isGeneric: true,
+    assert.deepStrictEqual(createReport({reportId: '111111', name: 'eyes-selenium', metadata, junit}), {
+      sdk: 'js_selenium_4',
+      group: 'selenium',
+      sandbox: false,
+      results: [
+        {
+          test_name: 'test check window with vg',
+          parameters: {
+            browser: 'chrome',
+            mode: 'visualgrid',
+            api: undefined,
           },
-          {
-            test_name: 'test check window with css',
-            parameters: {
-              browser: 'chrome',
-              mode: 'css',
-              api: 'classic',
-            },
-            passed: true,
-            isSkipped: false,
-            isGeneric: true,
+          passed: false,
+          isSkipped: false,
+          isGeneric: true,
+        },
+        {
+          test_name: 'test check window with css',
+          parameters: {
+            browser: 'chrome',
+            mode: 'css',
+            api: 'classic',
           },
-          {
-            test_name: 'test check window with scroll',
-            parameters: {
-              browser: 'chrome',
-              mode: 'scroll',
-              api: undefined,
-            },
-            passed: true,
-            isSkipped: false,
-            isGeneric: true,
+          passed: true,
+          isSkipped: false,
+          isGeneric: true,
+        },
+        {
+          test_name: 'test check window with scroll',
+          parameters: {
+            browser: 'chrome',
+            mode: 'scroll',
+            api: undefined,
           },
-          {
-            test_name: 'test that was not emitted',
-            parameters: {
-              browser: 'chrome',
-              mode: 'bla',
-              api: undefined,
-            },
-            passed: undefined,
-            isSkipped: true,
-            isGeneric: true,
+          passed: true,
+          isSkipped: false,
+          isGeneric: true,
+        },
+        {
+          test_name: 'test that was not emitted',
+          parameters: {
+            browser: 'chrome',
+            mode: 'bla',
+            api: undefined,
           },
-          {
-            test_name: 'test that was emitted but not executed',
-            parameters: {
-              browser: 'chrome',
-              mode: 'bla',
-              api: undefined,
-            },
-            passed: undefined,
-            isSkipped: true,
-            isGeneric: true,
+          passed: undefined,
+          isSkipped: true,
+          isGeneric: true,
+        },
+        {
+          test_name: 'test that was emitted but not executed',
+          parameters: {
+            browser: 'chrome',
+            mode: 'bla',
+            api: undefined,
           },
-        ],
-        id: '111111',
-      },
-    )
+          passed: undefined,
+          isSkipped: true,
+          isGeneric: true,
+        },
+      ],
+      id: '111111',
+    })
   })
 
   it('should create a report with custom coverage tests', () => {

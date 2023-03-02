@@ -1,9 +1,5 @@
 const assert = require('assert')
-const {
-  getTestIndexesFromErrors,
-  sortErrorsByType,
-  getPassedTestIndexes,
-} = require('../src/cli-util')
+const {getTestIndexesFromErrors, sortErrorsByType, getPassedTestIndexes} = require('../src/cli-util')
 
 describe('cli-util', () => {
   describe('doDisplayResults', () => {

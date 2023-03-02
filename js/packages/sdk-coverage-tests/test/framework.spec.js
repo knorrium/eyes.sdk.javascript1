@@ -40,9 +40,7 @@ describe('framework', () => {
     assert.deepStrictEqual(Object.keys(context.tests), ['test a'])
     assert.strictEqual(
       output[0].replace(/\b\d+\b/g, '%line%').replace('\n', ''),
-      chalk.yellow(
-        `WARNING: test with name "test a" on line %line% overrides the test with same name on line %line%`,
-      ),
+      chalk.yellow(`WARNING: test with name "test a" on line %line% overrides the test with same name on line %line%`),
     )
 
     api.config({z: 0})
@@ -50,10 +48,7 @@ describe('framework', () => {
 
     assert.deepStrictEqual(context.testsConfig, {a: 0})
 
-    assert.strictEqual(
-      output[1].replace('\n', ''),
-      chalk.yellow(`WARNING: tests configuration object was reset`),
-    )
+    assert.strictEqual(output[1].replace('\n', ''), chalk.yellow(`WARNING: tests configuration object was reset`))
 
     global.console = originalConsole
   })

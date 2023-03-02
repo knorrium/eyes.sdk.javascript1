@@ -34,9 +34,7 @@ function useEmitter() {
       case 'afterEach':
         return hooks[name].push(value)
       default:
-        throw new Error(
-          `Unsupported hook ${name}. Please specify one of either ${Object.keys(hooks).join(', ')}`,
-        )
+        throw new Error(`Unsupported hook ${name}. Please specify one of either ${Object.keys(hooks).join(', ')}`)
     }
   }
 
@@ -99,9 +97,7 @@ function useEmitter() {
 
     const match = type.match(/(?<name>[A-Za-z][A-Za-z0-9_]*)(<(?<generic>.*)>)?/)
     if (!match) {
-      throw new Error(
-        'Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)',
-      )
+      throw new Error('Type format is incorrect. Please follow the convention (e.g. TypeName or Type1<Type2, Type3>)')
     }
 
     return {

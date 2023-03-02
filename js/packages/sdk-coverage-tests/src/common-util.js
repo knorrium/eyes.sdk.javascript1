@@ -5,9 +5,7 @@ const chalk = require('chalk')
 const fetchSync = require('sync-fetch')
 
 function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
-  const _hostCollection = Array.isArray(hostCollection)
-    ? hostCollection
-    : Object.keys(hostCollection)
+  const _hostCollection = Array.isArray(hostCollection) ? hostCollection : Object.keys(hostCollection)
   const _guestCollection = Array.isArray(guestCollection)
     ? new Set(guestCollection)
     : new Set(Object.keys(guestCollection))

@@ -105,10 +105,7 @@ function describeRegion(region = {}) {
     region.hasOwnProperty('height')
   ) {
     description.type = 'Coordinates'
-  } else if (
-    typeof region === 'string' ||
-    (region.hasOwnProperty('type') && region.hasOwnProperty('selector'))
-  ) {
+  } else if (typeof region === 'string' || (region.hasOwnProperty('type') && region.hasOwnProperty('selector'))) {
     description.type = 'Selector'
   } else if (region.isRef) {
     const type = region.type()

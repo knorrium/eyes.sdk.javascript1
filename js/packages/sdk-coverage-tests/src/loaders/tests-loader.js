@@ -17,9 +17,7 @@ function loadOverrides(overrides) {
   if (Array.isArray(overrides)) {
     return overrides.reduce((overrides, item) => overrides.concat(loadOverrides(item)), [])
   } else if (isString(overrides)) {
-    const requiredOverrides = isUrl(overrides)
-      ? requireUrl(overrides)
-      : require(path.resolve(overrides))
+    const requiredOverrides = isUrl(overrides) ? requireUrl(overrides) : require(path.resolve(overrides))
     return [].concat(loadOverrides(requiredOverrides))
   } else {
     return [overrides]
@@ -77,14 +75,7 @@ function transformTests(code) {
   return transformed.code
 }
 
-async function testsLoader({
-  tests: testsPath,
-  overrides,
-  fixtures,
-  ignoreSkip,
-  ignoreSkipEmit,
-  emitOnly = [],
-}) {
+async function testsLoader({tests: testsPath, overrides, fixtures, ignoreSkip, ignoreSkipEmit, emitOnly = []}) {
   const {tests, testsConfig} = await loadTests(testsPath, useFramework({fixturesPath: fixtures}))
   const overrideTests = loadOverrides(overrides)
   const processedTests = Object.entries(tests).reduce((tests, [testName, {variants, ...test}]) => {

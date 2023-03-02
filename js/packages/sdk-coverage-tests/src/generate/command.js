@@ -62,12 +62,8 @@ async function generate(options) {
     await createTestMetaData(tests, config)
 
     console.log(chalk.green(`${chalk.bold(`${emittedTests.length}`.padEnd(3))} test(s) generated`))
-    console.log(
-      chalk.cyan(`${chalk.bold(`${skippedTestCount}`.padEnd(3))} test(s) skipped execution`),
-    )
-    console.log(
-      chalk.cyan(`${chalk.bold(`${skippedEmitTestCount}`.padEnd(3))} test(s) skipped emit`),
-    )
+    console.log(chalk.cyan(`${chalk.bold(`${skippedTestCount}`.padEnd(3))} test(s) skipped execution`))
+    console.log(chalk.cyan(`${chalk.bold(`${skippedEmitTestCount}`.padEnd(3))} test(s) skipped emit`))
     console.log(chalk.red(`${chalk.bold(`${errors.length}`.padEnd(3))} error(s) occurred`))
   } catch (err) {
     console.log(chalk.red(err.stack))
