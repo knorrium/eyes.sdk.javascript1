@@ -16,6 +16,11 @@
     node-fetch "2.6.1"
     yargs "15.0.2"
 
+"@applitools/eg-frpc@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eg-frpc/-/eg-frpc-1.0.2.tgz#085814f410fa84666cd03cefb3177487e6cf5b2e"
+  integrity sha512-qNY+u1se+PCmiLTqGg7ed4tYf0ScjNOSIZmtqwi+cGeJFuny/oZ7ChctQLD6x8GL1YO3CDjZiJc9Zrcbnx7u0w==
+
 "@applitools/eg-socks5-proxy-server@^0.5.4":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@applitools/eg-socks5-proxy-server/-/eg-socks5-proxy-server-0.5.4.tgz#d6ce67e5fabfb413a521406ea6b6994617da7550"
@@ -24,7 +29,27 @@
     binary "^0.3.0"
     is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.15", "@applitools/execution-grid-tunnel@^1.0.14":
+"@applitools/execution-grid-tunnel@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.18.tgz#d1a6776a607eb468d13e6fad0c39a0ef0cd7d346"
+  integrity sha512-9H0N/OCxKfgw4cLgMlbJNiXcyLuaUxZy6k2eYRy1QFZ85wXRdEo8S3bmFV39q8gBYd0szPMRTqk7YWx78pXJbA==
+  dependencies:
+    "@applitools/eg-frpc" "1.0.2"
+    "@applitools/eg-socks5-proxy-server" "^0.5.4"
+    "@applitools/execution-grid-tunnel" "^1.0.14"
+    "@applitools/logger" "^1.0.12"
+    dotenv "^16.0.0"
+    encoding "^0.1.13"
+    fastify "^3.24.1"
+    fastify-plugin "^3.0.1"
+    find-process "^1.4.7"
+    ini "^3.0.0"
+    node-cleanup "^2.1.2"
+    node-fetch "^2.6.7"
+    p-retry "^4.6.2"
+    teen_process "^1.16.0"
+
+"@applitools/execution-grid-tunnel@^1.0.14":
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.15.tgz#9d63d89b64faed22e7b7e5ee762869d778d6a180"
   integrity sha512-TgaQTYUNabSLbOxSB9opbyuMV6l4FelD/XqzA/I21UsJDVuJx6ymbQ6gSlFypQm+9Omzwdu0hFRYqkIufdYaKA==
