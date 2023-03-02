@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.8 - 2023/3/2
+
+### Features
+### Bug fixes
+- upgrade dom-snapshot with a fix to CSP
+
 ## 2.3.7 - 2023/2/23
 
 ### Features
