@@ -42,6 +42,8 @@ function convertSdkNameToReportName(sdkName) {
       return 'nightwatch'
     case 'eyes-puppeteer':
       return 'puppeteer'
+    case 'eyes_playwright_java':
+      return 'java_playwright'
     default:
       throw new Error('Unsupported SDK')
   }
