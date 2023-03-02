@@ -44,10 +44,10 @@
   resolved "https://registry.npmjs.org/@applitools/dom-shared/-/dom-shared-1.0.9.tgz"
   integrity sha512-u6nRHBklRAaODILm0HRluE0IAwrnjs8AMNRBFxHThKGt4qpbkhnwazGMr4zDu3WCBjr/sA31kekUqNl0Jx3YeQ==
 
-"@applitools/dom-snapshot@4.7.3":
-  version "4.7.3"
-  resolved "https://registry.npmjs.org/@applitools/dom-snapshot/-/dom-snapshot-4.7.3.tgz"
-  integrity sha512-bovKLsjR6peaTurR35d2Ik6N+NOVeMW4FTjI6I6ZSLjzJ9XtzNGXCQ7vkTKaSe6406vDMXdcAfIu7+s6C640xg==
+"@applitools/dom-snapshot@4.7.5":
+  version "4.7.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.7.5.tgz#e68fa4b89831839f478b3d028c7c01cbc184e102"
+  integrity sha512-qay8LQ7/qWIVzaaTCKgvNsmHhanppt58H9NsrpG7GXdCiQypa0zz6M9F9+XxEVSjcxMLtFal+O8OQQmCmLzEzQ==
   dependencies:
     "@applitools/dom-shared" "1.0.9"
     "@applitools/functional-commons" "1.6.0"

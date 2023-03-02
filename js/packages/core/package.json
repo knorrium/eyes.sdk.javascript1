@@ -75,7 +75,7 @@
   "dependencies": {
     "@applitools/core-base": "1.1.39",
     "@applitools/dom-capture": "11.2.1",
-    "@applitools/dom-snapshot": "4.7.3",
+    "@applitools/dom-snapshot": "4.7.5",
     "@applitools/driver": "1.11.34",
     "@applitools/ec-client": "1.2.11",
     "@applitools/logger": "1.1.46",
