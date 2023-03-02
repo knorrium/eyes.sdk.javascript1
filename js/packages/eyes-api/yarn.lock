@@ -26,16 +26,16 @@
     "@applitools/req" "1.1.30"
     "@applitools/utils" "1.3.30"
 
-"@applitools/core@2.3.7":
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.7.tgz#24f33866e4f1c5e723a3c239c084a6ec08845b54"
-  integrity sha512-+VhKHJO6W50Qg7CNVjTX4YD0PbHfciwwqLBJOuLEpCKDq1BsTGGichxEGuRgSpD1ZdFyJk0gCucVfyoqRT5gvA==
+"@applitools/core@2.3.9":
+  version "2.3.9"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.9.tgz#6cc1ba5e4939b72213f48a7ececd4e510299b421"
+  integrity sha512-1SIYDGFluBpwR7F1V6/mq+LYqz72ujcD60erptP1cn+JT1NynYGUneKZLwFh8Fn6I6hSVEFt+QsGXlwQ21ldOg==
   dependencies:
     "@applitools/core-base" "1.1.39"
     "@applitools/dom-capture" "11.2.1"
-    "@applitools/dom-snapshot" "4.7.3"
+    "@applitools/dom-snapshot" "4.7.5"
     "@applitools/driver" "1.11.34"
-    "@applitools/ec-client" "1.2.11"
+    "@applitools/ec-client" "1.2.12"
     "@applitools/logger" "1.1.46"
     "@applitools/nml-client" "1.3.37"
     "@applitools/req" "1.1.30"
@@ -72,10 +72,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/dom-shared/-/dom-shared-1.0.9.tgz#fdab0daad95b1215a1315204e2f9d46f76648c93"
   integrity sha512-u6nRHBklRAaODILm0HRluE0IAwrnjs8AMNRBFxHThKGt4qpbkhnwazGMr4zDu3WCBjr/sA31kekUqNl0Jx3YeQ==
 
-"@applitools/dom-snapshot@4.7.3":
-  version "4.7.3"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.7.3.tgz#a021f09820fe0ea6183cec50ea62c00181252959"
-  integrity sha512-bovKLsjR6peaTurR35d2Ik6N+NOVeMW4FTjI6I6ZSLjzJ9XtzNGXCQ7vkTKaSe6406vDMXdcAfIu7+s6C640xg==
+"@applitools/dom-snapshot@4.7.5":
+  version "4.7.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.7.5.tgz#e68fa4b89831839f478b3d028c7c01cbc184e102"
+  integrity sha512-qay8LQ7/qWIVzaaTCKgvNsmHhanppt58H9NsrpG7GXdCiQypa0zz6M9F9+XxEVSjcxMLtFal+O8OQQmCmLzEzQ==
   dependencies:
     "@applitools/dom-shared" "1.0.9"
     "@applitools/functional-commons" "1.6.0"
@@ -92,18 +92,23 @@
     "@applitools/utils" "1.3.30"
     semver "7.3.7"
 
-"@applitools/ec-client@1.2.11":
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.11.tgz#44fb4689d648fcb291bc4105ef5391790b93ab01"
-  integrity sha512-Tsg2yASp1NIK6HiMrybGphTovNb5LGAlRiKQZNqH1DMsvyzELje8yJFbn7iQ23yWZpk1aNC9Wa9Bh1ocf5cOTg==
+"@applitools/ec-client@1.2.12":
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.12.tgz#5089ba5642631f7b85ac3a3cc5f7302fae1bf525"
+  integrity sha512-VF+kYT9G+pzFbS7rWAL9xdwaWXxThd0FpzGPclzV+aRTtaW1MagUSPSygvHY2D4uumLilnmA+1ZlHfRRUyqieQ==
   dependencies:
-    "@applitools/execution-grid-tunnel" "1.0.15"
+    "@applitools/execution-grid-tunnel" "1.0.18"
     "@applitools/logger" "1.1.46"
     "@applitools/req" "1.1.30"
     "@applitools/socket" "1.0.8"
     "@applitools/utils" "1.3.30"
     abort-controller "3.0.0"
     yargs "17.6.2"
+
+"@applitools/eg-frpc@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eg-frpc/-/eg-frpc-1.0.2.tgz#085814f410fa84666cd03cefb3177487e6cf5b2e"
+  integrity sha512-qNY+u1se+PCmiLTqGg7ed4tYf0ScjNOSIZmtqwi+cGeJFuny/oZ7ChctQLD6x8GL1YO3CDjZiJc9Zrcbnx7u0w==
 
 "@applitools/eg-socks5-proxy-server@^0.5.4":
   version "0.5.4"
@@ -113,7 +118,27 @@
     binary "^0.3.0"
     is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.15", "@applitools/execution-grid-tunnel@^1.0.14":
+"@applitools/execution-grid-tunnel@1.0.18":
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.18.tgz#d1a6776a607eb468d13e6fad0c39a0ef0cd7d346"
+  integrity sha512-9H0N/OCxKfgw4cLgMlbJNiXcyLuaUxZy6k2eYRy1QFZ85wXRdEo8S3bmFV39q8gBYd0szPMRTqk7YWx78pXJbA==
+  dependencies:
+    "@applitools/eg-frpc" "1.0.2"
+    "@applitools/eg-socks5-proxy-server" "^0.5.4"
+    "@applitools/execution-grid-tunnel" "^1.0.14"
+    "@applitools/logger" "^1.0.12"
+    dotenv "^16.0.0"
+    encoding "^0.1.13"
+    fastify "^3.24.1"
+    fastify-plugin "^3.0.1"
+    find-process "^1.4.7"
+    ini "^3.0.0"
+    node-cleanup "^2.1.2"
+    node-fetch "^2.6.7"
+    p-retry "^4.6.2"
+    teen_process "^1.16.0"
+
+"@applitools/execution-grid-tunnel@^1.0.14":
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.15.tgz#9d63d89b64faed22e7b7e5ee762869d778d6a180"
   integrity sha512-TgaQTYUNabSLbOxSB9opbyuMV6l4FelD/XqzA/I21UsJDVuJx6ymbQ6gSlFypQm+9Omzwdu0hFRYqkIufdYaKA==
