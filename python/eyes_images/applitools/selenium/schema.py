@@ -55,13 +55,6 @@ from .schema_fields import (
 
 if t.TYPE_CHECKING:
     from applitools.common import config
-    from applitools.common.utils.custom_types import ViewPort
-    from applitools.core import locators
-    from applitools.images import fluent as ics
-    from applitools.selenium.fluent import selenium_check_settings as cs
-    from applitools.selenium.optional_deps import WebDriver
-
-    from ..core import batch_close
 
 
 # Default marshmallow.Schema has no option to skip attributes with None value

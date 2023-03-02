@@ -233,7 +233,7 @@ def test_locate_with_missing_locator_returns_empty_result(local_chrome_driver):
 def test_get_all_test_results_aborts_eyes(runner_type):
     runner = runner_type()
     options = webdriver.ChromeOptions()
-    options.headless = True
+    options.add_argument("--headless")
     with webdriver.Chrome(options=options) as driver:
         driver.get("https://applitools.github.io/demo/TestPages/SimpleTestPage/")
         eyes = Eyes(runner)

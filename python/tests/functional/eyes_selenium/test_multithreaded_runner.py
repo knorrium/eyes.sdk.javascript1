@@ -14,7 +14,7 @@ def test_ten_threads(runner_type):
 
     def perform_test(n):
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.add_argument("--headless")
         with webdriver.Chrome(options=options) as driver:
             driver.get("https://applitools.github.io/demo/TestPages/SimpleTestPage/")
             driver.execute_script("window.scrollTo(0,{});".format(n * 55))

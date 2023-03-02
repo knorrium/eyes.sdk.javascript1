@@ -163,6 +163,7 @@ class TestResultContainer(object):
     browser_info = attr.ib(default=None)  # type: Optional[RenderBrowserInfo]
     exception = attr.ib(default=None)  # type: Optional[Exception]
     user_test_id = attr.ib(default=None)  # type: Optional[Text]
+    __test__ = False  # avoid warnings in test frameworks
 
     def __str__(self):
         browser_info = (
@@ -195,6 +196,7 @@ class TestResultsSummary(object):
     mismatches = attr.ib(default=0)  # type: int
     missing = attr.ib(default=0)  # type: int
     matches = attr.ib(default=0)  # type: int
+    __test__ = False  # avoid warnings in test frameworks
 
     @property
     def all_results(self):

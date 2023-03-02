@@ -3,18 +3,24 @@ import os
 import subprocess
 import uuid
 from os import path
-from typing import Generator
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
-from robot.model import TestSuite
-from robot.result import ExecutionResult, TestCase
+from robot.result import ExecutionResult
 
 from applitools.common.utils.converters import str2bool
 from EyesLibrary.test_results_manager import (
     METADATA_EYES_TEST_RESULTS_URL_NAME,
     METADATA_PATH_TO_EYES_RESULTS_NAME,
 )
+
+if TYPE_CHECKING:
+    from typing import Generator
+
+    from robot.result import TestCase as RobotTestCase
+    from robot.result import TestSuite as RobotTestSuite
+
 
 backend_to_backend_name = {
     "selenium": "SeleniumLibrary",
@@ -39,7 +45,7 @@ def run_robot(*args, output_file_path=None):
 
 
 def from_suite(suite):
-    # type: (TestSuite) -> Generator[TestCase]
+    # type: (RobotTestSuite) -> Generator[RobotTestCase]
     if suite.suites:
         for s in suite.suites:
             for t in s.tests:

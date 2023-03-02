@@ -39,7 +39,7 @@ def chrome(execution_grid):
 @pytest.fixture(scope="function")
 def firefox():
     options = webdriver.FirefoxOptions()
-    options.headless = True
+    options.add_argument("-headless")
     if LEGACY_SELENIUM:
         return webdriver.Firefox(executable_path=GECKO_DRIVER, options=options)
     else:
