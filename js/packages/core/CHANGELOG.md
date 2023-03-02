@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.9 - 2023/3/2
+
+### Features
+### Bug fixes
+- Update `@applitools/execution-grid-tunnel` dependency
+
 ## 2.3.8 - 2023/3/2
 
 ### Features
