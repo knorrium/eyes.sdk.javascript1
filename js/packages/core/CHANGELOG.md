@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 2.3.10 - 2023/3/3
+
+### Features
+- Added `Resize` stitch mode value
+### Bug fixes
+- Fixed issue when `.visualgrid` was not added to agent id
+- Fixed issue with aborting ufg tests
+
 ## 2.3.9 - 2023/3/2
 
 ### Features
