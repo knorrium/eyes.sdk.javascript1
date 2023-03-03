@@ -106,12 +106,14 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
           },
         ),
         close: utils.general.wrap(makeClose({storage, target: driver, logger}), async (close, options) => {
+          if (!running) return
           running = false
           return close(options)
         }),
         abort: utils.general.wrap(
           makeAbort({storage, target: driver, spec, controller, logger}),
           async (abort, options) => {
+            if (!running) return
             running = false
             return abort(options)
           },
