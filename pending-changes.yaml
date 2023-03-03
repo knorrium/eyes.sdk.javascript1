@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue when `.visualgrid` was not added to agent id
 "@applitools/eyes-selenium":
   feature:
     - 
