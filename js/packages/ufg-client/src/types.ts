@@ -264,6 +264,7 @@ export type RenderSettings = RendererSettings & {
   rendererId: string
   region?: Region | Selector
   fully?: boolean
+  stitchMode?: 'Scroll' | 'CSS' | 'Resize'
   selectorsToCalculate?: Selector[]
   includeFullPageSize?: boolean
   ufgOptions?: Record<string, any>

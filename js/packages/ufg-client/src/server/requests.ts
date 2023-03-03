@@ -143,6 +143,9 @@ export function makeUFGRequests({
         } else {
           renderOptions.renderInfo.target = settings.fully ? 'full-page' : 'viewport'
         }
+        if (settings.stitchMode) {
+          renderOptions.renderInfo.stitchMode = settings.stitchMode
+        }
         return renderOptions
       }),
       expected: 200,

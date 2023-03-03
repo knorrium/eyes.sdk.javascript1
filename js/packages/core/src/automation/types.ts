@@ -56,7 +56,7 @@ export interface ScreenshotSettings<TSpec extends SpecType>
   frames?: (ContextReference<TSpec> | {frame: ContextReference<TSpec>; scrollRootElement?: ElementReference<TSpec>})[]
   fully?: boolean
   scrollRootElement?: ElementReference<TSpec>
-  stitchMode?: 'Scroll' | 'CSS'
+  stitchMode?: 'Scroll' | 'CSS' | 'Resize'
   hideScrollbars?: boolean
   hideCaret?: boolean
   overlap?: {top?: number; bottom?: number}

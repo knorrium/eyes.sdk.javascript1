@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Added `Resize` stitch mode value
   bug-fix:
     - Fixed issue when `.visualgrid` was not added to agent id
     - Fixed issue with aborting ufg tests
