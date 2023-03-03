@@ -132,7 +132,7 @@ export async function makeTunnelManager({
   async function open(): Promise<string> {
     const {port, cleanupFunction} = await makeTunnelServer({logger})
     server = {port, close: cleanupFunction}
-    return `http://0.0.0.0:${port}`
+    return `http://localhost:${port}`
   }
 
   async function cleanup() {

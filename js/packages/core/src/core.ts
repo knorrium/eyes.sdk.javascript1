@@ -27,14 +27,14 @@ type Options<TSpec extends SpecType> = {
 export function makeCore<TSpec extends SpecType>({
   spec,
   concurrency,
-  core,
+  core: defaultCore,
   agentId = 'core',
   cwd = process.cwd(),
   logger,
 }: Options<TSpec> = {}): Core<TSpec, 'classic' | 'ufg'> {
   logger = logger?.extend({label: 'core'}) ?? makeLogger({label: 'core'})
-  logger.log(`Core is initialized ${core ? 'with' : 'without'} custom base core`)
-  core ??= makeBaseCore({agentId, cwd, logger})
+  logger.log(`Core is initialized ${defaultCore ? 'with' : 'without'} custom base core`)
+  const core = defaultCore ?? makeBaseCore({agentId, cwd, logger})
 
   return utils.general.extend(core, {
     isDriver: spec && spec.isDriver,
@@ -46,7 +46,7 @@ export function makeCore<TSpec extends SpecType>({
     locateText: makeLocateText({spec, core, logger}),
     extractText: makeExtractText({spec, core, logger}),
     openEyes: makeOpenEyes({spec, core, concurrency, logger}),
-    makeManager: makeMakeManager({spec, concurrency, agentId, logger}),
+    makeManager: makeMakeManager({spec, core: defaultCore, concurrency, agentId, logger}),
     closeBatch: makeCloseBatch({core, logger}),
     deleteTest: makeDeleteTest({core, logger}),
     makeECClient: makeMakeECClient({core, logger}),

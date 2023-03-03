@@ -6,16 +6,16 @@ on:
       packages:
         description: package names (aliases)
         required: true
-      version:
-        description: version type
+      default-version:
+        description: default version type
         type: choice
         options: [ patch, minor, major ]
         default: patch
-      allow-cascading:
+      include-dependencies:
         description: include dependencies
         type: boolean
         default: true
-      only-changed:
+      include-only-changed:
         description: include only packages with new commits
         type: boolean
         default: true
@@ -41,15 +41,15 @@ jobs:
         id: setup
         with:
           packages: ${{github.event.inputs.packages}}
-          allow-cascading: ${{github.event.inputs.allow-cascading}}
-          only-changed: ${{github.event.inputs.only-changed}}
-          release-version: ${{github.event.inputs.version}}
+          include-only-changed: ${{github.event.inputs.include-only-changed}}
+          include-dependencies: ${{github.event.inputs.include-dependencies}}
+          default-publish-version: ${{github.event.inputs.default-version}}
 
   # INTERNAL
   utils:
     needs: [ setup ]
     if: ${{fromJSON(needs.setup.outputs.packages).utils && !failure() && !cancelled()}}
-    name: utils
+    name: ${{fromJSON(needs.setup.outputs.packages).utils.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -58,11 +58,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-utils.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).utils.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).utils.params.version}}"}'
   logger:
     needs: [ setup, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).logger && !failure() && !cancelled()}}
-    name: logger
+    name: ${{fromJSON(needs.setup.outputs.packages).logger.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -71,11 +71,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-logger.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).logger.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).logger.params.version}}"}'
   socket:
     needs: [ setup, logger, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).socket && !failure() && !cancelled()}}
-    name: socket
+    name: ${{fromJSON(needs.setup.outputs.packages).socket.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -84,11 +84,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-socket.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).socket.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).socket.params.version}}"}'
   req:
     needs: [ setup, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).req && !failure() && !cancelled()}}
-    name: req
+    name: ${{fromJSON(needs.setup.outputs.packages).req.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -97,11 +97,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-req.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).req.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).req.params.version}}"}'
   snippets:
     needs: [ setup ]
     if: ${{fromJSON(needs.setup.outputs.packages).snippets && !failure() && !cancelled()}}
-    name: snippets
+    name: ${{fromJSON(needs.setup.outputs.packages).snippets.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -110,11 +110,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-snippets.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).snippets.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).snippets.params.version}}"}'
   image:
     needs: [ setup, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).image && !failure() && !cancelled()}}
-    name: image
+    name: ${{fromJSON(needs.setup.outputs.packages).image.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -123,7 +123,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-image.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).image.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).image.params.version}}"}'
   screenshoter:
     needs:
       [
@@ -137,7 +137,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).screenshoter && !failure() && !cancelled()}}
-    name: screenshoter
+    name: ${{fromJSON(needs.setup.outputs.packages).screenshoter.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -146,11 +146,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-screenshoter.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).screenshoter.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).screenshoter.params.version}}"}'
   driver:
     needs: [ setup, logger, snippets, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).driver && !failure() && !cancelled()}}
-    name: driver
+    name: ${{fromJSON(needs.setup.outputs.packages).driver.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -159,13 +159,13 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-driver.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).driver.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).driver.params.version}}"}'
 
   # TESTING BASE
   test-utils:
     needs: [ setup ]
     if: ${{fromJSON(needs.setup.outputs.packages).test-utils && !failure() && !cancelled()}}
-    name: test-utils
+    name: ${{fromJSON(needs.setup.outputs.packages).test-utils.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -174,11 +174,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-test-utils.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).test-utils.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).test-utils.params.version}}"}'
   test-server:
     needs: [ setup, logger, utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).test-server && !failure() && !cancelled()}}
-    name: test-server
+    name: ${{fromJSON(needs.setup.outputs.packages).test-server.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -187,7 +187,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-test-server.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).test-server.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).test-server.params.version}}"}'
 
   # CORE
   core-base:
@@ -202,7 +202,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).core-base && !failure() && !cancelled()}}
-    name: core-base
+    name: ${{fromJSON(needs.setup.outputs.packages).core-base.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -211,7 +211,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-core-base.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core-base.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core-base.params.version}}"}'
   core:
     needs:
       [
@@ -235,7 +235,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).core && !failure() && !cancelled()}}
-    name: core
+    name: ${{fromJSON(needs.setup.outputs.packages).core.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -244,11 +244,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-core.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).core.params.version}}"}'
   ufg-client:
     needs: [ setup, logger, req, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).ufg-client && !failure() && !cancelled()}}
-    name: ufg-client
+    name: ${{fromJSON(needs.setup.outputs.packages).ufg-client.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -257,11 +257,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-ufg-client.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.params.version}}"}'
   ec-client:
     needs: [ setup, logger, req, socket, utils, test-server ]
     if: ${{fromJSON(needs.setup.outputs.packages).ec-client && !failure() && !cancelled()}}
-    name: ec-client
+    name: ${{fromJSON(needs.setup.outputs.packages).ec-client.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -270,7 +270,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-ec-client.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ec-client.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ec-client.params.version}}"}'
   nml-client:
     needs:
       [
@@ -283,7 +283,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).nml-client && !failure() && !cancelled()}}
-    name: nml-client
+    name: ${{fromJSON(needs.setup.outputs.packages).nml-client.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -292,11 +292,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-nml-client.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nml-client.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nml-client.params.version}}"}'
   api:
     needs: [ setup, core, logger, utils, req ]
     if: ${{fromJSON(needs.setup.outputs.packages).api && !failure() && !cancelled()}}
-    name: api
+    name: ${{fromJSON(needs.setup.outputs.packages).api.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -305,13 +305,13 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-api.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).api.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).api.params.version}}"}'
 
   # SPEC DRIVERS
   spec-playwright:
     needs: [ setup, driver, utils, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-playwright && !failure() && !cancelled()}}
-    name: spec-playwright
+    name: ${{fromJSON(needs.setup.outputs.packages).spec-playwright.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -320,11 +320,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-spec-playwright.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-playwright.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-playwright.params.version}}"}'
   spec-puppeteer:
     needs: [ setup, driver, utils, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-puppeteer && !failure() && !cancelled()}}
-    name: spec-puppeteer
+    name: ${{fromJSON(needs.setup.outputs.packages).spec-puppeteer.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -333,11 +333,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-spec-puppeteer.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-puppeteer.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-puppeteer.params.version}}"}'
   spec-webdriver:
     needs: [ setup, driver, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-webdriver && !failure() && !cancelled()}}
-    name: spec-webdriver
+    name: ${{fromJSON(needs.setup.outputs.packages).spec-webdriver.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -346,11 +346,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-spec-webdriver.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriver.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriver.params.version}}"}'
   spec-webdriverio:
     needs: [ setup, driver, utils, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-webdriverio && !failure() && !cancelled()}}
-    name: spec-webdriverio
+    name: ${{fromJSON(needs.setup.outputs.packages).spec-webdriverio.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -359,11 +359,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-spec-webdriverio.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriverio.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-webdriverio.params.version}}"}'
   spec-selenium:
     needs: [ setup, driver, utils, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).spec-selenium && !failure() && !cancelled()}}
-    name: spec-selenium
+    name: ${{fromJSON(needs.setup.outputs.packages).spec-selenium.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -372,13 +372,13 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-spec-selenium.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-selenium.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).spec-selenium.params.version}}"}'
 
   # JS SDKS
   images:
     needs: [ setup, core, api, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).images && !failure() && !cancelled()}}
-    name: images
+    name: ${{fromJSON(needs.setup.outputs.packages).images.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -387,11 +387,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-images.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).images.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).images.params.version}}"}'
   playwright:
     needs: [ setup, core, api, spec-playwright, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).playwright && !failure() && !cancelled()}}
-    name: playwright
+    name: ${{fromJSON(needs.setup.outputs.packages).playwright.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -400,11 +400,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-playwright.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).playwright.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).playwright.params.version}}"}'
   puppeteer:
     needs: [ setup, core, api, spec-puppeteer, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).puppeteer && !failure() && !cancelled()}}
-    name: puppeteer
+    name: ${{fromJSON(needs.setup.outputs.packages).puppeteer.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -413,11 +413,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-puppeteer.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).puppeteer.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).puppeteer.params.version}}"}'
   webdriverio:
     needs: [ setup, core, api, spec-webdriverio, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).webdriverio && !failure() && !cancelled()}}
-    name: webdriverio
+    name: ${{fromJSON(needs.setup.outputs.packages).webdriverio.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -426,11 +426,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-webdriverio.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).webdriverio.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).webdriverio.params.version}}"}'
   selenium:
     needs: [ setup, core, api, spec-selenium, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).selenium && !failure() && !cancelled()}}
-    name: selenium
+    name: ${{fromJSON(needs.setup.outputs.packages).selenium.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -439,7 +439,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-selenium.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).selenium.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).selenium.params.version}}"}'
   nightwatch:
     needs:
       [
@@ -452,7 +452,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).nightwatch && !failure() && !cancelled()}}
-    name: nightwatch
+    name: ${{fromJSON(needs.setup.outputs.packages).nightwatch.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -461,11 +461,11 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-nightwatch.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nightwatch.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).nightwatch.params.version}}"}'
   testcafe:
     needs: [ setup, core, api, utils, test-server, test-utils ]
     if: ${{fromJSON(needs.setup.outputs.packages).testcafe && !failure() && !cancelled()}}
-    name: testcafe
+    name: ${{fromJSON(needs.setup.outputs.packages).testcafe.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -474,7 +474,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-testcafe.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).testcafe.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).testcafe.params.version}}"}'
   cypress:
     needs:
       [
@@ -487,7 +487,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).cypress && !failure() && !cancelled()}}
-    name: cypress
+    name: ${{fromJSON(needs.setup.outputs.packages).cypress.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -496,7 +496,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-cypress.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).cypress.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).cypress.params.version}}"}'
   browser-extension:
     needs:
       [
@@ -510,7 +510,7 @@ jobs:
         test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).browser-extension && !failure() && !cancelled()}}
-    name: browser-extension
+    name: ${{fromJSON(needs.setup.outputs.packages).browser-extension.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -519,7 +519,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-browser-extension.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).browser-extension.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).browser-extension.params.version}}"}'
   storybook:
     needs:
       [
@@ -533,7 +533,7 @@ jobs:
         utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).storybook && !failure() && !cancelled()}}
-    name: storybook
+    name: ${{fromJSON(needs.setup.outputs.packages).storybook.displayName}}
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -542,7 +542,7 @@ jobs:
         uses: ./.github/actions/run
         with:
           workflow: publish-storybook.yml
-          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).storybook.version}}"}'
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).storybook.params.version}}"}'
 
   # PYTHON BINDING
   python-universal:

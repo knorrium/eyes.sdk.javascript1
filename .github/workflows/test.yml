@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     branches-ignore: ['dependabot/**', 'draft/**', 'play/**']
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       packages:
@@ -22,12 +24,16 @@ on:
         description: setup type
         type: string
         required: false
+      grep:
+        description: test name pattern
+        required: false
       links:
         description: package names to link
         required: false
-      grep:
-        description: grep pattern
-        required: false
+      link-dependencies:
+        description: use dependencies from source
+        type: boolean
+        default: false
 
 concurrency: 
   group: ${{github.event_name == 'pull_request' && github.ref || github.run_id }}
@@ -54,24 +60,25 @@ jobs:
         uses: ./.github/actions/parser
         id: setup
         with:
-          packages: ${{github.event.inputs.packages}}
+          packages: ${{github.event.inputs.packages || (github.event_name == 'pull_request' && 'changed') || (github.event_name == 'schedule' && 'all')}}
           allow-variations: true
+          link-dependencies: ${{github.event.inputs.link-dependencies || github.event_name == 'pull_request' || github.event_name == 'schedule'}}
   test:
     needs: setup
     strategy:
       fail-fast: false
       matrix: 
         include: ${{fromJSON(needs.setup.outputs.packages)}}
-    runs-on: ${{matrix.os}}
     name: ${{matrix.displayName}}
-    env: ${{matrix.env}}
+    runs-on: ${{matrix.params.runner}}
+    env: ${{matrix.params.env}}
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{matrix.node}}
+          node-version: ${{matrix.params.node}}
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Setup xvfb
@@ -86,15 +93,16 @@ jobs:
           test-type: ${{(github.event_name == 'pull_request' && 'sanity') || github.event.inputs.test-type}}
           build-type: ${{github.event.inputs.build-type}}
           setup-type: ${{github.event.inputs.setup-type}}
-          links: ${{matrix.links || github.event.inputs.links}}
+          links: ${{matrix.params.links || github.event.inputs.links}}
           grep: ${{github.event.inputs.grep}}
         env:
           APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
-          APPLITOOLS_API_KEY_JSSDK: ${{secrets.APPLITOOLS_API_KEY_JSSDK}}
           APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
           SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
           SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
-          AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+          BROWSERSTACK_USERNAME: applitools
+          BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
+
       - name: Save testing artifacts
         uses: actions/upload-artifact@v3
         with:
