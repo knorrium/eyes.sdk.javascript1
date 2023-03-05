@@ -76,12 +76,18 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
 
   const mappedArgs = {
     ...args,
-    browsersInfo,
     defaultMatchSettings,
     batch,
   }
 
-  return Object.assign({testName, dontCloseBatches: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs)
+  return {
+    settings: Object.assign({testName, dontCloseBatches: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs),
+    config: {
+      check: {
+        renderers: browsersInfo,
+      },
+    },
+  }
 }
 
 function fillDefaultBrowserName(browser) {

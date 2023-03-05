@@ -13,9 +13,22 @@ const throwErr = Cypress.config('failCypressOnDiff')
 socketCommands(socket, refer)
 let connectedToUniversal = false
 
-let manager,
-  eyes,
-  closePromiseArr = []
+let _summary,
+  closePromiseArr = [],
+  config = {}
+
+async function getSummary() {
+  if (_summary) return _summary
+  await Promise.all(closePromiseArr)
+  _summary = socket.request('EyesManager.getResults', {manager, settings: {throwErr}}).catch(err => {
+    return {results: [{result: err.info.result}]}
+  })
+  _summary = await _summary
+
+  return _summary
+}
+
+let manager, eyes
 
 function getGlobalConfigProperty(prop) {
   const property = Cypress.config(prop)
@@ -34,8 +47,6 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
       isCurrentTestDisabled = false
       return
     }
-    await Promise.all(closePromiseArr)
-    const summary = await socket.request('EyesManager.getResults', {manager, settings: {throwErr}})
 
     const deleteTest = ({settings: {testId, batchId, secretToken}}) => {
       const {serverUrl, proxy, apiKey} = Cypress.config('appliConfFile')
@@ -50,6 +61,7 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
         },
       })
     }
+    const summary = await getSummary()
     return new TestResultsSummary({summary, deleteTest})
   })
 })
@@ -70,9 +82,9 @@ if (shouldUseBrowserHooks || Cypress.config('eyesFailCypressOnDiff')) {
         tapFileName: Cypress.config('appliConfFile').tapFileName,
         shouldCreateTapFile: shouldUseBrowserHooks,
       }
-      await Promise.all(closePromiseArr)
-      const summary = await socket.request('EyesManager.getResults', {manager, settings: {throwErr}})
-      const testResults = summary.results.map(({testResults}) => testResults)
+
+      const summary = await getSummary()
+      const testResults = summary.results.map(({result}) => result)
       const message = await socket.request('Test.printTestResults', {testResults, resultConfig})
       if (
         !!getGlobalConfigProperty('eyesFailCypressOnDiff') &&
@@ -122,7 +134,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
-    const settings = eyesOpenMapValues({
+    const {settings, config: openConfig} = eyesOpenMapValues({
       args,
       appliConfFile,
       testName,
@@ -133,7 +145,8 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
         name: 'chrome',
       },
     })
-    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings})
+    config = {...config, ...openConfig}
+    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings, config})
   })
 })
 
@@ -152,6 +165,7 @@ Cypress.Commands.add('eyesCheckWindow', (args = {}) =>
       eyes,
       settings: checkSettings,
       target: driver,
+      config,
     })
   }),
 )
@@ -167,7 +181,7 @@ Cypress.Commands.add('eyesClose', () => {
     }
 
     // intentionally not returning the result in order to not wait on the close promise
-    const p = socket.request('Eyes.close', {eyes, throwErr: false}).catch(err => {
+    const p = socket.request('Eyes.close', {eyes}).catch(err => {
       console.log('Error in cy.eyesClose', err)
     })
     closePromiseArr.push(p)

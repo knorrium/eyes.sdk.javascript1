@@ -35,7 +35,7 @@ export default function makeGlobalRunHooks({closeManager, closeBatches, closeUni
 
         let testResults
         for (const summary of summaries) {
-          testResults = summary.results.map(({testResults}: any) => testResults)
+          testResults = summary.results
         }
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({
@@ -47,7 +47,7 @@ export default function makeGlobalRunHooks({closeManager, closeBatches, closeUni
         }
 
         if (config.appliConfFile.tapDirPath) {
-          await handleTestResults.handleBatchResultsFile(testResults, {
+          handleTestResults.handleBatchResultsFile(testResults, {
             tapDirPath: config.appliConfFile.tapDirPath,
             tapFileName: config.appliConfFile.tapFileName,
           })
