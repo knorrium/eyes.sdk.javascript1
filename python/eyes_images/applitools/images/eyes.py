@@ -38,6 +38,14 @@ class Eyes(object):
         self._commands = self._runner._commands  # noqa
         self._eyes_ref = None
 
+    def get_configuration(self):
+        # type: () -> Configuration
+        return self.configure.clone()
+
+    def set_configuration(self, configuration):
+        # type: (Configuration) -> None
+        self.configure = configuration.clone()
+
     def open(self, app_name, test_name, dimension=None):
         # type: (Text, Text, Optional[ViewPort]) -> None
         if app_name is not None:
@@ -171,6 +179,11 @@ class Eyes(object):
                 return results[0]  # Original interface returns just one result
             else:
                 return None
+
+    @property
+    def configuration(self):
+        # type: () -> Configuration
+        return self.configure
 
     @property
     def is_open(self):

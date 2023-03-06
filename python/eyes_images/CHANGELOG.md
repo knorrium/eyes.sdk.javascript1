@@ -1,3 +1,7 @@
+## [vNext]
+## Fixed
+- Add missing set_configuration/get_configuration methods and configuration property to images.Eyes [Trello 3155](https://trello.com/c/QZz64qr3)
+
 ## [5.15.1] - 2023-02-28
 ### Updated
 - Switch to core-universal server package
