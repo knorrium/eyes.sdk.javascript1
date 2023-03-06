@@ -23,10 +23,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: [
-        {width: 1200, height: 1000, name: 'chrome'},
-        {width: 800, height: 1000, name: 'chrome'},
-      ],
       dontCloseBatches,
       testName,
       defaultMatchSettings: {
@@ -47,17 +43,13 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('should work with config file', () => {
     const args = {}
 
     const expected = {
-      browsersInfo: [
-        {width: 1200, height: 1000, name: 'chrome'},
-        {width: 800, height: 1000, name: 'chrome'},
-      ],
       apiKey: 'my api key',
       showLogs: true,
       testName,
@@ -98,7 +90,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('eyes open config should have precedence over config file', () => {
@@ -122,10 +114,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: [
-        {width: 1200, height: 1000, name: 'chrome'},
-        {width: 800, height: 1000, name: 'chrome'},
-      ],
       testName,
       dontCloseBatches,
       shouldUseBrowserHooks,
@@ -161,7 +149,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('eyesOpen batch mapping, batch properties', () => {
@@ -172,7 +160,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: undefined,
       defaultMatchSettings: {
         accessibilitySettings: undefined,
         enablePatterns: undefined,
@@ -194,7 +181,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('eyesOpen batch mapping, batch object with boolean', () => {
@@ -209,7 +196,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: undefined,
       defaultMatchSettings: {
         accessibilitySettings: undefined,
         enablePatterns: undefined,
@@ -237,7 +223,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('config file batch mapping, batch properties', () => {
@@ -248,7 +234,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: undefined,
       defaultMatchSettings: {
         accessibilitySettings: undefined,
         enablePatterns: undefined,
@@ -270,7 +255,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('config file batch mapping, batch obejct', () => {
@@ -285,7 +270,6 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      browsersInfo: undefined,
       defaultMatchSettings: {
         accessibilitySettings: undefined,
         enablePatterns: undefined,
@@ -313,17 +297,13 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig).to.eql(expected)
+    expect(coreConfig.settings).to.eql(expected)
   })
 
   it('make sure applitConfFile stays intact for all tests', () => {
     const args = {}
 
     const expected = {
-      browsersInfo: [
-        {width: 1200, height: 1000, name: 'chrome'},
-        {width: 800, height: 1000, name: 'chrome'},
-      ],
       apiKey: 'my api key',
       showLogs: true,
       testName,
@@ -372,6 +352,6 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfigTest2).to.eql(expected)
+    expect(coreConfigTest2.settings).to.eql(expected)
   })
 })
