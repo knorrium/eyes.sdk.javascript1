@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.11 - 2023/3/6
+
+### Features
+### Bug fixes
+- setting the universal cli for javascript right
+
 ## 2.3.10 - 2023/3/3
 
 ### Features
