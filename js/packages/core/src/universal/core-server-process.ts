@@ -6,10 +6,14 @@ export function makeCoreServerProcess(
   options: Options & {forkOptions?: ForkOptions},
 ): Promise<{port: number; close: () => void}> {
   return new Promise((resolve, reject) => {
-    const server = fork(path.resolve(__dirname, '../../dist/cli.js'), [`--config=${JSON.stringify(options)}`], {
-      stdio: [options.shutdownMode === 'stdin' ? 'inherit' : 'ignore', 'ignore', 'ignore', 'ipc'],
-      ...options.forkOptions,
-    })
+    const server = fork(
+      path.resolve(__dirname, '../../dist/cli/cli.js'),
+      ['universal', `--config=${JSON.stringify(options)}`],
+      {
+        stdio: [options.shutdownMode === 'stdin' ? 'inherit' : 'ignore', 'ignore', 'ignore', 'ipc'],
+        ...options.forkOptions,
+      },
+    )
 
     const timeout = setTimeout(() => {
       reject(new Error(`Server didn't respond for 10s after being started`))
