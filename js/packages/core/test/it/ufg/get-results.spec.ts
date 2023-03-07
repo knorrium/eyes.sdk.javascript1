@@ -7,7 +7,7 @@ describe('get results', () => {
   it('returns multiple test results', async () => {
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
@@ -42,7 +42,7 @@ describe('get results', () => {
         },
       },
     })
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
@@ -72,7 +72,7 @@ describe('get results', () => {
       },
     })
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })

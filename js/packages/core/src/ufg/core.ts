@@ -17,7 +17,7 @@ import throat from 'throat'
 type Options<TSpec extends SpecType> = {
   concurrency: number
   spec?: SpecDriver<TSpec>
-  clients?: {ufg: UFGClient; nml: NMLClient}
+  clients?: {ufg?: UFGClient; nml?: NMLClient}
   core?: BaseCore
   agentId?: string
   cwd?: string

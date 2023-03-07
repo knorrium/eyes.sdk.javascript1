@@ -17,7 +17,7 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   core: BaseCore
-  clients?: {ufg: UFGClient; nml: NMLClient}
+  clients?: {ufg?: UFGClient; nml?: NMLClient}
   spec?: SpecDriver<TSpec>
   logger: Logger
 }

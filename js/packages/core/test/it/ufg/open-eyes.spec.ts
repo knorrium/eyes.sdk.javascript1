@@ -13,7 +13,7 @@ describe('open-eyes', () => {
         },
       },
     })
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
 
     await assert.rejects(
       core.openEyes({
@@ -37,7 +37,7 @@ describe('open-eyes', () => {
       account: accountInfo,
     })
 
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const openResult = await core.openEyes({
       settings: {
         serverUrl: 'server-url',

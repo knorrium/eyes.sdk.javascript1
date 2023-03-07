@@ -8,7 +8,7 @@ describe('abort', () => {
   it('handles abort with no started tests', async () => {
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
@@ -25,7 +25,7 @@ describe('abort', () => {
   it('handles abort before render started', async () => {
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
@@ -65,7 +65,7 @@ describe('abort', () => {
         openEyes: () => utils.general.sleep(0),
       },
     })
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
@@ -108,7 +108,7 @@ describe('abort', () => {
         check: () => utils.general.sleep(0),
       },
     })
-    const core = makeCore({concurrency: 5, core: fakeCore, client: fakeClient})
+    const core = makeCore({concurrency: 5, core: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
