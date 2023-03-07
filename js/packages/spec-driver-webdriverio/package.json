@@ -95,7 +95,7 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION @wdio/globals@$APPLITOOLS_WEBDRIVERIO_VERSION @types/node@${NODE_VERSION%%.*}; echo \"$packagejson\" > package.json; fi",
+    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION @types/node@${NODE_VERSION%%.*}; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-webdriverio' -f links='types utils test-utils'",
     "gh:publish": "gh workflow run publish-spec-webdriverio.yml --ref $(git rev-parse --abbrev-ref HEAD)",
@@ -113,11 +113,11 @@
     "@applitools/test-utils": "1.5.12",
     "@types/mocha": "^9.1.1",
     "@types/node": "16",
-    "@wdio/globals": "^8.0.10",
+    "@wdio/globals": "^8.5.6",
     "chromedriver": "^101.0.0",
     "mocha": "^9.2.2",
     "nock": "^13.2.9",
-    "webdriverio": "^8.3.9"
+    "webdriverio": "^8.5.6"
   },
   "peerDependencies": {
     "webdriverio": ">=5.0.0"
