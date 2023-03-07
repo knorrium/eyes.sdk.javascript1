@@ -47,7 +47,7 @@ class EyesService {
   private async _eyesOpen() {
     if (!this._eyes.isOpen) {
       this._testResults = undefined
-      await this._eyes.open(browser as Driver)
+      await this._eyes.open(browser as unknown as Driver)
     }
   }
 
