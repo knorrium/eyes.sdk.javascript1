@@ -26,16 +26,16 @@
     "@applitools/req" "1.1.30"
     "@applitools/utils" "1.3.30"
 
-"@applitools/core@2.3.13":
-  version "2.3.13"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.13.tgz#789dfbed4d013c0fe8bed5d1fbf79c33c6c99600"
-  integrity sha512-rQ5f1n15Kpc8KohykYRNnoK5xtKEcfVBfKB+47wUuhErIhIRXzZYjl2cTo+uQmXELydiMMcg3Xz63jWKgNSN/A==
+"@applitools/core@2.3.14":
+  version "2.3.14"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.3.14.tgz#036d39ccc5ad1c0b9f22507fefa91db4bb8d47ed"
+  integrity sha512-ubCQTGcoKKmgrt7QmIsrniDH8MqWgF66T+bEDRurNjpnC0RzjiCmEipr1pkMJGeXiUbe4Kr4uWP1+rg3QA8FBA==
   dependencies:
     "@applitools/core-base" "1.1.39"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.5"
     "@applitools/driver" "1.11.35"
-    "@applitools/ec-client" "1.2.13"
+    "@applitools/ec-client" "1.2.14"
     "@applitools/logger" "1.1.46"
     "@applitools/nml-client" "1.3.38"
     "@applitools/req" "1.1.30"
@@ -92,12 +92,12 @@
     "@applitools/utils" "1.3.30"
     semver "7.3.7"
 
-"@applitools/ec-client@1.2.13":
-  version "1.2.13"
-  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.13.tgz#d28d53c9b8081fa9cabe11869953538b8e2330fa"
-  integrity sha512-zy7EuXHmETiR6YnD7aZu3LAUleUu6xlm5JV17KR5bHCrlAfu+4602+NtXFgdmNOK9JckyjUMV5HTVTDGgAT6pw==
+"@applitools/ec-client@1.2.14":
+  version "1.2.14"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.14.tgz#3e8d5108dd3b0fc4cd52d2f5a460146da34997e4"
+  integrity sha512-qnAS7k5Y6MXLzOOZQ5Shl6crHFJ6hYnujGKqt2tJrLnIL8xwXPPhJNscb6NtLP4BTNvTxatdK8Rz4XJ4Tz+iow==
   dependencies:
-    "@applitools/execution-grid-tunnel" "1.0.18"
+    "@applitools/execution-grid-tunnel" "1.0.19"
     "@applitools/logger" "1.1.46"
     "@applitools/req" "1.1.30"
     "@applitools/socket" "1.0.8"
@@ -118,10 +118,10 @@
     binary "^0.3.0"
     is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.18.tgz#d1a6776a607eb468d13e6fad0c39a0ef0cd7d346"
-  integrity sha512-9H0N/OCxKfgw4cLgMlbJNiXcyLuaUxZy6k2eYRy1QFZ85wXRdEo8S3bmFV39q8gBYd0szPMRTqk7YWx78pXJbA==
+"@applitools/execution-grid-tunnel@1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.19.tgz#e7c4ca908239127937cf098d719367507b5a21dc"
+  integrity sha512-kTRSNcld6fyW+vEXwsxkrgg7AfqXaA/upgUFdiIAEDoTUGqowoRfjAnkZcAgWPeEdtGEAu5KttlFp9z64EvRPQ==
   dependencies:
     "@applitools/eg-frpc" "1.0.2"
     "@applitools/eg-socks5-proxy-server" "^0.5.4"
