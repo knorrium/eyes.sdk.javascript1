@@ -10,6 +10,12 @@
 
 
 
+## 5.42.1 - 2023/3/7
+
+### Features
+- Added support for scroll root elements in ufg (only for native apps)
+### Bug fixes
+
 ## 5.42.0 - 2023/2/17
 
 ### Features

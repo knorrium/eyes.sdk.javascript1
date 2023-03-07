@@ -20,7 +20,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Added support for scroll root elements in ufg (only for native apps)
+    - 
   bug-fix:
     - 
 "@applitools/eyes-playwright":
