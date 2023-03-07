@@ -121,7 +121,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
       connectedToUniversal = true
       socket.emit('Core.makeCore', {
         agentId: `eyes.cypress/${require('../../package.json').version}`,
-        cwd: process.cwd(),
+        cwd: typeof process === 'object' && process.cwd(),
         spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']),
       })
 
