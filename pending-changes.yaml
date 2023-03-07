@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed selector transformation for scroll root elements for ufg
 "@applitools/eyes-selenium":
   feature:
     - 

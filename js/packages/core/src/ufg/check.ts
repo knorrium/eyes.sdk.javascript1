@@ -85,6 +85,7 @@ export function makeCheck<TSpec extends SpecType>({
           context: driver.currentContext,
           elementReferences: [
             ...(elementReferenceToTarget ? [elementReferenceToTarget] : []),
+            ...(settings.scrollRootElement ? [settings.scrollRootElement] : []),
             ...elementReferencesToCalculate,
           ],
         })
