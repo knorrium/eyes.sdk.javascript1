@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.3.13 - 2023/3/7
+
+### Features
+### Bug fixes
+- Fixed selector transformation for scroll root elements for ufg
+
 ## 2.3.12 - 2023/3/7
 
 ### Features
