@@ -95,7 +95,7 @@
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION @types/node@${NODE_VERSION%%.*}; echo \"$packagejson\" > package.json; fi",
+    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION @wdio/globals@$APPLITOOLS_WEBDRIVERIO_VERSION @types/node@${NODE_VERSION%%.*}; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-webdriverio' -f links='types utils test-utils'",
     "gh:publish": "gh workflow run publish-spec-webdriverio.yml --ref $(git rev-parse --abbrev-ref HEAD)",
@@ -104,7 +104,7 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.34",
+    "@applitools/driver": "1.11.35",
     "@applitools/utils": "1.3.30"
   },
   "devDependencies": {
