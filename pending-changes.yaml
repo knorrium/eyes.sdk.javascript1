@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Update broker url using last response instead of using driver
+    - 
   bug-fix:
-    - Replaced broker url cache with nml element cache
+    - 
 "@applitools/eyes-selenium":
   feature:
     - 

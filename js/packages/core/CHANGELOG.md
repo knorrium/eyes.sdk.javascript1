@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.3.12 - 2023/3/7
+
+### Features
+- Update broker url using last response instead of using driver
+### Bug fixes
+- Replaced broker url cache with nml element cache
+
 ## 2.3.11 - 2023/3/6
 
 ### Features
