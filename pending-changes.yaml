@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Upgrade tunnel version
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
