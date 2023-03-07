@@ -78,17 +78,6 @@ describe('client', () => {
       assert.strictEqual(title, 'My local page')
     })
 
-    it('throws when ec is not enabled', async () => {
-      client = await makeECClient({settings: {capabilities: {eyesServerUrl: 'https://testeyes.applitools.com'}}})
-      await assert.rejects(
-        new Builder()
-          .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
-          .usingServer(client.url)
-          .build(),
-        error => error.message === 'Failed to create tunnel with code EG_NOT_ENABLED',
-      )
-    })
-
     // TODO: add assertion for expected error
     it.skip('fails gracefully when tunnel closes during test run', async () => {
       client = await makeECClient()

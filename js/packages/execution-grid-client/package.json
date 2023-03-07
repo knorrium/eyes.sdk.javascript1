@@ -63,7 +63,7 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/execution-grid-tunnel": "1.0.18",
+    "@applitools/execution-grid-tunnel": "1.0.19",
     "@applitools/logger": "1.1.46",
     "@applitools/req": "1.1.30",
     "@applitools/socket": "1.0.8",
