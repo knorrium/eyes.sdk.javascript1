@@ -83,11 +83,6 @@ jobs:
           node-version: ${{matrix.params.node}}
           registry-url: https://registry.npmjs.org/
           always-auth: true
-      - name: Setup xvfb
-        if: ${{matrix.xvfb}}
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb -ac $DISPLAY -screen 0 1280x1024x16 &
       - name: Run tests
         uses: ./.github/actions/tests
         with:
@@ -104,7 +99,12 @@ jobs:
           SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
           BROWSERSTACK_USERNAME: applitools
           BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-
+      - name: Summarize
+        if: always()
+        uses: test-summary/action@v2
+        with:
+          paths: |
+            ${{matrix.path}}/coverage-test-report.xml
       - name: Save testing artifacts
         uses: actions/upload-artifact@v3
         with:
