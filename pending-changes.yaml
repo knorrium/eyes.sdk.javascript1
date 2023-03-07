@@ -15,12 +15,12 @@ Apollo SDK:
     - Upgrade tunnel version
 "@applitools/eyes-selenium":
   feature:
-    - 
+    - Added `Resize` value to `StitchMode` enum
   bug-fix:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Added `Resize` value to `StitchMode` enum
   bug-fix:
     - 
 "@applitools/eyes-playwright":
@@ -78,7 +78,7 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-nightwatch":
   feature:
-    - 
+    - Added `Resize` value to `StitchMode` enum
   bug-fix:
     - 
 "@applitools/eyes-cypress":
