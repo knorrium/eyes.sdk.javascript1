@@ -111,8 +111,8 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core": "2.3.13",
-    "@applitools/eyes-api": "1.13.11",
+    "@applitools/core": "2.3.14",
+    "@applitools/eyes-api": "1.13.12",
     "@applitools/spec-driver-webdriverio": "1.4.30"
   },
   "devDependencies": {
