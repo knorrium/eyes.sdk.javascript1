@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriver",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "keywords": [
     "webdriver",
     "chrome devtools protocol",
@@ -61,7 +61,7 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.34",
+    "@applitools/driver": "1.11.35",
     "@applitools/utils": "1.3.30",
     "proxy-agent": "5.0.0"
   },
