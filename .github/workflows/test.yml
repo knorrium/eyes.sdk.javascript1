@@ -1,5 +1,7 @@
 name: Test packages
 
+run-name: ${{github.event_name == 'schedule' && 'Nightly' || ''}}
+
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
