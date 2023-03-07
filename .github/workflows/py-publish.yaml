@@ -30,8 +30,8 @@ jobs:
           RELEASE_BRANCH=release-python-$PACKAGE-$new_version
           git checkout -b $RELEASE_BRANCH
           git push -u origin $RELEASE_BRANCH
-          echo "::set-output name=release_branch::$RELEASE_BRANCH"
-          echo "::set-output name=release_version::$new_version"
+          echo "name=release_branch::$RELEASE_BRANCH" >> $GITHUB_OUTPUT
+          echo "name=release_version::$new_version" >> $GITHUB_OUTPUT
         working-directory: python
         env:
           GIT_AUTHOR_NAME: ${{github.actor}}
