@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Optional, Text, overload
 
 from .selenium_check_settings import SeleniumCheckSettings
 
@@ -96,3 +96,19 @@ class Target(object):
     @staticmethod  # noqa
     def frame(frame):
         return SeleniumCheckSettings().frame(frame)
+
+    @staticmethod  # noqa
+    @overload
+    def webview(use_default=True):
+        # type: (Optional[bool]) -> SeleniumCheckSettings
+        pass
+
+    @staticmethod  # noqa
+    @overload
+    def webview(webview_id):
+        # type: (Text) -> SeleniumCheckSettings
+        pass
+
+    @staticmethod  # noqa
+    def webview(webview=True):
+        return SeleniumCheckSettings().webview(webview)

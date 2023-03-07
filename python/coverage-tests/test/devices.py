@@ -97,6 +97,21 @@ def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
     return appium(capabilities, sauce_url, app=app, browser_name=browser_name)
 
 
+@sauce.mac_vm
+@pytest.fixture(scope="function")
+def iphone_12(app, sauce_url, browser_name, orientation, name_of_test):
+    capabilities = {
+        "deviceName": "iPhone 12 Pro Simulator",
+        "platformVersion": "15.2",
+        "platformName": "iOS",
+        "deviceOrientation": orientation.upper(),
+        "sauce:options": {
+            "name": name_of_test,
+        },
+    }
+    return appium(capabilities, sauce_url, app=app, browser_name=browser_name)
+
+
 def appium(desired_caps, sauce_url, app="", browser_name=""):
     from appium.webdriver import Remote
 

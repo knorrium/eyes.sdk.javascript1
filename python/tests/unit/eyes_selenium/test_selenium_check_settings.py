@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement as SeleniumWebElement
 
 from applitools.common import FloatingBounds
-from applitools.selenium import AccessibilityRegionType, Region
+from applitools.selenium import AccessibilityRegionType, Region, Target
 from applitools.selenium.fluent import SeleniumCheckSettings
 from applitools.selenium.fluent.target_path import TargetPath
 
@@ -247,3 +247,42 @@ def test_lazy_load_custom_settings():
     assert cs.values.lazy_load.scroll_length == 1
     assert cs.values.lazy_load.waiting_time == 2
     assert cs.values.lazy_load.max_amount_to_scroll == 3
+
+
+def test_webview_default():
+    cs = SeleniumCheckSettings()
+    cs.webview()
+
+    assert cs.values.webview is True
+
+
+def test_webview_false():
+    cs = SeleniumCheckSettings()
+    cs.webview(False)
+
+    assert cs.values.webview is False
+
+
+def test_webview_text():
+    cs = SeleniumCheckSettings()
+    cs.webview("webviewId")
+
+    assert cs.values.webview == "webviewId"
+
+
+def test_target_webview_default():
+    cs = Target.webview()
+
+    assert cs.values.webview is True
+
+
+def test_target_webview_false():
+    cs = Target.webview(False)
+
+    assert cs.values.webview is False
+
+
+def test_target_webview_id():
+    cs = Target.webview("webviewId")
+
+    assert cs.values.webview == "webviewId"

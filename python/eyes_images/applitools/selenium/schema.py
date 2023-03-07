@@ -365,6 +365,7 @@ class CheckSettings(USDKSchema):
     accessibility_regions = List(
         Nested(AccessibilityRegionReference), dump_to="accessibilityRegions"
     )
+    webview = Field()
 
 
 class LocateSettings(USDKSchema):

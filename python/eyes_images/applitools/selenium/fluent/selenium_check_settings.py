@@ -62,6 +62,7 @@ class SeleniumCheckSettingsValues(CheckSettingsValues):
     ocr_region = attr.ib(init=False, default=None)  # type: Optional[OCRRegion]
     layout_breakpoints = attr.ib(default=None)  # type: Optional[Union[bool, List[int]]]
     lazy_load = attr.ib(default=None)  # type: Optional[LazyLoadOptions]
+    webview = attr.ib(default=None)  # type: Union[None, bool, Text]
 
     @property
     def size_mode(self):
@@ -566,6 +567,25 @@ class SeleniumCheckSettings(CheckSettings):
         # type: (Optional[int], Optional[int], Optional[int]) -> SeleniumCheckSettings
         value = LazyLoadOptions(scroll_length, waiting_time, max_amount_to_scroll)
         self.values.lazy_load = value
+        return self
+
+    @overload
+    def webview(self):
+        # type: () -> SeleniumCheckSettings
+        pass
+
+    @overload
+    def webview(self, use_default):
+        # type: (bool) -> SeleniumCheckSettings
+        pass
+
+    @overload
+    def webview(self, webview_id):
+        # type: (Text) -> SeleniumCheckSettings
+        pass
+
+    def webview(self, webview=True):
+        self.values.webview = webview
         return self
 
     @property
