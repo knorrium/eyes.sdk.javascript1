@@ -14,7 +14,6 @@ const batchPropertiesRetriever = (args, appliConfFile) => {
   }
 }
 function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks}) {
-  let browsersInfo = args.browser || appliConfFile.browser
   let accessibilitySettings = args.accessibilityValidation || appliConfFile.accessibilityValidation
   const batchProperties = batchPropertiesRetriever(args, appliConfFile)
   const batch = {
@@ -45,16 +44,6 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
     'batchSequenceName',
   ]
 
-  if (browsersInfo) {
-    if (Array.isArray(browsersInfo)) {
-      for (const [index, value] of browsersInfo.entries()) {
-        browsersInfo[index] = fillDefaultBrowserName(value)
-      }
-    } else {
-      browsersInfo = [fillDefaultBrowserName(browsersInfo)]
-    }
-  }
-
   const defaultMatchSettings = {
     accessibilitySettings,
     matchLevel: args.matchLevel || appliConfFile.matchLevel,
@@ -80,28 +69,7 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
     batch,
   }
 
-  return {
-    settings: Object.assign({testName, dontCloseBatches: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs),
-    config: {
-      check: {
-        renderers: browsersInfo,
-      },
-    },
-  }
-}
-
-function fillDefaultBrowserName(browser) {
-  if (!browser.iosDeviceInfo && !browser.chromeEmulationInfo) {
-    if (!browser.name) {
-      browser.name = 'chrome'
-    }
-    if (browser.deviceName) {
-      browser = {chromeEmulationInfo: browser}
-    }
-    return browser
-  } else {
-    return browser
-  }
+  return Object.assign({testName, dontCloseBatches: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs)
 }
 
 module.exports = {eyesOpenMapValues}

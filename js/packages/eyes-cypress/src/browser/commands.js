@@ -15,7 +15,7 @@ let connectedToUniversal = false
 
 let _summary,
   closePromiseArr = [],
-  config = {}
+  openToCheckSettingsArgs // this is using to map open setting that passed to check as part of the upgrade to core@2
 
 async function getSummary() {
   if (_summary) return _summary
@@ -134,19 +134,17 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
-    const {settings, config: openConfig} = eyesOpenMapValues({
+    const {browser, waitBeforeCapture, layoutBreakpoints} = args
+
+    openToCheckSettingsArgs = {browser, waitBeforeCapture, layoutBreakpoints}
+
+    const settings = eyesOpenMapValues({
       args,
       appliConfFile,
       testName,
       shouldUseBrowserHooks,
-      defaultBrowser: {
-        width: Cypress.config('viewportWidth'),
-        height: Cypress.config('viewportHeight'),
-        name: 'chrome',
-      },
     })
-    config = {...config, ...openConfig}
-    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings, config})
+    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings})
   })
 })
 
@@ -155,17 +153,25 @@ Cypress.Commands.add('eyesCheckWindow', (args = {}) =>
     if (isCurrentTestDisabled) return
 
     setRootContext()
-    const driver = refer.ref(cy.state('window').document)
+    const target = refer.ref(cy.state('window').document)
 
     Cypress.log({name: 'Eyes: check window'})
 
-    const checkSettings = eyesCheckMapValues({args, refer})
+    const settings = eyesCheckMapValues({
+      args: {...openToCheckSettingsArgs, ...args},
+      refer,
+      appliConfFile: Cypress.config('appliConfFile'),
+      defaultBrowser: {
+        width: Cypress.config('viewportWidth'),
+        height: Cypress.config('viewportHeight'),
+        name: 'chrome',
+      },
+    })
 
     return socket.request('Eyes.check', {
       eyes,
-      settings: checkSettings,
-      target: driver,
-      config,
+      settings,
+      target,
     })
   }),
 )

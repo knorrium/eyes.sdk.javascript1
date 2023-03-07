@@ -35,7 +35,7 @@ export default function makeGlobalRunHooks({closeManager, closeBatches, closeUni
 
         let testResults
         for (const summary of summaries) {
-          testResults = summary.results
+          testResults = summary.results.map(({result}: any) => result)
         }
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({

@@ -43,7 +43,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('should work with config file', () => {
@@ -90,7 +90,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('eyes open config should have precedence over config file', () => {
@@ -149,7 +149,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('eyesOpen batch mapping, batch properties', () => {
@@ -181,7 +181,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('eyesOpen batch mapping, batch object with boolean', () => {
@@ -223,7 +223,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('config file batch mapping, batch properties', () => {
@@ -255,7 +255,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('config file batch mapping, batch obejct', () => {
@@ -297,7 +297,7 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfig.settings).to.eql(expected)
+    expect(coreConfig).to.eql(expected)
   })
 
   it('make sure applitConfFile stays intact for all tests', () => {
@@ -352,6 +352,6 @@ describe('eyes open mapping', () => {
       shouldUseBrowserHooks,
       defaultBrowser,
     })
-    expect(coreConfigTest2.settings).to.eql(expected)
+    expect(coreConfigTest2).to.eql(expected)
   })
 })

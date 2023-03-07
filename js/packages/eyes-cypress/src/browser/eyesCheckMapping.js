@@ -1,9 +1,14 @@
 /* global Node */
-function eyesCheckMapValues({args, refer}) {
+function eyesCheckMapValues({args, refer, appliConfFile, defaultBrowser}) {
   if (typeof args === `string`) {
     args = {tag: args}
   }
+  let renderers = args.renderers || args.browser || appliConfFile.browser || defaultBrowser
+  if (typeof args.waitBeforeCapture !== 'number' || args.waitBeforeCapture < 0)
+    args.waitBeforeCapture = appliConfFile.waitBeforeCapture
+
   const config = args // just did it for having less git changes at this moment
+
   const mappedValues = [
     'tag',
     'scriptHooks',
@@ -20,6 +25,17 @@ function eyesCheckMapValues({args, refer}) {
 
   let regionSettings = {}
   let shadowDomSettings = {}
+
+  if (renderers) {
+    if (Array.isArray(renderers)) {
+      for (const [index, value] of renderers.entries()) {
+        renderers[index] = fillDefaultBrowserName(value)
+      }
+    } else {
+      renderers = [fillDefaultBrowserName(renderers)]
+    }
+  }
+
   const checkSettings = {
     name: config.tag,
     hooks: config.scriptHooks,
@@ -29,6 +45,7 @@ function eyesCheckMapValues({args, refer}) {
     layoutRegions: convertPaddedRegion(config.layout),
     contentRegions: convertPaddedRegion(config.content),
     accessibilityRegions: convertAccessabilityRegions(config.accessibility),
+    renderers,
   }
 
   if (config.target === 'region') {
@@ -231,6 +248,20 @@ function isHTMLElement(element) {
   // Avoiding instanceof here since the element might come from an iframe, and `instanceof HTMLElement` would fail.
   // This check looks naive, but if anyone passes something like {nodeType: 1} as a region, then I'm fine with them crashing :)
   return element.nodeType && element.nodeType === Node.ELEMENT_NODE
+}
+
+function fillDefaultBrowserName(browser) {
+  if (!browser.iosDeviceInfo && !browser.chromeEmulationInfo) {
+    if (!browser.name) {
+      browser.name = 'chrome'
+    }
+    if (browser.deviceName) {
+      browser = {chromeEmulationInfo: browser}
+    }
+    return browser
+  } else {
+    return browser
+  }
 }
 
 module.exports = {eyesCheckMapValues}
