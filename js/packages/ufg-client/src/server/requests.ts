@@ -142,6 +142,10 @@ export function makeUFGRequests({
           }
         } else {
           renderOptions.renderInfo.target = settings.fully ? 'full-page' : 'viewport'
+          //NOTE at the moment scroll root is supported only for native devices
+          if (settings.type === 'native') {
+            renderOptions.renderInfo.selector = settings.scrollRootElement
+          }
         }
         if (settings.stitchMode) {
           renderOptions.renderInfo.stitchMode = settings.stitchMode

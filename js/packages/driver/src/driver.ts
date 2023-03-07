@@ -15,9 +15,9 @@ import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
 
-type DriverState = {
+type DriverState<T extends SpecType> = {
   world?: string
-  brokerUrl?: string
+  nmlElement?: Element<T> | null
 }
 
 type DriverOptions<T extends SpecType> = {
@@ -35,7 +35,7 @@ export class Driver<T extends SpecType> {
   private _currentContext: Context<T>
   private _driverInfo: DriverInfo = {}
   private _helper?: HelperAndroid<T> | HelperIOS<T> | null
-  private _state: DriverState = {}
+  private _state: DriverState<T> = {}
   private _logger: Logger
 
   private _customConfig: {useCeilForViewportSize?: boolean} = {}
@@ -349,32 +349,29 @@ export class Driver<T extends SpecType> {
   }
 
   async extractBrokerUrl(): Promise<string | null> {
-    if (this._state.brokerUrl) return this._state.brokerUrl
     if (!this.isNative) return null
     this._logger.log('Broker url extraction is started')
-    const element = await this.element({type: 'accessibility id', selector: 'Applitools_View'})
-    if (!element) return null
+    this._state.nmlElement ??= await this.element({type: 'accessibility id', selector: 'Applitools_View'})
+    if (!this._state.nmlElement) return null
     try {
       let result: {error: string; nextPath: string | null}
       do {
-        result = JSON.parse(await element.getText())
+        result = JSON.parse(await this._state.nmlElement.getText())
         if (result.nextPath) {
           this._logger.log('Broker url was extraction finished successfully with value', result.nextPath)
-          this._state.brokerUrl = result.nextPath
-          return this._state.brokerUrl
+          return result.nextPath
         }
         await utils.general.sleep(1000)
       } while (!result.error)
       this._logger.error('Broker url extraction has failed with error', result.error)
       return null
     } catch (error) {
-      this._logger.error('Broker url extraction has failed with error', error)
-      return null
+      this._logger.error('Broker url extraction has failed with error and will be retried', error)
+      this._state.nmlElement = null
+      return this.extractBrokerUrl()
     }
   }
 
-  // begin world
-  //
   // About the concept of a  "World":
   //
   // Since "context" is an overloaded term from frames, we have decided to use

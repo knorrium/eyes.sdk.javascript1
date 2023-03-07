@@ -1,9 +1,9 @@
 import type {Location, Size, Region} from '@applitools/utils'
 import type {Cookie} from './types'
+import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver, type WaitOptions} from './spec-driver'
 import {type Driver} from './driver'
-import {type Selector} from './selector'
-import {type Logger} from '@applitools/logger'
+import {isSelector, isObjectCommonSelector, type Selector} from './selector'
 import {Element, type ElementReference} from './element'
 import * as utils from '@applitools/utils'
 import * as specUtils from './spec-utils'
@@ -53,7 +53,7 @@ export class Context<T extends SpecType> {
       utils.types.isString(reference) ||
       reference instanceof Element ||
       this._spec.isElement(reference) ||
-      specUtils.isSelector(this._spec, reference)
+      isSelector(reference, this._spec)
     )
   }
 
@@ -167,7 +167,7 @@ export class Context<T extends SpecType> {
       if (element) elements = [element]
     }
 
-    if (specUtils.isObjectCommonSelector(this._spec, selector)) {
+    if (isObjectCommonSelector(selector, this._spec)) {
       if (elements.length > 0) {
         if (selector.child) {
           elements = await elements.reduce((result, element) => {
@@ -217,14 +217,14 @@ export class Context<T extends SpecType> {
         throw new TypeError(`Context element with index ${this._reference} is not found`)
       }
       this._element = elements[this._reference]
-    } else if (utils.types.isString(this._reference) || specUtils.isSelector(this._spec, this._reference)) {
+    } else if (utils.types.isString(this._reference) || isSelector(this._reference, this._spec)) {
       if (utils.types.isString(this._reference)) {
         this._logger.log('Getting context element by name or id', this._reference)
         this._element = await this.parent
           .element(`iframe[name="${this._reference}"], iframe#${this._reference}`)
           .catch(() => null)
       }
-      if (!this._element && specUtils.isSelector(this._spec, this._reference)) {
+      if (!this._element && isSelector(this._reference, this._spec)) {
         this._logger.log('Getting context element by selector', this._reference)
         this._element = await this.parent.element(this._reference)
       }
@@ -310,7 +310,7 @@ export class Context<T extends SpecType> {
   async element(elementOrSelector: ElementReference<T>): Promise<Element<T> | null> {
     if (this._spec.isElement(elementOrSelector)) {
       return new Element({spec: this._spec, context: this, element: elementOrSelector, logger: this._logger})
-    } else if (!specUtils.isSelector(this._spec, elementOrSelector)) {
+    } else if (!isSelector(elementOrSelector, this._spec)) {
       throw new TypeError('Cannot find element using argument of unknown type!')
     }
     if (this.isRef) {
@@ -324,7 +324,7 @@ export class Context<T extends SpecType> {
   }
 
   async elements(selectorOrElement: ElementReference<T>): Promise<Element<T>[]> {
-    if (specUtils.isSelector(this._spec, selectorOrElement)) {
+    if (isSelector(selectorOrElement, this._spec)) {
       if (this.isRef) {
         return [new Element({spec: this._spec, context: this, selector: selectorOrElement, logger: this._logger})]
       }

@@ -1,10 +1,17 @@
 import type {MaybeArray} from '@applitools/utils'
 import type * as BaseCore from '@applitools/core-base/types'
 import type * as AutomationCore from '../automation/types'
-import {type SpecType} from '@applitools/driver'
+import {type SpecType, type Driver} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
-import {type Renderer, type DomSnapshot, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
+import {
+  type UFGClient,
+  type Renderer,
+  type DomSnapshot,
+  type AndroidSnapshot,
+  type IOSSnapshot,
+} from '@applitools/ufg-client'
+import {type NMLClient} from '@applitools/nml-client'
 
 export * from '../automation/types'
 
@@ -27,6 +34,8 @@ export interface Core<
 
 export interface Eyes<TSpec extends SpecType, TTarget = Target<TSpec>> extends AutomationCore.Eyes<TSpec, TTarget> {
   readonly type: 'ufg'
+  getUFGClient(options?: {logger?: Logger}): Promise<UFGClient>
+  getNMLClient(options: {driver: Driver<TSpec>; logger?: Logger}): Promise<NMLClient | null>
   getBaseEyes(options?: {
     settings?: {type: 'web' | 'native'; renderer: Renderer}
     logger?: Logger

@@ -1,8 +1,11 @@
 import type {DriverTarget, Eyes, OpenSettings, TestInfo} from './types'
 import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
+import {type UFGClient, type Renderer} from '@applitools/ufg-client'
+import {type NMLClient} from '@applitools/nml-client'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
-import {makeUFGClient, Renderer, type UFGClient} from '@applitools/ufg-client'
+import {makeGetUFGClient} from './get-ufg-client'
+import {makeGetNMLClient} from './get-nml-client'
 import {makeGetBaseEyes} from './get-base-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
@@ -14,12 +17,12 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   core: BaseCore
-  client?: UFGClient
+  clients?: {ufg: UFGClient; nml: NMLClient}
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeOpenEyes<TSpec extends SpecType>({core, clients, spec, logger: defaultLogger}: Options<TSpec>) {
   return async function openEyes({
     target,
     settings,
@@ -50,18 +53,9 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
     }
     const controller = new AbortController()
     const account = await core.getAccountInfo({settings, logger})
-    client ??= makeUFGClient({
-      config: {...account.ufg, ...account, proxy: settings.proxy},
-      concurrency: settings.renderConcurrency ?? 5,
-      logger,
-    })
-
-    const getBaseEyes = makeGetBaseEyes({settings, eyes, core, client, logger})
     return utils.general.extend({}, eyes => {
       const storage = new Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>()
-
       let running = true
-
       return {
         type: 'ufg' as const,
         test: <TestInfo>{
@@ -74,10 +68,17 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
         get running() {
           return running
         },
-        getBaseEyes,
+        getUFGClient: makeGetUFGClient({
+          config: {...account.ufg, ...account, proxy: settings.proxy},
+          concurrency: settings.renderConcurrency ?? 5,
+          client: clients?.ufg,
+          logger,
+        }),
+        getNMLClient: makeGetNMLClient({config: settings, client: clients?.nml, logger}),
+        getBaseEyes: makeGetBaseEyes({eyes, settings, core, logger}),
         // check with indexing and storage
         check: utils.general.wrap(
-          makeCheck({eyes, client: client!, target: driver, spec, signal: controller.signal, logger}),
+          makeCheck({eyes, target: driver, spec, signal: controller.signal, logger}),
           async (check, options = {}) => {
             const results = await check(options)
             results.forEach(result => {
@@ -88,14 +89,7 @@ export function makeOpenEyes<TSpec extends SpecType>({core, client, spec, logger
           },
         ),
         checkAndClose: utils.general.wrap(
-          makeCheckAndClose({
-            eyes,
-            client: client!,
-            target: driver,
-            spec,
-            signal: controller.signal,
-            logger,
-          }),
+          makeCheckAndClose({eyes, target: driver, spec, signal: controller.signal, logger}),
           async (checkAndClose, options = {}) => {
             const results = await checkAndClose(options)
             results.forEach(result => {

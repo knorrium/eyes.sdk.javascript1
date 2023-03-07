@@ -1,6 +1,7 @@
 import type {Core} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type UFGClient} from '@applitools/ufg-client'
+import {type NMLClient} from '@applitools/nml-client'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore} from '@applitools/core-base'
@@ -16,7 +17,7 @@ import throat from 'throat'
 type Options<TSpec extends SpecType> = {
   concurrency: number
   spec?: SpecDriver<TSpec>
-  client?: UFGClient
+  clients?: {ufg: UFGClient; nml: NMLClient}
   core?: BaseCore
   agentId?: string
   cwd?: string
@@ -26,7 +27,7 @@ type Options<TSpec extends SpecType> = {
 export function makeCore<TSpec extends SpecType>({
   concurrency,
   spec,
-  client,
+  clients,
   core,
   agentId = 'core-ufg',
   cwd = process.cwd(),
@@ -77,6 +78,6 @@ export function makeCore<TSpec extends SpecType>({
     locate: makeLocate({spec, core, logger}),
     locateText: makeLocateText({spec, core, logger}),
     extractText: makeExtractText({spec, core, logger}),
-    openEyes: makeOpenEyes({spec, client, core, logger}),
+    openEyes: makeOpenEyes({spec, clients, core, logger}),
   })
 }

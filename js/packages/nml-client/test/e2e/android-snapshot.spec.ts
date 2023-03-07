@@ -1,5 +1,5 @@
 import type {AndroidSnapshot} from '../../src/types'
-import {takeSnapshots} from '../../src/client'
+import {makeNMLClient} from '../../src/client'
 import {makeProxyServer} from '@applitools/test-server'
 import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
@@ -38,8 +38,8 @@ describe('android snapshot', () => {
 
   it('works', async () => {
     const brokerUrl = await extractBrokerUrl(driver)
+    const {takeSnapshots} = makeNMLClient({config: {brokerUrl}})
     const snapshots = await takeSnapshots<AndroidSnapshot>({
-      url: brokerUrl,
       settings: {renderers: [{androidDeviceInfo: {deviceName: 'Pixel 3'}}]},
     })
     assert.strictEqual(snapshots.length, 1)
@@ -50,11 +50,10 @@ describe('android snapshot', () => {
 
   it('works with a proxy server', async () => {
     const brokerUrl = await extractBrokerUrl(driver)
+    const {takeSnapshots} = makeNMLClient({config: {brokerUrl, proxy: {url: `http://localhost:${proxyServer.port}`}}})
     const snapshots = await takeSnapshots<AndroidSnapshot>({
-      url: brokerUrl,
       settings: {
         renderers: [{androidDeviceInfo: {deviceName: 'Pixel 3'}}],
-        proxy: {url: `http://localhost:${proxyServer.port}`},
       },
     })
     assert.strictEqual(snapshots.length, 1)

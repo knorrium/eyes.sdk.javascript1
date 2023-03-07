@@ -1,5 +1,5 @@
 import type {IOSSnapshot} from '../../src/types'
-import {takeSnapshots} from '../../src/client'
+import {makeNMLClient} from '../../src/client'
 import {makeProxyServer} from '@applitools/test-server'
 import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
@@ -33,8 +33,8 @@ describe('ios snapshot', () => {
 
   it('works', async () => {
     const brokerUrl = await extractBrokerUrl(driver)
+    const {takeSnapshots} = makeNMLClient({config: {brokerUrl}})
     const snapshots = await takeSnapshots<IOSSnapshot>({
-      url: brokerUrl,
       settings: {renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12'}}]},
     })
     assert.strictEqual(snapshots.length, 1)
@@ -45,11 +45,10 @@ describe('ios snapshot', () => {
 
   it('works with a proxy server', async () => {
     const brokerUrl = await extractBrokerUrl(driver)
+    const {takeSnapshots} = makeNMLClient({config: {brokerUrl, proxy: {url: `http://localhost:${proxyServer.port}`}}})
     const snapshots = await takeSnapshots({
-      url: brokerUrl,
       settings: {
         renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12'}}],
-        proxy: {url: `http://localhost:${proxyServer.port}`},
       },
     })
     assert.strictEqual(snapshots.length, 1)

@@ -1,4 +1,5 @@
 import type {Size, Location, Region} from '@applitools/utils'
+import {type Logger} from '@applitools/logger'
 
 export type Selector = string | {selector: string; type?: string; shadow?: Selector; frame?: Selector}
 
@@ -55,4 +56,12 @@ export type IOSSnapshot = {
   platformName: 'ios'
   vhsCompatibilityParams: Record<string, any>
   vhsHash: {hashFormat: string; hash: string; contentType: string}
+}
+
+export interface NMLClient {
+  takeScreenshot(options: {settings: ScreenshotSettings; logger?: Logger}): Promise<Screenshot>
+  takeSnapshots<TSnapshot extends IOSSnapshot | AndroidSnapshot = IOSSnapshot | AndroidSnapshot>(options: {
+    settings: SnapshotSettings
+    logger?: Logger
+  }): Promise<TSnapshot[]>
 }

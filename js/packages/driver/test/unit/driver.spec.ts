@@ -434,18 +434,37 @@ describe('driver native', () => {
       assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah')
     })
 
-    it('should cache broker url', async () => {
-      let count = 0
-      mock.mockElement('Applitools_View', {
+    it('should cache nml element', async () => {
+      const element = mock.mockElement('Applitools_View', {
         attrs: {
+          count: 0,
           get text() {
-            return `{"error":"","nextPath":"http://blah${++count}"}`
+            return `{"error":"","nextPath":"http://blah${++this.count}"}`
           },
         },
       })
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah1')
+      mock.unmockElement(element)
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah2')
+    })
 
-      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah1')
-      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah1')
+    it('should re-find nml element if text extraction failed', async () => {
+      const element = mock.mockElement('Applitools_View', {
+        attrs: {
+          used: false,
+          get text(): string {
+            if (this.used) {
+              this.used = false
+              throw new Error('It was already used')
+            }
+            this.used = false
+            return `{"error":"","nextPath":"http://blah"}`
+          },
+        },
+      })
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah')
+      mock.unmockElement(element)
+      assert.deepStrictEqual(await driver.extractBrokerUrl(), 'http://blah')
     })
   })
 })

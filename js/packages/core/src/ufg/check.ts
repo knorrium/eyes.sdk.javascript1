@@ -3,9 +3,17 @@ import type {DriverTarget, Target, Eyes, CheckSettings, CheckResult} from './typ
 import {type DomSnapshot, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
 import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
-import {type UFGClient} from '@applitools/ufg-client'
-import {makeDriver, isDriver, type SpecType, type SpecDriver, type Selector, type Cookie} from '@applitools/driver'
-import {takeSnapshots} from './utils/take-snapshots'
+import {
+  makeDriver,
+  isDriver,
+  isSelector,
+  type SpecType,
+  type SpecDriver,
+  type Selector,
+  type Cookie,
+} from '@applitools/driver'
+import {takeDomSnapshots} from './utils/take-dom-snapshots'
+import {takeVHSes} from './utils/take-vhses'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
@@ -16,7 +24,6 @@ import chalk from 'chalk'
 
 type Options<TSpec extends SpecType> = {
   eyes: Eyes<TSpec>
-  client: UFGClient
   target?: DriverTarget<TSpec>
   spec?: SpecDriver<TSpec>
   signal?: AbortSignal
@@ -25,7 +32,6 @@ type Options<TSpec extends SpecType> = {
 
 export function makeCheck<TSpec extends SpecType>({
   eyes,
-  client,
   target: defaultTarget,
   spec,
   signal,
@@ -47,6 +53,8 @@ export function makeCheck<TSpec extends SpecType>({
       throw new AbortError('Command "check" was called after test was already aborted')
     }
 
+    const ufgClient = await eyes.getUFGClient({logger})
+
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({
       settings,
     })
@@ -55,7 +63,8 @@ export function makeCheck<TSpec extends SpecType>({
     let snapshotUrl: string | undefined
     let snapshotTitle: string | undefined
     let userAgent: string | undefined
-    let regionToTarget: Selector | Region
+    let regionToTarget: Selector | Region | undefined
+    let scrollRootSelector: Selector | undefined
     let selectorsToCalculate: {originalSelector: Selector | null; safeSelector: Selector | null}[]
     const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
     const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
@@ -80,25 +89,35 @@ export function makeCheck<TSpec extends SpecType>({
           ],
         })
         cleanupGeneratedSelectors = generated.cleanupGeneratedSelectors
+        selectorsToCalculate = generated.selectors
         if (elementReferenceToTarget) {
-          if (!generated.selectors[0]?.safeSelector) throw new Error('Target element not found')
-          regionToTarget = generated.selectors[0]?.safeSelector as Selector<never>
-          selectorsToCalculate = generated.selectors.slice(1)
-        } else {
-          selectorsToCalculate = generated.selectors
+          if (!selectorsToCalculate[0]?.safeSelector) throw new Error('Target element not found')
+          regionToTarget = selectorsToCalculate[0].safeSelector
+          selectorsToCalculate = selectorsToCalculate.slice(1)
         }
+        if (settings.scrollRootElement) {
+          scrollRootSelector = selectorsToCalculate[0].safeSelector ?? undefined
+          selectorsToCalculate = selectorsToCalculate.slice(1)
+        }
+      } else {
+        regionToTarget = isSelector(elementReferenceToTarget)
+          ? spec?.untransformSelector?.(settings.scrollRootElement) ?? undefined
+          : undefined
+        scrollRootSelector = isSelector(settings.scrollRootElement)
+          ? spec?.untransformSelector?.(settings.scrollRootElement) ?? undefined
+          : undefined
       }
 
       const currentContext = driver.currentContext
-      snapshots = await takeSnapshots({
-        driver,
+
+      const snapshotOptions = {
         settings: {
           ...eyes.test.server,
           waitBeforeCapture: settings.waitBeforeCapture,
           disableBrowserFetching: settings.disableBrowserFetching,
           layoutBreakpoints: settings.layoutBreakpoints,
           renderers: uniqueRenderers,
-          skipResources: client.getCachedResourceUrls(),
+          skipResources: ufgClient.getCachedResourceUrls(),
         },
         hooks: {
           async beforeSnapshots() {
@@ -112,11 +131,21 @@ export function makeCheck<TSpec extends SpecType>({
           },
         },
         provides: {
-          getChromeEmulationDevices: client.getChromeEmulationDevices,
-          getIOSDevices: client.getIOSDevices,
+          getChromeEmulationDevices: ufgClient.getChromeEmulationDevices,
+          getIOSDevices: ufgClient.getIOSDevices,
         },
-        logger,
-      })
+      }
+      if (driver.isWeb) {
+        snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
+      } else {
+        const nmlClient = await eyes.getNMLClient({driver, logger})
+        if (nmlClient) {
+          snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
+        } else {
+          snapshots = await takeVHSes({driver, ...snapshotOptions, logger})
+        }
+      }
+
       await currentContext.focus()
       snapshotUrl = await driver.getUrl()
       snapshotTitle = await driver.getTitle()
@@ -148,7 +177,7 @@ export function makeCheck<TSpec extends SpecType>({
 
         const {cookies, ...snapshot} = snapshots[index] as (typeof snapshots)[number] & {cookies: Cookie[]}
         const snapshotType = utils.types.has(snapshot, 'cdt') ? 'web' : 'native'
-        const renderTargetPromise = client.createRenderTarget({
+        const renderTargetPromise = ufgClient.createRenderTarget({
           snapshot,
           settings: {
             renderer,
@@ -185,11 +214,12 @@ export function makeCheck<TSpec extends SpecType>({
             )
           }
 
-          const {renderId, selectorRegions, ...baseTarget} = await client.render({
+          const {renderId, selectorRegions, ...baseTarget} = await ufgClient.render({
             target: renderTarget,
             settings: {
               ...settings,
               region: regionToTarget,
+              scrollRootElement: scrollRootSelector,
               selectorsToCalculate: selectorsToCalculate.flatMap(({safeSelector}) => safeSelector ?? []),
               includeFullPageSize: Boolean(settings.pageId),
               type: snapshotType,

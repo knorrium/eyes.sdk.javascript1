@@ -212,6 +212,9 @@ export class MockDriver {
     this.mockSelector(selector, element)
     return element
   }
+  unmockElement(element) {
+    this.unmockSelector(element.selector, element)
+  }
   mockElements(nodes, {parentId = null, parentContextId = null, parentRootId = null} = {}) {
     for (const node of nodes) {
       const element = this.mockElement(node.selector, {...node, parentId, parentContextId, parentRootId})
@@ -231,6 +234,13 @@ export class MockDriver {
       this._elements.set(selector, elements)
     }
     elements.push(element)
+  }
+  unmockSelector(selector, element) {
+    const elements = this._elements.get(selector)
+    if (!elements) return
+    const index = elements.indexOf(element)
+    if (index < 0) return
+    elements.splice(index, 1)
   }
   wrapMethod<
     TName extends {

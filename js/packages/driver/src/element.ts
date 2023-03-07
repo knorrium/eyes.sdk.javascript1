@@ -1,10 +1,9 @@
 import type {Location, Size, Region} from '@applitools/utils'
+import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Context} from './context'
-import {type Selector, type CommonSelector} from './selector'
-import {type Logger} from '@applitools/logger'
+import {isSelector, isSimpleCommonSelector, type Selector, type CommonSelector} from './selector'
 import * as utils from '@applitools/utils'
-import * as specUtils from './spec-utils'
 
 const snippets = require('@applitools/snippets')
 
@@ -50,13 +49,13 @@ export class Element<T extends SpecType> {
         this._selector = options.selector ?? this._spec.extractSelector?.(options.element)
         this._index = options.index
       }
-    } else if (specUtils.isSelector(this._spec, options.selector)) {
+    } else if (isSelector(options.selector, this._spec)) {
       this._selector = options.selector
     } else {
       throw new TypeError('Element constructor called with argument of unknown type!')
     }
 
-    if (specUtils.isSimpleCommonSelector(this._selector) && !utils.types.isString(this._selector)) {
+    if (isSimpleCommonSelector(this._selector) && !utils.types.isString(this._selector)) {
       this._commonSelector = this._selector
     } else if (this._selector && this._spec.untransformSelector) {
       this._commonSelector = this._spec.untransformSelector(
@@ -714,5 +713,5 @@ export function isElementReference<T extends SpecType>(
   reference: any,
   spec?: SpecDriver<T>,
 ): reference is ElementReference<T> {
-  return !!spec && (spec.isElement(reference) || specUtils.isSelector(spec, reference))
+  return !!spec && (spec.isElement(reference) || isSelector(reference, spec))
 }

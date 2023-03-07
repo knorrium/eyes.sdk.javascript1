@@ -1,4 +1,4 @@
-import {makeReqBroker} from '../../src/req-broker'
+import {makeReqBroker} from '../../src/server/req-broker'
 import {brokerURL, fakePublishMessage, fakePollMessageResult, fakeBrokerRequests} from '../util/fake-broker'
 import assert from 'assert'
 

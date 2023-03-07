@@ -1,36 +1,12 @@
 import {type SpecType, type SpecDriver} from './spec-driver'
-import {type Selector, type CommonSelector} from './selector'
-import * as utils from '@applitools/utils'
-
-export function isSimpleCommonSelector(selector: any): selector is CommonSelector {
-  return utils.types.isString(selector) || isObjectCommonSelector(null, selector)
-}
-
-export function isObjectCommonSelector<T extends SpecType>(
-  spec: Pick<SpecDriver<T>, 'isSelector'> | null,
-  selector: any,
-): selector is Exclude<CommonSelector<T['selector']>, string> {
-  return (
-    utils.types.isPlainObject(selector) &&
-    utils.types.has(selector, 'selector') &&
-    Object.keys(selector).every(key => ['selector', 'type', 'frame', 'shadow', 'child', 'fallback'].includes(key)) &&
-    (utils.types.isString(selector.selector) || !!spec?.isSelector(selector.selector))
-  )
-}
-
-export function isSelector<T extends SpecType>(
-  spec: Pick<SpecDriver<T>, 'isSelector'>,
-  selector: any,
-): selector is Selector<T> {
-  return spec.isSelector(selector) || utils.types.isString(selector) || isObjectCommonSelector(spec, selector)
-}
+import {isObjectCommonSelector, type Selector, type CommonSelector} from './selector'
 
 export function transformSelector<T extends SpecType>(
   spec: Pick<SpecDriver<T>, 'isSelector' | 'transformSelector'>,
   selector: Selector<T>,
   environment?: {isWeb?: boolean; isNative?: boolean; isIOS?: boolean; isAndroid?: boolean},
 ): T['selector'] {
-  if (environment?.isWeb && isObjectCommonSelector(spec, selector)) {
+  if (environment?.isWeb && isObjectCommonSelector(selector, spec)) {
     if (selector.type === 'id') selector = {type: 'css', selector: `#${selector.selector}`}
     else if (selector.type === 'name') selector = {type: 'css', selector: `[name="${selector.selector}"]`}
     else if (selector.type === 'class name') selector = {type: 'css', selector: `.${selector.selector}`}
@@ -52,7 +28,7 @@ export function splitSelector<T extends SpecType>(
   let elementSelector = activeSelector
   const contextSelectors = [] as Selector<T>[]
   while (targetSelector) {
-    if (isObjectCommonSelector(spec, targetSelector)) {
+    if (isObjectCommonSelector(targetSelector, spec)) {
       activeSelector.selector = targetSelector.selector
       if (targetSelector.type) activeSelector.type = targetSelector.type
 
