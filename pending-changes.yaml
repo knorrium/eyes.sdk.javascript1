@@ -20,7 +20,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Added `Resize` value to `StitchMode` enum
+    - 
   bug-fix:
     - 
 "@applitools/eyes-playwright":

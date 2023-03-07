@@ -10,6 +10,12 @@
 
 
 
+## 5.42.2 - 2023/3/7
+
+### Features
+- Added `Resize` value to `StitchMode` enum
+### Bug fixes
+
 ## 5.42.1 - 2023/3/7
 
 ### Features
