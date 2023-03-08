@@ -14,7 +14,6 @@ const batchPropertiesRetriever = (args, appliConfFile) => {
   }
 }
 function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks}) {
-  let accessibilitySettings = args.accessibilityValidation || appliConfFile.accessibilityValidation
   const batchProperties = batchPropertiesRetriever(args, appliConfFile)
   const batch = {
     id: batchProperties('batchId', 'id'),
@@ -45,7 +44,6 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
   ]
 
   const defaultMatchSettings = {
-    accessibilitySettings,
     matchLevel: args.matchLevel || appliConfFile.matchLevel,
     ignoreCaret: args.ignoreCaret || appliConfFile.ignoreCaret,
     useDom: args.useDom || appliConfFile.useDom,
@@ -68,8 +66,11 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
     defaultMatchSettings,
     batch,
   }
+  if (typeof args.viewportSize !== 'undefined' || typeof args.environment !== 'undefined') {
+    mappedArgs.environment = {viewportSize: args.viewportSize, ...args.environment}
+  }
 
-  return Object.assign({testName, dontCloseBatches: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs)
+  return Object.assign({testName, keepBatchOpen: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs)
 }
 
 module.exports = {eyesOpenMapValues}

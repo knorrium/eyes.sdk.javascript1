@@ -134,9 +134,21 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
-    const {browser, waitBeforeCapture, layoutBreakpoints} = args
+    const {browser, waitBeforeCapture, layoutBreakpoints, accessibilityValidation} = args
 
-    openToCheckSettingsArgs = {browser, waitBeforeCapture, layoutBreakpoints}
+    openToCheckSettingsArgs = {
+      browser,
+      waitBeforeCapture,
+      layoutBreakpoints,
+    }
+
+    if (accessibilityValidation) {
+      const {level, guidelinesVersion} = accessibilityValidation
+      openToCheckSettingsArgs.accessibilitySettings = {
+        level,
+        version: guidelinesVersion,
+      }
+    }
 
     const settings = eyesOpenMapValues({
       args,
@@ -161,11 +173,6 @@ Cypress.Commands.add('eyesCheckWindow', (args = {}) =>
       args: {...openToCheckSettingsArgs, ...args},
       refer,
       appliConfFile: Cypress.config('appliConfFile'),
-      defaultBrowser: {
-        width: Cypress.config('viewportWidth'),
-        height: Cypress.config('viewportHeight'),
-        name: 'chrome',
-      },
     })
 
     return socket.request('Eyes.check', {

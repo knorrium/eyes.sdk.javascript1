@@ -1,11 +1,12 @@
 /* global Node */
-function eyesCheckMapValues({args, refer, appliConfFile, defaultBrowser}) {
+function eyesCheckMapValues({args, refer, appliConfFile}) {
   if (typeof args === `string`) {
     args = {tag: args}
   }
-  let renderers = args.renderers || args.browser || appliConfFile.browser || defaultBrowser
+  let renderers = args.renderers || args.browser || appliConfFile.browser
   if (typeof args.waitBeforeCapture !== 'number' || args.waitBeforeCapture < 0)
     args.waitBeforeCapture = appliConfFile.waitBeforeCapture
+  let accessibilitySettings = args.accessibilitySettings || appliConfFile.accessibilityValidation
 
   const config = args // just did it for having less git changes at this moment
 
@@ -46,6 +47,12 @@ function eyesCheckMapValues({args, refer, appliConfFile, defaultBrowser}) {
     contentRegions: convertPaddedRegion(config.content),
     accessibilityRegions: convertAccessabilityRegions(config.accessibility),
     renderers,
+  }
+  if (config.variationGroupId) {
+    checkSettings.userCommandId = config.variationGroupId
+  }
+  if (config.accessibilitySettings) {
+    checkSettings.accessibilitySettings = accessibilitySettings
   }
 
   if (config.target === 'region') {
@@ -193,10 +200,12 @@ function eyesCheckMapValues({args, refer, appliConfFile, defaultBrowser}) {
 
     for (const region of floatingRegions) {
       const floatingRegion = {
-        maxDownOffset: region.maxDownOffset || 0,
-        maxLeftOffset: region.maxLeftOffset || 0,
-        maxUpOffset: region.maxUpOffset || 0,
-        maxRightOffset: region.maxRightOffset || 0,
+        offset: {
+          bottom: region.maxDownOffset || 0,
+          left: region.maxLeftOffset || 0,
+          top: region.maxUpOffset || 0,
+          right: region.maxRightOffset || 0,
+        },
       }
       if (region.hasOwnProperty('selector')) {
         floatingRegion.region = region.selector
@@ -208,7 +217,7 @@ function eyesCheckMapValues({args, refer, appliConfFile, defaultBrowser}) {
           floating.push(Object.assign({}, region, floatingRegion, {region: element}))
         }
       } else if (region.hasOwnProperty('region')) {
-        floating.push(region)
+        floating.push({offset: floatingRegion.offset, ...region})
       } else {
         floatingRegion.region = {
           y: region.top,
