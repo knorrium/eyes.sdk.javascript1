@@ -3,7 +3,10 @@ if (!process.env.STORYBOOK_VERSION) {
   process.env.STORYBOOK_VERSION = 'latest';
 }
 module.exports = {
-  appName: `Storybook CSF with versions`,
+  appName:
+    process.env.STORYBOOK_VERSION === '5.3.21'
+      ? `Storybook CSF with versions \ ${process.env.STORYBOOK_VERSION}/`
+      : `Storybook CSF with versions`,
   batchName: `Storybook CSF / ${process.env.STORYBOOK_VERSION}`,
   storybookConfigDir: path.resolve(
     __dirname,
