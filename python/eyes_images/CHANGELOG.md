@@ -3,6 +3,8 @@
 - Support webview targets with appium [Trello 3162](https://trello.com/c/77BDT6t6)
 ## Fixed
 - Add missing set_configuration/get_configuration methods and configuration property to images.Eyes [Trello 3155](https://trello.com/c/QZz64qr3)
+### Updated
+- Drop obsolete eyes-core and eyes-common dependencies [Trello 3165](https://trello.com/c/aLfsFODx)
 
 ## [5.15.1] - 2023-02-28
 ### Updated
