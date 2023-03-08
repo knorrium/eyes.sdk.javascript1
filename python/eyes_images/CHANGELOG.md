@@ -1,4 +1,4 @@
-## [vNext]
+## [5.16.0] - 2023-03-08
 ### Added
 - Support webview targets with appium [Trello 3162](https://trello.com/c/77BDT6t6)
 ## Fixed
