@@ -113,7 +113,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: packages
-      - run: make eyes_selenium_unit_tests
+      - run: make unit_tests
         working-directory: python
 
   unit-tests-alpine:
@@ -129,7 +129,7 @@ jobs:
         with:
           name: packages
       - run: apk add gcc libffi-dev make musl-dev py3-pip python3-dev
-      - run: make eyes_selenium_unit_tests
+      - run: make unit_tests
         working-directory: python
 
   unit-tests-linux-arm64:
@@ -156,7 +156,7 @@ jobs:
             curl -O https://bootstrap.pypa.io/pip/3.6/get-pip.py
             python get-pip.py
             pip config --user set global.progress_bar off
-          run: make --directory=python eyes_selenium_unit_tests
+          run: make --directory=python unit_tests
 
   installation-tests:
     needs: dist-build
@@ -267,6 +267,12 @@ jobs:
         with:
           name: packages
       - run: make eyes_images_functional_tests
+        working-directory: python
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
+      - run: make eyes_playwright_functional_tests
+        if: ${{ matrix.python-version == '3.11' }}
         working-directory: python
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}

@@ -135,7 +135,7 @@ gen_robot_docs:
 	python -m robot.libdoc --format html EyesLibrary docs/eyes_robotframework/keywords.html
 
 
-eyes_selenium_unit_tests: install_eyes_robotframework install_unit_tests_requirements
+unit_tests: install_eyes_robotframework install_unit_tests_requirements
 	pytest -n6 tests/unit
 
 
@@ -156,6 +156,10 @@ eyes_playwright_generated_tests: install_eyes_playwright install_functional_test
 
 eyes_images_functional_tests: install_eyes_images install_functional_tests_requirements
 	pytest -n8 tests/functional/eyes_images/
+
+
+eyes_playwright_functional_tests: install_eyes_playwright install_functional_tests_requirements
+	pytest -n8 tests/functional/eyes_playwright/
 
 
 eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements
