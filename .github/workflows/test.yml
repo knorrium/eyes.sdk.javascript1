@@ -99,12 +99,12 @@ jobs:
           SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
           BROWSERSTACK_USERNAME: applitools
           BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-      - name: Summarize
+      - name: Report
         if: always()
-        uses: test-summary/action@v2
+        uses: ./.github/actions/report
         with:
           paths: |
-            ${{matrix.path}}/coverage-test-report.xml
+            ${{matrix.path}}/logs/report.json
       - name: Save testing artifacts
         uses: actions/upload-artifact@v3
         with:

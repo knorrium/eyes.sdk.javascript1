@@ -8,6 +8,6 @@ module.exports = {
   jobs: 10,
   timeout: 0,
   reporter: 'mocha-multi',
-  reporterOptions: ['spec=-,xunit=coverage-test-report.xml'],
+  reporterOptions: ['spec=-,xunit=coverage-test-report.xml,json=./logs/report.json'],
   grep: mochaGrep({tags}),
 }

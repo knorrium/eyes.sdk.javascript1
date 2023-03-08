@@ -9,6 +9,6 @@ module.exports = {
   exit: true,
   require: ['ts-node/register'],
   reporter: 'mocha-multi',
-  reporterOptions: ['spec=-,xunit=coverage-test-report.xml'],
+  reporterOptions: ['spec=-,xunit=coverage-test-report.xml,json=./logs/report.json'],
   grep: mochaGrep(),
 }

@@ -1,0 +1,9 @@
+name: Report
+
+inputs:
+  paths:
+    description: Path(s) to test output file(s) to analyze
+    required: true
+runs:
+  using: node16
+  main: dist/index.js
