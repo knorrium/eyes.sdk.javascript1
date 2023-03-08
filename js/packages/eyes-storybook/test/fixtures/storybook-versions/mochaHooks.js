@@ -13,7 +13,7 @@ exports.mochaHooks = {
     const versionDir = path.resolve(__dirname, `./${storybookVersion}`);
     fs.readdirSync(versionDir).map(fileName => {
       const filePath = path.join(versionDir, fileName);
-      if (fs.existsSync(filePath) && fs.lstatSync(filePath).isDirectory()) {
+      if (fs.existsSync(filePath) && fs.lstatSync(filePath).isDirectory() && !filePath.includes('.storybook')) {
         fs.rmSync(filePath, { recursive: true })
       }
     });

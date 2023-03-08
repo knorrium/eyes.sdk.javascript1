@@ -29,7 +29,7 @@ on:
 env:
   FORCE_COLOR: 3
   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-  APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY_JSSDK}}
+  APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
   APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
 
 jobs:
@@ -60,9 +60,9 @@ jobs:
         run: |
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            echo "::set-output name=environments::[{\"node-version\":16}, {\"node-version\":14}]"
+            echo "::set-output name=environments::[{\"node-version\":18}, {\"node-version\":16}, {\"node-version\":14}]"
           else
-            echo "::set-output name=environments::[{\"node-version\":16}]"
+            echo "::set-output name=environments::[{\"node-version\":18}]"
           fi
   test:
     needs: [verify]

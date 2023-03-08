@@ -34,7 +34,6 @@ describe('eyes-storybook floating region', () => {
   it('renders storybook with floating region', async () => {
     const {stream, getEvents} = testStream();
     const configPath = path.resolve(__dirname, 'happy-config/floatingRegion.config.js');
-    const globalConfig = require(configPath);
     const defaultConfig = {waitBeforeScreenshots: 50};
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
 

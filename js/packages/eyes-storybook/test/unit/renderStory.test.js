@@ -418,9 +418,9 @@ describe('renderStory', () => {
   });
 
   it('throws error during testWindow', async () => {
-    const openEyes = async x => {
+    const openEyes = async _x => {
       return {
-        checkAndClose: async y => {
+        checkAndClose: async _y => {
           await psetTimeout(0);
           throw new Error('bla');
         },

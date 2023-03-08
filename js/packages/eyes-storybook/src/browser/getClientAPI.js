@@ -10,12 +10,12 @@ const API_VERSIONS = {
 function getClientAPI() {
   const frameWindow = getFrameWindow();
   const clientAPI = frameWindow.__STORYBOOK_CLIENT_API__;
-  const addons = frameWindow.__STORYBOOK_ADDONS;
+  const addons = frameWindow.__STORYBOOK_ADDONS || frameWindow.__STORYBOOK_ADDONS_PREVIEW;
 
   return getAPI(getStorybookVersion());
 
   function getStorybookVersion() {
-    const addons = frameWindow.__STORYBOOK_ADDONS;
+    const addonsForV4 = frameWindow.__STORYBOOK_ADDONS;
 
     if (frameWindow.__STORYBOOK_PREVIEW__) {
       return API_VERSIONS.v6_4;
@@ -24,11 +24,11 @@ function getClientAPI() {
     } else if (frameWindow.__STORYBOOK_CLIENT_API__ && frameWindow.__STORYBOOK_CLIENT_API__.raw) {
       return API_VERSIONS.v5;
     } else if (
-      addons &&
-      addons.channel &&
-      addons.channel._listeners &&
-      addons.channel._listeners.setCurrentStory &&
-      addons.channel._listeners.setCurrentStory[0]
+      addonsForV4 &&
+      addonsForV4.channel &&
+      addonsForV4.channel._listeners &&
+      addonsForV4.channel._listeners.setCurrentStory &&
+      addonsForV4.channel._listeners.setCurrentStory[0]
     ) {
       return API_VERSIONS.v4;
     } else {
@@ -38,6 +38,15 @@ function getClientAPI() {
   function onStoryRendered(callback) {
     if (addons && addons.channel && addons.channel.once) {
       addons.channel.once('storyRendered', () => {
+        setTimeout(callback, 0);
+      });
+      addons.channel.once('playFunctionThrewException', () => {
+        setTimeout(callback, 0);
+      });
+      addons.channel.once('storyErrored', () => {
+        setTimeout(callback, 0);
+      });
+      addons.channel.once('storyThrewException', () => {
         setTimeout(callback, 0);
       });
     } else {
@@ -107,9 +116,14 @@ function getClientAPI() {
                 await clientAPI.storyStore.cacheAllCSFFiles();
                 storyId = clientAPI.raw()[i].id;
               }
-              frameWindow.__STORYBOOK_PREVIEW__.urlStore.setSelection({
-                storyId,
-              });
+              if (frameWindow.__STORYBOOK_PREVIEW__.urlStore) {
+                frameWindow.__STORYBOOK_PREVIEW__.urlStore.setSelection({
+                  storyId,
+                });
+              } else {
+                // storybook v7
+                frameWindow.__STORYBOOK_PREVIEW__.selectionStore.setSelection({storyId});
+              }
               await frameWindow.__STORYBOOK_PREVIEW__.renderSelection();
             },
             onStoryRendered,

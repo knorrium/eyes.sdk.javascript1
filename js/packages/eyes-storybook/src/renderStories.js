@@ -124,8 +124,7 @@ function makeRenderStories({
 
     function didTestPass({resultsOrErr}) {
       return (
-        resultsOrErr.constructor &&
-        resultsOrErr.constructor.name !== 'Error' &&
+        Array.isArray(resultsOrErr) &&
         resultsOrErr.every(r => !r.isDifferent && !r.isAborted && !r.isNew)
       );
     }

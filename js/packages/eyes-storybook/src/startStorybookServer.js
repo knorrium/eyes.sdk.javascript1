@@ -2,6 +2,7 @@
 const {resolve} = require('path');
 const ora = require('ora');
 const StorybookConnector = require('./storybookConnector');
+const fs = require('fs');
 
 async function startStorybookServer({
   packagePath,
@@ -14,7 +15,14 @@ async function startStorybookServer({
   startStorybookServerTimeout,
 }) {
   const isWindows = process.platform.startsWith('win');
-  const storybookPath = resolve(packagePath, 'node_modules/.bin/start-storybook');
+  let storybookPath, sbArg;
+
+  if (fs.existsSync(resolve(packagePath, 'node_modules/.bin/sb'))) {
+    storybookPath = resolve(packagePath, 'node_modules/.bin/sb');
+    sbArg = 'dev';
+  } else {
+    storybookPath = resolve(packagePath, 'node_modules/.bin/start-storybook');
+  }
 
   const storybookConnector = new StorybookConnector({
     storybookPath,
@@ -24,6 +32,7 @@ async function startStorybookServer({
     storybookStaticDir,
     isWindows,
     logger,
+    sbArg,
   });
 
   if (showStorybookOutput) {

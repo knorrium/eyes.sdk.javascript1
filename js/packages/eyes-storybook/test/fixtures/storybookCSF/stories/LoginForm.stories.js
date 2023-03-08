@@ -10,16 +10,18 @@ function sleep(ms) {
 const clickSubmitDelay = 1000;
 const sbVersion = process.env.STORYBOOK_VERSION || 'latest';
 const isInteractionsCompetiable = sbVersion === 'latest' || sbVersion === 'next' || (parseFloat(sbVersion) >= 6.4);
-const excludeStories = isInteractionsCompetiable ? [] : ['FilledForm']
-export default {
+const exports = {
   title: 'Examples/Login',
   component: LoginForm,
-  excludeStories,
   args: {
     clickSubmitDelay,
     sbVersion,
   },
-};
+}
+if(parseFloat(sbVersion) < 6.4) {
+  exports.excludeStories = ['FilledForm']
+}
+export default exports
 const Template = (args) => <LoginForm {...args} />;
 export const EmptyForm = Template.bind({});
 export const FilledForm = Template.bind({});

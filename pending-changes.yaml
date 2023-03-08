@@ -63,9 +63,57 @@ Apollo SDK:
     - 
 "@applitools/eyes-storybook":
   feature:
-    - 
+    - Add support for storybook 7
   bug-fix:
-    - 
+    - Support running Storybook dev server in Node.js v18
+"@applitools/eyes-webdriverio5-service":
+  feature:
+    - Added new selector extensions `child` and `fallback`
+    - Support UFG for native mobile
+    - Drop support for Node.js versions <=12
+    - Added support for taking full screenshots of elements that are scroll by pages only
+    - Allowed `` values in custom properties
+    - Add special attribute for pseudo elements
+    - Add the ability for the SDK to lazy load the page prior to performing a check window
+    - Support `addMobileDevice` in user API for NMG
+    - Add support for dynamic coded regions
+    - Don't fail `eyes.open` when there is a failure to set viewport size in `UFG`.
+    - Using `lazyLoad.waitingTime` as a delay between stitches by default
+    - Deprecated "Content" match level value in favor of "IgnoreColors"
+    - Drop support for Android 9 and Android 10 specific devices
+    - Added new iOS device - 'iPad Pro (11-inch) (4th generation)'
+    - Use user agent metadata to improve browser environment detection logic
+    - Additional internal event logs
+    - Crop screenshot image base on account info
+  bug-fix:
+    - |
+      `extractText` now supports regions that don't use hints while using `x`/`y` coordinates
+    - Fixed check region fully in classic execution when using CSS stitching
+    - Support data urls in iframes
+    - Allow running with self-signed certificates
+    - Fixed handling of navigation bar size on various devices
+    - Fixed bug when navigation bar was presented in screenshot on Android 12
+    - Added support for drivers that return screenshots in jpeg format
+    - Fixed incorrect calculation of coded regions in classic mode when using CSS stitching
+    - Fix rounding error of image size when scaling introduces fractions
+    - Fixed the "Maximum Call Stack Size Exceeded" error when taking screenshots on iOS Safari
+    - Fixed an issue with wrong cropped screenshots of elements out of viewport bounds on native devices
+    - |
+      Fixed `forceFullPageScreenshot` option behavior
+    - |
+      Fix calling `waitBeforeCapture` when failed to set required viewport size
+    - Fix rendering issues with Salesforce Lightning design system
+    - Fix issue that prevented self-signed certificates from working when connecting through a proxy server
+    - Fixed native screenshots of the elements under large collapsing areas
+    - Fixed scrolling on some android devices
+    - Improved handling of touch padding related issues in native apps
+    - Prevented navbar from appearing on Android 12 screenshots
+    - Fixed various issues during taking screenshots in landscape orientation on some native devices
+    - Avoided unexpected touch actions during `check` on Android apps
+    - Better support in DOM slot element
+    - Fixed some issues with helper library usage
+    - Fixed the issue with screenshots being taken on chrome-emulated devices
+    - Handle fake shadowRoot with UFG
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`

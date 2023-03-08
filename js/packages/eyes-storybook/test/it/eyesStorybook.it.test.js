@@ -300,7 +300,7 @@ describe('eyesStorybook', () => {
   });
 
   it('enforces legacy concurrency', async () => {
-    const {port, close} = await fakeEyesServer({renderDelay: 2500});
+    const {port, close} = await fakeEyesServer({renderDelay: 5000});
     closeEyesServer = close;
     serverUrl = `http://localhost:${port}`;
     const {stream} = testStream();

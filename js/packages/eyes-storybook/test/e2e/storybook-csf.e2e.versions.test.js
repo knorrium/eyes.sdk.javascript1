@@ -3,8 +3,10 @@ const path = require('path');
 const {delay: _psetTimeout, presult} = require('@applitools/functional-commons');
 const utils = require('@applitools/utils');
 const snap = require('@applitools/snaptdout');
-const {copyStoriesToVersionDir} = require('../fixtures/storybook-versions/copyStoriesToVersionDir');
 const {version} = require('../../package.json');
+const {exec} = require('child_process');
+const {promisify: p} = require('util');
+const pexec = p(exec);
 
 const envWithColor = {...process.env, FORCE_COLOR: true};
 const spawnOptions = {stdio: 'pipe', env: envWithColor};
@@ -19,7 +21,11 @@ const eyesStorybookPath = path.resolve(__dirname, '../../bin/eyes-storybook');
 
 describe('storybook-csf', () => {
   before(async () => {
-    await copyStoriesToVersionDir({storybookSourceDir, storybookVersion});
+    const versionDir = path.resolve(
+      __dirname,
+      `../fixtures/storybook-versions/${storybookVersion}`,
+    );
+    await pexec(`cp -r ${storybookSourceDir}/stories/. ${versionDir}/stories`);
   });
 
   it(`renders storybook in version ${storybookVersion} and CSF format and takes snapshot after play function ends`, async () => {

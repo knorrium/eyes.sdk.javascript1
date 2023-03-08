@@ -1,9 +1,8 @@
 const {describe, it, before, after} = require('mocha');
-const {expect} = require('chai');
 const path = require('path');
 const {testServerInProcess} = require('@applitools/test-server');
 const utils = require('@applitools/utils');
-const {delay: psetTimeout, presult} = require('@applitools/functional-commons');
+const {presult} = require('@applitools/functional-commons');
 const {version} = require('../../package.json');
 const snap = require('@applitools/snaptdout');
 

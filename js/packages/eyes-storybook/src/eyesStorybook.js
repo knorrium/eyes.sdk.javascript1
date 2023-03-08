@@ -133,6 +133,7 @@ async function eyesStorybook({
         getChromeEmulationDevices: client.getChromeEmulationDevices,
         getIOSDevices: client.getIOSDevices,
       },
+      showLogs: config.showLogs,
     });
     return result;
   };

@@ -12,6 +12,7 @@ class StorybookConnector extends EventEmitter {
     storybookStaticDir,
     isWindows,
     logger,
+    sbArg,
   }) {
     super();
     this._storybookPath = `${storybookPath}${isWindows ? '.cmd' : ''}`;
@@ -21,6 +22,7 @@ class StorybookConnector extends EventEmitter {
     this._storybookStaticDir = storybookStaticDir;
     this._isWindows = isWindows;
     this._logger = logger;
+    this._sbArg = sbArg;
 
     this._childProcess = null;
     this._version = 5;
@@ -114,8 +116,18 @@ class StorybookConnector extends EventEmitter {
     if (version >= 4) {
       args.push('--ci');
     }
+    if (this._sbArg) {
+      args.unshift(this._sbArg);
+    }
     this._logger.log(`${this._storybookPath} ${args.join(' ')}`);
-    this._childProcess = spawn(this._storybookPath, args, {detached: false});
+    const spawnOptions = {detached: false};
+
+    // Storybook has an issue when running with Node.js v18 - https://github.com/storybookjs/storybook/issues/20482
+    if (parseInt(process.versions.node) > 16) {
+      spawnOptions.env = {...process.env, NODE_OPTIONS: '--openssl-legacy-provider'};
+    }
+
+    this._childProcess = spawn(this._storybookPath, args, spawnOptions);
     this._addListeners();
 
     this._childProcess.once('exit', code => {

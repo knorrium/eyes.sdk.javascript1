@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
-    "build-storybook": "build-storybook",
+    "build-storybook": "sb build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "storybook": "STORYBOOK_VERSION=next start-storybook -p 9010 --no-manager-cache",
+    "storybook": "STORYBOOK_VERSION=next sb dev -p 9010",
     "test": "npx eyes-storybook"
   },
   "dependencies": {
@@ -16,19 +16,31 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-lifecycles-compat": "^3.0.4",
-    "react-scripts": "^5.0.0"
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
-    "@storybook/addon-actions": "latest",
-    "@storybook/addon-storyshots": "latest",
-    "@storybook/addons": "latest",
-    "@storybook/builder-webpack4": "latest",
-    "@storybook/preset-create-react-app": "latest",
-    "@storybook/react": "latest",
-    "webpack": "4"
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+    "@storybook/addon-actions": "next",
+    "@storybook/addon-storyshots": "next",
+    "@storybook/addon-interactions": "next",
+    "@storybook/addons": "next",
+    "@storybook/builder-webpack5": "next",
+    "@storybook/cli": "next",
+    "@storybook/manager-webpack5": "next",
+    "@storybook/preset-create-react-app": "next",
+    "@storybook/react": "next",
+    "@storybook/react-webpack5": "next",
+    "@storybook/testing-library": "0.0.14-next.1",
+    "webpack": "5.75.0"
   },
   "snaptdout": {
     "snapshotsPrefix": "v_next_"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ]
   }
 }
