@@ -1,14 +1,11 @@
 /* global Node */
-function eyesCheckMapValues({args, refer, appliConfFile}) {
+function eyesCheckMapValues({openToCheckSettingsArgs, args, refer, appliConfFile}) {
   if (typeof args === `string`) {
     args = {tag: args}
   }
-  let renderers = args.renderers || args.browser || appliConfFile.browser
-  if (typeof args.waitBeforeCapture !== 'number' || args.waitBeforeCapture < 0)
-    args.waitBeforeCapture = appliConfFile.waitBeforeCapture
+  args = {...openToCheckSettingsArgs, ...args}
+  if (typeof args.waitBeforeCapture !== 'number') args.waitBeforeCapture = appliConfFile.waitBeforeCapture
   let accessibilitySettings = args.accessibilitySettings || appliConfFile.accessibilityValidation
-
-  const config = args // just did it for having less git changes at this moment
 
   const mappedValues = [
     'tag',
@@ -27,6 +24,7 @@ function eyesCheckMapValues({args, refer, appliConfFile}) {
   let regionSettings = {}
   let shadowDomSettings = {}
 
+  let renderers = args.renderers || args.browser || appliConfFile.browser
   if (renderers) {
     if (Array.isArray(renderers)) {
       for (const [index, value] of renderers.entries()) {
@@ -38,62 +36,62 @@ function eyesCheckMapValues({args, refer, appliConfFile}) {
   }
 
   const checkSettings = {
-    name: config.tag,
-    hooks: config.scriptHooks,
-    ignoreRegions: convertPaddedRegion(config.ignore),
-    floatingRegions: convertFloatingRegion(config.floating),
-    strictRegions: convertPaddedRegion(config.strict),
-    layoutRegions: convertPaddedRegion(config.layout),
-    contentRegions: convertPaddedRegion(config.content),
-    accessibilityRegions: convertAccessabilityRegions(config.accessibility),
+    name: args.tag,
+    hooks: args.scriptHooks,
+    ignoreRegions: convertPaddedRegion(args.ignore),
+    floatingRegions: convertFloatingRegion(args.floating),
+    strictRegions: convertPaddedRegion(args.strict),
+    layoutRegions: convertPaddedRegion(args.layout),
+    contentRegions: convertPaddedRegion(args.content),
+    accessibilityRegions: convertAccessabilityRegions(args.accessibility),
     renderers,
   }
-  if (config.variationGroupId) {
-    checkSettings.userCommandId = config.variationGroupId
+  if (args.variationGroupId) {
+    checkSettings.userCommandId = args.variationGroupId
   }
-  if (config.accessibilitySettings) {
+  if (args.accessibilitySettings) {
     checkSettings.accessibilitySettings = accessibilitySettings
   }
 
-  if (config.target === 'region') {
-    if (!Array.isArray(config.selector)) {
-      if (config.element) {
-        if (isHTMLElement(config.element)) {
+  if (args.target === 'region') {
+    if (!Array.isArray(args.selector)) {
+      if (args.element) {
+        if (isHTMLElement(args.element)) {
           regionSettings = {
-            region: Object.assign(refer.ref(config.element), {type: 'element'}),
+            region: Object.assign(refer.ref(args.element), {type: 'element'}),
           }
         } else {
           // JQuery element
           regionSettings = {
-            region: Object.assign(refer.ref(config.element[0]), {type: 'element'}),
+            region: Object.assign(refer.ref(args.element[0]), {type: 'element'}),
           }
         }
       } else if (
-        config.region &&
-        config.region.hasOwnProperty('top') &&
-        config.region.hasOwnProperty('left') &&
-        config.region.hasOwnProperty('width') &&
-        config.region.hasOwnProperty('height')
+        args.region &&
+        args.region.hasOwnProperty('top') &&
+        args.region.hasOwnProperty('left') &&
+        args.region.hasOwnProperty('width') &&
+        args.region.hasOwnProperty('height')
       ) {
         regionSettings = {
           region: {
-            y: config.region.top,
-            x: config.region.left,
-            width: config.region.width,
-            height: config.region.height,
+            y: args.region.top,
+            x: args.region.left,
+            width: args.region.width,
+            height: args.region.height,
           },
         }
-      } else if (!config.hasOwnProperty('selector')) {
+      } else if (!args.hasOwnProperty('selector')) {
         regionSettings = {
-          region: config.region,
+          region: args.region,
         }
       } else {
         regionSettings = {
-          region: config.selector,
+          region: args.selector,
         }
       }
     } else {
-      const selectors = config.selector
+      const selectors = args.selector
       for (let i = selectors.length - 1; i > -1; i--) {
         if (i === selectors.length - 1) {
           shadowDomSettings['shadow'] = selectors[i].selector
@@ -112,12 +110,12 @@ function eyesCheckMapValues({args, refer, appliConfFile}) {
   }
 
   for (const val of mappedValues) {
-    if (config.hasOwnProperty(val)) {
-      delete config[val]
+    if (args.hasOwnProperty(val)) {
+      delete args[val]
     }
   }
 
-  return Object.assign({}, checkSettings, regionSettings, config)
+  return Object.assign({}, checkSettings, regionSettings, args)
 
   // #region helper functions
 

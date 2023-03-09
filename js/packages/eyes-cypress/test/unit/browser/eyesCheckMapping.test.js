@@ -3,7 +3,6 @@ const {expect} = require('chai')
 const {eyesCheckMapValues} = require('../../../src/browser/eyesCheckMapping')
 
 describe('eyes check mapping', () => {
-  const defaultBrowser = {}
   it('should mapp values correctly', () => {
     const args = {
       tag: 'some tag name',
@@ -84,7 +83,7 @@ describe('eyes check mapping', () => {
 
     const appliConfFile = {}
 
-    const coreConfig = eyesCheckMapValues({args, appliConfFile, defaultBrowser})
+    const coreConfig = eyesCheckMapValues({args, appliConfFile})
     expect(coreConfig).to.be.deep.equal(expected)
   })
   it('should not include element in the returned config', () => {
@@ -186,7 +185,6 @@ describe('eyes check mapping', () => {
     const coreConfig = eyesCheckMapValues({
       args,
       appliConfFile,
-      defaultBrowser,
     })
     expect(coreConfig).to.eql(expected)
   })
@@ -238,7 +236,6 @@ describe('eyes check mapping', () => {
     const coreConfig = eyesCheckMapValues({
       args,
       appliConfFile,
-      defaultBrowser,
     })
     expect(coreConfig).to.eql(expected)
   })

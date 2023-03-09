@@ -62,8 +62,8 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
   }
 
   const mappedArgs = {
+    ...defaultMatchSettings,
     ...args,
-    defaultMatchSettings,
     batch,
   }
   if (typeof args.viewportSize !== 'undefined' || typeof args.environment !== 'undefined') {
@@ -73,4 +73,23 @@ function eyesOpenMapValues({args, appliConfFile, testName, shouldUseBrowserHooks
   return Object.assign({testName, keepBatchOpen: !shouldUseBrowserHooks}, appliConfFileCopy, mappedArgs)
 }
 
-module.exports = {eyesOpenMapValues}
+function eyesOpenToCheckMapValues(args) {
+  const {browser, waitBeforeCapture, layoutBreakpoints, accessibilityValidation} = args
+
+  const openToCheckSettingsArgs = {
+    browser,
+    waitBeforeCapture,
+    layoutBreakpoints,
+  }
+
+  if (accessibilityValidation) {
+    const {level, guidelinesVersion} = accessibilityValidation
+    openToCheckSettingsArgs.accessibilitySettings = {
+      level,
+      version: guidelinesVersion,
+    }
+  }
+  return openToCheckSettingsArgs
+}
+
+module.exports = {eyesOpenMapValues, eyesOpenToCheckMapValues}

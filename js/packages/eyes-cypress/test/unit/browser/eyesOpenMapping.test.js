@@ -25,13 +25,11 @@ describe('eyes open mapping', () => {
     const expected = {
       keepBatchOpen,
       testName,
-      defaultMatchSettings: {
-        enablePatterns: true,
-        ignoreCaret: true,
-        ignoreDisplacements: true,
-        matchLevel: 'Layout',
-        useDom: true,
-      },
+      enablePatterns: true,
+      ignoreCaret: true,
+      ignoreDisplacements: true,
+      matchLevel: 'Layout',
+      useDom: true,
       accessibilitySettings: {level: 'AAA', version: 'WCAG_2_0'},
       batch: {id: '1234'},
     }
@@ -55,13 +53,11 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       keepBatchOpen: false,
-      defaultMatchSettings: {
-        enablePatterns: true,
-        ignoreCaret: true,
-        ignoreDisplacements: true,
-        matchLevel: 'Layout',
-        useDom: true,
-      },
+      enablePatterns: true,
+      ignoreCaret: true,
+      ignoreDisplacements: true,
+      matchLevel: 'Layout',
+      useDom: true,
       accessibilitySettings: {level: 'AAA', version: 'WCAG_2_0'},
       batch: {id: '1234'},
     }
@@ -117,13 +113,11 @@ describe('eyes open mapping', () => {
       testName,
       keepBatchOpen,
       shouldUseBrowserHooks,
-      defaultMatchSettings: {
-        enablePatterns: true,
-        ignoreCaret: true,
-        ignoreDisplacements: true,
-        matchLevel: 'Layout',
-        useDom: true,
-      },
+      enablePatterns: true,
+      ignoreCaret: true,
+      ignoreDisplacements: true,
+      matchLevel: 'Layout',
+      useDom: true,
       accessibilitySettings: {level: 'AAA', version: 'WCAG_2_0'},
       batch: {id: '12345', name: 'test config file mapping 2', sequenceName: 'S2'},
     }
@@ -160,14 +154,12 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      defaultMatchSettings: {
-        enablePatterns: undefined,
-        enablePatterns: undefined,
-        ignoreCaret: undefined,
-        ignoreDisplacements: undefined,
-        matchLevel: undefined,
-        useDom: undefined,
-      },
+      enablePatterns: undefined,
+      enablePatterns: undefined,
+      ignoreCaret: undefined,
+      ignoreDisplacements: undefined,
+      matchLevel: undefined,
+      useDom: undefined,
       keepBatchOpen,
       testName,
       batch: {id: '1234', name: 'test eyesOpen mapping', sequenceName: 'S1'},
@@ -195,14 +187,12 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      defaultMatchSettings: {
-        enablePatterns: undefined,
-        enablePatterns: undefined,
-        ignoreCaret: undefined,
-        ignoreDisplacements: undefined,
-        matchLevel: undefined,
-        useDom: undefined,
-      },
+      enablePatterns: undefined,
+      enablePatterns: undefined,
+      ignoreCaret: undefined,
+      ignoreDisplacements: undefined,
+      matchLevel: undefined,
+      useDom: undefined,
       keepBatchOpen,
       testName,
       batch: {
@@ -232,14 +222,12 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      defaultMatchSettings: {
-        enablePatterns: undefined,
-        enablePatterns: undefined,
-        ignoreCaret: undefined,
-        ignoreDisplacements: undefined,
-        matchLevel: undefined,
-        useDom: undefined,
-      },
+      enablePatterns: undefined,
+      enablePatterns: undefined,
+      ignoreCaret: undefined,
+      ignoreDisplacements: undefined,
+      matchLevel: undefined,
+      useDom: undefined,
       keepBatchOpen,
       testName,
       batch: {id: '1234', name: 'test config file mapping', sequenceName: 'S1'},
@@ -267,14 +255,12 @@ describe('eyes open mapping', () => {
     }
 
     const expected = {
-      defaultMatchSettings: {
-        enablePatterns: undefined,
-        enablePatterns: undefined,
-        ignoreCaret: undefined,
-        ignoreDisplacements: undefined,
-        matchLevel: undefined,
-        useDom: undefined,
-      },
+      enablePatterns: undefined,
+      enablePatterns: undefined,
+      ignoreCaret: undefined,
+      ignoreDisplacements: undefined,
+      matchLevel: undefined,
+      useDom: undefined,
       keepBatchOpen,
       testName,
       batch: {
@@ -305,13 +291,11 @@ describe('eyes open mapping', () => {
       testName,
       shouldUseBrowserHooks,
       keepBatchOpen: false,
-      defaultMatchSettings: {
-        enablePatterns: true,
-        ignoreCaret: true,
-        ignoreDisplacements: true,
-        matchLevel: 'Layout',
-        useDom: true,
-      },
+      enablePatterns: true,
+      ignoreCaret: true,
+      ignoreDisplacements: true,
+      matchLevel: 'Layout',
+      useDom: true,
       accessibilitySettings: {level: 'AAA', version: 'WCAG_2_0'},
       batch: {id: '1234'},
     }

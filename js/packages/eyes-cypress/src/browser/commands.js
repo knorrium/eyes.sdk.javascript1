@@ -4,7 +4,7 @@ const spec = require('../../dist/browser/spec-driver')
 const Refer = require('./refer')
 const Socket = require('./socket')
 const {socketCommands} = require('./socketCommands')
-const {eyesOpenMapValues} = require('./eyesOpenMapping')
+const {eyesOpenMapValues, eyesOpenToCheckMapValues} = require('./eyesOpenMapping')
 const {eyesCheckMapValues} = require('./eyesCheckMapping')
 const {TestResultsSummary} = require('@applitools/eyes-api')
 const refer = new Refer()
@@ -114,15 +114,15 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
 
   return cy.then({timeout: 86400000}, async () => {
     setRootContext()
-    const driver = refer.ref(cy.state('window').document)
+    const target = refer.ref(cy.state('window').document)
 
     if (!connectedToUniversal) {
       socket.connect(`wss://localhost:${Cypress.config('eyesPort')}/eyes`)
       connectedToUniversal = true
       socket.emit('Core.makeCore', {
         agentId: `eyes.cypress/${require('../../package.json').version}`,
-        cwd: typeof process === 'object' && process.cwd(),
-        spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']),
+        cwd: Cypress.config('projectRoot'),
+        spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']), // TODO fix spec.isSelector and spec.isDriver and spec.isElement in driver
       })
 
       manager =
@@ -134,21 +134,8 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
-    const {browser, waitBeforeCapture, layoutBreakpoints, accessibilityValidation} = args
 
-    openToCheckSettingsArgs = {
-      browser,
-      waitBeforeCapture,
-      layoutBreakpoints,
-    }
-
-    if (accessibilityValidation) {
-      const {level, guidelinesVersion} = accessibilityValidation
-      openToCheckSettingsArgs.accessibilitySettings = {
-        level,
-        version: guidelinesVersion,
-      }
-    }
+    openToCheckSettingsArgs = eyesOpenToCheckMapValues(args)
 
     const settings = eyesOpenMapValues({
       args,
@@ -156,7 +143,8 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
       testName,
       shouldUseBrowserHooks,
     })
-    eyes = await socket.request('EyesManager.openEyes', {manager, target: driver, settings})
+
+    eyes = await socket.request('EyesManager.openEyes', {manager, target, settings})
   })
 })
 
