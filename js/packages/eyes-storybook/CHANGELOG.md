@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.31.2 - 2023/3/9
+
+### Features
+- Add support for storybook 7
+### Bug fixes
+- Support running Storybook dev server in Node.js v18
+
 ## 3.31.1 - 2023/2/21
 
 ### Features

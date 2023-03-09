@@ -63,9 +63,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-storybook":
   feature:
-    - Add support for storybook 7
+    - 
   bug-fix:
-    - Support running Storybook dev server in Node.js v18
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
