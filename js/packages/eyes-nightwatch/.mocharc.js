@@ -11,18 +11,15 @@ const tags = [
   'edge',
   'safari',
 ]
-
 if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
   tags.push('jsonwire')
 }
+const group = process.env.MOCHA_GROUP
 
 module.exports = {
-  spec: ['./test/generic/*.spec.js'],
-  parallel: true,
-  jobs: process.env.MOCHA_JOBS || 15,
   timeout: 0,
+  require: ['ts-node/register'],
   reporter: 'mocha-multi',
-  reporterOptions: ['spec=-,xunit=coverage-test-report.xml,json=./logs/report.json'],
-  require: ['@applitools/test-utils/mocha-hooks/docker.js'],
+  reporterOptions: [`spec=-,json=./logs/report${group ? `-${group}` : ''}.json,xunit=coverage-test-report.xml`],
   grep: mochaGrep({tags}),
 }

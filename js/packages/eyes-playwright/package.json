@@ -41,8 +41,8 @@
     "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-playwright'",
     "test": "yarn test:coverage",
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:sanity": "echo 'create sanity suite'",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) mocha --exit --config .mocharc.cvg.js",
     "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes-playwright'",
     "upgrade:framework": "if [ ! -z $APPLITOOLS_PLAYWRIGHT_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile playwright@$APPLITOOLS_PLAYWRIGHT_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
@@ -62,10 +62,7 @@
     "@applitools/bongo": "^2.2.5",
     "@applitools/sdk-coverage-tests": "2.7.10",
     "@applitools/test-utils": "1.5.12",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "12",
-    "mocha": "^10.0.0",
-    "mocha-multi": "^1.1.7",
+    "@types/node": "^12.20.55",
     "playwright": "^1.22.2"
   },
   "peerDependencies": {

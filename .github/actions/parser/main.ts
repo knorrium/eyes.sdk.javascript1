@@ -75,10 +75,10 @@ const packages = await getPackages()
 
 if (input === 'changed') {
   input = getChangedPackagesInput()
-  core.notice(`Packages with changes: "${input}"`)
+  core.notice(`Changed packages: "${input}"`)
 } else if (input === 'all') {
   input = getAllPackagesInput()
-  core.notice(`Packages to change: "${input}"`)
+  core.notice(`All packages: "${input}"`)
 } else {
   core.notice(`Input provided: "${input}"`)
 }

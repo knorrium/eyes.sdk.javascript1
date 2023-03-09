@@ -53,10 +53,10 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "mocha --no-timeouts -r ts-node/register ./test/**/*.spec.ts",
-    "test:sanity": "yarn test:it && yarn test:e2e",
-    "test:it": "mocha --no-timeouts -r ts-node/register ./test/it/*.spec.ts",
-    "test:e2e": "mocha --no-timeouts -r ts-node/register ./test/e2e/*.spec.ts",
+    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
+    "test:e2e": "MOCHA_GROUP=e2e node ../../node_modules/.bin/mocha './test/e2e/*.spec.ts'",
+    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/*.spec.ts'",
+    "test:sanity": "yarn test",
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
@@ -74,12 +74,10 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.5",
     "@applitools/test-server": "^1.1.26",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "12",
+    "@types/node": "^12.20.55",
     "@types/node-fetch": "^2.6.1",
     "@types/selenium-webdriver": "^4.0.19",
     "@types/yargs": "^17.0.19",
-    "mocha": "^9.2.2",
     "nock": "^13.2.4",
     "selenium-webdriver": "^4.1.2"
   },

@@ -4,25 +4,25 @@
 ## ✅ Passed
 {{/if}}
 
-
-✅ **{{stats.passes}} passed**
-❌ **{{stats.failures}} failed**
-❔ **{{stats.pending}} skipped**
-⏱️ **{{ms stats.duration}}**
+✅ **{{stats.passes}} passed** ❌ **{{stats.failures}} failed** ❔ **{{stats.pending}} skipped** ⏱️ **{{ms stats.duration}}**
 
 {{#if failures}}
 <details>
-  <summary>Failed test errors</summary>
-
+  <summary>Failed tests</summary>
   {{#each failures as | test |}}
-    Test: {{test.fullName}} <br>
-    File: {{test.file}} <br>
-    Duration: {{ms test.duration}}
-    Error: {{test.err.message}}
+  Test: {{test.fullTitle}} <br>
+  File: {{test.file}} <br>
+  Duration: {{ms test.duration}} <br>
 
   ```
-    {{test.err.stack}}
+  {{#if test.err.stack}}
+  {{test.err.stack}}
+  {{else}}
+  {{test.err.message}}
+  {{/if}}
   ```
+
+  <br>
   {{/each}}
 </details>
 {{/if}}

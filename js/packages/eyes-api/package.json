@@ -45,10 +45,8 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "yarn test:unit",
-    "test:sanity": "yarn test:unit",
-    "test:unit": "mocha --no-timeouts -r ts-node/register './test/unit/*.spec.ts'",
-    "test:watch": "yarn test:unit --watch --extension ts",
+    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
+    "test:sanity": "yarn test",
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
@@ -62,9 +60,7 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.5",
     "@applitools/req": "^1.1.30",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "12",
-    "mocha": "^9.2.2"
+    "@types/node": "^12.20.55"
   },
   "engines": {
     "node": ">=12.13.0"

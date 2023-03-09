@@ -37,7 +37,7 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
-    "test": "mocha ./test/**/*.spec.ts --no-timeouts --exit -r ts-node/register",
+    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --exit",
     "test:sanity": "yarn test",
     "setup": "yarn playwright:setup",
     "playwright:setup": "sudo npx playwright install-deps",
@@ -57,9 +57,7 @@
     "@applitools/api-extractor": "^1.2.11",
     "@applitools/bongo": "^2.2.5",
     "@applitools/test-utils": "1.5.12",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "12",
-    "mocha": "^9.2.2",
+    "@types/node": "^12.20.55",
     "playwright": "^1.29.2"
   },
   "peerDependencies": {

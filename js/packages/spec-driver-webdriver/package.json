@@ -48,7 +48,7 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
-    "test": "mocha ./test/**/*.spec.ts --exit --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
+    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker --exit",
     "test:sanity": "yarn test",
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
@@ -70,9 +70,7 @@
     "@applitools/bongo": "^2.2.5",
     "@applitools/test-server": "^1.1.26",
     "@applitools/test-utils": "1.5.12",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "12",
-    "mocha": "^9.2.2",
+    "@types/node": "^12.20.55",
     "nock": "^13.2.9",
     "webdriver": "^7.27.0"
   },
