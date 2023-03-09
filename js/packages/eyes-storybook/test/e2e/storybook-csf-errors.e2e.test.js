@@ -39,22 +39,28 @@ describe('storybook-csf', () => {
   });
 
   for (const version of versions) {
-    it(`${version} - renders storybook with render errors with version`, async function() {
-      const [err, result] = await presult(
-        utils.process.sh(`node ${eyesStorybookPath} -f ${testConfigFile}`, {spawnOptions}),
-      );
-      const stdout = err ? err.stdout : result.stdout;
-      const output = stdout
-        .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
-        .replace(
-          /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
-          'See details at <some_url>',
-        )
-        .replace(version, '<version>')
-        .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
+    //storybook 7 is supported from node 16 and above
+    if (parseInt(process.versions.node) !== 14 || version !== '7.0') {
+      it(`${version} - renders storybook with render errors with version`, async function() {
+        if (parseInt(process.versions.node) === 14 && version === '7.0') {
+          return;
+        }
+        const [err, result] = await presult(
+          utils.process.sh(`node ${eyesStorybookPath} -f ${testConfigFile}`, {spawnOptions}),
+        );
+        const stdout = err ? err.stdout : result.stdout;
+        const output = stdout
+          .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
+          .replace(
+            /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
+            'See details at <some_url>',
+          )
+          .replace(version, '<version>')
+          .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
 
-      await snap(output, `storybook with CSF and render error version ${version}`);
-    });
+        await snap(output, `storybook with CSF and render error version ${version}`);
+      });
+    }
   }
 
   afterEach(() => {
