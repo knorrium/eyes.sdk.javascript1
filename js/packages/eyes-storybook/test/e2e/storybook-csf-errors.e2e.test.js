@@ -22,6 +22,7 @@ const eyesStorybookPath = path.resolve(__dirname, '../../bin/eyes-storybook');
 const versions = ['6.5', '7.0'];
 
 describe('storybook-csf', () => {
+  const currCWD = process.cwd();
   beforeEach(async function() {
     const storybookVersion = this.currentTest.title.substring(0, 3);
     spawnOptions.env['STORYBOOK_VERSIONS_ERROR_TEST'] = storybookVersion;
@@ -34,7 +35,7 @@ describe('storybook-csf', () => {
     await pexec(
       `cp -r ${storybookSourceDir}/stories/. ${storybookSourceDir}/${storybookVersion}/stories`,
     );
-    delete process.env.INIT_CWD;
+    process.chdir(currCWD);
   });
 
   for (const version of versions) {
@@ -43,7 +44,6 @@ describe('storybook-csf', () => {
         utils.process.sh(`node ${eyesStorybookPath} -f ${testConfigFile}`, {spawnOptions}),
       );
       const stdout = err ? err.stdout : result.stdout;
-      console.log(`stdout: ${stdout}`);
       const output = stdout
         .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
         .replace(
@@ -52,8 +52,6 @@ describe('storybook-csf', () => {
         )
         .replace(version, '<version>')
         .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
-
-      console.log(`stdout: ${stdout}`);
 
       await snap(output, `storybook with CSF and render error version ${version}`);
     });
