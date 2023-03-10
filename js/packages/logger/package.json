@@ -1,6 +1,6 @@
 {
   "name": "@applitools/logger",
-  "version": "1.1.46",
+  "version": "1.1.47",
   "description": "Applitools logger",
   "keywords": [
     "applitools",
@@ -57,7 +57,7 @@
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/utils": "1.3.30",
+    "@applitools/utils": "1.3.31",
     "chalk": "4.1.2",
     "debug": "4.3.3"
   },
