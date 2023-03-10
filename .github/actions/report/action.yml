@@ -1,7 +1,7 @@
 name: Report
 
 inputs:
-  paths:
+  path:
     description: Path(s) to test output file(s) to analyze
     required: true
 runs:

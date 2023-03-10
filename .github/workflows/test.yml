@@ -104,8 +104,8 @@ jobs:
         if: always()
         uses: ./.github/actions/report
         with:
-          paths: |
-            ${{matrix.path}}/logs/report.json
+          path: |
+            ${{matrix.path}}/logs/report*.json
       - name: Save testing artifacts
         uses: actions/upload-artifact@v3
         with:

@@ -375,7 +375,7 @@ const BROWSERS = {
   },
   chrome: {
     type: 'local',
-    url: 'http://localhost:4444/wd/hub',
+    url: process.env.APPLITOOLS_TEST_REMOTE === 'ec' ? process.env.APPLITOOLS_EC_URL : 'http://localhost:4444/wd/hub',
     capabilities: {
       browserName: 'chrome',
     },
@@ -599,7 +599,7 @@ const BROWSERS = {
 }
 
 function parseEnv(
-  {browser, app, device, url, headless = !process.env.NO_HEADLESS, legacy, eg, injectUFGLib, withNML, ...options} = {},
+  {browser, app, device, url, headless = !process.env.NO_HEADLESS, legacy, injectUFGLib, withNML, ...options} = {},
   protocol = 'wd',
 ) {
   const env = {browser, device, headless, protocol, ...options}
@@ -633,9 +633,6 @@ function parseEnv(
     }
     if (app) {
       env.capabilities[legacy ? 'app' : 'appium:app'] = app
-    }
-    if (eg && (!preset || preset.type === 'local')) {
-      env.url = new URL(process.env.CVG_TESTS_EG_REMOTE)
     }
     if (injectUFGLib) {
       if (env.capabilities.platformName.toLowerCase() === 'ios') {
