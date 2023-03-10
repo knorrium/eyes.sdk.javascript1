@@ -39,9 +39,9 @@
     "universal:eg": "eyes-universal eg-client --port 8080"
   },
   "dependencies": {
-    "@applitools/bongo": "^2.2.5",
+    "@applitools/bongo": "^3.0.0",
     "@applitools/eyes-universal": "2.18.0",
-    "@applitools/sdk-coverage-tests": "^2.3.17",
+    "@applitools/sdk-coverage-tests": "^3.0.0",
     "@typescript-eslint/parser": "^2.14.0",
     "junit-merge": "^2.0.0",
     "typescript": "^3.7.4"
