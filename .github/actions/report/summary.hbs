@@ -13,16 +13,17 @@
   Test: {{test.fullTitle}} <br>
   File: {{test.file}} <br>
   Duration: {{ms test.duration}} <br>
+  <br>
 
   ```
   {{#if test.err.stack}}
-  {{test.err.stack}}
+  {{{test.err.stack}}}
   {{else}}
-  {{test.err.message}}
+  {{{test.err.message}}}
   {{/if}}
   ```
 
-  <br>
+  ---
   {{/each}}
 </details>
 {{/if}}

@@ -98,11 +98,6 @@ if (includeOnlyChanged) {
   core.info(`Filtered jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`)
 }
 
-core.summary
-  .addHeading('Jobs', 2)
-  .addList(Object.values(jobs).map(job => job.displayName))
-  .write()
-
 core.setOutput('packages', allowVariations ? Object.values(jobs) : jobs)
 
 async function getPackages(): Promise<Record<string, Package>> {

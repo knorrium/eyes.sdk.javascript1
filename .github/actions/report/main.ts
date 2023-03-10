@@ -1,12 +1,13 @@
 import type {JSONReport} from './types.js'
 import {readFile} from 'node:fs/promises'
+import {glob} from 'glob'
 import ms from 'ms'
 import Handlebars from 'handlebars'
 import * as core from '@actions/core'
 
 async function main() {
-  const paths = core.getMultilineInput('paths', {required: true})
-  
+  const paths = await glob(core.getMultilineInput('paths'), {absolute: true})
+
   const reports = await paths.reduce(async (reports, path) => {
     try {
       const content = await readFile(path, {encoding: 'utf8'})
