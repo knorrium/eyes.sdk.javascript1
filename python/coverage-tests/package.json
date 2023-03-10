@@ -26,8 +26,8 @@
     "python:tests": "./python_tests.sh"
   },
   "dependencies": {
-    "@applitools/bongo": "^2.2.5",
-    "@applitools/sdk-coverage-tests": "^2.3.14",
+    "@applitools/bongo": "^3.0.0",
+    "@applitools/sdk-coverage-tests": "^3.0.0",
     "@typescript-eslint/parser": "^2.14.0",
     "typescript": "^3.7.4"
   },
