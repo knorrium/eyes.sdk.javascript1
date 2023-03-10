@@ -30,9 +30,9 @@
     "test:sanity": "yarn test",
     "deps": "yarn bongo deps",
     "prepublish:setup": "echo 'no setup'",
-    "preversion": "yarn bongo preversion && yarn test",
+    "preversion": "yarn bongo preversion",
     "version": "yarn bongo version",
-    "postversion": "yarn bongo postversion --skip-release-notification"
+    "postversion": "yarn bongo postversion"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
