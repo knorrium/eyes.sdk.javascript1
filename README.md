@@ -4,3 +4,5 @@
 ## Applitools Eyes SDK Repository
 
 </div>
+
+---
