@@ -51,7 +51,7 @@
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

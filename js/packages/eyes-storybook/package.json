@@ -65,7 +65,7 @@
     "postinstall": "node src/postinstall",
     "preversion": "bongo preversion --verifyPendingChanges",
     "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "husky": {
     "hooks": {

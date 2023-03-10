@@ -14,7 +14,7 @@ const {
 } = require('../changelog')
 const {packInstall, lsDryRun} = require('../dry-run')
 const {lint} = require('../lint')
-const sendReleaseNotification = require('../send-report')
+const {sendTestReport, sendReleaseNotification} = require('../report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 const {gitAdd, gitCommit, gitPushWithTags, isChanged, gitStatus} = require('../git')
@@ -185,30 +185,15 @@ yargs
       // no commit here since it is implicitly handled as part of `yarn version`'s lifecycle script hooks
     },
   )
-  .command(
-    ['postversion'],
-    'Supportive steps to after a package has been versioned',
-    {
-      recipient: {alias: 'r', type: 'string'},
-      skipReleaseNotification: {alias: 'sr', type: 'boolean'},
-    },
-    async args => {
-      try {
-        console.log('[bongo postversion] pushing with tags')
-        await gitPushWithTags()
-        if (args.skipReleaseNotification) {
-          console.log('[bongo postversion] skipping release notification')
-        } else if (!args.skipReleaseNotification) {
-          console.log('[bongo postversion] sending release notification')
-          await sendReleaseNotification(args.cwd, args.recipient)
-          console.log('[bongo postversion] release notification sent')
-        }
-        console.log('[bongo postversion] done!')
-      } catch (err) {
-        console.log(chalk.yellow(err.message))
-      }
-    },
-  )
+  .command(['postversion'], 'Supportive steps to after a package has been versioned', async () => {
+    try {
+      console.log('[bongo postversion] pushing with tags')
+      await gitPushWithTags()
+      console.log('[bongo postversion] done!')
+    } catch (err) {
+      console.log(chalk.yellow(err.message))
+    }
+  })
   .command(['lint', 'l'], 'Static code analysis ftw', {}, async ({cwd}) => await lint(cwd))
   .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries', {}, ({cwd}) => verifyChangelog(cwd))
   .command(
@@ -234,11 +219,57 @@ yargs
   })
   .command(['ls-dry-run', 'ls'], 'Display dependencies from a verify-installed-versions run', {}, () => lsDryRun())
   .command(
-    ['send-release-notification', 'hello-world'],
+    ['send-release-notification'],
     'Send a notification that an sdk has been released',
-    {recipient: {alias: 'r', type: 'string'}},
-    async args => await sendReleaseNotification(args.cwd, args.recipient),
+    {
+      recipient: {alias: 'r', type: 'string'},
+      name: {alias: 'n', type: 'string', description: 'the sdk name'},
+      version: {alias: 'v', type: 'string', description: 'the sdk version name'},
+    },
+    async args =>
+      await sendReleaseNotification({
+        name: args.name,
+        version: args.version,
+        targetFolder: args.cwd,
+        recipient: args.recipient,
+      }),
   )
+  .command({
+    command: ['send-test-report', 'report'],
+    description: 'send a test report to QA dashboard',
+    builder: yargs =>
+      yargs.options({
+        name: {
+          alias: ['n'],
+          description: 'the sdk name',
+          type: 'string',
+          demandOption: true,
+        },
+        version: {
+          alias: ['v'],
+          description: 'the sdk version (required for non-JS SDKs)',
+          type: 'string',
+        },
+        reportId: {
+          alias: ['id'],
+          describe: 'id of the report which will be displayed at the dashboard',
+        },
+        resultDir: {
+          alias: ['r', 'resultPath'],
+          description: 'path to the junit xml file',
+          type: 'string',
+        },
+        metaDir: {
+          alias: ['m', 'metaPath'],
+          description: 'path to the json metadata file generated with tests',
+          type: 'string',
+        },
+        sandbox: {
+          description: `send a result report to the sandbox QA dashboard instead of prod`,
+        },
+      }),
+    handler: sendTestReport,
+  })
   .command(
     ['deps', 'd'],
     'update internal deps',

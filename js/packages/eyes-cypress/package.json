@@ -58,7 +58,7 @@
     "deps": "bongo deps",
     "preversion": "yarn build && bongo preversion --skip-deps --verifyPendingChanges --skipVerifyInstalledVersions",
     "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "husky": {
     "hooks": {

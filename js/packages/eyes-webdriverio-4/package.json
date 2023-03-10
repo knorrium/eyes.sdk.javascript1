@@ -27,7 +27,6 @@
     "test:sanity": "yarn test:it",
     "test:it": "mocha ./test/it/*.spec.ts --exit --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-4' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes.webdriverio.javascript4'",
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",

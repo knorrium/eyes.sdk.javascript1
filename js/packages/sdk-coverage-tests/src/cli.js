@@ -2,7 +2,6 @@
 
 const yargs = require('yargs')
 const generate = require('./generate/command')
-const report = require('./report/command')
 
 const cliName = 'SAT - SDK Agnostic Test-framework'
 
@@ -95,42 +94,42 @@ const cli = yargs
       }),
     handler: generate,
   })
-  .command({
-    command: 'report [config]',
-    description: 'send a report to QA dashboard',
-    builder: yargs =>
-      yargs.options({
-        config: {
-          alias: ['c', 'configPath'],
-          description: 'path to the sdk configuration .js file',
-          type: 'string',
-          default: './test/coverage/index.js',
-        },
-        name: {
-          alias: ['n'],
-          description: 'the sdk name',
-          type: 'string',
-        },
-        resultDir: {
-          alias: ['r', 'resultPath'],
-          description: 'path to the junit xml file',
-          type: 'string',
-        },
-        metaDir: {
-          alias: ['m', 'metaPath'],
-          description: 'path to the json metadata file generated with tests',
-          type: 'string',
-        },
-        reportId: {
-          alias: ['id'],
-          describe: 'id of the report which will be displayed at the dashboard',
-        },
-        sandbox: {
-          description: `send a result report to the sandbox QA dashboard instead of prod`,
-        },
-      }),
-    handler: report,
-  })
+  //.command({
+  //  command: 'report [config]',
+  //  description: 'send a report to QA dashboard',
+  //  builder: yargs =>
+  //    yargs.options({
+  //      config: {
+  //        alias: ['c', 'configPath'],
+  //        description: 'path to the sdk configuration .js file',
+  //        type: 'string',
+  //        default: './test/coverage/index.js',
+  //      },
+  //      name: {
+  //        alias: ['n'],
+  //        description: 'the sdk name',
+  //        type: 'string',
+  //      },
+  //      resultDir: {
+  //        alias: ['r', 'resultPath'],
+  //        description: 'path to the junit xml file',
+  //        type: 'string',
+  //      },
+  //      metaDir: {
+  //        alias: ['m', 'metaPath'],
+  //        description: 'path to the json metadata file generated with tests',
+  //        type: 'string',
+  //      },
+  //      reportId: {
+  //        alias: ['id'],
+  //        describe: 'id of the report which will be displayed at the dashboard',
+  //      },
+  //      sandbox: {
+  //        description: `send a result report to the sandbox QA dashboard instead of prod`,
+  //      },
+  //    }),
+  //  handler: report,
+  //})
   .demandCommand(1, 'You need to specify a command before moving on')
 
 cli.argv

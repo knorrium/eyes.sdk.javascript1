@@ -47,7 +47,7 @@
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "dependencies": {
     "@applitools/image": "1.0.27",

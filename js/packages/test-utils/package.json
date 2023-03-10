@@ -27,7 +27,7 @@
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "dependencies": {
     "node-fetch": "2.6.1"

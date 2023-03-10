@@ -56,13 +56,15 @@
     "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/**/*.spec.ts'",
     "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha './test/unit/**/*.spec.ts'",
     "test:sanity": "yarn test:unit",
+    "report": "bongo report --name 'core'",
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "deps": "bongo deps",
     "preversion": "bongo preversion --verify-pending-changes --skip-deps",
     "version": "bongo version --with-pending-changes",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "postpublish": "bongo send-release-notification --name 'core'"
   },
   "pkg": {
     "scripts": "./dist/cli/cli.js",

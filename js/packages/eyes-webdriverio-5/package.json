@@ -96,8 +96,8 @@
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:coverage:wd": "APPLITOOLS_WEBDRIVERIO_PROTOCOL=wd yarn test:coverage",
     "test:coverage:cdp": "APPLITOOLS_WEBDRIVERIO_PROTOCOL=cdp yarn test:coverage",
+    "report": "bongo report --name 'js_wdio_5'",
     "test:sanity": "echo 'create sanity suite'",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes.webdriverio.javascript5'",
     "setup": "yarn docker:setup && [ \"$APPLITOOLS_TEST_REMOTE\" = 'ec' ] && yarn ec:setup || echo 'no ec client'",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
@@ -109,7 +109,8 @@
     "gh:publish": "gh workflow run publish-webdriverio.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion --verifyPendingChanges",
     "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "postpublish": "bongo send-release-notification --name 'js_wdio_5'"
   },
   "dependencies": {
     "@applitools/eyes": "1.0.0",

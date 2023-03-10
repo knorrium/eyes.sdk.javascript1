@@ -36,7 +36,6 @@
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
     "test:ufg_native": "APPLITOOLS_TEST_REMOTE=appium mocha --no-timeouts test/e2e/ufg-native.spec.js",
     "test:ufg_native:sauce": "APPLITOOLS_TEST_REMOTE=sauce mocha --no-timeouts test/e2e/ufg-native.spec.js",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes-selenium-universal'",
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",

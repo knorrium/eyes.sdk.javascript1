@@ -28,7 +28,7 @@
     "test:sanity": "yarn test",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification",
+    "postversion": "bongo postversion",
     "deps": "bongo deps",
     "prepublish:setup": "echo 'no setup'"
   },
@@ -36,7 +36,6 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "@azure/storage-blob": "12.2.0-preview.1",
     "@babel/core": "7.12.10",
     "chalk": "4.1.1",
     "handlebars": "4.7.7",
@@ -44,7 +43,6 @@
     "node-fetch": "2.6.7",
     "prettier": "2.3.0",
     "sync-fetch": "0.3.0",
-    "xml-js": "1.6.11",
     "yargs": "16.0.3"
   },
   "devDependencies": {

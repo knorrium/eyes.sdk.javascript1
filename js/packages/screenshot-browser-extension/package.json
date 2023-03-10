@@ -23,7 +23,7 @@
     "gh:publish": "gh workflow run publish-browser-extension-screenshot.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion",
     "version": "yarn build && bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "dependencies": {
     "@applitools/core": "1.4.7",

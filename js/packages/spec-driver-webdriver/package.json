@@ -58,7 +58,7 @@
     "gh:publish": "gh workflow run publish-spec-webdriver.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "dependencies": {
     "@applitools/driver": "1.11.36",

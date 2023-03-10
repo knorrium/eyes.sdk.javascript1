@@ -83,14 +83,15 @@
     "perf:full": "yarn perf && yarn perf -c 5",
     "perf:lite": "testcafe chrome:headless test/perf/perf-lite.spec.js",
     "perf:lite:full": "yarn perf:lite && yarn perf:lite -c 5",
-    "report": "coverage-tests report ./test/coverage/config.js --name 'eyes-testcafe'",
+    "report": "bongo report --name 'testcafe'",
     "upgrade:framework": "if [ ! -z $APPLITOOLS_TESTCAFE_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile testcafe@$APPLITOOLS_TESTCAFE_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='testcafe' -f links='eyes-sdk-core eyes-api types test-utils utils driver snippets screenshoter visual-grid-client'",
     "gh:publish": "gh workflow run publish-testcafe.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion --verifyPendingChanges",
     "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "postpublish": "bongo send-release-notification --name 'testcafe'"
   },
   "dependencies": {
     "@applitools/core": "1.4.6",

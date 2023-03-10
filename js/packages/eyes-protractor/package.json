@@ -48,7 +48,7 @@
     "test:sanity": "yarn test:it",
     "test:it": "mocha ./test/it/*.spec.ts --no-timeouts -r ts-node/register -r @applitools/test-utils/mocha-hooks/docker",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-protractor' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha --config .mocharc.cvg.js",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes-protractor'",
+    "report": "bongo report --name 'js_protractor'",
     "setup": "yarn docker:setup",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
@@ -57,7 +57,8 @@
     "gh:publish": "gh workflow run publish-protractor.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion --verifyPendingChanges && yarn build",
     "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion"
+    "postversion": "bongo postversion",
+    "postpublish": "bongo send-release-notification --name 'js_protractor'"
   },
   "husky": {
     "hooks": {

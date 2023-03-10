@@ -50,7 +50,7 @@
     "deps": "bongo deps",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion"
   },
   "dependencies": {
     "@applitools/core": "2.3.14",

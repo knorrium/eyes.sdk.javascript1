@@ -31,7 +31,7 @@
     "test": "mocha --no-timeouts \"test/**/*.test.js\"",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification",
+    "postversion": "bongo postversion",
     "deps": "bongo deps",
     "prepublish:setup": "echo 'no setup'"
   },

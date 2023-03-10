@@ -50,13 +50,14 @@
     "test": "yarn test:coverage",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}",
     "test:sanity": "echo 'create sanity suite'",
-    "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes-images'",
+    "report": "bongo report --name 'js_images'",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='images' -f links='types test-utils core-base core eyes utils'",
     "gh:publish": "gh workflow run publish-images.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion",
     "version": "bongo version",
-    "postversion": "bongo postversion --skip-release-notification"
+    "postversion": "bongo postversion",
+    "postpublish": "bongo send-release-notification --name 'js_images'"
   },
   "dependencies": {
     "@applitools/eyes": "1.0.0"

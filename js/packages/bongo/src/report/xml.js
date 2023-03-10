@@ -1,5 +1,8 @@
 const convert = require('xml-js')
-const {logDebug} = require('../log')
+
+function logDebug(thingToLog) {
+  if (process.env.COVERAGE_TESTS_DEBUG) console.dir(thingToLog, {depth: null})
+}
 
 function convertJunitXmlToResultSchema({junit, browser, metadata}) {
   const tests = parseJunitXmlForTests(junit)
@@ -7,7 +10,6 @@ function convertJunitXmlToResultSchema({junit, browser, metadata}) {
   logDebug(tests)
 
   const xmlTests = tests.reduce((acc, test) => {
-    // console.log(test)
     const name = parseBareTestName(test._attributes.name)
     acc[name] = {
       ...test._attributes,
@@ -17,9 +19,11 @@ function convertJunitXmlToResultSchema({junit, browser, metadata}) {
     return acc
   }, {})
 
-  Object.entries(metadata).forEach(([key, value]) => {
-    xmlTests[key] = {...value, skip: !xmlTests[key], ...xmlTests[key], name: value.name}
-  })
+  if (metadata) {
+    Object.entries(metadata).forEach(([key, value]) => {
+      xmlTests[key] = {...value, skip: !xmlTests[key], ...xmlTests[key], name: value.name}
+    })
+  }
 
   return Object.entries(xmlTests).map(([testName, testMeta]) => {
     const isSkipped = testMeta.skip || testMeta.skipEmit || false // we explicitly set false to preserve backwards compatibility
