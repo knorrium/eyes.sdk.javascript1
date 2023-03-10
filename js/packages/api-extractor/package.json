@@ -1,6 +1,6 @@
 {
   "name": "@applitools/api-extractor",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "Ultimate api extractor for typescript project",
   "keywords": [
     "applitools",
@@ -32,7 +32,7 @@
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register",
+    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
     "test:sanity": "yarn test",
     "preversion": "bongo preversion",
     "version": "bongo version",
@@ -41,10 +41,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@applitools/bongo": "^2.2.2",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "12",
-    "mocha": "^9.1.3"
+    "@applitools/bongo": "^2.2.5",
+    "@types/node": "12"
   },
   "engines": {
     "node": ">=12.13.0"

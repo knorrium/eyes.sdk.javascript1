@@ -1,23 +1,29 @@
-import type * as core from '@applitools/core'
+import {makeFakeCore} from '../utils/fake-core'
 import {strict as assert} from 'assert'
 import * as api from '../../src'
 
-const makeSDK = require('../utils/fake-sdk')
-
 describe('Runner', () => {
-  let sdk: core.Core<any, any> & {history: Record<string, any>[]; settings: Record<string, any>}
-  const driver = {isDriver: true}
+  let driver: any
+  let core: {history: any[]; reset: () => void}
 
   class Eyes extends api.Eyes {
-    protected static get _spec() {
-      return sdk
+    protected static _sdk = {
+      makeCore() {
+        return (core = makeFakeCore())
+      },
+      spec: {
+        isDriver(driver: any) {
+          return Boolean(driver.isDriver)
+        },
+      } as any,
     }
   }
   class ClassicRunner extends api.ClassicRunner {}
   class VisualGridRunner extends api.VisualGridRunner {}
 
   beforeEach(() => {
-    sdk = makeSDK()
+    driver = {isDriver: true, viewportSize: {width: 700, height: 500}}
+    core?.reset()
   })
 
   it('should return empty test summary from "getAllTestResults" method if no eyes instances were attached', async () => {

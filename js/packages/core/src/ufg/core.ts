@@ -70,9 +70,6 @@ export function makeCore<TSpec extends SpecType>({
 
   return utils.general.extend(core, {
     type: 'ufg' as const,
-    isDriver: spec && spec.isDriver,
-    isElement: spec && spec.isElement,
-    isSelector: spec && spec.isSelector,
     getViewportSize: spec && makeGetViewportSize({spec, logger}),
     setViewportSize: spec && makeSetViewportSize({spec, logger}),
     locate: makeLocate({spec, core, logger}),

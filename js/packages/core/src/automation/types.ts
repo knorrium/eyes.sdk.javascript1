@@ -13,9 +13,6 @@ export interface Core<
   TTarget = Target<TSpec>,
   TEyes extends Eyes<TSpec, TTarget> = Eyes<TSpec, TTarget>,
 > extends BaseCore.Core<TTarget, TEyes> {
-  isDriver?(driver: any): driver is TSpec['driver']
-  isElement?(element: any): element is TSpec['element']
-  isSelector?(selector: any): selector is TSpec['selector']
   getViewportSize?(options: {target: DriverTarget<TSpec>; logger?: Logger}): Promise<Size>
   setViewportSize?(options: {target: DriverTarget<TSpec>; size: Size; logger?: Logger}): Promise<void>
   openEyes(options: {

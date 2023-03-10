@@ -1,5 +1,5 @@
-import {type Logger} from '@applitools/logger'
-import {type MaybeArray} from '@applitools/utils'
+import type * as Core from '@applitools/core'
+import {initSDK, type SDK} from './SDK'
 import * as utils from '@applitools/utils'
 import {ProxySettings} from './input/ProxySettings'
 
@@ -10,40 +10,38 @@ type BatchCloseOptions = {
   proxy?: ProxySettings
 }
 
-type BatchCloseSpec = {
-  closeBatch(options: {
-    settings: MaybeArray<{serverUrl?: string; apiKey?: string; proxy?: ProxySettings; batchId: string}>
-    logger?: Logger
-  }): Promise<void>
-}
-
-export function closeBatch(spec: BatchCloseSpec): (options: BatchCloseOptions) => Promise<void> {
-  return (settings: BatchCloseOptions) => {
+export function closeBatch(sdk: SDK): (options: BatchCloseOptions) => Promise<void> {
+  return function closeBatch(settings: BatchCloseOptions) {
     utils.guard.notNull(settings.batchIds, {name: 'options.batchIds'})
-    return spec.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
+    const {core} = initSDK(sdk)
+    return core.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
   }
 }
 
 export class BatchClose {
-  protected static readonly _spec: BatchCloseSpec
-  protected get _spec(): BatchCloseSpec {
-    return (this.constructor as typeof BatchClose)._spec
+  protected static readonly _sdk: SDK
+  protected get _sdk(): SDK {
+    return (this.constructor as typeof BatchClose)._sdk
   }
 
+  private _core: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   private _settings = {} as BatchCloseOptions
 
   static async close(settings: BatchCloseOptions): Promise<void> {
     utils.guard.notNull(settings.batchIds, {name: 'options.batchIds'})
-    await this._spec.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
+    const {core} = initSDK(this._sdk)
+    await core.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
   }
 
   constructor(options?: BatchCloseOptions) {
+    const {core} = initSDK(this._sdk)
+    this._core = core
     if (options) this._settings = options
   }
 
   async close(): Promise<void> {
     utils.guard.notNull(this._settings.batchIds, {name: 'batchIds'})
-    await this._spec.closeBatch({settings: this._settings.batchIds.map(batchId => ({batchId, ...this._settings}))})
+    await this._core.closeBatch({settings: this._settings.batchIds.map(batchId => ({batchId, ...this._settings}))})
   }
 
   setBatchIds(batchIds: string[]): this {

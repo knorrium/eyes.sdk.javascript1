@@ -57,16 +57,15 @@
     "docker:teardown": "docker-compose down",
     "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
     "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='nightwatch' -f links='eyes-sdk-core eyes-api types test-utils utils driver snippets screenshoter visual-grid-client'",
+    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='nightwatch' -f links='eyes-sdk-core eyes types test-utils utils driver snippets screenshoter visual-grid-client'",
     "gh:publish": "gh workflow run publish-nightwatch.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion --verifyPendingChanges",
     "version": "bongo version --withPendingChanges",
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core": "2.3.9",
     "@applitools/driver": "1.11.34",
-    "@applitools/eyes-api": "1.13.8",
+    "@applitools/eyes": "1.0.0",
     "@applitools/spec-driver-webdriver": "1.0.14",
     "@applitools/utils": "1.3.30",
     "webdriver": "7.27.0"

@@ -1,14 +1,17 @@
-import {CoreSpec, CoreTestResultContainer, CoreTestResultSummary} from '../Core'
+import type * as Core from '@applitools/core'
 import {TestResultContainer, TestResultContainerData} from './TestResultContainer'
 
 export type TestResultsSummary = Iterable<TestResultContainer>
 
 export class TestResultsSummaryData implements Iterable<TestResultContainerData> {
-  private _summary?: CoreTestResultSummary
-  private _deleteTest?: CoreSpec['deleteTest']
+  private _summary?: Core.TestResultSummary<'classic' | 'ufg'>
+  private _deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
 
   /** @internal */
-  constructor(options?: {summary?: CoreTestResultSummary; deleteTest?: CoreSpec['deleteTest']}) {
+  constructor(options?: {
+    summary?: Core.TestResultSummary<'classic' | 'ufg'>
+    deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
+  }) {
     this._summary = options?.summary
     this._deleteTest = options?.deleteTest
   }
@@ -32,7 +35,7 @@ export class TestResultsSummaryData implements Iterable<TestResultContainerData>
   }
 
   /** @internal */
-  toJSON(): CoreTestResultContainer[] {
+  toJSON(): Core.TestResultContainer<'classic' | 'ufg'>[] {
     return this._summary?.results ?? []
   }
 

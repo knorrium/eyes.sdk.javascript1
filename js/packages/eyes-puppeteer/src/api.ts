@@ -1,13 +1,7 @@
-import {makeCore} from '@applitools/core'
-import * as api from '@applitools/eyes-api'
+import * as eyes from '@applitools/eyes'
 import * as spec from '@applitools/spec-driver-puppeteer'
 
-const sdk = makeCore({
-  agentId: `eyes.puppeteer/${require('../package.json').version}`,
-  spec,
-})
-
-export * from '@applitools/eyes-api'
+export * from '@applitools/eyes'
 
 export type Driver = spec.Driver
 export type Context = spec.Context
@@ -15,31 +9,31 @@ export type Element = spec.Element
 export type Selector = spec.Selector
 export type SpecType = spec.SpecType
 
-export class Eyes extends api.Eyes<SpecType> {
-  protected static readonly _spec = sdk
-  static setViewportSize: (driver: Driver, viewportSize: api.RectangleSize) => Promise<void>
+const sdk = {agentId: `eyes.puppeteer/${require('../package.json').version}`, spec}
+
+export class Eyes extends eyes.Eyes<SpecType> {
+  protected static readonly _sdk = sdk
+  static setViewportSize: (driver: Driver, viewportSize: eyes.RectangleSize) => Promise<void>
 }
 
-export type ConfigurationPlain = api.ConfigurationPlain<SpecType>
-
-export class Configuration extends api.Configuration<SpecType> {
-  protected static readonly _spec = sdk
+export type CheckSettingsAutomationPlain = eyes.CheckSettingsAutomationPlain<SpecType>
+export class CheckSettingsAutomation extends eyes.CheckSettingsAutomation<SpecType> {
+  protected static readonly _spec = spec
 }
-
-export type OCRRegion = api.OCRRegion<SpecType>
-
-export type CheckSettingsAutomationPlain = api.CheckSettingsAutomationPlain<SpecType>
-
-export class CheckSettingsAutomation extends api.CheckSettingsAutomation<SpecType> {
-  protected static readonly _spec = sdk
-}
-
 export class CheckSettings extends CheckSettingsAutomation {}
 
-export const Target = {...api.Target, spec: sdk} as api.Target<SpecType>
+export type TargetAutomation = eyes.TargetAutomation<SpecType>
+export const TargetAutomation = {...eyes.TargetAutomation, spec} as TargetAutomation
+export const Target = {...eyes.Target, spec} as eyes.Target<SpecType>
 
-export class BatchClose extends api.BatchClose {
-  protected static readonly _spec = sdk
+export type OCRRegion = eyes.OCRRegion<SpecType>
+
+export type ConfigurationPlain = eyes.ConfigurationPlain<SpecType>
+export class Configuration extends eyes.Configuration<SpecType> {
+  protected static readonly _spec = spec
 }
 
-export const closeBatch = api.closeBatch(sdk)
+export class BatchClose extends eyes.BatchClose {
+  protected static readonly _sdk = sdk
+}
+export const closeBatch = eyes.closeBatch(sdk)

@@ -30,9 +30,6 @@ export function makeCore<TSpec extends SpecType>({
   core ??= makeBaseCore({agentId, cwd, logger})
   return utils.general.extend(core, {
     type: 'classic' as const,
-    isDriver: spec && spec.isDriver,
-    isElement: spec && spec.isElement,
-    isSelector: spec && spec.isSelector,
     getViewportSize: spec && makeGetViewportSize({spec, logger}),
     setViewportSize: spec && makeSetViewportSize({spec, logger}),
     locate: makeLocate({spec, core, logger}),

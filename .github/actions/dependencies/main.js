@@ -88,7 +88,7 @@ async function getDependencies() {
     }
     return dependencies
   }, {})
-  pyDependencies['python-universal'].deps.push('universal')
+  pyDependencies['python-core-universal']?.deps.push('core')
 
   return {...jsDependencies, ...pyDependencies}
 }

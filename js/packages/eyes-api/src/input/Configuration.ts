@@ -1,6 +1,5 @@
-import * as utils from '@applitools/utils'
+import type * as Core from '@applitools/core'
 import {EyesSelector} from './EyesSelector'
-import {CoreConfig, SpecType} from '../Core'
 import {SessionType, SessionTypeEnum} from '../enums/SessionType'
 import {StitchMode, StitchModeEnum} from '../enums/StitchMode'
 import {MatchLevel, MatchLevelEnum} from '../enums/MatchLevel'
@@ -28,6 +27,7 @@ import {AUTProxySettings} from './AUTProxySettings'
 import {BatchInfo, BatchInfoData} from './BatchInfo'
 import {PropertyData, PropertyDataData} from './PropertyData'
 import {ImageMatchSettings, ImageMatchSettingsData} from './ImageMatchSettings'
+import * as utils from '@applitools/utils'
 
 type RenderInfo =
   | DesktopBrowserInfo
@@ -36,12 +36,7 @@ type RenderInfo =
   | AndroidDeviceInfo
   | ChromeEmulationInfoLegacy
 
-type ConfigurationSpec<TSpec extends SpecType = SpecType> = {
-  isElement?(element: any): element is TSpec['element']
-  isSelector?(selector: any): selector is TSpec['selector']
-}
-
-export type GeneralConfiguration = {
+export type Configuration<TSpec extends Core.SpecType = Core.SpecType> = {
   /** @undocumented */
   debugScreenshots?: DebugScreenshotProvider
   agentId?: string
@@ -54,9 +49,7 @@ export type GeneralConfiguration = {
   connectionTimeout?: number
   /** @undocumented */
   removeSession?: boolean
-}
 
-export type OpenConfiguration = {
   appName?: string
   testName?: string
   displayName?: string
@@ -83,15 +76,11 @@ export type OpenConfiguration = {
   saveDiffs?: boolean
   /** @undocumented */
   dontCloseBatches?: boolean
-}
 
-export type CheckConfiguration = {
   sendDom?: boolean
   matchTimeout?: number
   forceFullPageScreenshot?: boolean
-}
 
-export type ClassicConfiguration<TSpec extends SpecType = SpecType> = {
   waitBeforeScreenshots?: number
   stitchMode?: StitchMode
   hideScrollbars?: boolean
@@ -101,28 +90,20 @@ export type ClassicConfiguration<TSpec extends SpecType = SpecType> = {
   cut?: CutProvider
   rotation?: ImageRotation
   scaleRatio?: number
-  waitBeforeCapture?: number
-}
 
-export type VGConfiguration = {
   /** @undocumented */
   concurrentSessions?: number
   browsersInfo?: (DesktopBrowserInfo | ChromeEmulationInfo | IOSDeviceInfo | AndroidDeviceInfo)[]
   visualGridOptions?: Record<string, any>
   layoutBreakpoints?: boolean | number[]
   disableBrowserFetching?: boolean
+
   waitBeforeCapture?: number
 }
 
-export type Configuration<TSpec extends SpecType = SpecType> = GeneralConfiguration &
-  OpenConfiguration &
-  CheckConfiguration &
-  ClassicConfiguration<TSpec> &
-  VGConfiguration
-
-export class ConfigurationData<TSpec extends SpecType = SpecType> implements Required<Configuration<TSpec>> {
-  protected static readonly _spec: ConfigurationSpec
-  private _spec: ConfigurationSpec<TSpec>
+export class ConfigurationData<TSpec extends Core.SpecType = Core.SpecType> implements Required<Configuration<TSpec>> {
+  protected static readonly _spec: Core.SpecDriver<Core.SpecType>
+  private _spec: Core.SpecDriver<TSpec>
 
   private _config: Configuration<TSpec> = {}
 
@@ -142,7 +123,10 @@ export class ConfigurationData<TSpec extends SpecType = SpecType> implements Req
     )
   }
 
-  constructor(config?: Configuration<TSpec>, spec?: ConfigurationSpec<TSpec>) {
+  constructor(config?: Configuration<TSpec>)
+  /** @internal */
+  constructor(config?: Configuration<TSpec>, spec?: Core.SpecDriver<TSpec>)
+  constructor(config?: Configuration<TSpec>, spec?: Core.SpecDriver<TSpec>) {
     config = utils.types.instanceOf(config, ConfigurationData) ? config.toObject() : config ?? {}
     this._spec = spec!
     for (const [key, value] of Object.entries(config)) {
@@ -1090,7 +1074,7 @@ export class ConfigurationData<TSpec extends SpecType = SpecType> implements Req
   }
 
   /** @internal */
-  toJSON(): CoreConfig<TSpec> {
+  toJSON(): Core.Config<TSpec, 'classic'> & Core.Config<TSpec, 'ufg'> {
     return utils.general.toJSON({
       open: utils.general.removeUndefinedProps({
         serverUrl: this.serverUrl,

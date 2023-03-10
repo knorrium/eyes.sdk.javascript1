@@ -1,4 +1,4 @@
-import {CoreSpec, CoreEyesManager, CoreEyes, CoreConfig, SpecType} from './Core'
+import type * as Core from '@applitools/core'
 import {type Logger} from '@applitools/logger'
 import {NewTestError} from './errors/NewTestError'
 import {DiffsFoundError} from './errors/DiffsFoundError'
@@ -10,36 +10,35 @@ import {Eyes} from './Eyes'
 import * as utils from '@applitools/utils'
 
 export abstract class EyesRunner {
-  protected _spec?: CoreSpec
-  private _manager?: CoreEyesManager
-  private _eyes: Eyes<SpecType>[] = []
+  private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
+  private _manager?: Core.EyesManager<Core.SpecType, 'classic' | 'ufg'>
+  private _eyes: Eyes<Core.SpecType>[] = []
 
   /** @internal */
   abstract get config(): {type: 'classic' | 'ufg'}
 
   /** @internal */
-  attach<TSpec extends SpecType = SpecType>(eyes: Eyes<TSpec>, spec: CoreSpec<TSpec>) {
-    if (!this._spec) this._spec = spec
+  attach<TSpec extends Core.SpecType = Core.SpecType>(eyes: Eyes<TSpec>, core: Core.Core<TSpec, 'classic' | 'ufg'>) {
+    this._core ??= core
     this._eyes.push(eyes)
   }
 
   /** @internal */
-  async openEyes<TSpec extends SpecType = SpecType>(options: {
+  async openEyes<TSpec extends Core.SpecType = Core.SpecType>(options: {
     target: TSpec['driver']
-    config?: CoreConfig<TSpec>
+    config?: Core.Config<TSpec, 'classic' | 'ufg'>
     logger?: Logger
     on?: (name: string, data?: Record<string, any>) => void
-  }): Promise<CoreEyes<TSpec>> {
-    if (!this._manager) this._manager = await this._spec!.makeManager(this.config)
-
+  }): Promise<Core.Eyes<TSpec, 'classic' | 'ufg'>> {
+    this._manager ??= await this._core!.makeManager(this.config)
     return await this._manager.openEyes(options)
   }
 
   async getAllTestResults(throwErr = true): Promise<TestResultsSummaryData> {
     if (!this._manager) return new TestResultsSummaryData()
     const [eyes] = this._eyes
-    const deleteTest: NonNullable<typeof this._spec>['deleteTest'] = options =>
-      this._spec!.deleteTest({
+    const deleteTest = (options: any) =>
+      this._core!.deleteTest({
         ...options,
         settings: {
           ...options.settings,

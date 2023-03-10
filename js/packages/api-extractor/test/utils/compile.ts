@@ -40,7 +40,11 @@ export function compile({config, input}: {config: TransformerConfig; input: File
 
   const outputFileNames = Object.keys(output)
 
-  assert.strictEqual(outputFileNames.length, 1, `It expects 1 output file, but got ${outputFileNames.length}. File names: ${outputFileNames}`)
+  assert.strictEqual(
+    outputFileNames.length,
+    1,
+    `It expects 1 output file, but got ${outputFileNames.length}. File names: ${outputFileNames}`,
+  )
 
   return output[outputFileNames[0]]
 }

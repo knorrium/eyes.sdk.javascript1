@@ -52,15 +52,14 @@
     "test:sanity": "echo 'create sanity suite'",
     "report": "coverage-tests report https://raw.githubusercontent.com/applitools/sdk.coverage.tests/master/js/config.js --name 'eyes-images'",
     "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='images' -f links='types test-utils core-base core eyes-api utils'",
+    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='images' -f links='types test-utils core-base core eyes utils'",
     "gh:publish": "gh workflow run publish-images.yml --ref $(git rev-parse --abbrev-ref HEAD)",
     "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
   "dependencies": {
-    "@applitools/core": "2.3.5",
-    "@applitools/eyes-api": "1.13.3"
+    "@applitools/eyes": "1.0.0"
   },
   "devDependencies": {
     "@applitools/api-extractor": "^1.2.11",
