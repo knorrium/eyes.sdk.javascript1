@@ -18192,7 +18192,7 @@ var core = __nccwpck_require__(2186);
 
 
 async function main() {
-    const paths = await glob(core.getMultilineInput('paths'), { absolute: true });
+    const paths = await glob(core.getMultilineInput('path'), { absolute: true });
     const reports = await paths.reduce(async (reports, path) => {
         try {
             const content = await (0,promises_namespaceObject.readFile)(path, { encoding: 'utf8' });
