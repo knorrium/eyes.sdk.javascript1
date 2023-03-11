@@ -1,5 +1,4 @@
-import type {TypedCore, Batch, Eyes, Config, OpenSettings, DriverTarget} from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
+import type {DriverTarget, Core, TypedCore, Batch, Eyes, Config, OpenSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
@@ -16,7 +15,7 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   type?: TType
   concurrency?: number
   batch?: Batch
-  core: BaseCore
+  core: Core<TSpec, TType>
   cores?: {[TKey in 'classic' | 'ufg']: TypedCore<TSpec, TKey>}
   spec?: SpecDriver<TSpec>
   logger: Logger
@@ -59,11 +58,6 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     settings.baselineBranchName ??= utils.general.getEnvValue('BASELINE_BRANCH')
     settings.ignoreBaseline ??= false
     settings.compareWithParentBranch ??= false
-    if (type === 'ufg') {
-      const ufgSettings = settings as OpenSettings<'ufg'>
-      const ufgConfig = config as Config<TSpec, 'ufg'>
-      ufgSettings.renderConcurrency ??= ufgConfig?.check?.renderers?.length
-    }
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
@@ -82,7 +76,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
         event: {
           type: 'runnerStarted',
           testConcurrency: concurrency,
-          concurrentRendersPerTest: (settings as OpenSettings<'ufg'>).renderConcurrency,
+          concurrentRendersPerTest: (config as Config<SpecType, 'ufg'>)?.check?.renderers?.length ?? 1,
           node: {version: process.version, platform: process.platform, arch: process.arch},
           driverUrl: driver?.remoteHostname,
           extractedCIProvider: extractCIProvider(),
@@ -96,8 +90,8 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
       settings: settings as OpenSettings<TType>,
       target: driver,
       cores: cores ?? {
-        ufg: makeUFGCore({spec, core, concurrency: concurrency ?? 5, logger}),
-        classic: makeClassicCore({spec, core, logger}),
+        ufg: makeUFGCore({spec, base: core.base, concurrency: concurrency ?? 5, logger}),
+        classic: makeClassicCore({spec, base: core.base, logger}),
       },
       logger,
     })

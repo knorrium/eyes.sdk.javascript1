@@ -1,6 +1,6 @@
 import type {DriverTarget, TypedCore, TypedEyes, OpenSettings} from './types'
 import {type SpecType} from '@applitools/driver'
-import {type Renderer} from '@applitools/ufg-client'
+import {type RendererSettings} from '@applitools/ufg-client'
 import {type Logger} from '@applitools/logger'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
@@ -19,13 +19,13 @@ export function makeGetTypedEyes<TSpec extends SpecType, TDefaultType extends 'c
   logger: defaultLogger,
 }: Options<TSpec, TDefaultType>) {
   let eyes: TypedEyes<TSpec, 'classic' | 'ufg'>
-  return async function getTypesEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
+  return async function getTypedEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
     settings,
     logger = defaultLogger,
   }: {
     type?: TType
-    settings?: {type: 'web' | 'native'; renderers: Renderer[]}
+    settings?: RendererSettings[]
     logger?: Logger
   } = {}): Promise<TypedEyes<TSpec, TType>> {
     if (!eyes) {
@@ -34,16 +34,12 @@ export function makeGetTypedEyes<TSpec extends SpecType, TDefaultType extends 'c
     } else if (eyes.type === type) {
       return eyes as TypedEyes<TSpec, TType>
     } else if (type === 'ufg') {
-      const baseEyes = await eyes.getBaseEyes()
-      const typedEyes = await cores.ufg.openEyes({target, settings: defaultSettings, eyes: baseEyes, logger})
+      const base = await eyes.getBaseEyes({logger})
+      const typedEyes = await cores.ufg.openEyes({target, settings: defaultSettings, base, logger})
       return typedEyes as TypedEyes<TSpec, TType>
     } else {
-      const baseEyes = (
-        await Promise.all(
-          settings!.renderers.map(renderer => eyes.getBaseEyes({settings: {type: settings!.type, renderer}})),
-        )
-      ).flat()
-      const typedEyes = await cores.classic.openEyes({target, settings: defaultSettings, eyes: baseEyes, logger})
+      const base = (await Promise.all(settings!.map(settings => eyes.getBaseEyes({settings, logger})))).flat()
+      const typedEyes = await cores.classic.openEyes({target, settings: defaultSettings, base, logger})
       return typedEyes as TypedEyes<TSpec, TType>
     }
   }

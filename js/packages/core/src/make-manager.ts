@@ -1,4 +1,4 @@
-import type {Batch, EyesManager, Eyes} from './types'
+import type {Core, EyesManager, Eyes, Batch} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
@@ -11,8 +11,9 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
-  core?: BaseCore
   concurrency?: number
+  core: Core<TSpec>
+  base?: BaseCore
   agentId?: string
   cwd?: string
   logger: Logger
@@ -20,8 +21,9 @@ type Options<TSpec extends SpecType> = {
 
 export function makeMakeManager<TSpec extends SpecType>({
   spec,
-  core,
   concurrency: defaultConcurrency = utils.general.getEnvValue('CONCURRENCY', 'number'),
+  core,
+  base,
   agentId: defaultAgentId,
   cwd = process.cwd(),
   logger: defaultLogger,
@@ -45,8 +47,8 @@ export function makeMakeManager<TSpec extends SpecType>({
     concurrency ??= utils.types.isInteger(legacyConcurrency) ? legacyConcurrency * 5 : 5
     batch ??= {}
     batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
-    core ??= makeBaseCore({agentId, cwd, logger})
-    const cores = {ufg: makeUFGCore({spec, core, concurrency, logger}), classic: makeClassicCore({spec, core, logger})}
+    base ??= makeBaseCore({agentId, cwd, logger})
+    const cores = {ufg: makeUFGCore({spec, base, concurrency, logger}), classic: makeClassicCore({spec, base, logger})}
     const storage = [] as Eyes<TSpec, TType>[]
     return {
       openEyes: utils.general.wrap(

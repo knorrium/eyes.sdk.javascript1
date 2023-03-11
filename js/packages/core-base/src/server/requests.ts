@@ -29,14 +29,16 @@ import {makeReqEyes, type ReqEyes} from './req-eyes'
 import {makeUpload, type Upload} from './upload'
 import * as utils from '@applitools/utils'
 
-export interface CoreRequests extends Core<ImageTarget, EyesRequests> {
+export interface CoreRequests extends Core {
   getBatchBranches(options: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}>
+  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
 }
 
-export interface EyesRequests extends Eyes<ImageTarget> {
+export interface EyesRequests extends Eyes {
+  readonly core: CoreRequests
   report(options: {settings?: ReportSettings; logger?: Logger}): Promise<void>
 }
 
@@ -52,13 +54,13 @@ export function makeCoreRequests({
   const defaultLogger = logger?.extend({label: 'core-requests'}) ?? makeLogger({label: 'core-requests'})
 
   const getAccountInfoWithCache = utils.general.cachify(getAccountInfo, ([{settings}]) => {
-    return [settings.serverUrl, settings.apiKey, settings.proxy]
+    return [settings.serverUrl, settings.apiKey]
   })
   const getBatchBranchesWithCache = utils.general.cachify(getBatchBranches, ([{settings}]) => {
-    return [settings.serverUrl, settings.apiKey, settings.proxy, settings.batchId]
+    return [settings.batchId, settings.serverUrl, settings.apiKey]
   })
 
-  return {
+  const core = {
     getAccountInfo: getAccountInfoWithCache,
     getBatchBranches: getBatchBranchesWithCache,
     openEyes,
@@ -69,6 +71,8 @@ export function makeCoreRequests({
     deleteTest,
     logEvent,
   }
+
+  return core
 
   async function openEyes({
     settings,
@@ -158,7 +162,7 @@ export function makeCoreRequests({
 
     const upload = makeUpload({config: {uploadUrl: test.account.uploadUrl, proxy: settings.proxy}, logger})
 
-    return makeEyesRequests({test, req, upload, logger})
+    return makeEyesRequests({core, test, req, upload, logger})
   }
 
   async function locate<TLocator extends string>({
@@ -388,11 +392,13 @@ export function makeCoreRequests({
 }
 
 export function makeEyesRequests({
+  core,
   test,
   req,
   upload,
   logger: defaultLogger,
 }: {
+  core: CoreRequests
   test: TestInfo
   req: ReqEyes
   upload: Upload
@@ -401,7 +407,8 @@ export function makeEyesRequests({
   let resultsPromise = undefined as Promise<TestResult[]> | undefined
   let supportsCheckAndClose = true
 
-  return {
+  const eyes = {
+    core,
     test,
     get running() {
       return !resultsPromise
@@ -413,6 +420,8 @@ export function makeEyesRequests({
     abort,
     getResults,
   }
+
+  return eyes
 
   async function check({
     target,

@@ -1,23 +1,24 @@
-import type {OpenSettings} from './types'
-import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
+import type {Eyes, OpenSettings} from './types'
+import type {Eyes as BaseEyes} from '@applitools/core-base'
+import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
-type Options = {
+type Options<TSpec extends SpecType> = {
   settings: OpenSettings
-  core: BaseCore
-  eyes?: BaseEyes[]
+  eyes: Eyes<TSpec>
+  base?: BaseEyes[]
   logger: Logger
 }
 
-export function makeGetBaseEyes({settings, core, eyes, logger: defaultLogger}: Options) {
+export function makeGetBaseEyes<TSpec extends SpecType>({settings, eyes, base, logger: defaultLogger}: Options<TSpec>) {
   const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, () => 'default')
-  if (eyes) getBaseEyesWithCache.setCachedValue('default', Promise.resolve(eyes))
+  if (base) getBaseEyesWithCache.setCachedValue('default', Promise.resolve(base))
   return getBaseEyesWithCache
 
   async function getBaseEyes({logger = defaultLogger}: {logger?: Logger} = {}): Promise<BaseEyes[]> {
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
-    const eyes = await core.openEyes({settings, logger})
-    return [eyes]
+    const baseEyes = await eyes.core.base.openEyes({settings, logger})
+    return [baseEyes]
   }
 }

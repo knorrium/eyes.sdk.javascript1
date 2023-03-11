@@ -1,11 +1,11 @@
 import type {DriverTarget, CloseSettings} from './types'
+import {type Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {Renderer} from '@applitools/ufg-client'
-import {Eyes as baseEyes} from '@applitools/core-base'
 
 type Options<TSpec extends SpecType> = {
-  storage: Map<string, Promise<{renderer: Renderer; eyes: baseEyes}>[]>
+  storage: Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>
   target?: DriverTarget<TSpec>
   spec?: SpecDriver<TSpec>
   logger: Logger

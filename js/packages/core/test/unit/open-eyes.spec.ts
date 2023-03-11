@@ -23,7 +23,7 @@ describe('open-eyes', () => {
           },
         },
       })
-      const openEyes = makeOpenEyes({core: fakeCore, logger: makeLogger()})
+      const openEyes = makeOpenEyes({core: fakeCore as any, logger: makeLogger()})
 
       process.env = {
         APPLITOOLS_SERVER_URL: 'server-url',
@@ -53,7 +53,7 @@ describe('open-eyes', () => {
         },
       },
     })
-    const openEyes = makeOpenEyes({core: fakeCore, logger: makeLogger()})
+    const openEyes = makeOpenEyes({core: fakeCore as any, logger: makeLogger()})
 
     await openEyes({type: 'classic', settings: {testName: 'test-name'}})
   })

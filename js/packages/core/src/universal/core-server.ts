@@ -136,9 +136,10 @@ export async function makeCoreServer({
       const core = await corePromise
       return core.extractText(options)
     })
+    // TODO rename to getECClient
     socket.command('Core.makeECClient', async options => {
       const core = await corePromise
-      const client = await core.makeECClient(options)
+      const client = await core.getECClient(options)
       return {url: client.url} as any
     })
     socket.command('Core.makeManager', async options => {

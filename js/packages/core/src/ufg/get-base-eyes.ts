@@ -1,22 +1,26 @@
 import type {Eyes, OpenSettings} from './types'
-import type {Core as BaseCore, Eyes as EyesBase} from '@applitools/core-base'
+import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
-import {type Renderer} from '@applitools/ufg-client'
+import {type RendererSettings} from '@applitools/ufg-client'
 import * as utils from '@applitools/utils'
 
-type Options = {
-  eyes: Eyes<SpecType>
+type Options<TSpec extends SpecType> = {
   settings: OpenSettings
-  core: BaseCore
-  baseEyes?: EyesBase[]
+  eyes: Eyes<TSpec>
+  base?: BaseEyes[]
   logger: Logger
 }
 
-export function makeGetBaseEyes({eyes, settings: defaultSettings, core, baseEyes, logger: defaultLogger}: Options) {
+export function makeGetBaseEyes<TSpec extends SpecType>({
+  settings: defaultSettings,
+  eyes,
+  base,
+  logger: defaultLogger,
+}: Options<TSpec>) {
   const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, ([options]) => options?.settings)
-  if (baseEyes) {
-    baseEyes.forEach(baseEyes =>
+  if (base) {
+    base.forEach(baseEyes =>
       getBaseEyesWithCache.setCachedValue(baseEyes.test.rendererInfo, Promise.resolve([baseEyes])),
     )
   }
@@ -26,17 +30,20 @@ export function makeGetBaseEyes({eyes, settings: defaultSettings, core, baseEyes
     settings,
     logger = defaultLogger,
   }: {
-    settings?: {type: 'web' | 'native'; renderer: Renderer}
+    settings?: RendererSettings
     logger?: Logger
-  } = {}): Promise<EyesBase[]> {
+  } = {}): Promise<BaseEyes[]> {
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     if (!settings) throw new Error('')
-    const ufgClient = await eyes.getUFGClient({logger})
+    const ufgClient = await eyes.core.getUFGClient({
+      config: {...eyes.test.account, ...eyes.test.account.ufg, proxy: eyes.test.server.proxy},
+      logger,
+    })
     const environment = await ufgClient.bookRenderer({settings})
-    const eyesBase = await core.openEyes({
+    const baseEyes = await eyes.core.base.openEyes({
       settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},
       logger,
     })
-    return [eyesBase]
+    return [baseEyes]
   }
 }

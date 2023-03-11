@@ -10,6 +10,8 @@ import {makeSetViewportSize} from '../automation/set-viewport-size'
 import {makeLocate} from '../automation/locate'
 import {makeLocateText} from '../automation/locate-text'
 import {makeExtractText} from '../automation/extract-text'
+import {makeGetUFGClient} from './get-ufg-client'
+import {makeGetNMLClient} from './get-nml-client'
 import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 import throat from 'throat'
@@ -18,7 +20,7 @@ type Options<TSpec extends SpecType> = {
   concurrency: number
   spec?: SpecDriver<TSpec>
   clients?: {ufg?: UFGClient; nml?: NMLClient}
-  core?: BaseCore
+  base?: BaseCore
   agentId?: string
   cwd?: string
   logger?: Logger
@@ -28,53 +30,57 @@ export function makeCore<TSpec extends SpecType>({
   concurrency,
   spec,
   clients,
-  core,
+  base,
   agentId = 'core-ufg',
   cwd = process.cwd(),
-  logger,
+  logger: defaultLogger,
 }: Options<TSpec>): Core<TSpec> {
-  logger = logger?.extend({label: 'core-ufg'}) ?? makeLogger({label: 'core-ufg'})
-  logger.log(`Core ufg is initialized ${core ? 'with' : 'without'} custom base core`)
+  const logger = defaultLogger?.extend({label: 'core-ufg'}) ?? makeLogger({label: 'core-ufg'})
+  logger.log(`Core ufg is initialized ${base ? 'with' : 'without'} custom base core`)
 
-  const throttle = throat(concurrency)
-
-  core ??= makeBaseCore({agentId, cwd, logger})
-  // open eyes with concurrency
-  core.openEyes = utils.general.wrap(core.openEyes, (openEyes, options) => {
-    return new Promise((resolve, rejects) => {
-      throttle(() => {
-        return new Promise<void>(async done => {
-          try {
-            const eyes = await openEyes(options)
-            resolve(
-              utils.general.extend(eyes, {
-                // release concurrency slot when closed
-                close: utils.general.wrap(eyes.close, (close, options) => close(options).finally(done)),
-                // release concurrency slot when aborted
-                abort: utils.general.wrap(eyes.abort, (abort, options) => abort(options).finally(done)),
-                // release concurrency slot when checkAndClose is done
-                checkAndClose: utils.general.wrap(eyes.checkAndClose, (checkAndClose, options) =>
-                  checkAndClose(options).finally(done),
-                ),
-              }),
-            )
-          } catch (error) {
-            rejects(error)
-            // release concurrency slot when error thrown
-            done()
-          }
-        })
-      })
-    })
-  })
-
-  return utils.general.extend(core, {
-    type: 'ufg' as const,
-    getViewportSize: spec && makeGetViewportSize({spec, logger}),
-    setViewportSize: spec && makeSetViewportSize({spec, logger}),
-    locate: makeLocate({spec, core, logger}),
-    locateText: makeLocateText({spec, core, logger}),
-    extractText: makeExtractText({spec, core, logger}),
-    openEyes: makeOpenEyes({spec, clients, core, logger}),
+  base ??= makeBaseCore({agentId, cwd, logger})
+  return utils.general.extend(base, core => {
+    const throttle = throat(concurrency)
+    return {
+      type: 'ufg' as const,
+      base: utils.general.extend(base!, {
+        // open eyes with concurrency
+        openEyes: utils.general.wrap(base!.openEyes, (openEyes, options) => {
+          return new Promise((resolve, rejects) => {
+            throttle(() => {
+              return new Promise<void>(async done => {
+                try {
+                  const eyes = await openEyes(options)
+                  resolve(
+                    utils.general.extend(eyes, {
+                      // release concurrency slot when closed
+                      close: utils.general.wrap(eyes.close, (close, options) => close(options).finally(done)),
+                      // release concurrency slot when aborted
+                      abort: utils.general.wrap(eyes.abort, (abort, options) => abort(options).finally(done)),
+                      // release concurrency slot when checkAndClose is done
+                      checkAndClose: utils.general.wrap(eyes.checkAndClose, (checkAndClose, options) =>
+                        checkAndClose(options).finally(done),
+                      ),
+                    }),
+                  )
+                } catch (error) {
+                  rejects(error)
+                  // release concurrency slot when error thrown
+                  done()
+                }
+              })
+            })
+          })
+        }),
+      }),
+      getViewportSize: spec && makeGetViewportSize({spec, logger}),
+      setViewportSize: spec && makeSetViewportSize({spec, logger}),
+      locate: makeLocate({spec, core, logger}),
+      locateText: makeLocateText({spec, core, logger}),
+      extractText: makeExtractText({spec, core, logger}),
+      getUFGClient: makeGetUFGClient({client: clients?.ufg, logger}),
+      getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
+      openEyes: makeOpenEyes({spec, core, logger}),
+    }
   })
 }

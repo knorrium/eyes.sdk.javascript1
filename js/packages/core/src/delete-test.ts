@@ -1,11 +1,10 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {DeleteTestSettings} from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
+import type {Core, DeleteTestSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
 type Options = {
-  core: BaseCore
+  core: Core<any>
   logger: Logger
 }
 
@@ -22,6 +21,6 @@ export function makeDeleteTest({core, logger: defaultLogger}: Options) {
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')
     })
 
-    await core.deleteTest({settings, logger})
+    await core.base.deleteTest({settings, logger})
   }
 }

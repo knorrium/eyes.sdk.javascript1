@@ -53,10 +53,15 @@ export function makeCheck<TSpec extends SpecType>({
       throw new AbortError('Command "check" was called after test was already aborted')
     }
 
-    const ufgClient = await eyes.getUFGClient({logger})
-
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({
       settings,
+    })
+
+    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
+    const ufgClient = await eyes.core.getUFGClient({
+      config: {...eyes.test.account, ...eyes.test.account.ufg, proxy: eyes.test.server.proxy},
+      concurrency: uniqueRenderers.length || 5,
+      logger,
     })
 
     let snapshots: DomSnapshot[] | AndroidSnapshot[] | IOSSnapshot[]
@@ -66,7 +71,7 @@ export function makeCheck<TSpec extends SpecType>({
     let regionToTarget: Selector | Region | undefined
     let scrollRootSelector: Selector | undefined
     let selectorsToCalculate: {originalSelector: Selector | null; safeSelector: Selector | null}[]
-    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
+
     const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     if (driver) {
       await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
@@ -139,7 +144,7 @@ export function makeCheck<TSpec extends SpecType>({
       if (driver.isWeb) {
         snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
       } else {
-        const nmlClient = await eyes.getNMLClient({driver, logger})
+        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
         if (nmlClient) {
           snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
         } else {

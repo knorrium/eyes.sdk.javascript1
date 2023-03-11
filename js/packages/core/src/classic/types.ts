@@ -5,30 +5,26 @@ import {type Logger} from '@applitools/logger'
 
 export * from '../automation/types'
 
-export interface Core<
-  TSpec extends SpecType,
-  TTarget = AutomationCore.Target<TSpec>,
-  TEyes extends Eyes<TSpec, TTarget> = Eyes<TSpec, TTarget>,
-> extends AutomationCore.Core<TSpec, TTarget, TEyes> {
+export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec> {
   readonly type: 'classic'
   openEyes(options: {
     target?: AutomationCore.DriverTarget<TSpec>
     settings: OpenSettings
-    eyes?: BaseCore.Eyes[]
+    base?: BaseCore.Eyes[]
     logger?: Logger
-  }): Promise<TEyes>
+  }): Promise<Eyes<TSpec>>
 }
 
-export interface Eyes<TSpec extends SpecType, TTarget = AutomationCore.Target<TSpec>>
-  extends AutomationCore.Eyes<TSpec, TTarget> {
+export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec> {
   readonly type: 'classic'
+  readonly core: Core<TSpec>
   check(options?: {
-    target?: TTarget
+    target?: AutomationCore.Target<TSpec>
     settings?: CheckSettings<TSpec>
     logger?: Logger
   }): Promise<AutomationCore.CheckResult[]>
   checkAndClose(options?: {
-    target?: TTarget
+    target?: AutomationCore.Target<TSpec>
     settings?: CheckSettings<TSpec> & AutomationCore.CloseSettings
     logger?: Logger
   }): Promise<AutomationCore.TestResult[]>

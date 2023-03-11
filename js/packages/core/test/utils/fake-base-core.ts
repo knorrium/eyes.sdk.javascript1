@@ -12,10 +12,13 @@ export function makeFakeCore({
       : never
   }
   account?: Partial<AccountInfo>
-} = {}): Core & {emitter: EventEmitter} {
+} = {}): Core & {emitter: EventEmitter; base: Core} {
   const emitter = new EventEmitter()
   return {
     emitter,
+    get base(): any {
+      return this
+    },
     async getAccountInfo(options) {
       emitter.emit('getAccountInfo', options)
       await hooks?.getAccountInfo?.(options)
@@ -55,6 +58,7 @@ export function makeFakeCore({
       try {
         await utils.general.sleep(10)
         await hooks?.openEyes?.(options)
+        const core = this as Core
         const environment = options.settings.environment
         const steps = [] as any[]
         const results = [] as any[]
@@ -78,6 +82,7 @@ export function makeFakeCore({
               proxy: options.settings?.proxy,
             },
           },
+          core,
           get running() {
             return !closed && !aborted
           },

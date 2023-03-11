@@ -53,10 +53,15 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       throw new AbortError('Command "checkAndClose" was called after test was already aborted')
     }
 
-    const ufgClient = await eyes.getUFGClient({logger})
-
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({
       settings,
+    })
+
+    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
+    const ufgClient = await eyes.core.getUFGClient({
+      config: {...eyes.test.account, ...eyes.test.account.ufg, proxy: eyes.test.server.proxy},
+      concurrency: uniqueRenderers.length,
+      logger,
     })
 
     let snapshots: DomSnapshot[] | AndroidSnapshot[] | IOSSnapshot[]
@@ -66,9 +71,9 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     let regionToTarget: Selector | Region | undefined
     let scrollRootSelector: Selector | undefined
     let selectorsToCalculate: {safeSelector: Selector | null; originalSelector: Selector | null}[]
-    const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
-    if (isDriver(target, spec)) {
-      const driver = await makeDriver({spec, driver: target, logger})
+
+    const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    if (driver) {
       if (uniqueRenderers.length === 0) {
         if (driver.isWeb) {
           const viewportSize = await driver.getViewportSize()
@@ -138,7 +143,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       if (driver.isWeb) {
         snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
       } else {
-        const nmlClient = await eyes.getNMLClient({driver, logger})
+        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
         if (nmlClient) {
           snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
         } else {

@@ -1,6 +1,6 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {DriverTarget, ImageTarget, ExtractTextSettings} from '../classic/types'
-import type {Core as BaseCore, ExtractTextSettings as BaseExtractTextSettings} from '@applitools/core-base'
+import type {Target, ImageTarget, Core, ExtractTextSettings} from '../classic/types'
+import type {ExtractTextSettings as BaseExtractTextSettings} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, isElementReference, type SpecType, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from './utils/take-screenshot'
@@ -10,7 +10,7 @@ import * as utils from '@applitools/utils'
 const {getText} = require('@applitools/snippets')
 
 type Options<TSpec extends SpecType> = {
-  core: BaseCore
+  core: Core<TSpec>
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
@@ -21,13 +21,13 @@ export function makeExtractText<TSpec extends SpecType>({core, spec, logger: def
     settings,
     logger = defaultLogger,
   }: {
-    target: DriverTarget<TSpec> | ImageTarget
+    target: Target<TSpec>
     settings: MaybeArray<ExtractTextSettings<TSpec>>
     logger?: Logger
   }): Promise<string[]> {
     logger.log('Command "extractText" is called with settings', settings)
     if (!isDriver(target, spec)) {
-      return core.extractText({target, settings: settings as MaybeArray<BaseExtractTextSettings>, logger})
+      return core.base.extractText({target, settings: settings as MaybeArray<BaseExtractTextSettings>, logger})
     }
     settings = utils.types.isArray(settings) ? settings : [settings]
     const driver = await makeDriver({spec, driver: target, logger})
@@ -52,7 +52,7 @@ export function makeExtractText<TSpec extends SpecType>({core, spec, logger: def
       }
       delete settings.region
       delete settings.normalization
-      const results = await core.extractText({
+      const results = await core.base.extractText({
         target: baseTarget,
         settings: settings as BaseExtractTextSettings,
         logger,

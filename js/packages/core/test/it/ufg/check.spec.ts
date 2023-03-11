@@ -6,7 +6,7 @@ import assert from 'assert'
 
 describe('check', () => {
   it('renders multiple viewport sizes', async () => {
-    const core = makeCore({core: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
 
     const eyes = await core.openEyes({
       settings: {
@@ -39,7 +39,7 @@ describe('check', () => {
   })
 
   it('renders with correct renderer', async () => {
-    const core = makeCore({core: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
 
     const eyes = await core.openEyes({
       settings: {
@@ -69,7 +69,7 @@ describe('check', () => {
   })
 
   it('handles region by selector', async () => {
-    const core = makeCore({core: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
 
     const eyes = await core.openEyes({
       settings: {
@@ -100,7 +100,7 @@ describe('check', () => {
   })
 
   it('handles region by coordinates', async () => {
-    const core = makeCore({core: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
 
     const eyes = await core.openEyes({
       settings: {
@@ -139,7 +139,7 @@ describe('check', () => {
     driver.mockScript('dom-snapshot', () => JSON.stringify({status: 'ERROR', error: 'bla'}))
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 2, spec, core: fakeCore, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 2, spec, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
@@ -160,7 +160,7 @@ describe('check', () => {
     driver.mockScript('dom-snapshot', () => response)
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 2, spec, core: fakeCore, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 2, spec, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
@@ -205,7 +205,7 @@ describe('check', () => {
     })
     const fakeClient = makeFakeClient()
     const fakeCore = makeFakeCore()
-    const core = makeCore({concurrency: 2, spec, core: fakeCore, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 2, spec, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
       target: driver,
       settings: {
@@ -223,7 +223,7 @@ describe('check', () => {
   })
 
   it('adds unique id to duplicated renderers', async function () {
-    const core = makeCore({core: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
 
     const eyes = await core.openEyes({
       settings: {

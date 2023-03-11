@@ -1,5 +1,5 @@
-import type {DriverTarget, ImageTarget, LocateTextSettings, LocateTextResult} from './types'
-import type {Core as BaseCore, LocateTextSettings as BaseLocateTextSettings} from '@applitools/core-base'
+import type {Target, ImageTarget, Core, LocateTextSettings, LocateTextResult} from './types'
+import type {LocateTextSettings as BaseLocateTextSettings} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {takeScreenshot} from './utils/take-screenshot'
@@ -7,7 +7,7 @@ import {takeScreenshot} from './utils/take-screenshot'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
-  core: BaseCore
+  core: Core<TSpec>
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
@@ -18,13 +18,13 @@ export function makeLocateText<TSpec extends SpecType>({core, spec, logger: defa
     settings,
     logger = defaultLogger,
   }: {
-    target: DriverTarget<TSpec> | ImageTarget
+    target: Target<TSpec>
     settings: LocateTextSettings<TPattern, TSpec>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
     logger.log('Command "locateText" is called with settings', settings)
     if (!isDriver(target, spec)) {
-      return core.locateText({target, settings: settings as BaseLocateTextSettings<TPattern>, logger})
+      return core.base.locateText({target, settings: settings as BaseLocateTextSettings<TPattern>, logger})
     }
     const driver = await makeDriver({spec, driver: target, logger})
     const screenshot = await takeScreenshot({driver, settings, logger})
@@ -37,7 +37,7 @@ export function makeLocateText<TSpec extends SpecType>({core, spec, logger: defa
       // else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
       // baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
     }
-    const results = await core.locateText({
+    const results = await core.base.locateText({
       target: baseTarget,
       settings: settings as BaseLocateTextSettings<TPattern>,
       logger,

@@ -1,5 +1,5 @@
-import type {DriverTarget, Eyes, OpenSettings} from './types'
-import type {Core as BaseCore, Eyes as BaseEyes} from '@applitools/core-base'
+import type {Core, DriverTarget, Eyes, OpenSettings} from './types'
+import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeGetBaseEyes} from './get-base-eyes'
@@ -10,7 +10,7 @@ import {makeAbort} from './abort'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
-  core: BaseCore
+  core: Core<TSpec>
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
@@ -19,21 +19,22 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
   return async function openEyes({
     target,
     settings,
-    eyes,
+    base,
     logger = defaultLogger,
   }: {
     target?: DriverTarget<TSpec>
     settings: OpenSettings
-    eyes?: BaseEyes[]
+    base?: BaseEyes[]
     logger?: Logger
   }): Promise<Eyes<TSpec>> {
     logger.log(
       `Command "openEyes" is called with ${target ? 'default driver and' : ''}`,
       ...(settings ? ['settings', settings] : []),
-      eyes ? 'predefined eyes' : '',
+      base ? 'predefined eyes' : '',
     )
+
     const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings}))
-    if (driver && !eyes) {
+    if (driver && !base) {
       const currentContext = driver.currentContext
       settings.environment ??= {}
       if (driver.isEC) {
@@ -75,12 +76,12 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
       }
       await currentContext.focus()
     }
-    const getBaseEyes = makeGetBaseEyes({settings, core, eyes, logger})
-    const [baseEyes] = await getBaseEyes()
 
-    return utils.general.extend(baseEyes, eyes => ({
+    base ??= [await core.base.openEyes({settings, logger})]
+    return utils.general.extend(base[0], eyes => ({
       type: 'classic' as const,
-      getBaseEyes,
+      core,
+      getBaseEyes: makeGetBaseEyes({settings, eyes, base, logger}),
       check: makeCheck({eyes, target: driver, spec, logger}),
       checkAndClose: makeCheckAndClose({eyes, target: driver, spec, logger}),
       close: makeClose({eyes, target: driver, spec, logger}),

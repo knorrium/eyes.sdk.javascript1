@@ -33,7 +33,7 @@ describe('concurrency', () => {
       },
     })
 
-    const core = makeCore({concurrency: 1, core: fakeCore as any, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 1, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -72,7 +72,7 @@ describe('concurrency', () => {
     })
     const fakeClient = makeFakeClient()
 
-    const core = makeCore({concurrency: 2, core: fakeCore as any, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 2, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes = await Promise.all([
       core.openEyes({settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: '1'}}),
@@ -108,7 +108,7 @@ describe('concurrency', () => {
     })
     const fakeClient = makeFakeClient()
 
-    const core = makeCore({concurrency: 1, core: fakeCore as any, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 1, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes1 = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -142,7 +142,7 @@ describe('concurrency', () => {
       },
     })
 
-    const core = makeCore({concurrency: 1, core: fakeCore as any, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 1, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes1 = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -170,7 +170,7 @@ describe('concurrency', () => {
     const fakeCore = makeFakeCore()
     const fakeClient = makeFakeClient()
 
-    const core = makeCore({concurrency: 2, core: fakeCore as any, clients: {ufg: fakeClient}})
+    const core = makeCore({concurrency: 2, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes = await core.openEyes({
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},

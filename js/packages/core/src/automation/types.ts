@@ -8,41 +8,43 @@ export * from '@applitools/core-base/types'
 export type DriverTarget<TSpec extends SpecType> = TSpec['driver'] | Driver<TSpec>
 export type Target<TSpec extends SpecType> = DriverTarget<TSpec> | BaseCore.Target
 
-export interface Core<
-  TSpec extends SpecType,
-  TTarget = Target<TSpec>,
-  TEyes extends Eyes<TSpec, TTarget> = Eyes<TSpec, TTarget>,
-> extends BaseCore.Core<TTarget, TEyes> {
+export interface Core<TSpec extends SpecType> extends BaseCore.Core {
+  readonly base: BaseCore.Core
   getViewportSize?(options: {target: DriverTarget<TSpec>; logger?: Logger}): Promise<Size>
   setViewportSize?(options: {target: DriverTarget<TSpec>; size: Size; logger?: Logger}): Promise<void>
   openEyes(options: {
     target?: DriverTarget<TSpec>
     settings: BaseCore.OpenSettings
-    eyes?: BaseCore.Eyes[]
+    base?: BaseCore.Eyes[]
     logger?: Logger
-  }): Promise<TEyes>
+  }): Promise<Eyes<TSpec>>
   locate<TLocator extends string>(options: {
-    target: TTarget
+    target: Target<TSpec>
     settings: LocateSettings<TLocator, TSpec>
     logger?: Logger
   }): Promise<BaseCore.LocateResult<TLocator>>
   locateText<TPattern extends string>(options: {
-    target: TTarget
+    target: Target<TSpec>
     settings: LocateTextSettings<TPattern, TSpec>
     logger?: Logger
   }): Promise<BaseCore.LocateTextResult<TPattern>>
   extractText(options: {
-    target: TTarget
+    target: Target<TSpec>
     settings: MaybeArray<ExtractTextSettings<TSpec>>
     logger?: Logger
   }): Promise<string[]>
 }
 
-export interface Eyes<TSpec extends SpecType, TTarget = Target<TSpec>> extends BaseCore.Eyes<TTarget> {
+export interface Eyes<TSpec extends SpecType> extends BaseCore.Eyes {
+  readonly core: Core<TSpec>
   getBaseEyes(options?: {logger?: Logger}): Promise<BaseCore.Eyes[]>
-  check(options?: {target?: TTarget; settings?: CheckSettings<TSpec>; logger?: Logger}): Promise<BaseCore.CheckResult[]>
+  check(options?: {
+    target?: Target<TSpec>
+    settings?: CheckSettings<TSpec>
+    logger?: Logger
+  }): Promise<BaseCore.CheckResult[]>
   checkAndClose(options?: {
-    target?: TTarget
+    target?: Target<TSpec>
     settings?: CheckSettings<TSpec> & BaseCore.CloseSettings
     logger?: Logger
   }): Promise<BaseCore.TestResult[]>

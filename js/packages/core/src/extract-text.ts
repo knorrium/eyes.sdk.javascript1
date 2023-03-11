@@ -1,6 +1,5 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {Target, Config, ExtractTextSettings} from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
+import type {Target, Core, ExtractTextSettings, Config} from './types'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
@@ -8,7 +7,7 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
-  core: BaseCore
+  core: Core<TSpec>
   logger: Logger
 }
 
@@ -32,7 +31,7 @@ export function makeExtractText<TSpec extends SpecType>({spec, core, logger: def
       return settings
     })
 
-    const classicCore = makeClassicCore({spec, core, logger})
+    const classicCore = makeClassicCore({spec, base: core.base, logger})
     const results = await classicCore.extractText({target, settings, logger})
     return results
   }

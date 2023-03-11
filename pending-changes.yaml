@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed ufg concurrency regression
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum

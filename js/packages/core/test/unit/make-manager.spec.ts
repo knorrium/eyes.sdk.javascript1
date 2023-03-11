@@ -14,7 +14,7 @@ describe('make manager', () => {
           },
         },
       })
-      const makeManager = makeMakeManager({core: fakeCore, logger: makeLogger()})
+      const makeManager = makeMakeManager({core: fakeCore as any, base: fakeCore, logger: makeLogger()})
 
       process.env = {
         APPLITOOLS_BATCH_ID: 'batch-id',

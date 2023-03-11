@@ -12,7 +12,7 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
-  core?: BaseCore
+  base?: BaseCore
   agentId?: string
   cwd?: string
   logger?: Logger
@@ -20,21 +20,25 @@ type Options<TSpec extends SpecType> = {
 
 export function makeCore<TSpec extends SpecType>({
   spec,
-  core,
+  base,
   agentId = 'core-classic',
   cwd = process.cwd(),
   logger: defaultLogger,
 }: Options<TSpec>): Core<TSpec> {
   const logger = defaultLogger?.extend({label: 'core-classic'}) ?? makeLogger({label: 'core-classic'})
-  logger.log(`Core classic is initialized ${core ? 'with' : 'without'} custom base core`)
-  core ??= makeBaseCore({agentId, cwd, logger})
-  return utils.general.extend(core, {
-    type: 'classic' as const,
-    getViewportSize: spec && makeGetViewportSize({spec, logger}),
-    setViewportSize: spec && makeSetViewportSize({spec, logger}),
-    locate: makeLocate({spec, core, logger}),
-    locateText: makeLocateText({spec, core, logger}),
-    extractText: makeExtractText({spec, core, logger}),
-    openEyes: makeOpenEyes({spec, core, logger}),
+  logger.log(`Core classic is initialized ${base ? 'with' : 'without'} custom base core`)
+
+  base ??= makeBaseCore({agentId, cwd, logger})
+  return utils.general.extend(base, core => {
+    return {
+      type: 'classic' as const,
+      base: base!,
+      getViewportSize: spec && makeGetViewportSize({spec, logger}),
+      setViewportSize: spec && makeSetViewportSize({spec, logger}),
+      locate: makeLocate({spec, core, logger}),
+      locateText: makeLocateText({spec, core, logger}),
+      extractText: makeExtractText({spec, core, logger}),
+      openEyes: makeOpenEyes({spec, core, logger}),
+    }
   })
 }

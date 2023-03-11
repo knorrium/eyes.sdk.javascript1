@@ -1,4 +1,5 @@
 import type {
+  Core,
   Eyes,
   GetResultsSettings,
   CloseBatchSettings,
@@ -6,14 +7,13 @@ import type {
   TestResultContainer,
   TestResultSummary,
 } from './types'
-import type {Core as BaseCore} from '@applitools/core-base'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 import {InternalError} from './errors/internal-error'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
-  core: BaseCore<unknown>
+  core: Core<TSpec>
   storage: Eyes<TSpec, TType>[]
   logger: Logger
 }

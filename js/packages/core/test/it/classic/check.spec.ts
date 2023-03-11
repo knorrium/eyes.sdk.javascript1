@@ -41,7 +41,7 @@ describe('check', () => {
   })
 
   it('preserves original frame after checking window', async function () {
-    const core = await makeCore({spec, core: makeFakeCore()})
+    const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -58,7 +58,7 @@ describe('check', () => {
   })
 
   it('preserves original frame after checking nested frame', async function () {
-    const core = await makeCore({spec, core: makeFakeCore()})
+    const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -75,7 +75,7 @@ describe('check', () => {
   })
 
   it('preserves original frame after checking region within nested frame', async function () {
-    const core = await makeCore({spec, core: makeFakeCore()})
+    const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -94,7 +94,7 @@ describe('check', () => {
   })
 
   it('preserves original frame after checking nested frame fully', async function () {
-    const core = await makeCore({spec, core: makeFakeCore()})
+    const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
@@ -112,7 +112,7 @@ describe('check', () => {
   })
 
   it('preserves original frame after checking region within cors frame', async function () {
-    const core = await makeCore({spec, core: makeFakeCore()})
+    const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
       settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},

@@ -38,12 +38,10 @@ export function makeCheckAndClose<TSpec extends SpecType, TDefaultType extends '
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const typedEyes = await eyes.getTypedEyes({
       type,
-      settings: driver
-        ? {
-            type: driver.isNative ? 'native' : 'web',
-            renderers: (settings as CheckSettings<TSpec, 'ufg'>).renderers!,
-          }
-        : undefined,
+      settings: (settings as CheckSettings<TSpec, 'ufg'>).renderers?.map(renderer => ({
+        type: driver?.isNative ? 'native' : 'web',
+        renderer,
+      })),
       logger,
     })
     const results = await typedEyes.checkAndClose({target: driver ?? target, settings, logger})

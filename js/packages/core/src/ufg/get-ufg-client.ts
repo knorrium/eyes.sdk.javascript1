@@ -3,18 +3,26 @@ import {makeUFGClient, type UFGClient, type UFGRequestsConfig} from '@applitools
 import * as utils from '@applitools/utils'
 
 type Options = {
-  config: UFGRequestsConfig
-  concurrency: number
   client?: UFGClient
   logger: Logger
 }
 
-export function makeGetUFGClient({config, concurrency, client, logger: defaultLogger}: Options) {
-  const getBaseEyesWithCache = utils.general.cachify(getUFGClient, () => 'default')
-  if (client) getBaseEyesWithCache.setCachedValue('default', Promise.resolve(client))
-  return getBaseEyesWithCache
+export function makeGetUFGClient({client, logger: defaultLogger}: Options) {
+  const getUFGClientWithCache = utils.general.cachify(getUFGClient, ([options]) =>
+    client ? 'default' : [options.config],
+  )
+  if (client) getUFGClientWithCache.setCachedValue('default', Promise.resolve(client))
+  return getUFGClientWithCache
 
-  async function getUFGClient({logger = defaultLogger}: {logger?: Logger} = {}) {
-    return makeUFGClient({config, concurrency, logger})
+  async function getUFGClient({
+    config,
+    concurrency,
+    logger = defaultLogger,
+  }: {
+    config: UFGRequestsConfig
+    concurrency?: number
+    logger?: Logger
+  }) {
+    return makeUFGClient({config, concurrency: concurrency || 5, logger})
   }
 }

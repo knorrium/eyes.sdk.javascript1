@@ -13,7 +13,8 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
   spec: 'webdriver' | SpecDriver<TSpec>
 }): Core<TSpec, TType> {
   const socketPromise = makeClientSocket(options)
-  return {
+  const core: Core<TSpec, TType> = {
+    base: null as never,
     async getAccountInfo(options) {
       const socket = await socketPromise
       return socket.request('Core.getAccountInfo', options)
@@ -40,15 +41,15 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
     },
     async openEyes(options) {
       const socket = await socketPromise
-      const eyes = await socket.request('Core.openEyes', options)
-      return makeEyes({socket, eyes})
+      const eyesRef = await socket.request('Core.openEyes', options)
+      return makeEyes({socket, core, eyesRef})
     },
     async makeManager(options) {
       const socket = await socketPromise
-      const manager = await socket.request('Core.makeManager', options)
-      return makeManager({socket, manager})
+      const managerRef = await socket.request('Core.makeManager', options)
+      return makeManager({socket, core, managerRef})
     },
-    async makeECClient(options) {
+    async getECClient(options) {
       const socket = await socketPromise
       return socket.request('Core.makeECClient', options) as any
     },
@@ -65,36 +66,43 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
       return socket.request('Core.logEvent', options)
     },
   }
+  return core
 }
 
 export function makeManager<TSpec extends SpecType, TType extends 'classic' | 'ufg'>({
   socket,
-  manager,
+  core,
+  managerRef,
 }: {
   socket: ClientSocket<TSpec, TType>
-  manager: Ref<EyesManager<TSpec, TType>>
+  core: Core<TSpec, TType>
+  managerRef: Ref<EyesManager<TSpec, TType>>
 }): EyesManager<TSpec, TType> {
-  return {
+  const manager: EyesManager<TSpec, TType> = {
     async openEyes(options) {
-      const eyes = await socket.request('EyesManager.openEyes', {...options, manager})
-      return makeEyes({socket, eyes})
+      const eyesRef = await socket.request('EyesManager.openEyes', {...options, manager: managerRef})
+      return makeEyes({socket, core, eyesRef})
     },
     async getResults(options) {
-      return socket.request('EyesManager.getResults', {...options, manager})
+      return socket.request('EyesManager.getResults', {...options, manager: managerRef})
     },
   }
+  return manager
 }
 
 export function makeEyes<TSpec extends SpecType, TType extends 'classic' | 'ufg'>({
   socket,
-  eyes,
+  core,
+  eyesRef,
 }: {
   socket: ClientSocket<TSpec, TType>
-  eyes: Ref<Eyes<TSpec, TType>>
+  core: Core<TSpec, TType>
+  eyesRef: Ref<Eyes<TSpec, TType>>
 }): Eyes<TSpec, TType> {
-  return {
+  const eyes: Eyes<TSpec, TType> = {
     test: null as never,
     running: null as never,
+    core,
     getBaseEyes() {
       return null as never
     },
@@ -102,21 +110,22 @@ export function makeEyes<TSpec extends SpecType, TType extends 'classic' | 'ufg'
       return null as never
     },
     async check(options) {
-      return socket.request('Eyes.check', {...options, eyes}) as any
+      return socket.request('Eyes.check', {...options, eyes: eyesRef}) as any
     },
     async checkAndClose(options) {
-      return socket.request('Eyes.checkAndClose', {...options, eyes}) as any
+      return socket.request('Eyes.checkAndClose', {...options, eyes: eyesRef}) as any
     },
     async close(options) {
-      return socket.request('Eyes.close', {...options, eyes})
+      return socket.request('Eyes.close', {...options, eyes: eyesRef})
     },
     async abort(options) {
-      return socket.request('Eyes.abort', {...options, eyes})
+      return socket.request('Eyes.abort', {...options, eyes: eyesRef})
     },
     async getResults(options) {
-      return socket.request('Eyes.getResults', {...options, eyes}) as any
+      return socket.request('Eyes.getResults', {...options, eyes: eyesRef}) as any
     },
   }
+  return eyes
 }
 
 export async function makeClientSocket<TSpec extends SpecType>({

@@ -16,19 +16,19 @@ export interface ImageTarget {
 }
 export type Target = ImageTarget
 
-export interface Core<TTarget = Target, TEyes extends Eyes<TTarget> = Eyes<TTarget>> {
-  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<TEyes>
+export interface Core {
+  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<Eyes>
   locate<TLocator extends string>(options: {
-    target: TTarget
+    target: Target
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>>
   locateText<TPattern extends string>(options: {
-    target: TTarget
+    target: Target
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>>
-  extractText(options: {target: TTarget; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
+  extractText(options: {target: Target; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
   getAccountInfo(options: {settings: ServerSettings; logger?: Logger}): Promise<AccountInfo>
   closeBatch(options: {settings: MaybeArray<CloseBatchSettings>; logger?: Logger}): Promise<void>
   deleteTest(options: {settings: MaybeArray<DeleteTestSettings>; logger?: Logger}): Promise<void>
@@ -36,12 +36,13 @@ export interface Core<TTarget = Target, TEyes extends Eyes<TTarget> = Eyes<TTarg
   logEvent(options: {settings: MaybeArray<LogEventSettings>; logger?: Logger}): Promise<void>
 }
 
-export interface Eyes<TTarget = Target> {
+export interface Eyes {
+  readonly core: Core
   readonly test: TestInfo
   readonly running: boolean
-  check(options: {target: TTarget; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
+  check(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
   checkAndClose(options: {
-    target: TTarget
+    target: Target
     settings?: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]>
