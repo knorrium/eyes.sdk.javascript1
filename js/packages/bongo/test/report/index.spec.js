@@ -1,6 +1,7 @@
 const nock = require('nock')
 const {fixtureDir} = require('./util')
 const {sendTestReport, sendReleaseNotification} = require('../../src/report')
+const assert = require('assert')
 
 describe('report', () => {
   describe('send', () => {
@@ -18,6 +19,9 @@ describe('report', () => {
           return [200]
         })
       await sendTestReport({resultPath: fixtureDir, skipStorage: true})
+    })
+    it('test report errors when coverage-tests.xml not found', async () => {
+      assert.rejects(async () => await sendTestReport({}), /no such file or directory/)
     })
     it('release notification for SDK', async () => {
       nock(serverUrl)

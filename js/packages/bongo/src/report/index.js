@@ -24,7 +24,7 @@ function makeSendReleaseNotification({name, version, changeLog, testCoverageGap}
 
 async function createAndSendTestReport({name, reportId, metaPath, resultPath, sandbox, skipStorage}) {
   const cwd = process.cwd()
-  const junit = fs.readFileSync(path.resolve(cwd, resultPath, 'coverage-test-report.xml'), {
+  const junit = fs.readFileSync(path.resolve(cwd, resultPath ? resultPath : '', 'coverage-test-report.xml'), {
     encoding: 'utf-8',
   })
   const metadata = metaPath ? require(path.resolve(cwd, metaPath, 'coverage-tests-metadata.json')) : undefined
