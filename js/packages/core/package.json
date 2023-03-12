@@ -52,7 +52,7 @@
     "build:bin:tgz": "tar -czf ./bin/core.tar.gz $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:bin": "MOCHA_GROUP=bin node ../../node_modules/.bin/mocha './test/bin/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:e2e": "MOCHA_GROUP=e2e node ../../node_modules/.bin/mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "test:e2e": "MOCHA_GROUP=e2e node ../../node_modules/mocha/bin/mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/**/*.spec.ts'",
     "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha './test/unit/**/*.spec.ts'",
     "test:sanity": "yarn test:unit",
