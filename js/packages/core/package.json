@@ -75,7 +75,7 @@
     ]
   },
   "dependencies": {
-    "@applitools/core-base": "1.1.40",
+    "@applitools/core-base": "1.1.41",
     "@applitools/dom-capture": "11.2.1",
     "@applitools/dom-snapshot": "4.7.5",
     "@applitools/driver": "1.11.36",
@@ -99,8 +99,8 @@
     "yargs": "17.6.2"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.5",
-    "@applitools/sdk-coverage-tests": "^2.7.12",
+    "@applitools/bongo": "^3.0.1",
+    "@applitools/sdk-coverage-tests": "^3.0.0",
     "@applitools/spec-driver-puppeteer": "^1.1.48",
     "@applitools/spec-driver-selenium": "^1.5.33",
     "@applitools/spec-driver-webdriverio": "^1.4.31",

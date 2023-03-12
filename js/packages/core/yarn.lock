@@ -2,24 +2,26 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^2.2.5":
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/@applitools/bongo/-/bongo-2.2.5.tgz"
-  integrity sha512-a0NRHM1pjZ4oblshU///slyl1vktVZAJ11toRxRdAArAa4d4Vgak5VsqukFGQFdlF85voZp/XJcJXYOZmKeAWQ==
+"@applitools/bongo@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.1.tgz#15d9eba8d85417b30a9c0ce3d8f01182de30a378"
+  integrity sha512-cuOFE19HzbF8sqaV6QqiXOLVBZy0z4TkVx58WoexcUM/1FN+JhN+UjAEV8U30UNiIRCtSec8erhqKNhX92Sr3Q==
   dependencies:
-    "@applitools/utils" "1.3.30"
+    "@applitools/utils" "1.3.31"
+    "@azure/storage-blob" "12.2.0-preview.1"
     chalk "3.0.0"
     compare-versions "4.1.3"
     js-yaml "4.1.0"
     lodash.pickby "4.6.0"
     micromatch "4.0.2"
     node-fetch "2.6.1"
+    xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.40":
-  version "1.1.40"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.40.tgz#93d84731ec47cf2896985c85074e83f5ca8757c4"
-  integrity sha512-/wzkcEae5KbXc53JSuGZCfUgv3GYriIyrBNOUytFyKWNv1LpSYjJNV1jUlj8bgNVYA7R+n5GGV/QeQe2wjJmSA==
+"@applitools/core-base@1.1.41":
+  version "1.1.41"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.41.tgz#46e2f5efd6fe3e8ff96307a268e931d3214e27f0"
+  integrity sha512-DciZXxRdw6hjgaBLO4MyWOc5cSOp4KJnFSfJFia4nrRcHpTSy+W6U+YU69hmftK8Dfor7pmarvsgRz+wgKb0QQ==
   dependencies:
     "@applitools/image" "1.0.27"
     "@applitools/logger" "1.1.47"
@@ -227,12 +229,11 @@
     jpeg-js "0.4.4"
     png-async "0.9.4"
 
-"@applitools/sdk-coverage-tests@^2.7.12":
-  version "2.7.12"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-2.7.12.tgz#d040527e49380c4ab19cde15701c5079d3a8ec2b"
-  integrity sha512-oc+fJjbpFaJCAwR3u7ugdOBpR2oT+fFiPNHOWIs9MEMqs0iZ/zUnlIQ3hpN7e9aibp8s3/6cP/iBMw4Z7xgxYw==
+"@applitools/sdk-coverage-tests@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-coverage-tests/-/sdk-coverage-tests-3.0.0.tgz#bc2a19d7112ae1139d0a2aa407de3f780831886e"
+  integrity sha512-ZDP631AvKuyWc6ZNV9xi6wjuP2rshJZOJvt9aPgiedYREAMRqbHO7NzDi1YP6vQN6g4FtVci13DvNWNeaCvvgQ==
   dependencies:
-    "@azure/storage-blob" "12.2.0-preview.1"
     "@babel/core" "7.12.10"
     chalk "4.1.1"
     handlebars "4.7.7"
@@ -240,7 +241,6 @@
     node-fetch "2.6.7"
     prettier "2.3.0"
     sync-fetch "0.3.0"
-    xml-js "1.6.11"
     yargs "16.0.3"
 
 "@applitools/snippets@2.4.16":
