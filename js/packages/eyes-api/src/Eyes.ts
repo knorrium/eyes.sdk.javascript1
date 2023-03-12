@@ -61,7 +61,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
 
   static async getExecutionCloudUrl(config?: Configuration): Promise<string> {
     const {core} = initSDK(this._sdk)
-    const client = await core.makeECClient({
+    const client = await core.getECClient({
       settings: {
         proxy: config?.proxy,
         capabilities: {eyesServerUrl: config?.serverUrl, apiKey: config?.apiKey},

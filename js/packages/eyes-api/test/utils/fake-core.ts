@@ -8,6 +8,7 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
     get history() {
       return history
     },
+    base: null as never,
     reset: () => (history = [] as any),
     makeManager,
     locate,
@@ -17,7 +18,7 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
     setViewportSize,
     closeBatch: null as never,
     deleteTest: null as never,
-    makeECClient: null as never,
+    getECClient: null as never,
     getAccountInfo: null as never,
     logEvent: null as never,
     openEyes: null as never,
