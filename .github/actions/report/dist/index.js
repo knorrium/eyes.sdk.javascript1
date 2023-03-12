@@ -18203,13 +18203,26 @@ async function main() {
             return reports;
         }
     }, Promise.resolve([]));
+    let report;
     if (reports.length > 0) {
-        const template = lib_default().compile(await (0,promises_namespaceObject.readFile)('./.github/actions/report/summary.hbs', { encoding: 'utf8' }));
-        const summary = template(reports[0], {
-            helpers: { ms: (duration) => ms_default()(duration, { long: true }) }
+        report = reports.reduce((mergedReport, report) => {
+            mergedReport.stats.suites += report.stats.suites;
+            mergedReport.stats.tests += report.stats.tests;
+            mergedReport.stats.passes += report.stats.passes;
+            mergedReport.stats.pending += report.stats.pending;
+            mergedReport.stats.failures += report.stats.failures;
+            mergedReport.stats.duration += report.stats.duration;
+            mergedReport.passes.push(...report.passes);
+            mergedReport.pending.push(...report.pending);
+            mergedReport.failures.push(...report.failures);
+            return mergedReport;
         });
-        core.summary.addRaw(summary).write();
     }
+    const template = lib_default().compile(await (0,promises_namespaceObject.readFile)('./.github/actions/report/summary.hbs', { encoding: 'utf8' }));
+    const summary = template(report, {
+        helpers: { ms: (duration) => ms_default()(duration, { long: true }) }
+    });
+    core.summary.addRaw(summary).write();
 }
 main();
 

@@ -1,9 +1,14 @@
+{{#if stats}}
 {{#if stats.failures}}
 ## ❌ Failed
 {{else}}
 ## ✅ Passed
 {{/if}}
+{{else}}
+## ⁉️ No tests
+{{/if}}
 
+{{#if stats}}
 ✅ **{{stats.passes}} passed** ❌ **{{stats.failures}} failed** ❔ **{{stats.pending}} skipped** ⏱️ **{{ms stats.duration}}**
 
 {{#if failures}}
@@ -27,4 +32,4 @@
   {{/each}}
 </details>
 {{/if}}
-
+{{/if}}

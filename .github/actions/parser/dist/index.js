@@ -2958,11 +2958,11 @@ const defaultPublishVersion = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInpu
 const packages = await getPackages();
 if (input === 'changed') {
     input = getChangedPackagesInput();
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Packages with changes: "${input}"`);
+    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Changed packages: "${input}"`);
 }
 else if (input === 'all') {
     input = getAllPackagesInput();
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Packages to change: "${input}"`);
+    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`All packages: "${input}"`);
 }
 else {
     _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Input provided: "${input}"`);
@@ -2978,9 +2978,6 @@ if (includeOnlyChanged) {
     jobs = filterInsignificantJobs(jobs);
     _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Filtered jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
 }
-_actions_core__WEBPACK_IMPORTED_MODULE_1__.summary.addHeading('Jobs', 2)
-    .addList(Object.values(jobs).map(job => job.displayName))
-    .write();
 _actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput('packages', allowVariations ? Object.values(jobs) : jobs);
 async function getPackages() {
     const jsPackagesPath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), './js/packages');

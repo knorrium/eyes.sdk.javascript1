@@ -56,14 +56,14 @@ runs:
           echo "::endgroup::"
         fi
 
+        echo "::group::Installing and updating dependencies"
+        yarn --cwd ../../ install
+        yarn install
+        npm run deps --if-present -- --commit
+        echo "::endgroup::"
+
         if [ "${{inputs.skip-build}}" = "false" ]
         then
-          echo "::group::Installing and updating dependencies"
-          yarn --cwd ../../ install
-          yarn install
-          npm run deps --if-present -- --commit
-          echo "::endgroup::"
-
           echo "::group::Building package"
           npm run build --if-present
           echo "::endgroup::"
