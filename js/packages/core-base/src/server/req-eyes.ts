@@ -77,11 +77,16 @@ function handleLogs({logger: defaultLogger}: {logger?: Logger} = {}): Hooks<ReqE
         options?.body,
       )
     },
-    beforeRetry({request, attempt}) {
-      const [requestId] = request.headers.get('x-applitools-eyes-client-request-id')?.split('#') ?? []
-      if (requestId) {
-        request.headers.set('x-applitools-eyes-client-request-id', `${requestId}#${attempt + 1}`)
-      }
+    beforeRetry({request, attempt, error, response, options}) {
+      const logger = options?.logger ?? defaultLogger
+      const requestId = request.headers.get('x-applitools-eyes-client-request-id')!
+      logger?.log(
+        `Request "${options?.name}" [${requestId}] that was sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
+        `is going to retried due to ${error ? 'an error' : 'a response with status'}`,
+        error ?? `${response!.statusText}(${response!.status})`,
+      )
+      request.headers.set('x-applitools-eyes-client-request-id', `${requestId.split('#', 1)[0]}#${attempt + 1}`)
     },
     async afterResponse({request, response, options}) {
       const logger = options?.logger ?? defaultLogger
