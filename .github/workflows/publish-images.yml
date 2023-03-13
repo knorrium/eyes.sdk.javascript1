@@ -54,6 +54,7 @@ jobs:
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/eyes-images
+          report: prod
   publish:
     name: Publish
     needs: [test]

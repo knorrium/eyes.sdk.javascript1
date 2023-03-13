@@ -104,6 +104,7 @@ jobs:
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/eyes-cypress
+          report: prod
   test-cypress-versions:
     needs: [verify]
     strategy:

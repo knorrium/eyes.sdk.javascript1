@@ -100,6 +100,7 @@ jobs:
         uses: ./.github/actions/tests
         with:
           working-directory: ./js/packages/eyes-webdriverio-5
+          report: prod
       - name: Upload testing artifacts
         uses: actions/upload-artifact@v3
         with:

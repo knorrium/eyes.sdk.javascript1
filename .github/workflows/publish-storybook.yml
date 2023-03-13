@@ -108,6 +108,7 @@ jobs:
         with:
           working-directory: ./js/packages/eyes-storybook
           test-type: versions
+          report: prod
   publish:
     needs: [test, test-versions]
     name: Publish
