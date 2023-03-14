@@ -204,7 +204,7 @@ function createJobs(input: string): Record<string, Job> {
       }
     }
   
-    const envs = defaultEnv.split(';').reduce((envs, env) => {
+    const envs = defaultEnv.split(/[;\s]+/).reduce((envs, env) => {
       const [key, value] = env.split('=')
       return {...envs, [key]: value}
     }, {})
