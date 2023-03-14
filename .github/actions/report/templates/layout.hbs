@@ -1,0 +1,13 @@
+{{#if reports.failures}}
+## ❌ Failures
+{{#each reports.failures}}
+{{> report }}
+{{/each}}
+{{/if}}
+
+{{#if reports.passes}}
+## ✅ Passes
+{{#each reports.passes}}
+{{> report }}
+{{/each}}
+{{/if}}

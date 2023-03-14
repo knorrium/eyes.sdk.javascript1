@@ -100,17 +100,53 @@ jobs:
           SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
           BROWSERSTACK_USERNAME: applitools
           BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-      - name: Report
-        if: always()
-        uses: ./.github/actions/report
-        with:
-          path: |
-            ${{matrix.path}}/logs/report*.json
       - name: Save testing artifacts
+        if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: artifacts-${{matrix.name}}
+          name: artifact-${{matrix.name}}
           retention-days: 2
           if-no-files-found: ignore
           path: |
             ${{matrix.path}}/logs/**/*
+
+  report:
+    name: Report
+    needs: [test]
+    if: ${{always() && github.event_name == 'schedule'}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Download testing artifacts
+        uses: actions/download-artifact@v3
+      - name: Report
+        id: report
+        uses: ./.github/actions/report
+        with:
+          path: ./artifact-*/report*.json
+      - name: Send slack notification
+        if: always()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{fromJSON(steps.report.outputs.failed-tests) > 0 && '#f85149' || '#3fb950'}}",
+                  "blocks": [
+                    {
+                      "type":"section",
+                      "text": {"type": "mrkdwn", "text": "@channel *Nightly* <https://github.com/applitools/eyes.sdk.javascript1/actions/runs/${{github.run_id}}|workflow> has been finished 🦉"}
+                    },
+                    {
+                      "type":"section",
+                      "text": {"type": "plain_text", "emoji": true, "text": "${{fromJSON(steps.report.outputs.failed-tests) > 0 && '❌' || '✅'}} ${{steps.report.outputs.message}}"}
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{secrets.JS_SLACK_WEBHOOK_URL}}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

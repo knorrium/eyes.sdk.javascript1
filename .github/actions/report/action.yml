@@ -2,8 +2,15 @@ name: Report
 
 inputs:
   path:
-    description: Path(s) to test output file(s) to analyze
+    description: path(s) to test output file(s) to analyze
     required: true
+outputs:
+  failed-reports:
+    description: number of reports with failed tests
+  failed-tests:
+    description: number of failed tests in all reports
+  message:
+    description: message with the summary of failed tests
 runs:
   using: node16
   main: dist/index.js

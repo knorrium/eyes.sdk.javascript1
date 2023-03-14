@@ -1,3 +1,22 @@
+export interface Report {
+  title?: string
+  duration: number
+  failed: Test[]
+  skipped: Test[]
+  passed: Test[]
+}
+
+export interface Test {
+  title: string
+  url: string
+  path: string
+  duration: number
+  error?: {
+    message: string
+    stack: string
+  }
+}
+
 export interface JSONReport {
   stats: {
     suites: number

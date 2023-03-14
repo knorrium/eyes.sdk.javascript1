@@ -1,0 +1,29 @@
+{{#if failed}}
+### ❌ {{title}} Failed
+{{else}}
+### ✅ {{title}} Passed
+{{/if}}
+
+✅ **{{passed.length}} passed** {{#if failed}} ❌ **{{failed.length}} failed** {{/if}} {{#if skipped}} ❔ **{{skipped.length}} skipped** {{/if}} ⏱️ **{{humanizer duration}}**
+
+{{#if failed}}
+<details>
+  <summary>Failed tests</summary>
+  {{#each failed as | test |}}
+  <i>Test</i>: {{test.title}} <br>
+  <i>File</i>: <a href="{{test.url}}">{{test.path}}</a> <br>
+  <i>Duration</i>: {{humanizer test.duration}} <br>
+  <br>
+
+  ```
+  {{#if test.error.stack}}
+  {{{test.error.stack}}}
+  {{else}}
+  {{{test.error.message}}}
+  {{/if}}
+  ```
+
+  ---
+  {{/each}}
+</details>
+{{/if}}
