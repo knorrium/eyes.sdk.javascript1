@@ -15,7 +15,7 @@ on:
         type: string
         required: true
       test-type:
-        description: testing type (unit, it, e2e, coverage, sanity)
+        description: testing type (unit, it, e2e)
         type: string
         required: false
       build-type:
