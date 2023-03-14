@@ -1,6 +1,7 @@
 import pytest
 import trafaret as t
 
+from applitools.common import AndroidVersion, IosVersion
 from applitools.selenium import BrowserType, RectangleSize, StitchMode
 from EyesLibrary import RobotConfiguration
 from EyesLibrary.config_parser import (
@@ -113,6 +114,17 @@ web_ufg:
     chrome_emulation:
       - device_name: iPhone_4  # names from DeviceName
         screen_orientation: PORTRAIT  # PORTRAIT | LANDSCAPE
+
+native_mobile_grid:
+  devices:
+    ios:
+      - device_name: iPhone_12_Pro  # names from IosDeviceName
+        screen_orientation: PORTRAIT  # PORTRAIT | LANDSCAPE
+        ios_version: LATEST  # LATEST | ONE_VERSION_BACK
+    android:
+      - device_name: Pixel_3_XL  # names from AndroidDeviceName
+        screen_orientation: PORTRAIT  # PORTRAIT | LANDSCAPE
+        android_version: LATEST  # LATEST | ONE_VERSION_BACK
 """
 
 
@@ -127,3 +139,12 @@ def test_web_config_options():
     )
 
     assert web_config.dont_close_batches
+
+
+def test_native_mobile_grid_config_options():
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.native_mobile_grid, RobotConfiguration()
+    ).check(unicode_yaml_load(EXAMPLE_CONFIG_YAML))
+
+    assert web_config.browsers_info[0].ios_version is IosVersion.LATEST
+    assert web_config.browsers_info[1].android_version is AndroidVersion.LATEST

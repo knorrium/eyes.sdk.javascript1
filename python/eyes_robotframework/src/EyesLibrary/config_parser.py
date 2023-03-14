@@ -11,6 +11,7 @@ from six import raise_from
 from applitools.common import (
     AndroidDeviceInfo,
     AndroidDeviceName,
+    AndroidVersion,
     ChromeEmulationInfo,
     DesktopBrowserInfo,
     DeviceName,
@@ -170,7 +171,7 @@ class AndroidDeviceInfoTrafaret(trf.Trafaret):
                     ScreenOrientation
                 ),
                 trf.Key("android_version", optional=True): UpperTextToEnumTrafaret(
-                    IosVersion
+                    AndroidVersion
                 ),
             }
         )

@@ -270,6 +270,8 @@ class Eyes(object):
 
         if not proxy_settings:
             proxy_settings = ProxySettings.from_env()
+        elif isinstance(proxy_settings, string_types):
+            proxy_settings = ProxySettings(proxy_settings)
         if proxy_settings:
             env_caps["NML_PROXY_URL"] = proxy_settings.url
 
