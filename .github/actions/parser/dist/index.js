@@ -2950,6 +2950,7 @@ const SKIP_PACKAGES = [
     'applitools-for-selenium-ide',
 ];
 let input = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('packages', { required: true });
+const defaultEnv = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('env');
 const allowVariations = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('allow-variations');
 const includeOnlyChanged = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('include-only-changed');
 const includeDependencies = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('include-dependencies');
@@ -3074,6 +3075,10 @@ function createJobs(input) {
                 return jobs;
             }
         }
+        const envs = defaultEnv.split(';').reduce((envs, env) => {
+            const [key, value] = env.split('=');
+            return { ...envs, [key]: value };
+        }, {});
         const appendix = Object.entries({ version: publishVersion, framework: frameworkVersion, protocol: frameworkProtocol, node: nodeVersion, os: jobOS })
             .reduce((parts, [key, value]) => value ? [...parts, `${key}: ${value}`] : parts, [])
             .join('; ');
@@ -3092,7 +3097,8 @@ function createJobs(input) {
                 env: {
                     [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_MAJOR_VERSION`]: frameworkVersion,
                     [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_VERSION`]: frameworkVersion,
-                    [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol
+                    [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol,
+                    ...envs,
                 },
             },
             requested: true,

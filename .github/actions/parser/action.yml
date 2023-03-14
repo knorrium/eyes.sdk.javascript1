@@ -5,6 +5,10 @@ inputs:
     description: list of package names (aliases) with modifiers such as version or aut protocol
     type: string
     required: true
+  env:
+    description: list of environment variables to add to every job
+    type: string
+    required: false
   allow-variations:
     description: whether modifiers should be allowed to create variations (wdio+cdp or selenium@3)
     type: boolean

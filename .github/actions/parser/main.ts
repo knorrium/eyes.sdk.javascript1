@@ -65,6 +65,7 @@ const SKIP_PACKAGES = [
 ]
 
 let input = core.getInput('packages', {required: true}) 
+const defaultEnv = core.getInput('env')
 const allowVariations = core.getBooleanInput('allow-variations')
 const includeOnlyChanged = core.getBooleanInput('include-only-changed')
 const includeDependencies = core.getBooleanInput('include-dependencies')
@@ -203,6 +204,11 @@ function createJobs(input: string): Record<string, Job> {
       }
     }
   
+    const envs = defaultEnv.split(';').reduce((envs, env) => {
+      const [key, value] = env.split('=')
+      return {...envs, [key]: value}
+    }, {})
+
     const appendix = Object.entries({version: publishVersion, framework: frameworkVersion, protocol: frameworkProtocol, node: nodeVersion, os: jobOS})
       .reduce((parts, [key, value]) => value ? [...parts, `${key}: ${value}`] : parts, [] as string[])
       .join('; ')
@@ -221,7 +227,8 @@ function createJobs(input: string): Record<string, Job> {
         env: {
           [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_MAJOR_VERSION`]: frameworkVersion,
           [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_VERSION`]: frameworkVersion,
-          [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol
+          [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol,
+          ...envs,
         },
       },
       requested: true,

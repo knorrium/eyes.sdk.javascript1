@@ -26,11 +26,15 @@ on:
         description: setup type
         type: string
         required: false
+      env:
+        description: environment variables
+        type: string
+        required: false
       grep:
         description: test name pattern
         required: false
       links:
-        description: package names to link
+        description: use packages from source
         required: false
       link-dependencies:
         description: use dependencies from source
@@ -44,7 +48,12 @@ concurrency:
 env:
   FORCE_COLOR: 3
   NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-  DISPLAY: ':99'
+  APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
+  APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
+  SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+  SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+  BROWSERSTACK_USERNAME: applitools
+  BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
 
 jobs:
   setup:
@@ -63,6 +72,7 @@ jobs:
         id: setup
         with:
           packages: ${{github.event.inputs.packages || (github.event_name == 'pull_request' && 'changed') || (github.event_name == 'schedule' && 'all')}}
+          env: ${{{github.event.inputs.env}}
           allow-variations: true
           link-dependencies: ${{github.event.inputs.link-dependencies || github.event_name == 'pull_request' || github.event_name == 'schedule'}}
   test:
@@ -93,13 +103,6 @@ jobs:
           setup-type: ${{github.event.inputs.setup-type}}
           links: ${{matrix.params.links || github.event.inputs.links}}
           grep: ${{github.event.inputs.grep}}
-        env:
-          APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
-          APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
-          SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
-          SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
-          BROWSERSTACK_USERNAME: applitools
-          BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
       - name: Save testing artifacts
         if: always()
         uses: actions/upload-artifact@v3
