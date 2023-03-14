@@ -1,4 +1,4 @@
-## [vNext]
+## [5.11.1] - 2023-03-14
 ### Fixed
 - IosVersion.LATEST is not a valid AndroidVersion error when native_mobile_grid is configured with Android device [Trello 3174](https://trello.com/c/O3c1xs0L)
 
