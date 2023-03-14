@@ -98,7 +98,7 @@
     "test:coverage:cdp": "APPLITOOLS_WEBDRIVERIO_PROTOCOL=cdp yarn test:coverage",
     "report": "bongo report --name 'js_wdio_5'",
     "test:sanity": "echo 'create sanity suite'",
-    "setup": "yarn docker:setup && [ \"$APPLITOOLS_TEST_REMOTE\" = 'ec' ] && yarn ec:setup || echo 'no ec client'",
+    "setup": "yarn docker:setup; [ \"$APPLITOOLS_TEST_REMOTE\" = 'ec' ] && yarn ec:setup || echo 'no ec client'",
     "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
     "docker:teardown": "docker-compose down",
     "ec:setup": "ec-client --port 19012 &> /dev/null & echo 'APPLITOOLS_EC_URL=http://localhost:19012' >> ./.env",
