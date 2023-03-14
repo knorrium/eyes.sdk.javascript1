@@ -65,7 +65,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    -  Update internal dependencies
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
