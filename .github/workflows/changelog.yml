@@ -3,7 +3,12 @@ name: Verify changelog
 on: 
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
-    branches-ignore: ['dependabot/**', 'draft/**', 'play/**', 'chore/**', 'internal/**']
+    branches-ignore: 
+      - 'dependabot/**'
+      - 'draft/**'
+      - 'play/**'
+      - 'chore/**'
+      - 'internal/**'
 
 jobs:
   verify:
