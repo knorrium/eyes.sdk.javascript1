@@ -9,7 +9,7 @@
     - [Core.deleteTest](#coredeletetest)
     - [Core.getViewportSize](#coregetviewportsize)
     - [Core.setViewportSize](#coresetviewportsize)
-    - [Core.makeECClient](#coremakeecclient)
+    - [Core.getECClient](#coregetecclient)
     - [Core.makeManager](#coremakemanager)
     - [Core.locate](#corelocate)
     - [Core.locateText](#corelocatetext)
@@ -98,13 +98,13 @@ interface SetViewportSizeRequestPayload {
 }
 ```
 
-### Core.makeECClient
+### Core.getECClient
 ```ts
-interface MakeECClientRequestPayload {
+interface GetECClientRequestPayload {
   settings?: ECClientSettings
 }
 
-interface MakeECClientResponsePayload {
+interface GetECClientResponsePayload {
   url: string
 }
 ```
