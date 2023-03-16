@@ -26715,8 +26715,8 @@ async function main() {
     }
     else {
         const passedReports = reports.passes.length;
-        const passedTests = reports.passes.reduce((sum, report) => sum + report.failed.length, 0);
-        const message = `All ${passedTests} tests${pluralizer.select(passedTests) === 'one' ? '' : 's'} passed in ${passedReports} report${pluralizer.select(passedReports) === 'one' ? '' : 's'}`;
+        const passedTests = reports.passes.reduce((sum, report) => sum + report.passed.length, 0);
+        const message = `All ${passedTests} test${pluralizer.select(passedTests) === 'one' ? '' : 's'} passed in ${passedReports} report${pluralizer.select(passedReports) === 'one' ? '' : 's'}`;
         core.setOutput('message', message);
     }
 }
