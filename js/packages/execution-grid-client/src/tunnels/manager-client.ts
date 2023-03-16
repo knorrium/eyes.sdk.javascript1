@@ -1,27 +1,42 @@
 import {type TunnelManager, type TunnelManagerSettings} from './manager'
-import {makeTunnelManagerServerProcess} from './manager-server'
+import {makeTunnelManagerServerProcess, type TunnelManagerServer} from './manager-server'
 import {makeSocket} from '@applitools/socket'
+import {promises as fs} from 'fs'
 import {createConnection} from 'net'
 
 export async function makeTunnelManagerClient({
   settings,
-}: {settings?: TunnelManagerSettings} = {}): Promise<TunnelManager> {
+}: {
+  settings?: TunnelManagerSettings
+} = {}): Promise<TunnelManager & {close(): Promise<void>}> {
   const path =
     process.env.APPLITOOLS_TUNNEL_MANAGER_SOCK ||
     (process.platform === 'win32' ? '\\\\.\\pipe\\applitools-tunnel-manager' : '/tmp/applitools-tunnel-manager.sock')
   const socket = makeSocket(createConnection({path}), {transport: 'ipc'})
+  let server: TunnelManagerServer
   socket.once('error', async (error: Error & {code: string}) => {
-    if (['ECONNREFUSED', 'ENOENT'].includes(error.code)) {
-      await makeTunnelManagerServerProcess({settings, path, unlink: error.code === 'ECONNREFUSED'})
+    try {
+      if (['ECONNREFUSED', 'ENOENT'].includes(error.code)) {
+        if (error.code === 'ECONNREFUSED') {
+          try {
+            await fs.unlink(path)
+          } catch {}
+        }
+        server = await makeTunnelManagerServerProcess({settings, path})
+      }
+    } finally {
       socket.use(createConnection({path}))
     }
   })
   socket.once('ready', () => socket.target.unref())
 
   return {
-    create: (options: any) => socket.request('Tunnel.create', options),
+    create: (options: any) => {
+      return socket.request('Tunnel.create', options)
+    },
     destroy: (options: any) => socket.request('Tunnel.destroy', options),
     acquire: (options: any) => socket.request('Tunnel.acquire', options),
     release: (options: any) => socket.request('Tunnel.release', options),
+    close: () => server?.close(),
   }
 }

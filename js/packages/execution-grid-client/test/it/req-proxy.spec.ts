@@ -1,8 +1,9 @@
-import assert from 'assert'
-import {createServer as createHttpServer, Server as HttpServer} from 'http'
+import {type AddressInfo} from 'net'
+import {createServer as createHttpServer, type Server as HttpServer} from 'http'
 import {makeLogger} from '@applitools/logger'
 import {makeReqProxy} from '../../src/req-proxy'
 import req from '@applitools/req'
+import assert from 'assert'
 import * as utils from '@applitools/utils'
 
 describe('req-proxy', () => {
@@ -63,10 +64,14 @@ describe('req-proxy', () => {
 
   it('works with http target and proxy', async () => {
     return new Promise<void>(async (resolve, reject) => {
-      const reqProxy = makeReqProxy({targetUrl: 'http://localhost:3000'})
-      const server = await createServer({port: 3000})
-      const secondProxyServer = await createServer({port: 4000})
-      const proxyServer = await createServer({port: 5000})
+      const server = await createServer({port: 0})
+      const serverPort = (server.address() as AddressInfo).port
+      const secondProxyServer = await createServer({port: 0})
+      const secondProxyServerPort = (secondProxyServer.address() as AddressInfo).port
+      const proxyServer = await createServer({port: 0})
+      const proxyServerPort = (proxyServer.address() as AddressInfo).port
+
+      const reqProxy = makeReqProxy({targetUrl: `http://localhost:${serverPort}`})
       try {
         const headers = {original: null as any, proxied: null as any, doubleProxied: null as any}
 
@@ -96,7 +101,7 @@ describe('req-proxy', () => {
             headers.original = request.headers
             await reqProxy(request.url as string, {
               io: {request, response},
-              proxy: {url: 'http://localhost:4000'},
+              proxy: {url: `http://localhost:${secondProxyServerPort}`},
               logger,
             })
           } catch (err) {
@@ -104,13 +109,13 @@ describe('req-proxy', () => {
           }
         })
 
-        const response = await req('http://localhost:5000/path', {method: 'post'})
+        const response = await req(`http://localhost:${proxyServerPort}/path`, {method: 'post'})
 
         assert.strictEqual(response.status, 200)
         assert.strictEqual(response.headers.get('x-header'), 'value')
         assert.deepStrictEqual(await response.json(), {value: true})
-        assert.deepStrictEqual(headers.proxied, {...headers.original, host: 'localhost:3000'})
-        assert.deepStrictEqual(headers.doubleProxied, {...headers.original, host: 'localhost:3000'})
+        assert.deepStrictEqual(headers.proxied, {...headers.original, host: `localhost:${serverPort}`})
+        assert.deepStrictEqual(headers.doubleProxied, {...headers.original, host: `localhost:${serverPort}`})
         resolve()
       } catch (err) {
         reject(err)

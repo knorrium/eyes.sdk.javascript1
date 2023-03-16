@@ -38,7 +38,7 @@ export async function makeTunnelManager({
 }: {
   settings?: TunnelManagerSettings
   logger: Logger
-}): Promise<TunnelManager & {cleanup(): Promise<void>}> {
+}): Promise<TunnelManager & {close(): Promise<void>}> {
   let server: {port: number; close: () => Promise<void>} | undefined
 
   const req = makeReq({
@@ -61,7 +61,7 @@ export async function makeTunnelManager({
 
   const pools = new Map<string, Pool<Tunnel[], TunnelCredentials>>()
 
-  return {create, destroy, acquire, release, cleanup}
+  return {create, destroy, acquire, release, close}
 
   async function acquire(credentials: TunnelCredentials): Promise<Tunnel[]> {
     const key = JSON.stringify(credentials)
@@ -135,7 +135,7 @@ export async function makeTunnelManager({
     return `http://localhost:${port}`
   }
 
-  async function cleanup() {
+  async function close() {
     await server?.close()
   }
 }
@@ -167,7 +167,7 @@ interface PoolOptions<TResource, TResourceOptions> {
 function makePool<TResource, TResourceOptions = never>(
   options: PoolOptions<TResource, TResourceOptions>,
 ): Pool<TResource, TResourceOptions> {
-  const pool = new Map<TResource, PoolItem<TResource>>()
+  const pool = new Map<string, PoolItem<TResource>>()
 
   return {
     acquire,
@@ -199,7 +199,7 @@ function makePool<TResource, TResourceOptions = never>(
       item.timers.expiration = setTimeout(() => destroy(resource), options.timeout.expiration)
       item.expireAt = Date.now() + options.timeout.expiration
     }
-    pool.set(resource, item)
+    pool.set(JSON.stringify(resource), item)
   }
 
   async function get(): Promise<TResource | null> {
@@ -216,7 +216,7 @@ function makePool<TResource, TResourceOptions = never>(
   }
 
   async function use(resource: TResource): Promise<boolean> {
-    const item = pool.get(resource)
+    const item = pool.get(JSON.stringify(resource))
     if (!item) return false
     if (item.timers?.idle) clearTimeout(item.timers?.idle)
     item.inuse += 1
@@ -224,7 +224,7 @@ function makePool<TResource, TResourceOptions = never>(
   }
 
   async function release(resource: TResource): Promise<boolean> {
-    const item = pool.get(resource)
+    const item = pool.get(JSON.stringify(resource))
     if (!item) return false
     item.inuse -= 1
     if (item.destroyed) await destroy(resource)
@@ -240,7 +240,7 @@ function makePool<TResource, TResourceOptions = never>(
   }
 
   async function destroy(resource: TResource): Promise<boolean> {
-    const item = pool.get(resource)
+    const item = pool.get(JSON.stringify(resource))
     if (!item) return false
     item.destroyed = true
     if (item.inuse > 0) return false

@@ -78,6 +78,25 @@ describe('client', () => {
       assert.strictEqual(title, 'My local page')
     })
 
+    it('works with tunnel in parallel processes', async () => {
+      client = await makeECClient()
+      await Promise.all(
+        Array.from({length: 5}, async () => {
+          const driver = await new Builder()
+            .withCapabilities({browserName: 'chrome', 'applitools:tunnel': true})
+            .usingServer(client.url)
+            .build()
+
+          await driver.get(url)
+          const title = await driver.executeScript('return document.title')
+
+          await driver.quit()
+
+          assert.strictEqual(title, 'My local page')
+        }),
+      )
+    })
+
     // TODO: add assertion for expected error
     it.skip('fails gracefully when tunnel closes during test run', async () => {
       client = await makeECClient()
