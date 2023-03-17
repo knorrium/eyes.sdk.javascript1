@@ -45,15 +45,15 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/logger": "1.1.47",
-    "@applitools/req": "1.1.31",
-    "@applitools/utils": "1.3.31"
+    "@applitools/logger": "1.1.48",
+    "@applitools/req": "1.1.32",
+    "@applitools/utils": "1.3.32"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.5",
-    "@applitools/spec-driver-webdriverio": "^1.4.31",
-    "@applitools/test-server": "^1.1.27",
-    "@applitools/test-utils": "^1.5.13",
+    "@applitools/bongo": "^3.0.1",
+    "@applitools/spec-driver-webdriverio": "^1.4.32",
+    "@applitools/test-server": "^1.1.28",
+    "@applitools/test-utils": "^1.5.14",
     "@types/node": "^12.20.55",
     "chromedriver": "^109.0.0",
     "nock": "^13.2.9",
