@@ -67,18 +67,18 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/image": "1.0.27",
-    "@applitools/logger": "1.1.47",
-    "@applitools/snippets": "2.4.16",
-    "@applitools/utils": "1.3.31",
+    "@applitools/image": "1.0.28",
+    "@applitools/logger": "1.1.48",
+    "@applitools/snippets": "2.4.17",
+    "@applitools/utils": "1.3.32",
     "jpeg-js": "0.4.4",
     "png-async": "0.9.4"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.5",
-    "@applitools/driver": "^1.11.36",
-    "@applitools/spec-driver-webdriverio": "^1.4.31",
-    "@applitools/test-utils": "^1.5.13",
+    "@applitools/bongo": "^3.0.1",
+    "@applitools/driver": "^1.11.37",
+    "@applitools/spec-driver-webdriverio": "^1.4.32",
+    "@applitools/test-utils": "^1.5.14",
     "appium": "^1.22.3",
     "chromedriver": "^101.0.0",
     "eslint": "^8.16.0",
