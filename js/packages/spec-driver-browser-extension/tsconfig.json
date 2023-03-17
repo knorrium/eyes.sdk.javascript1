@@ -1,18 +1,4 @@
 {
   "extends": "../../tsconfig.base.json",
   "ts-node": {"transpileOnly": true},
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declarationDir": "types",
-    "declaration": true,
-    "declarationMap": false,
-    "sourceMap": false,
-    "noImplicitAny": true,
-    "preserveConstEnums": true,
-    "stripInternal": false,
-    "removeComments": false,
-    "skipLibCheck": true
-  },
-  "exclude" : ["dist", "types", "test"]
 }

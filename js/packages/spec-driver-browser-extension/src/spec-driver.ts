@@ -1,7 +1,7 @@
-import browser from 'webextension-polyfill'
-import * as utils from '@applitools/utils'
 import type {Size} from '@applitools/utils'
 import type {Ref} from './refer'
+import * as utils from '@applitools/utils'
+import browser from 'webextension-polyfill'
 
 type CommonSelector<TSelector = never> = string | {selector: TSelector | string; type?: string}
 type Driver = {windowId: number; tabId: number}

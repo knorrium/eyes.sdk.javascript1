@@ -36,9 +36,9 @@
   ],
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "ttsc",
+    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
     "test:build": "cd test/ext && yarn && yarn webpack",
-    "test": "yarn test:build && mocha ./test/**/*.spec.ts --no-timeouts -r ts-node/register",
+    "test": "yarn test:build && node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --exit",
     "test:xvfb": "xvfb-run --auto-servernum -- yarn test",
     "test:sanity": "yarn test",
     "deps": "bongo deps",
@@ -48,11 +48,6 @@
     "version": "bongo version",
     "postversion": "bongo postversion"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
-  },
   "dependencies": {
     "@applitools/utils": "1.3.30",
     "webextension-polyfill": "0.10.0"
@@ -60,18 +55,11 @@
   "devDependencies": {
     "@applitools/api-extractor": "^1.2.11",
     "@applitools/bongo": "^2.2.2",
-    "@applitools/scripts": "1.2.0",
     "@applitools/spec-driver-playwright": "^1.3.8",
     "@applitools/test-utils": "1.5.12",
     "@types/mocha": "^9.0.0",
     "@types/node": "12",
     "@types/webextension-polyfill": "^0.9.1",
-    "husky": "^4.3.7",
-    "mocha": "^9.2.2",
-    "playwright": "^1.22.2",
-    "prettier": "^2.6.2",
-    "ts-node": "^10.8.0",
-    "ttypescript": "^1.5.13",
-    "typescript": "^4.8.4"
+    "playwright": "^1.22.2"
   }
 }
