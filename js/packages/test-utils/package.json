@@ -1,6 +1,6 @@
 {
   "name": "@applitools/test-utils",
-  "version": "1.5.13",
+  "version": "1.5.14",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -33,7 +33,7 @@
     "node-fetch": "2.6.1"
   },
   "devDependencies": {
-    "@applitools/bongo": "^2.2.5",
+    "@applitools/bongo": "^3.0.1",
     "eslint": "^6.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-mocha-no-only": "^1.1.1",
