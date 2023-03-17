@@ -10,6 +10,14 @@
 
 
 
+## 5.42.3 - 2023/3/17
+
+### Features
+- Improved extraction of nml element
+### Bug fixes
+- Avoid handing process when using execution cloud
+- Fixed slowness during ufg tests
+
 ## 5.42.2 - 2023/3/7
 
 ### Features

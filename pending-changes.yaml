@@ -22,10 +22,9 @@ Apollo SDK:
     - Fixed slowness during ufg tests
 "@applitools/eyes-webdriverio":
   feature:
-    - Improved extraction of nml element
+    - 
   bug-fix:
-    - Avoid handing process when using execution cloud
-    - Fixed slowness during ufg tests
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 
