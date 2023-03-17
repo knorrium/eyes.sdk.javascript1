@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.2 - 2023/3/17
+
+### Features
+### Bug fixes
+- Fixed issue with concurrency of the renders in ufg mode
+
 ## 2.4.1 - 2023/3/17
 
 ### Features
