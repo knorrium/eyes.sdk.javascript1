@@ -123,8 +123,7 @@ jobs:
         id: report
         uses: ./.github/actions/report
         with:
-          artifact: |
-            ${{join(fromJSON(needs.setup.outputs.packages).*.artifactName, '\n')}}
+          artifact: fromJSON(needs.setup.outputs.packages).*.artifactName
           path: |
             ./report*.json
       - name: Send slack notification
