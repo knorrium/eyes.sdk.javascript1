@@ -192,7 +192,7 @@ async function main() {
         name: packageInfo.jobName,
         displayName: `${packageInfo.jobName}${appendix ? ` (${appendix})` : ''}`,
         packageName: packageInfo.name,
-        artifactName: `artifact-${packageInfo.name}`,
+        artifactName: `artifact-${packageInfo.jobName}`,
         dirname: packageInfo.dirname,
         path: packageInfo.path,
         tag: packageInfo.tag,
