@@ -5,7 +5,7 @@ run-name: ${{github.event_name == 'schedule' && 'Nightly' || github.event_name =
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
-    branches-ignore: ['dependabot/**', 'draft/**', 'play/**']
+    branches: ['!dependabot/**', '!draft/**', '!play/**']
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -72,7 +72,7 @@ jobs:
           allow-variations: true
           link-dependencies: ${{github.event.inputs.links == 'all' || github.event_name == 'pull_request' || github.event_name == 'schedule'}}
   test:
-    needs: setup
+    needs: [setup]
     strategy:
       fail-fast: false
       matrix: 
@@ -103,7 +103,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: artifact-${{matrix.name}}
+          name: ${{matrix.artifactName}}
           retention-days: 2
           if-no-files-found: ignore
           path: |
@@ -111,7 +111,7 @@ jobs:
 
   report:
     name: Report
-    needs: [test]
+    needs: [setup, test]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -123,7 +123,8 @@ jobs:
         id: report
         uses: ./.github/actions/report
         with:
-          path: ./artifact-*/report*.json
+          artifact: ${{join(fromJSON(needs.setup.outputs.packages).*.artifactName, '\n')}}
+          path: ./report*.json
       - name: Send slack notification
         if: ${{always() && github.event_name == 'schedule'}}
         uses: slackapi/slack-github-action@v1.23.0
@@ -132,7 +133,7 @@ jobs:
             {
               "attachments": [
                 {
-                  "color": "${{fromJSON(steps.report.outputs.failed-tests) > 0 && '#f85149' || '#3fb950'}}",
+                  "color": "${{(steps.report.outputs.status == 'failed') && '#f85149' || '#3fb950'}}",
                   "blocks": [
                     {
                       "type":"section",
@@ -140,7 +141,7 @@ jobs:
                     },
                     {
                       "type":"section",
-                      "text": {"type": "plain_text", "emoji": true, "text": "${{fromJSON(steps.report.outputs.failed-tests) > 0 && '❌' || '✅'}} ${{steps.report.outputs.message}}"}
+                      "text": {"type": "plain_text", "emoji": true, "text": "${{steps.report.outputs.status == 'failed' && '❌' || '✅'}} ${{steps.report.outputs.message}}"}
                     }
                   ]
                 }

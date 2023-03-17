@@ -2899,291 +2899,6 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 716:
-/***/ ((module, __unused_webpack___webpack_exports__, __nccwpck_require__) => {
-
-__nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-/* harmony import */ var node_child_process__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(718);
-/* harmony import */ var node_child_process__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(node_child_process__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(411);
-/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(node_path__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var node_fs_promises__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(977);
-/* harmony import */ var node_fs_promises__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(node_fs_promises__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var ini__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(45);
-/* harmony import */ var ini__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__nccwpck_require__.n(ini__WEBPACK_IMPORTED_MODULE_4__);
-
-
-
-
-
-var Runner;
-(function (Runner) {
-    Runner["linux"] = "ubuntu-latest";
-    Runner["ubuntu"] = "ubuntu-latest";
-    Runner["linuxarm"] = "buildjet-2vcpu-ubuntu-2204-arm";
-    Runner["ubuntuarm"] = "buildjet-2vcpu-ubuntu-2204-arm";
-    Runner["mac"] = "macos-latest";
-    Runner["macos"] = "macos-latest";
-    Runner["win"] = "windows-2022";
-    Runner["windows"] = "windows-2022";
-})(Runner || (Runner = {}));
-const SKIP_PACKAGES = [
-    // tools
-    '@applitools/bongo',
-    '@applitools/sdk-coverage-tests',
-    '@applitools/api-extractor',
-    '@applitools/snaptdout',
-    '@applitools/fancy',
-    // legacy
-    '@applitools/visual-grid-client',
-    '@applitools/types',
-    '@applitools/sdk-fake-eyes-server',
-    '@applitools/eyes-sdk-core',
-    '@applitools/eyes-universal',
-    '@applitools/eyes-selenium-universal',
-    '@applitools/eyes-playwright-universal',
-    '@applitools/eyes-webdriverio5-service',
-    '@applitools/eyes.webdriverio',
-    '@applitools/eyes-protractor',
-    'applitools-for-selenium-ide',
-];
-let input = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('packages', { required: true });
-const defaultEnv = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('env');
-const allowVariations = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('allow-variations');
-const includeOnlyChanged = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('include-only-changed');
-const includeDependencies = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('include-dependencies');
-const linkDependencies = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getBooleanInput('link-dependencies');
-const defaultPublishVersion = _actions_core__WEBPACK_IMPORTED_MODULE_1__.getInput('default-publish-version');
-const packages = await getPackages();
-if (input === 'changed') {
-    input = getChangedPackagesInput();
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Changed packages: "${input}"`);
-}
-else if (input === 'all') {
-    input = getAllPackagesInput();
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`All packages: "${input}"`);
-}
-else {
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.notice(`Input provided: "${input}"`);
-}
-let jobs = createJobs(input);
-_actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Requested jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
-if (includeDependencies) {
-    const additionalJobs = createDependencyJobs(jobs);
-    jobs = { ...jobs, ...additionalJobs };
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Requested and dependant jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
-}
-if (includeOnlyChanged) {
-    jobs = filterInsignificantJobs(jobs);
-    _actions_core__WEBPACK_IMPORTED_MODULE_1__.info(`Filtered jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
-}
-_actions_core__WEBPACK_IMPORTED_MODULE_1__.setOutput('packages', allowVariations ? Object.values(jobs) : jobs);
-async function getPackages() {
-    const jsPackagesPath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), './js/packages');
-    const jsPackageDirs = await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.readdir(jsPackagesPath);
-    const jsPackages = await jsPackageDirs.reduce(async (packages, packageDir) => {
-        const packagePath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(jsPackagesPath, packageDir);
-        const packageManifestPath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(packagePath, 'package.json');
-        if (!(await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.stat(packageManifestPath).catch(() => false)))
-            return packages;
-        const manifest = JSON.parse(await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.readFile(packageManifestPath, { encoding: 'utf8' }));
-        if (SKIP_PACKAGES.includes(manifest.name))
-            return packages;
-        return packages.then(packages => {
-            packages[manifest.name] = {
-                name: manifest.name,
-                aliases: manifest.aliases,
-                jobName: manifest.aliases?.[0] ?? packageDir,
-                dirname: packageDir,
-                path: packagePath,
-                tag: `${manifest.name}@`,
-                dependencies: Object.keys({ ...manifest.dependencies, ...manifest.devDependencies }),
-                framework: Object.keys({ ...manifest.peerDependencies })[0],
-            };
-            return packages;
-        });
-    }, Promise.resolve({}));
-    Object.values(jsPackages).forEach(packageInfo => {
-        packageInfo.dependencies = packageInfo.dependencies.filter(depName => jsPackages[depName]);
-    });
-    const pyPackagesPath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), './python');
-    const pyPackageDirs = await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.readdir(pyPackagesPath);
-    const pyPackages = await pyPackageDirs.reduce(async (packages, packageDir) => {
-        const packagePath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(pyPackagesPath, packageDir);
-        const packageManifestPath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(packagePath, 'setup.cfg');
-        if (!(await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.stat(packageManifestPath).catch(() => false)))
-            return packages;
-        const { iniString } = await node_fs_promises__WEBPACK_IMPORTED_MODULE_3__.readFile(packageManifestPath, { encoding: 'utf8' }).then(iniString => {
-            return iniString.split(/[\n\r]+/).reduce(({ lastField, iniString }, line) => {
-                const indent = line.slice(0, Array.from(line).findIndex(char => char !== ' ' && char !== '\t'));
-                if (!lastField || indent.length <= lastField.indent.length) {
-                    const [key] = line.split(/\s?=/, 1);
-                    lastField = { key, indent };
-                    iniString += line + '\n';
-                }
-                else {
-                    iniString += lastField.indent + `${lastField.key}[]=` + line.trim() + '\n';
-                }
-                return { lastField, iniString };
-            }, { lastField: null, iniString: '' });
-        });
-        const manifest = ini__WEBPACK_IMPORTED_MODULE_4___default().parse(iniString);
-        return packages.then(packages => {
-            const packageName = manifest.metadata.name.replace('_', '-');
-            const alias = packageName.replace('eyes-', '');
-            const dependencies = (manifest.options.install_requires ?? []);
-            packages[packageName] = {
-                name: packageName,
-                jobName: `python-${alias}`,
-                aliases: [`py-${alias}`, `python-${alias}`],
-                dirname: packageDir,
-                path: packagePath,
-                tag: `@applitools/python/${packageDir}@`,
-                dependencies: dependencies.map(depString => depString.split(/[<=>]/, 1)[0])
-            };
-            return packages;
-        });
-    }, Promise.resolve({}));
-    Object.values(pyPackages).forEach(packageInfo => {
-        packageInfo.dependencies = packageInfo.dependencies.filter(depName => pyPackages[depName]);
-    });
-    pyPackages['core-universal'].dependencies.push('@applitools/core');
-    return { ...jsPackages };
-}
-function createJobs(input) {
-    return input.split(/[\s,]+(?=(?:[^()]*\([^())]*\))*[^()]*$)/).reduce((jobs, input) => {
-        let [_, packageKey, publishVersion, frameworkVersion, frameworkProtocol, nodeVersion, jobOS, linkPackages, shortPublishVersion, shortFrameworkVersion, shortFrameworkProtocol] = input.match(/^(.*?)(?:\((?:version:(patch|minor|major);?)?(?:framework:([\d.]+);?)?(?:protocol:(.+?);?)?(?:node:([\d.]+);?)?(?:os:(linux|ubuntu|mac|macos|win|windows);?)?(?:links:(.+?);?)?\))?(?::(patch|minor|major))?(?:@([\d.]+))?(?:\+(.+?))?$/i) ?? [];
-        publishVersion ??= shortPublishVersion ?? defaultPublishVersion;
-        frameworkVersion ??= shortFrameworkVersion;
-        frameworkProtocol ??= shortFrameworkProtocol;
-        const packageInfo = Object.values(packages).find(({ name, jobName, dirname, aliases }) => {
-            return [name, jobName, dirname, ...(aliases ?? [])].includes(packageKey);
-        });
-        if (!packageInfo) {
-            _actions_core__WEBPACK_IMPORTED_MODULE_1__.warning(`Package name is unknown! Package configured as "${input}" will be ignored!`);
-            return jobs;
-        }
-        if (frameworkVersion || frameworkProtocol) {
-            if (!allowVariations) {
-                _actions_core__WEBPACK_IMPORTED_MODULE_1__.warning(`Modifiers are not allowed! Package "${packageInfo.name}" configured as "${input}" will be ignored!`);
-                return jobs;
-            }
-            else if (!packageInfo.framework) {
-                _actions_core__WEBPACK_IMPORTED_MODULE_1__.warning(`Framework modifiers are not allowed for package "${packageInfo.name}"! Package configured as "${input}" will be ignored!`);
-                return jobs;
-            }
-        }
-        const envs = defaultEnv.split(/[;\s]+/).reduce((envs, env) => {
-            const [key, value] = env.split('=');
-            return { ...envs, [key]: value };
-        }, {});
-        const appendix = Object.entries({ version: publishVersion, framework: frameworkVersion, protocol: frameworkProtocol, node: nodeVersion, os: jobOS })
-            .reduce((parts, [key, value]) => value ? [...parts, `${key}: ${value}`] : parts, [])
-            .join('; ');
-        const job = {
-            name: packageInfo.jobName,
-            displayName: `${packageInfo.jobName}${appendix ? ` (${appendix})` : ''}`,
-            packageName: packageInfo.name,
-            dirname: packageInfo.dirname,
-            path: packageInfo.path,
-            tag: packageInfo.tag,
-            params: {
-                version: publishVersion,
-                runner: Runner[jobOS] ?? Runner.linux,
-                node: nodeVersion ?? 'lts/*',
-                links: linkDependencies ? packageInfo.dependencies.join(',') : linkPackages,
-                env: {
-                    [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_MAJOR_VERSION`]: frameworkVersion,
-                    [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_VERSION`]: frameworkVersion,
-                    [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol,
-                    ...envs,
-                },
-            },
-            requested: true,
-        };
-        jobs[allowVariations ? job.displayName : job.name] = job;
-        return jobs;
-    }, {});
-}
-function createDependencyJobs(jobs) {
-    const packageNames = Object.values(jobs).map(job => job.packageName);
-    const dependencyJobs = {};
-    for (const packageName of packageNames) {
-        for (const dependencyName of packages[packageName].dependencies) {
-            if (packageNames.includes(dependencyName))
-                continue;
-            packageNames.push(dependencyName);
-            dependencyJobs[packages[dependencyName].jobName] = {
-                name: packages[dependencyName].jobName,
-                displayName: packages[dependencyName].jobName,
-                packageName: packages[dependencyName].name,
-                dirname: packages[dependencyName].dirname,
-                path: packages[dependencyName].path,
-                tag: packages[dependencyName].tag,
-                params: {
-                    links: linkDependencies ? packages[dependencyName].dependencies.join(',') : undefined,
-                },
-                requested: false
-            };
-        }
-    }
-    return dependencyJobs;
-}
-function filterInsignificantJobs(jobs) {
-    const filteredJobs = Object.entries(jobs).reduce((filteredJobs, [jobName, job]) => {
-        if (job.requested || changedSinceLastTag(job))
-            filteredJobs[jobName] = job;
-        return filteredJobs;
-    }, {});
-    let more = true;
-    while (more) {
-        more = false;
-        for (const [jobName, job] of Object.entries(jobs)) {
-            if (filteredJobs[jobName])
-                continue;
-            if (packages[job.packageName].dependencies.some(packageName => Object.values(filteredJobs).some(job => job.packageName === packageName))) {
-                more = true;
-                filteredJobs[jobName] = job;
-            }
-        }
-    }
-    return filteredJobs;
-}
-function changedSinceLastTag(job) {
-    let tag;
-    try {
-        tag = (0,node_child_process__WEBPACK_IMPORTED_MODULE_0__.execSync)(`git describe --tags --match "${job.tag}*" --abbrev=0`, { encoding: 'utf8' }).trim();
-    }
-    catch { }
-    if (!tag)
-        return true;
-    const commits = (0,node_child_process__WEBPACK_IMPORTED_MODULE_0__.execSync)(`git log ${tag}..HEAD --oneline -- ${job.path}`, { encoding: 'utf8' });
-    return Boolean(commits);
-}
-function getChangedPackagesInput() {
-    const changedFiles = (0,node_child_process__WEBPACK_IMPORTED_MODULE_0__.execSync)('git --no-pager diff --name-only origin/master', { encoding: 'utf8' });
-    const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
-        const changedPackage = Object.values(packages).find(changedPackage => {
-            const changedFilePath = node_path__WEBPACK_IMPORTED_MODULE_2__.resolve(process.cwd(), changedFile, './');
-            return changedFilePath.startsWith(changedPackage.path + '/');
-        });
-        if (changedPackage)
-            changedPackageNames.add(changedPackage.jobName);
-        return changedPackageNames;
-    }, new Set());
-    return Array.from(changedPackageNames.values()).join(' ');
-}
-function getAllPackagesInput() {
-    return Object.values(packages).map(({ jobName }) => jobName).join(' ');
-}
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } }, 1);
-
-/***/ }),
-
 /***/ 491:
 /***/ ((module) => {
 
@@ -3230,27 +2945,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("https");
 /***/ ((module) => {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("net");
-
-/***/ }),
-
-/***/ 718:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
-
-/***/ }),
-
-/***/ 977:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs/promises");
-
-/***/ }),
-
-/***/ 411:
-/***/ ((module) => {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
 
 /***/ }),
 
@@ -3315,75 +3009,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("util");
 /******/ }
 /******/ 
 /************************************************************************/
-/******/ /* webpack/runtime/async module */
-/******/ (() => {
-/******/ 	var webpackQueues = typeof Symbol === "function" ? Symbol("webpack queues") : "__webpack_queues__";
-/******/ 	var webpackExports = typeof Symbol === "function" ? Symbol("webpack exports") : "__webpack_exports__";
-/******/ 	var webpackError = typeof Symbol === "function" ? Symbol("webpack error") : "__webpack_error__";
-/******/ 	var resolveQueue = (queue) => {
-/******/ 		if(queue && !queue.d) {
-/******/ 			queue.d = 1;
-/******/ 			queue.forEach((fn) => (fn.r--));
-/******/ 			queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
-/******/ 		}
-/******/ 	}
-/******/ 	var wrapDeps = (deps) => (deps.map((dep) => {
-/******/ 		if(dep !== null && typeof dep === "object") {
-/******/ 			if(dep[webpackQueues]) return dep;
-/******/ 			if(dep.then) {
-/******/ 				var queue = [];
-/******/ 				queue.d = 0;
-/******/ 				dep.then((r) => {
-/******/ 					obj[webpackExports] = r;
-/******/ 					resolveQueue(queue);
-/******/ 				}, (e) => {
-/******/ 					obj[webpackError] = e;
-/******/ 					resolveQueue(queue);
-/******/ 				});
-/******/ 				var obj = {};
-/******/ 				obj[webpackQueues] = (fn) => (fn(queue));
-/******/ 				return obj;
-/******/ 			}
-/******/ 		}
-/******/ 		var ret = {};
-/******/ 		ret[webpackQueues] = x => {};
-/******/ 		ret[webpackExports] = dep;
-/******/ 		return ret;
-/******/ 	}));
-/******/ 	__nccwpck_require__.a = (module, body, hasAwait) => {
-/******/ 		var queue;
-/******/ 		hasAwait && ((queue = []).d = 1);
-/******/ 		var depQueues = new Set();
-/******/ 		var exports = module.exports;
-/******/ 		var currentDeps;
-/******/ 		var outerResolve;
-/******/ 		var reject;
-/******/ 		var promise = new Promise((resolve, rej) => {
-/******/ 			reject = rej;
-/******/ 			outerResolve = resolve;
-/******/ 		});
-/******/ 		promise[webpackExports] = exports;
-/******/ 		promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
-/******/ 		module.exports = promise;
-/******/ 		body((deps) => {
-/******/ 			currentDeps = wrapDeps(deps);
-/******/ 			var fn;
-/******/ 			var getResult = () => (currentDeps.map((d) => {
-/******/ 				if(d[webpackError]) throw d[webpackError];
-/******/ 				return d[webpackExports];
-/******/ 			}))
-/******/ 			var promise = new Promise((resolve) => {
-/******/ 				fn = () => (resolve(getResult));
-/******/ 				fn.r = 0;
-/******/ 				var fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
-/******/ 				currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
-/******/ 			});
-/******/ 			return fn.r ? promise : getResult();
-/******/ 		}, (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue)));
-/******/ 		queue && (queue.d = 0);
-/******/ 	};
-/******/ })();
-/******/ 
 /******/ /* webpack/runtime/compat get default export */
 /******/ (() => {
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -3418,10 +3043,292 @@ module.exports = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("util");
 /******/ if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = new URL('.', import.meta.url).pathname.slice(import.meta.url.match(/^file:\/\/\/\w:/) ? 1 : 0, -1) + "/";
 /******/ 
 /************************************************************************/
-/******/ 
-/******/ // startup
-/******/ // Load entry module and return exports
-/******/ // This entry module used 'module' so it can't be inlined
-/******/ var __webpack_exports__ = __nccwpck_require__(716);
-/******/ __webpack_exports__ = await __webpack_exports__;
-/******/ 
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+
+;// CONCATENATED MODULE: external "node:child_process"
+const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
+;// CONCATENATED MODULE: external "node:path"
+const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
+;// CONCATENATED MODULE: external "node:fs/promises"
+const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs/promises");
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(186);
+// EXTERNAL MODULE: ./node_modules/ini/lib/ini.js
+var ini = __nccwpck_require__(45);
+var ini_default = /*#__PURE__*/__nccwpck_require__.n(ini);
+;// CONCATENATED MODULE: ./main.ts
+
+
+
+
+
+var Runner;
+(function (Runner) {
+    Runner["linux"] = "ubuntu-latest";
+    Runner["ubuntu"] = "ubuntu-latest";
+    Runner["linuxarm"] = "buildjet-2vcpu-ubuntu-2204-arm";
+    Runner["ubuntuarm"] = "buildjet-2vcpu-ubuntu-2204-arm";
+    Runner["mac"] = "macos-latest";
+    Runner["macos"] = "macos-latest";
+    Runner["win"] = "windows-2022";
+    Runner["windows"] = "windows-2022";
+})(Runner || (Runner = {}));
+const SKIP_PACKAGES = [
+    // tools
+    '@applitools/bongo',
+    '@applitools/sdk-coverage-tests',
+    '@applitools/api-extractor',
+    '@applitools/snaptdout',
+    '@applitools/fancy',
+    // legacy
+    '@applitools/visual-grid-client',
+    '@applitools/types',
+    '@applitools/sdk-fake-eyes-server',
+    '@applitools/eyes-sdk-core',
+    '@applitools/eyes-universal',
+    '@applitools/eyes-selenium-universal',
+    '@applitools/eyes-playwright-universal',
+    '@applitools/eyes-webdriverio5-service',
+    '@applitools/eyes.webdriverio',
+    '@applitools/eyes-protractor',
+    'applitools-for-selenium-ide',
+];
+main();
+async function main() {
+    let input = core.getInput('packages', { required: true });
+    const defaultEnv = core.getInput('env');
+    const allowVariations = core.getBooleanInput('allow-variations');
+    const includeOnlyChanged = core.getBooleanInput('include-only-changed');
+    const includeDependencies = core.getBooleanInput('include-dependencies');
+    const linkDependencies = core.getBooleanInput('link-dependencies');
+    const defaultPublishVersion = core.getInput('default-publish-version');
+    const packages = await getPackages();
+    if (input === 'changed') {
+        input = getChangedPackagesInput();
+        core.notice(`Changed packages: "${input}"`);
+    }
+    else if (input === 'all') {
+        input = getAllPackagesInput();
+        core.notice(`All packages: "${input}"`);
+    }
+    else {
+        core.notice(`Input provided: "${input}"`);
+    }
+    let jobs = createJobs(input);
+    core.info(`Requested jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
+    if (includeDependencies) {
+        const additionalJobs = createDependencyJobs(jobs);
+        jobs = { ...jobs, ...additionalJobs };
+        core.info(`Requested and dependant jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
+    }
+    if (includeOnlyChanged) {
+        jobs = filterInsignificantJobs(jobs);
+        core.info(`Filtered jobs: "${Object.values(jobs).map(job => job.displayName).join(', ')}"`);
+    }
+    core.setOutput('packages', allowVariations ? Object.values(jobs) : jobs);
+    async function getPackages() {
+        const jsPackagesPath = external_node_path_namespaceObject.resolve(process.cwd(), './js/packages');
+        const jsPackageDirs = await promises_namespaceObject.readdir(jsPackagesPath);
+        const jsPackages = await jsPackageDirs.reduce(async (packages, packageDir) => {
+            const packagePath = external_node_path_namespaceObject.resolve(jsPackagesPath, packageDir);
+            const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'package.json');
+            if (!(await promises_namespaceObject.stat(packageManifestPath).catch(() => false)))
+                return packages;
+            const manifest = JSON.parse(await promises_namespaceObject.readFile(packageManifestPath, { encoding: 'utf8' }));
+            if (SKIP_PACKAGES.includes(manifest.name))
+                return packages;
+            return packages.then(packages => {
+                packages[manifest.name] = {
+                    name: manifest.name,
+                    aliases: manifest.aliases,
+                    jobName: manifest.aliases?.[0] ?? packageDir,
+                    dirname: packageDir,
+                    path: packagePath,
+                    tag: `${manifest.name}@`,
+                    dependencies: Object.keys({ ...manifest.dependencies, ...manifest.devDependencies }),
+                    framework: Object.keys({ ...manifest.peerDependencies })[0],
+                };
+                return packages;
+            });
+        }, Promise.resolve({}));
+        Object.values(jsPackages).forEach(packageInfo => {
+            packageInfo.dependencies = packageInfo.dependencies.filter(depName => jsPackages[depName]);
+        });
+        const pyPackagesPath = external_node_path_namespaceObject.resolve(process.cwd(), './python');
+        const pyPackageDirs = await promises_namespaceObject.readdir(pyPackagesPath);
+        const pyPackages = await pyPackageDirs.reduce(async (packages, packageDir) => {
+            const packagePath = external_node_path_namespaceObject.resolve(pyPackagesPath, packageDir);
+            const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'setup.cfg');
+            if (!(await promises_namespaceObject.stat(packageManifestPath).catch(() => false)))
+                return packages;
+            const { iniString } = await promises_namespaceObject.readFile(packageManifestPath, { encoding: 'utf8' }).then(iniString => {
+                return iniString.split(/[\n\r]+/).reduce(({ lastField, iniString }, line) => {
+                    const indent = line.slice(0, Array.from(line).findIndex(char => char !== ' ' && char !== '\t'));
+                    if (!lastField || indent.length <= lastField.indent.length) {
+                        const [key] = line.split(/\s?=/, 1);
+                        lastField = { key, indent };
+                        iniString += line + '\n';
+                    }
+                    else {
+                        iniString += lastField.indent + `${lastField.key}[]=` + line.trim() + '\n';
+                    }
+                    return { lastField, iniString };
+                }, { lastField: null, iniString: '' });
+            });
+            const manifest = ini_default().parse(iniString);
+            return packages.then(packages => {
+                const packageName = manifest.metadata.name.replace('_', '-');
+                const alias = packageName.replace('eyes-', '');
+                const dependencies = (manifest.options.install_requires ?? []);
+                packages[packageName] = {
+                    name: packageName,
+                    jobName: `python-${alias}`,
+                    aliases: [`py-${alias}`, `python-${alias}`],
+                    dirname: packageDir,
+                    path: packagePath,
+                    tag: `@applitools/python/${packageDir}@`,
+                    dependencies: dependencies.map(depString => depString.split(/[<=>]/, 1)[0])
+                };
+                return packages;
+            });
+        }, Promise.resolve({}));
+        Object.values(pyPackages).forEach(packageInfo => {
+            packageInfo.dependencies = packageInfo.dependencies.filter(depName => pyPackages[depName]);
+        });
+        pyPackages['core-universal'].dependencies.push('@applitools/core');
+        return { ...jsPackages };
+    }
+    function createJobs(input) {
+        return input.split(/[\s,]+(?=(?:[^()]*\([^())]*\))*[^()]*$)/).reduce((jobs, input) => {
+            let [_, packageKey, publishVersion, frameworkVersion, frameworkProtocol, nodeVersion, jobOS, linkPackages, shortPublishVersion, shortFrameworkVersion, shortFrameworkProtocol] = input.match(/^(.*?)(?:\((?:version:(patch|minor|major);?)?(?:framework:([\d.]+);?)?(?:protocol:(.+?);?)?(?:node:([\d.]+);?)?(?:os:(linux|ubuntu|mac|macos|win|windows);?)?(?:links:(.+?);?)?\))?(?::(patch|minor|major))?(?:@([\d.]+))?(?:\+(.+?))?$/i) ?? [];
+            publishVersion ??= shortPublishVersion ?? defaultPublishVersion;
+            frameworkVersion ??= shortFrameworkVersion;
+            frameworkProtocol ??= shortFrameworkProtocol;
+            const packageInfo = Object.values(packages).find(({ name, jobName, dirname, aliases }) => {
+                return [name, jobName, dirname, ...(aliases ?? [])].includes(packageKey);
+            });
+            if (!packageInfo) {
+                core.warning(`Package name is unknown! Package configured as "${input}" will be ignored!`);
+                return jobs;
+            }
+            if (frameworkVersion || frameworkProtocol) {
+                if (!allowVariations) {
+                    core.warning(`Modifiers are not allowed! Package "${packageInfo.name}" configured as "${input}" will be ignored!`);
+                    return jobs;
+                }
+                else if (!packageInfo.framework) {
+                    core.warning(`Framework modifiers are not allowed for package "${packageInfo.name}"! Package configured as "${input}" will be ignored!`);
+                    return jobs;
+                }
+            }
+            const envs = defaultEnv.split(/[;\s]+/).reduce((envs, env) => {
+                const [key, value] = env.split('=');
+                return { ...envs, [key]: value };
+            }, {});
+            const appendix = Object.entries({ version: publishVersion, framework: frameworkVersion, protocol: frameworkProtocol, node: nodeVersion, os: jobOS })
+                .reduce((parts, [key, value]) => value ? [...parts, `${key}: ${value}`] : parts, [])
+                .join('; ');
+            const job = {
+                name: packageInfo.jobName,
+                displayName: `${packageInfo.jobName}${appendix ? ` (${appendix})` : ''}`,
+                packageName: packageInfo.name,
+                artifactName: `artifact-${packageInfo.name}`,
+                dirname: packageInfo.dirname,
+                path: packageInfo.path,
+                tag: packageInfo.tag,
+                params: {
+                    version: publishVersion,
+                    runner: Runner[jobOS] ?? Runner.linux,
+                    node: nodeVersion ?? 'lts/*',
+                    links: linkDependencies ? packageInfo.dependencies.join(',') : linkPackages,
+                    env: {
+                        [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_MAJOR_VERSION`]: frameworkVersion,
+                        [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_VERSION`]: frameworkVersion,
+                        [`APPLITOOLS_${packageInfo.jobName.toUpperCase()}_PROTOCOL`]: frameworkProtocol,
+                        ...envs,
+                    },
+                },
+                requested: true,
+            };
+            jobs[allowVariations ? job.displayName : job.name] = job;
+            return jobs;
+        }, {});
+    }
+    function createDependencyJobs(jobs) {
+        const packageNames = Object.values(jobs).map(job => job.packageName);
+        const dependencyJobs = {};
+        for (const packageName of packageNames) {
+            for (const dependencyName of packages[packageName].dependencies) {
+                if (packageNames.includes(dependencyName))
+                    continue;
+                packageNames.push(dependencyName);
+                dependencyJobs[packages[dependencyName].jobName] = {
+                    name: packages[dependencyName].jobName,
+                    displayName: packages[dependencyName].jobName,
+                    packageName: packages[dependencyName].name,
+                    artifactName: `artifact-${packages[dependencyName].jobName}`,
+                    dirname: packages[dependencyName].dirname,
+                    path: packages[dependencyName].path,
+                    tag: packages[dependencyName].tag,
+                    params: {
+                        links: linkDependencies ? packages[dependencyName].dependencies.join(',') : undefined,
+                    },
+                    requested: false
+                };
+            }
+        }
+        return dependencyJobs;
+    }
+    function filterInsignificantJobs(jobs) {
+        const filteredJobs = Object.entries(jobs).reduce((filteredJobs, [jobName, job]) => {
+            if (job.requested || changedSinceLastTag(job))
+                filteredJobs[jobName] = job;
+            return filteredJobs;
+        }, {});
+        let more = true;
+        while (more) {
+            more = false;
+            for (const [jobName, job] of Object.entries(jobs)) {
+                if (filteredJobs[jobName])
+                    continue;
+                if (packages[job.packageName].dependencies.some(packageName => Object.values(filteredJobs).some(job => job.packageName === packageName))) {
+                    more = true;
+                    filteredJobs[jobName] = job;
+                }
+            }
+        }
+        return filteredJobs;
+    }
+    function changedSinceLastTag(job) {
+        let tag;
+        try {
+            tag = (0,external_node_child_process_namespaceObject.execSync)(`git describe --tags --match "${job.tag}*" --abbrev=0`, { encoding: 'utf8' }).trim();
+        }
+        catch { }
+        if (!tag)
+            return true;
+        const commits = (0,external_node_child_process_namespaceObject.execSync)(`git log ${tag}..HEAD --oneline -- ${job.path}`, { encoding: 'utf8' });
+        return Boolean(commits);
+    }
+    function getChangedPackagesInput() {
+        const changedFiles = (0,external_node_child_process_namespaceObject.execSync)('git --no-pager diff --name-only origin/master', { encoding: 'utf8' });
+        const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
+            const changedPackage = Object.values(packages).find(changedPackage => {
+                const changedFilePath = external_node_path_namespaceObject.resolve(process.cwd(), changedFile, './');
+                return changedFilePath.startsWith(changedPackage.path + '/');
+            });
+            if (changedPackage)
+                changedPackageNames.add(changedPackage.jobName);
+            return changedPackageNames;
+        }, new Set());
+        return Array.from(changedPackageNames.values()).join(' ');
+    }
+    function getAllPackagesInput() {
+        return Object.values(packages).map(({ jobName }) => jobName).join(' ');
+    }
+}
+
+})();
+

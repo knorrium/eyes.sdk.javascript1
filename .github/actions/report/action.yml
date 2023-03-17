@@ -1,14 +1,20 @@
 name: Report
 
 inputs:
+  artifact:
+    description: artifacts(s) to look for files
   path:
     description: path(s) to test output file(s) to analyze
     required: true
 outputs:
+  failed-artifacts:
+    description: number of artifacts that were not resolved
   failed-reports:
     description: number of reports with failed tests
   failed-tests:
     description: number of failed tests in all reports
+  status:
+    description: status of the report (failed or passed)
   message:
     description: message with the summary of failed tests
 runs:
