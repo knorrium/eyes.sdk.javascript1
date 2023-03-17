@@ -33321,7 +33321,7 @@ var artifact_client = __nccwpck_require__(2605);
 
 main();
 async function main() {
-    const artifacts = core.getMultilineInput('artifact');
+    const artifacts = core.getMultilineInput('artifact').flatMap(artifact => artifact.split(','));
     const results = [];
     if (artifacts.length > 0) {
         const client = artifact_client/* create */.U();

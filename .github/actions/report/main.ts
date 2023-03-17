@@ -11,7 +11,7 @@ import * as artifact from '@actions/artifact'
 main()
 
 async function main() {
-  const artifacts = core.getMultilineInput('artifact')
+  const artifacts = core.getMultilineInput('artifact').flatMap(artifact => artifact.split(','))
 
   const results = [] as (Report | {name: string, error: Error})[]
   if (artifacts.length > 0) {
