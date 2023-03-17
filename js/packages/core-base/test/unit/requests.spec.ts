@@ -97,11 +97,6 @@ describe('requests', () => {
         ignoreBaseline: false,
         saveDiffs: false,
         abortIdleTestTimeout: 60_000,
-        densityMetrics: {
-          xdpi: 12,
-          ydpi: 12,
-          scaleRatio: 1.2,
-        },
       },
     })
 
@@ -203,6 +198,7 @@ describe('requests', () => {
           viewportSize: {width: 100.25, height: 200.75},
           userAgent: 'UserAgent string',
           rendererId: 'renderer-id',
+          rendererUniqueId: 'renderer-unique-id',
           rendererInfo: {
             type: 'web',
             renderer: {name: 'chrome', width: 100, height: 101},

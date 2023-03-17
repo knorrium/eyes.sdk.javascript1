@@ -7,7 +7,7 @@ import throat from 'throat'
 
 export function makeRender({
   requests,
-  concurrency,
+  concurrency = utils.general.getEnvValue('CONCURRENT_RENDERS_PER_TEST', 'number') ?? 1,
   timeout = 60 * 60 * 1000,
   batchingTimeout = 300,
   logger,
@@ -20,7 +20,13 @@ export function makeRender({
 }) {
   const startRenderWithBatching = utils.general.batchify(startRenders, {timeout: batchingTimeout})
   const checkRenderResultWithBatching = utils.general.batchify(checkRenderResults, {timeout: batchingTimeout})
-  const renderWithConcurrency = concurrency ? throat(concurrency, render) : render
+
+  const throttles = new Map<string, ReturnType<typeof throat>>()
+  const renderWithConcurrency = utils.general.wrap(render, (render, options) => {
+    let throttle = throttles.get(options.settings.rendererUniqueId)
+    if (!throttle) throttles.set(options.settings.rendererUniqueId, (throttle = throat(concurrency)))
+    return throttle(render, options)
+  })
 
   return renderWithConcurrency
 

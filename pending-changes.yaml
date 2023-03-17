@@ -12,27 +12,29 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with concurrency of the renders in ufg mode
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
   bug-fix:
     - Avoid handing process when using execution cloud
+    - Fixed slowness during ufg tests
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
     - Avoid handing process when using execution cloud
+    - Fixed slowness during ufg tests
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed slowness during ufg tests
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed slowness during ufg tests
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -56,16 +58,17 @@ Apollo SDK:
     - Added `Resize` value to `StitchMode` enum
   bug-fix:
     - Avoid handing process when using execution cloud
+    - Fixed slowness during ufg tests
 "@applitools/eyes-cypress":
   feature:
     - Crop screenshot image base on account info
   bug-fix:
-    - 
+    - Fixed slowness during ufg tests
 "@applitools/eyes-storybook":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed slowness during ufg tests
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

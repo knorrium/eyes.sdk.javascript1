@@ -64,6 +64,7 @@ export interface TestInfo {
   server: ServerSettings
   account: AccountInfo
   rendererId?: string
+  rendererUniqueId?: string
   rendererInfo?: {type?: 'web' | 'native'; renderer?: Record<string, any>}
 }
 
@@ -97,10 +98,8 @@ type Environment = {
   userAgent?: string
   rawEnvironment?: Record<string, any>
   rendererId?: string
-  rendererInfo?: {
-    type?: 'web' | 'native'
-    renderer?: Record<string, any>
-  }
+  rendererUniqueId?: string
+  rendererInfo?: {type?: 'web' | 'native'; renderer?: Record<string, any>}
   ecSessionId?: string
 }
 export interface OpenSettings extends ServerSettings {

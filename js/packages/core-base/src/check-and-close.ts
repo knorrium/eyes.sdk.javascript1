@@ -1,14 +1,17 @@
 import type {Target, CheckSettings, CloseSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
+import {type AbortSignal} from 'abort-controller'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
 
 type Options = {
   requests: EyesRequests
+  done: () => void
+  signal: AbortSignal
   logger: Logger
 }
 
-export function makeCheckAndClose({requests, logger: defaultLogger}: Options) {
+export function makeCheckAndClose({requests, done, signal, logger: defaultLogger}: Options) {
   return async function checkAndClose({
     target,
     settings,
@@ -31,8 +34,12 @@ export function makeCheckAndClose({requests, logger: defaultLogger}: Options) {
       ),
     }
     logger.log('Command "checkAndClose" is called with settings', settings)
+
     target = await transformTarget({target, settings})
-    const results = await requests.checkAndClose({target, settings, logger})
-    return results
+
+    if (signal.aborted) {
+      throw new Error('Command "checkAndClose" was aborted')
+    }
+    return requests.checkAndClose({target, settings, logger}).finally(done)
   }
 }

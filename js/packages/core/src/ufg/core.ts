@@ -14,14 +14,13 @@ import {makeGetUFGClient} from './get-ufg-client'
 import {makeGetNMLClient} from './get-nml-client'
 import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
-import throat from 'throat'
 
 type Options<TSpec extends SpecType> = {
-  concurrency: number
   spec?: SpecDriver<TSpec>
   clients?: {ufg?: UFGClient; nml?: NMLClient}
   base?: BaseCore
   agentId?: string
+  concurrency?: number
   cwd?: string
   logger?: Logger
 }
@@ -38,41 +37,11 @@ export function makeCore<TSpec extends SpecType>({
   const logger = defaultLogger?.extend({label: 'core-ufg'}) ?? makeLogger({label: 'core-ufg'})
   logger.log(`Core ufg is initialized ${base ? 'with' : 'without'} custom base core`)
 
-  base ??= makeBaseCore({agentId, cwd, logger})
+  base ??= makeBaseCore({agentId, concurrency, cwd, logger})
   return utils.general.extend(base, core => {
-    const throttle = throat(concurrency)
     return {
       type: 'ufg' as const,
-      base: utils.general.extend(base!, {
-        // open eyes with concurrency
-        openEyes: utils.general.wrap(base!.openEyes, (openEyes, options) => {
-          return new Promise((resolve, rejects) => {
-            throttle(() => {
-              return new Promise<void>(async done => {
-                try {
-                  const eyes = await openEyes(options)
-                  resolve(
-                    utils.general.extend(eyes, {
-                      // release concurrency slot when closed
-                      close: utils.general.wrap(eyes.close, (close, options) => close(options).finally(done)),
-                      // release concurrency slot when aborted
-                      abort: utils.general.wrap(eyes.abort, (abort, options) => abort(options).finally(done)),
-                      // release concurrency slot when checkAndClose is done
-                      checkAndClose: utils.general.wrap(eyes.checkAndClose, (checkAndClose, options) =>
-                        checkAndClose(options).finally(done),
-                      ),
-                    }),
-                  )
-                } catch (error) {
-                  rejects(error)
-                  // release concurrency slot when error thrown
-                  done()
-                }
-              })
-            })
-          })
-        }),
-      }),
+      base: base!,
       getViewportSize: spec && makeGetViewportSize({spec, logger}),
       setViewportSize: spec && makeSetViewportSize({spec, logger}),
       locate: makeLocate({spec, core, logger}),

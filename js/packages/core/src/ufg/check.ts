@@ -230,6 +230,7 @@ export function makeCheck<TSpec extends SpecType>({
               includeFullPageSize: Boolean(settings.pageId),
               type: snapshotType,
               renderer,
+              rendererUniqueId: baseEyes.test.rendererUniqueId!,
               rendererId: baseEyes.test.rendererId!,
             },
             signal,

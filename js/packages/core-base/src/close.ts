@@ -4,10 +4,11 @@ import {type EyesRequests} from './server/requests'
 
 type Options = {
   requests: EyesRequests
+  done: () => void
   logger: Logger
 }
 
-export function makeClose({requests, logger: defaultLogger}: Options) {
+export function makeClose({requests, done, logger: defaultLogger}: Options) {
   return async function close({
     settings,
     logger = defaultLogger,
@@ -16,6 +17,6 @@ export function makeClose({requests, logger: defaultLogger}: Options) {
     logger?: Logger
   } = {}): Promise<void> {
     logger.log('Command "close" is called with settings', settings)
-    await requests.close({settings, logger})
+    requests.close({settings, logger}).finally(done)
   }
 }

@@ -243,6 +243,7 @@ export interface UFGClient {
 
 export type RendererEnvironment = {
   rendererId: string
+  rendererUniqueId: string
   rendererInfo: {type: 'native' | 'web'; renderer: Renderer}
   rawEnvironment: Record<string, any>
 }
@@ -261,6 +262,7 @@ export type RendererSettings = {
 }
 
 export type RenderSettings = RendererSettings & {
+  rendererUniqueId: string
   rendererId: string
   region?: Region | Selector
   fully?: boolean

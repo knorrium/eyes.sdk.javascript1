@@ -14,15 +14,7 @@ export function makeGetUFGClient({client, logger: defaultLogger}: Options) {
   if (client) getUFGClientWithCache.setCachedValue('default', Promise.resolve(client))
   return getUFGClientWithCache
 
-  async function getUFGClient({
-    config,
-    concurrency,
-    logger = defaultLogger,
-  }: {
-    config: UFGRequestsConfig
-    concurrency?: number
-    logger?: Logger
-  }) {
-    return makeUFGClient({config, concurrency: concurrency || 5, logger})
+  async function getUFGClient({config, logger = defaultLogger}: {config: UFGRequestsConfig; logger?: Logger}) {
+    return makeUFGClient({config, logger})
   }
 }

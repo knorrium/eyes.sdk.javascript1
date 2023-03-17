@@ -148,6 +148,7 @@ export function makeCoreRequests({
         keepBatchOpen: settings.keepBatchOpen ?? false,
         server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
         rendererId: settings.environment?.rendererId,
+        rendererUniqueId: settings.environment?.rendererUniqueId,
         rendererInfo: settings.environment?.rendererInfo,
       } as TestInfo
       if (result.renderingInfo) {
@@ -542,6 +543,7 @@ export function makeEyesRequests({
         logger.log('Request "close" finished successfully with body', result)
         return [result]
       })
+    return resultsPromise.then(() => undefined).catch(() => undefined)
   }
 
   async function abort({
@@ -574,6 +576,7 @@ export function makeEyesRequests({
         logger.log('Request "abort" finished successfully with body', result)
         return [result]
       })
+    return resultsPromise.then(() => undefined).catch(() => undefined)
   }
 
   async function getResults({

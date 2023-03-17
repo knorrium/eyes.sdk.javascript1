@@ -91,6 +91,7 @@ export function makeUFGRequests({
       return results.map((result, index) => {
         return {
           rendererId: result.renderer,
+          rendererUniqueId: utils.general.guid(),
           rendererInfo: {type: settings[index]?.type, renderer: settings[index]?.renderer},
           rawEnvironment: result.eyesEnvironment,
         } as RendererEnvironment

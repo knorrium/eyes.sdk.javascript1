@@ -1,21 +1,26 @@
 import type {OpenSettings, Eyes} from './types'
 import {type Logger} from '@applitools/logger'
 import {type CoreRequests} from './server/requests'
+import {AbortController} from 'abort-controller'
 import {extractBranchingTimestamp} from './utils/extract-branching-timestamp'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeClose} from './close'
 import {makeAbort} from './abort'
 import {makeGetResults} from './get-results'
+import throat from 'throat'
 import * as utils from '@applitools/utils'
 
 type Options = {
   requests: CoreRequests
-  cwd: string
+  concurrency?: number
+  cwd?: string
   logger: Logger
 }
 
-export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogger}: Options) {
+export function makeOpenEyes({requests, concurrency, cwd = process.cwd(), logger: defaultLogger}: Options) {
+  const throttle = concurrency ? throat(concurrency) : (fn: () => any) => fn()
+
   return async function openEyes({
     settings,
     logger = defaultLogger,
@@ -44,24 +49,27 @@ export function makeOpenEyes({requests, cwd = process.cwd(), logger: defaultLogg
       settings.gitBranchingTimestamp = undefined
     }
 
-    const eyesRequests = await requests.openEyes({settings, logger})
-
-    const aborted = utils.promises.makeControlledPromise<never>()
-    const queue = [] as (PromiseLike<void> & {resolve(): void})[]
-    return utils.general.extend(eyesRequests, {
-      check: utils.general.wrap(makeCheck({requests: eyesRequests, logger}), async (check, options) => {
-        const index = options.settings?.stepIndex ?? -1
-        queue[index] ??= utils.promises.makeControlledPromise()
-        if (index > 0) await Promise.race([(queue[index - 1] ??= utils.promises.makeControlledPromise()), aborted])
-        return Promise.race([check(options), aborted]).finally(queue[index].resolve)
-      }),
-      checkAndClose: makeCheckAndClose({requests: eyesRequests, logger}),
-      close: makeClose({requests: eyesRequests, logger}),
-      abort: utils.general.wrap(makeAbort({requests: eyesRequests, logger}), async (abort, options) => {
-        aborted.reject(new Error('Command "check" was aborted due to possible error in previous step'))
-        return abort(options)
-      }),
-      getResults: makeGetResults({requests: eyesRequests, logger}),
+    return new Promise<Eyes>((resolve, reject) => {
+      throttle(() => {
+        return new Promise<void>(async done => {
+          try {
+            const controller = new AbortController()
+            const eyesRequests = await requests.openEyes({settings, logger})
+            resolve(
+              utils.general.extend(eyesRequests, {
+                check: makeCheck({requests: eyesRequests, signal: controller.signal, logger}),
+                checkAndClose: makeCheckAndClose({requests: eyesRequests, done, signal: controller.signal, logger}),
+                close: makeClose({requests: eyesRequests, done, logger}),
+                abort: makeAbort({requests: eyesRequests, done, controller, logger}),
+                getResults: makeGetResults({requests: eyesRequests, logger}),
+              }),
+            )
+          } catch (error) {
+            reject(error)
+            done()
+          }
+        })
+      })
     })
   }
 }

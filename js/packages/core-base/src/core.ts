@@ -10,17 +10,23 @@ import {makeDeleteTest} from './delete-test'
 
 type Options = {
   agentId?: string
+  concurrency?: number
   cwd?: string
   logger?: Logger
 }
 
-export function makeCore({agentId = 'core-base', cwd = process.cwd(), logger: defaultLogger}: Options): Core {
+export function makeCore({
+  agentId = 'core-base',
+  concurrency,
+  cwd = process.cwd(),
+  logger: defaultLogger,
+}: Options): Core {
   const logger = defaultLogger?.extend({label: 'core-base'}) ?? makeLogger({label: 'core-base'})
   logger.log(`Core is initialized in directory ${cwd} for agent ${agentId}`)
   const coreRequests = makeCoreRequests({agentId, logger})
 
   return {
-    openEyes: makeOpenEyes({requests: coreRequests, logger, cwd}),
+    openEyes: makeOpenEyes({requests: coreRequests, concurrency, cwd, logger}),
     locate: makeLocate({requests: coreRequests, logger}),
     locateText: makeLocateText({requests: coreRequests, logger}),
     extractText: makeExtractText({requests: coreRequests, logger}),
