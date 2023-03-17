@@ -1,7 +1,7 @@
 {{#if failed}}
-### ❌ {{title}} Failed
+### ❌ Failed {{title}}
 {{else}}
-### ✅ {{title}} Passed
+### ✅ Passed {{title}}
 {{/if}}
 
 ✅ **{{passed.length}} passed** {{#if failed}} ❌ **{{failed.length}} failed** {{/if}} {{#if skipped}} ❔ **{{skipped.length}} skipped** {{/if}} ⏱️ **{{humanizer duration}}**
