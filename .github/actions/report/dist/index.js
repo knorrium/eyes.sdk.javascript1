@@ -12543,16 +12543,16 @@ handlebars.print = printer.print;
 module.exports = handlebars;
 
 // Publish a Node.js require() handler for .handlebars and .hbs files
-function extension(module, filename) {
-  var fs = __nccwpck_require__(7147);
-  var templateString = fs.readFileSync(filename, 'utf8');
-  module.exports = handlebars.compile(templateString);
-}
-/* istanbul ignore else */
-if ( true && require.extensions) {
-  require.extensions['.handlebars'] = extension;
-  require.extensions['.hbs'] = extension;
-}
+// function extension(module, filename) {
+//   var fs = require('fs');
+//   var templateString = fs.readFileSync(filename, 'utf8');
+//   module.exports = handlebars.compile(templateString);
+// }
+// /* istanbul ignore else */
+// if (typeof require !== 'undefined' && require.extensions) {
+//   require.extensions['.handlebars'] = extension;
+//   require.extensions['.hbs'] = extension;
+// }
 
 
 /***/ }),
