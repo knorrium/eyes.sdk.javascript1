@@ -123,8 +123,10 @@ jobs:
         id: report
         uses: ./.github/actions/report
         with:
-          artifact: ${{join(fromJSON(needs.setup.outputs.packages).*.artifactName, '\n')}}
-          path: ./report*.json
+          artifact: |
+            ${{join(fromJSON(needs.setup.outputs.packages).*.artifactName, '\n')}}
+          path: |
+            ./report*.json
       - name: Send slack notification
         if: ${{always() && github.event_name == 'schedule'}}
         uses: slackapi/slack-github-action@v1.23.0
