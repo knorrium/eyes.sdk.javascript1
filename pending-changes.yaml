@@ -69,7 +69,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed slowness during ufg tests
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

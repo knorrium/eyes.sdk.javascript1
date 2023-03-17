@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.31.4 - 2023/3/17
+
+### Features
+### Bug fixes
+- Fixed slowness during ufg tests
+
 ## 3.31.3 - 2023/3/14
 
 ### Features
