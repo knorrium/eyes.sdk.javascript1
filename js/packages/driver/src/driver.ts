@@ -351,8 +351,14 @@ export class Driver<T extends SpecType> {
   async extractBrokerUrl(): Promise<string | null> {
     if (!this.isNative) return null
     this._logger.log('Broker url extraction is started')
-    this._state.nmlElement ??= await this.element({type: 'accessibility id', selector: 'Applitools_View'})
-    if (!this._state.nmlElement) return null
+    this._state.nmlElement ??= await this.waitFor(
+      {type: 'accessibility id', selector: 'Applitools_View'},
+      {timeout: 10_000},
+    )
+    if (!this._state.nmlElement) {
+      this._logger.log('Broker url extraction is failed due to absence of nml element')
+      return null
+    }
     try {
       let result: {error: string; nextPath: string | null}
       do {
