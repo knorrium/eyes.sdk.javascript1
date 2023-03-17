@@ -47,8 +47,8 @@ export function makeMakeManager<TSpec extends SpecType>({
     concurrency ??= utils.types.isInteger(legacyConcurrency) ? legacyConcurrency * 5 : 5
     batch ??= {}
     batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
-    base ??= makeBaseCore({agentId, cwd, logger})
-    const cores = {ufg: makeUFGCore({spec, base, concurrency, logger}), classic: makeClassicCore({spec, base, logger})}
+    base ??= makeBaseCore({agentId, concurrency, cwd, logger})
+    const cores = {ufg: makeUFGCore({spec, base, logger}), classic: makeClassicCore({spec, base, logger})}
     const storage = [] as Eyes<TSpec, TType>[]
     return {
       openEyes: utils.general.wrap(
