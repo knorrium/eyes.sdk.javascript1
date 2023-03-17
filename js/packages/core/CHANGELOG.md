@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.4.1 - 2023/3/17
+
+### Features
+- Improved extraction of nml element
+### Bug fixes
+- Fixed issue with concurrency of the renders in ufg mode
+
 ## 2.4.0 - 2023/3/12
 
 ### Features

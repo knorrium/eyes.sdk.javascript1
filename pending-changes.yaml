@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Improved extraction of nml element
+    - 
   bug-fix:
-    - Fixed issue with concurrency of the renders in ufg mode
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
