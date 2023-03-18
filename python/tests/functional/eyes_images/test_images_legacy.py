@@ -19,7 +19,6 @@ from applitools.images import (
     TextRegionSettings,
     UnscaledFixedCutProvider,
 )
-from tests.utils import get_session_results
 
 here = path.abspath(path.dirname(__file__))
 
@@ -151,7 +150,7 @@ def test_extract_text_regions(eyes):
     eyes.close()
 
 
-def test_check_image_fluent_accessibility(eyes):
+def test_check_image_fluent_accessibility(eyes, helpers):
     (
         eyes.configure.set_accessibility_validation(
             AccessibilitySettings(
@@ -168,7 +167,7 @@ def test_check_image_fluent_accessibility(eyes):
     )
     test_result = eyes.close(False)
 
-    session_results = get_session_results(eyes.api_key, test_result)
+    session_results = helpers.get_test_info(test_result)
 
     ims = session_results["actualAppOutput"][0]["imageMatchSettings"]
     assert ims["accessibility"] == [

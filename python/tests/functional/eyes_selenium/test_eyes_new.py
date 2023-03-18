@@ -14,7 +14,6 @@ from applitools.selenium import (
     TargetPath,
     VisualGridRunner,
 )
-from tests.utils import get_session_results
 
 
 def test_create_open_check_close_eyes(local_chrome_driver):
