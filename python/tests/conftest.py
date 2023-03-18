@@ -16,10 +16,10 @@ environ["APPLITOOLS_DONT_CLOSE_BATCHES"] = "true"
 
 @pytest.hookimpl(trylast=True)
 def pytest_sessionfinish(session, exitstatus):
-    if "TEST_REPORT_SANDBOX" in environ:
+    if environ.get("BONGO_REPORT_TESTS", "false").lower() not in ("false", "0"):
+        releasing_package = environ.get("RELEASING_PACKAGE")
         npx = "npx.cmd" if platform == "win32" else "npx"
-        sandbox = environ["TEST_REPORT_SANDBOX"].lower() not in ("false", "0")
-        if environ.get("RELEASING_PACKAGE") == "eyes_robotframework":
+        if releasing_package == "eyes_robotframework":
             reported_name = "robotframework"
         else:  # unless releasing robotframework package, report all tests as python sdk
             reported_name = "python"
@@ -27,7 +27,7 @@ def pytest_sessionfinish(session, exitstatus):
         cmd = [npx, "bongo", "report", "--name", reported_name, "--reportId", git_sha]
         if path.exists("coverage-tests-metadata.json"):
             cmd += ["--metaDir", "."]
-        if sandbox:
+        if not releasing_package:
             cmd.append("--sandbox")
         flush = {} if PY2 else {"flush": True}
         print("\n\nReporting tests for package:", reported_name, **flush)

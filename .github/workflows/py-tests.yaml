@@ -68,6 +68,10 @@ on:
         required: false
         default: true
 
+env:
+  RELEASING_PACKAGE: ${{ inputs.releasing_package }}
+  BONGO_REPORT_TESTS: true
+
 jobs:
   dist-build:
     runs-on: ubuntu-20.04
@@ -115,6 +119,8 @@ jobs:
           name: packages
       - run: make unit_tests
         working-directory: python
+        env:
+          BONGO_REPORT_TESTS: false
 
   unit-tests-alpine:
     needs: dist-build
@@ -131,6 +137,8 @@ jobs:
       - run: apk add gcc libffi-dev make musl-dev py3-pip python3-dev
       - run: make unit_tests
         working-directory: python
+        env:
+          BONGO_REPORT_TESTS: false
 
   unit-tests-linux-arm64:
     needs: dist-build
@@ -157,6 +165,8 @@ jobs:
             python get-pip.py
             pip config --user set global.progress_bar off
           run: make --directory=python unit_tests
+          env: | # YAML, pipe character is necessary
+            BONGO_REPORT_TESTS: false
 
   installation-tests:
     needs: dist-build
@@ -218,8 +228,6 @@ jobs:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
-          RELEASING_PACKAGE: ${{ inputs.releasing_package }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   generated-tests-playwright:
     needs: dist-build
@@ -246,7 +254,6 @@ jobs:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
           RELEASING_PACKAGE: ${{ inputs.releasing_package }}
           SAUCE_LIMITS: "{}"
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   functional-tests:
     needs: dist-build
@@ -276,18 +283,15 @@ jobs:
         working-directory: python
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
       - run: make eyes_playwright_functional_tests
         if: ${{ matrix.python-version == '3.11' }}
         working-directory: python
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
       - run: make eyes_selenium_functional_tests
         working-directory: python
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   sauce-functional-tests:
     needs: dist-build
@@ -313,7 +317,6 @@ jobs:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   robot-framework-tests:
     needs: dist-build
@@ -338,7 +341,6 @@ jobs:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   sauce-robot-framework-tests:
     needs: dist-build
@@ -364,7 +366,6 @@ jobs:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-          TEST_REPORT_SANDBOX: ${{ inputs.releasing_package && 'False' || 'True'}}
 
   report:
     needs:
