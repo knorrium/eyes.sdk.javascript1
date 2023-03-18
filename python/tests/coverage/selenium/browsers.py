@@ -1,30 +1,25 @@
-import os
-
 import pytest
+import selenium
 from pkg_resources import parse_version
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+
+from applitools.selenium import VisualGridRunner
 
 from . import sauce
 
-try:
-    import selenium
-    from selenium import webdriver
-    from webdriver_manager.chrome import ChromeDriverManager
-    from webdriver_manager.firefox import GeckoDriverManager
-
-    LEGACY_SELENIUM = parse_version(selenium.__version__) < parse_version("4")
-    # Download driver during module import to avoid racy downloads by xdist workers
-    GECKO_DRIVER = GeckoDriverManager().install()
-    CHROME_DRIVER = ChromeDriverManager().install()
-except ImportError:
-    # No selenium installed, browser fixtures will not work
-    pass
+LEGACY_SELENIUM = parse_version(selenium.__version__) < parse_version("4")
+# Download driver during module import to avoid racy downloads by xdist workers
+GECKO_DRIVER = GeckoDriverManager().install()
+CHROME_DRIVER = ChromeDriverManager().install()
 
 
 @pytest.fixture(scope="function")
-def chrome(execution_grid):
+def chrome(eyes_runner_class):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
-    if execution_grid:
+    if isinstance(eyes_runner_class, VisualGridRunner):
         if LEGACY_SELENIUM:
             options.capabilities.pop("platform")
             options.capabilities.pop("version")

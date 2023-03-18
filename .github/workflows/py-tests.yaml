@@ -253,7 +253,6 @@ jobs:
           APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
           RELEASING_PACKAGE: ${{ inputs.releasing_package }}
-          SAUCE_LIMITS: "{}"
 
   functional-tests:
     needs: dist-build
