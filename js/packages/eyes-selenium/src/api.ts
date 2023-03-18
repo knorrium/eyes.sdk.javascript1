@@ -36,4 +36,3 @@ export class BatchClose extends eyes.BatchClose {
   protected static readonly _sdk = sdk
 }
 export const closeBatch = eyes.closeBatch(sdk)
-
