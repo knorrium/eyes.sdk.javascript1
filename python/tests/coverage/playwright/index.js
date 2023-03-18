@@ -1,11 +1,7 @@
 let ref = "universal-sdk";
 let dir = `https://raw.githubusercontent.com/applitools/sdk.coverage.tests/${ref}`
-let report_package_name = {
-    "eyes_robotframework": "eyes_robotframework",
-    "eyes_selenium": "eyes_selenium_python",
-}
 module.exports = {
-    name: report_package_name[process.env.RELEASING_PACKAGE] || "eyes_selenium_python",
+    name: "py-playwright",
     env: {
         AUTOMATION_FRAMEWORK: "playwright"
     },
@@ -21,5 +17,5 @@ module.exports = {
     template: `${dir}/python/playwright-template.hbs`,
     tests: `${dir}/coverage-tests.js`,
     ext: ".py",
-    outPath: "./test/coverage/generic",
+    outPath: "./generic",
 }

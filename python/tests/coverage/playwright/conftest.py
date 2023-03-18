@@ -8,11 +8,16 @@ os.environ["APPLITOOLS_BATCH_ID"] = os.getenv("APPLITOOLS_BATCH_ID", str(uuid.uu
 # Keep batch open after runner termination
 os.environ["APPLITOOLS_DONT_CLOSE_BATCHES"] = "true"
 
+import sys
+from os import path
+
 from applitools.selenium import BatchInfo, StitchMode
 
 from .browsers import *
 from .devices import *
 from .sauce import pytest_collection_modifyitems, sauce_url
+
+sys.path.insert(0, path.abspath((path.dirname(__file__))))
 
 
 @pytest.fixture(scope="session")

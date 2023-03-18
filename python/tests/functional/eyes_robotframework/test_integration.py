@@ -55,30 +55,6 @@ def from_suite(suite):
             yield t
 
 
-def send_test_report(suite, **kwargs):
-    report_data = {
-        "sdk": "robotframework",
-        "group": "selenium",
-        "id": os.getenv("GITHUB_SHA", str(uuid.uuid4())),
-        "sandbox": bool(str2bool(os.getenv("TEST_REPORT_SANDBOX", "True"))),
-        "results": [
-            {
-                "passed": t.passed,
-                "test_name": t.name,
-                "parameters": kwargs,
-            }
-            for t in from_suite(suite)
-        ],
-    }
-    r = requests.post(
-        "http://applitools-quality-server.herokuapp.com/result",
-        data=json.dumps(report_data),
-    )
-    r.raise_for_status()
-    print("Result report send: {} - {}".format(r.status_code, r.text))
-    return r
-
-
 @pytest.mark.parametrize("runner", ["web", "web_ufg"])
 @pytest.mark.parametrize(
     "with_propagation",
@@ -112,11 +88,6 @@ def test_suite_dir_with_results_propagation_and_one_diff_in_report(
     local_chrome_driver.get("file://" + output_file_path + ".html")
     assert METADATA_EYES_TEST_RESULTS_URL_NAME in local_chrome_driver.page_source
     assert "1 test failed" in local_chrome_driver.page_source
-    send_test_report(
-        result.suite,
-        runner=runner,
-        with_propagation=bool(with_propagation),
-    )
 
 
 @pytest.mark.parametrize(
@@ -144,12 +115,6 @@ def test_web_mobile(data, tmp_path):
     result = ExecutionResult(output_file_path + ".xml")
     not_passed = [t for t in result.suite.tests if t.status != "PASS"]
     assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-    send_test_report(
-        result.suite,
-        runner=runner,
-        backend=backend,
-        platform=platform,
-    )
 
 
 @pytest.mark.parametrize(
@@ -178,12 +143,6 @@ def test_web_desktop(data, tmp_path):
 
     not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
     assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-    send_test_report(
-        result.suite,
-        runner=runner,
-        backend=backend,
-        platform=platform,
-    )
 
 
 @pytest.mark.parametrize(
@@ -215,9 +174,3 @@ def test_suite_mobile_native(data, tmp_path):
     result = ExecutionResult(output_file_path + ".xml")
     not_passed = [t for t in result.suite.tests if t.status != "PASS"]
     assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-    send_test_report(
-        result.suite,
-        runner=runner,
-        backend=backend,
-        platform=platform,
-    )

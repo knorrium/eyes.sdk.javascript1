@@ -190,9 +190,14 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-eyes_selenium/node_modules/
 eyes_selenium/applitools/selenium/resources/
 !eyes_selenium/applitools/selenium/resources/.gitignore
-logs/
 
 .vscode/
+
+# Generated tests
+node_modules/
+package-lock.json
+package.json
+tests/coverage/playwright/generic/
+tests/coverage/selenium/generic/

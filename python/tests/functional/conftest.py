@@ -5,8 +5,6 @@ from six import iteritems
 
 from applitools.common import BatchInfo, Configuration, StdoutLogger
 
-pytest_plugins = ("tests.functional.pytest_reporting",)
-
 
 @pytest.fixture
 def sauce_driver_url():

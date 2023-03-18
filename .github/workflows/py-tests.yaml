@@ -176,6 +176,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions/download-artifact@v3
         with:
           name: packages
@@ -263,6 +266,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions/download-artifact@v3
         with:
           name: packages
@@ -295,6 +301,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions/download-artifact@v3
         with:
           name: packages
@@ -317,6 +326,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.6'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions/download-artifact@v3
         with:
           name: packages
@@ -340,6 +352,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.6'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions/download-artifact@v3
         with:
           name: packages

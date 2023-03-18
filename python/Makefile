@@ -1,6 +1,4 @@
-export APPLITOOLS_BATCH_ID=$(shell python -c "import uuid;print(str(uuid.uuid4()))")
-
-install_dev_requirements: ensure_dev_venv install_installation_tests_requirements
+install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_selenium_tests generate_playwright_tests
 	python -m pip install --upgrade --editable core_universal
 	python -m pip install --upgrade --editable eyes_images
 	python -m pip install --upgrade --editable eyes_selenium
@@ -44,24 +42,36 @@ install_eyes_robotframework: eyes_robotframework/dist install_eyes_selenium
 	python -m pip install eyes_robotframework/dist/*
 
 
-install_unit_tests_requirements:
-	python -m pip install 'pytest<8' 'pytest-xdist<3' 'mock' 'psutil'
+install_tests_requirements:
+	python -m pip install 'pytest<8' 'pytest-xdist<3' 'mock'
 
 
-install_functional_tests_requirements: install_unit_tests_requirements
+install_unit_tests_requirements: install_tests_requirements
+	python -m pip install 'psutil'
+
+
+install_functional_tests_requirements: install_tests_requirements node_modules
 	python -m pip install 'pillow' 'requests' "webdriver-manager==3.7.0; python_version>='3'"
 
 
-install_installation_tests_requirements: install_unit_tests_requirements
+install_installation_tests_requirements: install_tests_requirements node_modules
 	python -m pip install 'pytest-venv==0.2.1' 'virtualenv==20.11'
 
 
-install_selenium_generated_tests_requirements: install_functional_tests_requirements
+install_selenium_generated_tests_requirements: install_functional_tests_requirements node_modules
 	python -m pip install 'webdriver-manager==3.7.0'
 
 
-install_publish_requirements:
+install_publish_requirements: node_modules
 	python -m pip install twine
+
+
+generate_selenium_tests: install_selenium_generated_tests_requirements node_modules
+	cd tests/coverage/selenium && npx coverage-tests generate . --pascalizeTests --strict
+
+
+generate_playwright_tests: node_modules
+	cd tests/coverage/playwright && npx coverage-tests generate . --pascalizeTests --strict
 
 
 uninstall:
@@ -129,6 +139,7 @@ eyes_robotframework/dist:
 clean:
 	for PACK in core_universal eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
 	do rm -rf $$PACK/dist $$PACK/build $$PACK/$$PACK.egg-info; done
+	rm -rf node_modules
 
 
 gen_robot_docs:
@@ -143,15 +154,14 @@ eyes_selenium_installation_tests: install_eyes_robotframework install_installati
 	pytest tests/test_installation.py
 
 
-eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements
-	chmod a+x ./coverage-tests/python_tests.sh
-	npm run python:tests --prefix ./coverage-tests
+eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_selenium_tests
+	# cd into suite directory required because coverage-tests-metadata.json is there
+	cd tests/coverage/selenium && pytest -n 14 --durations=10 --dist loadgroup generic/*
 
 
-eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements
-	cd coverage-tests && npm install
-	npm run python:generate:playwright --prefix ./coverage-tests
-	npm run python:run:parallel --prefix ./coverage-tests
+eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements generate_playwright_tests
+	# cd into suite directory required because coverage-tests-metadata.json is there
+	cd tests/coverage/playwright && pytest -n 14 --durations=10 generic/*
 
 
 eyes_images_functional_tests: install_eyes_images install_functional_tests_requirements
@@ -176,3 +186,7 @@ eyes_selenium_functional_tests: install_eyes_selenium install_functional_tests_r
 
 eyes_selenium_sauce_functional_tests: install_eyes_selenium install_functional_tests_requirements
 	pytest -n4 -m sauce tests/functional/eyes_selenium/
+
+
+node_modules:
+	npm install '@applitools/bongo' '@applitools/sdk-coverage-tests'
