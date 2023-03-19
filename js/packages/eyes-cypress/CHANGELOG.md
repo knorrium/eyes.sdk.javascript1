@@ -12,6 +12,14 @@
 
 
 
+## 3.30.0 - 2023/3/19
+
+### Features
+- Crop screenshot image base on account info
+### Bug fixes
+- Fixed slowness during ufg tests
+- Upgrade to core@v2
+
 ## 3.29.1 - 2023/2/2
 
 ### Features
