@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-__version__ = "2.3.14"
+__version__ = "2.4.1"
 
 
 def get_instance():
