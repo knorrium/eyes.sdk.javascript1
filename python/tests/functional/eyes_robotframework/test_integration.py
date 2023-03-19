@@ -1,15 +1,11 @@
-import json
 import os
 import subprocess
-import uuid
 from os import path
 from typing import TYPE_CHECKING
 
 import pytest
-import requests
 from robot.result import ExecutionResult
 
-from applitools.common.utils.converters import str2bool
 from EyesLibrary.test_results_manager import (
     METADATA_EYES_TEST_RESULTS_URL_NAME,
     METADATA_PATH_TO_EYES_RESULTS_NAME,

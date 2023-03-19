@@ -1,11 +1,14 @@
 from __future__ import print_function
 
 import json
+import re
 import uuid
 from contextlib import closing
+from gzip import GzipFile
 from os import environ, path, remove
 from subprocess import check_call, check_output
 from sys import platform
+from xml.etree import ElementTree
 
 import pytest
 from six import PY2
@@ -30,6 +33,7 @@ def pytest_sessionfinish(session, exitstatus):
         git_sha = check_output(["git", "log", "-n1", "--format=%H"]).decode().strip()
         cmd = [npx, "bongo", "report", "--name", reported_name, "--reportId", git_sha]
         if path.exists("coverage-tests-metadata.json"):
+            remove_test_name_prefix("coverage-test-report.xml")
             cmd += ["--metaDir", "."]
         if not releasing_package:
             cmd.append("--sandbox")
@@ -71,7 +75,7 @@ class Helpers(object):
             )
         )
         with closing(urlopen(url)) as response:
-            return json.load(response)
+            return json.load(GzipFile(fileobj=response))
 
     @classmethod
     def get_nodes_by_attribute(cls, node, attribute):
@@ -79,3 +83,14 @@ class Helpers(object):
         for child_node in node.get("childNodes", []):
             nodes.extend(cls.get_nodes_by_attribute(child_node, attribute))
         return nodes
+
+
+def remove_test_name_prefix(xml_report_path):
+    """Remove test_ prefix from test names in junit xml report."""
+    xml = ElementTree.parse(xml_report_path)
+    for testcase in xml.findall("testsuite/testcase"):
+        name = testcase.get("name")
+        # removes 'test_' prefix and @sauce_mac_0 or @sauce_vm_1 suffix
+        cleaned_name = re.sub(r"^(test_)?(.+?)(@sauce_(mac_)?vm_\d+)?$", r"\2", name)
+        testcase.set("name", cleaned_name)
+    return xml.write(xml_report_path, encoding="unicode", xml_declaration=True)

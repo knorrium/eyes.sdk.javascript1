@@ -51,7 +51,7 @@ install_unit_tests_requirements: install_tests_requirements
 
 
 install_functional_tests_requirements: install_tests_requirements node_modules
-	python -m pip install 'pillow' 'requests' "webdriver-manager==3.7.0; python_version>='3'"
+	python -m pip install 'pillow' "webdriver-manager==3.7.0; python_version>='3'"
 
 
 install_installation_tests_requirements: install_tests_requirements node_modules
@@ -161,7 +161,7 @@ eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_
 
 eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements generate_playwright_tests
 	# cd into suite directory required because coverage-tests-metadata.json is there
-	cd tests/coverage/playwright && pytest -n 14 --durations=10 generic/*
+	cd tests/coverage/playwright && pytest -n 10 --durations=10 generic/*
 
 
 eyes_images_functional_tests: install_eyes_images install_functional_tests_requirements

@@ -1,7 +1,6 @@
 import os
 
 import pytest
-import requests
 import six
 from PIL import Image
 
@@ -164,18 +163,5 @@ def eyes(request):
 
 
 @pytest.fixture
-def app_output(eyes):
-    def get_test_info():
-        results = eyes.close()
-        r = requests.get(
-            results.api_urls.session,
-            params={
-                "format": "json",
-                "AccessToken": results.secret_token,
-                "apiKey": eyes.configure.api_key,
-            },
-        )
-        r.raise_for_status()
-        return r.json()["actualAppOutput"]
-
-    return get_test_info
+def app_output(eyes, helpers):
+    return lambda: helpers.get_test_info(eyes.close())["actualAppOutput"]

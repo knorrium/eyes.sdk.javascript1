@@ -1,9 +1,11 @@
 import json
 import os
+from base64 import b64encode
+from contextlib import closing
 from itertools import cycle
 
 import pytest
-import requests
+from six.moves.urllib.request import Request, urlopen
 
 _fixutres2vm_types = {}
 
@@ -53,13 +55,12 @@ def _fetch_sauce_limits(need_vms, need_mac_vms):
     # Use environment variable to cache limits to avoid sending same request multiple
     # times when xdist workers start
     if "SAUCE_LIMITS" not in os.environ:
-        url_template = (
-            "https://{username}:{key}@api.us-west-1.saucelabs.com/"
-            "rest/v1.2/users/{username}/concurrency"
-        )
         username, key = _sauce_credentials()
-        url = url_template.format(username=username, key=key)
-        response = requests.get(url).json()
+        url_t = "https://api.us-west-1.saucelabs.com/rest/v1.2/users/{}/concurrency"
+        url = url_t.format(username)
+        auth = "Basic " + b64encode("{}:{}".format(username, key).encode()).decode()
+        with closing(urlopen(Request(url, headers={"Authorization": auth}))) as r:
+            response = json.load(r)
         allowed = response["concurrency"]["team"]["allowed"]
         limits = {
             "vms": min(allowed["vms"], need_vms),

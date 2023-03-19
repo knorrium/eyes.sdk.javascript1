@@ -4,7 +4,7 @@ module.exports = {
     name: "py-selenium",
     emitter: `${dir}/python/emitter.js`,
     overrides: [`${dir}/js/overrides.js`, `${dir}/python/overrides.js`],
-    template: `${dir}/python/template.hbs`,
+    template: `${dir}/python/selenium-template.hbs`,
     tests: `${dir}/coverage-tests.js`,
     ext: ".py",
     outPath: "./generic",

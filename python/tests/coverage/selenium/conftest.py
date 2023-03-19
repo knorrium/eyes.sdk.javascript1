@@ -1,5 +1,4 @@
 import sys
-from os import path
 
 import selenium
 from pytest import fixture
@@ -9,8 +8,6 @@ from applitools.selenium import BatchInfo, ClassicRunner, Eyes, StitchMode
 from .browsers import *
 from .devices import *
 from .sauce import pytest_collection_modifyitems, sauce_url
-
-sys.path.insert(0, path.abspath((path.dirname(__file__))))
 
 batch_info = BatchInfo(
     "Py{}.{}|Sel{} Generated tests".format(*sys.version_info[:2], selenium.__version__)

@@ -1,13 +1,9 @@
 import sys
-from os import path
 
 from playwright.sync_api import sync_playwright
 from pytest import fixture
 
 from applitools.playwright import BatchInfo, Eyes, StitchMode
-
-# allows generates tests to import 'test' module
-sys.path.insert(0, path.abspath((path.dirname(__file__))))
 
 batch_info = BatchInfo("Py{}.{} pw Generated tests".format(*sys.version_info[:2]))
 
