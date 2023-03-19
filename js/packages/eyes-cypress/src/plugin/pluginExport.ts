@@ -55,7 +55,7 @@ export default function makePluginExport({startServer, eyesConfig}: any) {
       return pluginInitArgs
     }
     return function getCloseServer() {
-      return eyesServer.close()
+      return new Promise<void>(res => eyesServer.close(() => res()))
     }
 
     async function setupNodeEvents(
