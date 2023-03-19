@@ -63,9 +63,9 @@ Apollo SDK:
 "@applitools/eyes-cypress":
   feature:
     - Crop screenshot image base on account info
-    - Upgrade to core@v2
   bug-fix:
     - Fixed slowness during ufg tests
+    - Upgrade to core@v2
 "@applitools/eyes-storybook":
   feature:
     - 
