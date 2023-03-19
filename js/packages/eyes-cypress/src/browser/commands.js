@@ -11,11 +11,13 @@ const refer = new Refer()
 const socket = new Socket()
 const throwErr = Cypress.config('failCypressOnDiff')
 socketCommands(socket, refer)
-let connectedToUniversal = false
 
-let _summary,
+let manager,
+  eyes,
   closePromiseArr = [],
-  openToCheckSettingsArgs // this is using to map open setting that passed to check as part of the upgrade to core@2
+  _summary,
+  connectedToUniversal,
+  openToCheckSettingsArgs
 
 async function getSummary() {
   if (_summary) return _summary
@@ -27,8 +29,6 @@ async function getSummary() {
 
   return _summary
 }
-
-let manager, eyes
 
 function getGlobalConfigProperty(prop) {
   const property = Cypress.config(prop)
@@ -181,11 +181,12 @@ Cypress.Commands.add('eyesClose', () => {
       return
     }
 
-    // intentionally not returning the result in order to not wait on the close promise
+    // Eyes.close in core is not waiting on results anymore. So we should return it in order to await it
     const p = socket.request('Eyes.close', {eyes}).catch(err => {
       console.log('Error in cy.eyesClose', err)
     })
     closePromiseArr.push(p)
+    return p
   })
 })
 
