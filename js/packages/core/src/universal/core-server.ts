@@ -136,7 +136,12 @@ export async function makeCoreServer({
       const core = await corePromise
       return core.extractText(options)
     })
-    // TODO rename to getECClient
+    socket.command('Core.getECClient', async options => {
+      const core = await corePromise
+      const client = await core.getECClient(options)
+      return {url: client.url} as any
+    })
+    // TODO remove
     socket.command('Core.makeECClient', async options => {
       const core = await corePromise
       const client = await core.getECClient(options)
@@ -144,6 +149,10 @@ export async function makeCoreServer({
     })
     socket.command('Core.makeManager', async options => {
       const core = await corePromise
+      options.settings ??= {}
+      options.settings.concurrency ??= (options as any).concurrency
+      options.settings.legacyConcurrency ??= (options as any).legacyConcurrency
+      options.settings.agentId ??= (options as any).agentId
       return refer.ref(await core.makeManager(options))
     })
 

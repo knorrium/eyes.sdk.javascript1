@@ -311,7 +311,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
 
     let type: 'classic' | 'ufg' | undefined
     if (settings?.nmgOptions?.nonNMGCheck === 'addToAllDevices') {
-      type = this._runner.config.type === 'ufg' ? 'classic' : 'ufg'
+      type = this._runner.type === 'ufg' ? 'classic' : 'ufg'
     }
 
     const [result] = await this._eyes!.check({type, target, settings, config})

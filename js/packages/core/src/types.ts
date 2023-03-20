@@ -27,8 +27,7 @@ export interface Core<TSpec extends SpecType, TDefaultType extends 'classic' | '
   getECClient(options?: {settings?: Partial<ECClientSettings>; logger?: Logger}): Promise<ECClient>
   makeManager<TType extends 'classic' | 'ufg' = TDefaultType>(options?: {
     type: TType
-    concurrency?: TType extends 'ufg' ? number : never
-    agentId?: string
+    settings?: EyesManagerSettings
     logger?: Logger
   }): Promise<EyesManager<TSpec, TType>>
   openEyes<TType extends 'classic' | 'ufg' = TDefaultType>(options: {
@@ -114,6 +113,14 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
     config?: Config<TSpec, TDefaultType>
     logger?: Logger
   }): Promise<TestResult<TDefaultType>[]>
+}
+
+export interface EyesManagerSettings {
+  concurrency?: number
+  /** @deprecated */
+  legacyConcurrency?: number
+  agentId?: string
+  batch?: AutomationCore.Batch
 }
 
 export type Config<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {

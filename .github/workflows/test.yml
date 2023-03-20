@@ -5,7 +5,7 @@ run-name: ${{github.event_name == 'schedule' && 'Nightly' || github.event_name =
 on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
-    branches: ['!dependabot/**', '!draft/**', '!play/**']
+    branches: ['!dependabot/**', '!draft/**', '!play/**', '**']
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:

@@ -65,7 +65,7 @@ describe('proxy', () => {
       await driver.url('https://applitools.com/helloworld')
 
       const core = makeCore({spec})
-      const manager = await core.makeManager({type: 'ufg', concurrency: 5})
+      const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
       const eyes = await manager.openEyes({
         target: driver,
         settings: {
@@ -128,7 +128,7 @@ describe('proxy', () => {
       await driver.url('https://applitools.com/helloworld')
 
       const core = makeCore({spec})
-      const manager = await core.makeManager({type: 'ufg', concurrency: 5})
+      const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
       const eyes = await manager.openEyes({
         target: driver,
         settings: {
@@ -177,7 +177,7 @@ describe('proxy', () => {
 
     it('ufg works with nml and proxy', async () => {
       const core = makeCore({spec})
-      const manager = await core.makeManager({type: 'ufg', concurrency: 5})
+      const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
       const eyes = await manager.openEyes({
         target: driver,
         settings: {

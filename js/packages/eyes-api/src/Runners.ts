@@ -13,9 +13,10 @@ export abstract class EyesRunner {
   private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   private _manager?: Core.EyesManager<Core.SpecType, 'classic' | 'ufg'>
   private _eyes: Eyes<Core.SpecType>[] = []
-
   /** @internal */
-  abstract get config(): {type: 'classic' | 'ufg'}
+  abstract readonly type: 'classic' | 'ufg'
+  /** @internal */
+  abstract readonly settings: Core.EyesManagerSettings
 
   /** @internal */
   attach<TSpec extends Core.SpecType = Core.SpecType>(eyes: Eyes<TSpec>, core: Core.Core<TSpec, 'classic' | 'ufg'>) {
@@ -30,7 +31,7 @@ export abstract class EyesRunner {
     logger?: Logger
     on?: (name: string, data?: Record<string, any>) => void
   }): Promise<Core.Eyes<TSpec, 'classic' | 'ufg'>> {
-    this._manager ??= await this._core!.makeManager(this.config)
+    this._manager ??= await this._core!.makeManager({type: this.type, settings: this.settings})
     return await this._manager.openEyes(options)
   }
 
@@ -69,6 +70,15 @@ export abstract class EyesRunner {
 export class VisualGridRunner extends EyesRunner {
   private _testConcurrency?: number
   private _legacyConcurrency?: number
+  /** @internal */
+  readonly type = 'ufg' as const
+  /** @internal */
+  get settings() {
+    return {
+      concurrency: this._testConcurrency,
+      legacyConcurrency: this._legacyConcurrency,
+    }
+  }
 
   constructor(options?: RunnerOptions)
   /** @deprecated */
@@ -85,15 +95,6 @@ export class VisualGridRunner extends EyesRunner {
           ? optionsOrLegacyConcurrency.toJSON()
           : optionsOrLegacyConcurrency
       this._testConcurrency = options.testConcurrency
-    }
-  }
-
-  /** @internal */
-  get config() {
-    return {
-      type: 'ufg' as const,
-      concurrency: this._testConcurrency,
-      legacyConcurrency: this._legacyConcurrency,
     }
   }
 
@@ -114,7 +115,9 @@ export class VisualGridRunner extends EyesRunner {
 
 export class ClassicRunner extends EyesRunner {
   /** @internal */
-  get config() {
-    return {type: 'classic' as const}
+  readonly type = 'classic' as const
+  /** @internal */
+  get settings() {
+    return {}
   }
 }

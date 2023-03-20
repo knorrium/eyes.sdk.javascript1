@@ -63,7 +63,7 @@ describe('get manager results', () => {
 
   it('should add internal error to the summary', async () => {
     const core = makeCore({spec})
-    const manager = await core.makeManager({type: 'ufg', concurrency: 5})
+    const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
 
     const eyes = await manager.openEyes({
       target: driver,

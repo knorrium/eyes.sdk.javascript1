@@ -1,4 +1,4 @@
-import type {Core, EyesManager, Eyes, Batch} from './types'
+import type {Core, EyesManager, Eyes, EyesManagerSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
@@ -30,29 +30,25 @@ export function makeMakeManager<TSpec extends SpecType>({
 }: Options<TSpec>) {
   return async function makeManager<TType extends 'classic' | 'ufg' = 'classic'>({
     type = 'classic' as TType,
-    concurrency = defaultConcurrency,
-    legacyConcurrency,
-    batch,
-    agentId = type === 'ufg' ? defaultAgentId?.replace(/(\/\d)/, '.visualgrid$1') : defaultAgentId,
+    settings,
     logger = defaultLogger,
   }: {
     type?: TType
-    concurrency?: number
-    /** @deprecated */
-    legacyConcurrency?: number
-    batch?: Batch
-    agentId?: string
+    settings?: EyesManagerSettings
     logger?: Logger
   } = {}): Promise<EyesManager<TSpec, TType>> {
-    concurrency ??= utils.types.isInteger(legacyConcurrency) ? legacyConcurrency * 5 : 5
-    batch ??= {}
-    batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
-    base ??= makeBaseCore({agentId, concurrency, cwd, logger})
+    settings ??= {}
+    settings.concurrency ??=
+      defaultConcurrency ?? (utils.types.isInteger(settings.legacyConcurrency) ? settings.legacyConcurrency * 5 : 5)
+    settings.batch ??= {}
+    settings.batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
+    settings.agentId ??= type === 'ufg' ? defaultAgentId?.replace(/(\/\d)/, '.visualgrid$1') : defaultAgentId
+    base ??= makeBaseCore({agentId: settings.agentId, concurrency: settings.concurrency, cwd, logger})
     const cores = {ufg: makeUFGCore({spec, base, logger}), classic: makeClassicCore({spec, base, logger})}
     const storage = [] as Eyes<TSpec, TType>[]
     return {
       openEyes: utils.general.wrap(
-        makeOpenEyes({type, batch, spec, core, cores, logger}),
+        makeOpenEyes({type, batch: settings.batch, spec, core, cores, logger}),
         async (openEyes, options) => {
           const eyes = await openEyes(options)
           storage.push(eyes)

@@ -31,7 +31,7 @@ describe('coded regions', () => {
     it(`region id works - ${type}`, async () => {
       const core = makeCore({spec})
 
-      const manager = await core.makeManager({type, concurrency: 5})
+      const manager = await core.makeManager({type, settings: {concurrency: 5}})
       const eyes = await manager.openEyes({
         target: driver,
         settings: {
@@ -100,7 +100,7 @@ describe('coded regions', () => {
   it(`ufg with non-existent regions`, async () => {
     const core = makeCore({spec})
 
-    const manager = await core.makeManager({type: 'ufg', concurrency: 5})
+    const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
     const eyes = await manager.openEyes({
       target: driver,
       settings: {

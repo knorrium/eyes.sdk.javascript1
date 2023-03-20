@@ -24,8 +24,8 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
     openEyes: null as never,
   }
 
-  async function makeManager(config: any): Promise<Core.EyesManager<any, 'classic' | 'ufg'>> {
-    history.push({command: 'makeManager', data: config})
+  async function makeManager({type, settings}: any): Promise<Core.EyesManager<any, 'classic' | 'ufg'>> {
+    history.push({command: 'makeManager', data: {type, settings}})
 
     return {openEyes, getResults}
 

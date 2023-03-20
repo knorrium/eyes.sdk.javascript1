@@ -25,6 +25,7 @@
   - [Type examples](#type-examples)
     - [ImageTarget](#imagetarget)
     - [DriverTarget](#drivertarget)
+    - [EyesManagerSettings](#eyesmanagersettings)
     - [LocateSettings](#locatesettings)
     - [LocateTextSettings](#locatetextsettings)
     - [ExtractTextSettings](#extracttextsettings)
@@ -115,9 +116,7 @@ interface GetECClientResponsePayload {
 ```ts
 interface MakeManagerRequestPayload {
   type: 'ufg' | 'classic'
-  concurrency?: number
-  legacyConcurrency?: number
-  agentId?: string
+  settings?: EyesManagerSettings
 }
 
 type MakeManagerResponsePayload = Ref<EyesManager>
@@ -283,6 +282,15 @@ type GetHistoryResponsePayload = Record<string, any>
   },
   "sessionId": "123456",
   "capabilities": {}
+}
+```
+
+### EyesManagerSettings
+```jsonc
+{
+  "concurrency": 10,
+  "legacyConcurrency": 50,
+  "agentId": "js/eyes/1.0.0"
 }
 ```
 
