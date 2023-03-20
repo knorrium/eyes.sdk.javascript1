@@ -6,14 +6,10 @@ describe('spec driver', async () => {
   let driver: any, backgroundPage: any, contentPage: any, destroyPage: any
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
-  async function build(env: any) {
-    const extPath = path.resolve(process.cwd(), 'test/ext/dist')
-    return spec.build({...env, extension: extPath})
-  }
-
   describe('onscreen desktop (@chrome)', async () => {
     before(async () => {
-      ;[contentPage, destroyPage] = await build({browser: 'chromium'})
+      const extPath = path.resolve(process.cwd(), 'test/fixtures/extension/dist')
+      ;[contentPage, destroyPage] = await spec.build({browser: 'chromium', extension: extPath})
 
       backgroundPage =
         contentPage.context().serviceWorkers()[0] || (await contentPage.context().waitForEvent('serviceworker'))
