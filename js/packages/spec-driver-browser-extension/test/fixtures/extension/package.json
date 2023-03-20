@@ -10,7 +10,7 @@
     "extension"
   ],
   "dependencies": {
-    "@applitools/spec-driver-browser-extension": "link:../..",
+    "@applitools/spec-driver-browser-extension": "link:../../..",
     "@applitools/utils": "^1.3.32"
   },
   "devDependencies": {
