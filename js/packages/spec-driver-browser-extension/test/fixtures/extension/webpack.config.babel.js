@@ -18,6 +18,13 @@ export default {
     clean: true,
   },
   target: ['webworker'],
+  resolve: {
+    extensions: ['.js', '.json'],
+    mainFields: ['browser', 'main'],
+    alias: {
+      buffer: require.resolve('buffer/'),
+    },
+  },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
