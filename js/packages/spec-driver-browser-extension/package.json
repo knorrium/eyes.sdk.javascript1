@@ -41,7 +41,7 @@
     "test:build": "cd test/ext && yarn && yarn webpack",
     "test:sanity": "yarn test",
     "setup": "yarn xvfb:setup",
-    "xvfb:setup": "sudo apt-get install -y xvfb && xvfb -ac :99 -screen 0 1280x1024x16 &",
+    "xvfb:setup": "sudo apt-get install -y xvfb; Xvfb -ac :99 -screen 0 1280x1024x16 &",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-browser-extension' -f links='types utils test-utils'",
     "gh:publish": "gh workflow run publish-spec-browser-extension.yml --ref $(git rev-parse --abbrev-ref HEAD)",
