@@ -61,7 +61,17 @@ jobs:
       packages: ${{steps.setup.outputs.packages}}
     steps:
       - name: print inputs values
-        run: echo "::notice::${{ toJSON(github.event.inputs) }}"
+        run: |
+          jsonGithubInput=$(echo '${{ toJSON(github.event.inputs) }}' )
+          jsonData=$(jq -r 'to_entries' <<< "$jsonGithubInput")
+          for row in $(echo "${jsonData}" | jq -r '.[] | @base64'); do
+              _jq() {
+                echo "${row}" | base64 --decode | jq -r "${1}"
+              }
+              key=$(_jq '.key')
+              value=$(_jq '.value')
+              echo "::notice::$key=$value"
+          done
       - name: Check-out repository
         uses: actions/checkout@v3
         with:
