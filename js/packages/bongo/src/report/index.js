@@ -27,7 +27,12 @@ async function createAndSendTestReport({name, reportId, metaPath, resultPath, sa
   const junit = fs.readFileSync(path.resolve(cwd, resultPath ? resultPath : '', 'coverage-test-report.xml'), {
     encoding: 'utf-8',
   })
-  const metadata = metaPath ? require(path.resolve(cwd, metaPath, 'coverage-tests-metadata.json')) : undefined
+  let metadata
+  try {
+    metadata = require(path.resolve(cwd, metaPath ? metaPath : '', 'coverage-tests-metadata.json'))
+  } catch (error) {
+    console.log(chalk.red('No metadata file found'))
+  }
 
   const report = createReport({
     reportId,
