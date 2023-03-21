@@ -6,6 +6,10 @@ on:
       - 'python/**'
   workflow_dispatch:
     inputs:
+      pytest_filter:
+        description: Execute only tests with names containing this substring
+        type: string
+        required: false
       unit_tests:
         description: Unit tests
         type: boolean
@@ -42,6 +46,10 @@ on:
         required: false
         type: string
       # Same parameters as workflow_dispatch, run all tests by default
+      pytest_filter:
+        description: Execute only tests with names containing this substring
+        required: false
+        type: string
       unit_tests:
         description: Unit tests
         type: boolean
@@ -71,6 +79,7 @@ on:
 env:
   RELEASING_PACKAGE: ${{ inputs.releasing_package }}
   BONGO_REPORT_TESTS: true
+  PYTEST_FILTER: ${{ inputs.pytest_filter }}
 
 jobs:
   dist-build:

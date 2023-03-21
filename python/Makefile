@@ -1,3 +1,8 @@
+ifdef PYTEST_FILTER
+	PYTEST_FLAGS= -k '$(PYTEST_FILTER)'
+endif
+PYTEST=python -m pytest $(PYTEST_FLAGS)
+
 install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_selenium_tests generate_playwright_tests
 	python -m pip install --upgrade --editable core_universal
 	python -m pip install --upgrade --editable eyes_images
@@ -147,45 +152,45 @@ gen_robot_docs:
 
 
 unit_tests: install_eyes_robotframework install_unit_tests_requirements
-	pytest -n6 tests/unit
+	$(PYTEST) -n6 tests/unit
 
 
 eyes_selenium_installation_tests: install_eyes_robotframework install_installation_tests_requirements
-	pytest tests/test_installation.py
+	$(PYTEST) tests/test_installation.py
 
 
 eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_selenium_tests
 	# cd into suite directory required because coverage-tests-metadata.json is there
-	cd tests/coverage/selenium && pytest -n 14 --durations=10 --dist loadgroup generic/*
+	cd tests/coverage/selenium && $(PYTEST) -n 14 --durations=10 --dist loadgroup generic/*
 
 
 eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements generate_playwright_tests
 	# cd into suite directory required because coverage-tests-metadata.json is there
-	cd tests/coverage/playwright && pytest -n 10 --durations=10 generic/*
+	cd tests/coverage/playwright && $(PYTEST) -n 10 --durations=10 generic/*
 
 
 eyes_images_functional_tests: install_eyes_images install_functional_tests_requirements
-	pytest -n8 tests/functional/eyes_images/
+	$(PYTEST) -n8 tests/functional/eyes_images/
 
 
 eyes_playwright_functional_tests: install_eyes_playwright install_functional_tests_requirements
-	pytest -n8 tests/functional/eyes_playwright/
+	$(PYTEST) -n8 tests/functional/eyes_playwright/
 
 
 eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements
-	pytest -n8 -m "not sauce" tests/functional/eyes_robotframework/test_integration.py
+	$(PYTEST) -n8 -m "not sauce" tests/functional/eyes_robotframework/test_integration.py
 
 
 eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_functional_tests_requirements
-	pytest -n4 -m sauce tests/functional/eyes_robotframework/test_integration.py
+	$(PYTEST) -n4 -m sauce tests/functional/eyes_robotframework/test_integration.py
 
 
 eyes_selenium_functional_tests: install_eyes_selenium install_functional_tests_requirements
-	pytest -n8 -m "not sauce" tests/functional/eyes_selenium/
+	$(PYTEST) -n8 -m "not sauce" tests/functional/eyes_selenium/
 
 
 eyes_selenium_sauce_functional_tests: install_eyes_selenium install_functional_tests_requirements
-	pytest -n4 -m sauce tests/functional/eyes_selenium/
+	$(PYTEST) -n4 -m sauce tests/functional/eyes_selenium/
 
 
 node_modules:
