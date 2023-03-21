@@ -61,6 +61,7 @@ jobs:
       packages: ${{steps.setup.outputs.packages}}
     steps:
       - name: print inputs values
+        if: ${{github.event_name == 'workflow_dispatch'}}
         run: |
           jsonGithubInput=$(echo '${{ toJSON(github.event.inputs) }}' )
           if [[ $jsonGithubInput != 'null' ]]; then
