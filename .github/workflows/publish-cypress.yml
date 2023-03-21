@@ -78,7 +78,7 @@ jobs:
 
           if [ ${{github.event.inputs.multiversion}} = true ]
           then
-            VERSIONS="[{\"cypress-version\":12},{\"cypress-version\":11},{\"cypress-version\":10},{\"cypress-version\":9}]"
+            VERSIONS="[{\"cypress-version\":12},{\"cypress-version\":11},{\"cypress-version\":10},{\"cypress-version\":9},{\"cypress-version\":8}]"
           else
             VERSIONS="[{\"cypress-version\":12}]"
           fi
