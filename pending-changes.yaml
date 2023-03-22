@@ -30,8 +30,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed slowness during ufg tests
-    - Optimized number of requests during polling
+    - 
 "@applitools/eyes-puppeteer":
   feature:
     - 

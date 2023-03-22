@@ -11,6 +11,13 @@
 
 
 
+## 1.14.1 - 2023/3/22
+
+### Features
+### Bug fixes
+- Fixed slowness during ufg tests
+- Optimized number of requests during polling
+
 ## 1.14.0 - 2023/2/21
 
 ### Features
