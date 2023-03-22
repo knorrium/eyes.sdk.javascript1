@@ -8,6 +8,16 @@
 
 
 
+## 4.64.1 - 2023/3/22
+
+### Features
+- Added `Resize` value to `StitchMode` enum
+- Improved extraction of nml element
+### Bug fixes
+- Avoid handing process when using execution cloud
+- Fixed slowness during ufg tests
+- Optimized number of requests during polling
+
 ## 4.64.0 - 2023/2/23
 
 ### Features
