@@ -1,0 +1,15 @@
+on:
+  workflow_dispatch:
+
+name: release-please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Release Please
+      id: prepare
+      shell: bash
+      run: |
+        echo hello world
+
