@@ -32,8 +32,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed slowness during ufg tests
-    - Optimized number of requests during polling
+    - 
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
