@@ -131,12 +131,12 @@ describe('req', () => {
   })
 
   it('retries on configured status codes with timeout backoff', async () => {
-    const expectedRetryIntervals = [1000, 1500, 2000]
+    const expectedRetryIntervals = [100, 150, 200, 200]
     let index = -1
     let prevRequestTimestamp: number
     nock('https://eyesapi.applitools.com')
       .get('/api/hello')
-      .times(4)
+      .times(5)
       .reply(() => {
         // if retry
         if (index >= 0) {
@@ -148,7 +148,7 @@ describe('req', () => {
       })
 
     const response = await req('https://eyesapi.applitools.com/api/hello', {
-      retry: [{statuses: [500], limit: 3, timeout: expectedRetryIntervals}],
+      retry: [{statuses: [500], limit: 4, timeout: [100, 150, 200]}],
     })
 
     assert.strictEqual(response.status, 500)

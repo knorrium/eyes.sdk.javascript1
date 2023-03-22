@@ -312,7 +312,7 @@ export async function req(input: string | URL | Request, options?: Options): Pro
       const delay = response.headers.has('Retry-After')
         ? Number(response.headers.get('Retry-After')) * 1000
         : utils.types.isArray(retry.timeout)
-        ? retry.timeout[Math.min(retry.attempt, retry.timeout.length)]
+        ? retry.timeout[Math.min(retry.attempt, retry.timeout.length - 1)]
         : retry.timeout ?? 0
       await utils.general.sleep(delay)
       retry.attempt += 1

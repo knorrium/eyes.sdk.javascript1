@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - Changed `makeManager` api to accept `settings`
   bug-fix:
-    - 
+    - Fixed retry interval during poll requests to eyes back-end
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
@@ -20,21 +20,24 @@ Apollo SDK:
   bug-fix:
     - Avoid handing process when using execution cloud
     - Fixed slowness during ufg tests
+    - Optimized number of requests during polling
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Optimized number of requests during polling
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
     - Fixed slowness during ufg tests
+    - Optimized number of requests during polling
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
     - Fixed slowness during ufg tests
+    - Optimized number of requests during polling
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -60,6 +63,7 @@ Apollo SDK:
   bug-fix:
     - Avoid handing process when using execution cloud
     - Fixed slowness during ufg tests
+    - Optimized number of requests during polling
 "@applitools/eyes-cypress":
   feature:
     - 
@@ -70,7 +74,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Optimized number of requests during polling
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -151,4 +155,4 @@ Apollo SDK:
     - Crop screenshot image base on account info
     - Passing density metric for PPI support in the sdk
   bug-fix:
-    - 
+    - Optimized number of requests during polling
