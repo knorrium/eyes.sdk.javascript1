@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-cypress",
-  "version": "3.30.0",
+  "version": "3.30.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git",
@@ -69,7 +69,7 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "2.4.2",
+    "@applitools/core": "2.4.3",
     "@applitools/eyes-api": "1.13.12",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/logger": "1.1.48",
@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@applitools/api-extractor": "^1.2.12",
-    "@applitools/bongo": "^3.0.1",
+    "@applitools/bongo": "^3.0.2",
     "@applitools/sdk-coverage-tests": "^3.0.0",
     "@applitools/snaptdout": "1.0.1",
     "@applitools/test-server": "1.1.28",
