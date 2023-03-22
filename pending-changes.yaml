@@ -22,7 +22,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Optimized number of requests during polling
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 
