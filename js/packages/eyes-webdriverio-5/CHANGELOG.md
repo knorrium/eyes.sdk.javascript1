@@ -10,6 +10,12 @@
 
 
 
+## 5.42.4 - 2023/3/22
+
+### Features
+### Bug fixes
+- Optimized number of requests during polling
+
 ## 5.42.3 - 2023/3/17
 
 ### Features
