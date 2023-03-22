@@ -65,6 +65,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Fixed cypress 8 not working with core v2
+    - Fixed closeBatch issue
 "@applitools/eyes-storybook":
   feature:
     - 

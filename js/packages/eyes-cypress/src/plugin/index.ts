@@ -22,6 +22,7 @@ export type EyesPluginConfig = {
   eyesTestConcurrency: number
   eyesWaitBeforeCapture: number
   eyesPort?: number
+  eyesIsGlobalHooksSupported?: boolean
 }
 
 const {config, eyesConfig} = makeConfig()

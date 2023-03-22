@@ -1,4 +1,5 @@
 import handleTestResults from './handleTestResults'
+import {type StartServerReturn} from './server'
 export type EyesCypressAction = 'before:run' | 'after:run'
 
 declare global {
@@ -9,7 +10,7 @@ declare global {
         dontCloseBatches: boolean
         batch: any
         serverUrl: string
-        proxy: string
+        proxy: any // TODO: add proxy type
         apiKey: string
         batchId: string
         tapDirPath: string
@@ -19,7 +20,11 @@ declare global {
   }
 }
 
-export default function makeGlobalRunHooks({closeManager, closeBatches, closeUniversalServer}: any): {
+export default function makeGlobalRunHooks({
+  closeManager,
+  closeBatches,
+  closeUniversalServer,
+}: Omit<StartServerReturn, 'server' | 'port'>): {
   'after:run': (results: CypressCommandLine.CypressRunResult) => void | Promise<void>
   'before:run': (runDetails: Cypress.BeforeRunDetails) => void | Promise<void>
 } {
@@ -39,7 +44,7 @@ export default function makeGlobalRunHooks({closeManager, closeBatches, closeUni
         }
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({
-            batchIds: [config.appliConfFile.batchId || config.appliConfFile.batch.id],
+            batchId: config.appliConfFile.batchId || config.appliConfFile.batch.id,
             serverUrl: config.appliConfFile.serverUrl,
             proxy: config.appliConfFile.proxy,
             apiKey: config.appliConfFile.apiKey,

@@ -1,5 +1,5 @@
 import connectSocket, {type SocketWithUniversal} from './webSocket'
-import {makeCoreServerProcess} from '@applitools/core'
+import {type CloseBatchSettings, makeCoreServerProcess} from '@applitools/core'
 import handleTestResults from './handleTestResults'
 import path from 'path'
 import fs from 'fs'
@@ -10,9 +10,16 @@ import which from 'which'
 import {type Logger} from '@applitools/logger'
 import {AddressInfo} from 'net'
 import {promisify} from 'util'
+export type StartServerReturn = {
+  server: Omit<SocketWithUniversal, 'disconnect' | 'ref' | 'unref' | 'send' | 'request' | 'setPassthroughListener'>
+  port: number
+  closeManager: () => Promise<any[]>
+  closeBatches: (settings: CloseBatchSettings | CloseBatchSettings[]) => Promise<void>
+  closeUniversalServer: () => void
+}
 
 export default function makeStartServer({logger}: {logger: Logger}) {
-  return async function startServer(options?: Cypress.PluginConfigOptions) {
+  return async function startServer(options?: Cypress.PluginConfigOptions): Promise<StartServerReturn> {
     const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
     const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
     const https = new HttpsServer({
@@ -139,7 +146,7 @@ export default function makeStartServer({logger}: {logger: Logger}) {
         ),
       )
     }
-    function closeBatches(settings: any) {
+    function closeBatches(settings: CloseBatchSettings | CloseBatchSettings[]) {
       if (socketWithUniversal)
         return socketWithUniversal.request('Core.closeBatch', {settings}).catch((err: Error) => {
           logger.log('@@@', err)

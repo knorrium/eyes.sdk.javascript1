@@ -12,10 +12,12 @@
     "node": ">=8.0.0"
   },
   "devDependencies": {
-    "cypress": "latest",
-    "@applitools/test-utils": "latest"
+    "@applitools/test-utils": "latest",
+    "cypress": "latest"
   },
   "dependencies": {
-    "@applitools/eyes-api": "latest"
+    "@applitools/eyes-api": "latest",
+    "cypress-multi-reporters": "^1.6.3",
+    "mocha-multi": "^1.1.7"
   }
 }
