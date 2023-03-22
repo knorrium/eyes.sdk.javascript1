@@ -15,12 +15,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-selenium":
   feature:
-    - Added `Resize` value to `StitchMode` enum
-    - Improved extraction of nml element
+    - 
   bug-fix:
-    - Avoid handing process when using execution cloud
-    - Fixed slowness during ufg tests
-    - Optimized number of requests during polling
+    - 
 "@applitools/eyes-webdriverio":
   feature:
     - 
