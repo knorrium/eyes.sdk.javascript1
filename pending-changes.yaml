@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Changed `makeManager` api to accept `settings`
+    - 
   bug-fix:
-    - Fixed retry interval during poll requests to eyes back-end
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Added `Resize` value to `StitchMode` enum
