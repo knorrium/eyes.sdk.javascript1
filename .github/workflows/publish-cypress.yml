@@ -78,9 +78,9 @@ jobs:
 
           if [ ${{github.event.inputs.multiversion}} = true ]
           then
-            VERSIONS="[{\"cypress-version\":12},{\"cypress-version\":11},{\"cypress-version\":10},{\"cypress-version\":9},{\"cypress-version\":8}]"
+            VERSIONS='[{"cypress-version":12, "node-version":"lts/*"},{"cypress-version":11, "node-version":"lts/*" },{"cypress-version":10, "node-version":"lts/*"},{"cypress-version":9, "node-version":"lts/*"},{"cypress-version":8, "node-version": 16}]'
           else
-            VERSIONS="[{\"cypress-version\":12}]"
+            VERSIONS='[{"cypress-version":12, "node-version":"lts/*"}]'
           fi
           echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
   test:
@@ -113,7 +113,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{fromJSON(needs.verify.outputs.versions)}}
-    name: 'Test (cypress: ${{matrix.cypress-version}})'
+    name: 'Test (cypress: ${{matrix.cypress-version}}, node: ${{matrix.node-version}})'
     runs-on: ubuntu-latest
     steps:
       - name: Check-out repository
@@ -121,7 +121,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: lts/*
+          node-version: ${{matrix.node-version}}
           registry-url: https://registry.npmjs.org/
           always-auth: true
       - name: Run tests
