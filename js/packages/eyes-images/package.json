@@ -60,13 +60,13 @@
     "postpublish": "bongo send-release-notification --name 'js_images'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.0.0"
+    "@applitools/eyes": "1.0.2"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "^1.2.11",
-    "@applitools/bongo": "^2.2.5",
-    "@applitools/sdk-coverage-tests": "^2.7.10",
-    "@applitools/test-utils": "^1.5.12",
+    "@applitools/api-extractor": "^1.2.12",
+    "@applitools/bongo": "^3.0.2",
+    "@applitools/sdk-coverage-tests": "^3.0.0",
+    "@applitools/test-utils": "^1.5.14",
     "@types/node": "^12.20.55"
   },
   "engines": {
