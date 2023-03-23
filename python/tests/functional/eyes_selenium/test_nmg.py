@@ -41,6 +41,7 @@ def test_nmg_ios_basic(sauce_driver_url):
 
 
 @pytest.mark.sauce
+@pytest.mark.skip("Needs new app")
 def test_nmg_android_basic(sauce_driver_url):
     caps = {
         "app": "storage:filename=e2e_applitoolsify_test.apk",
