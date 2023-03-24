@@ -245,6 +245,11 @@ yargs
           type: 'string',
           demandOption: true,
         },
+        group: {
+          alias: ['g'],
+          description: 'the sdk group',
+          type: 'string',
+        },
         version: {
           alias: ['v'],
           description: 'the sdk version (required for non-JS SDKs)',

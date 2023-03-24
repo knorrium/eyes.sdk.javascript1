@@ -50,7 +50,7 @@
     "test": "yarn test:coverage",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}",
     "test:sanity": "echo 'create sanity suite'",
-    "report": "bongo report --name 'js_images'",
+    "report": "bongo report --name 'js_images' --group 'images'",
     "deps": "bongo deps",
     "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='images' -f links='types test-utils core-base core eyes utils'",
     "gh:publish": "gh workflow run publish-images.yml --ref $(git rev-parse --abbrev-ref HEAD)",
