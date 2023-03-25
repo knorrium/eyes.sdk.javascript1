@@ -86,13 +86,14 @@ class CommandExecutor(object):
     ):
         # type: (ManagerType, Optional[int], Optional[int], Optional[Text]) -> dict
         context = self._protocol.context(self._connection)
-        payload = {"type": manager_type.value}
+        settings = {}
         if concurrency is not None:
-            payload["concurrency"] = concurrency
+            settings["concurrency"] = concurrency
         if legacy_concurrency is not None:
-            payload["legacyConcurrency"] = legacy_concurrency
+            settings["legacyConcurrency"] = legacy_concurrency
         if agent_id is not None:
-            payload["agentId"] = agent_id
+            settings["agentId"] = agent_id
+        payload = {"type": manager_type.value, "settings": settings}
         return self._checked_command(context, "Core.makeManager", payload)
 
     def core_get_viewport_size(self, driver):

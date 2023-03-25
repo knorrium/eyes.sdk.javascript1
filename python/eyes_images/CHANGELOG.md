@@ -1,3 +1,7 @@
+## [vNext]
+### Updated
+- Use new Core.makeManager command structure introduced in eyes-core 2.4.3 [Trello 3182](https://trello.com/c/LuGK3JCN)
+
 ## [5.16.0] - 2023-03-08
 ### Added
 - Support webview targets with appium [Trello 3162](https://trello.com/c/77BDT6t6)
