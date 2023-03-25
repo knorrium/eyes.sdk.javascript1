@@ -146,8 +146,9 @@ def test_web_desktop(data, tmp_path):
     [
         ["ios", "mobile_native"],
         ["ios", "native_mobile_grid"],
-        #["android", "mobile_native"],
-        #["android", "native_mobile_grid"],
+        ["android", "mobile_native"],
+        # separate applitools.yaml to have different sections for ios/android
+        # ["android", "native_mobile_grid"],
     ],
     ids=lambda d: str(d),
 )

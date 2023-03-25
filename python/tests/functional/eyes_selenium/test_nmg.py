@@ -1,5 +1,3 @@
-import warnings
-
 import pytest
 from appium.webdriver import Remote
 
@@ -14,15 +12,13 @@ from applitools.selenium import Eyes, VisualGridRunner
 
 @pytest.mark.sauce
 @pytest.mark.filterwarnings("ignore:desired_capabilities has been deprecated")
-@pytest.mark.skip("Needs new app")
 def test_nmg_ios_basic(sauce_driver_url):
     caps = {
-        "app": "https://applitools.jfrog.io/artifactory/"
-        "Examples/DuckDuckGo-instrumented.app.zip",
+        "app": "https://applitools.jfrog.io/artifactory/Examples/"
+        "DuckDuckGo-instrumented.app.zip",
         "deviceName": "iPhone 12 Pro Simulator",
         "platformName": "iOS",
         "platformVersion": "15.2",
-        "deviceOrientation": "portrait",
     }
     Eyes.set_nmg_capabilities(caps)
     with Remote(sauce_driver_url, caps) as driver:
@@ -41,15 +37,13 @@ def test_nmg_ios_basic(sauce_driver_url):
 
 
 @pytest.mark.sauce
-@pytest.mark.skip("Needs new app")
 def test_nmg_android_basic(sauce_driver_url):
     caps = {
-        "app": "storage:filename=e2e_applitoolsify_test.apk",
+        "app": "storage:filename=android_nmg.apk",
+        "appium:autoGrantPermissions": True,
+        "deviceName": "Android GoogleAPI Emulator",
         "platformName": "Android",
         "platformVersion": "11.0",
-        "deviceName": "Android GoogleAPI Emulator",
-        "deviceOrientation": "portrait",
-        "automationName": "UiAutomator2",
     }
     Eyes.set_nmg_capabilities(caps)
     with Remote(sauce_driver_url, caps) as driver:

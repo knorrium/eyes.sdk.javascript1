@@ -41,9 +41,10 @@ def get_variables(
                 desired_caps.update(
                     {
                         "automationName": "UiAutomator2",
-                        "app": "storage:filename=e2e_applitoolsify_test.apk",
+                        "app": "storage:filename=android_nmg.apk",
                         "clearSystemFiles": True,
                         "noReset": True,
+                        "appium:autoGrantPermissions": True,
                     }
                 )
             elif platform == "ios":
