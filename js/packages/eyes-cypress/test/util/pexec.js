@@ -2,13 +2,21 @@ const {exec} = require('child_process')
 const {promisify: p} = require('util')
 const pexec = p(exec)
 
-const nodeMajorVersion = process.version.match(/\d+/)[0] - ''
-const env = {...process.env}
-if (nodeMajorVersion >= 18) {
-  env.NODE_OPTIONS = '--openssl-legacy-provider'
+function getMajorVersion(version) {
+  return version.match(/(\d+)/g)[0] - ''
 }
 
+const nodeMajorVersion = getMajorVersion(process.version)
+const env = {...process.env}
+
 function pexecWarpper(cmd, options) {
+  let cypressVersion
+  try {
+    cypressVersion = require(`${process.cwd()}/node_modules/cypress/package.json`).version
+  } catch (_e) {}
+  if (cypressVersion && getMajorVersion(cypressVersion) < 9 && nodeMajorVersion >= 18) {
+    env.NODE_OPTIONS = '--openssl-legacy-provider'
+  }
   const promisePPexec = pexec(cmd, {...options, env})
   console.log(`$ ${cmd}`)
   // const {child} = promisePPexec
