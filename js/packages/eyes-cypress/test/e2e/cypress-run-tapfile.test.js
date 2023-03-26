@@ -1,10 +1,9 @@
 'use strict'
 const {describe, it, before, after} = require('mocha')
 const {expect} = require('chai')
-const {exec} = require('child_process')
-const {promisify: p} = require('util')
 const path = require('path')
-const pexec = p(exec)
+const pexec = require('../util/pexec')
+const {promisify: p} = require('util')
 const fs = require('fs')
 const {presult} = require('@applitools/functional-commons')
 const readFile = p(fs.readFile)

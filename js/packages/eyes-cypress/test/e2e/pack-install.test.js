@@ -1,14 +1,12 @@
 'use strict'
 const {describe, it, after} = require('mocha')
-const {exec} = require('child_process')
 const {resolve} = require('path')
-const {promisify: p} = require('util')
 const fs = require('fs')
 const path = require('path')
 
 const rootPath = resolve(__dirname, '../..')
 const rootPackageJson = require(resolve(rootPath, 'package.json'))
-const pexec = p(exec)
+const pexec = require('../util/pexec')
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-pack-install')

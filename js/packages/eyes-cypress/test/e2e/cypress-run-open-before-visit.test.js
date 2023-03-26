@@ -1,9 +1,7 @@
 'use strict'
 const {describe, it, before, after} = require('mocha')
-const {exec} = require('child_process')
-const {promisify: p} = require('util')
 const path = require('path')
-const pexec = p(exec)
+const pexec = require('../util/pexec')
 const fs = require('fs')
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
@@ -31,7 +29,6 @@ describe('open before visit', () => {
         './node_modules/.bin/cypress run --headless --config testFiles=openBeforeVisit.js,integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js ',
         {
           maxBuffer: 10000000,
-          timeout: 40000,
         },
       )
     } catch (ex) {

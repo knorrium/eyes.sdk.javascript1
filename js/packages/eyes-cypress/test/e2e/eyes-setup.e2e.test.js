@@ -1,14 +1,12 @@
 'use strict'
 const {describe, it, after} = require('mocha')
 const {expect} = require('chai')
-const {exec} = require('child_process')
-const {promisify: p} = require('util')
 const path = require('path')
 const {presult} = require('@applitools/functional-commons')
 const utils = require('@applitools/utils')
 const {readFileSync, writeFileSync, existsSync, rmdirSync, unlinkSync} = require('fs')
 
-const pexec = p(exec)
+const pexec = require('../util/pexec')
 const cwd = process.cwd()
 const {version: packageVersion} = require('../../package.json')
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/setup')
@@ -23,7 +21,7 @@ function runSetupScript() {
   return utils.process.sh(`node ${binEyesSetupPath}`, {spawnOptions: {stdio: 'pipe'}})
 }
 
-describe('eyes-setup script (e2e)', () => {
+describe('eyes-setup script', () => {
   let originalPackageJson,
     packageJsonPath,
     packageJson,
