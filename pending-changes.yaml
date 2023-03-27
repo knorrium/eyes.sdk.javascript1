@@ -63,7 +63,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - map visualGridOptions to ufgOptions
 "@applitools/eyes-storybook":
   feature:
     - 

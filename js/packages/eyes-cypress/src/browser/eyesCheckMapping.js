@@ -19,6 +19,9 @@ function eyesCheckMapValues({openToCheckSettingsArgs, args, refer, appliConfFile
     'region',
     'selector',
     'element',
+    'variationGroupId',
+    'accessibilitySettings',
+    'visualGridOptions',
   ]
 
   let regionSettings = {}
@@ -51,6 +54,10 @@ function eyesCheckMapValues({openToCheckSettingsArgs, args, refer, appliConfFile
   }
   if (args.accessibilitySettings) {
     checkSettings.accessibilitySettings = accessibilitySettings
+  }
+
+  if (args.visualGridOptions) {
+    checkSettings.ufgOptions = args.visualGridOptions
   }
 
   if (args.target === 'region') {

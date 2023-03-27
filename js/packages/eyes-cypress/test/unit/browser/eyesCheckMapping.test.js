@@ -72,7 +72,7 @@ describe('eyes check mapping', () => {
       useDom: true,
       enablePatterns: true,
       matchLevel: 'Layout',
-      visualGridOptions: {
+      ufgOptions: {
         polyfillAdoptedStyleSheets: true,
       },
       layoutBreakpoints: [500, 1000],
