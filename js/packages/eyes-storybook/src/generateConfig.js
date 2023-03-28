@@ -40,7 +40,7 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     result.waitBeforeCapture = Number(result.waitBeforeCapture);
   }
 
-  if (result.showLogs === '1') {
+  if (result.showLogs === '1' || process.env.APPLITOOLS_SHOW_LOGS === 'true') {
     result.showLogs = true;
   }
 

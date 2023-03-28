@@ -99,4 +99,10 @@ describe('generateConfig', function() {
     const config = generateConfig({defaultConfig});
     expect(config.waitBeforeCapture).to.eql('.someClass');
   });
+
+  it('populates showLogs if APPLITOOLS_SHOW_LOGS env var is defined', () => {
+    process.env.APPLITOOLS_SHOW_LOGS = 'true';
+    const config = generateConfig({});
+    expect(config.showLogs).to.be.true;
+  });
 });
