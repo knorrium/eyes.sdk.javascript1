@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.31.5 - 2023/3/28
+
+### Features
+### Bug fixes
+- Optimized number of requests during polling
+- Write result files without throwing error
+
 ## 3.31.4 - 2023/3/17
 
 ### Features
