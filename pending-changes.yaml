@@ -69,6 +69,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Optimized number of requests during polling
+    - Write result files without throwing error
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`

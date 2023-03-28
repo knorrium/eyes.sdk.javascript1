@@ -55,7 +55,7 @@ describe('processResults', () => {
       totalTime: 10000,
       concurrency: 1,
     });
-    expect(processResult.formatter).to.equal(
+    expect(JSON.stringify(processResult.summary)).to.equal(
       JSON.stringify({
         results: [
           {
@@ -464,12 +464,12 @@ describe('processResults', () => {
         },
       ],
     };
-    const {formatter} = processResults({
+    const pr = processResults({
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
     });
-    const storedResults = JSON.parse(formatter).results;
+    const storedResults = pr.summary.results;
     expect(storedResults.length).to.eql(1);
     expect(storedResults[0].result.name).to.eql('My Component | Button1');
     expect(storedResults[0].error.message).to.eql(results[0].resultsOrErr[0].message);
@@ -492,12 +492,12 @@ describe('processResults', () => {
         },
       ],
     };
-    const {formatter} = processResults({
+    const {summary: processResultsSummary} = processResults({
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
     });
-    const storedResults = JSON.parse(formatter).results;
+    const storedResults = processResultsSummary.results;
     expect(storedResults.length).to.eql(1);
     expect(storedResults[0].result.name).to.eql('My Component | Button1');
     expect(storedResults[0].error.message).to.eql(results[0].resultsOrErr.message);

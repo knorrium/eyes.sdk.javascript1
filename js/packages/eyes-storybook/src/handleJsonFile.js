@@ -2,10 +2,11 @@
 
 const fs = require('fs');
 const {resolve} = require('path');
+const {formatters} = require('@applitools/core');
 
-function handleJsonFile(jsonFilePath, formatter) {
+function handleJsonFile(jsonFilePath, summary) {
   const path = resolve(jsonFilePath, 'eyes.json');
-  fs.writeFileSync(path, formatter.toJsonOutput());
+  fs.writeFileSync(path, formatters.toJsonOutput(summary));
   return path;
 }
 

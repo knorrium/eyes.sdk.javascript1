@@ -3,16 +3,20 @@ const {expect} = require('chai');
 const path = require('path');
 const {testServerInProcess} = require('@applitools/test-server');
 const utils = require('@applitools/utils');
+const os = require('os');
+const fs = require('fs');
 const {delay: psetTimeout, presult} = require('@applitools/functional-commons');
 const {version} = require('../../package.json');
 const snap = require('@applitools/snaptdout');
 
 const envWithColor = {...process.env, FORCE_COLOR: true};
 const spawnOptions = {stdio: 'pipe', env: envWithColor};
+const tmpdir = path.resolve(os.tmpdir(), 'eyes-storybook');
 
 describe('eyes-storybook', () => {
   let closeTestServer, showLogsOrig;
   before(async () => {
+    fs.mkdirSync(tmpdir, {recursive: true});
     closeTestServer = (await testServerInProcess({port: 7272})).close;
     showLogsOrig = process.env.APPLITOOLS_SHOW_LOGS;
     if (showLogsOrig) {
@@ -26,6 +30,7 @@ describe('eyes-storybook', () => {
   after(async () => {
     await closeTestServer();
     process.env.APPLITOOLS_SHOW_LOGS = '';
+    fs.rmdirSync(tmpdir, {recursive: true, force: true});
   });
 
   it('renders test storybook', async () => {
@@ -148,5 +153,27 @@ describe('eyes-storybook', () => {
 
     await snap(normalizedStdout, 'multi browser stdout');
     await snap(stderr, 'multi browser stderr');
+  });
+
+  it('write result file', async () => {
+    const single = require('./happy-config/single.config');
+    single.browser = [single.browser[0]];
+    single.jsonFilePath = single.tapFilePath = single.xmlFilePath = tmpdir;
+    await utils.process.sh(
+      `echo 'module.exports = ${JSON.stringify(single)}' > ${tmpdir}/single.config.js`,
+    );
+    await presult(
+      utils.process.sh(
+        `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
+          __dirname,
+          `${tmpdir}/single.config.js`,
+        )}`,
+        {spawnOptions},
+      ),
+    );
+
+    expect(fs.existsSync(`${tmpdir}/eyes.json`)).to.be.true;
+    expect(fs.existsSync(`${tmpdir}/eyes.tap`)).to.be.true;
+    expect(fs.existsSync(`${tmpdir}/eyes.xml`)).to.be.true;
   });
 });
