@@ -65,19 +65,13 @@ async function eyesStorybook({
   if (config.puppeteerExtraHTTPHeaders) {
     await page.setExtraHTTPHeaders(config.puppeteerExtraHTTPHeaders);
   }
-  const core = await makeCore({
-    spec,
-    concurrency: testConcurrency,
-    logger,
-    agentId,
-  });
+  const core = await makeCore({spec, agentId, logger});
   const manager = await core.makeManager({
-    spec,
-    concurrency: testConcurrency,
-    agentId,
-    logger,
-    core,
     type: 'ufg',
+    settings: {
+      concurrency: testConcurrency,
+    },
+    logger,
   });
 
   const settings = {
