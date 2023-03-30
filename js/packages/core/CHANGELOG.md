@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.4 - 2023/3/30
+
+### Features
+### Bug fixes
+- Improve performance in DOM snapshot
+
 ## 2.4.3 - 2023/3/22
 
 ### Features
