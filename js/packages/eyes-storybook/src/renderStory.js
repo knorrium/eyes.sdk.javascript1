@@ -1,6 +1,4 @@
 'use strict';
-const getStoryTitle = require('./getStoryTitle');
-const getStoryBaselineName = require('./getStoryBaselineName');
 const {deprecationWarning} = require('./errMessages');
 const throat = require('throat');
 
@@ -15,10 +13,11 @@ function makeRenderStory({
   serverSettings,
 }) {
   const throttle = throat(storyDataGap);
-  return function renderStory({config, story, snapshots, url}) {
+  return function renderStory({story, snapshots, url}) {
+    const config = story.config;
     const {name, kind, parameters, hasPlayFunction} = story;
-    const baselineName = getStoryBaselineName({name, kind, parameters});
-    const title = getStoryTitle({name, kind, parameters});
+    const baselineName = story.baselineName;
+    const title = story.storyTitle;
     const eyesParameters = (parameters && parameters.eyes) || {};
     const eyesOptions = {
       ...config,
@@ -38,7 +37,6 @@ function makeRenderStory({
       target,
       fully,
       selector,
-      region,
       tag,
       properties,
       ignore,
@@ -111,10 +109,8 @@ function makeRenderStory({
       renderers,
       hooks: scriptHooks,
       sizeMode,
-      target,
+      region: target === 'region' ? selector : undefined,
       fully,
-      selector,
-      region,
       tag,
       sendDom,
       ufgOptions: visualGridOptions,
@@ -133,6 +129,23 @@ function makeRenderStory({
           }
         : undefined,
     };
+
+    return timeItAsync(baselineName, async () => {
+      const {checkAndClose} = await openEyes({settings: openParams});
+      return new Promise((resolve, reject) => {
+        throttle(async () => {
+          try {
+            const checkResults = await checkAndClose({
+              settings: {...checkParams, ...closeSettings, throwEx: false},
+              target: snapshots,
+            });
+            resolve(checkResults);
+          } catch (ex) {
+            reject(ex);
+          }
+        });
+      });
+    }).then(onDoneStory);
 
     function mapAccessibilityRegions(accessabilityRegions) {
       if (!accessabilityRegions) return;
@@ -195,23 +208,6 @@ function makeRenderStory({
         return true;
       }
     }
-
-    return timeItAsync(baselineName, async () => {
-      const {checkAndClose} = await openEyes({settings: openParams});
-      return new Promise((resolve, reject) => {
-        throttle(async () => {
-          try {
-            const checkResults = await checkAndClose({
-              settings: {...checkParams, ...closeSettings, throwEx: false},
-              target: snapshots,
-            });
-            resolve(checkResults);
-          } catch (ex) {
-            reject(ex);
-          }
-        });
-      });
-    }).then(onDoneStory);
 
     function onDoneStory(results) {
       logger.log('finished story', baselineName, 'in', performance[baselineName]);

@@ -54,7 +54,6 @@ describe('eyes-storybook', () => {
         'See details at <some_url>',
       )
       .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds');
-    console.log(normalizedStdout, stderr);
     await snap(normalizedStdout, 'stdout');
     await snap(stderr, 'stderr');
   });

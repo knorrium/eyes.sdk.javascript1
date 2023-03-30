@@ -19,10 +19,10 @@ const {takeDomSnapshots} = require('@applitools/core');
 const {Driver} = require('@applitools/driver');
 const spec = require('@applitools/spec-driver-puppeteer');
 const {refineErrorMessage} = require('./errMessages');
-const {splitConfigsByBrowser} = require('./shouldRenderIE');
 const executeRenders = require('./executeRenders');
 const {makeCore} = require('@applitools/core');
 const {makeUFGClient} = require('@applitools/ufg-client');
+const makeGetStoriesWithConfig = require('./getStoriesWithConfig');
 
 const CONCURRENT_PAGES = 3;
 const MAX_RETRIES = 10;
@@ -81,6 +81,8 @@ async function eyesStorybook({
     agentId,
   };
   const [error, account] = await presult(core.getAccountInfo({settings, logger}));
+
+  const getStoriesWithConfig = makeGetStoriesWithConfig({config});
 
   if (error && error.message && error.message.includes('Unauthorized(401)')) {
     const failMsg = 'Incorrect API Key';
@@ -155,7 +157,18 @@ async function eyesStorybook({
       config,
     });
 
-    logger.log(`starting to run ${storiesIncludingVariations.length} stories`);
+    logger.log(
+      `there are ${storiesIncludingVariations.length} stories after filtering and adding variations `,
+    );
+
+    const storiesByBrowserWithConfig = getStoriesWithConfig({
+      stories: storiesIncludingVariations,
+      logger,
+    });
+
+    logger.log(
+      `starting to run ${storiesByBrowserWithConfig.stories.length} normal stories ("non fake IE") and ${storiesByBrowserWithConfig.storiesWithIE.length} "fake IE stories"`,
+    );
 
     const getStoryData = makeGetStoryData({
       logger,
@@ -191,14 +204,13 @@ async function eyesStorybook({
     });
 
     logger.log('finished creating functions');
-    const configs = config.fakeIE ? splitConfigsByBrowser(config) : [config];
+
     const [error, results] = await presult(
       executeRenders({
         renderStories,
         setRenderIE,
         setTransitioningIntoIE,
-        configs,
-        stories: storiesIncludingVariations,
+        storiesByBrowserWithConfig,
         pagePool,
         logger,
         timeItAsync,

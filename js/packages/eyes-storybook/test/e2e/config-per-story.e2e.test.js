@@ -9,7 +9,7 @@ const snap = require('@applitools/snaptdout');
 const envWithColor = {...process.env, FORCE_COLOR: true};
 const spawnOptions = {stdio: 'pipe', env: envWithColor};
 
-describe('eyes-storybook mobile env', () => {
+describe('Config per story e2e', () => {
   let closeTestServer, showLogsOrig;
   before(async () => {
     closeTestServer = (await testServerInProcess({port: 7272})).close;
@@ -27,27 +27,29 @@ describe('eyes-storybook mobile env', () => {
     process.env.APPLITOOLS_SHOW_LOGS = '';
   });
 
-  it('renders test storybook - mobile env', async () => {
+  it('Config per story', async () => {
     const [err, result] = await presult(
       utils.process.sh(
         `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
           __dirname,
-          'happy-config/mobile.config.js',
+          'happy-config/config-per-story.config.js',
         )}`,
         {spawnOptions},
       ),
     );
+
     const stdout = err ? err.stdout : result.stdout;
     const stderr = err ? err.stderr : result.stderr;
     const normalizedStdout = stdout
       .replace(/\[Chrome \d+.\d+\]/g, '[Chrome]')
+      .replace(version, '<version>')
+      .replace(/\[Firefox \d+.\d+\]/g, '[Firefox]')
       .replace(version, '<version>')
       .replace(
         /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
         'See details at <some_url>',
       )
       .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds');
-    console.log(normalizedStdout, stderr);
     await snap(normalizedStdout, 'stdout');
     await snap(stderr, 'stderr');
   });

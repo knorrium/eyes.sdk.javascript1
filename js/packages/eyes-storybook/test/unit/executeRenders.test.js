@@ -4,161 +4,128 @@ const executeRenders = require('../../src/executeRenders');
 const {presult} = require('@applitools/functional-commons');
 
 describe('executeRenders', () => {
-  it('should call executeRender for each config', async () => {
-    const results = {};
-    let counter = 0;
-    const stories = [{hello: 'world'}];
+  it('should call executeRender for fakeIE and non fakeIE stories', async () => {
+    const renderStoriesCalls = [];
     const viewport = {width: 800, height: 600};
-    const configs = [
-      {browser: [{name: 'chrome', ...viewport}]},
-      {browser: [{name: 'firefox', ...viewport}]},
-    ];
-    const [err, result] = await executeRenders({
+    const storiesByBrowserWithConfig = {
+      stories: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [{name: 'chrome', ...viewport}],
+          },
+        },
+      ],
+      storiesWithIE: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [{name: 'ie', ...viewport}],
+          },
+        },
+      ],
+    };
+    await executeRenders({
       timeItAsync: (_a, cb) => cb(),
-      renderStories: async function(stories, config) {
-        Object.assign(results[counter], {config});
-        return [undefined, stories];
+      renderStories: async function(stories) {
+        renderStoriesCalls.push(stories);
+        return stories;
       },
       pagePool: {},
-      stories,
-      configs,
+      storiesByBrowserWithConfig,
+      pagePool: {
+        drain: () => {},
+      },
+      setTransitioningIntoIE: () => {},
       logger: {
-        verbose: function(txt) {
-          counter++;
-          if (!results[counter]) {
-            results[counter] = {log: [txt]};
-          } else {
-            results[counter].log.push(txt);
-          }
-        },
+        verbose: () => {},
       },
       setRenderIE: () => {},
     });
 
-    expect(err).to.be.undefined;
-    expect(result).to.deep.equal(stories);
-    expect(results.pagePoolDrained).to.be.undefined;
-    expect(results).to.deep.equal({
-      '1': {
-        log: [
-          'executing render story with {"browser":[{"name":"chrome","width":800,"height":600}]}',
-        ],
-        config: {
-          browser: [
-            {
-              name: 'chrome',
-              width: 800,
-              height: 600,
-            },
-          ],
-        },
-      },
-      '2': {
-        log: [
-          'executing render story with {"browser":[{"name":"firefox","width":800,"height":600}]}',
-        ],
-        config: {
-          browser: [
-            {
-              name: 'firefox',
-              width: 800,
-              height: 600,
-            },
-          ],
-        },
-      },
-    });
+    expect(renderStoriesCalls).to.eql([
+      storiesByBrowserWithConfig.stories,
+      storiesByBrowserWithConfig.storiesWithIE,
+    ]);
   });
 
   it('should drain pool in case of IE', async () => {
-    const results = {};
-    let counter = 0;
+    const renderStoriesCalls = [];
     let poolDrained = false;
     let renderIE = false;
     const viewport = {width: 800, height: 600};
-    const stories = [{hello: 'world'}];
-    const configs = [
-      {renderers: [{name: 'chrome', ...viewport}]},
-      {renderers: [{name: 'ie', ...viewport}], fakeIE: true},
-    ];
-    const [err, result] = await executeRenders({
+    const storiesByBrowserWithConfig = {
+      stories: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [{name: 'chrome', ...viewport}],
+          },
+        },
+      ],
+      storiesWithIE: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [{name: 'ie', ...viewport}],
+            fakeIE: true,
+          },
+        },
+      ],
+    };
+    const result = await executeRenders({
       timeItAsync: (_a, cb) => cb(),
       setTransitioningIntoIE: () => {},
-      renderStories: async function(stories, config) {
-        Object.assign(results[counter], {stories, config});
-        return [undefined, stories];
+      renderStories: async function(stories) {
+        renderStoriesCalls.push(stories);
+        return stories;
       },
       pagePool: {drain: () => (poolDrained = true)},
-      configs,
-      stories,
+      storiesByBrowserWithConfig,
       logger: {
-        verbose: function(txt) {
-          counter++;
-          if (!results[counter]) {
-            results[counter] = {log: [txt]};
-          } else {
-            results[counter].log.push(txt);
-          }
-        },
+        verbose: () => {},
       },
       setRenderIE: value => (renderIE = value),
     });
 
-    expect(err).to.be.undefined;
-    expect(result).to.deep.equal(stories);
     expect(poolDrained).to.be.true;
     expect(renderIE).to.be.true;
-    expect(results).to.deep.equal({
-      '1': {
-        log: [
-          'executing render story with {"renderers":[{"name":"chrome","width":800,"height":600}]}',
-        ],
-        stories: [
-          {
-            hello: 'world',
-          },
-        ],
-        config: {
-          renderers: [
-            {
-              name: 'chrome',
-              width: 800,
-              height: 600,
-            },
-          ],
-        },
-      },
-      '2': {
-        log: [
-          'executing render story with {"renderers":[{"name":"ie","width":800,"height":600}],"fakeIE":true}',
-        ],
-        stories: [
-          {
-            hello: 'world',
-          },
-        ],
-        config: {
-          renderers: [
-            {
-              name: 'ie',
-              width: 800,
-              height: 600,
-            },
-          ],
-          fakeIE: true,
-        },
-      },
-    });
+    expect(result).to.eql([
+      ...storiesByBrowserWithConfig.stories,
+      ...storiesByBrowserWithConfig.storiesWithIE,
+    ]);
+    expect(renderStoriesCalls).to.eql([
+      storiesByBrowserWithConfig.stories,
+      storiesByBrowserWithConfig.storiesWithIE,
+    ]);
   });
 
   it('should handle exceptions in renderStories', async () => {
     let counter = 0;
-    const stories = [{hello: 'world'}];
     const viewport = {width: 800, height: 600};
-    const configs = [
-      {browser: [{name: 'chrome', ...viewport}]},
-      {browser: [{name: 'firefox', ...viewport}]},
-    ];
+    const storiesByBrowserWithConfig = {
+      stories: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [
+              {name: 'chrome', ...viewport},
+              {name: 'firefox', ...viewport},
+            ],
+          },
+        },
+      ],
+      storiesWithIE: [
+        {
+          hello: 'world',
+          config: {
+            renderers: [{name: 'ie', ...viewport}],
+            fakeIE: true,
+          },
+        },
+      ],
+    };
+
     const [err, _result] = await presult(
       executeRenders({
         setTransitioningIntoIE: () => {},
@@ -172,8 +139,7 @@ describe('executeRenders', () => {
           }
         },
         pagePool: {},
-        stories,
-        configs,
+        storiesByBrowserWithConfig,
         logger: {
           verbose: () => {},
           log: () => {},
@@ -181,6 +147,7 @@ describe('executeRenders', () => {
         setRenderIE: () => {},
       }),
     );
+    expect(err).not.to.be.undefined;
     expect(err.message).to.equal('omg! something went wrong');
   });
 });

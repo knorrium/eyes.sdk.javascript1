@@ -27,7 +27,7 @@ describe('renderStories', () => {
       logger,
     });
 
-    const results = await renderStories([], {});
+    const results = await renderStories([]);
 
     expect(results).to.eql([]);
     await snap(getEvents().join(''), 'empty');
@@ -60,14 +60,19 @@ describe('renderStories', () => {
       pagePool,
     });
 
-    const stories = [{name: 's1', kind: 'k1'}];
+    const stories = [
+      {
+        name: 's1',
+        kind: 'k1',
+        config: {
+          bla: true,
+          fakeIE: true,
+          renderers: [{name: 'ie'}],
+        },
+      },
+    ];
 
-    await renderStories(stories, {
-      bla: true,
-      fakeIE: true,
-      renderers: [{name: 'ie'}],
-    });
-
+    await renderStories(stories, true);
     await snap(getEvents().join(''), 'IE rendering msg');
   });
 
@@ -98,13 +103,18 @@ describe('renderStories', () => {
       pagePool,
     });
 
-    const stories = [{name: 's1', kind: 'k1'}];
+    const stories = [
+      {
+        name: 's1',
+        kind: 'k1',
+        config: {
+          bla: true,
+          renderers: [{name: 'chrome'}, {name: 'ie'}],
+        },
+      },
+    ];
 
-    await renderStories(stories, {
-      bla: true,
-      renderers: [{name: 'chrome'}, {name: 'ie'}],
-    });
-
+    await renderStories(stories);
     await snap(getEvents().join(''), 'rendering msg');
   });
 

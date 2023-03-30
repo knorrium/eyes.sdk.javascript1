@@ -3,7 +3,6 @@ const getStoryUrl = require('./getStoryUrl');
 const getStoryBaselineName = require('./getStoryBaselineName');
 const ora = require('ora');
 const {presult} = require('@applitools/functional-commons');
-const {shouldRenderIE} = require('./shouldRenderIE');
 
 function makeRenderStories({
   getStoryData,
@@ -17,7 +16,7 @@ function makeRenderStories({
 }) {
   let newPageIdToAdd;
 
-  return async function renderStories(stories, config) {
+  return async function renderStories(stories, isIE) {
     let doneStories = 0;
     const allTestResults = [];
     let allStoriesPromise = Promise.resolve();
@@ -66,7 +65,7 @@ function makeRenderStories({
             getStoryData({
               story,
               storyUrl,
-              renderers: config.renderers,
+              renderers: story.config.renderers,
               page,
               waitBeforeStory: waitBeforeCapture,
             }),
@@ -92,7 +91,7 @@ function makeRenderStories({
               getStoryData({
                 story,
                 storyUrl,
-                renderers: config.renderers,
+                renderers: story.config.renderers,
                 page: newPageObj.page,
                 waitBeforeStory: waitBeforeCapture,
               }),
@@ -113,7 +112,6 @@ function makeRenderStories({
             snapshots: storyData,
             url: storyUrl,
             story,
-            config,
           });
           return onDoneStory(testResults, story);
         } catch (ex) {
@@ -134,11 +132,11 @@ function makeRenderStories({
     }
 
     function updateSpinnerText(number, length) {
-      return `Done ${number} stories out of ${length} ${shouldRenderIE(config) ? '(IE)' : ''}`;
+      return `Done ${number} stories out of ${length} ${isIE ? '(IE)' : ''}`;
     }
 
     function onDoneStory(resultsOrErr, story) {
-      spinner.text = updateSpinnerText(++doneStories, stories.length);
+      spinner.text = updateSpinnerText(++doneStories, stories.length, story.config);
       const title = getStoryBaselineName(story);
       allTestResults.push({title, resultsOrErr});
       return {title, resultsOrErr};

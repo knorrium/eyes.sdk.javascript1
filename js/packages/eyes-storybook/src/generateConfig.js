@@ -77,18 +77,31 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     );
   }
 
-  if (!result.browser) {
+  transformBrowser(result);
+  if (!result.renderers) {
     result.renderers = [{name: 'chrome', width: 1024, height: 768}];
-  } else {
+  }
+
+  return result;
+}
+
+function transformBrowser(result) {
+  if (result.browser) {
     result.renderers = [];
     if (!Array.isArray(result.browser)) {
       result.browser = [result.browser];
     }
     result.renderers = result.browser.map(browser => {
-      return browser.deviceName ? {chromeEmulationInfo: browser} : browser;
+      if (browser.deviceName) {
+        return {chromeEmulationInfo: browser};
+      } else if (!browser.name) {
+        return {...browser, name: 'chrome'};
+      } else {
+        return browser;
+      }
     });
   }
   delete result.browser;
   return result;
 }
-module.exports = generateConfig;
+module.exports = {generateConfig, transformBrowser};
