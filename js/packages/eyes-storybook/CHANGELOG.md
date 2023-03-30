@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.32.0 - 2023/3/30
+
+### Features
+- Add support for configuration per subsets of stories
+### Bug fixes
+- Improve performance in DOM snapshot
+
 ## 3.31.5 - 2023/3/28
 
 ### Features

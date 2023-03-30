@@ -66,9 +66,9 @@ Apollo SDK:
     - disableBrowserFetching change from open to check
 "@applitools/eyes-storybook":
   feature:
-    - Add support for configuration per subsets of stories
+    - 
   bug-fix:
-    - Improve performance in DOM snapshot
+    - 
 "@applitools/eyes-webdriverio5-service":
   feature:
     - Added new selector extensions `child` and `fallback`
