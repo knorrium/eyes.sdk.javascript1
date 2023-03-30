@@ -49,6 +49,8 @@ function eyesCheckMapValues({openToCheckSettingsArgs, args, refer, appliConfFile
     accessibilityRegions: convertAccessabilityRegions(args.accessibility),
     renderers,
   }
+  if (appliConfFile.disableBrowserFetching)
+    checkSettings.disableBrowserFetching = !!appliConfFile.disableBrowserFetching
   if (args.variationGroupId) {
     checkSettings.userCommandId = args.variationGroupId
   }

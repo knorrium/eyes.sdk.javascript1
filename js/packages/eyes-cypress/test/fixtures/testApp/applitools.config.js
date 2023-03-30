@@ -10,4 +10,5 @@ module.exports = {
   // failCypressOnDiff: true,
   // tapDirPath: './',
   // browser: [{name: 'firefox'}],
+  // disableBrowserFetching: true,
 };

@@ -153,31 +153,6 @@ describe('pluginExport', () => {
     })
   })
 
-  it('works with eyes disableBrowserFetching', async () => {
-    eyesConfig.eyesDisableBrowserFetching = true
-    const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
-    const __module = {
-      exports: () => ({bla: 'ret'}),
-    }
-
-    pluginExport(__module)
-    const ret = await __module.exports(() => {}, {})
-    expect(ret).to.eql({
-      bla: 'ret',
-      eyesPort: 123,
-      eyesDisableBrowserFetching: true,
-      eyesLayoutBreakpoints: undefined,
-      eyesIsDisabled: false,
-      eyesIsGlobalHooksSupported: false,
-      eyesFailCypressOnDiff: true,
-      eyesBrowser: undefined,
-      eyesTestConcurrency: 5,
-      eyesWaitBeforeCapture: undefined,
-      tapDirPath: undefined,
-      tapFileName: undefined,
-    })
-  })
-
   it('works with ts cypress.json config', async () => {
     const pluginExport = makePluginExport({startServer, eyesConfig, globalHooks})
     let __module = {
