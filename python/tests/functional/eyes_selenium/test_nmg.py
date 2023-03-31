@@ -14,8 +14,7 @@ from applitools.selenium import Eyes, VisualGridRunner
 @pytest.mark.filterwarnings("ignore:desired_capabilities has been deprecated")
 def test_nmg_ios_basic(sauce_driver_url):
     caps = {
-        "app": "https://applitools.jfrog.io/artifactory/Examples/"
-        "DuckDuckGo-instrumented.app.zip",
+        "app": "storage:filename=awesomeswift.app.zip",
         "deviceName": "iPhone 12 Pro Simulator",
         "platformName": "iOS",
         "platformVersion": "15.2",

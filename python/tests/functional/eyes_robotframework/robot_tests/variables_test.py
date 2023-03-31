@@ -50,7 +50,7 @@ def get_variables(
             elif platform == "ios":
                 desired_caps.update(
                     {
-                        "app": "https://applitools.jfrog.io/artifactory/Examples/DuckDuckGo-instrumented.app.zip",
+                        "app": "storage:filename=awesomeswift.app.zip",
                         "clearSystemFiles": True,
                         "noReset": True,
                         "automationName": "XCUITest",
