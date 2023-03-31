@@ -56,8 +56,8 @@
   },
   "devDependencies": {
     "@applitools/api-extractor": "1.2.12",
-    "@applitools/bongo": "^3.0.1",
-    "@applitools/test-utils": "1.5.14",
+    "@applitools/bongo": "^3.0.3",
+    "@applitools/test-utils": "1.5.15",
     "@types/node": "^12.20.55",
     "puppeteer": "^15.3.1"
   },
