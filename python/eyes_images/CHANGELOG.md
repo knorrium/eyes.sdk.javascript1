@@ -1,4 +1,4 @@
-## [vNext]
+## [5.17.0] - 2023-03-31
 ### Added
 - Galaxy S22, Galaxy Tab S7, Huawei Mate 50 Pro, Huawei Matepad 11 and Sony Xperia 10 II to the enum of supported emulators [Trello 3187](https://trello.com/c/mnXe35i8)
 - Huawei P30 Lite, Sony Xperia 1 II, Sony Xperia 10 II, Sony Xperia Ace II and Xiaomi Redmi Note 10 JE added to the enum of supported Android NMG devices [Trello 3187](https://trello.com/c/mnXe35i8)
