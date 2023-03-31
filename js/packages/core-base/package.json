@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core-base",
-  "version": "1.1.43",
+  "version": "1.1.44",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -58,9 +58,9 @@
     "throat": "6.0.2"
   },
   "devDependencies": {
-    "@applitools/bongo": "^3.0.2",
+    "@applitools/bongo": "^3.0.3",
     "@applitools/test-server": "^1.1.28",
-    "@applitools/test-utils": "^1.5.14",
+    "@applitools/test-utils": "^1.5.15",
     "@types/node": "^12.20.55",
     "nock": "^13.2.8"
   },
