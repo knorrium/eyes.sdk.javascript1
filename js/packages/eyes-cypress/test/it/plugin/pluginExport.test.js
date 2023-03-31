@@ -67,6 +67,7 @@ describe('pluginExport', () => {
       eyesFailCypressOnDiff: true,
       eyesIsDisabled: false,
       eyesIsGlobalHooksSupported: false,
+      eyesRemoveDuplicateTests: false,
       eyesBrowser: undefined,
       eyesTestConcurrency: 5,
       version: '6.5.0',
