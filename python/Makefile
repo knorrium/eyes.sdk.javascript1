@@ -64,7 +64,7 @@ install_installation_tests_requirements: install_tests_requirements node_modules
 
 
 install_selenium_generated_tests_requirements: install_functional_tests_requirements node_modules
-	python -m pip install 'webdriver-manager==3.7.0'
+	python -m pip install "webdriver-manager==3.7.0; python_version>='3'"
 
 
 install_publish_requirements: node_modules

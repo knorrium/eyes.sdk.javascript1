@@ -1,6 +1,11 @@
 ## [vNext]
+### Added
+- Galaxy S22, Galaxy Tab S7, Huawei Mate 50 Pro, Huawei Matepad 11 and Sony Xperia 10 II to the enum of supported emulators [Trello 3187](https://trello.com/c/mnXe35i8)
+- Huawei P30 Lite, Sony Xperia 1 II, Sony Xperia 10 II, Sony Xperia Ace II and Xiaomi Redmi Note 10 JE added to the enum of supported Android NMG devices [Trello 3187](https://trello.com/c/mnXe35i8)
+- iPad Air (4th generation) and iPad Pro (11-inch) (4th generation) added to the enum of supported iOS NMG devices [Trello 3187](https://trello.com/c/mnXe35i8)
 ### Updated
 - Use new Core.makeManager command structure introduced in eyes-core 2.4.3 [Trello 3182](https://trello.com/c/LuGK3JCN)
+- Removed unsupported Galaxy Note 9, Galaxy S9 and Galaxy S9 Plus NMG devices [Trello 3187](https://trello.com/c/mnXe35i8)
 
 ## [5.16.0] - 2023-03-08
 ### Added
