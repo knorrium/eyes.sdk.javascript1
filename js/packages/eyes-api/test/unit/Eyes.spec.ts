@@ -29,7 +29,7 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'classic', settings: {}}}],
+      [{command: 'makeManager', data: {type: 'classic', settings: undefined}}],
     )
   })
 
@@ -39,7 +39,7 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: 7, legacyConcurrency: undefined}}}],
+      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: 7}}}],
     )
   })
 
@@ -49,7 +49,33 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: undefined, legacyConcurrency: 7}}}],
+      [{command: 'makeManager', data: {type: 'ufg', settings: {legacyConcurrency: 7}}}],
+    )
+  })
+
+  it('should create classic eyes with removeDuplicateTests', async () => {
+    const eyes = new Eyes(new api.ClassicRunner({removeDuplicateTests: true}))
+    assert.ok(eyes.runner instanceof api.ClassicRunner)
+    await eyes.open(driver)
+    await eyes.check()
+    await eyes.close()
+    await eyes.runner.getAllTestResults()
+    assert.deepEqual(
+      core.history.filter(h => h.command === 'getManagerResults'),
+      [{command: 'getManagerResults', data: {settings: {throwErr: true, removeDuplicateTests: true}}}],
+    )
+  })
+
+  it('should create vg eyes with removeDuplicateTests', async () => {
+    const eyes = new Eyes(new api.VisualGridRunner({removeDuplicateTests: true}))
+    assert.ok(eyes.runner instanceof api.VisualGridRunner)
+    await eyes.open(driver)
+    await eyes.check()
+    await eyes.close()
+    await eyes.runner.getAllTestResults()
+    assert.deepEqual(
+      core.history.filter(h => h.command === 'getManagerResults'),
+      [{command: 'getManagerResults', data: {settings: {throwErr: true, removeDuplicateTests: true}}}],
     )
   })
 

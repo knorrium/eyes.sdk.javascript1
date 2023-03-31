@@ -27,7 +27,7 @@ export interface Core<TSpec extends SpecType, TDefaultType extends 'classic' | '
   getECClient(options?: {settings?: Partial<ECClientSettings>; logger?: Logger}): Promise<ECClient>
   makeManager<TType extends 'classic' | 'ufg' = TDefaultType>(options?: {
     type: TType
-    settings?: EyesManagerSettings
+    settings?: ManagerSettings
     logger?: Logger
   }): Promise<EyesManager<TSpec, TType>>
   openEyes<TType extends 'classic' | 'ufg' = TDefaultType>(options: {
@@ -66,7 +66,7 @@ export interface EyesManager<TSpec extends SpecType, TDefaultType extends 'class
     logger?: Logger
   }): Promise<Eyes<TSpec, TType>>
   getResults: (options?: {
-    settings?: GetResultsSettings<TDefaultType>
+    settings?: GetManagerResultsSettings<TDefaultType>
     logger?: Logger
   }) => Promise<TestResultSummary<'classic' | 'ufg'>>
 }
@@ -109,13 +109,13 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
     logger?: Logger
   }): Promise<void>
   getResults(options?: {
-    settings?: Partial<GetResultsSettings<TDefaultType>>
+    settings?: Partial<GetEyesResultsSettings<TDefaultType>>
     config?: Config<TSpec, TDefaultType>
     logger?: Logger
   }): Promise<TestResult<TDefaultType>[]>
 }
 
-export interface EyesManagerSettings {
+export interface ManagerSettings {
   concurrency?: number
   /** @deprecated */
   legacyConcurrency?: number
@@ -149,6 +149,12 @@ export type AbortSettings<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
 export type GetResultsSettings<TType extends 'classic' | 'ufg'> = (TType extends 'ufg'
   ? UFGCore.GetResultsSettings
   : ClassicCore.GetResultsSettings) & {throwErr?: boolean}
+
+export type GetEyesResultsSettings<TType extends 'classic' | 'ufg'> = GetResultsSettings<TType>
+
+export type GetManagerResultsSettings<TType extends 'classic' | 'ufg'> = GetEyesResultsSettings<TType> & {
+  removeDuplicateTests?: boolean
+}
 
 export type CheckResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
   ? UFGCore.CheckResult

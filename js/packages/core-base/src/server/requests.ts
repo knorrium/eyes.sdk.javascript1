@@ -150,6 +150,7 @@ export function makeCoreRequests({
         rendererId: settings.environment?.rendererId,
         rendererUniqueId: settings.environment?.rendererUniqueId,
         rendererInfo: settings.environment?.rendererInfo,
+        keepIfDuplicate: !!settings.baselineEnvName,
       } as TestInfo
       if (result.renderingInfo) {
         const {serviceUrl, accessToken, resultsUrl, ...rest} = result.renderingInfo
@@ -538,6 +539,8 @@ export function makeEyesRequests({
         result.userTestId = test.userTestId
         result.url = test.resultsUrl
         result.isNew = test.isNew
+        result.keepIfDuplicate = test.keepIfDuplicate
+        result.server = test.server
         // for backwards compatibility with outdated servers
         result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
         logger.log('Request "close" finished successfully with body', result)
@@ -573,6 +576,8 @@ export function makeEyesRequests({
       .then(async response => {
         const result: Mutable<TestResult> = await response.json()
         result.userTestId = test.userTestId
+        result.keepIfDuplicate = test.keepIfDuplicate
+        result.server = test.server
         logger.log('Request "abort" finished successfully with body', result)
         return [result]
       })

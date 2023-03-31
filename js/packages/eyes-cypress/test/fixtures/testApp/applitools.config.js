@@ -4,6 +4,7 @@ module.exports = {
   serverUrl2: 'eyes.applitools.com',
   serverUrl2: 'https://eyesfabric3eyes.applitools.com',
   saveNewTests: false,
+  removeDuplicateTests: true,
   // dontCloseBatches: true,
   // showLogs: true,
   // eyesTimeout: 1234,

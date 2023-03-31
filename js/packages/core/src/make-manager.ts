@@ -1,4 +1,4 @@
-import type {Core, EyesManager, Eyes, EyesManagerSettings} from './types'
+import type {Core, EyesManager, Eyes, ManagerSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
@@ -34,7 +34,7 @@ export function makeMakeManager<TSpec extends SpecType>({
     logger = defaultLogger,
   }: {
     type?: TType
-    settings?: EyesManagerSettings
+    settings?: ManagerSettings
     logger?: Logger
   } = {}): Promise<EyesManager<TSpec, TType>> {
     settings ??= {}

@@ -10,6 +10,7 @@ import which from 'which'
 import {type Logger} from '@applitools/logger'
 import {AddressInfo} from 'net'
 import {promisify} from 'util'
+import {EyesPluginConfig} from './index'
 export type StartServerReturn = {
   server: Omit<SocketWithUniversal, 'disconnect' | 'ref' | 'unref' | 'send' | 'request' | 'setPassthroughListener'>
   port: number
@@ -18,7 +19,7 @@ export type StartServerReturn = {
   closeUniversalServer: () => void
 }
 
-export default function makeStartServer({logger}: {logger: Logger}) {
+export default function makeStartServer({logger, eyesConfig}: {logger: Logger; eyesConfig: EyesPluginConfig}) {
   return async function startServer(options?: Cypress.PluginConfigOptions): Promise<StartServerReturn> {
     const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
     const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
@@ -142,7 +143,10 @@ export default function makeStartServer({logger}: {logger: Logger}) {
     function closeManager() {
       return Promise.all(
         managers.map(({manager, socketWithUniversal}) =>
-          socketWithUniversal.request('EyesManager.getResults', {manager, settings: {throwErr: false}}),
+          socketWithUniversal.request('EyesManager.getResults', {
+            manager,
+            settings: {throwErr: false, removeDuplicateTests: eyesConfig.eyesRemoveDuplicateTests},
+          }),
         ),
       )
     }

@@ -1,5 +1,6 @@
 import * as spec from '@applitools/spec-driver-webdriverio'
 import {makeCore} from '../../src/index'
+import {getTestInfo} from '@applitools/test-utils'
 import assert from 'assert'
 
 describe('get manager results', () => {
@@ -73,5 +74,72 @@ describe('get manager results', () => {
     await eyes.check({settings: {fully: false, renderers: [{name: 'firefox-3' as 'firefox', width: 640, height: 480}]}})
     const summary = await manager.getResults()
     assert.strictEqual((summary.results[0].error as any).reason, 'internal')
+  })
+
+  it('should remove duplicates', async () => {
+    const core = makeCore({spec})
+    const manager = await core.makeManager()
+
+    await driver.url('https://applitools.com/helloworld')
+
+    let eyes
+    eyes = await manager.openEyes({
+      target: driver,
+      settings: {
+        appName: 'core e2e',
+        testName: 'should support removing duplicates',
+        properties: [{name: 'latest', value: 'false'}],
+      },
+    })
+    await eyes.check({settings: {fully: false}})
+    await eyes.close()
+
+    // pseudo-retry
+    eyes = await manager.openEyes({
+      target: driver,
+      settings: {
+        appName: 'core e2e',
+        testName: 'should support removing duplicates',
+        properties: [{name: 'latest', value: 'true'}],
+      },
+    })
+    await eyes.check({settings: {fully: false}})
+    await eyes.close()
+
+    const summary = await manager.getResults({
+      settings: {removeDuplicateTests: true},
+    })
+    assert.deepStrictEqual(summary.results.length, 1)
+
+    const testInfo = await getTestInfo(summary.results[0].result)
+    assert.deepStrictEqual(testInfo.startInfo.properties, [{name: 'latest', value: 'true'}])
+  })
+
+  it('should not remove duplicates if baselineEnvName is used', async () => {
+    const core = makeCore({spec})
+    const manager = await core.makeManager()
+
+    await driver.url('https://applitools.com/helloworld')
+
+    let eyes
+    eyes = await manager.openEyes({
+      target: driver,
+      settings: {appName: 'core e2e', testName: 'should support removing duplicates', baselineEnvName: 'blah'},
+    })
+    await eyes.check({settings: {fully: false}})
+    await eyes.close()
+
+    // pseudo-retry
+    eyes = await manager.openEyes({
+      target: driver,
+      settings: {appName: 'core e2e', testName: 'should support removing duplicates', baselineEnvName: 'blah'},
+    })
+    await eyes.check({settings: {fully: false}})
+    await eyes.close()
+
+    const summary = await manager.getResults({
+      settings: {removeDuplicateTests: true},
+    })
+    assert.deepStrictEqual(summary.results.length, 2)
   })
 })

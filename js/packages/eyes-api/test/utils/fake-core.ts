@@ -51,6 +51,7 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
       }
 
       async function close() {
+        history.push({command: 'close'})
         const isDifferent = test.steps.some(step => step.settings.region && step.settings.region.includes('diff'))
         const isNew = test.steps.some(step => step.settings.region && step.settings.region.includes('new'))
         test.results = [
@@ -71,10 +72,12 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
       }
 
       async function abort() {
+        history.push({command: 'abort'})
         return
       }
 
       async function getResults({settings = {}}: any = {}) {
+        history.push({command: 'getEyesResults', data: {settings}})
         test.results.forEach((result: any) => {
           if (settings.throwErr && result.status === 'Unresolved') {
             const error = new Error('error') as any
@@ -88,7 +91,8 @@ export function makeFakeCore(): Core.Core<any, 'classic' | 'ufg'> & {history: an
       }
     }
 
-    async function getResults() {
+    async function getResults({settings = {}}: any = {}) {
+      history.push({command: 'getManagerResults', data: {settings}})
       return {} as any
     }
   }

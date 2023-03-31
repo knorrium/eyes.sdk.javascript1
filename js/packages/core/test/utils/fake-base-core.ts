@@ -28,7 +28,9 @@ export function makeFakeCore({
       emitter.emit('closeBatch', options)
       await hooks?.closeBatch?.(options)
     },
-    deleteTest: null as never,
+    async deleteTest(options) {
+      emitter.emit('deleteTest', options)
+    },
     async logEvent() {
       emitter.emit('logEvent')
     },
@@ -146,6 +148,10 @@ export function makeFakeCore({
               results.push({
                 status: steps.every(result => result.asExpected) ? ('Passed' as const) : ('Unresolved' as const),
                 stepsInfo: steps,
+                baselineId: 'baseline-id',
+                batchId: 'batch-id',
+                keepIfDuplicate: false,
+                server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: 'proxy'},
               })
             } finally {
               emitter.emit('afterClose', options)

@@ -1,7 +1,7 @@
 import type {
   Core,
   Eyes,
-  GetResultsSettings,
+  GetManagerResultsSettings,
   CloseBatchSettings,
   TestResult,
   TestResultContainer,
@@ -11,6 +11,7 @@ import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 import {InternalError} from './errors/internal-error'
+import {separateDuplicateResults} from './utils/separate-duplicate-results'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   core: Core<TSpec>
@@ -27,26 +28,51 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
     settings,
     logger = defaultLogger,
   }: {
-    settings?: GetResultsSettings<TType>
+    settings?: GetManagerResultsSettings<TType>
     logger?: Logger
   } = {}): Promise<TestResultSummary<TType>> {
-    const containers: TestResultContainer<TType>[][] = await Promise.all(
-      storage.map(async eyes => {
-        try {
-          const results = await eyes.getResults({settings: {...settings, throwErr: false}, logger})
-          return results.map(result => {
-            return {
+    let containers = await storage.reduce(async (promise, eyes) => {
+      try {
+        const results = await eyes.getResults({settings: {...settings, throwErr: false}, logger})
+        return promise.then(containers => {
+          return containers.concat(
+            results.map(result => ({
               result,
               error: result.status !== 'Passed' ? new TestError(result) : undefined,
               userTestId: result.userTestId,
-              renderer: (result as TestResult<'ufg'>).renderer,
+              renderer: (result as TestResult<'ufg'>).renderer as any,
+            })),
+          )
+        })
+      } catch (error: any) {
+        return promise.then(containers => containers.concat({error: new InternalError(error), ...error.info}))
+      }
+    }, Promise.resolve([] as TestResultContainer<TType>[]))
+
+    if (settings?.removeDuplicateTests) {
+      logger.log('User opted into removing duplicate tests, checking for duplicates...')
+      const [dedupedContainers, duplicateContainers] = separateDuplicateResults(containers)
+      containers = dedupedContainers
+      if (!duplicateContainers.length) logger.log('No duplicate tests found.')
+      else {
+        logger.log(`Duplicates found (${duplicateContainers.length} in total), cleaning them up...`)
+        await Promise.all(
+          duplicateContainers.map(async container => {
+            if (container.result) {
+              await core.deleteTest({
+                settings: {
+                  ...container.result.server,
+                  testId: container.result.id!,
+                  batchId: container.result.batchId!,
+                  secretToken: container.result.secretToken!,
+                },
+              })
             }
-          })
-        } catch (error: any) {
-          return [{error: new InternalError(error), ...error.info}]
-        }
-      }),
-    )
+          }),
+        )
+        logger.log('Done cleaning up duplicate tests!')
+      }
+    }
 
     const batches = storage.reduce((batches, eyes) => {
       if (!eyes.test.keepBatchOpen) {
@@ -59,7 +85,7 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
     await core.closeBatch({settings: Object.values(batches), logger}).catch(() => null)
 
     const summary = {
-      results: containers.flat(),
+      results: containers,
       passed: 0,
       unresolved: 0,
       failed: 0,

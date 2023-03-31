@@ -73,14 +73,14 @@
     ws "8.12.0"
     yargs "17.6.2"
 
-"@applitools/core@2.4.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.4.3.tgz#1ca111f45369f21a37e202dd52e1ee199b4547bf"
-  integrity sha512-DTh/1jWeYwEIkrlKD3wWAjpYENLsCqsQNn/9B1SViXvWwA9vJ6L7wBgO1aoQ6LHlw64/wXfrVR3TkrLaZO6z2w==
+"@applitools/core@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.4.4.tgz#d486f365653e9feef0611081b3599b0b23efcd55"
+  integrity sha512-OnBfh3/McKC6g1caK1baDluEnKEhQPmtvwCxTTGYacKtAjgFm9Ozay2JKboPCGwmj3cimoqX6FQXoQI93nMr0g==
   dependencies:
     "@applitools/core-base" "1.1.43"
     "@applitools/dom-capture" "11.2.1"
-    "@applitools/dom-snapshot" "4.7.6"
+    "@applitools/dom-snapshot" "4.7.7"
     "@applitools/driver" "1.11.37"
     "@applitools/ec-client" "1.2.17"
     "@applitools/logger" "1.1.48"
@@ -128,10 +128,10 @@
     css-tree "2.3.1"
     pako "1.0.11"
 
-"@applitools/dom-snapshot@4.7.6":
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.7.6.tgz#ec706c5704a28d58961b6944fec313835284c46e"
-  integrity sha512-D1aW46M25+IraGD0mGpI6uGLlaFglDloZAIbmYjXFzowCWGnfyiHSGU5qo2mypeqL51ueztrj/ORQivMCwsHDw==
+"@applitools/dom-snapshot@4.7.7":
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-4.7.7.tgz#9ff6f8667910dad6113350a7e5ff7ece8443ec92"
+  integrity sha512-WNIDUtjVLGjzOyeF4ySDtNkuXaRNaCJ42HCPXHEdBAaUagimCmlrAlx+WXZNHLYaGjM5nFSVu24siGazKyeyfQ==
   dependencies:
     "@applitools/dom-shared" "1.0.9"
     "@applitools/functional-commons" "1.6.0"

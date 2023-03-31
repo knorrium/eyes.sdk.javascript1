@@ -10,27 +10,27 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Added `removeDuplicateTests` property to the `GetManagerResultsSettings`
   bug-fix:
     - 
 "@applitools/eyes-selenium":
   feature:
-    - 
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - 
 "@applitools/eyes-playwright":
   feature:
-    - 
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - 
 "@applitools/eyes-puppeteer":
   feature:
-    - 
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
@@ -47,6 +47,7 @@ Apollo SDK:
     - Additional internal event logs
     - Add NML support for Android
     - Crop screenshot image base on account info
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
@@ -55,13 +56,14 @@ Apollo SDK:
   feature:
     - Added `Resize` value to `StitchMode` enum
     - Improved extraction of nml element
+    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - Avoid handing process when using execution cloud
     - Fixed slowness during ufg tests
     - Optimized number of requests during polling
 "@applitools/eyes-cypress":
   feature:
-    - 
+    - Added `removeDuplicateTests` configuration to remove duplicated tests in the runner at the end of execution
   bug-fix:
     - disableBrowserFetching change from open to check
 "@applitools/eyes-storybook":

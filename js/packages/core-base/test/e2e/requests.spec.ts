@@ -43,6 +43,16 @@ describe('requests', () => {
 
     await eyes.close()
     const [result] = await eyes.getResults()
+
+    assert.ok(result.url)
+    assert.strictEqual(result.isNew, false)
+    assert.strictEqual(result.keepIfDuplicate, false)
+    assert.deepStrictEqual(result.server, {
+      serverUrl: 'https://eyesapi.applitools.com',
+      apiKey: process.env.APPLITOOLS_API_KEY,
+      proxy: undefined,
+    })
+
     const info = await getTestInfo(result)
     assert.deepStrictEqual(info.actualAppOutput[0].imageMatchSettings.ignore, [
       {left: 0, top: 0, width: 100, height: 100},

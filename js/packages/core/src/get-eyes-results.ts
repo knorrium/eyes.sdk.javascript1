@@ -1,4 +1,4 @@
-import type {Eyes, GetResultsSettings, TestResult} from './types'
+import type {Eyes, GetEyesResultsSettings, TestResult} from './types'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
@@ -16,7 +16,7 @@ export function makeGetEyesResults<TSpec extends SpecType, TType extends 'classi
     settings,
     logger = defaultLogger,
   }: {
-    settings?: GetResultsSettings<TType>
+    settings?: GetEyesResultsSettings<TType>
     logger?: Logger
   } = {}): Promise<TestResult<TType>[]> {
     const typedEyes = await eyes.getTypedEyes({logger})

@@ -61,6 +61,7 @@ export interface TestInfo {
   resultsUrl: string
   isNew: boolean
   keepBatchOpen: boolean
+  keepIfDuplicate: boolean
   server: ServerSettings
   account: AccountInfo
   rendererId?: string
@@ -311,6 +312,7 @@ type SessionUrls = {
 }
 export interface TestResult {
   readonly id?: string
+  readonly baselineId?: string
   readonly userTestId?: string
   readonly name?: string
   readonly secretToken?: string
@@ -345,4 +347,6 @@ export interface TestResult {
   readonly layoutMatches?: number
   readonly noneMatches?: number
   readonly url?: string
+  readonly keepIfDuplicate: boolean
+  readonly server: ServerSettings
 }

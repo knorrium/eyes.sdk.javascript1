@@ -49,6 +49,15 @@ describe('getAllTestResults', () => {
     expect(v).to.contain('This is the second test')
   })
 
+  it('return test results for all managers without duplicates', async () => {
+    // removeDuplicateTests opted into in test/fixtures/testApp/applitools.config.js
+    const [err, v] = await presult(runCypress('get-test-results.js', 'getAllTestResultsWithDuplicates.js'))
+    expect(err).to.be.undefined
+    expect(v).to.contain('This is the first test')
+    expect(v).to.contain('This is the second test')
+    expect(v).to.contain('passed=2')
+  })
+
   it('delete test results', async () => {
     const config = {...applitoolsConfig, showLogs: true}
     fs.writeFileSync(`${targetTestAppPath}/applitools.config.js`, 'module.exports =' + JSON.stringify(config, 2, null))

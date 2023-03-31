@@ -16,6 +16,7 @@ describe('config', () => {
       eyesDisableBrowserFetching: false,
       eyesTestConcurrency: 5,
       eyesWaitBeforeCapture: undefined,
+      eyesRemoveDuplicateTests: false,
       tapDirPath: undefined,
       tapFileName: undefined,
     })
@@ -35,6 +36,7 @@ describe('config', () => {
       eyesDisableBrowserFetching: false,
       eyesTestConcurrency: 5,
       eyesWaitBeforeCapture: undefined,
+      eyesRemoveDuplicateTests: false,
       tapDirPath: undefined,
       tapFileName: undefined,
     })

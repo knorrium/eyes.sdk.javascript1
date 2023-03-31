@@ -6,9 +6,22 @@ const batch = {
   name: process.env.APPLITOOLS_BATCH_NAME || 'JS Coverage Tests',
 }
 
-function setupEyes({runner, vg, showLogs, saveLogs, saveDebugScreenshots, sdk = cwd, ...config} = {}) {
-  const {Eyes, VisualGridRunner} = require(require.resolve(path.join(sdk, './dist'), {paths: [cwd]}))
-  runner = runner || (vg ? new VisualGridRunner({testConcurrency: 500}) : undefined)
+function setupEyes({
+  runner,
+  vg,
+  removeDuplicateTests,
+  showLogs,
+  saveLogs,
+  saveDebugScreenshots,
+  sdk = cwd,
+  ...config
+} = {}) {
+  const {Eyes, VisualGridRunner, ClassicRunner} = require(require.resolve(path.join(sdk, './dist'), {paths: [cwd]}))
+  runner =
+    runner ||
+    (vg
+      ? new VisualGridRunner({testConcurrency: 500, removeDuplicateTests})
+      : new ClassicRunner({removeDuplicateTests}))
   const configuration = {
     batch,
     parentBranchName: 'master',

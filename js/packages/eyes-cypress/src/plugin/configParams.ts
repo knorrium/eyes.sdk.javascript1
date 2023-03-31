@@ -41,6 +41,7 @@ const configParams = [
   'notifyOnCompletion',
   'batchNotify',
   'dontCloseBatches',
+  'removeDuplicateTests',
 ]
 
 export default configParams

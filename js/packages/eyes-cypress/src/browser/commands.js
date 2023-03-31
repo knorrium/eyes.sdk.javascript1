@@ -22,9 +22,12 @@ let manager,
 async function getSummary() {
   if (_summary) return _summary
   await Promise.all(closePromiseArr)
-  _summary = socket.request('EyesManager.getResults', {manager, settings: {throwErr}}).catch(err => {
-    return {results: [{result: err.info.result}]}
-  })
+  const removeDuplicateTests = Cypress.config('eyesRemoveDuplicateTests')
+  _summary = socket
+    .request('EyesManager.getResults', {manager, settings: {throwErr, removeDuplicateTests}})
+    .catch(err => {
+      return {results: [{result: err.info.result}]}
+    })
   _summary = await _summary
 
   return _summary
@@ -127,10 +130,10 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
 
       manager =
         manager ||
-        (await socket.request(
-          'Core.makeManager',
-          Object.assign({}, {concurrency: Cypress.config('eyesTestConcurrency')}, {type: 'ufg'}),
-        ))
+        (await socket.request('Core.makeManager', {
+          concurrency: Cypress.config('eyesTestConcurrency'),
+          type: 'ufg',
+        }))
     }
 
     const appliConfFile = Cypress.config('appliConfFile')
