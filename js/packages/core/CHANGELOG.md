@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.5 - 2023/3/31
+
+### Features
+- Added `removeDuplicateTests` property to the `GetManagerResultsSettings`
+### Bug fixes
+
 ## 2.4.4 - 2023/3/30
 
 ### Features

@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Added `removeDuplicateTests` property to the `GetManagerResultsSettings`
+    - 
   bug-fix:
     - 
 "@applitools/eyes-selenium":
