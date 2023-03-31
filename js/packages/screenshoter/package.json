@@ -75,10 +75,10 @@
     "png-async": "0.9.4"
   },
   "devDependencies": {
-    "@applitools/bongo": "^3.0.1",
+    "@applitools/bongo": "^3.0.3",
     "@applitools/driver": "^1.11.37",
-    "@applitools/spec-driver-webdriverio": "^1.4.32",
-    "@applitools/test-utils": "^1.5.14",
+    "@applitools/spec-driver-webdriverio": "^1.4.33",
+    "@applitools/test-utils": "^1.5.15",
     "appium": "^1.22.3",
     "chromedriver": "^101.0.0",
     "eslint": "^8.16.0",
