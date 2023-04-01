@@ -1,5 +1,7 @@
 from datetime import datetime
+from enum import Enum
 
+import pytest
 from mock import ANY
 from selenium.webdriver.common.by import By
 
@@ -643,3 +645,29 @@ def test_configuration_schema_allows_strings_instead_of_enums():
 
     assert errors == {}
     assert json == {"stitchMode": "CSS"}
+
+
+def test_configuration_schema_allows_any_compatible_enums():
+    class DummyStitchMode(Enum):
+        CSS = "CSS"
+
+    serializer = schema.EyesConfig()
+    conf = Configuration()
+    conf.stitch_mode = DummyStitchMode.CSS
+
+    json, errors = serializer.dump(conf)
+
+    assert errors == {}
+    assert json == {"stitchMode": "CSS"}
+
+
+def test_configuration_schema_raises_on_incompatible_enums():
+    class DummyStitchMode(Enum):
+        CSS = "wrong"
+
+    serializer = schema.EyesConfig()
+    conf = Configuration()
+    conf.stitch_mode = DummyStitchMode.CSS
+
+    with pytest.raises(ValueError, match="is not a valid StitchMode"):
+        serializer.dump(conf)

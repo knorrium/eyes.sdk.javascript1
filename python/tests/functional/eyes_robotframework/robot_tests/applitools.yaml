@@ -48,7 +48,7 @@ web:
     name: RobotFramework | Web | Selenium
   force_full_page_screenshot: false  #optional
   wait_before_screenshots: 100  #optional
-#  stitch_mode: CSS   # Scroll | CSS
+  stitch_mode: Scroll   # Scroll | CSS
   hide_scrollbars: false
 #  hide_caret: true
 # ALL SETTINGS FROM `SHARED SECTION` COULD BE PASSED HERE AS WELL

@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import enum
 import typing as t
 
 from marshmallow.fields import Dict, Field
@@ -24,8 +25,6 @@ from .fluent.region import AccessibilityRegionBySelector
 from .fluent.target_path import RegionLocator
 
 if t.TYPE_CHECKING:
-    import enum
-
     from applitools.common import config as cfg
     from applitools.common import ultrafastgrid as ufg
     from applitools.core.fluent import region
@@ -44,7 +43,11 @@ class Enum(Field):
             return None
         elif isinstance(value, self.enum_type):
             return value.value
-        else:
+        elif isinstance(value, enum.Enum):
+            # robotframework library defines customized enums like RobotStitchMode
+            # allow them but verify their values are matching
+            return self.enum_type(value.value).value
+        else:  # accept raw enum values but check their correctness
             return self.enum_type(value).value
 
     def _deserialize(self, value, *_):
