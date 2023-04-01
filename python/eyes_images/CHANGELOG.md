@@ -1,4 +1,4 @@
-## [vNext]
+## [5.17.1] - 2023-04-01
 ### Fixed
 - Permit compatible values of enums in Configuration objects [Trello 3188](https://trello.com/c/VaZniTQ4)
 
