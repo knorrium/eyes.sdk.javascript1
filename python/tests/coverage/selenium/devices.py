@@ -86,6 +86,7 @@ def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
         "appium:clearSystemFiles": True,
         "appium:deviceName": "iPhone XS Simulator",
         "appium:platformVersion": "13.0",
+        "idleTimeout": 180,
         "platformName": "iOS",
         "sauce:options": {
             "appiumVersion": "1.19.2",
@@ -102,6 +103,7 @@ def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
 def iphone_12(app, sauce_url, browser_name, orientation, name_of_test):
     capabilities = {
         "deviceName": "iPhone 12 Pro Simulator",
+        "idleTimeout": 180,
         "platformVersion": "15.2",
         "platformName": "iOS",
         "deviceOrientation": orientation.upper(),

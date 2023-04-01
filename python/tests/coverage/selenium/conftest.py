@@ -33,13 +33,7 @@ def driver_builder(chrome):
 @fixture
 def driver(driver_builder):
     yield driver_builder
-    try:
-        driver_builder.quit()
-    except WebDriverException as exc:
-        if "has already finished" in exc.msg:
-            pass  # avoid error if driver is timed out during teardown
-        else:
-            raise
+    driver_builder.quit()
 
 
 @fixture
