@@ -1,5 +1,5 @@
-import type {Location, Size, Region} from '@applitools/utils'
-import type {ScreenOrientation, Cookie} from './types'
+import type {Size, Region} from '@applitools/utils'
+import type {DriverInfo, Capabilities, ScreenOrientation, Cookie} from './types'
 import {type CommonSelector} from './selector'
 
 export type SpecType<TDriver = unknown, TContext = unknown, TElement = unknown, TSelector = unknown> = {
@@ -47,7 +47,7 @@ export interface SpecDriver<T extends SpecType> {
   getViewportSize?(driver: T['driver']): Promise<Size>
   getCookies?(driver: T['driver'] | T['context'], context?: boolean): Promise<Cookie[]>
   getDriverInfo?(driver: T['driver']): Promise<DriverInfo>
-  getCapabilities?(driver: T['driver']): Promise<Record<string, any>>
+  getCapabilities?(driver: T['driver']): Promise<Capabilities>
   getTitle(driver: T['driver']): Promise<string>
   getUrl(driver: T['driver']): Promise<string>
   takeScreenshot(driver: T['driver']): Promise<Buffer | string>
@@ -71,43 +71,6 @@ export interface SpecDriver<T extends SpecType> {
   // #endregion
 
   getSessionMetadata?(driver: T['driver']): Promise<any>
-}
-
-export type DriverInfo = {
-  sessionId?: string
-  remoteHostname?: string
-  browserName?: string
-  browserVersion?: string
-  platformName?: string
-  platformVersion?: string
-  deviceName?: string
-  userAgent?: string
-  viewportLocation?: Location
-  viewportSize?: Size
-  displaySize?: Size
-  orientation?: ScreenOrientation
-  pixelRatio?: number
-  viewportScale?: number
-  safeArea?: Region
-  statusBarSize?: number
-  navigationBarSize?: number
-  isW3C?: boolean
-  isChrome?: boolean
-  isChromium?: boolean
-  isEmulation?: boolean
-  isMobile?: boolean
-  isNative?: boolean
-  isAndroid?: boolean
-  isIOS?: boolean
-  isMac?: boolean
-  isWindows?: boolean
-  isWebView?: boolean
-  isECClient?: boolean
-  features?: {
-    shadowSelector?: boolean
-    allCookies?: boolean
-    canExecuteOnlyFunctionScripts?: boolean
-  }
 }
 
 export type WaitOptions = {

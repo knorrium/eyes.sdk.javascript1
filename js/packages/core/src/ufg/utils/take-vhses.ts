@@ -18,14 +18,16 @@ export async function takeVHSes<TSpec extends SpecType>({
 }): Promise<AndroidSnapshot[] | IOSSnapshot[]> {
   logger.log('taking VHS')
 
-  if (!driver.isAndroid && !driver.isIOS) {
+  const environment = await driver.getEnvironment()
+
+  if (!environment.isAndroid && !environment.isIOS) {
     throw new Error('cannot take VHS on mobile device other than iOS or Android')
   }
 
   await hooks?.beforeSnapshots?.()
 
   const trigger = await driver.waitFor(
-    driver.isAndroid
+    environment.isAndroid
       ? {type: 'xpath', selector: `//android.widget.Button[@content-desc="UFG_TriggerArea"]`}
       : {type: 'accessibility id', selector: 'UFG_TriggerArea'},
     {timeout: 30_000},
@@ -33,7 +35,7 @@ export async function takeVHSes<TSpec extends SpecType>({
 
   if (!trigger) throw new Error('Trigger element could not be found')
 
-  if (driver.isAndroid) {
+  if (environment.isAndroid) {
     const apiKeyInput = await driver.element({
       type: 'xpath',
       selector: `//android.widget.EditText[@content-desc="UFG_Apikey"]`,
@@ -62,7 +64,7 @@ export async function takeVHSes<TSpec extends SpecType>({
   await trigger.click() // TODO handle stale element exception and then find the trigger again and click it
 
   let label = await driver.waitFor(
-    driver.isAndroid
+    environment.isAndroid
       ? {type: 'xpath', selector: `//android.widget.TextView[@content-desc="UFG_SecondaryLabel"]`}
       : {type: 'accessibility id', selector: 'UFG_SecondaryLabel'},
     {timeout: 10_000},
@@ -72,7 +74,7 @@ export async function takeVHSes<TSpec extends SpecType>({
     // If the trigger area is not present, then we're probably at the middle of taking the VHS - give it 50 seconds more until we give up
     logger.log('UFG_SecondaryLabel was not found after 10 seconds, trying to click UFG_TriggerArea again')
     const triggerRetry = await driver.waitFor(
-      driver.isAndroid
+      environment.isAndroid
         ? {type: 'xpath', selector: `//android.widget.Button[@content-desc="UFG_TriggerArea"]`}
         : {type: 'accessibility id', selector: 'UFG_TriggerArea'},
       {timeout: 30_000},
@@ -84,7 +86,7 @@ export async function takeVHSes<TSpec extends SpecType>({
       logger.log('UFG_TriggerArea was NOT found on retry. Probably VHS is being taken.')
     }
     label = await driver.waitFor(
-      driver.isAndroid
+      environment.isAndroid
         ? {type: 'xpath', selector: `//android.widget.TextView[@content-desc="UFG_SecondaryLabel"]`}
         : {type: 'accessibility id', selector: 'UFG_SecondaryLabel'},
       {timeout: 50_000},
@@ -101,7 +103,7 @@ export async function takeVHSes<TSpec extends SpecType>({
   if (info.error) throw new Error(`Error while taking VHS - ${info.error}`)
 
   let vhs = ''
-  if (driver.isIOS) {
+  if (environment.isIOS) {
     const label = await driver.element({type: 'accessibility id', selector: 'UFG_Label'})
     if (!label) throw new Error('VHS label element could not be found')
     vhs = await label.getText()
@@ -127,7 +129,7 @@ export async function takeVHSes<TSpec extends SpecType>({
   }
 
   const clear = await driver.waitFor(
-    driver.isAndroid
+    environment.isAndroid
       ? {type: 'xpath', selector: `//android.widget.Button[@content-desc="UFG_ClearArea"]`}
       : {type: 'accessibility id', selector: 'UFG_ClearArea'},
     {timeout: 30_000},
@@ -137,7 +139,7 @@ export async function takeVHSes<TSpec extends SpecType>({
 
   let snapshot: AndroidSnapshot | IOSSnapshot
 
-  if (driver.isAndroid) {
+  if (environment.isAndroid) {
     snapshot = {
       platformName: 'android',
       vhsType: info.flavorName,

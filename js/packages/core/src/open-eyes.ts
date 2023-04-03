@@ -61,7 +61,8 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
-    if (driver?.isEC) {
+    const environment = await driver?.getEnvironment()
+    if (environment?.isEC) {
       settings.properties ??= []
       settings.properties.push({name: 'Running platform', value: 'Execution cloud'})
     }
@@ -78,7 +79,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
           testConcurrency: concurrency,
           concurrentRendersPerTest: (config as Config<SpecType, 'ufg'>)?.check?.renderers?.length ?? 1,
           node: {version: process.version, platform: process.platform, arch: process.arch},
-          driverUrl: driver?.remoteHostname,
+          driverUrl: await driver?.getDriverUrl(),
           extractedCIProvider: extractCIProvider(),
         },
       },

@@ -20,7 +20,6 @@ describe('screenshoter android web', () => {
 
   it('take full page when the result of image size is a fraction', async () => {
     await driver.visit('https://applitools.com/helloworld/')
-    await driver.init()
 
     await test({
       type: 'android-web',

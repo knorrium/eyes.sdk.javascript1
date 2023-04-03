@@ -1,5 +1,5 @@
 import type {Size} from '@applitools/utils'
-import {type DriverInfo} from '../spec-driver'
+import type {DriverInfo} from '../types'
 import * as utils from '@applitools/utils'
 
 export type Driver = any
@@ -69,7 +69,7 @@ export async function takeScreenshot(driver: Driver): Promise<Buffer | string> {
   return driver.takeScreenshot()
 }
 export async function getDriverInfo(driver: Driver): Promise<DriverInfo> {
-  return driver.info
+  return {environment: driver.environment}
 }
 export async function getWindowSize(driver: Driver): Promise<Size> {
   return utils.geometry.size(await driver.getWindowRect())

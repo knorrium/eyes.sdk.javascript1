@@ -54,8 +54,6 @@ describe('screenshoter ios app', () => {
       .then(button => button.click())
     await sleep(10000)
 
-    await driver.init()
-
     await test({
       type: 'ios',
       tag: 'app-fully-manulife',

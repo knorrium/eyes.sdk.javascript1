@@ -27,8 +27,9 @@ async function getTarget({window, context, region, fully, scrollingMode, logger}
       if (!element) throw new Error('Element not found!')
 
       const elementContext = element.context
+      const environment = await element.driver.getEnvironment()
 
-      if (element.driver.isNative) {
+      if (environment.isNative) {
         // if element is in a native context, then scroll it to the top, otherwise, it will be not possible to get all of its size
         const scrollingElement = await elementContext.getScrollingElement()
         if (scrollingElement && (await scrollingElement.contains(element))) {
@@ -51,7 +52,7 @@ async function getTarget({window, context, region, fully, scrollingMode, logger}
         returnRegion = await element.getRegion()
       }
       const scroller = makeScroller({element: scrollingElement, scrollingMode, logger})
-      if (returnRegion && !element.driver.isNative && !(await scrollingElement.isRoot())) {
+      if (returnRegion && !environment.isNative && !(await scrollingElement.isRoot())) {
         const scrollerOffset = await scroller.getScrollOffset()
         returnRegion = utils.geometry.offset(returnRegion, scrollerOffset)
       }

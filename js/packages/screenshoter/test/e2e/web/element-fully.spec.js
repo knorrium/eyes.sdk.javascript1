@@ -46,6 +46,7 @@ describe('screenshoter web', () => {
       type: 'web',
       tag: 'element-inside-scrollable-element',
       region: '#lipsum',
+      scrollingMode: 'scroll',
       driver,
       logger,
     })

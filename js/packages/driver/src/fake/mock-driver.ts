@@ -124,17 +124,14 @@ export class MockDriver {
     this.mockScript(snippets.getShadowRoot, ([element]) => {
       return element
     })
-    this.mockScript(snippets.getBrowserInfo, () => {
+    this.mockScript(snippets.getUserAgent, () => {
       return JSON.stringify({
         status: 'SUCCESS',
-        value: {
-          userAgent: this._ua !== undefined ? this._ua : this.info.isMobile ? DEFAULT_MOBILE_UA : DEFAULT_DESKTOP_UA,
-          pixelRatio: 1,
-        },
+        value: this._ua !== undefined ? this._ua : this.environment.isMobile ? DEFAULT_MOBILE_UA : DEFAULT_DESKTOP_UA,
       })
     })
-    this.mockScript(snippets.getViewportSize, () => {
-      return {width: this._window.rect.width, height: this._window.rect.height}
+    this.mockScript(snippets.getViewport, () => {
+      return {viewportSize: {width: this._window.rect.width, height: this._window.rect.height}, pixelRation: 1}
     })
     this.mockScript(snippets.getElementXpath, ([element]) => {
       if (element.xpath) return element.xpath
@@ -263,7 +260,7 @@ export class MockDriver {
     this[name] = method
   }
 
-  get info() {
+  get environment() {
     return {
       isMobile: this._device ? Boolean(this._device.isMobile) : false,
       isNative: this._device ? Boolean(this._device.isNative) : false,
@@ -275,7 +272,7 @@ export class MockDriver {
     }
   }
   async executeScript(script, args = []) {
-    if (this.info.isNative) throw new Error("Native context doesn't support this method")
+    if (this.environment.isNative) throw new Error("Native context doesn't support this method")
     let result = this._scripts.get(String(script))
     if (!result) {
       const name = Object.keys(WELL_KNOWN_SCRIPTS).find(name => WELL_KNOWN_SCRIPTS[name](script))
@@ -339,15 +336,15 @@ export class MockDriver {
     Object.assign(this._window.rect, rect)
   }
   async getUrl() {
-    if (this.info.isNative) throw new Error("Native context doesn't support this method")
+    if (this.environment.isNative) throw new Error("Native context doesn't support this method")
     return this._window.url
   }
   async getTitle() {
-    if (this.info.isNative) throw new Error("Native context doesn't support this method")
+    if (this.environment.isNative) throw new Error("Native context doesn't support this method")
     return this._window.title
   }
   async visit(url) {
-    if (this.info.isNative) throw new Error("Native context doesn't support this method")
+    if (this.environment.isNative) throw new Error("Native context doesn't support this method")
     this._window.url = url
   }
   async takeScreenshot(): Promise<unknown> {

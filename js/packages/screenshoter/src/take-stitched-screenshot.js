@@ -21,7 +21,10 @@ async function takeStitchedScreenshot({
   if (await scroller.element.isPager()) overlap = {top: 0, bottom: 0}
 
   const driver = context.driver
-  const takeViewportScreenshot = makeTakeViewportScreenshot({logger, driver, stabilization, debug})
+  const environment = await driver.getEnvironment()
+  const viewport = await driver.getViewport()
+
+  const takeViewportScreenshot = await makeTakeViewportScreenshot({logger, driver, stabilization, debug})
   const scrollerState = await scroller.preserveState()
 
   const initialOffset = region ? utils.geometry.location(region) : {x: 0, y: 0}
@@ -58,7 +61,7 @@ async function takeStitchedScreenshot({
   logger.log('Crop region calculated: ', cropRegion)
   if (utils.geometry.isEmpty(cropRegion)) throw new Error('Screenshot region is out of viewport')
 
-  image.crop(withStatusBar ? utils.geometry.offset(cropRegion, {x: 0, y: driver.statusBarSize}) : cropRegion)
+  image.crop(withStatusBar ? utils.geometry.offset(cropRegion, {x: 0, y: viewport.statusBarSize}) : cropRegion)
   await image.debug({...debug, name: 'initial', suffix: 'region'})
 
   const contentRegion = utils.geometry.region({x: 0, y: 0}, contentSize)
@@ -80,7 +83,8 @@ async function takeStitchedScreenshot({
   }
   region = utils.geometry.floor(region)
 
-  const partSize = lazyLoad && driver.isNative ? {width: image.size.width, height: image.size.height / 2} : image.size
+  const partSize =
+    lazyLoad && environment.isNative ? {width: image.size.width, height: image.size.height / 2} : image.size
   const [initialRegion, ...partRegions] = utils.geometry.divide(region, partSize, overlap)
   logger.verbose('Part regions', partRegions)
 
@@ -109,7 +113,7 @@ async function takeStitchedScreenshot({
     let actualOffset = await scroller.moveTo(requiredOffset)
     // actual scroll position after scrolling might be not equal to required position due to
     // scrollable region shift during scrolling so actual scroll position should be corrected
-    if (!utils.geometry.equals(actualOffset, requiredOffset) && driver.isNative) {
+    if (!utils.geometry.equals(actualOffset, requiredOffset) && environment.isNative) {
       const actualScrollerRegion = await scroller.getClientRegion()
       scrollerRegionShift = {x: scrollerRegion.x - actualScrollerRegion.x, y: scrollerRegion.y - actualScrollerRegion.y}
     }
@@ -154,7 +158,7 @@ async function takeStitchedScreenshot({
     stitchedImage.frame(
       firstImage,
       lastImage,
-      withStatusBar ? utils.geometry.offset(cropRegion, {x: 0, y: driver.statusBarSize}) : cropRegion,
+      withStatusBar ? utils.geometry.offset(cropRegion, {x: 0, y: viewport.statusBarSize}) : cropRegion,
     )
     await stitchedImage.debug({...debug, name: 'framed'})
 

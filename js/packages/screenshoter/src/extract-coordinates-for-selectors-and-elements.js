@@ -16,6 +16,7 @@ async function extractCoordinatesForSelectorsAndElements({regionsToCalculate, sc
         const contextLocationInViewport = await elements[0].context.getLocationInViewport()
         const scaledRegions = []
         for (const element of elements) {
+          const viewport = await element.driver.getViewport()
           const elementRegion = await element.getRegion()
           const region = utils.geometry.offset(elementRegion, contextLocationInViewport)
           const scaledRegion = utils.geometry.scale(
@@ -25,7 +26,7 @@ async function extractCoordinatesForSelectorsAndElements({regionsToCalculate, sc
               width: region.width,
               height: region.height,
             },
-            context.driver.viewportScale,
+            viewport.viewportScale,
           )
           logger.log('scaled region', scaledRegion)
           scaledRegions.push(scaledRegion)

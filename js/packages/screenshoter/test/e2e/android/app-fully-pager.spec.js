@@ -23,8 +23,6 @@ describe('screenshoter androidx app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     await driver.mainContext.setScrollingElement({type: 'id', selector: 'view_pager'})
 
     await test({

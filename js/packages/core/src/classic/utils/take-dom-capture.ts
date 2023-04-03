@@ -25,19 +25,22 @@ export async function takeDomCapture<TSpec extends SpecType>({
   settings?: DomCaptureSettings
   logger: Logger
 }) {
-  const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
+  const environment = await driver.getEnvironment()
+  const features = await driver.getFeatures()
+  const isLegacyBrowser = environment.isIE || environment.isEdgeLegacy
   const arg = {
     chunkByteLength:
       settings?.chunkByteLength ??
-      (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || (driver.isIOS ? 100_000 : 250 * 1024 * 1024)),
+      (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) ||
+        (environment.isIOS ? 100_000 : 250 * 1024 * 1024)),
   }
   const scripts = {
-    main: driver.features?.canExecuteOnlyFunctionScripts
+    main: features.canExecuteOnlyFunctionScripts
       ? require('@applitools/dom-capture').captureDomPoll
       : `return (${
           isLegacyBrowser ? await getCaptureDomPollForIE() : await getCaptureDomPoll()
         }).apply(null, arguments);`,
-    poll: driver.features?.canExecuteOnlyFunctionScripts
+    poll: features.canExecuteOnlyFunctionScripts
       ? require('@applitools/dom-capture').pollResult
       : `return (${isLegacyBrowser ? await getPollResultForIE() : await getPollResult()}).apply(null, arguments);`,
   }

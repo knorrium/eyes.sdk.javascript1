@@ -8,6 +8,10 @@ describe('screenshoter android app', () => {
     ;[driver, destroyDriver] = await makeDriver({type: 'android', logger})
   })
 
+  beforeEach(async () => {
+    driver.refresh()
+  })
+
   after(async () => {
     await destroyDriver()
   })
@@ -19,8 +23,6 @@ describe('screenshoter android app', () => {
     await driver.execute('mobile:shell', {command: 'settings put system user_rotation 3'})
 
     await sleep(5000)
-
-    await driver.init()
 
     await test({
       type: 'android',
@@ -38,8 +40,6 @@ describe('screenshoter android app', () => {
     await driver.execute('mobile:shell', {command: 'settings put system user_rotation 1'})
 
     await sleep(5000)
-
-    await driver.init()
 
     await test({
       type: 'android',

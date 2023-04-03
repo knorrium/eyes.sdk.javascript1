@@ -49,8 +49,6 @@ describe('screenshoter android app', () => {
     await loginButton2.click()
     await sleep(15000)
 
-    await driver.init()
-
     await driver.mainContext.setScrollingElement({type: 'id', selector: 'insuranceTabNestedScrollView'})
 
     await test({
@@ -81,8 +79,6 @@ describe('screenshoter android app', () => {
     const cardElement = await driver.element({type: 'id', selector: 'card_view'})
     await cardElement.click()
     await sleep(5000)
-
-    await driver.init()
 
     await driver.mainContext.setScrollingElement({type: 'id', selector: 'policyDetailsScrollView'})
 
@@ -115,8 +111,6 @@ describe('screenshoter android app', () => {
     await profileButton.click()
     await sleep(10000)
 
-    await driver.init()
-
     await driver.mainContext.setScrollingElement({type: 'class name', selector: 'android.widget.ScrollView'})
 
     await test({
@@ -148,8 +142,6 @@ describe('screenshoter android app', () => {
     await benefitsButton.click()
     await sleep(5000)
 
-    await driver.init()
-
     await test({
       type: 'android',
       tag: 'app-fully-suncorp3',
@@ -178,8 +170,6 @@ describe('screenshoter android app', () => {
     const activeClaimsButton = await driver.element({type: 'id', selector: 'activeClaimsFragment'})
     await activeClaimsButton.click()
     await sleep(3000)
-
-    await driver.init()
 
     await test({
       type: 'android',

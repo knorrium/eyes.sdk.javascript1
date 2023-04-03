@@ -63,10 +63,11 @@ export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic'
     }
 
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    const environment = await driver?.getEnvironment()
     const typedEyes = await eyes.getTypedEyes({
       type,
       settings: (settings as CheckSettings<TSpec, 'ufg'>).renderers?.map(renderer => ({
-        type: driver?.isNative ? 'native' : 'web',
+        type: environment?.isNative ? 'native' : 'web',
         renderer,
       })),
       logger,

@@ -35,20 +35,21 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
 
     const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings}))
     if (driver && !base) {
+      const environment = await driver.getEnvironment()
       const currentContext = driver.currentContext
       settings.environment ??= {}
-      if (driver.isEC) {
-        settings.environment.ecSessionId = driver.sessionId
+      if (environment.isEC) {
+        settings.environment.ecSessionId = (await driver.getSessionId())!
       }
-      if (driver.isWeb) {
-        settings.environment.userAgent ??= driver.userAgent
+      if (environment.isWeb) {
+        settings.environment.userAgent ??= (await driver.getUserAgentLegacy()) ?? undefined
       }
-      if (!settings.environment.deviceName && driver.deviceName) {
-        settings.environment.deviceName = driver.deviceName
+      if (!settings.environment.deviceName && environment.deviceName) {
+        settings.environment.deviceName = environment.deviceName
       }
       if (!settings.environment.os) {
-        if (driver.isNative && driver.platformName) {
-          settings.environment.os = driver.platformName
+        if (environment.isNative && environment.platformName) {
+          settings.environment.os = environment.platformName
           if (!settings.keepPlatformNameAsIs) {
             if (settings.environment.os?.startsWith('android')) {
               settings.environment.os = `Android${settings.environment.os.slice(7)}`
@@ -57,20 +58,21 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
               settings.environment.os = `iOS${settings.environment.os.slice(3)}`
             }
           }
-          if (driver.platformVersion) {
-            settings.environment.os += ` ${driver.platformVersion}`
+          if (environment.platformVersion) {
+            settings.environment.os += ` ${environment.platformVersion}`
           }
         } else if (
-          driver.isChromium &&
-          ((driver.isWindows && Number.parseInt(driver.browserVersion as string) >= 107) ||
-            (driver.isMac && Number.parseInt(driver.browserVersion as string) >= 90))
+          environment.isChromium &&
+          ((environment.isWindows && Number.parseInt(environment.browserVersion as string) >= 107) ||
+            (environment.isMac && Number.parseInt(environment.browserVersion as string) >= 90))
         ) {
-          settings.environment.os = `${driver.platformName} ${driver.platformVersion ?? ''}`.trim()
+          settings.environment.os = `${environment.platformName} ${environment.platformVersion ?? ''}`.trim()
         }
       }
-      if (!settings.environment.viewportSize || driver.isMobile) {
+      if (!settings.environment.viewportSize || environment.isMobile) {
+        const viewport = await driver.getViewport()
         const size = await driver.getViewportSize()
-        settings.environment.viewportSize = utils.geometry.scale(size, driver.viewportScale)
+        settings.environment.viewportSize = utils.geometry.scale(size, viewport.viewportScale)
       } else {
         await driver.setViewportSize(settings.environment.viewportSize)
       }

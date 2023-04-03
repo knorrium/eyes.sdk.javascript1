@@ -43,8 +43,6 @@ describe('screenshoter android app', () => {
       .then(button => button.click())
     await sleep(10000)
 
-    await driver.init()
-
     await test({
       type: 'android',
       tag: 'app-fully-doterra',

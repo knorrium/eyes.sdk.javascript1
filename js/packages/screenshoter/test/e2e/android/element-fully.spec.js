@@ -16,8 +16,6 @@ describe('screenshoter androidx app', () => {
   })
 
   it('take full element screenshot', async () => {
-    await driver.init()
-
     return test({
       type: 'android',
       tag: 'element-fully',

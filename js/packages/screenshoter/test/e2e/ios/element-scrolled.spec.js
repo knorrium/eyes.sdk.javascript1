@@ -16,8 +16,6 @@ describe('screenshoter ios app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     await driver.target.touchAction([
       {action: 'press', y: 500, x: 50},
       {action: 'wait', ms: 100},

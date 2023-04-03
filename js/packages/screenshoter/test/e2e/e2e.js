@@ -8,7 +8,7 @@ const {Driver} = require('@applitools/driver')
 const {makeImage} = require('@applitools/image')
 const takeScreenshot = require('../../src/take-screenshot')
 
-exports.logger = makeLogger()
+const logger = (exports.logger = makeLogger())
 
 async function sanitizeAndroidStatusBar(image) {
   const leftPatchImage = makeImage({
@@ -32,6 +32,8 @@ exports.sleep = utils.general.sleep
 
 exports.test = async function test({type, tag, driver, ...options} = {}) {
   if (options.withStatusBar) tag += '-statusbar'
+
+  logger.log('Test started')
 
   const screenshot = await takeScreenshot({driver, ...options})
   try {
@@ -240,7 +242,7 @@ exports.makeDriver = async function makeDriver({
     connectionRetryTimeout: 240000,
   })
 
-  const driver = await new Driver({driver: browser, spec, logger}).init()
+  const driver = new Driver({driver: browser, spec, logger})
   if (disableHelper) driver._helper = null
   if (process.env.APPLITOOLS_TEST_REMOTE === 'sauce')
     console.log(`Running on Sauce Labs at: https://app.saucelabs.com/tests/${driver.target.sessionId}`)

@@ -33,7 +33,7 @@ describe.skip('external tests', () => {
 
     await browser.closeApp()
     await browser.launchApp()
-    const driver = await new Driver({driver: browser, spec, logger}).init()
+    const driver = new Driver({driver: browser, spec, logger})
 
     const saveBtn = await browser.$('//android.widget.Button')
     await saveBtn.click()
@@ -58,8 +58,6 @@ describe.skip('external tests', () => {
     const finishBtn = await browser.$('//android.widget.Button[@text="FINISH"]')
     await finishBtn.click()
     await utils.general.sleep(15000)
-
-    await driver.init()
 
     const screenshot = await takeScreenshot({
       logger,
@@ -108,7 +106,7 @@ describe.skip('external tests', () => {
 
     await browser.closeApp()
     await browser.launchApp()
-    const driver = await new Driver({driver: browser, spec, logger}).init()
+    const driver = new Driver({driver: browser, spec, logger})
 
     await browser.acceptAlert()
 
@@ -132,8 +130,6 @@ describe.skip('external tests', () => {
     const finishBtn = await browser.$('//XCUIElementTypeButton[@name="Finish"]')
     await finishBtn.click()
     await utils.general.sleep(20000)
-
-    await driver.init()
 
     const screenshot = await takeScreenshot({
       logger,

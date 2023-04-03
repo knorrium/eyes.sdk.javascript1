@@ -74,8 +74,9 @@ export function makeCheckAndClose<TSpec extends SpecType>({
 
     const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     if (driver) {
+      const environment = await driver.getEnvironment()
       if (uniqueRenderers.length === 0) {
-        if (driver.isWeb) {
+        if (environment.isWeb) {
           const viewportSize = await driver.getViewportSize()
           uniqueRenderers.push({name: 'chrome', ...viewportSize})
         } else {
@@ -83,8 +84,8 @@ export function makeCheckAndClose<TSpec extends SpecType>({
         }
       }
       let cleanupGeneratedSelectors
-      if (driver.isWeb) {
-        userAgent = driver.userAgent
+      if (environment.isWeb) {
+        userAgent = (await driver.getUserAgentLegacy()) ?? undefined
         const generated = await generateSafeSelectors({
           context: driver.currentContext,
           elementReferences: [
@@ -126,7 +127,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
         },
         hooks: {
           async beforeSnapshots() {
-            if (settings.lazyLoad && driver.isWeb) {
+            if (settings.lazyLoad && environment.isWeb) {
               await waitForLazyLoad({
                 context: driver.currentContext,
                 settings: settings.lazyLoad !== true ? settings.lazyLoad : {},
@@ -140,7 +141,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           getIOSDevices: ufgClient.getIOSDevices,
         },
       }
-      if (driver.isWeb) {
+      if (environment.isWeb) {
         snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
       } else {
         const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})

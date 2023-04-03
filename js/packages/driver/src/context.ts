@@ -132,13 +132,14 @@ export class Context<T extends SpecType> {
 
     const {parent, all, wait} = options
 
-    const transformedSelector = specUtils.transformSelector(this._spec, selector, this.driver)
+    const environment = await this.driver.getEnvironment()
+    const transformedSelector = specUtils.transformSelector(this._spec, selector, environment)
     let elements = [] as T['element'][]
     if (wait) {
       if (this._spec.waitForSelector) {
         const element = await this._spec.waitForSelector(
           this.target,
-          specUtils.transformSelector(this._spec, selector, this.driver),
+          specUtils.transformSelector(this._spec, selector, environment),
           parent,
           wait,
         )
@@ -149,7 +150,7 @@ export class Context<T extends SpecType> {
         while (waiting) {
           const element = await this._spec.findElement(
             this.target,
-            specUtils.transformSelector(this._spec, selector, this.driver),
+            specUtils.transformSelector(this._spec, selector, environment),
             parent,
           )
           if (element) {
@@ -440,11 +441,12 @@ export class Context<T extends SpecType> {
   async getScrollingElement(): Promise<Element<T> | null> {
     if (!(this._scrollingElement instanceof Element)) {
       await this.focus()
+      const environment = await this.driver.getEnvironment()
       if (this._scrollingElement) {
         this._scrollingElement = await this.element(this._scrollingElement)
-      } else if (this.driver.isWeb) {
+      } else if (environment.isWeb) {
         let selector
-        if (this.driver.isIOS && !this.driver.isEmulation) {
+        if (environment.isIOS && !environment.isEmulation) {
           selector = 'html'
           this._logger.log(`Using hardcoded default scrolling element for Safari on iOS - "${selector}"`)
         } else {
@@ -574,6 +576,7 @@ export class Context<T extends SpecType> {
     else region = {x: 0, y: 0, width: Infinity, height: Infinity}
 
     let currentContext = this as Context<T> | null
+    const environment = await this.driver.getEnvironment()
     while (currentContext) {
       const contextRegion = await currentContext.getClientRegion()
       // const contextScrollingRegion = await currentContext.getScrollingRegion()
@@ -581,7 +584,7 @@ export class Context<T extends SpecType> {
 
       // TODO revisit
       if (
-        this.driver.isWeb ||
+        environment.isWeb ||
         (!utils.geometry.equals(contextRegion, region) && utils.geometry.contains(contextRegion, region))
       ) {
         this._logger.log('Intersecting context region', contextRegion, 'with context region', region)
@@ -596,9 +599,12 @@ export class Context<T extends SpecType> {
   }
 
   async getCookies(): Promise<Cookie[]> {
-    if (this.driver.isNative) return []
+    const environment = await this.driver.getEnvironment()
+    if (!environment.isWeb) return []
     await this.focus()
-    return this._spec.getCookies?.(this.target, true) ?? []
+    const cookies = await this._spec.getCookies?.(this.target, true)
+    this._logger.log('Extracted context cookies', cookies)
+    return cookies ?? []
   }
 
   private async preserveInnerOffset() {

@@ -39,7 +39,9 @@ export async function takeDomSnapshot<TSpec extends SpecType>({
   logger: Logger
 }): Promise<DomSnapshot> {
   const driver = context.driver
-  const cookies: Cookie[] = driver.features?.allCookies ? await driver.getCookies().catch(() => []) : []
+  const environment = await driver.getEnvironment()
+  const features = await driver.getFeatures()
+  const cookies: Cookie[] = features.allCookies ? await driver.getCookies().catch(() => []) : []
 
   const snapshot = deserializeDomSnapshot({snapshot: await takeContextDomSnapshot({context})})
   snapshot.cookies = cookies
@@ -48,11 +50,11 @@ export async function takeDomSnapshot<TSpec extends SpecType>({
   async function takeContextDomSnapshot({context}: {context: Context<TSpec>}): Promise<RawDomSnapshot> {
     // logger.log(`taking dom snapshot. ${context._reference ? `context referece: ${JSON.stringify(context._reference)}` : ''}`)
 
-    if (!driver.features?.allCookies) {
+    if (!features.allCookies) {
       cookies.push(...(await context.getCookies()))
     }
 
-    const isLegacyBrowser = driver.isIE || driver.isEdgeLegacy
+    const isLegacyBrowser = environment.isIE || environment.isEdgeLegacy
 
     const arg = {
       dontFetchResources: settings?.disableBrowserFetching,
@@ -60,19 +62,19 @@ export async function takeDomSnapshot<TSpec extends SpecType>({
       removeReverseProxyURLPrefixes: Boolean(process.env.APPLITOOLS_SCRIPT_REMOVE_REVERSE_PROXY_URL_PREFIXES),
       chunkByteLength:
         settings?.chunkByteLength ??
-        (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) || (driver.isIOS ? 100_000 : 250 * 1024 * 1024)),
+        (Number(process.env.APPLITOOLS_SCRIPT_RESULT_MAX_BYTE_LENGTH) ||
+          (environment.isIOS ? 100_000 : 250 * 1024 * 1024)),
       serializeResources: true,
       compressResources: false,
       showLogs: settings?.showLogs,
     }
     const scripts = {
-      main: driver.features?.canExecuteOnlyFunctionScripts
+      main: features.canExecuteOnlyFunctionScripts
         ? require('@applitools/dom-snapshot').processPagePoll
         : `return (${
             isLegacyBrowser ? await getProcessPagePollForIE() : await getProcessPagePoll()
           }).apply(null, arguments);`,
-
-      poll: driver.features?.canExecuteOnlyFunctionScripts
+      poll: features.canExecuteOnlyFunctionScripts
         ? require('@applitools/dom-snapshot').pollResult
         : `return (${isLegacyBrowser ? await getPollResultForIE() : await getPollResult()}).apply(null, arguments);`,
     }

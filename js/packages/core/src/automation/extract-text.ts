@@ -31,6 +31,7 @@ export function makeExtractText<TSpec extends SpecType>({core, spec, logger: def
     }
     settings = utils.types.isArray(settings) ? settings : [settings]
     const driver = await makeDriver({spec, driver: target, logger})
+    const environment = await driver.getEnvironment()
     const results = await settings.reduce(async (prev, settings) => {
       const steps = await prev
       const screenshot = await takeScreenshot({driver, settings, logger})
@@ -45,7 +46,7 @@ export function makeExtractText<TSpec extends SpecType>({core, spec, logger: def
         size: utils.geometry.size(screenshot.region),
         locationInViewport: utils.geometry.location(screenshot.region),
       }
-      if (driver.isWeb) {
+      if (environment.isWeb) {
         if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
         else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
         baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => undefined)

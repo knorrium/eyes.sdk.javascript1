@@ -1,22 +1,29 @@
 import type {Size, Region} from '@applitools/utils'
-import type {ScreenOrientation, Cookie} from './types'
+import type {
+  DriverInfo,
+  Capabilities,
+  UserAgent,
+  Environment,
+  Viewport,
+  Features,
+  ScreenOrientation,
+  Cookie,
+} from './types'
 import {type Selector} from './selector'
-import {type SpecType, type SpecDriver, type DriverInfo, type WaitOptions} from './spec-driver'
+import {type SpecType, type SpecDriver, type WaitOptions} from './spec-driver'
 import {type Element} from './element'
 import {Context, type ContextReference} from './context'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {HelperIOS} from './helper-ios'
 import {HelperAndroid} from './helper-android'
-import {parseUserAgent} from './user-agent'
-import {parseUserAgentData} from './user-agent-data'
-import {parseCapabilities} from './capabilities'
+import {extractUserAgentEnvironment} from './user-agent'
+import {extractCapabilitiesEnvironment, extractCapabilitiesViewport} from './capabilities'
 import * as specUtils from './spec-utils'
 import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
 
 type DriverState<T extends SpecType> = {
-  world?: string
   nmlElement?: Element<T> | null
 }
 
@@ -27,23 +34,26 @@ type DriverOptions<T extends SpecType> = {
   customConfig?: {useCeilForViewportSize?: boolean}
 }
 
-// eslint-disable-next-line
 export class Driver<T extends SpecType> {
   private _target: T['driver']
 
+  private _guid: string
   private _mainContext: Context<T>
   private _currentContext: Context<T>
-  private _driverInfo: DriverInfo = {}
+  private _driverInfo?: DriverInfo
+  private _environment?: Environment
+  private _viewport?: Viewport
+  private _features?: Features
   private _helper?: HelperAndroid<T> | HelperIOS<T> | null
   private _state: DriverState<T> = {}
-  private _logger: Logger
-
   private _customConfig: {useCeilForViewportSize?: boolean} = {}
+  private _logger: Logger
 
   protected readonly _spec: SpecDriver<T>
 
   constructor(options: DriverOptions<T>) {
     this._customConfig = options.customConfig ?? {}
+    this._guid = utils.general.guid()
     this._spec = options.spec
     this._logger = options.logger?.extend({label: 'driver'}) ?? makeLogger({label: 'driver'})
     this._target = this._spec.transformDriver?.(options.driver) ?? options.driver
@@ -64,404 +74,37 @@ export class Driver<T extends SpecType> {
   get target(): T['driver'] {
     return this._target
   }
+  get guid() {
+    return this._guid
+  }
   get currentContext(): Context<T> {
     return this._currentContext
   }
   get mainContext(): Context<T> {
     return this._mainContext
   }
-  get features() {
-    return this._driverInfo?.features
-  }
-  get deviceName(): string | undefined {
-    return this._driverInfo?.deviceName
-  }
-  get platformName(): string | undefined {
-    return this._driverInfo?.platformName
-  }
-  get platformVersion(): string | number | undefined {
-    return this._driverInfo?.platformVersion
-  }
-  get browserName(): string | undefined {
-    return this._driverInfo?.browserName
-  }
-  get browserVersion(): string | number | undefined {
-    return this._driverInfo?.browserVersion
-  }
-  get userAgent(): string | undefined {
-    return this._driverInfo?.userAgent
-  }
-  get orientation(): ScreenOrientation | undefined {
-    return this._driverInfo.orientation
-  }
-  get pixelRatio(): number {
-    return this._driverInfo.pixelRatio ?? 1
-  }
-  get viewportScale(): number {
-    return this._driverInfo.viewportScale ?? 1
-  }
-  get statusBarSize(): number | undefined {
-    return this._driverInfo.statusBarSize ?? (this.isNative ? 0 : undefined)
-  }
-  get navigationBarSize(): number | undefined {
-    return this._driverInfo.navigationBarSize ?? (this.isNative ? 0 : undefined)
-  }
-  get isNative(): boolean {
-    return (!this.isWebView && this._driverInfo?.isNative) ?? false
-  }
-  get isWebView(): boolean {
-    return (this._driverInfo?.isNative && this._driverInfo?.isWebView) ?? false
-  }
-  get isWeb(): boolean {
-    return this.isWebView || !this.isNative
-  }
-  get isEmulation(): boolean {
-    return this._driverInfo?.isEmulation ?? false
-  }
-  get isMobile(): boolean {
-    return this._driverInfo?.isMobile ?? false
-  }
-  get isIOS(): boolean {
-    return this._driverInfo?.isIOS ?? (!!this.platformName && /iOS/i.test(this.platformName))
-  }
-  get isAndroid(): boolean {
-    return this._driverInfo?.isAndroid ?? (!!this.platformName && /Android/i.test(this.platformName))
-  }
-  get isMac(): boolean {
-    return this._driverInfo?.isMac ?? (!!this.platformName && /mac\s?OS/i.test(this.platformName))
-  }
-  get isWindows(): boolean {
-    return this._driverInfo?.isWindows ?? (!!this.platformName && /Windows/i.test(this.platformName))
-  }
-  get isChromium(): boolean {
-    return (
-      this._driverInfo?.isChromium ??
-      (!!this.browserName &&
-        (/(chrome)/i.test(this.browserName) || (/edge/i.test(this.browserName) && Number(this.browserVersion) > 44)))
-    )
-  }
-  get isIE(): boolean {
-    return !!this.browserName && /(internet explorer|ie)/i.test(this.browserName)
-  }
-  get isEdgeLegacy(): boolean {
-    return !!this.browserName && /edge/i.test(this.browserName) && Number(this.browserVersion) <= 44
-  }
-  get isECClient(): boolean {
-    return !!this._driverInfo?.isECClient
-  }
-  get isEC(): boolean {
-    return this.isECClient || (!!this.remoteHostname && /exec-wus.applitools.com/.test(this.remoteHostname))
-  }
-  get sessionId(): string | undefined {
-    return this._driverInfo?.sessionId
-  }
-  get remoteHostname(): string | undefined {
-    return this._driverInfo?.remoteHostname
-  }
 
   updateCurrentContext(context: Context<T>): void {
     this._currentContext = context
   }
 
-  async init(): Promise<this> {
-    // NOTE: this is here because saucelabs does not provide right capabilities for the first call
-    await this._spec.getCapabilities?.(this.target)
-    const capabilities = await this._spec.getCapabilities?.(this.target)
-    this._logger.log('Driver capabilities', capabilities)
-
-    const capabilitiesInfo = capabilities && parseCapabilities(capabilities)
-    const driverInfo = await this._spec.getDriverInfo?.(this.target)
-
-    this._driverInfo = {...capabilitiesInfo, ...driverInfo}
-    this._driverInfo.remoteHostname ??= this._spec.extractHostName?.(this.target) ?? undefined
-
-    if (this.isMobile) {
-      this._driverInfo.orientation =
-        (await this.getOrientation().catch(() => undefined)) ?? this._driverInfo.orientation
-      const world = await this.getCurrentWorld()
-      if (world) {
-        const [home] = (await this.getWorlds())!
-        this._driverInfo.isWebView = world !== home
-      }
-    }
-
-    if (this.isWeb) {
-      const browserInfo = await this.currentContext.executePoll(snippets.getBrowserInfo)
-      this._driverInfo.userAgent ??= browserInfo.userAgent
-      this._driverInfo.pixelRatio ??= browserInfo.pixelRatio
-      this._driverInfo.viewportScale ??= browserInfo.viewportScale
-
-      if (browserInfo.userAgentData && this.isChromium) {
-        if (this.isWindows && Number.parseInt(this.browserVersion as string) >= 107) {
-          this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
-        } else if (this.isMac && Number.parseInt(this.browserVersion as string) >= 90) {
-          this._driverInfo.platformVersion = browserInfo.platformVersion ?? this._driverInfo.platformVersion
-        }
-      }
-
-      if (this._driverInfo.userAgent) {
-        const userAgentInfo = parseUserAgent(this._driverInfo.userAgent)
-        const userAgentDataInfo = browserInfo.userAgentData && parseUserAgentData(browserInfo.userAgentData)
-        this._driverInfo.browserName =
-          userAgentInfo.browserName ?? userAgentDataInfo?.browserName ?? this._driverInfo.browserName
-        this._driverInfo.browserVersion =
-          userAgentInfo.browserVersion ?? userAgentDataInfo?.browserVersion ?? this._driverInfo.browserVersion
-        this._driverInfo.isMobile ??= userAgentDataInfo?.isMobile
-        this._driverInfo.isChromium ??= userAgentDataInfo?.isChromium
-        if (this._driverInfo.isMobile) {
-          this._driverInfo.platformName ??= userAgentDataInfo?.platformName ?? userAgentInfo.platformName
-          this._driverInfo.platformVersion ??= userAgentDataInfo?.platformVersion ?? userAgentInfo.platformVersion
-        } else {
-          this._driverInfo.platformName =
-            userAgentDataInfo?.platformName ?? userAgentInfo.platformName ?? this._driverInfo.platformName
-          this._driverInfo.platformVersion =
-            userAgentDataInfo?.platformVersion ?? userAgentInfo.platformVersion ?? this._driverInfo.platformVersion
-        }
-      }
-
-      if (!this.isMobile && (this.isAndroid || this.isIOS)) {
-        this._driverInfo.isMobile = true
-        this._driverInfo.isEmulation = this._driverInfo.isChrome
-      }
-
-      this._driverInfo.features ??= {}
-      this._driverInfo.features.allCookies ??=
-        this._driverInfo.isChrome ||
-        (!!this._driverInfo.browserName && /chrome/i.test(this._driverInfo.browserName) && !this._driverInfo.isMobile)
-    } else {
-      // this value always excludes the height of the navigation bar, and sometimes it also excludes the height of the status bar
-      let windowSize = await this._spec.getWindowSize!(this.target)
-      this._driverInfo.displaySize ??= windowSize
-
-      if (
-        this.orientation?.startsWith('landscape') &&
-        this._driverInfo.displaySize.height > this._driverInfo.displaySize.width
-      ) {
-        this._driverInfo.displaySize = {
-          width: this._driverInfo.displaySize.height,
-          height: this._driverInfo.displaySize.width,
-        }
-      }
-
-      if (this.isAndroid) {
-        // bar sizes could be extracted only on android
-        const systemBars = await this._spec.getSystemBars?.(this.target).catch(() => null as never)
-        const {statusBar, navigationBar} = systemBars ?? {}
-
-        if (statusBar?.visible) {
-          this._logger.log('Driver status bar', statusBar)
-
-          const statusBarSize = statusBar.height
-
-          // when status bar is overlapping content on android it returns status bar height equal to display height
-          if (statusBarSize < this._driverInfo.displaySize.height) {
-            this._driverInfo.statusBarSize = Math.max(this._driverInfo.statusBarSize ?? 0, statusBarSize)
-          }
-        }
-        if (navigationBar?.visible) {
-          this._logger.log('Driver navigation size', navigationBar)
-
-          // if navigation bar is placed on the right side is screen the the orientation is landscape-secondary
-          if (navigationBar.x > 0) this._driverInfo.orientation = 'landscape-secondary'
-
-          // navigation bar size could be its height or width depending on screen orientation
-          const navigationBarSize = navigationBar[this.orientation?.startsWith('landscape') ? 'width' : 'height']
-
-          // when navigation bar is invisible on android it returns navigation bar size equal to display size
-          if (
-            navigationBarSize <
-            this._driverInfo.displaySize[this.orientation?.startsWith('landscape') ? 'width' : 'height']
-          ) {
-            this._driverInfo.navigationBarSize = Math.max(this._driverInfo.navigationBarSize ?? 0, navigationBarSize)
-          } else {
-            this._driverInfo.navigationBarSize = 0
-          }
-        }
-
-        // bar sizes have to be scaled on android
-        this._driverInfo.statusBarSize &&= this._driverInfo.statusBarSize / this.pixelRatio
-        this._driverInfo.navigationBarSize &&= this._driverInfo.navigationBarSize / this.pixelRatio
-
-        windowSize = utils.geometry.scale(windowSize, 1 / this.pixelRatio)
-        this._driverInfo.displaySize &&= utils.geometry.scale(this._driverInfo.displaySize, 1 / this.pixelRatio)
-      }
-
-      if (this.isIOS) {
-        if (this.orientation?.startsWith('landscape')) this._driverInfo.statusBarSize = 0
-      }
-
-      // calculate viewport location
-      this._driverInfo.viewportLocation ??= {
-        x: this.orientation === 'landscape' ? this.navigationBarSize! : 0,
-        y: this.statusBarSize!,
-      }
-
-      // calculate viewport size
-      if (!this._driverInfo.viewportSize) {
-        this._driverInfo.viewportSize = {...this._driverInfo.displaySize}
-        this._driverInfo.viewportSize.height -= this.statusBarSize!
-        if (this.isAndroid) {
-          this._driverInfo.viewportSize[this.orientation?.startsWith('landscape') ? 'width' : 'height'] -=
-            this.navigationBarSize!
-        }
-      }
-
-      // calculate safe area
-      if (this.isIOS && !this._driverInfo.safeArea) {
-        this._driverInfo.safeArea = {x: 0, y: 0, ...this._driverInfo.displaySize}
-        const topElement = await this.element({
-          type: '-ios class chain',
-          selector: '**/XCUIElementTypeNavigationBar',
-        })
-        if (topElement) {
-          const topRegion = await this._spec.getElementRegion!(this.target, topElement.target)
-          const topOffset = topRegion.y + topRegion.height
-          this._driverInfo.safeArea.y = topOffset
-          this._driverInfo.safeArea.height -= topOffset
-        }
-        const bottomElement = await this.element({
-          type: '-ios class chain',
-          selector: '**/XCUIElementTypeTabBar',
-        })
-        if (bottomElement) {
-          const bottomRegion = await this._spec.getElementRegion!(this.target, bottomElement.target)
-          const bottomOffset = bottomRegion.height
-          this._driverInfo.safeArea.height -= bottomOffset
-        }
-      }
-    }
-
-    this._logger.log('Combined driver info', this._driverInfo)
-
-    return this
-  }
-
-  async getHelper(): Promise<HelperAndroid<T> | HelperIOS<T> | null> {
-    if (this._helper === undefined) {
-      this._logger.log(`Extracting helper for ${this.isIOS ? 'ios' : 'android'}`)
-      this._helper = this.isIOS
-        ? await HelperIOS.make({spec: this._spec, driver: this, logger: this._logger})
-        : await HelperAndroid.make({spec: this._spec, driver: this, logger: this._logger})
-      this._logger.log(`Extracted helper of type ${this._helper?.name}`)
-    }
-    this._logger.log(`Returning helper for of type ${this._helper?.name ?? null}`)
-    return this._helper
-  }
-
-  async extractBrokerUrl(): Promise<string | null> {
-    if (!this.isNative) return null
-    this._logger.log('Broker url extraction is started')
-    this._state.nmlElement ??= await this.waitFor(
-      {type: 'accessibility id', selector: 'Applitools_View'},
-      {timeout: 10_000},
-    )
-    if (!this._state.nmlElement) {
-      this._logger.log('Broker url extraction is failed due to absence of nml element')
-      return null
-    }
-    try {
-      let result: {error: string; nextPath: string | null}
-      do {
-        result = JSON.parse(await this._state.nmlElement.getText())
-        if (result.nextPath) {
-          this._logger.log('Broker url was extraction finished successfully with value', result.nextPath)
-          return result.nextPath
-        }
-        await utils.general.sleep(1000)
-      } while (!result.error)
-      this._logger.error('Broker url extraction has failed with error', result.error)
-      return null
-    } catch (error) {
-      this._logger.error('Broker url extraction has failed with error and will be retried', error)
-      this._state.nmlElement = null
-      return this.extractBrokerUrl()
-    }
-  }
-
-  // About the concept of a  "World":
-  //
-  // Since "context" is an overloaded term from frames, we have decided to use
-  // the concept of a "world" when switching between mobile app contexts (e.g., native and webview(s))
-  //
-  // Notes:
-  // - two new functions need to be added to a spec driver for this to work (`getCurrentWorld` and `switchWorld`)
-  // - you can see a reference implementation of this in spec-driver-webdriverio
-  // - if a world id is provided it will be used for switching
-  // - if a world id is not provided, the first non-native world will be used
-  //    (regardless of which world the driver is currently switched into)
-  // - before switching, the current world context is stored so it can switched back to later
-  //    (with the `restoreState` option)
-  // - the native app world can be switched to (with the `goHome` option)
-  async switchWorld(options?: {id?: string; restoreState?: boolean; goHome?: boolean}) {
-    if (options?.restoreState && !this._state.world) return
-    if (!this._spec.getCurrentWorld || !this._spec.switchWorld) {
-      this._logger.warn('world switching not implemented in the spec driver, skipping')
-      return
-    }
-    this._logger.log('switchWorld called with', options ? options : 'no options')
-    const current = (await this.getCurrentWorld())!
-    if (!this._state.world) {
-      this._logger.log('storing current world id for future restoration', current)
-      this._state.world = current
-    }
-    let world: string
-    if (options?.id) world = options.id
-    else if (options?.restoreState) world = this._state.world
-    else {
-      const [home, next] = (await this.getWorlds())!
-      if (options?.goHome) world = home
-      else world = next
-    }
-    this._logger.log('switching world with', world)
-    try {
-      await this._spec.switchWorld?.(this.target, world)
-      await this.init()
-    } catch (error: any) {
-      throw new Error(`Unable to switch worlds, the original error was: ${error.message}`)
-    }
-  }
-
-  async getWorlds(): Promise<string[] | null> {
-    if (!this._spec.getWorlds) return null
-    this._logger.log('Extracting worlds')
-    try {
-      let worlds = [] as string[]
-      for (let attempt = 0; worlds.length <= 1 && attempt < 5; ++attempt) {
-        if (attempt > 0) await utils.general.sleep(500)
-        worlds = await this._spec.getWorlds(this.target)
-      }
-      this._logger.log('Worlds were extracted', worlds)
-      return worlds
-    } catch (error) {
-      this._logger.warn('Worlds were not extracted due to the error', error)
-      return null
-    }
-  }
-
-  async getCurrentWorld(): Promise<string | null> {
-    if (!this._spec.getCurrentWorld) return null
-    try {
-      this._logger.log('Extracting current world')
-      const current = await this._spec.getCurrentWorld?.(this.target)
-      this._logger.log('Current world was extracted', current)
-      return current
-    } catch (error) {
-      this._logger.warn('Current world was not extracted due to the error', error)
-      return null
-    }
-  }
-
-  async getSessionMetadata(): Promise<any> {
-    if (this.isECClient) return await this._spec.getSessionMetadata?.(this.target)
-  }
-
-  async refreshContexts(): Promise<Context<T>> {
-    if (this.isNative) return this.currentContext
+  async refresh(): Promise<this> {
+    this._driverInfo = undefined
+    this._environment = undefined
+    this._viewport = undefined
+    this._features = undefined
+    this._helper = undefined
+    this._state = {}
 
     const spec = this._spec
 
     let currentContext = this.currentContext.target
-    let contextInfo = await getContextInfo(currentContext)
+    let contextInfo
+    try {
+      contextInfo = await getContextInfo(currentContext)
+    } catch (err) {
+      return this
+    }
 
     const path = []
     if (spec.parentContext) {
@@ -477,7 +120,8 @@ export class Driver<T extends SpecType> {
       path.push(...(await findContextPath(currentContext, contextInfo))!)
     }
     this._currentContext = this._mainContext
-    return this.switchToChildContext(...path)
+    await this.switchToChildContext(...path)
+    return this
 
     function transformSelector(selector: Selector<T>) {
       return specUtils.transformSelector(spec, selector, {isWeb: true})
@@ -547,6 +191,367 @@ export class Driver<T extends SpecType> {
     }
   }
 
+  async getDriverInfo({force}: {force?: boolean} = {}): Promise<DriverInfo> {
+    if (!this._driverInfo || force) {
+      this._driverInfo = (await this._spec.getDriverInfo?.(this.target)) ?? {}
+      this._logger.log('Extracted driver info', this._driverInfo)
+    }
+    return this._driverInfo
+  }
+
+  async getCapabilities({force}: {force?: boolean} = {}): Promise<Capabilities | null> {
+    if (this._driverInfo?.capabilities === undefined || force) {
+      this._driverInfo ??= {}
+      this._driverInfo.capabilities = (await this._spec.getCapabilities?.(this.target)) ?? null
+      this._logger.log('Extracted driver capabilities', this._driverInfo.capabilities)
+    }
+    return this._driverInfo.capabilities
+  }
+
+  async getUserAgent({force}: {force?: boolean} = {}): Promise<UserAgent | null> {
+    if (this._driverInfo?.userAgent === undefined || force) {
+      this._driverInfo ??= {}
+      this._driverInfo.userAgent ??= (await this.currentContext.executePoll(snippets.getUserAgent)) ?? null
+      this._logger.log('Extracted user agent', this._driverInfo.userAgent)
+    }
+    return this._driverInfo.userAgent ?? null
+  }
+
+  async getUserAgentLegacy({force}: {force?: boolean} = {}): Promise<string | null> {
+    const userAgent = await this.getUserAgent({force})
+    return utils.types.isObject(userAgent) ? userAgent?.legacy ?? null : userAgent
+  }
+
+  async getEnvironment(): Promise<Environment> {
+    if (!this._environment) {
+      const driverInfo = await this.getDriverInfo()
+      this._environment = {...driverInfo.environment}
+
+      const capabilities = await this.getCapabilities()
+      const capabilitiesEnvironment = capabilities ? extractCapabilitiesEnvironment(capabilities) : null
+      this._logger.log('Extracted capabilities environment', capabilitiesEnvironment)
+      this._environment = {...this._environment, ...capabilitiesEnvironment}
+
+      if (this._environment.isMobile && !this._environment.browserName) {
+        const world = await this.getCurrentWorld()
+        if (!!world?.includes('WEBVIEW')) {
+          this._environment.isNative = true
+          this._environment.isWeb = true
+        }
+      }
+
+      this._environment.isWeb ??= !this._environment.isNative
+
+      if (this._environment.isWeb) {
+        const userAgent = await this.getUserAgent()
+        const userAgentEnvironment = userAgent ? extractUserAgentEnvironment(userAgent) : null
+        this._logger.log('Extracted user agent environment', userAgentEnvironment)
+        this._environment = {
+          ...this._environment,
+          ...userAgentEnvironment,
+          // NOTE: not really necessary, but some user agents for mobile devices (iPads) may return a wrong platform info
+          ...(this._environment.isMobile
+            ? {
+                platformName: this._environment.platformName ?? userAgentEnvironment?.platformName,
+                platformVersion: this._environment.platformVersion ?? userAgentEnvironment?.platformVersion,
+              }
+            : {}),
+        }
+      }
+
+      if (this._environment.browserName) {
+        this._environment.isIE = /(internet explorer|ie)/i.test(this._environment.browserName)
+        this._environment.isEdgeLegacy =
+          /edge/i.test(this._environment.browserName) && Number(this._environment.browserVersion) <= 44
+        this._environment.isEdge =
+          /edge/i.test(this._environment.browserName) && Number(this._environment.browserVersion) > 44
+        this._environment.isChrome = /chrome/i.test(this._environment.browserName)
+        this._environment.isChromium = this._environment.isChrome || this._environment.isEdge
+      }
+
+      if (this._environment.platformName) {
+        this._environment.isWindows = /Windows/i.test(this._environment.platformName)
+        this._environment.isMac = /mac\s?OS/i.test(this._environment.platformName)
+        this._environment.isAndroid = /Android/i.test(this._environment.platformName)
+        this._environment.isIOS = /iOS/i.test(this._environment.platformName)
+      }
+
+      if (
+        !this._environment.isMobile &&
+        this._environment.isWeb &&
+        (this._environment.isAndroid || this._environment.isIOS)
+      ) {
+        this._environment.isMobile = true
+        this._environment.isEmulation = this._environment.isChromium
+      }
+
+      this._environment.isEC =
+        this._environment.isECClient || /exec-wus.applitools.com/.test((await this.getDriverUrl()) ?? '')
+
+      this._logger.log('Extracted environment', this._environment)
+    }
+    return this._environment
+  }
+
+  async getViewport(): Promise<Viewport> {
+    if (!this._viewport) {
+      const environment = await this.getEnvironment()
+
+      const driverInfo = await this.getDriverInfo()
+      this._viewport = {...(driverInfo.viewport as Viewport)}
+
+      if (environment.isMobile) {
+        if (!this._viewport.orientation) {
+          const orientation = await this.getOrientation()
+          if (orientation) this._viewport.orientation = orientation
+        }
+      }
+
+      if (environment.isNative) {
+        const capabilities = await this.getCapabilities()
+        const capabilitiesViewport = capabilities ? extractCapabilitiesViewport(capabilities) : null
+        this._logger.log('Extracted capabilities viewport', capabilitiesViewport)
+        this._viewport = {...capabilitiesViewport, ...this._viewport}
+
+        this._viewport.pixelRatio ??= 1
+
+        // this value always excludes the height of the navigation bar, and sometimes it also excludes the height of the status bar
+        let windowSize = await this._spec.getWindowSize!(this.target)
+        this._viewport.displaySize ??= windowSize
+
+        if (
+          this._viewport.orientation?.startsWith('landscape') &&
+          this._viewport.displaySize.height > this._viewport.displaySize.width
+        ) {
+          this._viewport.displaySize = utils.geometry.rotate(this._viewport.displaySize, 90)
+        }
+
+        if (environment.isAndroid) {
+          // bar sizes could be extracted only on android
+          const {statusBar, navigationBar} =
+            (await this._spec.getSystemBars?.(this.target).catch(() => undefined)) ?? {}
+
+          if (statusBar?.visible) {
+            this._logger.log('Driver status bar', statusBar)
+
+            const statusBarSize = statusBar.height
+
+            // when status bar is overlapping content on android it returns status bar height equal to display height
+            if (statusBarSize < this._viewport.displaySize.height) {
+              this._viewport.statusBarSize = Math.max(this._viewport.statusBarSize ?? 0, statusBarSize)
+            }
+          }
+          if (navigationBar?.visible) {
+            this._logger.log('Driver navigation size', navigationBar)
+
+            // if navigation bar is placed on the right side is screen the the orientation is landscape-secondary
+            if (navigationBar.x > 0) this._viewport.orientation = 'landscape-secondary'
+
+            // navigation bar size could be its height or width depending on screen orientation
+            const navigationBarSize =
+              navigationBar[this._viewport.orientation?.startsWith('landscape') ? 'width' : 'height']
+
+            // when navigation bar is invisible on android it returns navigation bar size equal to display size
+            if (
+              navigationBarSize <
+              this._viewport.displaySize[this._viewport.orientation?.startsWith('landscape') ? 'width' : 'height']
+            ) {
+              this._viewport.navigationBarSize = Math.max(this._viewport.navigationBarSize ?? 0, navigationBarSize)
+            } else {
+              this._viewport.navigationBarSize = 0
+            }
+          }
+
+          // bar sizes have to be scaled on android
+          this._viewport.statusBarSize &&= this._viewport.statusBarSize / this._viewport.pixelRatio
+          this._viewport.navigationBarSize &&= this._viewport.navigationBarSize / this._viewport.pixelRatio
+
+          windowSize = utils.geometry.scale(windowSize, 1 / this._viewport.pixelRatio)
+          this._viewport.displaySize &&= utils.geometry.scale(this._viewport.displaySize, 1 / this._viewport.pixelRatio)
+        }
+
+        if (environment.isIOS) {
+          if (this._viewport.orientation?.startsWith('landscape')) this._viewport.statusBarSize = 0
+        }
+
+        this._viewport.statusBarSize ??= 0
+
+        // calculate viewport location
+        this._viewport.viewportLocation ??= {
+          x: this._viewport.orientation === 'landscape' ? this._viewport.navigationBarSize ?? 0 : 0,
+          y: this._viewport.statusBarSize!,
+        }
+
+        // calculate viewport size
+        if (!this._viewport.viewportSize) {
+          this._viewport.viewportSize = {...this._viewport.displaySize}
+          this._viewport.viewportSize.height -= this._viewport.statusBarSize!
+          if (environment.isAndroid) {
+            this._viewport.viewportSize[this._viewport.orientation?.startsWith('landscape') ? 'width' : 'height'] -=
+              this._viewport.navigationBarSize!
+          }
+        }
+
+        // calculate safe area
+        if (!environment.isWeb && environment.isIOS && !this._viewport.safeArea) {
+          this._viewport.safeArea = {x: 0, y: 0, ...this._viewport.displaySize}
+          const topElement = await this.element({
+            type: '-ios class chain',
+            selector: '**/XCUIElementTypeNavigationBar',
+          })
+          if (topElement) {
+            const topRegion = await this._spec.getElementRegion!(this.target, topElement.target)
+            const topOffset = topRegion.y + topRegion.height
+            this._viewport.safeArea.y = topOffset
+            this._viewport.safeArea.height -= topOffset
+          }
+          const bottomElement = await this.element({
+            type: '-ios class chain',
+            selector: '**/XCUIElementTypeTabBar',
+          })
+          if (bottomElement) {
+            const bottomRegion = await this._spec.getElementRegion!(this.target, bottomElement.target)
+            const bottomOffset = bottomRegion.height
+            this._viewport.safeArea.height -= bottomOffset
+          }
+        }
+      }
+
+      if (environment.isWeb) {
+        const browserViewport: Viewport = await this.execute(snippets.getViewport)
+        this._viewport = {...browserViewport, ...this._viewport}
+      }
+
+      this._viewport.pixelRatio ??= 1
+      this._viewport.viewportScale ??= 1
+
+      this._logger.log('Extracted viewport', this._viewport)
+    }
+
+    return this._viewport
+  }
+
+  async getFeatures(): Promise<Features> {
+    if (!this._features) {
+      const driverInfo = await this.getDriverInfo()
+      this._features = {...driverInfo.features}
+      const environment = await this.getEnvironment()
+      this._features.allCookies ??= environment.isChromium || !environment.isMobile
+      this._logger.log('Extracted driver features', this._features)
+    }
+    return this._features
+  }
+
+  async getSessionId(): Promise<string | null> {
+    const driverInfo = await this.getDriverInfo()
+    return driverInfo.sessionId ?? null
+  }
+
+  async getDriverUrl(): Promise<string | null> {
+    const driverInfo = await this.getDriverInfo()
+    return driverInfo.remoteHostname ?? null
+  }
+
+  async getHelper(): Promise<HelperAndroid<T> | HelperIOS<T> | null> {
+    if (this._helper === undefined) {
+      const environment = await this.getEnvironment()
+      this._logger.log(`Extracting helper for ${environment.isIOS ? 'ios' : 'android'}`)
+      this._helper = environment.isIOS
+        ? await HelperIOS.make({spec: this._spec, driver: this, logger: this._logger})
+        : await HelperAndroid.make({spec: this._spec, driver: this, logger: this._logger})
+      this._logger.log(`Extracted helper of type ${this._helper?.name}`)
+    }
+    this._logger.log(`Returning helper for of type ${this._helper?.name ?? null}`)
+    return this._helper
+  }
+
+  async extractBrokerUrl(): Promise<string | null> {
+    const environment = await this.getEnvironment()
+    if (!environment.isNative) return null
+    this._logger.log('Broker url extraction is started')
+    this._state.nmlElement ??= await this.waitFor(
+      {type: 'accessibility id', selector: 'Applitools_View'},
+      {timeout: 10_000},
+    )
+    if (!this._state.nmlElement) {
+      this._logger.log('Broker url extraction is failed due to absence of nml element')
+      return null
+    }
+    try {
+      let result: {error: string; nextPath: string | null}
+      do {
+        result = JSON.parse(await this._state.nmlElement.getText())
+        if (result.nextPath) {
+          this._logger.log('Broker url was extraction finished successfully with value', result.nextPath)
+          return result.nextPath
+        }
+        await utils.general.sleep(1000)
+      } while (!result.error)
+      this._logger.error('Broker url extraction has failed with error', result.error)
+      return null
+    } catch (error) {
+      this._logger.error('Broker url extraction has failed with error and will be retried', error)
+      this._state.nmlElement = null
+      return this.extractBrokerUrl()
+    }
+  }
+
+  async getSessionMetadata(): Promise<any | undefined> {
+    try {
+      const metadata = await this._spec.getSessionMetadata?.(this.target)
+      this._logger.log('Extracted session metadata', metadata)
+      return metadata
+    } catch (err) {
+      this._logger.warn('Failed to extract session metadata due to the error', err)
+    }
+  }
+
+  async getWorlds(): Promise<string[] | null> {
+    if (!this._spec.getWorlds) return null
+    this._logger.log('Extracting worlds')
+    try {
+      let worlds = [] as string[]
+      for (let attempt = 0; worlds.length <= 1 && attempt < 3; ++attempt) {
+        if (attempt > 0) await utils.general.sleep(500)
+        worlds = await this._spec.getWorlds(this.target)
+      }
+      this._logger.log('Worlds were extracted', worlds)
+      return worlds
+    } catch (error) {
+      this._logger.warn('Worlds were not extracted due to the error', error)
+      return null
+    }
+  }
+
+  async getCurrentWorld(): Promise<string | null> {
+    if (!this._spec.getCurrentWorld) return null
+    try {
+      this._logger.log('Extracting current world')
+      const current = await this._spec.getCurrentWorld(this.target)
+      this._logger.log('Current world was extracted', current)
+      return current
+    } catch (error) {
+      this._logger.warn('Current world was not extracted due to the error', error)
+      return null
+    }
+  }
+
+  async switchWorld(name?: string): Promise<void> {
+    name ??= 'NATIVE_APP'
+    this._logger.log('Switching world to', name)
+    if (!this._spec.switchWorld) {
+      this._logger.error('Unable to switch world due to missed implementation')
+      throw new Error('Unable to switch world due to missed implementation')
+    }
+    try {
+      await this._spec.switchWorld(this.target, name)
+      this.refresh()
+    } catch (error: any) {
+      this._logger.error('Unable to switch world due to the error', error)
+      throw new Error(`Unable to switch world, the original error was: ${error.message}`)
+    }
+  }
+
   async switchTo(context: Context<T>): Promise<Context<T>> {
     if (await this.currentContext.equals(context)) {
       return (this._currentContext = context)
@@ -591,7 +596,8 @@ export class Driver<T extends SpecType> {
   }
 
   async switchToMainContext(): Promise<Context<T>> {
-    if (this.isNative) throw new Error('Contexts are supported only for web drivers')
+    const environment = await this.getEnvironment()
+    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to the main context')
     await this._spec.mainContext(this.currentContext.target)
@@ -599,7 +605,8 @@ export class Driver<T extends SpecType> {
   }
 
   async switchToParentContext(elevation = 1): Promise<Context<T>> {
-    if (this.isNative) throw new Error('Contexts are supported only for web drivers')
+    const environment = await this.getEnvironment()
+    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to a parent context with elevation:', elevation)
     if (this.currentContext.path.length <= elevation) {
@@ -624,7 +631,8 @@ export class Driver<T extends SpecType> {
   }
 
   async switchToChildContext(...references: ContextReference<T>[]): Promise<Context<T>> {
-    if (this.isNative) throw new Error('Contexts are supported only for web drivers')
+    const environment = await this.getEnvironment()
+    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
     this._logger.log('Switching to a child context with depth:', references.length)
     for (const reference of references) {
       if (reference === this.mainContext) continue
@@ -635,21 +643,20 @@ export class Driver<T extends SpecType> {
   }
 
   async normalizeRegion(region: Region): Promise<Region> {
-    if (this.isWeb) return region
+    const environment = await this.getEnvironment()
+    if (environment.isWeb) return region
+
+    const viewport = await this.getViewport()
 
     let normalizedRegion = region
-    if (this.isAndroid) {
-      normalizedRegion = utils.geometry.scale(normalizedRegion, 1 / this.pixelRatio)
+    if (environment.isAndroid) {
+      normalizedRegion = utils.geometry.scale(normalizedRegion, 1 / viewport.pixelRatio)
     }
-    if (
-      this.isIOS &&
-      this._driverInfo.safeArea &&
-      utils.geometry.isIntersected(normalizedRegion, this._driverInfo.safeArea)
-    ) {
-      normalizedRegion = utils.geometry.intersect(normalizedRegion, this._driverInfo.safeArea)
+    if (environment.isIOS && viewport.safeArea && utils.geometry.isIntersected(normalizedRegion, viewport.safeArea)) {
+      normalizedRegion = utils.geometry.intersect(normalizedRegion, viewport.safeArea)
     }
-    if (this._driverInfo.viewportLocation) {
-      normalizedRegion = utils.geometry.offsetNegative(normalizedRegion, this._driverInfo.viewportLocation)
+    if (viewport.viewportLocation) {
+      normalizedRegion = utils.geometry.offsetNegative(normalizedRegion, viewport.viewportLocation)
     }
     if (normalizedRegion.y < 0) {
       normalizedRegion.height += normalizedRegion.y
@@ -663,22 +670,6 @@ export class Driver<T extends SpecType> {
     return context.getRegionInViewport(region)
   }
 
-  async element(selector: Selector<T>): Promise<Element<T> | null> {
-    return this.currentContext.element(selector)
-  }
-
-  async elements(selector: Selector<T>): Promise<Element<T>[]> {
-    return this.currentContext.elements(selector)
-  }
-
-  async waitFor(selector: Selector<T>, options?: WaitOptions): Promise<Element<T> | null> {
-    return this.currentContext.waitFor(selector, options)
-  }
-
-  async execute(script: ((arg: any) => any) | string, arg?: any): Promise<any> {
-    return this.currentContext.execute(script, arg)
-  }
-
   async takeScreenshot(): Promise<Buffer> {
     const image = await this._spec.takeScreenshot(this.target)
     if (utils.types.isString(image)) {
@@ -687,23 +678,19 @@ export class Driver<T extends SpecType> {
     return image
   }
 
-  async getViewportRegion(): Promise<Region> {
-    return {
-      ...(this._driverInfo?.viewportLocation ?? {x: 0, y: 0}),
-      ...(await this.getViewportSize()),
-    }
-  }
-
   async getViewportSize(): Promise<Size> {
+    const environment = await this.getEnvironment()
+
     let size
-    if (this.isNative) {
-      if (this._driverInfo?.viewportSize) {
+    if (environment.isNative && !environment.isWeb) {
+      const viewport = await this.getViewport()
+      if (viewport.viewportSize) {
         this._logger.log('Extracting viewport size from native driver using cached value')
-        size = this._driverInfo.viewportSize
+        size = viewport.viewportSize
       } else {
         this._logger.log('Extracting viewport size from native driver')
-        size = await this.getDisplaySize()
-        size.height -= this.statusBarSize!
+        size = (await this.getDisplaySize())!
+        size.height -= viewport.statusBarSize ?? 0
       }
       this._logger.log(`Rounding viewport size using`, this._customConfig.useCeilForViewportSize ? 'ceil' : 'round')
       if (this._customConfig.useCeilForViewportSize) {
@@ -716,7 +703,8 @@ export class Driver<T extends SpecType> {
       size = await this._spec.getViewportSize(this.target)
     } else {
       this._logger.log('Extracting viewport size from web driver using js snippet')
-      size = await this.mainContext.execute(snippets.getViewportSize)
+      const viewport = await this.mainContext.execute(snippets.getViewport)
+      size = viewport.viewportSize
     }
 
     this._logger.log('Extracted viewport size', size)
@@ -725,7 +713,8 @@ export class Driver<T extends SpecType> {
   }
 
   async setViewportSize(size: Size): Promise<void> {
-    if (this.isMobile) return
+    const environment = await this.getEnvironment()
+    if (environment.isMobile) return
     if (this._spec.setViewportSize) {
       this._logger.log('Setting viewport size to', size, 'using spec method')
       await this._spec.setViewportSize(this.target, size)
@@ -763,31 +752,35 @@ export class Driver<T extends SpecType> {
     throw new Error('Failed to set viewport size!')
   }
 
-  async getDisplaySize(): Promise<Size> {
-    if (this.isWeb && !this.isMobile) return undefined as never
-    if (this._driverInfo?.displaySize) {
-      this._logger.log('Extracting display size from native driver using cached value')
-      return this._driverInfo.displaySize
+  async getDisplaySize(): Promise<Size | undefined> {
+    const environment = await this.getEnvironment()
+    if (!environment.isNative) return undefined
+
+    const viewport = await this.getViewport()
+    if (viewport?.displaySize) {
+      this._logger.log('Extracting display size from native driver using cached value', viewport.displaySize)
+      return viewport.displaySize
     }
     let size = await this._spec.getWindowSize!(this.target)
     if ((await this.getOrientation())?.startsWith('landscape') && size.height > size.width) {
       size = {width: size.height, height: size.width}
     }
-    const normalizedSize = this.isAndroid ? utils.geometry.scale(size, 1 / this.pixelRatio) : size
+    const normalizedSize = environment.isAndroid ? utils.geometry.scale(size, 1 / viewport.pixelRatio) : size
     this._logger.log('Extracted and normalized display size:', normalizedSize)
     return normalizedSize
   }
 
-  async getOrientation(): Promise<ScreenOrientation> {
-    if (this.isWeb && !this.isMobile) return undefined as never
-    if (this.isAndroid) {
+  async getOrientation(): Promise<ScreenOrientation | undefined> {
+    const environment = await this.getEnvironment()
+    if (!environment.isMobile) return undefined
+    if (environment.isAndroid) {
       this._logger.log('Extracting device orientation using adb command on android')
 
       const rotation = await this.execute('mobile:shell', {
         command: "dumpsys window | grep 'mCurrentRotation' | cut -d = -f2",
       })
-        .then(r => r?.trim?.())
-        .catch(() => null as never)
+        .then(rotation => rotation?.trim?.())
+        .catch(() => null)
 
       if (rotation) {
         let orientation: ScreenOrientation = undefined as never
@@ -801,40 +794,64 @@ export class Driver<T extends SpecType> {
     }
 
     this._logger.log('Extracting device orientation')
-    const orientation = await this._spec.getOrientation!(this.target)
+    const orientation = await this._spec.getOrientation?.(this.target)
     this._logger.log('Extracted device orientation:', orientation)
     return orientation
   }
 
   async setOrientation(orientation: 'portrait' | 'landscape'): Promise<void> {
-    if (this.isWeb && !this.isMobile) return undefined as never
+    const environment = await this.getEnvironment()
+    if (!environment.isMobile) return undefined as never
     this._logger.log('Set device orientation:', orientation)
     await this._spec.setOrientation!(this.target, orientation)
   }
 
   async getCookies(): Promise<Cookie[]> {
-    if (this.isNative || !this.features?.allCookies) return []
+    const environment = await this.getEnvironment()
+    const features = await this.getFeatures()
+    if (environment.isNative || !features.allCookies) return []
     try {
-      return (await this._spec.getCookies?.(this.target)) ?? []
+      const cookies = await this._spec.getCookies?.(this.target)
+      this._logger.log('Extracted driver cookies', cookies)
+      return cookies ?? []
     } catch (error) {
-      this._driverInfo.features ??= {}
-      this._driverInfo.features.allCookies = false
+      this._logger.error('Error while extracting driver cookies', error)
+      this._features ??= {}
+      this._features.allCookies = false
       throw error
     }
   }
 
   async getTitle(): Promise<string> {
-    if (this.isNative) return undefined as never
+    const environment = await this.getEnvironment()
+    if (environment.isNative) return undefined as never
     const title = await this._spec.getTitle(this.target)
     this._logger.log('Extracted title:', title)
     return title
   }
 
   async getUrl(): Promise<string> {
-    if (this.isNative) return undefined as never
+    const environment = await this.getEnvironment()
+    if (environment.isNative) return undefined as never
     const url = await this._spec.getUrl(this.target)
     this._logger.log('Extracted url:', url)
     return url
+  }
+
+  async element(selector: Selector<T>): Promise<Element<T> | null> {
+    return this.currentContext.element(selector)
+  }
+
+  async elements(selector: Selector<T>): Promise<Element<T>[]> {
+    return this.currentContext.elements(selector)
+  }
+
+  async waitFor(selector: Selector<T>, options?: WaitOptions): Promise<Element<T> | null> {
+    return this.currentContext.waitFor(selector, options)
+  }
+
+  async execute(script: ((arg: any) => any) | string, arg?: any): Promise<any> {
+    return this.currentContext.execute(script, arg)
   }
 
   async visit(url: string): Promise<void> {
@@ -849,11 +866,9 @@ export function isDriver<T extends SpecType>(driver: any, spec?: SpecDriver<T>):
 export async function makeDriver<T extends SpecType>(options: {
   driver: Driver<T> | T['driver']
   spec?: SpecDriver<T>
-  logger?: Logger
   customConfig?: {useCeilForViewportSize?: boolean}
+  logger?: Logger
 }): Promise<Driver<T>> {
   const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
-  await driver.init()
-  await driver.refreshContexts()
-  return driver
+  return driver.refresh()
 }

@@ -100,7 +100,8 @@ export class Element<T extends SpecType> {
     if (this.isRef) return false
 
     element = element instanceof Element ? element.target : element
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       return this._spec
         .executeScript(this.context!.target, snippets.isEqualElements, [this.target, element])
         .catch(() => false)
@@ -112,7 +113,8 @@ export class Element<T extends SpecType> {
   async contains(innerElement: Element<T> | T['element']): Promise<boolean> {
     const contains = await this.withRefresh(async () => {
       innerElement = innerElement instanceof Element ? innerElement.target : innerElement
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         this._logger.log('Checking if web element with selector', this.selector, 'contains element', innerElement)
         return false // TODO implement a snipped for web
       } else {
@@ -148,7 +150,8 @@ export class Element<T extends SpecType> {
 
   async getRegion(): Promise<Region> {
     const region = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         this._logger.log('Extracting region of web element with selector', this.selector)
         return this.context.execute(snippets.getElementRect, [this, false])
       } else {
@@ -170,7 +173,8 @@ export class Element<T extends SpecType> {
 
   async getClientRegion(): Promise<Region> {
     const region = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         this._logger.log('Extracting region of web element with selector', this.selector)
         return this.context.execute(snippets.getElementRect, [this, true])
       } else {
@@ -184,13 +188,14 @@ export class Element<T extends SpecType> {
   async getContentRegion(
     options: {lazyLoad?: {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}} = {},
   ): Promise<Region> {
-    if (!this.driver.isNative) return null as never
+    const environment = await this.driver.getEnvironment()
+    if (!environment.isNative) return null as never
     this._logger.log('Extracting content region of native element with selector', this.selector)
     const helper = await this.driver.getHelper()
     let contentRegion = await helper?.getContentRegion(this, options)
     this._logger.log('Extracted content region using helper library', contentRegion)
 
-    if (!contentRegion || !this.driver.isAndroid) {
+    if (!contentRegion || !environment.isAndroid) {
       let attrContentRegion = null as Region | null
       try {
         const size = JSON.parse(await this.getAttribute('contentSize'))
@@ -198,7 +203,7 @@ export class Element<T extends SpecType> {
           x: size.left,
           y: size.top,
           width: size.width,
-          height: this.driver.isIOS
+          height: environment.isIOS
             ? Math.max(size.height, size.scrollableOffset)
             : size.height + size.scrollableOffset,
         }
@@ -208,7 +213,7 @@ export class Element<T extends SpecType> {
       this._logger.log('Extracted content region using attribute', attrContentRegion!)
 
       // ios workaround
-      if (!attrContentRegion && this.driver.isIOS) {
+      if (!attrContentRegion && environment.isIOS) {
         try {
           const type = await this.getAttribute('type')
           if (type === 'XCUIElementTypeScrollView') {
@@ -252,7 +257,8 @@ export class Element<T extends SpecType> {
     if (this._state.contentSize) return this._state.contentSize
 
     const size = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         this._logger.log('Extracting content size of web element with selector', this.selector)
         return this.context.execute(snippets.getElementContentSize, [this])
       } else {
@@ -260,11 +266,12 @@ export class Element<T extends SpecType> {
         try {
           const contentRegion = await this.getContentRegion(options)
           this._state.contentSize = utils.geometry.size(contentRegion)
-          if (this.driver.isAndroid) {
-            this._state.contentSize = utils.geometry.scale(this._state.contentSize, 1 / this.driver.pixelRatio)
+          const viewport = await this.driver.getViewport()
+          if (environment.isAndroid) {
+            this._state.contentSize = utils.geometry.scale(this._state.contentSize, 1 / viewport.pixelRatio)
           }
-          if (contentRegion.y < this.driver.statusBarSize!) {
-            this._state.contentSize.height -= this.driver.statusBarSize! - contentRegion.y
+          if (contentRegion.y < viewport.statusBarSize!) {
+            this._state.contentSize.height -= viewport.statusBarSize! - contentRegion.y
           }
           return this._state.contentSize
         } catch (err) {
@@ -282,7 +289,8 @@ export class Element<T extends SpecType> {
   async isPager(): Promise<boolean> {
     this._logger.log('Check if element with selector', this.selector, 'is scrollable by pages')
     const isPager = await this.withRefresh(async () => {
-      if (this.driver.isAndroid) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isAndroid) {
         const className = await this.getAttribute('className')
         return ['androidx.viewpager.widget.ViewPager'].includes(className)
       } else {
@@ -296,12 +304,13 @@ export class Element<T extends SpecType> {
   async isScrollable(): Promise<boolean> {
     this._logger.log('Check if element with selector', this.selector, 'is scrollable')
     const isScrollable = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         return this.context.execute(snippets.isElementScrollable, [this])
-      } else if (this.driver.isAndroid) {
+      } else if (environment.isAndroid) {
         const data = JSON.parse(await this.getAttribute('scrollable'))
         return Boolean(data) || false
-      } else if (this.driver.isIOS) {
+      } else if (environment.isIOS) {
         const type = await this.getAttribute('type')
         return ['XCUIElementTypeScrollView', 'XCUIElementTypeTable', 'XCUIElementTypeCollectionView'].includes(type)
       }
@@ -313,7 +322,8 @@ export class Element<T extends SpecType> {
   async isRoot(): Promise<boolean> {
     // TODO replace with snippet
     return this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         const rootElement = await this.context.element({type: 'css', selector: 'html'})
         return this.equals(rootElement!)
       } else {
@@ -323,15 +333,17 @@ export class Element<T extends SpecType> {
   }
 
   async getShadowRoot(): Promise<T['element'] | null> {
-    if (!this.driver.isWeb) return null
+    const environment = await this.driver.getEnvironment()
+    if (!environment.isWeb) return null
     return this._spec.executeScript(this.context.target, snippets.getShadowRoot, [this.target])
   }
 
   async getTouchPadding(): Promise<number> {
     if (this._state.touchPadding == null) {
-      if (this.driver.isWeb) this._state.touchPadding = 0
-      else if (this.driver.isIOS) this._state.touchPadding = 10
-      else if (this.driver.isAndroid) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) this._state.touchPadding = 0
+      else if (environment.isIOS) this._state.touchPadding = 10
+      else if (environment.isAndroid) {
         const helper = await this.driver.getHelper()
         if (helper?.name === 'android') {
           this._state.touchPadding = await helper.getTouchPadding()
@@ -356,7 +368,8 @@ export class Element<T extends SpecType> {
 
   async getText(): Promise<string> {
     const text = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         return ''
       } else {
         this._logger.log('Extracting text of native element with selector', this.selector)
@@ -375,7 +388,8 @@ export class Element<T extends SpecType> {
     }
 
     const value = await this.withRefresh(async () => {
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         const properties = await this.context.execute(snippets.getElementProperties, [this, [name]])
         return properties[name]
       } else {
@@ -388,7 +402,7 @@ export class Element<T extends SpecType> {
           this._state.attributes[name] = err
           throw err
         } finally {
-          if (this.driver.isAndroid && name === 'contentSize') {
+          if (environment.isAndroid && name === 'contentSize') {
             // android has a bug when after extracting 'contentSize' attribute the element is being scrolled by undetermined number of pixels
             this._logger.log('Stabilizing android scroll offset')
             const originalScrollOffset = await this.getScrollOffset()
@@ -404,7 +418,8 @@ export class Element<T extends SpecType> {
   }
 
   async setAttribute(name: string, value: string): Promise<void> {
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       await this.context.execute(snippets.setElementAttributes, [this, {[name]: value}])
     }
   }
@@ -413,17 +428,18 @@ export class Element<T extends SpecType> {
     return this.withRefresh(async () => {
       this._logger.log(`Scrolling to offset (${offset.x}, ${offset.y}) element with selector`, this.selector)
       offset = utils.geometry.round({x: Math.max(offset.x, 0), y: Math.max(offset.y, 0)})
-      if (this.driver.isWeb) {
+      const environment = await this.driver.getEnvironment()
+      if (environment.isWeb) {
         let actualOffset = await this.context.execute(snippets.scrollTo, [this, offset])
         // iOS has an issue when scroll offset is read immediately after it is been set it will always return the exact value that was set
-        if (this.driver.isIOS) actualOffset = await this.getScrollOffset()
+        if (environment.isIOS) actualOffset = await this.getScrollOffset()
         return actualOffset
       } else {
         const currentScrollOffset = await this.getScrollOffset()
 
         if (!options?.force && utils.geometry.equals(offset, currentScrollOffset)) return currentScrollOffset
 
-        if (utils.geometry.equals(offset, {x: 0, y: 0}) && this.driver.isAndroid) {
+        if (utils.geometry.equals(offset, {x: 0, y: 0}) && environment.isAndroid) {
           const helper = await this.driver.getHelper()
           if (helper?.name === 'android') {
             await helper.scrollToTop(this)
@@ -446,9 +462,10 @@ export class Element<T extends SpecType> {
           ? {x: -maxOffset.x, y: -maxOffset.y} // if it has to be scrolled to the very beginning, then scroll maximum amount of pixels
           : utils.geometry.offsetNegative(requiredOffset, currentScrollOffset)
 
-        if (this.driver.isAndroid) {
-          remainingOffset = utils.geometry.round(utils.geometry.scale(remainingOffset, this.driver.pixelRatio))
-          effectiveRegion = utils.geometry.round(utils.geometry.scale(effectiveRegion, this.driver.pixelRatio))
+        if (environment.isAndroid) {
+          const viewport = await this.driver.getViewport()
+          remainingOffset = utils.geometry.round(utils.geometry.scale(remainingOffset, viewport.pixelRatio))
+          effectiveRegion = utils.geometry.round(utils.geometry.scale(effectiveRegion, viewport.pixelRatio))
         }
 
         const isPager = await this.isPager()
@@ -478,7 +495,7 @@ export class Element<T extends SpecType> {
               {action: 'moveTo', y: yTrack, x: xEnd},
               {action: 'release'},
             ])
-          } else if (this.driver.isAndroid) {
+          } else if (environment.isAndroid) {
             actions.push([
               // move through scrolling gap (actual scrolling will be triggered only after that)
               {action: 'press', y: yTrack, x: xStart - xGap},
@@ -491,7 +508,7 @@ export class Element<T extends SpecType> {
               {action: 'moveTo', y: yTrack, x: xEnd},
               {action: 'release'},
             ])
-          } else if (this.driver.isIOS) {
+          } else if (environment.isIOS) {
             actions.push([
               // move through scrolling gap (actual scrolling will be triggered only after that)
               {action: 'press', y: yTrack, x: xStart - xGap},
@@ -532,7 +549,7 @@ export class Element<T extends SpecType> {
               {action: 'moveTo', x: xTrack, y: yEnd},
               {action: 'release'},
             ])
-          } else if (this.driver.isAndroid) {
+          } else if (environment.isAndroid) {
             actions.push([
               // move through scrolling gap (actual scrolling will be triggered only after that)
               {action: 'press', x: xTrack, y: yStart - yGap},
@@ -545,7 +562,7 @@ export class Element<T extends SpecType> {
               {action: 'moveTo', x: xTrack, y: yEnd},
               {action: 'release'},
             ])
-          } else if (this.driver.isIOS) {
+          } else if (environment.isIOS) {
             actions.push([
               // move through scrolling gap (actual scrolling will be triggered only after that)
               {action: 'press', x: xTrack, y: yStart - yGap},
@@ -565,7 +582,7 @@ export class Element<T extends SpecType> {
 
         // ios actions should be executed one-by-one sequentially, otherwise the result isn't stable
         // pages should be scrolled one-by-one as well
-        if (isPager || this.driver.isIOS) {
+        if (isPager || environment.isIOS) {
           for (const action of actions) {
             await this._spec.performAction!(this.driver.target, action)
           }
@@ -586,7 +603,8 @@ export class Element<T extends SpecType> {
 
   async translateTo(offset: Location): Promise<Location> {
     offset = {x: Math.round(offset.x), y: Math.round(offset.y)}
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       return this.withRefresh(async () => this.context.execute(snippets.translateTo, [this, offset]))
     } else {
       throw new Error('Cannot apply css translate scrolling on non-web element')
@@ -594,7 +612,8 @@ export class Element<T extends SpecType> {
   }
 
   async getScrollOffset(): Promise<Location> {
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       return this.withRefresh(() => this.context.execute(snippets.getElementScrollOffset, [this]))
     } else {
       return this._state.scrollOffset ?? {x: 0, y: 0}
@@ -602,7 +621,8 @@ export class Element<T extends SpecType> {
   }
 
   async getTranslateOffset(): Promise<Location> {
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       return this.withRefresh(() => this.context.execute(snippets.getElementTranslateOffset, [this]))
     } else {
       throw new Error('Cannot apply css translate scrolling on non-web element')
@@ -610,7 +630,8 @@ export class Element<T extends SpecType> {
   }
 
   async getInnerOffset(): Promise<Location> {
-    if (this.driver.isWeb) {
+    const environment = await this.driver.getEnvironment()
+    if (environment.isWeb) {
       return this.withRefresh(() => this.context.execute(snippets.getElementInnerOffset, [this]))
     } else {
       return this.getScrollOffset()
@@ -629,7 +650,8 @@ export class Element<T extends SpecType> {
 
   async preserveState(): Promise<ElementState> {
     const scrollOffset = await this.getScrollOffset()
-    const transforms = this.driver.isWeb
+    const environment = await this.driver.getEnvironment()
+    const transforms = environment.isWeb
       ? await this.context.execute(snippets.getElementStyleProperties, [this, ['transform', '-webkit-transform']])
       : null
     if (!utils.types.has(this._state, ['scrollOffset', 'transforms'])) {
@@ -649,7 +671,8 @@ export class Element<T extends SpecType> {
   }
 
   async hideScrollbars(): Promise<void> {
-    if (this.driver.isNative) return
+    const environment = await this.driver.getEnvironment()
+    if (environment.isNative) return
     if (this._originalOverflow) return
     return this.withRefresh(async () => {
       const {overflow} = await this.context.execute(snippets.setElementStyleProperties, [this, {overflow: 'hidden'}])
@@ -658,7 +681,8 @@ export class Element<T extends SpecType> {
   }
 
   async restoreScrollbars(): Promise<void> {
-    if (this.driver.isNative) return
+    const environment = await this.driver.getEnvironment()
+    if (environment.isNative) return
     if (!this._originalOverflow) return
     return this.withRefresh(async () => {
       await this.context.execute(snippets.setElementStyleProperties, [this, {overflow: this._originalOverflow}])

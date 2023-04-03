@@ -1,12 +1,10 @@
 import type {Size} from '@applitools/utils'
-import {type DriverInfo} from './spec-driver'
+import type {Capabilities, Environment, Viewport} from './types'
 
-type Capabilities = Record<string, any>
+export function extractCapabilitiesEnvironment(capabilities: Capabilities): Partial<Environment> {
+  if (capabilities.capabilities) capabilities = capabilities.capabilities as Capabilities
 
-export function parseCapabilities(capabilities: Capabilities): DriverInfo {
-  if (capabilities.capabilities) capabilities = capabilities.capabilities
-
-  const info: DriverInfo = {
+  const environment: Environment = {
     browserName:
       !capabilities.app && !capabilities.bundleId
         ? (capabilities.browserName ?? capabilities.desired?.browserName) || undefined
@@ -21,34 +19,41 @@ export function parseCapabilities(capabilities: Capabilities): DriverInfo {
     isECClient: Boolean(capabilities['applitools:isECClient']),
   }
 
-  if (info.isMobile) {
-    info.deviceName = (capabilities.desired?.deviceName ?? capabilities.deviceName) || undefined
-    info.orientation = (capabilities.deviceOrientation ?? capabilities.orientation)?.toLowerCase()
-    info.isIOS = isIOS(capabilities)
-    info.isAndroid = isAndroid(capabilities)
-    if (!info.browserName) {
-      info.isNative = true
-    } else if (info.isIOS && !/mobilesafari/i.test(capabilities.CFBundleIdentifier)) {
-      info.browserName = undefined
-      info.isNative = true
+  if (environment?.isMobile) {
+    environment.deviceName = (capabilities.desired?.deviceName ?? capabilities.deviceName) || undefined
+    environment.isIOS = isIOS(capabilities)
+    environment.isAndroid = isAndroid(capabilities)
+    if (!environment.browserName) {
+      environment.isNative = true
+    } else if (environment.isIOS && !/mobilesafari/i.test(capabilities.CFBundleIdentifier)) {
+      environment.browserName = undefined
+      environment.isNative = true
     } else {
-      info.isNative = false
+      environment.isNative = false
     }
   }
 
-  if (info.isNative) {
-    info.displaySize = extractDisplaySize(capabilities)
-    info.pixelRatio = capabilities.pixelRatio
-    info.statusBarSize = capabilities.statBarHeight ?? capabilities.viewportRect?.top
-    if (info.displaySize && info.orientation && capabilities.viewportRect) {
-      info.navigationBarSize =
-        info.orientation === 'landscape'
-          ? info.displaySize.width - (capabilities.viewportRect.left + capabilities.viewportRect.width)
-          : info.displaySize.height - (capabilities.viewportRect.top + capabilities.viewportRect.height)
-    }
+  return environment
+}
+
+export function extractCapabilitiesViewport(capabilities: Capabilities): Partial<Viewport> {
+  if (capabilities.capabilities) capabilities = capabilities.capabilities as Capabilities
+
+  const viewport: Partial<Viewport> = {
+    displaySize: extractDisplaySize(capabilities),
+    orientation: (capabilities.deviceOrientation ?? capabilities.orientation)?.toLowerCase(),
+    pixelRatio: capabilities.pixelRatio,
+    statusBarSize: capabilities.statBarHeight ?? capabilities.viewportRect?.top,
   }
 
-  return info
+  if (viewport.displaySize && viewport.orientation && capabilities.viewportRect) {
+    viewport.navigationBarSize =
+      viewport.orientation === 'landscape'
+        ? viewport.displaySize.width - (capabilities.viewportRect.left + capabilities.viewportRect.width)
+        : viewport.displaySize.height - (capabilities.viewportRect.top + capabilities.viewportRect.height)
+  }
+
+  return viewport
 }
 
 function isW3C(capabilities: Capabilities) {

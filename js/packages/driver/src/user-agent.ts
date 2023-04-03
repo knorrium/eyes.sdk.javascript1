@@ -1,7 +1,5 @@
+import type {UserAgent, Environment} from './types'
 import * as utils from '@applitools/utils'
-
-type PlatformInfo = {platformName: string; platformVersion?: string}
-type BrowserInfo = {browserName: string; browserVersion?: string}
 
 const MAJOR_MINOR = '(\\d+)(?:[_.](\\d+))?'
 
@@ -35,17 +33,36 @@ const HIDDEN_IE_REGEX = new RegExp(`(?:rv:${MAJOR_MINOR}\\) like Gecko)`)
 
 const BROWSER_VERSION_REGEX = new RegExp(`(?:Version/${MAJOR_MINOR})`)
 
-export function parseUserAgent(userAgent: string): PlatformInfo & BrowserInfo {
-  utils.guard.notNull(userAgent, {name: 'userAgent'})
-
-  userAgent = userAgent.trim()
-  return {
-    ...parsePlatform(userAgent),
-    ...parseBrowser(userAgent),
-  }
+const WINDOWS_VERSIONS = {
+  '0.1.0': '7',
+  '0.2.0': '8',
+  '0.3.0': '8.1',
+  '10.0.0': '10',
+  '15.0.0': '11',
 }
 
-export function parsePlatform(userAgent: string): PlatformInfo {
+export function extractUserAgentEnvironment(userAgent: UserAgent): Environment {
+  let userAgentLegacy: string, userAgentObject: Exclude<UserAgent, string> | undefined
+  if (utils.types.isString(userAgent)) {
+    userAgentLegacy = userAgent.trim()
+  } else {
+    userAgentLegacy = userAgent.legacy.trim()
+    userAgentObject = userAgent
+  }
+  const userAgentLegacyEnvironment = {
+    ...extractUserAgentLegacyPlatform(userAgentLegacy),
+    ...extractUserAgentLegacyBrowser(userAgentLegacy),
+  }
+  const userAgentEnvironment = userAgentObject && extractUserAgentObjectEnvironment(userAgentObject)
+
+  const environment = {...userAgentLegacyEnvironment, ...userAgentEnvironment}
+  environment.browserName = userAgentLegacyEnvironment.browserName ?? userAgentEnvironment?.browserName
+  environment.browserVersion = userAgentLegacyEnvironment.browserVersion ?? userAgentEnvironment?.browserVersion
+
+  return environment
+}
+
+function extractUserAgentLegacyPlatform(userAgent: string): {platformName: string; platformVersion?: string} {
   const platformRegExp = PLATFORM_REGEXES.find(regexp => regexp.test(userAgent))
 
   if (!platformRegExp) return {platformName: 'Unknown'}
@@ -75,7 +92,7 @@ export function parsePlatform(userAgent: string): PlatformInfo {
   }
 }
 
-export function parseBrowser(userAgent: string): BrowserInfo {
+function extractUserAgentLegacyBrowser(userAgent: string): {browserName: string; browserVersion?: string} {
   const browserRegExp = BROWSER_REGEXPES.find(regexp => regexp.test(userAgent))
   if (!browserRegExp) {
     if (HIDDEN_IE_REGEX.test(userAgent)) {
@@ -96,4 +113,29 @@ export function parseBrowser(userAgent: string): BrowserInfo {
   }
 
   return result
+}
+
+function extractUserAgentObjectEnvironment(userAgent: Exclude<UserAgent, string>): Environment {
+  const chromiumBrand = userAgent.brands?.find(brand => /Chromium/i.test(brand.brand))
+  const browserBrand =
+    userAgent.brands?.find(brand => brand !== chromiumBrand && !/Not.?A.?Brand/i.test(brand.brand)) ?? chromiumBrand
+
+  const environment: Environment = {
+    browserName: browserBrand?.brand,
+    browserVersion: browserBrand?.version,
+    platformName: userAgent.platform || undefined,
+    platformVersion: userAgent.platformVersion || undefined,
+    deviceName: userAgent.model || undefined,
+    isMobile: userAgent.mobile,
+    isChromium: Boolean(chromiumBrand),
+  }
+
+  if (environment.platformName === 'Windows') {
+    environment.platformVersion = WINDOWS_VERSIONS[environment.platformVersion as keyof typeof WINDOWS_VERSIONS]
+  } else if (environment.platformName === 'macOS') {
+    environment.platformName = 'Mac OS X'
+    environment.platformVersion = environment.platformVersion?.split(/[._]/, 2).join('.')
+  }
+
+  return environment
 }

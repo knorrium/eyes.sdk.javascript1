@@ -16,8 +16,6 @@ describe('screenshoter androidx app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     return test({
       type: 'android',
       tag: 'element-fully-scrollable',

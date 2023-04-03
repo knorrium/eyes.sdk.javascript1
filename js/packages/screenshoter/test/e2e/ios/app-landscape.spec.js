@@ -35,10 +35,7 @@ describe('screenshoter ios app', () => {
 
   it('take viewport screenshot on device with landscape orientation', async () => {
     await driver.setOrientation('landscape')
-
     await sleep(5000)
-
-    await driver.init()
 
     await test({
       type: 'ios',

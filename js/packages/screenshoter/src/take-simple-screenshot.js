@@ -5,7 +5,7 @@ async function takeSimpleScreenshot({context, region, withStatusBar, wait, stabi
   logger.verbose('Taking image of...')
 
   const driver = context.driver
-  const takeViewportScreenshot = makeTakeViewportScreenshot({logger, driver, stabilization, debug})
+  const takeViewportScreenshot = await makeTakeViewportScreenshot({logger, driver, stabilization, debug})
 
   await utils.general.sleep(wait)
 

@@ -33,15 +33,24 @@ async function takeScreenshot({
   // screenshot of a window/app was requested (fully or viewport)
   const window = !region && (!frames || frames.length === 0)
 
+  const environment = await driver.getEnvironment()
+
   // switch worlds as needed
-  if (webview && driver.isNative) await driver.switchWorld(typeof webview === 'string' ? {id: webview} : null)
-  if (window && !webview && driver.isWebView) await driver.switchWorld({goHome: true})
+  let activeWorld
+  if (environment.isNative && (webview || (window && environment.isWeb))) {
+    if (webview === true) {
+      const worlds = await driver.getWorlds()
+      webview = worlds && worlds.find(name => name.includes('WEBVIEW'))
+    }
+    activeWorld = await driver.getCurrentWorld()
+    await driver.switchWorld(webview)
+  }
 
   // framed screenshots could be taken only when screenshot of window/app fully was requested
   framed = framed && fully && window
   // screenshots with status bar could be taken only when screenshot of app or framed app fully was requested
-  withStatusBar = withStatusBar && driver.isNative && window && (!fully || framed)
-  scrollingMode = driver.isNative ? 'scroll' : scrollingMode
+  withStatusBar = withStatusBar && environment.isNative && window && (!fully || framed)
+  scrollingMode = environment.isNative ? 'scroll' : scrollingMode
 
   const activeContext = driver.currentContext
   const context =
@@ -54,24 +63,24 @@ async function takeScreenshot({
     const scrollingElement = await nextContext.getScrollingElement()
     // unlike web apps, native apps do not always have scrolling element
     if (scrollingElement) {
-      if (driver.isWeb && hideScrollbars) await scrollingElement.hideScrollbars()
+      if (environment.isWeb && hideScrollbars) await scrollingElement.hideScrollbars()
       // this is unwanted but necessary side effect, because it is not possible to extract initial scroll position
-      if (driver.isNative && !window) await scrollingElement.scrollTo({x: 0, y: 0}, {force: true})
+      if (environment.isNative && !window) await scrollingElement.scrollTo({x: 0, y: 0}, {force: true})
       await scrollingElement.preserveState()
     }
   }
 
   // blur active element in target context
-  const activeElement = driver.isWeb && hideCaret ? await context.blurElement() : null
+  const activeElement = environment.isWeb && hideCaret ? await context.blurElement() : null
 
   const target = await getTarget({window, context, region, fully, scrollingMode, logger})
 
   if (target.scroller) {
     await target.scroller.preserveState()
-    if (driver.isWeb && hideScrollbars) await target.scroller.hideScrollbars()
+    if (environment.isWeb && hideScrollbars) await target.scroller.hideScrollbars()
   }
 
-  if (!window && !driver.isNative) await scrollIntoViewport({...target, logger})
+  if (!window && !environment.isNative) await scrollIntoViewport({...target, logger})
 
   if (fully && !target.region && target.scroller) await target.scroller.moveTo({x: 0, y: 0})
 
@@ -90,7 +99,9 @@ async function takeScreenshot({
         })
       : await takeSimpleScreenshot({...target, withStatusBar, wait, stabilization, debug, logger})
 
-  screenshot.image.scale(driver.viewportScale)
+  const viewport = await driver.getViewport()
+
+  screenshot.image.scale(viewport.viewportScale)
 
   const calculatedRegions = await extractCoordinatesForSelectorsAndElements({
     regionsToCalculate,
@@ -121,7 +132,7 @@ async function takeScreenshot({
       for (const prevContext of context.path.reverse()) {
         const scrollingElement = await prevContext.getScrollingElement()
         if (scrollingElement) {
-          if (driver.isWeb && hideScrollbars) await scrollingElement.restoreScrollbars()
+          if (environment.isWeb && hideScrollbars) await scrollingElement.restoreScrollbars()
           await scrollingElement.restoreState()
         }
       }
@@ -130,7 +141,7 @@ async function takeScreenshot({
       await activeContext.focus()
 
       // return driver to previous app world if switched
-      await driver.switchWorld({restoreState: true})
+      if (activeWorld) await driver.switchWorld(activeWorld)
     },
   }
 }

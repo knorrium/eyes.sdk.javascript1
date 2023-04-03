@@ -43,8 +43,6 @@ describe('screenshoter android app', () => {
     await memberButton.click()
     await sleep(5000)
 
-    await driver.init()
-
     await test({
       type: 'android',
       tag: 'app-fully-fr',
@@ -75,8 +73,6 @@ describe('screenshoter android app', () => {
 
     const okButton = await driver.element('android=new UiSelector().text("OK")')
     await okButton?.click()
-
-    await driver.init()
 
     // await driver.mainContext.setScrollingElement({type: 'id', selector: 'content_list'})
 

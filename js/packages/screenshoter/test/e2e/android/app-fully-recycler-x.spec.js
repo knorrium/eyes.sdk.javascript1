@@ -16,8 +16,6 @@ describe('screenshoter androidx app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     await test({
       type: 'android',
       tag: 'app-fully-recycler-x',

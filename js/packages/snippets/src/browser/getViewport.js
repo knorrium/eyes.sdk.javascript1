@@ -1,4 +1,4 @@
-function getViewportSize() {
+function getViewport() {
   let width = 0
   let height = 0
   if (window.innerHeight) {
@@ -16,7 +16,11 @@ function getViewportSize() {
     width = document.body.clientWidth
   }
 
-  return {width, height}
+  return {
+    viewportSize: {width, height},
+    pixelRatio: window.devicePixelRatio,
+    viewportScale: window.visualViewport && window.visualViewport.scale,
+  }
 }
 
-module.exports = getViewportSize
+module.exports = getViewport

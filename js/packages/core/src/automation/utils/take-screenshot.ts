@@ -24,6 +24,7 @@ export async function takeScreenshot<TSpec extends SpecType>({
   settings: ScreenshotSettings<TSpec> & {regionsToCalculate?: ElementReference<TSpec>[]}
   logger: Logger
 }): Promise<Screenshot<TSpec>> {
+  const environment = await driver.getEnvironment()
   return legacyTakeScreenshot({
     driver,
     frames: settings.frames?.map(frame => {
@@ -39,7 +40,7 @@ export async function takeScreenshot<TSpec extends SpecType>({
     scrollingMode: settings.stitchMode?.toLowerCase(),
     overlap: settings.overlap,
     wait: settings.waitBeforeCapture,
-    framed: driver.isNative,
+    framed: environment.isNative,
     lazyLoad: settings.lazyLoad,
     stabilization: settings.normalization && {
       crop: settings.normalization.cut,

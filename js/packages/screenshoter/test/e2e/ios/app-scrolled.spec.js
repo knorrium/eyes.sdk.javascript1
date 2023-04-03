@@ -16,8 +16,6 @@ describe('screenshoter ios app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     const scrollingElement = await driver.mainContext.getScrollingElement()
     await driver.execute('mobile:scroll', {
       elementId: scrollingElement.target['element-6066-11e4-a52e-4f735466cecf'],

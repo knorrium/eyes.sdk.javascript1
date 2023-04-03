@@ -15,8 +15,6 @@ describe('screenshoter ios web', () => {
     await driver.visit('https://applitools.github.io/demo/TestPages/DynamicResolution/desktop.html')
     await sleep(5000)
 
-    await driver.init()
-
     await test({
       type: 'ios-web',
       tag: 'page-noscale',

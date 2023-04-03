@@ -1,9 +1,9 @@
+import {extractUserAgentEnvironment} from '../../src/user-agent'
 import assert from 'assert'
-import {parseUserAgent} from '../../src/user-agent'
 
-describe('user agent', () => {
+describe('user agent legacy', () => {
   it('should return Chrome as browser, Windows as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
     )
     assert.deepStrictEqual(userAgent, {
@@ -15,7 +15,9 @@ describe('user agent', () => {
   })
 
   it('should return Firefox as browser, Windows as OS', () => {
-    const userAgent = parseUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0')
+    const userAgent = extractUserAgentEnvironment(
+      'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
+    )
     assert.deepStrictEqual(userAgent, {
       platformName: 'Windows',
       platformVersion: '10',
@@ -25,7 +27,7 @@ describe('user agent', () => {
   })
 
   it('should return Chrome as browser, Android as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Mobile Safari/537.36',
     )
     assert.deepStrictEqual(userAgent, {
@@ -37,7 +39,7 @@ describe('user agent', () => {
   })
 
   it('should return Safari as browser, iOS as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
     )
     assert.deepStrictEqual(userAgent, {
@@ -49,7 +51,7 @@ describe('user agent', () => {
   })
 
   it('should return Chrome as browser, Linux as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41',
     )
     assert.deepStrictEqual(userAgent, {
@@ -61,7 +63,7 @@ describe('user agent', () => {
   })
 
   it('should return Edge as browser, Windows as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136',
     )
     assert.deepStrictEqual(userAgent, {
@@ -73,7 +75,7 @@ describe('user agent', () => {
   })
 
   it('should return IE as browser, Windows as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)',
     )
     assert.deepStrictEqual(userAgent, {
@@ -85,7 +87,7 @@ describe('user agent', () => {
   })
 
   it('should return hidden IE as browser, Windows as OS', () => {
-    const userAgent = parseUserAgent('Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko')
+    const userAgent = extractUserAgentEnvironment('Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko')
     assert.deepStrictEqual(userAgent, {
       platformName: 'Windows',
       platformVersion: '8',
@@ -95,15 +97,16 @@ describe('user agent', () => {
   })
 
   it('should return Unknown as browser, Unknown as OS', () => {
-    const userAgent = parseUserAgent('Googlebot/2.1 (+http://www.google.com/bot.html)')
+    const userAgent = extractUserAgentEnvironment('Googlebot/2.1 (+http://www.google.com/bot.html)')
     assert.deepStrictEqual(userAgent, {
       platformName: 'Unknown',
       browserName: 'Unknown',
+      browserVersion: undefined,
     })
   })
 
   it('should return Safari as browser, Mac OS X as OS', () => {
-    const userAgent = parseUserAgent(
+    const userAgent = extractUserAgentEnvironment(
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5',
     )
     assert.deepStrictEqual(userAgent, {
@@ -347,8 +350,140 @@ describe('user agent', () => {
     },
   ].forEach(({uaStr, ...expected}) => {
     it(`should parse ${uaStr}`, () => {
-      const userAgent = parseUserAgent(uaStr)
+      const userAgent = extractUserAgentEnvironment(uaStr)
       assert.deepStrictEqual(userAgent, expected)
+    })
+  })
+})
+
+describe('user agent object', () => {
+  it('should return Windows 7 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy:
+        'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Google Chrome', version: '107'},
+        {brand: 'Chromium', version: '107'},
+      ],
+      platform: 'Windows',
+      platformVersion: '0.1.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Windows',
+      platformVersion: '7',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
+    })
+  })
+
+  it('should return Windows 8 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy: 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Google Chrome', version: '107'},
+        {brand: 'Chromium', version: '107'},
+      ],
+      platform: 'Windows',
+      platformVersion: '0.2.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Windows',
+      platformVersion: '8',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
+    })
+  })
+
+  it('should return Windows 8.1 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy: 'Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Google Chrome', version: '107'},
+        {brand: 'Chromium', version: '107'},
+      ],
+      platform: 'Windows',
+      platformVersion: '0.3.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Windows',
+      platformVersion: '8.1',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
+    })
+  })
+
+  it('should return Windows 10 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy:
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Google Chrome', version: '107'},
+        {brand: 'Chromium', version: '107'},
+      ],
+      platform: 'Windows',
+      platformVersion: '10.0.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Windows',
+      platformVersion: '10',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
+    })
+  })
+
+  it('should return Windows 11 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy:
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Google Chrome', version: '107'},
+        {brand: 'Chromium', version: '107'},
+      ],
+      platform: 'Windows',
+      platformVersion: '15.0.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Windows',
+      platformVersion: '11',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
+    })
+  })
+
+  it('should return Mac OS X 12.5 as OS', () => {
+    const userAgent = extractUserAgentEnvironment({
+      legacy:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 12_5_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+      brands: [
+        {brand: 'Chromium', version: '107'},
+        {brand: 'Google Chrome', version: '107'},
+      ],
+      platform: 'macOS',
+      platformVersion: '12.5.0',
+    })
+    assert.deepStrictEqual(userAgent, {
+      platformName: 'Mac OS X',
+      platformVersion: '12.5',
+      browserName: 'Chrome',
+      browserVersion: '107',
+      deviceName: undefined,
+      isChromium: true,
+      isMobile: undefined,
     })
   })
 })

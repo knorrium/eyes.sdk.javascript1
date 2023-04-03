@@ -10,7 +10,7 @@ type Options = {
 
 export function makeGetNMLClient({client, logger: defaultLogger}: Options) {
   const getNMLClientWithCache = utils.general.cachify(getNMLClient, ([options]) =>
-    client ? 'default' : [options.driver.sessionId, options.config],
+    client ? 'default' : [options.driver.guid, options.config],
   )
   if (client) getNMLClientWithCache.setCachedValue('default', Promise.resolve(client))
   return getNMLClientWithCache

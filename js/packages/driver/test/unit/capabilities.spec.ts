@@ -1,9 +1,9 @@
+import {extractCapabilitiesEnvironment, extractCapabilitiesViewport} from '../../src/capabilities'
 import assert from 'assert'
-import {parseCapabilities} from '../../src/capabilities'
 
 describe('capabilities', () => {
   it('should work with Chrome on Docker Container using W3C', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       acceptInsecureCerts: false,
       browserName: 'chrome',
       browserVersion: '94.0.4606.81',
@@ -28,9 +28,10 @@ describe('capabilities', () => {
       'webauthn:extension:credBlob': true,
       'webauthn:extension:largeBlob': true,
       'webauthn:virtualAuthenticators': true,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'chrome',
       browserVersion: '94.0.4606.81',
       platformName: 'linux',
@@ -43,7 +44,7 @@ describe('capabilities', () => {
   })
 
   it('should work with IE on Windows using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       browserVersion: '11',
       acceptInsecureCerts: false,
       'se:ieOptions': {
@@ -67,9 +68,10 @@ describe('capabilities', () => {
       pageLoadStrategy: 'normal',
       platformName: 'windows',
       setWindowRect: true,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'internet explorer',
       browserVersion: '11',
       platformName: 'windows',
@@ -82,7 +84,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Edge on Windows using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       browserVersion: '95.0.1020.40',
       strictFileInteractability: false,
       acceptInsecureCerts: false,
@@ -102,9 +104,10 @@ describe('capabilities', () => {
       },
       unhandledPromptBehavior: 'dismiss and notify',
       proxy: {},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'msedge',
       browserVersion: '95.0.1020.40',
       platformName: 'windows',
@@ -117,7 +120,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Edge on Windows using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       acceptInsecureCerts: false,
       acceptSslCerts: false,
       applicationCacheEnabled: false,
@@ -152,9 +155,10 @@ describe('capabilities', () => {
       'webauthn:extension:credBlob': true,
       'webauthn:extension:largeBlob': true,
       'webauthn:virtualAuthenticators': true,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'msedge',
       browserVersion: '95.0.1020.30',
       platformName: 'Windows',
@@ -167,7 +171,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Chrome on Windows using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'goog:chromeOptions': {debuggerAddress: 'localhost:56767'},
       browserVersion: '95.0.4638.54',
       strictFileInteractability: false,
@@ -187,9 +191,10 @@ describe('capabilities', () => {
         chromedriverVersion: '95.0.4638.17 (a9d0719444d4b035e284ed1fce73bf6ccd789df2-refs/branch-heads/4638@{#178})',
         userDataDir: 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\scoped_dir2120_2132372376',
       },
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
       platformName: 'windows',
@@ -202,7 +207,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Chrome on Windows using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       acceptInsecureCerts: false,
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
@@ -223,9 +228,10 @@ describe('capabilities', () => {
       'webauthn:extension:credBlob': true,
       'webauthn:extension:largeBlob': true,
       'webauthn:virtualAuthenticators': true,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
       platformName: 'windows',
@@ -238,7 +244,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Firefox on Windows using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'moz:debuggerAddress': 'localhost:53228',
       'moz:headless': false,
       'moz:webdriverClick': true,
@@ -262,9 +268,10 @@ describe('capabilities', () => {
       setWindowRect: true,
       'moz:buildID': '20211028161635',
       pageLoadStrategy: 'normal',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'firefox',
       browserVersion: '94.0',
       platformName: 'windows',
@@ -277,7 +284,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Firefox on Windows using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'moz:profile': 'C:\\Windows\\proxy\\rust_mozprofile5IWctq',
       'moz:geckodriverVersion': '0.30.0',
       timeouts: {implicit: 0, pageLoad: 300000, script: 30000},
@@ -299,9 +306,10 @@ describe('capabilities', () => {
       setWindowRect: true,
       'moz:webdriverClick': true,
       'webdriver.remote.sessionid': 'f567079469e4ab139ded2bd56bb71a041b850bed',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'firefox',
       browserVersion: '94.0',
       platformName: 'windows',
@@ -314,7 +322,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Safari on MacOS using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       browserVersion: '14.1',
       'safari:platformVersion': '11.3.1',
       'safari:diagnose': false,
@@ -334,9 +342,10 @@ describe('capabilities', () => {
       'apple:safari.options': {},
       platformName: 'macOS',
       setWindowRect: true,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: '14.1',
       platformName: 'macOS',
@@ -349,7 +358,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Safari on MacOS using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'safari:platformVersion': '11.5.2',
       'safari:automaticInspection': false,
       'webkit:WebRTC': {
@@ -367,9 +376,10 @@ describe('capabilities', () => {
       platformName: 'macOS',
       'safari:diagnose': false,
       'webdriver.remote.sessionid': 'a159db85d5ec159a37e5a890d8a67a5a650a48fc',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: '14.1.2',
       platformName: 'macOS',
@@ -382,7 +392,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Chrome on MacOS using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'goog:chromeOptions': {debuggerAddress: 'localhost:49196'},
       browserVersion: '95.0.4638.54',
       strictFileInteractability: false,
@@ -402,9 +412,10 @@ describe('capabilities', () => {
         chromedriverVersion: '95.0.4638.17 (a9d0719444d4b035e284ed1fce73bf6ccd789df2-refs/branch-heads/4638@{#178})',
         userDataDir: '/var/folders/dv/14mq8zpj3yx7cgtrwhjp77_h0000kr/T/.com.google.Chrome.XX9zps',
       },
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
       platformName: 'mac os x',
@@ -417,7 +428,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Chrome on MacOS using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       acceptInsecureCerts: false,
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
@@ -438,9 +449,10 @@ describe('capabilities', () => {
       'webauthn:extension:largeBlob': true,
       'webauthn:virtualAuthenticators': true,
       'webdriver.remote.sessionid': '6eab542091a9da8e813ae63860b49cad99a6a1a4',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'chrome',
       browserVersion: '95.0.4638.54',
       platformName: 'mac os x',
@@ -453,7 +465,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Firefox on MacOS using W3C in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'moz:debuggerAddress': 'localhost:53485',
       'moz:headless': false,
       'moz:webdriverClick': true,
@@ -477,9 +489,10 @@ describe('capabilities', () => {
       setWindowRect: true,
       'moz:buildID': '20211028161635',
       pageLoadStrategy: 'normal',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'firefox',
       browserVersion: '94.0',
       platformName: 'mac',
@@ -492,7 +505,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Firefox on MacOS using W3C in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       'moz:profile': '/var/folders/3y/zz_w6_s56sl__vcrf3r5bhzr0000hr/T/rust_mozprofilecBCOgP',
       'moz:geckodriverVersion': '0.30.0',
       timeouts: {implicit: 0, pageLoad: 300000, script: 30000},
@@ -514,9 +527,10 @@ describe('capabilities', () => {
       setWindowRect: true,
       'moz:webdriverClick': true,
       'webdriver.remote.sessionid': 'cde12c32081c4349a3e3ba72b32841ec0bfc7a5c',
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'firefox',
       browserVersion: '94.0',
       platformName: 'mac',
@@ -529,7 +543,7 @@ describe('capabilities', () => {
   })
 
   it('should work with Safari on iPhone 13 using Appium 1.22 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone 13',
       orientation: 'PORTRAIT',
       noReset: true,
@@ -573,15 +587,16 @@ describe('capabilities', () => {
       udid: '53BA11E8-98DB-436B-8E48-1B406FA28B66',
       statBarHeight: 47,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '15.0',
       deviceName: 'iPhone 13',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -590,10 +605,17 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 47,
+    })
   })
 
   it('should work with Safari on iPhone 12 using Appium 1.22 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '00008101-001828A93491003A',
       platformName: 'iOS',
       browserName: 'Safari',
@@ -616,15 +638,16 @@ describe('capabilities', () => {
       pixelRatio: 3,
       statBarHeight: 47,
       viewportRect: {left: 0, top: 141, width: 1170, height: 2391},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '14.1',
       deviceName: 'iPhone 12',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -633,10 +656,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 47,
+    })
   })
 
   it('should work with Safari on iPhone 12 using Appium 1.20 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone 12',
       orientation: 'PORTRAIT',
       noReset: true,
@@ -680,15 +709,16 @@ describe('capabilities', () => {
       udid: 'A60722D7-43E3-4118-BDAE-E825BE9C1550',
       statBarHeight: 47,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '14.5',
       deviceName: 'iPhone 12',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -697,10 +727,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 47,
+    })
   })
 
   it('should work with Safari on iPhone 12 using Appium 1.20 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '00008101-001C50D404E1401E',
       platformName: 'iOS',
       browserName: 'Safari',
@@ -723,15 +759,16 @@ describe('capabilities', () => {
       pixelRatio: 3,
       statBarHeight: 47,
       viewportRect: {left: 0, top: 141, width: 1170, height: 2391},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '14.1',
       deviceName: 'iPhone 12',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -740,10 +777,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 47,
+    })
   })
 
   it('should work with Safari on iPhone 11 using Appium 1.15 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone 11',
       orientation: 'PORTRAIT',
       noReset: true,
@@ -787,15 +830,16 @@ describe('capabilities', () => {
       udid: '8B21B469-14C3-4427-BB7A-37237415BD14',
       statBarHeight: 0,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '13.0',
       deviceName: 'iPhone 11',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -804,10 +848,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 0,
+    })
   })
 
   it('should work with Safari on iPhone 11 using Appium 1.14 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '00008030-001251E20C01802E',
       keychainPath: '[REDACTED VALUE]',
       keychainPassword: '[REDACTED VALUE]',
@@ -858,15 +908,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 0,
       viewportRect: {left: 0, top: 0, width: 828, height: 1792},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '12.2',
       deviceName: 'iPhone 11',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -875,10 +926,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 0,
+    })
   })
 
   it('should work with Safari on iPhone X using Appium 1.9 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone X',
       orientation: 'PORTRAIT',
       noReset: true,
@@ -923,15 +980,16 @@ describe('capabilities', () => {
       udid: '83165112-F730-48A8-A3AE-D205019A2269',
       statBarHeight: 44,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '12.0',
       deviceName: 'iPhone X',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -940,10 +998,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 44,
+    })
   })
 
   it('should work with Safari on iPhone X using Appium 1.7 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: 'b4a2ae5fecb8903d0d4da2ca0bfc80d3a939fde9',
       keychainPath: '[REDACTED VALUE]',
       keychainPassword: '[REDACTED VALUE]',
@@ -995,15 +1059,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 44,
       viewportRect: {left: 0, top: 88, width: 1960, height: 3258},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '11.0',
       deviceName: 'iPhone X',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1012,10 +1077,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 44,
+    })
   })
 
   it('should work with Safari on iPhone 8 using Appium 1.8 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone 8',
       orientation: 'PORTRAIT',
       noReset: true,
@@ -1057,15 +1128,16 @@ describe('capabilities', () => {
       udid: '4DAF25B3-6C7A-411E-A94B-C3FDB1CDFF57',
       statBarHeight: 20,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '11.0',
       deviceName: 'iPhone 8',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1074,10 +1146,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Safari on iPhone 7 using Appium 1.7 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '13c148928a0125464f64df9e9b339c12c9e709f6',
       keychainPath: '[REDACTED VALUE]',
       keychainPassword: '[REDACTED VALUE]',
@@ -1129,15 +1207,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 20,
       viewportRect: {left: 0, top: 40, width: 1960, height: 2882},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '11.0',
       deviceName: 'iPhone 7',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1146,10 +1225,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Safari on iPad 8th using Appium 1.22 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '00008020-000D75E23493802E',
       platformName: 'iOS',
       browserName: 'Safari',
@@ -1172,15 +1257,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 20,
       viewportRect: {left: 0, top: 40, width: 1620, height: 2120},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '14.1',
       deviceName: 'iPad 8th',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1189,10 +1275,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Safari on iPad 7th using Appium 1.19 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '1fe9724b13ca72810daf46b72afedc1f0dd54a9e',
       platformName: 'iOS',
       browserName: 'Safari',
@@ -1216,15 +1308,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 20,
       viewportRect: {left: 0, top: 40, width: 1620, height: 2120},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '14.1',
       deviceName: 'iPad 7th',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1233,10 +1326,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Safari on iPad 6th using Appium 1.12 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: 'd7610d95d99d9ff6b6d97f71c032a0799daec55d',
       keychainPath: '[REDACTED VALUE]',
       keychainPassword: '[REDACTED VALUE]',
@@ -1288,15 +1387,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 20,
       viewportRect: {left: 0, top: 40, width: 1960, height: 2394},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '11.0',
       deviceName: 'iPad 6th',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1305,10 +1405,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Safari on iPad 5th using Appium 1.7 in BS', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '73b681dedf50e5a3df3ea4c0e0bc87641bd177b2',
       keychainPath: '[REDACTED VALUE]',
       keychainPassword: '[REDACTED VALUE]',
@@ -1360,15 +1466,16 @@ describe('capabilities', () => {
       pixelRatio: 2,
       statBarHeight: 20,
       viewportRect: {left: 0, top: 40, width: 1960, height: 2394},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: 'Safari',
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '11.0',
       deviceName: 'iPad 5th',
-      orientation: 'portrait',
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1377,10 +1484,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 2,
+      statusBarSize: 20,
+    })
   })
 
   it('should work with Native App on iPhone 11 Pro using Appium 1.19 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone 11 Pro',
       takesScreenshot: true,
       orientation: 'PORTRAIT',
@@ -1411,18 +1524,16 @@ describe('capabilities', () => {
       launchTimeout: 180000,
       udid: '99195D1C-1BF8-46F9-A4B8-E91285AF8D4E',
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: undefined,
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '13.4',
       deviceName: 'iPhone 11 Pro',
-      displaySize: undefined,
-      orientation: 'portrait',
-      pixelRatio: undefined,
-      statusBarSize: undefined,
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1431,10 +1542,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: undefined,
+      statusBarSize: undefined,
+    })
   })
 
   it('should work with Native App on iPhone XS using Appium 1.19 in Sauce', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       deviceName: 'iPhone XS',
       orientation: 'PORTRAIT',
       viewportRect: {width: 1125, top: 132, height: 2304, left: 0},
@@ -1478,18 +1595,16 @@ describe('capabilities', () => {
       udid: '025C7C8B-220D-4BD8-B88E-1018F83EEADE',
       statBarHeight: 44,
       backendRetries: 4,
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: undefined,
       browserVersion: undefined,
       platformName: 'iOS',
       platformVersion: '13.0',
       deviceName: 'iPhone XS',
-      displaySize: undefined,
-      orientation: 'portrait',
-      pixelRatio: 3,
-      statusBarSize: 44,
       isW3C: true,
       isECClient: false,
       isMobile: true,
@@ -1498,10 +1613,16 @@ describe('capabilities', () => {
       isIOS: true,
       isAndroid: false,
     })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: 3,
+      statusBarSize: 44,
+    })
   })
 
   it('should work with Native App without app capability', () => {
-    const driverInfo = parseCapabilities({
+    const capabilities = {
       udid: '99434533-FB36-4B25-A6D0-BB42ECAFB46D',
       platformName: 'ios',
       animationCoolOffTimeout: 2,
@@ -1529,13 +1650,16 @@ describe('capabilities', () => {
       pixelRatio: 3,
       statBarHeight: 54,
       viewportRect: {left: 0, top: 162, width: 1290, height: 2634},
-    })
+    }
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
 
-    assert.deepStrictEqual(driverInfo, {
+    assert.deepStrictEqual(environment, {
       browserName: undefined,
       browserVersion: undefined,
+      platformName: 'ios',
+      platformVersion: '16.0',
       deviceName: 'DD-QA-iPhone-14-Pro-Max',
-      displaySize: undefined,
       isAndroid: false,
       isChrome: false,
       isIOS: true,
@@ -1543,10 +1667,11 @@ describe('capabilities', () => {
       isNative: true,
       isW3C: true,
       isECClient: false,
+    })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
       orientation: undefined,
       pixelRatio: 3,
-      platformName: 'ios',
-      platformVersion: '16.0',
       statusBarSize: 54,
     })
   })

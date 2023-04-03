@@ -41,9 +41,9 @@ export function makeCheck<TSpec extends SpecType>({
       ).flat()
     }
     const driver = await makeDriver({spec, driver: target, logger})
-    await driver.refreshContexts()
+    const environment = await driver.getEnvironment()
     await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
-    if (settings.lazyLoad && driver.isWeb) {
+    if (settings.lazyLoad && environment.isWeb) {
       if (settings.lazyLoad) {
         await waitForLazyLoad({
           context: driver.currentContext,
@@ -73,7 +73,7 @@ export function makeCheck<TSpec extends SpecType>({
         isTransformed: true,
       }
       baseSettings = getBaseCheckSettings({calculatedRegions: screenshot.calculatedRegions})
-      if (driver.isWeb && settings.sendDom) {
+      if (environment.isWeb && settings.sendDom) {
         if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
         else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
         baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => undefined)
@@ -81,7 +81,7 @@ export function makeCheck<TSpec extends SpecType>({
       if (settings.pageId) {
         const scrollingElement = await driver.mainContext.getScrollingElement()
         const scrollingOffset =
-          !scrollingElement || driver.isNative ? {x: 0, y: 0} : await scrollingElement.getScrollOffset()
+          !scrollingElement || environment.isNative ? {x: 0, y: 0} : await scrollingElement.getScrollOffset()
         baseTarget.locationInView = utils.geometry.offset(scrollingOffset, screenshot.region)
         baseTarget.fullViewSize = scrollingElement
           ? await scrollingElement.getContentSize()

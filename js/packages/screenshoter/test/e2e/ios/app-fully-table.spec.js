@@ -16,8 +16,6 @@ describe('screenshoter ios app', () => {
     await button.click()
     await sleep(3000)
 
-    await driver.init()
-
     await test({
       type: 'ios',
       tag: 'app-fully-table',

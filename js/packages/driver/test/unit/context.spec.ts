@@ -347,7 +347,6 @@ describe('context', () => {
         spec,
         driver: mock,
       })
-      await driver.init()
     })
 
     afterEach(async () => {
