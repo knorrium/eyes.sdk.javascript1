@@ -1,27 +1,54 @@
+import * as csstree from 'css-tree'
 import * as utils from '@applitools/utils'
-import ValueParser from 'postcss-value-parser'
 
-export function extractCssDependencyUrls(css: string): string[] {
-  const urls = [] as string[]
-  const parsedValue = new ValueParser(css)
-  parsedValue.walk((node, index, nodes) => {
-    urls.push(...extractUrls(node, index, nodes))
+export function extractCssDependencyUrls(
+  css: string,
+  {resourceUrl, pageUrl}: {resourceUrl: string; pageUrl?: string},
+): string[] {
+  const urls = new Set<string>()
+  const ast = csstree.parse(css, {
+    parseRulePrelude: false,
+    parseAtrulePrelude: true,
+    parseCustomProperty: true,
+    parseValue: true,
   })
-  return [...new Set(urls)].map(utils.general.toUriEncoding).map(utils.general.toUnAnchoredUri)
-}
+  csstree.walk(ast, node => {
+    if (node.type === 'Atrule' && node.name === 'import' && node.prelude?.type === 'AtrulePrelude') {
+      return processImportPrelude(node.prelude, {baseUrl: resourceUrl})
+    } else if (node.type === 'Declaration' && node.property.startsWith('--')) {
+      return processCustomPropertyValue(node.value, {baseUrl: pageUrl ?? resourceUrl})
+    } else {
+      return processCssNode(node, {baseUrl: resourceUrl})
+    }
+  })
 
-function extractUrls(node: ValueParser.Node, index: number, nodes: ValueParser.Node[]): string[] {
-  if (node.type === 'function') {
-    if (node.value === 'url' && node.nodes?.length == 1) {
-      return [node.nodes[0].value]
-    }
-    if (node.value.includes('image-set') && node.nodes) {
-      return node.nodes.filter(n => n.type === 'string').map(n => n.value)
-    }
-  } else if (node.type === 'word') {
-    if (node.value === '@import' && nodes[index + 2]?.type === 'string') {
-      return [nodes[index + 2].value]
+  return [...urls]
+
+  function processCssNode(node: csstree.CssNode, {baseUrl}: {baseUrl: string}) {
+    if (node.type === 'Url') {
+      urls.add(sanitizeUrl(node.value, {baseUrl}))
+      return (csstree.walk as any).skip
+    } else if (node.type === 'Function' && node.name.includes('image-set')) {
+      node.children.forEach(imageNode => {
+        if (imageNode.type === 'Url' || imageNode.type === 'String') urls.add(sanitizeUrl(imageNode.value, {baseUrl}))
+      })
+      return (csstree.walk as any).skip
     }
   }
-  return []
+
+  function processImportPrelude(node: csstree.AtrulePrelude, {baseUrl}: {baseUrl: string}) {
+    if (node.children.first?.type === 'Url' || node.children.first?.type === 'String') {
+      return urls.add(sanitizeUrl(node.children.first.value, {baseUrl}))
+    }
+    return (csstree.walk as any).skip
+  }
+
+  function processCustomPropertyValue(node: csstree.Raw | csstree.Value, {baseUrl}: {baseUrl: string}) {
+    csstree.walk(node, node => processCssNode(node, {baseUrl}))
+    return (csstree.walk as any).skip
+  }
+}
+
+function sanitizeUrl(url: string, {baseUrl}: {baseUrl: string}): string {
+  return utils.general.absolutizeUrl(utils.general.toUnAnchoredUri(utils.general.toUriEncoding(url)), baseUrl)
 }

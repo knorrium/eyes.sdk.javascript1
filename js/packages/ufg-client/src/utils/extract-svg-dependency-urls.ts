@@ -3,40 +3,39 @@ import {JSDOM} from '@applitools/jsdom'
 import {extractCssDependencyUrls} from './extract-css-dependency-urls'
 import * as utils from '@applitools/utils'
 
-export function extractSvgDependencyUrls(svg: string) {
-  const doc = parseDom(svg)
+export function extractSvgDependencyUrls(svg: string, {resourceUrl, pageUrl}: {resourceUrl: string; pageUrl?: string}) {
+  const urls = new Set<string>()
+  const doc =
+    typeof DOMParser === 'function'
+      ? new DOMParser().parseFromString(svg, 'image/svg+xml')
+      : (new JSDOM(svg).window.document as Document)
 
-  const srcsetUrls = Array.from(doc.querySelectorAll('img[srcset]')).flatMap(element => {
+  Array.from(doc.querySelectorAll('img[srcset]')).forEach(element => {
     const sources = element.getAttribute('srcset')!.split(', ')
-    return sources.map(source => source.trim().split(/\s+/, 1)[0])
+    sources.forEach(source => urls.add(sanitizeUrl(source.trim().split(/\s+/, 1)[0], {baseUrl: resourceUrl})))
   })
-  const srcUrls = Array.from(doc.querySelectorAll('img[src]')).map(element => {
-    return element.getAttribute('src')!
+  Array.from(doc.querySelectorAll('img[src]')).forEach(element => {
+    urls.add(sanitizeUrl(element.getAttribute('src')!, {baseUrl: resourceUrl}))
   })
-  const fromHref = Array.from(doc.querySelectorAll('image,use,link[rel="stylesheet"]')).map(element => {
-    return (element.getAttribute('href') || element.getAttribute('xlink:href'))!
+  Array.from(doc.querySelectorAll('image,use,link[rel="stylesheet"]')).forEach(element => {
+    urls.add(sanitizeUrl(element.getAttribute('href')! || element.getAttribute('xlink:href')!, {baseUrl: resourceUrl}))
   })
-  const fromObjects = Array.from(doc.getElementsByTagName('object')).map(element => {
-    return element.getAttribute('data')!
+  Array.from(doc.getElementsByTagName('object')).forEach(element => {
+    urls.add(sanitizeUrl(element.getAttribute('data')!, {baseUrl: resourceUrl}))
   })
-  const fromStyleTags = Array.from(doc.querySelectorAll('style')).flatMap(element => {
-    return element.textContent ? extractCssDependencyUrls(element.textContent) : []
+  Array.from(doc.querySelectorAll('style')).forEach(element => {
+    const cssUrls = element.textContent ? extractCssDependencyUrls(element.textContent, {resourceUrl, pageUrl}) : []
+    cssUrls.forEach(url => urls.add(url))
   })
-
-  const fromStyleAttrs = Array.from(doc.querySelectorAll<SVGElement>('*[style]')).flatMap(element => {
+  Array.from(doc.querySelectorAll<SVGElement>('*[style]')).forEach(element => {
     const matches = element.style!.cssText.matchAll(/url\((?!['"]?:)['"]?([^'")]*)['"]?\)/g)
-    return Array.from(matches).flatMap(match => match[1] ?? [])
+    Array.from(matches).forEach(([, url]) => urls.add(sanitizeUrl(url, {baseUrl: resourceUrl})))
   })
 
-  return [...srcsetUrls, ...srcUrls, ...fromHref, ...fromObjects, ...fromStyleTags, ...fromStyleAttrs]
-    .filter(url => !url.startsWith('#'))
-    .map(utils.general.toUnAnchoredUri)
+  return [...urls]
 }
 
-function parseDom(svg: string): Document {
-  if (typeof DOMParser !== 'function') {
-    return new JSDOM(svg).window.document
-  } else {
-    return new DOMParser().parseFromString(svg, 'image/svg+xml')
-  }
+function sanitizeUrl(url: string, {baseUrl}: {baseUrl: string}): string {
+  if (url.startsWith('#')) return baseUrl
+  return utils.general.absolutizeUrl(utils.general.toUnAnchoredUri(url), baseUrl)
 }

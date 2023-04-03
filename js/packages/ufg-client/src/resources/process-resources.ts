@@ -92,7 +92,7 @@ export function makeProcessResources({
       try {
         const fetchedResource = await fetchResource({resource, settings})
         const dependencyUrls = utils.types.has(fetchedResource, 'value')
-          ? await extractDependencyUrls({resource: fetchedResource})
+          ? await extractDependencyUrls({resource: fetchedResource, settings})
           : []
         logger?.log(`dependencyUrls for ${resource.url} --> ${dependencyUrls}`)
 
@@ -164,20 +164,28 @@ export function makeProcessResources({
     return entry
   }
 
-  async function extractDependencyUrls({resource}: {resource: ContentfulResource}): Promise<string[]> {
+  async function extractDependencyUrls({
+    resource,
+    settings,
+  }: {
+    resource: ContentfulResource
+    settings?: {referer?: string}
+  }): Promise<string[]> {
     try {
       let dependencyUrls = [] as string[]
       if (/text\/css/.test(resource.contentType)) {
-        dependencyUrls = extractCssDependencyUrls(resource.value.toString())
+        dependencyUrls = extractCssDependencyUrls(resource.value.toString(), {
+          resourceUrl: resource.url,
+          pageUrl: settings?.referer,
+        })
       } else if (/image\/svg/.test(resource.contentType)) {
-        dependencyUrls = extractSvgDependencyUrls(resource.value.toString())
+        dependencyUrls = extractSvgDependencyUrls(resource.value.toString(), {
+          resourceUrl: resource.url,
+          pageUrl: settings?.referer,
+        })
       }
-      return dependencyUrls.reduce((dependencyUrls, dependencyUrl) => {
-        dependencyUrl = utils.general.absolutizeUrl(dependencyUrl, resource.url)
-        // skip recursive dependency
-        if (dependencyUrl !== resource.url) dependencyUrls.push(dependencyUrl)
-        return dependencyUrls
-      }, [] as string[])
+      // avoid recursive dependencies
+      return dependencyUrls.filter(dependencyUrl => dependencyUrl !== resource.url)
     } catch (e) {
       logger?.log(`could not parse ${resource.contentType} ${resource.url}`, e)
       return []
