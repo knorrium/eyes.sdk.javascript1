@@ -30,7 +30,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-puppeteer":
   feature:
-    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
+    - 
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
