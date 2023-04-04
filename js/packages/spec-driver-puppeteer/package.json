@@ -51,7 +51,7 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.38",
+    "@applitools/driver": "1.11.39",
     "@applitools/utils": "1.3.32"
   },
   "devDependencies": {
