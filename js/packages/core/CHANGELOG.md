@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.4.6 - 2023/4/4
+
+### Features
+### Bug fixes
+- Fixed relative url resolution in css files
+- Added timeout to css fetching during preparing dom capture
+
 ## 2.4.5 - 2023/3/31
 
 ### Features
