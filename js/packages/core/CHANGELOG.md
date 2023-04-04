@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.7 - 2023/4/4
+
+### Features
+### Bug fixes
+- Fixed issue with emulation driver detection
+
 ## 2.4.6 - 2023/4/4
 
 ### Features
