@@ -14,17 +14,27 @@ describe('getViewport', () => {
       }
     })
 
-    it('return viewport size', async () => {
+    it('return viewport', async () => {
       await page.goto(url)
-      const viewportSize = await page.evaluate(getViewport)
-      assert.deepStrictEqual(viewportSize, {viewportSize: {width: 800, height: 600}, viewportScale: 1, pixelRatio: 1})
+      const viewport = await page.evaluate(getViewport)
+      assert.deepStrictEqual(viewport, {
+        viewportSize: {width: 800, height: 600},
+        viewportScale: 1,
+        pixelRatio: 1,
+        orientation: 'landscape',
+      })
     })
   })
 
   for (const name of ['internet explorer', 'ios safari']) {
     const expectedViewportSizes = {
-      'internet explorer': {viewportSize: {width: 800, height: 600}, viewportScale: null, pixelRatio: 1},
-      'ios safari': {viewportSize: {width: 375, height: 635}, viewportScale: 1, pixelRatio: 3},
+      'internet explorer': {
+        viewportSize: {width: 800, height: 600},
+        viewportScale: null,
+        pixelRatio: 1,
+        orientation: null,
+      },
+      'ios safari': {viewportSize: {width: 375, height: 635}, viewportScale: 1, pixelRatio: 3, orientation: null},
     }
 
     describe(name, () => {
@@ -37,7 +47,7 @@ describe('getViewport', () => {
         }
       })
 
-      it('return viewport size', async () => {
+      it('return viewport', async () => {
         await driver.url(url)
         const viewportSize = await driver.execute(getViewport)
         assert.deepStrictEqual(viewportSize, expectedViewportSizes[name])
