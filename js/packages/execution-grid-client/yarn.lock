@@ -18,10 +18,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/eg-frpc@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@applitools/eg-frpc/-/eg-frpc-1.0.2.tgz#085814f410fa84666cd03cefb3177487e6cf5b2e"
-  integrity sha512-qNY+u1se+PCmiLTqGg7ed4tYf0ScjNOSIZmtqwi+cGeJFuny/oZ7ChctQLD6x8GL1YO3CDjZiJc9Zrcbnx7u0w==
+"@applitools/eg-frpc@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@applitools/eg-frpc/-/eg-frpc-1.0.3.tgz#fc7743d0394114e114c177d51294dec8fee1078d"
+  integrity sha512-16CrVdq2onkN5j6wpHxd8dfapJehHJq7GnYEg86QGFZPhTgZI5WukKrp9ryM0EblUJUjdTwEPymc5B8cffuZZQ==
 
 "@applitools/eg-socks5-proxy-server@^0.5.4":
   version "0.5.4"
@@ -31,12 +31,12 @@
     binary "^0.3.0"
     is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.21":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.21.tgz#633a343060329b7db0525bd622609a785db968dc"
-  integrity sha512-QmmTqOsSVmpG21YoeGijf/oZSoAWGz0PaOC8ShyjZBiQz+pjyuis5lwIOw4Wmf0CsWkseoxiS8PmTpGZ1k86EA==
+"@applitools/execution-grid-tunnel@1.0.22":
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.22.tgz#56e023409983a5f8b1b4550c6957504e890e9b05"
+  integrity sha512-N9wavTUagJbqDnmrN+5ZgB1iyordaX0qwf5dY9s6HEK+mRRqylGxwL7Q7xnjuegbzf8Pgkog87wZMRh/CN8MZQ==
   dependencies:
-    "@applitools/eg-frpc" "1.0.2"
+    "@applitools/eg-frpc" "1.0.3"
     "@applitools/eg-socks5-proxy-server" "^0.5.4"
     "@applitools/execution-grid-tunnel" "^1.0.14"
     "@applitools/logger" "^1.0.12"
