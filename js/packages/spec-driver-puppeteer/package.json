@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-puppeteer",
-  "version": "1.1.51",
+  "version": "1.1.52",
   "keywords": [
     "puppeteer",
     "chrome devtools protocol",
