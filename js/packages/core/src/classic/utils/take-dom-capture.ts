@@ -11,6 +11,7 @@ const {
 
 export type DomCaptureSettings = {
   fetch?: Fetch
+  fetchTimeout?: number
   executionTimeout?: number
   pollTimeout?: number
   chunkByteLength?: number
@@ -98,9 +99,10 @@ export async function takeDomCapture<TSpec extends SpecType>({
     logger.log(`Request to download css will be sent to the address "[GET]${url}"`)
     try {
       const response = await req(url, {
+        timeout: settings?.fetchTimeout ?? 60_000,
         retry: {
           limit: 1,
-          validate: ({response, error}) => Boolean(error) || !response!.ok,
+          validate: ({response, error}) => !!error || !response!.ok,
         },
         fetch: settings?.fetch,
       })

@@ -13,6 +13,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Fixed relative url resolution in css files
+    - Added timeout to css fetching during preparing dom capture
 "@applitools/eyes-selenium":
   feature:
     - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution

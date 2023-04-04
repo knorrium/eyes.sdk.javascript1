@@ -1,8 +1,8 @@
 import {makeDriver, type SpecType, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
-import {Response} from '@applitools/req'
 import {makeLogger} from '@applitools/logger'
 import {takeDomCapture} from '../../../src/classic/utils/take-dom-capture'
+import nock from 'nock'
 import assert from 'assert'
 
 describe('take-dom-capture', () => {
@@ -108,23 +108,6 @@ describe('take-dom-capture', () => {
     )
   })
 
-  it('handles css', async () => {
-    mock.mockScript('dom-capture', () => {
-      return JSON.stringify({
-        status: 'SUCCESS',
-        value: createDomCapture('dom capture (#####http://css.com/main.css#####)'),
-      })
-    })
-
-    const result = await takeDomCapture({
-      driver,
-      settings: {fetch: (() => new Response('very big css file', {status: 200})) as any},
-      logger,
-    })
-
-    assert.strictEqual(result, 'dom capture (very big css file)')
-  })
-
   it('handles error response', async () => {
     mock.mockScript('dom-capture', () => {
       return JSON.stringify({status: 'ERROR', error: 'Oops! Something went wrong!'})
@@ -142,5 +125,35 @@ describe('take-dom-capture', () => {
     })
 
     assert.rejects(takeDomCapture({driver, settings: {executionTimeout: 1000}, logger}), 'dom-capture Timed out')
+  })
+
+  it('handles css', async () => {
+    nock('http://css.com').get('/main.css').delay(1000).reply(200, 'very big css file')
+
+    mock.mockScript('dom-capture', () => {
+      return JSON.stringify({
+        status: 'SUCCESS',
+        value: createDomCapture('dom capture (#####http://css.com/main.css#####)'),
+      })
+    })
+
+    const result = await takeDomCapture({driver, logger})
+
+    assert.strictEqual(result, 'dom capture (very big css file)')
+  })
+
+  it('stops fetching css if fetch timeout is reached', async () => {
+    nock('http://css.com').get('/main.css').delay(500).reply(200, 'css content')
+
+    mock.mockScript('dom-capture', () => {
+      return JSON.stringify({
+        status: 'SUCCESS',
+        value: createDomCapture('dom capture (#####http://css.com/main.css#####)'),
+      })
+    })
+
+    const result = await takeDomCapture({driver, settings: {fetchTimeout: 100}, logger})
+
+    assert.strictEqual(result, 'dom capture ()')
   })
 })
