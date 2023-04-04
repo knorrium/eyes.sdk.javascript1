@@ -5,20 +5,19 @@ export function separateDuplicateResults(containers: TestResultContainer<'classi
   const duplicates = [] as TestResultContainer<'classic' | 'ufg'>[]
   const possibleDuplicateContainers = containers.filter(container => !container.result?.keepIfDuplicate)
   for (const container of possibleDuplicateContainers) {
-    const baselineId = container.result?.baselineId
-    if (baselineId) {
-      const containerForThisBaseline = containerByBaselineId.get(baselineId)
-      if (containerForThisBaseline) {
-        const startedAt1 = Date.parse(containerForThisBaseline.result!.startedAt as string)
-        const startedAt2 = Date.parse(container.result!.startedAt as string)
-        if (startedAt2 > startedAt1) {
+    if (container.result) {
+      const containerForThisBaseline = containerByBaselineId.get(container.result.baselineId)
+      if (containerForThisBaseline?.result) {
+        const initializedAt1 = Date.parse(containerForThisBaseline.result.initializedAt)
+        const initializedAt2 = Date.parse(container.result.initializedAt)
+        if (initializedAt2 > initializedAt1) {
           duplicates.push(containerForThisBaseline)
-          containerByBaselineId.set(baselineId, container)
+          containerByBaselineId.set(container.result.baselineId, container)
         } else {
           duplicates.push(container)
         }
       } else {
-        containerByBaselineId.set(baselineId, container)
+        containerByBaselineId.set(container.result.baselineId, container)
       }
     }
   }

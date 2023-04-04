@@ -1,4 +1,4 @@
-import type {AccountInfo, Core, Eyes} from '@applitools/core-base'
+import type {AccountInfo, Core, Eyes, TestResult} from '@applitools/core-base'
 import * as utils from '@applitools/utils'
 import EventEmitter from 'events'
 
@@ -77,6 +77,8 @@ export function makeFakeCore({
             resultsUrl: 'https://result-url.com',
             keepBatchOpen: false,
             isNew: true,
+            initializedAt: new Date().toISOString(),
+            keepIfDuplicate: !!options.settings.baselineEnvName,
             account: account as AccountInfo,
             server: {
               serverUrl: options.settings?.serverUrl,
@@ -134,7 +136,7 @@ export function makeFakeCore({
                   status: steps.every(result => result.asExpected) ? ('Passed' as const) : ('Unresolved' as const),
                   stepsInfo: steps,
                 },
-              ]
+              ] as TestResult[]
             } finally {
               emitter.emit('afterCheckAndClose', options)
             }
@@ -173,7 +175,7 @@ export function makeFakeCore({
             try {
               await utils.general.sleep(40)
               await hooks?.getResults?.(options)
-              return results
+              return results as TestResult[]
             } finally {
               emitter.emit('afterGetResults', options)
             }

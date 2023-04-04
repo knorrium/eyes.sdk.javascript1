@@ -87,6 +87,7 @@ export function makeCoreRequests({
 
     const accountPromise = getAccountInfoWithCache({settings})
 
+    const initializedAt = new Date().toISOString()
     const response = await req('/api/sessions/running', {
       name: 'openEyes',
       method: 'POST',
@@ -143,6 +144,7 @@ export function makeCoreRequests({
         baselineId: result.baselineId,
         sessionId: result.sessionId,
         resultsUrl: result.url,
+        initializedAt,
         appId: settings.appName,
         isNew: result.isNew ?? response.status === 201,
         keepBatchOpen: settings.keepBatchOpen ?? false,
@@ -503,6 +505,11 @@ export function makeEyesRequests({
       }
       const result: Mutable<TestResult> = await response.json()
       result.userTestId = test.userTestId
+      result.url = test.resultsUrl
+      result.isNew = test.isNew
+      result.initializedAt = test.initializedAt
+      result.keepIfDuplicate = test.keepIfDuplicate
+      result.server = test.server
       logger.log('Request "checkAndClose" finished successfully with body', result)
       return [result]
     })
@@ -539,6 +546,7 @@ export function makeEyesRequests({
         result.userTestId = test.userTestId
         result.url = test.resultsUrl
         result.isNew = test.isNew
+        result.initializedAt = test.initializedAt
         result.keepIfDuplicate = test.keepIfDuplicate
         result.server = test.server
         // for backwards compatibility with outdated servers
@@ -576,6 +584,7 @@ export function makeEyesRequests({
       .then(async response => {
         const result: Mutable<TestResult> = await response.json()
         result.userTestId = test.userTestId
+        result.initializedAt = test.initializedAt
         result.keepIfDuplicate = test.keepIfDuplicate
         result.server = test.server
         logger.log('Request "abort" finished successfully with body', result)

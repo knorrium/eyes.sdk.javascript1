@@ -55,16 +55,15 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
       containers = dedupedContainers
       if (!duplicateContainers.length) logger.log('No duplicate tests found.')
       else {
-        logger.log(`Duplicates found (${duplicateContainers.length} in total), cleaning them up...`)
         await Promise.all(
           duplicateContainers.map(async container => {
             if (container.result) {
               await core.deleteTest({
                 settings: {
                   ...container.result.server,
-                  testId: container.result.id!,
-                  batchId: container.result.batchId!,
-                  secretToken: container.result.secretToken!,
+                  testId: container.result.id,
+                  batchId: container.result.batchId,
+                  secretToken: container.result.secretToken,
                 },
               })
             }

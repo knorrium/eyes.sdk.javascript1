@@ -2,19 +2,16 @@ import {separateDuplicateResults} from '../../src/utils/separate-duplicate-resul
 import assert from 'assert'
 import {TestResultContainer} from '../../src/types'
 
-const server = {serverUrl: '', apiKey: ''}
-
 describe('separate-duplicate-results', () => {
   it('returns deduped results and collection of tests to be deleted in eyes', () => {
-    const results: TestResultContainer<'classic' | 'ufg'>[] = [
+    const results = [
       {
         result: {
           baselineId: 'baseline 1',
           id: 'test 1',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:16.9972520+00:00',
+          initializedAt: '2023-03-17T17:44:16.9972520+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -22,9 +19,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 2',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -32,9 +28,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:33:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:33:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -42,12 +37,11 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
-    ]
+    ] as TestResultContainer<'classic' | 'ufg'>[]
     const [dedupedResults, testsToDelete] = separateDuplicateResults(results)
     assert.deepStrictEqual(dedupedResults, [
       {
@@ -55,9 +49,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 1',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:16.9972520+00:00',
+          initializedAt: '2023-03-17T17:44:16.9972520+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -65,9 +58,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
     ])
@@ -77,9 +69,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 2',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -87,9 +78,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:33:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:33:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
     ])
@@ -102,9 +92,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: '00000251723225752154',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -112,12 +101,11 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: '00000251723225742799',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
-    ]
+    ] as TestResultContainer<'classic' | 'ufg'>[]
     const [dedupedResults, testsToDelete] = separateDuplicateResults(results)
     assert.deepStrictEqual(dedupedResults, results)
     assert.deepStrictEqual(testsToDelete, [])
@@ -131,8 +119,7 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 1',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:16.9972520+00:00',
-          server,
+          initializedAt: '2023-03-17T17:44:16.9972520+00:00',
         },
       },
       {
@@ -141,8 +128,7 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 2',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
-          server,
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
         },
       },
       {
@@ -150,12 +136,11 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
-    ]
+    ] as TestResultContainer<'classic' | 'ufg'>[]
     const [dedupedResults, testsToDelete] = separateDuplicateResults(results)
     assert.deepStrictEqual(dedupedResults, results)
     assert.deepStrictEqual(testsToDelete, [])
@@ -168,9 +153,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 1',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:16.9972520+00:00',
+          initializedAt: '2023-03-17T17:44:16.9972520+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -178,9 +162,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 2',
           batchId: 'batch 2',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -188,12 +171,11 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
-    ]
+    ] as TestResultContainer<'classic' | 'ufg'>[]
     const [dedupedResults, testsToDelete] = separateDuplicateResults(results)
     assert.deepStrictEqual(dedupedResults, [
       {
@@ -201,9 +183,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 1',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:16.9972520+00:00',
+          initializedAt: '2023-03-17T17:44:16.9972520+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
       {
@@ -211,9 +192,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 2',
           id: 'test 3',
           batchId: 'batch 1',
-          startedAt: '2023-03-17T17:44:07.4545410+00:00',
+          initializedAt: '2023-03-17T17:44:07.4545410+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
     ])
@@ -223,9 +203,8 @@ describe('separate-duplicate-results', () => {
           baselineId: 'baseline 1',
           id: 'test 2',
           batchId: 'batch 2',
-          startedAt: '2023-03-17T17:44:07.6889232+00:00',
+          initializedAt: '2023-03-17T17:44:07.6889232+00:00',
           keepIfDuplicate: false,
-          server,
         },
       },
     ])
