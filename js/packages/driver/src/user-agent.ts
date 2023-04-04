@@ -55,9 +55,11 @@ export function extractUserAgentEnvironment(userAgent: UserAgent): Environment {
   }
   const userAgentEnvironment = userAgentObject && extractUserAgentObjectEnvironment(userAgentObject)
 
-  const environment = {...userAgentLegacyEnvironment, ...userAgentEnvironment}
-  environment.browserName = userAgentLegacyEnvironment.browserName ?? userAgentEnvironment?.browserName
-  environment.browserVersion = userAgentLegacyEnvironment.browserVersion ?? userAgentEnvironment?.browserVersion
+  const environment = {...userAgentEnvironment}
+  environment.platformName ??= userAgentLegacyEnvironment.platformName
+  environment.platformVersion ??= userAgentLegacyEnvironment.platformVersion
+  environment.browserName = userAgentLegacyEnvironment.browserName ?? environment.browserName
+  environment.browserVersion = userAgentLegacyEnvironment.browserVersion ?? environment.browserVersion
 
   return environment
 }

@@ -100,6 +100,7 @@ describe('user agent legacy', () => {
     const userAgent = extractUserAgentEnvironment('Googlebot/2.1 (+http://www.google.com/bot.html)')
     assert.deepStrictEqual(userAgent, {
       platformName: 'Unknown',
+      platformVersion: undefined,
       browserName: 'Unknown',
       browserVersion: undefined,
     })

@@ -20,6 +20,7 @@ function getViewport() {
     viewportSize: {width, height},
     pixelRatio: window.devicePixelRatio,
     viewportScale: window.visualViewport && window.visualViewport.scale,
+    orientation: window.screen && window.screen.orientation && window.screen.orientation.type.replace(/-primary$/, ''),
   }
 }
 

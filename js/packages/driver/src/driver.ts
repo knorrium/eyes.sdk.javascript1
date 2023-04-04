@@ -714,7 +714,7 @@ export class Driver<T extends SpecType> {
 
   async setViewportSize(size: Size): Promise<void> {
     const environment = await this.getEnvironment()
-    if (environment.isMobile) return
+    if (environment.isMobile && !environment.isEmulation) return
     if (this._spec.setViewportSize) {
       this._logger.log('Setting viewport size to', size, 'using spec method')
       await this._spec.setViewportSize(this.target, size)
@@ -773,6 +773,7 @@ export class Driver<T extends SpecType> {
   async getOrientation(): Promise<ScreenOrientation | undefined> {
     const environment = await this.getEnvironment()
     if (!environment.isMobile) return undefined
+    if (environment.isEmulation) return this._viewport?.orientation
     if (environment.isAndroid) {
       this._logger.log('Extracting device orientation using adb command on android')
 
