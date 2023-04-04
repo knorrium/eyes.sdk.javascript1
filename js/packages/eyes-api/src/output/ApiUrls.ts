@@ -2,11 +2,11 @@ import type {Mutable} from '@applitools/utils'
 import * as utils from '@applitools/utils'
 
 export type ApiUrls = {
-  readonly baselineImage?: string
-  readonly currentImage?: string
-  readonly checkpointImage?: string
-  readonly checkpointImageThumbnail?: string
-  readonly diffImage?: string
+  readonly baselineImage: string
+  readonly currentImage: string
+  readonly checkpointImage: string
+  readonly checkpointImageThumbnail: string
+  readonly diffImage: string
 }
 
 export class ApiUrlsData implements Required<ApiUrls> {

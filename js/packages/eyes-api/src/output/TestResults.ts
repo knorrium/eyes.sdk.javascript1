@@ -20,7 +20,7 @@ export type TestResults = {
   readonly hostApp?: string
   readonly hostDisplaySize?: RectangleSize
   readonly accessibilityStatus?: TestAccessibilityStatus
-  readonly startedAt?: Date | string
+  readonly startedAt?: string
   readonly duration?: number
   readonly isNew?: boolean
   readonly isDifferent?: boolean
@@ -52,7 +52,7 @@ export class TestResultsData implements Required<TestResults> {
 
   /** @internal */
   constructor(options: {
-    result?: Core.TestResult<'classic' | 'ufg'>
+    result?: Partial<Core.TestResult<'classic' | 'ufg'>>
     deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
   }) {
     this._deleteTest = options.deleteTest
@@ -191,7 +191,7 @@ export class TestResultsData implements Required<TestResults> {
     // DEPRECATED
   }
 
-  get startedAt(): Date | string {
+  get startedAt(): string {
     return this._result.startedAt!
   }
   getStartedAt(): Date {

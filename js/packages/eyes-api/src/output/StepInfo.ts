@@ -4,13 +4,13 @@ import {AppUrls, AppUrlsData} from './AppUrls'
 import {ApiUrls, ApiUrlsData} from './ApiUrls'
 
 export type StepInfo = {
-  readonly name?: string
-  readonly isDifferent?: boolean
-  readonly hasBaselineImage?: boolean
-  readonly hasCurrentImage?: boolean
-  readonly appUrls?: AppUrls
-  readonly apiUrls?: ApiUrls
-  readonly renderId?: string[]
+  readonly name: string
+  readonly isDifferent: boolean
+  readonly hasBaselineImage: boolean
+  readonly hasCurrentImage: boolean
+  readonly appUrls: AppUrls
+  readonly apiUrls: ApiUrls
+  readonly renderId: string[]
 }
 
 export class StepInfoData implements Required<StepInfo> {
