@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriverio",
-  "version": "1.4.34",
+  "version": "1.4.35",
   "keywords": [
     "webdriverio",
     "wdio",
@@ -103,7 +103,7 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.38",
+    "@applitools/driver": "1.11.39",
     "@applitools/utils": "1.3.32"
   },
   "devDependencies": {
