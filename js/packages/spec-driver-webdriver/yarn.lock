@@ -23,13 +23,13 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.38":
-  version "1.11.38"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.38.tgz#4da8e19c35f86fa3907a5195e543d9c23fc2f86d"
-  integrity sha512-zBmF4CZbYR3se1yGiHgEtesgikSlQ0fxPYK2wXRg6DZHTqntFjVvWxHeyNGopOUTepFEPSS6mDe6klJMxSZgxw==
+"@applitools/driver@1.11.39":
+  version "1.11.39"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.39.tgz#32f3ce64816e66d0a8107f808a86d9c7665f0eb2"
+  integrity sha512-ZZ19o+toqewGHZPh6oXkRtodtoY5PpVAt8xVnNIH/dtlikO7xJDEIExs9YrvhDIoG06+VP1O9kNu4xGsAWI08w==
   dependencies:
     "@applitools/logger" "1.1.48"
-    "@applitools/snippets" "2.4.18"
+    "@applitools/snippets" "2.4.19"
     "@applitools/utils" "1.3.32"
     semver "7.3.7"
 
@@ -42,10 +42,10 @@
     chalk "4.1.2"
     debug "4.3.3"
 
-"@applitools/snippets@2.4.18":
-  version "2.4.18"
-  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.18.tgz#375360b61e46608a47375c54e8b887e7bffd44ed"
-  integrity sha512-1BRR6Vz6/DAK8N5Roak2/niB6kCkpssGEewhsbY/GRLzP6FFJjyPECdUyjktTkPjnFoj5ro8xs8FP7Q1bYfK3Q==
+"@applitools/snippets@2.4.19":
+  version "2.4.19"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.19.tgz#2633a0e6df6663ab3ddeb2ac4d21e748d3eea04d"
+  integrity sha512-cXIB5fuVGYFQzZK3tylgIRLh5dTWoCS2v2ZDGpSgdWuz0NH5LArGQpqPr8svqv3nEHCKMBHCMbwEF/CoblIblA==
 
 "@applitools/test-server@^1.1.28":
   version "1.1.28"
