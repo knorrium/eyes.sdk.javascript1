@@ -63,9 +63,9 @@ Apollo SDK:
     - Optimized number of requests during polling
 "@applitools/eyes-cypress":
   feature:
-    - Added `removeDuplicateTests` configuration to remove duplicated tests in the runner at the end of execution
+    - 
   bug-fix:
-    - disableBrowserFetching change from open to check
+    - 
 "@applitools/eyes-storybook":
   feature:
     - 
