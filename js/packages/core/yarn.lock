@@ -18,10 +18,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.45":
-  version "1.1.45"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.45.tgz#db7e940a99e53c9f18108156907e9e6a43c25d5a"
-  integrity sha512-VVJ2Vw5DdB7AnTgadmFJqOJPhbeOVqkAWqHnrOKSM+NEhkGf7IykciTWYLVgOfxRRtRdHVfhEUcWIjLlERmOiQ==
+"@applitools/core-base@1.1.46":
+  version "1.1.46"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.46.tgz#1f97123a9026b6426e9454792eccdc8b9fd22a67"
+  integrity sha512-F7zSZI3bn7ehWjhQbDDrgAXqMJXjgX0/kMeVTAlkFr+Nqlf1sQODfsiQSQFtbQv9v8koFhpqJkd3NwQybj1WRA==
   dependencies:
     "@applitools/image" "1.0.28"
     "@applitools/logger" "1.1.48"
@@ -219,10 +219,10 @@
     node-fetch "2.6.7"
     proxy-agent "5.0.0"
 
-"@applitools/screenshoter@3.7.34":
-  version "3.7.34"
-  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.7.34.tgz#317eec3c586cd0df77fc2c9708c7d8285dcb65e4"
-  integrity sha512-5FjY6A8UcbM/1LNi7+XTaaOKf0mpkpERjnVk0QFTrEsz07zJnMyW1wcD1+qK2VvX2+T9WrMxmJ2tigfwZDenfA==
+"@applitools/screenshoter@3.7.35":
+  version "3.7.35"
+  resolved "https://registry.yarnpkg.com/@applitools/screenshoter/-/screenshoter-3.7.35.tgz#6db20207274386bea8df3fa21317e3d923b86bd4"
+  integrity sha512-G4ceW2AznJ9iIDzrLN8RJywEfMri5Z2w7kNRIim3UzRcz6nT5enk03IQk48nj5N4rKZjXnZ10RmNdPhDmTOxNQ==
   dependencies:
     "@applitools/image" "1.0.28"
     "@applitools/logger" "1.1.48"
@@ -316,10 +316,10 @@
   dependencies:
     node-fetch "2.6.1"
 
-"@applitools/ufg-client@1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.2.6.tgz#419cf6ff997479d9c33f17520493bd7fb6c2be67"
-  integrity sha512-uvKMpLQSTxOpk74eAFyqfuz1wtldzEWnCqViOCCIcB4P41sSiyQguhm1vAQ4HMFzIWsU+J7hfL8I/O70fAqLQA==
+"@applitools/ufg-client@1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.2.7.tgz#61c14cbef57881181ba500ba4bc8deee18761798"
+  integrity sha512-6J1Au+TapLJBJq6wvaU/h535MJgjTTPoBMukxaNAsIzL8kE3nu5o4rv7ihlyRFOKJ8AqydXjO0hbo2v841KS4Q==
   dependencies:
     "@applitools/jsdom" "1.0.4"
     "@applitools/logger" "1.1.48"
