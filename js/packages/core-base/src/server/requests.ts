@@ -147,19 +147,28 @@ export function makeCoreRequests({
         initializedAt,
         appId: settings.appName,
         isNew: result.isNew ?? response.status === 201,
-        keepBatchOpen: settings.keepBatchOpen ?? false,
-        server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
+        keepBatchOpen: !!settings.keepBatchOpen,
+        keepIfDuplicate: !!settings.baselineEnvName,
         rendererId: settings.environment?.rendererId,
         rendererUniqueId: settings.environment?.rendererUniqueId,
         rendererInfo: settings.environment?.rendererInfo,
-        keepIfDuplicate: !!settings.baselineEnvName,
       } as TestInfo
       if (result.renderingInfo) {
         const {serviceUrl, accessToken, resultsUrl, ...rest} = result.renderingInfo
-        test.account = {ufg: {serverUrl: serviceUrl, accessToken}, uploadUrl: resultsUrl, ...rest}
+        test.account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as AccountInfo
+        test.account.ufgServer = {
+          serverUrl: serviceUrl,
+          uploadUrl: test.account.uploadUrl,
+          stitchingServiceUrl: test.account.stitchingServiceUrl,
+          accessToken,
+          agentId: test.account.server.agentId,
+          proxy: test.account.server.proxy,
+        }
       } else {
         test.account = await accountPromise
       }
+      test.server = test.account.server
+      test.ufgServer = test.account.ufgServer
       return test
     })
     logger.log('Request "openEyes" finished successfully with body', test)
@@ -304,7 +313,16 @@ export function makeCoreRequests({
     })
     const result = await response.json().then(result => {
       const {serviceUrl, accessToken, resultsUrl, ...rest} = result
-      return {ufg: {serverUrl: serviceUrl, accessToken}, uploadUrl: resultsUrl, ...rest}
+      const account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as AccountInfo
+      account.ufgServer = {
+        serverUrl: serviceUrl,
+        uploadUrl: account.uploadUrl,
+        stitchingServiceUrl: account.stitchingServiceUrl,
+        accessToken,
+        agentId: account.server.agentId,
+        proxy: account.server.proxy,
+      }
+      return account
     })
     logger.log('Request "getAccountInfo" finished successfully with body', result)
     return result

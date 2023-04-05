@@ -60,7 +60,8 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
           userTestId: settings.userTestId,
           batchId: settings.batch?.id,
           keepBatchOpen: settings.keepBatchOpen,
-          server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy},
+          server: account.server,
+          ufgServer: account.ufgServer,
           account,
         } as TestInfo,
         get running() {

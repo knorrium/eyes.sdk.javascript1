@@ -132,6 +132,8 @@ export function makeUFGRequests({
         if (settings.type === 'native') {
           renderOptions.renderInfo.vhsType = target.vhsType
           renderOptions.renderInfo.vhsCompatibilityParams = target.vhsCompatibilityParams
+          //NOTE: at the moment stitch mode is supported only for native devices
+          renderOptions.renderInfo.stitchMode = settings.stitchMode
         }
         if (settings.region) {
           if (utils.types.has(settings.region, ['x', 'y', 'width', 'height'])) {
@@ -143,13 +145,10 @@ export function makeUFGRequests({
           }
         } else {
           renderOptions.renderInfo.target = settings.fully ? 'full-page' : 'viewport'
-          //NOTE at the moment scroll root is supported only for native devices
+          //NOTE: at the moment scroll root is supported only for native devices
           if (settings.type === 'native') {
             renderOptions.renderInfo.selector = settings.scrollRootElement
           }
-        }
-        if (settings.stitchMode) {
-          renderOptions.renderInfo.stitchMode = settings.stitchMode
         }
         return renderOptions
       }),

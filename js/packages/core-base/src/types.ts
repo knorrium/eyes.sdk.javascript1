@@ -64,6 +64,7 @@ export interface TestInfo {
   keepBatchOpen: boolean
   keepIfDuplicate: boolean
   server: ServerSettings
+  ufgServer: UFGServerSettings
   account: AccountInfo
   rendererId?: string
   rendererUniqueId?: string
@@ -73,8 +74,17 @@ export interface TestInfo {
 export interface ServerSettings {
   serverUrl: string
   apiKey: string
-  proxy?: Proxy
   agentId?: string
+  proxy?: Proxy
+}
+
+export interface UFGServerSettings {
+  serverUrl: string
+  uploadUrl: string
+  stitchingServiceUrl: string
+  accessToken: string
+  agentId?: string
+  proxy?: Proxy
 }
 
 type SessionType = 'SEQUENTIAL' | 'PROGRESSION'
@@ -181,10 +191,8 @@ export interface LogEventSettings extends ServerSettings {
 }
 
 export interface AccountInfo {
-  ufg: {
-    serverUrl: string // serviceUrl
-    accessToken: string // accessToken
-  }
+  server: ServerSettings
+  ufgServer: UFGServerSettings
   rcaEnabled: boolean
   stitchingServiceUrl: string
   uploadUrl: string // resultsUrl

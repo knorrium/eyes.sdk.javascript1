@@ -36,7 +36,7 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     if (!settings) throw new Error('')
     const ufgClient = await eyes.core.getUFGClient({
-      config: {...eyes.test.account, ...eyes.test.account.ufg, proxy: eyes.test.server.proxy},
+      config: {...eyes.test.ufgServer},
       logger,
     })
     const environment = await ufgClient.bookRenderer({settings})
