@@ -17,8 +17,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed screenshot framing
-    - Fixed issue with css fetching for dom capture
+    - 
 "@applitools/eyes-webdriverio":
   feature:
     - 
