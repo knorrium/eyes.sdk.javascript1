@@ -8,6 +8,12 @@
 
 
 
+## 4.65.0 - 2023/4/5
+
+### Features
+- Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
+### Bug fixes
+
 ## 4.64.1 - 2023/3/22
 
 ### Features
