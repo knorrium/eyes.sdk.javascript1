@@ -69,7 +69,9 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     if (environment.isWeb && settings.sendDom) {
       if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
       else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-      baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => undefined)
+      baseTarget.dom = await takeDomCapture({driver, settings: {proxy: eyes.test.server.proxy}, logger}).catch(
+        () => undefined,
+      )
     }
     if (settings.pageId) {
       const scrollingElement = await driver.mainContext.getScrollingElement()

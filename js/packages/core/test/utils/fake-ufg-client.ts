@@ -52,6 +52,7 @@ export function makeFakeClient({
         const browserName = renderer.name
         return {
           rendererId: 'renderer-uid',
+          rendererUniqueId: 'renderer-uid',
           rendererInfo: {
             type: 'web',
             renderer: settings.renderer,

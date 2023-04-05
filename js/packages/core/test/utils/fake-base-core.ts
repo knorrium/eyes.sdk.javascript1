@@ -22,7 +22,14 @@ export function makeFakeCore({
     async getAccountInfo(options) {
       emitter.emit('getAccountInfo', options)
       await hooks?.getAccountInfo?.(options)
-      return account as AccountInfo
+      return {
+        server: {
+          serverUrl: options.settings?.serverUrl,
+          apiKey: options.settings?.apiKey,
+          proxy: options.settings?.proxy,
+        },
+        ...account,
+      } as AccountInfo
     },
     async closeBatch(options) {
       emitter.emit('closeBatch', options)

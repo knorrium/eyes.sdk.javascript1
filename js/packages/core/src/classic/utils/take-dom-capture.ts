@@ -1,6 +1,6 @@
 import {type SpecType, type Driver, type Context} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
-import {req, type Fetch} from '@applitools/req'
+import {req, type Fetch, type Proxy} from '@applitools/req'
 
 const {
   getCaptureDomPoll,
@@ -10,11 +10,12 @@ const {
 } = require('@applitools/dom-capture')
 
 export type DomCaptureSettings = {
-  fetch?: Fetch
-  fetchTimeout?: number
   executionTimeout?: number
   pollTimeout?: number
+  fetchTimeout?: number
   chunkByteLength?: number
+  proxy?: Proxy
+  fetch?: Fetch
 }
 
 export async function takeDomCapture<TSpec extends SpecType>({
@@ -104,13 +105,15 @@ export async function takeDomCapture<TSpec extends SpecType>({
           limit: 1,
           validate: ({response, error}) => !!error || !response!.ok,
         },
+        proxy: settings?.proxy,
         fetch: settings?.fetch,
       })
+      const css = await response.text()
       logger.log(
         `Request to download css that was sent to the address "[GET]${url}" respond with ${response.statusText}(${response.status})`,
-        response.ok ? `and css of length ${(await response.clone().text()).length} chars` : '',
+        response.ok ? `and css of length ${css.length} chars` : '',
       )
-      return {url, css: response.ok ? encodeJSON(await response.text()) : ''}
+      return {url, css: response.ok ? encodeJSON(css) : ''}
     } catch (error) {
       logger.error(`Request to download css that was sent to the address "[GET]${url}" failed with error`, error)
       return {url, css: ''}

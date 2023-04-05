@@ -49,7 +49,9 @@ export function makeExtractText<TSpec extends SpecType>({core, spec, logger: def
       if (environment.isWeb) {
         if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
         else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-        baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => undefined)
+        baseTarget.dom = await takeDomCapture({driver, settings: {proxy: settings.proxy}, logger}).catch(
+          () => undefined,
+        )
       }
       delete settings.region
       delete settings.normalization

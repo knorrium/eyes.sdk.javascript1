@@ -26,7 +26,13 @@ describe('open-eyes', () => {
   it('should populate test information', async () => {
     const fakeClient = makeFakeClient()
     const accountInfo = {
-      ufg: {serverUrl: 'server-url', accessToken: 'token'},
+      ufgServer: {
+        serverUrl: 'server-url',
+        uploadUrl: 'uploadUrl',
+        stitchingServiceUrl: 'stitchingService',
+        accessToken: 'token',
+      },
+      server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
       rcaEnable: true,
       stitchingServiceUrl: 'stitchingService',
       uploadUrl: 'uploadUrl',
@@ -58,7 +64,8 @@ describe('open-eyes', () => {
       userTestId: 'testId',
       batchId: 'batchId',
       keepBatchOpen: true,
-      server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
+      server: accountInfo.server,
+      ufgServer: accountInfo.ufgServer,
       account: accountInfo,
     }
     assert.deepStrictEqual(openResult.test, expected)

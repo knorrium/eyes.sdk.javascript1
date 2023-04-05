@@ -13,26 +13,29 @@ Apollo SDK:
     - 
   bug-fix:
     - Fixed screenshot framing
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
     - Fixed screenshot framing
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
     - Fixed screenshot framing
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -62,6 +65,7 @@ Apollo SDK:
     - Fixed slowness during ufg tests
     - Optimized number of requests during polling
     - Fixed screenshot framing
+    - Fixed issue with css fetching for dom capture
 "@applitools/eyes-cypress":
   feature:
     - 

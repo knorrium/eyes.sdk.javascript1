@@ -36,7 +36,7 @@ export function makeLocateText<TSpec extends SpecType>({core, spec, logger: defa
     if (environment.isWeb) {
       // if (settings.fully) await screenshot.scrollingElement.setAttribute('data-applitools-scroll', 'true')
       // else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-      // baseTarget.dom = await takeDomCapture({driver, logger}).catch(() => null)
+      // baseTarget.dom = await takeDomCapture({driver, settings: {proxy: settings.proxy}, logger}).catch(() => null)
     }
     const results = await core.base.locateText({
       target: baseTarget,

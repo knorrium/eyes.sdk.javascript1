@@ -321,10 +321,10 @@
     "@applitools/driver" "1.11.39"
     "@applitools/utils" "1.3.32"
 
-"@applitools/test-utils@1.5.15":
-  version "1.5.15"
-  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.15.tgz#052e1c44645c79c730cf7f82eca37e60838b1e94"
-  integrity sha512-kY9DSV6kmPqdAXoCcFtpZ6NEILIh959Hkxjc+tFbWPSMmq2JyfzGBFjOJwDCCUulJE681hOADYTFVMQ4+MZuNw==
+"@applitools/test-utils@1.5.16":
+  version "1.5.16"
+  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.16.tgz#fefbcc3cf34da6a4ddfe3e984746fb7022fe5e73"
+  integrity sha512-IQEX+nC7Tj/BVeALaLVKua7InfSLRd8ZItkLoH5ohZ9Puq9G5nW37ZTYJfRpdVHjkbo+bqtQoB+eqebq/e4UhA==
   dependencies:
     node-fetch "2.6.1"
 
@@ -1661,10 +1661,10 @@ chrome-launcher@^0.15.0:
     is-wsl "^2.2.0"
     lighthouse-logger "^1.0.0"
 
-chromedriver@^109.0.0:
-  version "109.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-109.0.0.tgz#9407af72f2a01bb19e6db1b85cfc87eb3acd4f6b"
-  integrity sha512-jdmBq11IUwfThLFiygGTZ89qbROSQI4bICQjvOVQy2Bqr1LwC+MFkhwyZp3YG99eehQbZuTlQmmfCZBfpewTNA==
+chromedriver@^111.0.0:
+  version "111.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-111.0.0.tgz#ef704dc44524ce5c1eced283d523b7aefd59ee19"
+  integrity sha512-XavNYNBBfKIrT8Oi/ywJ0DoOOU+jHF5bQWTkqStFsAXvfCV9VzYN3J+TGAvZdrpXeoixqPRGUxQ2yZhD2iowdQ==
   dependencies:
     "@testim/chrome-version" "^1.1.3"
     axios "^1.2.1"
