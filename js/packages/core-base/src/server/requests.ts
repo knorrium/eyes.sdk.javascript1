@@ -313,7 +313,11 @@ export function makeCoreRequests({
     })
     const result = await response.json().then(result => {
       const {serviceUrl, accessToken, resultsUrl, ...rest} = result
-      const account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as AccountInfo
+      const account = {
+        server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy, agentId},
+        uploadUrl: resultsUrl,
+        ...rest,
+      } as AccountInfo
       account.ufgServer = {
         serverUrl: serviceUrl,
         uploadUrl: account.uploadUrl,

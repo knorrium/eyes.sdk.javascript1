@@ -48,6 +48,7 @@ describe('requests', () => {
     assert.strictEqual(result.isNew, false)
     assert.strictEqual(result.keepIfDuplicate, false)
     assert.deepStrictEqual(result.server, {
+      agentId: 'core-base/test',
       serverUrl: 'https://eyesapi.applitools.com',
       apiKey: process.env.APPLITOOLS_API_KEY,
       proxy: undefined,
