@@ -12,17 +12,17 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed screenshot framing
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed screenshot framing
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed screenshot framing
 "@applitools/eyes-playwright":
   feature:
     - 
@@ -61,6 +61,7 @@ Apollo SDK:
     - Avoid handing process when using execution cloud
     - Fixed slowness during ufg tests
     - Optimized number of requests during polling
+    - Fixed screenshot framing
 "@applitools/eyes-cypress":
   feature:
     - 

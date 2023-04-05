@@ -78,7 +78,7 @@
     "@applitools/bongo": "^3.0.3",
     "@applitools/driver": "^1.11.39",
     "@applitools/spec-driver-webdriverio": "^1.4.35",
-    "@applitools/test-utils": "^1.5.15",
+    "@applitools/test-utils": "^1.5.16",
     "appium": "^1.22.3",
     "chromedriver": "^101.0.0",
     "eslint": "^8.16.0",

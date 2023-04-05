@@ -96,7 +96,7 @@ async function takeStitchedScreenshot({
 
   logger.verbose('Getting the rest of the image parts...')
 
-  let lastImage = firstImage
+  let lastImage = makeImage(firstImage)
   let scrollerRegionShift = {x: 0, y: 0}
   for (const partRegion of partRegions) {
     const partName = `${partRegion.x}_${partRegion.y}_${partRegion.width}x${partRegion.height}`
