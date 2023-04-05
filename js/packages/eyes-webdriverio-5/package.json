@@ -112,7 +112,7 @@
     "postpublish": "bongo send-release-notification --name 'js_wdio_5'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.1.2",
+    "@applitools/eyes": "1.1.3",
     "@applitools/spec-driver-webdriverio": "1.4.35"
   },
   "devDependencies": {
