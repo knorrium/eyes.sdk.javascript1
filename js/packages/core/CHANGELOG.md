@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.4.8 - 2023/4/5
+
+### Features
+### Bug fixes
+- Fixed screenshot framing
+- Fixed issue with css fetching for dom capture
+
 ## 2.4.7 - 2023/4/4
 
 ### Features
