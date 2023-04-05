@@ -298,22 +298,6 @@ const DEVICES = {
       ...SAUCE_CREDENTIALS,
     },
   },
-
-  'Android 8.0 Chrome Emulator': {
-    type: 'local',
-    url: 'http://localhost:4444/wd/hub',
-    capabilities: {
-      browserName: 'chrome',
-      'goog:chromeOptions': {
-        mobileEmulation: {
-          deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
-          userAgent:
-            'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
-        },
-        args: ['hide-scrollbars'],
-      },
-    },
-  },
   'Perfecto Android native': {
     url: PERFECTO_SERVER_URL,
     capabilities: {
@@ -361,6 +345,14 @@ const DEVICES = {
       userName: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
     },
+  },
+}
+
+const EMULATIONS = {
+  'Android 8.0': {
+    deviceMetrics: {width: 384, height: 512, pixelRatio: 2},
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
   },
 }
 
@@ -599,10 +591,21 @@ const BROWSERS = {
 }
 
 function parseEnv(
-  {browser, app, device, url, headless = !process.env.NO_HEADLESS, legacy, injectUFGLib, withNML, ...options} = {},
+  {
+    browser,
+    app,
+    device,
+    emulation,
+    url,
+    headless = !process.env.NO_HEADLESS,
+    legacy,
+    injectUFGLib,
+    withNML,
+    ...options
+  } = {},
   protocol = 'wd',
 ) {
-  const env = {browser, device, headless, protocol, ...options}
+  const env = {browser, device, emulation, headless, protocol, ...options}
   if (protocol === 'wd') {
     env.url = url && new URL(url)
     if (env.desiredCapabilities) env.desiredCapabilities = {...env.desiredCapabilities}
@@ -633,6 +636,10 @@ function parseEnv(
     }
     if (app) {
       env.capabilities[legacy ? 'app' : 'appium:app'] = app
+    }
+    if (emulation && /chrome/i.test(env.capabilities.browserName)) {
+      env.capabilities['goog:chromeOptions'] = {...env.capabilities['goog:chromeOptions']}
+      env.capabilities['goog:chromeOptions'].mobileEmulation = EMULATIONS[emulation]
     }
     if (injectUFGLib) {
       if (env.capabilities.platformName.toLowerCase() === 'ios') {
