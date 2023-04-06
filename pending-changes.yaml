@@ -27,7 +27,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed issue with css fetching for dom capture
+    - 
 "@applitools/eyes-puppeteer":
   feature:
     - 
