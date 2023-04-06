@@ -41,8 +41,6 @@ function emitTest(test, {makeSpecEmitter, makeFile}) {
     return tags
   }, [])
 
-  if (test.env && test.env.emulation) console.log(test.tags)
-
   const [output, emitter, utils] = useEmitter()
   const sdk = makeSpecEmitter(emitter, test)
   test.output = output
