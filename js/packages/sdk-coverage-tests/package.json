@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-coverage-tests",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "engines": {
     "node": ">=12.12.0"
   },
@@ -46,7 +46,7 @@
     "yargs": "16.0.3"
   },
   "devDependencies": {
-    "@applitools/bongo": "^3.0.0",
+    "@applitools/bongo": "^3.0.3",
     "@typescript-eslint/parser": "4.2.0",
     "eslint": "^7.9.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",
