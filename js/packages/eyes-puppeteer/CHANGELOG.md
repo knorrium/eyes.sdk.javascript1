@@ -11,6 +11,12 @@
 
 
 
+## 1.15.1 - 2023/4/6
+
+### Features
+### Bug fixes
+- Fixed issue with css fetching for dom capture
+
 ## 1.15.0 - 2023/4/4
 
 ### Features

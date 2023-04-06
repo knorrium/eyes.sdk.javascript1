@@ -32,7 +32,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed issue with css fetching for dom capture
+    - 
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
