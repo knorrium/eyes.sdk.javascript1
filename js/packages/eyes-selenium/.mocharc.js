@@ -5,6 +5,7 @@ const tags = [
   'headfull',
   'jsonwire',
   'webdriver',
+  'emulator',
   'mobile',
   'native',
   'native-selectors',

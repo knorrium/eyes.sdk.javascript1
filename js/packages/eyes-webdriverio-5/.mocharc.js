@@ -6,6 +6,7 @@ const tags = {
     'headfull',
     'webdriver',
     'jsonwire',
+    'emulator',
     'mobile',
     'native',
     'native-selectors',
@@ -17,7 +18,7 @@ const tags = {
     'safari',
     'all-cookies'
   ]),
-  cdp: new Set(['image', 'chrome', 'all-cookies', 'cached-selectors'])
+  cdp: new Set(['image', 'chrome', 'emulator', 'all-cookies', 'cached-selectors'])
 }
 const protocol = process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL in tags ? process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL : 'wd'
 // in wdio version 6 and below there was automatically populated moz argument that blows modern gecodriver

@@ -4,6 +4,7 @@ const tags = [
   'image',
   'headfull',
   'webdriver',
+  'emulator',
   'mobile',
   'chrome',
   'firefox',
