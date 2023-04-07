@@ -51,9 +51,9 @@
   },
   "devDependencies": {
     "@applitools/bongo": "^3.0.3",
-    "@applitools/spec-driver-webdriverio": "^1.4.35",
+    "@applitools/spec-driver-webdriverio": "^1.4.36",
     "@applitools/test-server": "^1.1.28",
-    "@applitools/test-utils": "^1.5.15",
+    "@applitools/test-utils": "^1.5.16",
     "@types/node": "^12.20.55",
     "chromedriver": "^109.0.0",
     "nock": "^13.2.9",
