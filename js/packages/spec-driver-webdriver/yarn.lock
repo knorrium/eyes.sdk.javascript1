@@ -23,10 +23,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.39":
-  version "1.11.39"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.39.tgz#32f3ce64816e66d0a8107f808a86d9c7665f0eb2"
-  integrity sha512-ZZ19o+toqewGHZPh6oXkRtodtoY5PpVAt8xVnNIH/dtlikO7xJDEIExs9YrvhDIoG06+VP1O9kNu4xGsAWI08w==
+"@applitools/driver@1.11.40":
+  version "1.11.40"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.40.tgz#abe735b1435471352e632375bc620610feeeff54"
+  integrity sha512-bv6lrUWxMwo3Gptvvcg/c1auIziwtwp8DrR+tPes56YwQhd5tCT84uGiMT8WLNiHhKJz/ujUlr0X3yQ5qhH6oA==
   dependencies:
     "@applitools/logger" "1.1.48"
     "@applitools/snippets" "2.4.19"
@@ -65,10 +65,10 @@
     node-forge "1.3.1"
     yargs "17.0.1"
 
-"@applitools/test-utils@1.5.15":
-  version "1.5.15"
-  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.15.tgz#052e1c44645c79c730cf7f82eca37e60838b1e94"
-  integrity sha512-kY9DSV6kmPqdAXoCcFtpZ6NEILIh959Hkxjc+tFbWPSMmq2JyfzGBFjOJwDCCUulJE681hOADYTFVMQ4+MZuNw==
+"@applitools/test-utils@1.5.16":
+  version "1.5.16"
+  resolved "https://registry.yarnpkg.com/@applitools/test-utils/-/test-utils-1.5.16.tgz#fefbcc3cf34da6a4ddfe3e984746fb7022fe5e73"
+  integrity sha512-IQEX+nC7Tj/BVeALaLVKua7InfSLRd8ZItkLoH5ohZ9Puq9G5nW37ZTYJfRpdVHjkbo+bqtQoB+eqebq/e4UhA==
   dependencies:
     node-fetch "2.6.1"
 
