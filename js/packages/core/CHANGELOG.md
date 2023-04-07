@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.9 - 2023/4/7
+
+### Features
+### Bug fixes
+- Fixed issue in dom snapshot that prevented urls that start with a whitespace to be mapped
+
 ## 2.4.8 - 2023/4/5
 
 ### Features
