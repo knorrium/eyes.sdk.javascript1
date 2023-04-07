@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 @attr.s
 class ImagesCheckSettingsValues(SeleniumCheckSettingsValues):
     image = attr.ib(default=None)  # type: Optional[Text]
+    dom = attr.ib(default=None)  # type: Optional[Text]
 
 
 @attr.s
@@ -25,6 +26,15 @@ class ImagesCheckSettings(SeleniumCheckSettings):
     values = attr.ib(
         factory=ImagesCheckSettingsValues
     )  # type: ImagesCheckSettingsValues
+
+    def dom(self, dom):
+        # type: (Text) -> ImagesCheckSettings
+        """
+        Attach given DOM source text to the image.
+        Needed by the Root Cause Analysis tool
+        """
+        self.values.dom = dom
+        return self
 
 
 class Target(object):

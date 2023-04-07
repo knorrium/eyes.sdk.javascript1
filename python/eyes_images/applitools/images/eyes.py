@@ -46,7 +46,7 @@ class Eyes(object):
         # type: (Configuration) -> None
         self.configure = configuration.clone()
 
-    def open(self, app_name, test_name, dimension=None):
+    def open(self, app_name=None, test_name=None, dimension=None):
         # type: (Text, Text, Optional[ViewPort]) -> None
         if app_name is not None:
             self.configure.app_name = app_name
@@ -89,7 +89,7 @@ class Eyes(object):
         results = self._commands.eyes_check(
             self._object_registry,
             self._eyes_ref,
-            ImageTarget(check_settings.values.image),
+            ImageTarget(check_settings.values.image, check_settings.values.dom),
             check_settings,
             self.configure,
         )

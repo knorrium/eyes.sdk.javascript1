@@ -197,6 +197,7 @@ class Proxy(USDKSchema):
 
 class ImageTarget(USDKSchema):
     image = String()
+    dom = String()
 
 
 class AccessibilitySettings(USDKSchema):

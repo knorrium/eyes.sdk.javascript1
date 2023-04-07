@@ -1,3 +1,9 @@
+## [vNext]
+### Add
+- DOM can now be attached to images.Eyes checks via `dom` method of target [Trello 3196](https://trello.com/c/FZ6KcVd6)
+### Fixed
+- Images.Eyes.open method does not require `app_name` and `test_name` if they are set in configuration [Trello 3197](https://trello.com/c/euyA23yG)
+
 ## [5.17.1] - 2023-04-01
 ### Fixed
 - Permit compatible values of enums in Configuration objects [Trello 3188](https://trello.com/c/VaZniTQ4)

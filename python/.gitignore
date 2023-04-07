@@ -196,8 +196,10 @@ eyes_selenium/applitools/selenium/resources/
 .vscode/
 
 # Generated tests
+coverage-tests-metadata.json
 node_modules/
 package-lock.json
 package.json
+tests/coverage/images/generic/
 tests/coverage/playwright/generic/
 tests/coverage/selenium/generic/

@@ -10,7 +10,8 @@ module.exports = {
         let features = test.features || []
         return !env.device &&
             !["ie-11", "edge-18", "safari-11", "safari-12"].includes(env.browser) &&
-            !features.includes("webdriver")
+            !features.includes("webdriver") &&
+            !features.includes("image")
     },
     emitter: `${dir}/python/emitter.js`,
     overrides: [`${dir}/js/overrides.js`, `${dir}/python/overrides.js`],

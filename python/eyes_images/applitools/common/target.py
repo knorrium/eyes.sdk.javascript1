@@ -9,3 +9,4 @@ if TYPE_CHECKING:
 @attr.s
 class ImageTarget(object):
     image = attr.ib(default=None)  # type: Optional[Text]
+    dom = attr.ib(default=None)  # type: Optional[Text]

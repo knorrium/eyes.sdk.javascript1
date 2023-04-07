@@ -195,6 +195,18 @@ def test_check_image_with_viewport_size_set(eyes):
     assert result.host_display_size.height == 400
 
 
+def test_check_eyes_open_without_arguments(eyes):
+    eyes.configuration.set_app_name("images")
+    eyes.configuration.set_test_name("TestCheckEyesOpenWithoutArguments")
+
+    eyes.open()
+    eyes.check_image(path.join(here, "resources/minions-800x500.jpg"))
+    result = eyes.close()
+
+    assert result.app_name == "images"
+    assert result.name == "TestCheckEyesOpenWithoutArguments"
+
+
 @pytest.mark.skip("Not supported by core-universal yet")
 def test_check_image_without_viewport_size_set(eyes):
     eyes.open(
