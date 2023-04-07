@@ -472,7 +472,7 @@ export class Driver<T extends SpecType> {
     this._state.nmlElement ??= await this.waitFor(
       {type: 'accessibility id', selector: 'Applitools_View'},
       {timeout: 10_000},
-    )
+    ).catch(() => null)
     if (!this._state.nmlElement) {
       this._logger.log('Broker url extraction is failed due to absence of nml element')
       return null
