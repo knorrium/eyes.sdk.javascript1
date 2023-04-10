@@ -1,6 +1,6 @@
 {
   "name": "@applitools/api-extractor",
-  "version": "1.2.12",
+  "version": "1.2.14",
   "description": "Ultimate api extractor for typescript project",
   "keywords": [
     "applitools",
@@ -41,7 +41,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@applitools/bongo": "^2.2.5",
+    "@applitools/bongo": "^3.0.3",
     "@types/node": "12"
   },
   "engines": {
