@@ -1675,4 +1675,123 @@ describe('capabilities', () => {
       statusBarSize: 54,
     })
   })
+
+  it('should work with Native App with appium prefixed capabilities', () => {
+    const capabilities = {
+      'appium:newCommandTimeout': 0,
+      'appium:takesScreenshot': true,
+      'appium:warnings': {},
+      'appium:desired': {
+        'sauce:options': {},
+        deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
+        orientation: 'PORTRAIT',
+        udid: 'emulator-5554',
+        app: '/tmp/tmpivzMax/app-debug.apk',
+        noReset: true,
+        'selenium:webdriver.remote.quietExceptions': false,
+        chromeOptions: {
+          args: [
+            '--disable-fre',
+            '--disable-popup-blocking',
+            '--enable-automation',
+            '--enable-remote-debugging',
+            '--ignore-certificate-errors',
+            '--metrics-recording-only',
+            '--no-first-run',
+            '--disable-search-geolocation-disclosure',
+            '--disable-gpu-rasterization',
+          ],
+        },
+        browserName: '',
+        'noSign:noSign': true,
+        proxy: {
+          proxyAutoconfigUrl: 'http://127.0.0.1:19876/pac.js',
+          proxyType: 'PAC',
+        },
+        newCommandTimeout: 0,
+        platformVersion: '10.0',
+        platformName: 'android',
+        eventTimings: true,
+        maxTypingFrequency: 8,
+      },
+      'appium:deviceApiLevel': 29,
+      'appium:locationContextEnabled': false,
+      'appium:deviceScreenSize': '1080x2160',
+      'appium:deviceManufacturer': 'Google',
+      'sauce:options': {},
+      'selenium:webdriver.remote.quietExceptions': false,
+      'appium:udid': 'emulator-5554',
+      'appium:pixelRatio': 2.5,
+      'appium:orientation': 'PORTRAIT',
+      platformName: 'ANDROID',
+      'appium:app': '/tmp/tmpivzMax/app-debug.apk',
+      'appium:networkConnectionEnabled': true,
+      'appium:eventTimings': true,
+      'appium:deviceScreenDensity': 400,
+      'appium:viewportRect': {width: 1080, top: 60, height: 1980, left: 0},
+      'appium:deviceModel': 'Android SDK built for x86_64',
+      'appium:platformVersion': '10',
+      'appium:noReset': true,
+      'appium:databaseEnabled': false,
+      proxy: {
+        proxyType: 'PAC',
+        autodetect: false,
+        ftpProxy: null,
+        httpProxy: null,
+        noProxy: null,
+        sslProxy: null,
+        socksProxy: null,
+        socksVersion: null,
+        socksUsername: null,
+        socksPassword: null,
+        proxyAutoconfigUrl: 'http://127.0.0.1:19876/pac.js',
+      },
+      'appium:deviceUDID': 'emulator-5554',
+      'appium:statBarHeight': 60,
+      'appium:webStorageEnabled': false,
+      'appium:chromeOptions': {
+        args: [
+          '--disable-fre',
+          '--disable-popup-blocking',
+          '--enable-automation',
+          '--enable-remote-debugging',
+          '--ignore-certificate-errors',
+          '--metrics-recording-only',
+          '--no-first-run',
+          '--disable-search-geolocation-disclosure',
+          '--disable-gpu-rasterization',
+        ],
+      },
+      'appium:deviceName': 'emulator-5554',
+      'appium:javascriptEnabled': true,
+      'appium:maxTypingFrequency': 8,
+      'noSign:noSign': true,
+      'appium:appPackage': 'com.applitools.eyes.android',
+    }
+
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
+
+    assert.deepStrictEqual(environment, {
+      browserName: undefined,
+      browserVersion: undefined,
+      platformName: 'ANDROID',
+      platformVersion: '10',
+      isW3C: true,
+      isMobile: true,
+      isChrome: false,
+      isECClient: false,
+      deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
+      isIOS: false,
+      isAndroid: true,
+      isNative: true,
+    })
+    assert.deepStrictEqual(viewport, {
+      displaySize: {width: 1080, height: 2160},
+      orientation: 'portrait',
+      pixelRatio: 2.5,
+      statusBarSize: 60,
+      navigationBarSize: 120,
+    })
+  })
 })

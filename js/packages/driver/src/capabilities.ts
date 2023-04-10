@@ -6,13 +6,20 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
 
   const environment: Environment = {
     browserName:
-      !capabilities.app && !capabilities.bundleId
+      !(capabilities.app ?? capabilities['appium:app'] ?? capabilities['appium:desired']?.app) && !capabilities.bundleId
         ? (capabilities.browserName ?? capabilities.desired?.browserName) || undefined
         : undefined,
     browserVersion: (capabilities.browserVersion ?? capabilities.version) || undefined,
     platformName:
-      (capabilities.platformName ?? capabilities.platform ?? capabilities.desired?.platformName) || undefined,
-    platformVersion: capabilities.platformVersion || undefined,
+      (capabilities.platformName ??
+        (capabilities.desired ?? capabilities['appium:desired'])?.platformName ??
+        capabilities.platform) ||
+      undefined,
+    platformVersion:
+      (capabilities.platformVersion ??
+        capabilities['appium:platformVersion'] ??
+        capabilities['appium:desired']?.platformVersion) ||
+      undefined,
     isW3C: isW3C(capabilities),
     isMobile: isMobile(capabilities),
     isChrome: isChrome(capabilities),
@@ -20,7 +27,11 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
   }
 
   if (environment?.isMobile) {
-    environment.deviceName = (capabilities.desired?.deviceName ?? capabilities.deviceName) || undefined
+    environment.deviceName =
+      ((capabilities['appium:desired'] ?? capabilities.desired)?.deviceName ??
+        capabilities['appium:deviceName'] ??
+        capabilities.deviceName) ||
+      undefined
     environment.isIOS = isIOS(capabilities)
     environment.isAndroid = isAndroid(capabilities)
     if (!environment.browserName) {
@@ -41,16 +52,31 @@ export function extractCapabilitiesViewport(capabilities: Capabilities): Partial
 
   const viewport: Partial<Viewport> = {
     displaySize: extractDisplaySize(capabilities),
-    orientation: (capabilities.deviceOrientation ?? capabilities.orientation)?.toLowerCase(),
-    pixelRatio: capabilities.pixelRatio,
-    statusBarSize: capabilities.statBarHeight ?? capabilities.viewportRect?.top,
+    orientation: (
+      capabilities['appium:orientation'] ??
+      capabilities.deviceOrientation ??
+      capabilities.orientation
+    )?.toLowerCase(),
+    pixelRatio: capabilities['appium:pixelRatio'] ?? capabilities.pixelRatio,
+    statusBarSize:
+      capabilities['appium:statBarHeight'] ??
+      capabilities.statBarHeight ??
+      (capabilities['appium:viewportRect'] ?? capabilities.viewportRect)?.top,
   }
 
-  if (viewport.displaySize && viewport.orientation && capabilities.viewportRect) {
+  if (
+    viewport.displaySize &&
+    viewport.orientation &&
+    (capabilities['appium:viewportRect'] ?? capabilities.viewportRect)
+  ) {
     viewport.navigationBarSize =
       viewport.orientation === 'landscape'
-        ? viewport.displaySize.width - (capabilities.viewportRect.left + capabilities.viewportRect.width)
-        : viewport.displaySize.height - (capabilities.viewportRect.top + capabilities.viewportRect.height)
+        ? viewport.displaySize.width -
+          ((capabilities['appium:viewportRect'] ?? capabilities.viewportRect).left +
+            (capabilities['appium:viewportRect'] ?? capabilities.viewportRect).width)
+        : viewport.displaySize.height -
+          ((capabilities['appium:viewportRect'] ?? capabilities.viewportRect).top +
+            (capabilities['appium:viewportRect'] ?? capabilities.viewportRect).height)
   }
 
   return viewport
@@ -96,8 +122,9 @@ function isAndroid(capabilities: Capabilities) {
 }
 
 function extractDisplaySize(capabilities: Capabilities): Size | undefined {
-  if (!capabilities.deviceScreenSize) return undefined
-  const [width, height] = capabilities.deviceScreenSize.split('x')
+  const deviceScreenSize = capabilities['appium:deviceScreenSize'] ?? capabilities.deviceScreenSize
+  if (!deviceScreenSize) return undefined
+  const [width, height] = deviceScreenSize.split('x')
   if (Number.isNaN(Number(width)) || Number.isNaN(Number(height))) return undefined
   return {width: Number(width), height: Number(height)}
 }
