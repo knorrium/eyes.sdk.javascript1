@@ -73,4 +73,4 @@ def _fetch_sauce_limits(need_vms, need_mac_vms):
 # There is no sense in using more than this amount of sauce VMs
 # because non-sauce tests take more time to execute. If non-sauce tests
 # start to pass much faster, should bump these numbers
-_SAUCE_LIMITS = _fetch_sauce_limits(need_vms=1, need_mac_vms=1)
+_SAUCE_LIMITS = _fetch_sauce_limits(need_vms=2, need_mac_vms=2)

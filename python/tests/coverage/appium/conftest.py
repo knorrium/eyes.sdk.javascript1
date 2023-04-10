@@ -6,7 +6,7 @@ from selenium.common.exceptions import WebDriverException
 
 from applitools.selenium import BatchInfo, ClassicRunner, Eyes, StitchMode
 
-from .browsers import *
+from .devices import *
 from .sauce import pytest_collection_modifyitems, sauce_url
 
 batch_info = BatchInfo(

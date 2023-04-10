@@ -3,7 +3,7 @@ ifdef PYTEST_FILTER
 endif
 PYTEST=python -m pytest $(PYTEST_FLAGS)
 
-install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_images_tests generate_selenium_tests generate_playwright_tests
+install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_images_tests generate_selenium_tests generate_appium_tests generate_playwright_tests
 	python -m pip install --upgrade --editable core_universal
 	python -m pip install --upgrade --editable eyes_images
 	python -m pip install --upgrade --editable eyes_selenium
@@ -73,6 +73,10 @@ install_publish_requirements: node_modules
 
 generate_images_tests: node_modules
 	cd tests/coverage/images && npx coverage-tests generate . --pascalizeTests --strict
+
+
+generate_appium_tests: node_modules
+	cd tests/coverage/appium && npx coverage-tests generate . --pascalizeTests --strict
 
 
 generate_selenium_tests: install_selenium_generated_tests_requirements node_modules
@@ -166,6 +170,11 @@ eyes_selenium_installation_tests: install_eyes_robotframework install_installati
 eyes_images_generated_tests: install_eyes_images install_tests_requirements generate_images_tests
 	# cd into suite directory required because coverage-tests-metadata.json is there
 	cd tests/coverage/images && $(PYTEST) -n 14 --durations=10 generic/*
+
+
+eyes_appium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_appium_tests
+	# cd into suite directory required because coverage-tests-metadata.json is there
+	cd tests/coverage/appium && $(PYTEST) -n 4 --durations=10 --dist loadgroup generic/*
 
 
 eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_selenium_tests
