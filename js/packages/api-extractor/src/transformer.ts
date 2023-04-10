@@ -168,7 +168,7 @@ export default function transformer(
       (config.stripPrivate && modifierFlags & ts.ModifierFlags.Private) ||
         (config.stripProtected && modifierFlags & ts.ModifierFlags.Protected) ||
         (config.stripInternal &&
-          jsDocTags?.some(tag => tag.tagName?.escapedText ?? tag.tagName?.getText() === 'internal')),
+          jsDocTags?.some(tag => (tag.tagName?.escapedText ?? tag.tagName?.getText()) === 'internal')),
     )
   }
 

@@ -15,9 +15,16 @@ export abstract class EyesRunner {
   private _eyes: Eyes<Core.SpecType>[] = []
   abstract readonly type: 'classic' | 'ufg'
   /** @internal */
-  protected readonly _managerSettings?: Core.ManagerSettings
+  protected readonly _managerSettings: Core.ManagerSettings = {}
   /** @internal */
-  protected readonly _getResultsSettings?: Core.GetManagerResultsSettings<'classic' | 'ufg'>
+  protected readonly _getResultsSettings: Core.GetManagerResultsSettings<'classic' | 'ufg'> = {}
+
+  constructor(options?: RunnerOptions) {
+    if (options) {
+      this._managerSettings = {concurrency: options.testConcurrency, legacyConcurrency: options.legacyConcurrency}
+      this._getResultsSettings = {removeDuplicateTests: options.removeDuplicateTests}
+    }
+  }
 
   /** @internal */
   attach<TSpec extends Core.SpecType = Core.SpecType>(eyes: Eyes<TSpec>, core: Core.Core<TSpec, 'classic' | 'ufg'>) {
@@ -69,13 +76,7 @@ export abstract class EyesRunner {
 }
 
 export class VisualGridRunner extends EyesRunner {
-  /** @internal */
   readonly type = 'ufg' as const
-  /** @internal */
-  /** @internal */
-  protected readonly _managerSettings?: Core.ManagerSettings
-  /** @internal */
-  protected readonly _getResultsSettings?: Core.GetManagerResultsSettings<'ufg'>
 
   constructor(options?: RunnerOptions)
   /** @deprecated */
@@ -83,17 +84,15 @@ export class VisualGridRunner extends EyesRunner {
   /** @deprecated */
   constructor(legacyConcurrency?: number)
   constructor(optionsOrLegacyConcurrency?: RunnerOptions | RunnerOptionsFluent | number) {
-    super()
-    if (utils.types.isNumber(optionsOrLegacyConcurrency)) {
-      this._managerSettings = {legacyConcurrency: optionsOrLegacyConcurrency}
-    } else if (optionsOrLegacyConcurrency) {
-      const options =
-        optionsOrLegacyConcurrency instanceof RunnerOptionsFluent
-          ? optionsOrLegacyConcurrency.toJSON()
-          : optionsOrLegacyConcurrency
-      this._managerSettings = {concurrency: options.testConcurrency}
-      this._getResultsSettings = {removeDuplicateTests: options.removeDuplicateTests}
+    let options: RunnerOptions | undefined
+    if (utils.types.instanceOf(optionsOrLegacyConcurrency, RunnerOptionsFluent)) {
+      options = optionsOrLegacyConcurrency.toJSON()
+    } else if (utils.types.isNumber(optionsOrLegacyConcurrency)) {
+      options = {legacyConcurrency: optionsOrLegacyConcurrency}
+    } else {
+      options = optionsOrLegacyConcurrency
     }
+    super(options)
   }
 
   get testConcurrency() {
@@ -112,15 +111,5 @@ export class VisualGridRunner extends EyesRunner {
 }
 
 export class ClassicRunner extends EyesRunner {
-  /** @internal */
   readonly type = 'classic' as const
-  /** @internal */
-  protected readonly _getResultsSettings?: Core.GetManagerResultsSettings<'classic'>
-
-  constructor(options?: RunnerOptions) {
-    super()
-    if (options) {
-      this._getResultsSettings = {removeDuplicateTests: options.removeDuplicateTests}
-    }
-  }
 }

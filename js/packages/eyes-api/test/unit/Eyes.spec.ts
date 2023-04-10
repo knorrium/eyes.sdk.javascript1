@@ -29,7 +29,7 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'classic', settings: undefined}}],
+      [{command: 'makeManager', data: {type: 'classic', settings: {}}}],
     )
   })
 
@@ -39,7 +39,7 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: 7}}}],
+      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: 7, legacyConcurrency: undefined}}}],
     )
   })
 
@@ -49,7 +49,7 @@ describe('Eyes', () => {
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {legacyConcurrency: 7}}}],
+      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: undefined, legacyConcurrency: 7}}}],
     )
   })
 
