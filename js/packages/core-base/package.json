@@ -52,7 +52,7 @@
   "dependencies": {
     "@applitools/image": "1.0.28",
     "@applitools/logger": "1.1.48",
-    "@applitools/req": "1.1.33",
+    "@applitools/req": "1.1.34",
     "@applitools/utils": "1.3.32",
     "abort-controller": "3.0.0",
     "throat": "6.0.2"
