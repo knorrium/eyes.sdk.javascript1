@@ -38,12 +38,12 @@ export type TestResults = {
   readonly layoutMatches?: number
   readonly noneMatches?: number
   readonly url?: string
-  readonly server: {
+  readonly server?: {
     serverUrl: string
     apiKey: string
     proxy?: ProxySettings
   }
-  readonly keepIfDuplicate: boolean
+  readonly keepIfDuplicate?: boolean
 }
 
 export class TestResultsData implements Required<TestResults> {
