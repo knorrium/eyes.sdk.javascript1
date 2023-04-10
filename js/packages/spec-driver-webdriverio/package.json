@@ -103,11 +103,11 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.40",
+    "@applitools/driver": "1.11.41",
     "@applitools/utils": "1.3.32"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.12",
+    "@applitools/api-extractor": "1.2.14",
     "@applitools/bongo": "^3.0.3",
     "@applitools/test-utils": "1.5.16",
     "@types/node": "^16.18.14",
