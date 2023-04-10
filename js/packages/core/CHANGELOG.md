@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.10 - 2023/4/10
+
+### Features
+### Bug fixes
+- Improved appium prefixed capabilities parsing
+
 ## 2.4.9 - 2023/4/7
 
 ### Features
