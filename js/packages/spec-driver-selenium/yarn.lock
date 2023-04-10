@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/api-extractor@^1.2.12":
-  version "1.2.12"
-  resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.12.tgz#bf1cedc5b5c3aaf0d09ca8d862b3890074e6f717"
-  integrity sha512-O73PyrJUWFYuE/whksrgJuneXaNOS7luP35Sb/llh9KyxV/RZzPpwEqf1sl17q6us6lSDkTaV8FTYlCQ2vS9Mg==
+"@applitools/api-extractor@^1.2.14":
+  version "1.2.14"
+  resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.14.tgz#5bd60a45ee753e1ca13ce59462145bd39b851799"
+  integrity sha512-doEJolnJYPwt/nWC17qqaVUSmv/Ieq9N0IJMGRGzMnEM16xIDV2R9RuG8B8Z7HSaI+cV7bNOTZc/LQ/6y7Rzvw==
 
 "@applitools/bongo@3.0.3":
   version "3.0.3"
@@ -23,10 +23,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.40":
-  version "1.11.40"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.40.tgz#abe735b1435471352e632375bc620610feeeff54"
-  integrity sha512-bv6lrUWxMwo3Gptvvcg/c1auIziwtwp8DrR+tPes56YwQhd5tCT84uGiMT8WLNiHhKJz/ujUlr0X3yQ5qhH6oA==
+"@applitools/driver@1.11.41":
+  version "1.11.41"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.41.tgz#7286e0efb9f11f08112a0912aaf0280c64a79c6d"
+  integrity sha512-7wm8SKuNOwzv9naBO774+NXnUuJBjr/SjOY0jSQMrq7n9WJSIDyD1kT8QjMbveQzxx8Fp4BMUI4rOWVTeBGZ+w==
   dependencies:
     "@applitools/logger" "1.1.48"
     "@applitools/snippets" "2.4.19"
