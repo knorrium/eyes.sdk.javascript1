@@ -1,0 +1,20 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<!--TestNG will run all the methods in the same class in the same thread,
+but each class will be run in a separate thread.-->
+<suite name="Java Selenium SDK E2E Tests" verbose="1" parallel="classes" thread-count="15">
+    <listeners>
+        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+    </listeners>
+
+    <test name="TestEyes">
+        <classes>
+            <class name="com.applitools.eyes.AutProxyTest"/>
+            <class name="com.applitools.eyes.selenium.TestCodedRegionPadding"/>
+            <class name="com.applitools.eyes.TestMatchLevel"/>
+            <class name="com.applitools.eyes.driver.TestCustomDriver"/>
+            <class name="com.applitools.eyes.selenium.TestByAll"/>
+            <class name="com.applitools.eyes.TestCloseBatch"/>
+        </classes>
+    </test>
+</suite>

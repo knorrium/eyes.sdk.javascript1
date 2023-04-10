@@ -1,0 +1,40 @@
+# Mac
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# JetBrains
+.idea
+*.iml
+
+# Compiled/intermediate files
+target/
+dependency-reduced-pom.xml
+
+# Cross-SDK Features description files
+src/test/java/features
+eyes.selenium.java/src/main/node_resources/node_modules/
+eyes.selenium.java/src/main/resources/captureDom.js
+eyes.selenium.java/src/main/resources/processPage.js
+eyes.selenium.java/src/main/resources/processPageAndSerialize.js
+eyes.selenium.java/src/main/resources/processResource.js
+/.java-version
+
+*/bin
+*/.settings
+.project
+.classpath
+venv
+
+# sdk-coverage-tests
+**/test/java/coverage/generic/
+coverage-test-report.xml
+coverage-tests-metadata.json
+package-lock.json
+
+# yarn
+.yarn
+# Dependency directory
+node_modules

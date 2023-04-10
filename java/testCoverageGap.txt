@@ -1,0 +1,11 @@
+mobile web
+tutorials
+sauce labs (web)
+sauce labs (mobile web)
+browser stack (mobile web)
+perfecto mobile (mobile web)
+perfecto mobile (mobile native)
+all supported browser versions
+batch completion
+Default configuration validation
+Revert driver back to initial IFrame after checkWindow

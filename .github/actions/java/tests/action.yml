@@ -1,0 +1,65 @@
+name: Java tests
+description: Run Java SDKs tests
+
+inputs:
+  working-directory:
+    description: the path to the directory from repository root
+    type: string
+    required: false
+  test-type:
+    description: type of testing (unit, e2e, coverage)
+    type: string
+    default: all
+    required: false
+  report:
+    description: report level
+    type: string
+    default: sandbox
+    required: false
+  report-id:
+    description: report id
+    type: string
+    required: false
+  report-dir:
+    description: report directory
+    type: string
+    default: java_sdk
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: 8
+        distribution: "temurin"
+        cache: "maven"
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ./java
+      run: |
+        mvn clean install -DskipTests
+
+    - name: Set environment variables
+      working-directory: ${{inputs.working-directory}}
+      shell: bash
+      run: |
+        if [[ ! -z "${{inputs.report-id}}" ]]; then
+          echo APPLITOOLS_REPORT_ID="$(git rev-parse HEAD)-${{inputs.report-id}}" >> $GITHUB_ENV
+        else
+          echo APPLITOOLS_REPORT_ID="$(git rev-parse HEAD)-java" >> $GITHUB_ENV
+        fi
+
+    - name: Test and report
+      working-directory: ${{inputs.working-directory}}
+      shell: bash
+      run: |
+        chmod +x runTests.sh;
+        ./runTests.sh;
+      env:
+        TEST_TYPE: ${{ inputs.test-type }}
+        REPORT_LEVEL: ${{ inputs.report }}
+        BUILD_DIR: ${{ inputs.report-dir }}
+        APPLITOOLS_REPORT_ID: ${{ env.APPLITOOLS_REPORT_ID }}

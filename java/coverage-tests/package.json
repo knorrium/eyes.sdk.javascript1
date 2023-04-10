@@ -1,0 +1,42 @@
+{
+  "name": "@applitools/coverage-tests",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "index.js",
+  "description": "Coverage Tests for Applitools SDKs",
+  "author": "Applitools <team@applitools.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/sdk.coverage.tests.git"
+  },
+  "scripts": {
+    "java": "yarn && yarn test:local && yarn report",
+    "release": "yarn && yarn test:local && yarn report:prod",
+    "local": "yarn install --no-lockfile && yarn docker:start && yarn test && yarn report; yarn docker:stop",
+    "generate": "coverage-tests generate ./configuration --pascalizeTests --strict",
+    "generate:playwright": "coverage-tests generate ./configuration/playwright.js --pascalizeTests --strict",
+    "generate:eg": "coverage-tests generate ./configuration/eg_configuration.js --pascalizeTests --strict",
+    "generate:local": "coverage-tests generate ./configuration/local.js --pascalizeTests --strict",
+    "test": "yarn generate:eg && mvn test -DsuiteFile=EGSuite.xml",
+    "test:local": "yarn generate && mvn test",
+    "report:selenium": "yarn move:report-selenium && yarn rename:report-selenium && coverage-tests report ./configuration  --sandbox$( [ -z $APPLITOOLS_REPORT_ID ] || echo \" --reportId $APPLITOOLS_REPORT_ID\" )",
+    "report:playwright": "yarn move:report-playwright && yarn rename:report-playwright && coverage-tests report ./configuration/playwright.js  --sandbox$( [ -z $APPLITOOLS_REPORT_ID ] || echo \" --reportId $APPLITOOLS_REPORT_ID\" )",
+    "report:prod-selenium": "yarn move:report-selenium && yarn rename:report-selenium && coverage-tests report ./configuration --reportId $APPLITOOLS_REPORT_ID",
+    "report:prod-playwright": "yarn move:report-playwright && yarn rename:report-playwright && coverage-tests report ./configuration/playwright.js --reportId $APPLITOOLS_REPORT_ID",
+    "move:report-selenium": "mv ./target/surefire-reports/java_coverage_tests/coverage-tests-selenium.xml ./coverage-tests-selenium.xml",
+    "move:report-playwright": "mv ./target/surefire-reports/java_coverage_tests/coverage-tests-playwright.xml ./coverage-tests-playwright.xml",
+    "rename:report-selenium": "mv ./coverage-tests-selenium.xml ./coverage-test-report.xml",
+    "rename:report-playwright": "mv ./coverage-tests-playwright.xml ./coverage-test-report.xml",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "universal:eg": "ec-client --port 8080"
+  },
+  "dependencies": {
+    "@applitools/sdk-coverage-tests": "2.7.12",
+    "@applitools/ec-client": "^1.2.8"
+  }
+}

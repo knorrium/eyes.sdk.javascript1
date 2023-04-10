@@ -1,0 +1,291 @@
+name: "Java - Deploy"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to be set
+        type: string
+        required: true
+      ref:
+        description: Branch to be used
+        type: string
+        required: false
+
+env:
+  RELEASE_TAG: '@applitools/java@${{inputs.version}}'
+  APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+  APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
+  APPLITOOLS_API_KEY_TEST_EYES: ${{ secrets.APPLITOOLS_API_KEY_TEST_EYES }}
+  SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+  SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: debug
+        run: |
+          echo "Repo name ${{ github.repository }}"
+          echo "is not fork ${{github.event.pull_request.head.repo.fork == false }}"
+          echo "is dispatch ${{ github.event_name == 'workflow_dispatch' }}"
+          echo "release tag: $RELEASE_TAG"
+
+  tests:
+    needs: debug
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - working-directory: eyes.sdk.core
+          - working-directory: selenium4
+
+          - working-directory: ./java/eyes.images.java
+            report-id: java_selenium
+
+          - working-directory: ./java/eyes.appium.java
+            report-id: java_selenium
+
+          - working-directory: ./java/eyes.selenium.java
+            report-id: java_selenium
+            test-type: unit it e2e
+
+          - working-directory: ./java/eyes.selenium.java
+            report-id: java_selenium
+            test-type: coverage
+
+          - working-directory: ./java/eyes.playwright.java
+            report-id: java_playwright
+            test-type: unit it e2e
+
+          - working-directory: ./java/eyes.playwright.java
+            report-id: java_playwright
+            test-type: coverage
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          ref: ${{inputs.ref || github.ref}}
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Test
+        uses: ./.github/actions/java/tests/
+        with:
+          working-directory: ${{ matrix.working-directory }}
+          test-type: ${{ matrix.test-type }}
+          report-id: ${{ matrix.report-id }}
+          report: deploy
+
+  arm64-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          ref: ${{inputs.ref || github.ref}}
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: "temurin"
+          cache: "maven"
+      - uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu18.04
+          githubToken: ${{ github.token }}
+          install: |
+            set -e
+            apt-get update
+            apt-get install --no-install-recommends -y ca-certificates maven
+          run: |
+            cd java;
+            mvn clean install -DskipTests 
+            mvn test -Dtest="TestLinuxArmArchitecture" -DfailIfNoTests=false
+
+  alpine-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    container: "alpine:latest"
+    steps:
+      - name: Installing dependencies
+        run: |
+          apk add git
+          apk add git-lfs
+          apk add maven
+          apk add --no-cache openjdk8
+          apk add --no-cache libstdc++
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          ref: ${{inputs.ref || github.ref}}
+
+      - name: Set Java path
+        run: echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Test
+        run: |
+          cd java;
+          mvn clean install -DskipTests 
+          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+
+  deploy:
+    needs:
+      - tests
+      - arm64-tests
+      - alpine-tests
+    if: success()
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./java/
+    outputs:
+      APPLITOOLS_REPORT_ID: ${{ steps.report.outputs.APPLITOOLS_REPORT_ID }}
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+          lfs: true
+
+      - id: report
+        name: Report ID
+        run: echo "APPLITOOLS_REPORT_ID=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Install gpg secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+          which gpg
+          gpg --version
+
+      - name: Branch out
+        run: |
+          git checkout -b "v${{inputs.version}}"
+
+      - name: Build project
+        run: mvn clean install -DskipTests
+
+      - name: Set version
+        run: mvn versions:set-property -Dproperty=revision -DnewVersion=${{ inputs.version }}
+
+      - name: Commit version changes
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
+          git add pom.xml
+          git commit -m "Version up ${{ inputs.version }}"
+
+      - name: Tag and push
+        run: |
+          git tag $RELEASE_TAG
+          git push origin "v${{inputs.version}}" $RELEASE_TAG
+
+      - name: Package project
+        run: mvn clean package -P local-build -DskipTests
+
+      - name: Replace Core sources
+        shell: 'script -q -e -c "bash {0}"'
+        run: |
+          cd eyes-universal-core/target
+          SOURCES="eyes-universal-core-${{inputs.version}}-sources.jar"
+          rm -f $SOURCES
+          echo "NA" > na.txt
+          zip $SOURCES na.txt
+          gpg -s --armor -u "$GPG_KEY_EMAIL" --pinentry-mode loopback --passphrase "$GPG_KEY_PASSPHRASE" $SOURCES
+          rm -f na.txt
+          CONTENTS=$(jar tf $SOURCES)
+          if [ "$CONTENTS" != "na.txt" ]; then
+            echo "The JAR file does not contain only na.txt."
+            exit 1
+          fi
+        env:
+          GPG_KEY_EMAIL: ${{ secrets.GPG_KEY_EMAIL }}
+          GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+
+#      - name: Set up Maven Central Repository
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 8
+#          distribution: "temurin"
+#          server-id: ossrh
+#          server-username: MAVEN_USERNAME
+#          server-password: MAVEN_PASSWORD
+#
+#      - name: Publish
+#        if: success()
+#        run: mvn --batch-mode deploy
+#        env:
+#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+  release-mail:
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./java/
+    env:
+      APPLITOOLS_REPORT_ID: ${{ needs.deploy.outputs.APPLITOOLS_REPORT_ID }}
+    steps:
+      - name: Debug report id & tag
+        run: |
+          echo "env report id: $APPLITOOLS_REPORT_ID"
+          echo "env tag: $RELEASE_TAG"
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+          lfs: true
+          submodules: recursive
+          token: ${{ secrets.SUBMODULES_GA_TOKEN }}
+
+      - name: Selenium release mail
+        run: |
+          export APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID-java_selenium;
+          echo "APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID";
+          SDK_VERSION=${{inputs.version}};
+          chmod +x ./extractChangeLog.sh;
+          TMP_CHANGELOG=$(./extractChangeLog.sh "$SDK_VERSION" "CHANGELOG.md");
+          CHANGELOG=$([ -z "$TMP_CHANGELOG" ] && echo "There is no change log for version $SDK_VERSION"; echo "$TMP_CHANGELOG");
+          echo $CHANGELOG;
+          chmod +x ./sendMail.sh;
+          TEST_COVERAGE_GAP=$(cat testCoverageGap.txt);
+          SELENIUM_JAVA="eyes-selenium-java5@${{inputs.version}}";
+          APPIUM_JAVA="eyes-appium-java5@${{inputs.version}}";
+          IMAGES_JAVA="eyes-images-java5@${{inputs.version}}";
+          VERSION="$RELEASE_TAG;$SELENIUM_JAVA;$APPIUM_JAVA;$IMAGES_JAVA"
+          ./sendMail.sh "java" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP" "ido.elmaleh@applitools.com";
+
+      - name: Playwright release mail
+        run: |
+          export APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID-java_playwright;
+          echo "APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID";
+          SDK_VERSION=${{inputs.version}};
+          chmod +x ./extractChangeLog.sh;
+          TMP_CHANGELOG=$(./extractChangeLog.sh "$SDK_VERSION" "CHANGELOG.md");
+          CHANGELOG=$([ -z "$TMP_CHANGELOG" ] && echo "There is no change log for version $SDK_VERSION"; echo "$TMP_CHANGELOG");
+          echo $CHANGELOG;
+          chmod +x ./sendMail.sh;
+          TEST_COVERAGE_GAP=$(cat testCoverageGap.txt);
+          PLAYWRIGHT_JAVA="eyes-playwright-java5@${{inputs.version}}";
+          VERSION="$RELEASE_TAG;$PLAYWRIGHT_JAVA"
+          ./sendMail.sh "java_playwright" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP" "ido.elmaleh@applitools.com";

@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Images Tests" verbose="1">
+    <listeners>
+        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+    </listeners>
+
+    <test name="TestEyesImages" parallel="classes">
+        <classes>
+<!--            <class name="com.applitools.eyes.images.ImagesDemo"/>-->
+            <class name="com.applitools.eyes.images.TestConfiguration"/>
+            <class name="com.applitools.eyes.images.TestImagesApi"/>
+            <class name="com.applitools.eyes.images.TestImageUtils"/>
+            <class name="com.applitools.eyes.images.TestLocators"/>
+            <class name="com.applitools.eyes.images.TestImagesGeneric"/>
+        </classes>
+    </test>
+
+    <test name="Unit Tests">
+        <packages>
+            <package name="com.applitools.eyes.images.unit"/>
+        </packages>
+    </test>
+</suite>
