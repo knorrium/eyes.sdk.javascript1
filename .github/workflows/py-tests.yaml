@@ -262,6 +262,7 @@ jobs:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.generated_tests }}
     strategy:
+      fail-fast: false  # avoid cancelling one job if another fails
       matrix:
         python-version: [ '3.6', '3.11' ]
     runs-on: ubuntu-20.04
