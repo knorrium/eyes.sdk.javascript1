@@ -18,10 +18,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.47":
-  version "1.1.47"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.47.tgz#751c65cf29e38968f9b59a6ad3faff4e4db93601"
-  integrity sha512-dZdRqjs4bySX6XrSdgFkR19fC5/Sqhowrv+6hRWpAWtltYhcqLnnnUbggmiaDobv3ICXrw62nGbAoqjDQC/f/Q==
+"@applitools/core-base@1.1.48":
+  version "1.1.48"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.48.tgz#abe185e7efeb69a850a46f31589c334a3904c3f9"
+  integrity sha512-mv9fSQ+WE+ZeVWYRJvL4mrQbbJ1OgXKvaeupMJd9Y8IJkxTD3RqDqovK1yAqq+akaBySDdRr/vccSH5W/ZyhYg==
   dependencies:
     "@applitools/image" "1.0.28"
     "@applitools/logger" "1.1.48"
@@ -30,12 +30,12 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@2.4.10":
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.4.10.tgz#4391da1e73dbe8d8bf219acfa762674edffc7ad3"
-  integrity sha512-lnzMgam7/CA9YaHEh8XOmIhLFeXoIt+u7eyC/HLSdvjhZhChN8lcXFPQ4ZgMETbRhyrDmE0wbcRGDhHOuCJrTw==
+"@applitools/core@2.4.11":
+  version "2.4.11"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.4.11.tgz#7074811298851f8567ac14f0e99bf41a99b38c5d"
+  integrity sha512-Sa/0J8Bw4vPefNK670XCddyfU+Wdg1YQy02H+RX7jCJlguxv0nF0hn16lrc/2KytQ/cuIFXi6TZW6sLi+DxNfA==
   dependencies:
-    "@applitools/core-base" "1.1.47"
+    "@applitools/core-base" "1.1.48"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.9"
     "@applitools/driver" "1.11.41"
