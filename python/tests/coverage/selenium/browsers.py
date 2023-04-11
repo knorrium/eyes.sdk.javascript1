@@ -140,20 +140,26 @@ def safari_12(sauce_url, legacy, name_of_test):
         return webdriver.Remote(command_executor=sauce_url, options=options)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def chrome_emulator():
-    options = webdriver.ChromeOptions()
-    mobile_emulation = {
-        "deviceMetrics": {"width": 384, "height": 512, "pixelRatio": 2.0},
-        "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; "
-        "Android SDK built for x86_64 Build/OSR1.180418.004) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/69.0.3497.100 Mobile "
-        "Safari/537.36",
-    }
-    options.add_experimental_option("mobileEmulation", mobile_emulation)
-    options.add_argument("--headless")
-    return start_chrome_driver(options)
+    def make_emulated_driver(name, args):
+        assert name == "Android 8.0"
+        options = webdriver.ChromeOptions()
+        mobile_emulation = {
+            "deviceMetrics": {"width": 384, "height": 512, "pixelRatio": 2.0},
+            "userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; "
+            "Android SDK built for x86_64 Build/OSR1.180418.004) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/69.0.3497.100 Mobile "
+            "Safari/537.36",
+        }
+        options.add_experimental_option("mobileEmulation", mobile_emulation)
+        options.add_argument("--headless")
+        for arg in args or ():
+            options.add_argument(arg)
+        return start_chrome_driver(options)
+
+    return make_emulated_driver
 
 
 def start_chrome_driver(options):

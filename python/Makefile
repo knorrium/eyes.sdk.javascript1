@@ -48,7 +48,7 @@ install_eyes_robotframework: eyes_robotframework/dist install_eyes_selenium
 
 
 install_tests_requirements:
-	python -m pip install 'pytest<8' 'pytest-xdist<3' 'mock'
+	python -m pip install 'pytest<8' 'pytest-xdist<3' 'mock' "pytest-rerunfailures<11; python_version>='3'"
 
 
 install_unit_tests_requirements: install_tests_requirements

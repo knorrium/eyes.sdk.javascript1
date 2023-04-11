@@ -10,6 +10,7 @@ module.exports = {
         let features = test.features || []
         return !env.device &&
             !["ie-11", "edge-18", "safari-11", "safari-12"].includes(env.browser) &&
+            !env.emulation &&
             !features.includes("webdriver") &&
             !features.includes("image")
     },
