@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.4.11 - 2023/4/11
+
+### Features
+- Make `locate` to return coordinates that could be directly used with the driver
+### Bug fixes
+- Fix issue when `locate` return wrong type of the region, with `left` and `top` properties instead of `x` and `y`
+
 ## 2.4.10 - 2023/4/10
 
 ### Features
