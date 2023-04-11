@@ -27,7 +27,7 @@ class ImagesCheckSettings(SeleniumCheckSettings):
         factory=ImagesCheckSettingsValues
     )  # type: ImagesCheckSettingsValues
 
-    def dom(self, dom):
+    def with_dom(self, dom):
         # type: (Text) -> ImagesCheckSettings
         """
         Attach given DOM source text to the image.

@@ -105,7 +105,7 @@ def test_images_send_dom(png_target, eyes, app_output):
         "tagName": "HTML",
         "version": "1.3.0",
     }
-    eyes.check(png_target.dom(json.dumps(dom)))
+    eyes.check(png_target.with_dom(json.dumps(dom)))
 
     assert app_output()[0]["image"]["hasDom"]
 
