@@ -21,6 +21,7 @@
       "afterDeclarations": true,
       "rootFile": "./expose.ts",
       "allowModules": ["Cypress"],
+      "allowGlobalNamespaces": ["JQuery"],
       "stripPrivate": true,
       "stripProtected": true,
       "stripInternal": true

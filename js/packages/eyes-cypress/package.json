@@ -27,14 +27,14 @@
   ],
   "scripts": {
     "lint": "eslint \"**/*.{js,ts}\"",
-    "build": "ttsc",
+    "build": "node ../../node_modules/.bin/ttsc",
     "generate:tests": "coverage-tests generate",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:ts && yarn test:components && yarn test:coverage",
     "test:sanity": "yarn test:unit && yarn test:it && yarn test:ts",
     "test:unit": "mocha --no-timeouts 'test/unit/**/*.test.js'",
     "test:it": "yarn build && mocha --no-timeouts 'test/it/**/*.test.js'",
     "test:ts": "yarn test:ts:compile && yarn test:ts:run",
-    "test:ts:compile": "tsc --project test/e2e/ts/cypress",
+    "test:ts:compile": "node ../../node_modules/.bin/tsc --project test/e2e/ts/cypress",
     "test:ts:run:legacy": "yarn cypress9 run --config-file ./test/e2e/ts/cypress-ts-legacy.json",
     "cypress8": "./node_modules/cypress8/bin/cypress",
     "test:ts:run:8": "yarn cypress8 run --project ./test/e2e/ts --config-file ./cypress-8.config.ts",
@@ -69,7 +69,7 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "2.4.7",
+    "@applitools/core": "2.4.11",
     "@applitools/eyes-api": "1.13.12",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/logger": "1.1.48",
@@ -82,12 +82,12 @@
     "ws": "8.5.0"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "^1.2.12",
+    "@applitools/api-extractor": "^1.2.14",
     "@applitools/bongo": "^3.0.3",
-    "@applitools/sdk-coverage-tests": "^3.0.0",
+    "@applitools/sdk-coverage-tests": "^3.0.2",
     "@applitools/snaptdout": "1.0.1",
     "@applitools/test-server": "1.1.28",
-    "@applitools/test-utils": "1.5.15",
+    "@applitools/test-utils": "1.5.16",
     "@types/node": "12",
     "@types/semver": "^7.3.13",
     "@types/uuid": "^9.0.0",
@@ -110,9 +110,7 @@
     "morgan": "1.9.1",
     "ncp": "2.0.0",
     "node-fetch": "2.6.0",
-    "prettier": "^2.6.2",
-    "ttypescript": "^1.5.13",
-    "typescript": "^4.7.2"
+    "prettier": "^2.6.2"
   },
   "engines": {
     "node": ">=12.13.0"
