@@ -207,7 +207,13 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json()
+    const result = await response.json().then(results => {
+      return Object.entries<any[]>(results).reduce((results, [key, regions]) => {
+        results[key as TLocator] =
+          regions?.map(region => ({x: region.left, y: region.top, width: region.width, height: region.height})) ?? []
+        return results
+      }, {} as LocateResult<TLocator>)
+    })
     logger.log('Request "locate" finished successfully with body', result)
     return result
   }

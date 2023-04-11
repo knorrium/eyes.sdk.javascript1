@@ -21,7 +21,7 @@ import {ProxySettings, ProxySettingsData} from './input/ProxySettings'
 import {Configuration, ConfigurationData} from './input/Configuration'
 import {BatchInfo, BatchInfoData} from './input/BatchInfo'
 import {RectangleSize, RectangleSizeData} from './input/RectangleSize'
-import {Region} from './input/Region'
+import {Region, RegionData} from './input/Region'
 import {OCRRegion} from './input/OCRRegion'
 import {ImageRotation, ImageRotationData} from './input/ImageRotation'
 import {CutProviderData} from './input/CutProvider'
@@ -392,7 +392,11 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
 
     const config = this._config.toJSON()
 
-    return this._core.locate({target: this._driver, settings: {...this._state, ...settings}, config})
+    const results = await this._core.locate({target: this._driver, settings: {...this._state, ...settings}, config})
+    return Object.entries<Region[]>(results).reduce((results, [key, regions]) => {
+      results[key as TLocator] = regions.map(region => new RegionData(region))
+      return results
+    }, {} as Record<TLocator, Region[]>)
   }
 
   async extractTextRegions<TPattern extends string>(

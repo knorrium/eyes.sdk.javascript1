@@ -10,27 +10,27 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
-    - 
+    - Fix issue when `locate` return wrong type of the region, with `left` and `top` properties instead of `x` and `y`
 "@applitools/eyes-selenium":
   feature:
-    - 
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - 
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
     - 
 "@applitools/eyes-playwright":
   feature:
-    - 
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
     - 
 "@applitools/eyes-puppeteer":
   feature:
-    - 
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
@@ -57,6 +57,7 @@ Apollo SDK:
     - Added `Resize` value to `StitchMode` enum
     - Improved extraction of nml element
     - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
+    - Make `locate` to return coordinates that could be directly used with the driver
   bug-fix:
     - Avoid handing process when using execution cloud
     - Fixed slowness during ufg tests
