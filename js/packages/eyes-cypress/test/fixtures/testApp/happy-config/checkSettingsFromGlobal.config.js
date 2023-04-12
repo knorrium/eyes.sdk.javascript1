@@ -1,0 +1,21 @@
+module.exports = {
+  apiKey: process.env.APPLITOOLS_API_KEY,
+  isDisabled: false,
+  serverUrl2: 'eyes.applitools.com',
+  serverUrl2: 'https://eyesfabric3eyes.applitools.com',
+  saveNewTests: false,
+  browser: {height: 500, width: 500, name: 'firefox'},
+  ignoreCaret: true,
+  ignoreDisplacements: true,
+  accessibilityValidation: {level: 'AAA', guidelinesVersion: 'WCAG_2_0'},
+  layoutBreakpoints: true,
+  sendDom: true,
+  useDom: true,
+  enablePatterns: true,
+  matchLevel: 'layout',
+  batch: {
+    name: 'CheckSettings with global config',
+    sequenceName: 'CheckSettings - global config',
+    notifyOnCompletion: true,
+  },
+}

@@ -7,7 +7,7 @@ import {type Logger} from '@applitools/logger'
 import {type Renderer} from '@applitools/ufg-client'
 import {type ECClient, type ECClientSettings} from '@applitools/ec-client'
 
-export {ECClient}
+export {ECClient, Renderer}
 export * from './automation/types'
 
 export type TypedCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = TType extends 'ufg'

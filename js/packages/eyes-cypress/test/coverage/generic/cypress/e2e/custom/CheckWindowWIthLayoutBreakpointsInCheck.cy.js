@@ -1,6 +1,6 @@
 describe('Coverage tests', () => {
   /* global cy*/
-  it('check window with layout breakpoints in config', () => {
+  it('check window with layout breakpoints in check method', () => {
     cy.visit('https://applitools.github.io/demo/TestPages/JsLayout')
     cy.eyesOpen({
       appName: 'Applitools Eyes SDK',

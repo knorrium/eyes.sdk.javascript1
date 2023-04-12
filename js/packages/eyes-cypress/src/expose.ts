@@ -9,60 +9,89 @@
 /// <reference types="cypress" />
 import type * as api from '@applitools/eyes-api'
 import type * as core from '@applitools/core'
-import {type EyesSelector, type TestResultsStatus} from '@applitools/eyes-api'
+import {
+  type EyesSelector,
+  type TestResultsStatus,
+  type DeviceName,
+  type ScreenOrientationPlain,
+  type AccessibilityRegionTypePlain,
+} from '@applitools/eyes-api'
 
-export type {EyesSelector, TestResultsStatus}
-
-type MaybeArray<T> = T | T[]
-
-type LegacyRegion = {left: number; top: number; width: number; height: number}
-type Selector = {selector: string; type?: 'css' | 'xpath'; nodeType?: 'element' | 'shadow-root'} | string
-type Element = HTMLElement | JQuery<HTMLElement>
-type ElementWithOptions = {element: Element; regionId?: string; padding?: any}
+export type MaybeArray<T> = T | T[]
+export type {EyesSelector, TestResultsStatus, DeviceName, ScreenOrientationPlain}
+export type LegacyRegion = {left: number; top: number; width: number; height: number}
+export type Selector = {selector: string; type?: 'css' | 'xpath'; nodeType?: 'element' | 'shadow-root'} | string
+export type Element = HTMLElement | JQuery<HTMLElement>
+export type ElementWithOptions = {element: Element; regionId?: string; padding?: any}
+export type SelectorWithOptions = {region: Selector; regionId?: string; padding?: number | LegacyRegion}
 type SpecType = core.SpecType<unknown, unknown, Element, Selector>
+type CodedRegion = NonNullable<Element | ElementWithOptions | LegacyRegion | Selector | SelectorWithOptions>
+export type AccessibilityValidation = NonNullable<CypressEyesConfig['defaultMatchSettings']>['accessibilitySettings']
+export type FloatingRegion = MaybeArray<
+  (ElementWithOptions | SelectorWithOptions | Selector | LegacyRegion) & {
+    maxUpOffset?: number
+    maxDownOffset?: number
+    maxLeftOffset?: number
+    maxRightOffset?: number
+  }
+>
+export type accessibilityRegion = MaybeArray<
+  | ((ElementWithOptions | Selector | LegacyRegion) & {
+      accessibilityType?: AccessibilityRegionTypePlain
+    })
+  | {
+      region: {selector: Selector; accessibilityType: AccessibilityRegionTypePlain}
+      regionId?: string
+      padding?: number | LegacyRegion
+    }
+>
 
 export type CypressCheckSettings = api.CheckSettingsAutomationPlain<SpecType> & {
-  tag?: CypressCheckSettings['name']
-
+  tag?: string
   target?: 'window' | 'region'
   selector?: Selector
   element?: Element
-
-  ignore?: MaybeArray<NonNullable<CypressCheckSettings['ignoreRegions']>[number] | LegacyRegion | ElementWithOptions>
-  layout?: MaybeArray<NonNullable<CypressCheckSettings['layoutRegions']>[number] | LegacyRegion | ElementWithOptions>
-  content?: MaybeArray<NonNullable<CypressCheckSettings['contentRegions']>[number] | LegacyRegion | ElementWithOptions>
-  strict?: MaybeArray<NonNullable<CypressCheckSettings['strictRegions']>[number] | LegacyRegion | ElementWithOptions>
-  floating?: MaybeArray<
-    | NonNullable<CypressCheckSettings['floatingRegions']>[number]
-    | ((ElementWithOptions | Selector | LegacyRegion) & {
-        maxUpOffset?: number
-        maxDownOffset?: number
-        maxLeftOffset?: number
-        maxRightOffset?: number
-      })
-  >
-  accessibility?: MaybeArray<
-    | NonNullable<CypressCheckSettings['accessibilityRegions']>[number]
-    | ((ElementWithOptions | Selector | LegacyRegion) & {accessibilityType?: api.AccessibilityRegionTypePlain})
-  >
+  region?: LegacyRegion
+  ignore?: MaybeArray<CodedRegion>
+  layout?: MaybeArray<CodedRegion>
+  content?: MaybeArray<CodedRegion>
+  strict?: MaybeArray<CodedRegion>
+  floating?: FloatingRegion
+  accessibility?: accessibilityRegion
   scriptHooks?: CypressCheckSettings['hooks']
   ignoreCaret?: boolean
   ignoreDisplacements?: boolean
+  browser?: MaybeArray<
+    | NonNullable<CypressEyesConfig['browsersInfo']>[number]
+    | {deviceName: DeviceName; screenOrientation?: ScreenOrientationPlain; name?: string}
+  >
 }
 export type CypressEyesConfig = api.ConfigurationPlain<SpecType> & {
   browser?: MaybeArray<
     | NonNullable<CypressEyesConfig['browsersInfo']>[number]
-    | {deviceName: string; screenOrientation?: api.ScreenOrientationPlain; name?: string}
+    | {deviceName: DeviceName; screenOrientation?: ScreenOrientationPlain; name?: string}
   >
 
   batchId?: NonNullable<CypressEyesConfig['batch']>['id']
   batchName?: NonNullable<CypressEyesConfig['batch']>['name']
   batchSequence?: NonNullable<CypressEyesConfig['batch']>['sequenceName']
   notifyOnCompletion?: NonNullable<CypressEyesConfig['batch']>['notifyOnCompletion']
+  batchSequenceName?: NonNullable<CypressEyesConfig['batch']>['sequenceName']
 
   envName?: CypressEyesConfig['environmentName']
 
-  accessibilitySettings?: NonNullable<CypressEyesConfig['defaultMatchSettings']>['accessibilitySettings']
+  accessibilityValidation?: AccessibilityValidation
+  matchLevel?: NonNullable<CypressEyesConfig['defaultMatchSettings']>['matchLevel']
+  ignoreCaret?: NonNullable<boolean>
+  ignoreDisplacements?: NonNullable<boolean>
+  useDom?: NonNullable<boolean>
+  enablePatterns?: NonNullable<boolean>
+  scriptHooks?: {
+    beforeCaptureScreenshot: string
+  }
+  saveNewTests?: boolean
+  /** @internal */
+  shouldUseBrowserHooks?: boolean
 }
 
 export type CypressTestResultsSummary = api.TestResultsSummary
