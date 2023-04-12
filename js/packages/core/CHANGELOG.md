@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.12 - 2023/4/12
+
+### Features
+### Bug fixes
+- Expose types for eyes-cypress
+
 ## 2.4.11 - 2023/4/11
 
 ### Features
