@@ -1,3 +1,4 @@
+/* global cy */
 it('should support js layouts from config file', () => {
   cy.visit('https://applitools.github.io/demo/TestPages/JsLayout/')
   cy.eyesOpen({
@@ -8,6 +9,7 @@ it('should support js layouts from config file', () => {
       {iosDeviceInfo: {deviceName: 'iPad (7th generation)'}},
       {chromeEmulationInfo: {deviceName: 'Pixel 4 XL'}},
     ],
+    waitBeforeCapture: 500,
   })
   cy.eyesCheckWindow('layoutBreakpoints in eyesOpen')
   cy.eyesClose()
