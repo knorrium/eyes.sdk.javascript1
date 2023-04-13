@@ -81,7 +81,7 @@ export function toHierarchicTAPString(
         ? currentResult.appUrls.session
         : "No URL (session didn't start)."
     tapString += `#\tTest url: ${url}\n`
-    tapString += `#\tBrowser: ${currentResult.hostApp}, Viewport: ${currentResult.hostDisplaySize}\n`
+    tapString += `#\tBrowser: ${currentResult.hostApp}, Viewport: ${currentResult.hostDisplaySize.width}X${currentResult.hostDisplaySize.width}\n`
 
     if (includeSubTests) {
       if (currentResult.stepsInfo && currentResult.stepsInfo.length > 0) {

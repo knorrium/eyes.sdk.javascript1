@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - format result `hostDisplaySize`
 "@applitools/eyes-selenium":
   feature:
     - 
@@ -73,7 +73,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - result output throw error
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`
