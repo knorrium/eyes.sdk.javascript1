@@ -12,6 +12,12 @@
 
 
 
+## 3.31.1 - 2023/4/14
+
+### Features
+### Bug fixes
+- Map values from open and global config
+
 ## 3.31.0 - 2023/4/4
 
 ### Features
