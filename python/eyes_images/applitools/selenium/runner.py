@@ -28,9 +28,16 @@ class EyesRunner(object):
     BASE_AGENT_ID = "eyes.sdk.python"
     Protocol = SeleniumWebDriver
 
-    def __init__(self, manager_type, concurrency=None, is_legacy=None):
-        # type: (ManagerType, Optional[int], Optional[bool]) -> None
+    def __init__(
+        self,
+        manager_type,  # type: ManagerType
+        concurrency=None,  # type: Optional[int]
+        is_legacy=None,  # type: Optional[bool]
+        remove_duplicate_tests=None,  # type: Optional[bool]
+    ):
+        # type: (...) -> None
         self._connection_configuration = None
+        self._remove_duplicate_tests = remove_duplicate_tests
         self._commands = CommandExecutor.get_instance(
             self.Protocol, self.BASE_AGENT_ID, __version__
         )
@@ -42,6 +49,10 @@ class EyesRunner(object):
             self._ref = self._commands.core_make_manager(
                 manager_type, concurrency=concurrency
             )
+
+    def set_remove_duplicate_tests(self, should_remove):
+        # type: (bool) -> None
+        self._remove_duplicate_tests = should_remove
 
     @classmethod
     def get_server_info(cls):
@@ -56,7 +67,7 @@ class EyesRunner(object):
         try:
             # Do not pass should_raise_exception because USDK raises untyped exceptions
             results = self._commands.manager_get_results(
-                self._ref, should_raise_exception, timeout
+                self._ref, should_raise_exception, self._remove_duplicate_tests, timeout
             )
         except TimeoutError:
             raise EyesError("Tests didn't finish in {} seconds".format(timeout))
@@ -80,10 +91,16 @@ class EyesRunner(object):
 
 class RunnerOptions(object):
     concurrency = 5
+    _remove_duplicate_tests = None
 
     def test_concurrency(self, value):
         # type: (int) -> RunnerOptions
         self.concurrency = value
+        return self
+
+    def remove_duplicate_tests(self, should_remove=True):
+        # type: (bool) -> RunnerOptions
+        self._remove_duplicate_tests = should_remove
         return self
 
 
@@ -95,11 +112,17 @@ class VisualGridRunner(EyesRunner):
         # type: (Union[RunnerOptions, int]) -> None
         if isinstance(options_or_concurrency, int):
             concurrency = options_or_concurrency * 5  # legacy factor
+            remove_duplicate_tests = None
             is_legacy = True
         else:
             concurrency = options_or_concurrency.concurrency
+            remove_duplicate_tests = (
+                options_or_concurrency._remove_duplicate_tests  # noqa
+            )
             is_legacy = False
-        super(VisualGridRunner, self).__init__(ManagerType.UFG, concurrency, is_legacy)
+        super(VisualGridRunner, self).__init__(
+            ManagerType.UFG, concurrency, is_legacy, remove_duplicate_tests
+        )
 
 
 class ClassicRunner(EyesRunner):

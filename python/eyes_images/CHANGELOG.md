@@ -1,6 +1,7 @@
 ## [vNext]
 ### Add
 - DOM can now be attached to images.Eyes checks via `dom` method of target [Trello 3196](https://trello.com/c/FZ6KcVd6)
+- Runners now support `remove_duplicate_tests` option via RunnerOptions and `set_remove_duplicate_tests` method [Trello 3202](https://trello.com/c/tfg6cLPd)
 ### Fixed
 - Images.Eyes.open method does not require `app_name` and `test_name` if they are set in configuration [Trello 3197](https://trello.com/c/euyA23yG)
 

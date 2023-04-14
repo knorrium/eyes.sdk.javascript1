@@ -150,13 +150,17 @@ class CommandExecutor(object):
             payload["config"] = m.marshal_configuration(config)
         return self._checked_command(context, "EyesManager.openEyes", payload)
 
-    def manager_get_results(self, manager, raise_ex, timeout):
-        # type: (dict, bool, float) -> List[dict]
+    def manager_get_results(self, manager, raise_ex, remove_duplicate_tests, timeout):
+        # type: (dict, bool, Optional[bool], float) -> List[dict]
         context = self._protocol.context(self._connection)
+        settings = {"throwErr": raise_ex}
+        if remove_duplicate_tests is not None:
+            settings["removeDuplicateTests"] = remove_duplicate_tests
+
         return self._checked_command(
             context,
             "EyesManager.getResults",
-            {"manager": manager, "settings": {"throwErr": raise_ex}},
+            {"manager": manager, "settings": settings},
             wait_timeout=timeout,
         )
 
