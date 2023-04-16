@@ -16,9 +16,7 @@ module.exports = {
   emitOnly: test => {
     if (
       test.api === 'classic' ||
-      (test.name.toLowerCase().includes('shadow') && test.name.toLowerCase().includes('dom')) ||
-      // skipping this test as we get CypressError: `cy.visit()` failed trying to load on CI
-      test.name.toLowerCase() === 'should send ufg options'
+      (test.name.toLowerCase().includes('shadow') && test.name.toLowerCase().includes('dom'))
     )
       return false
     return test.vg
