@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.32.1 - 2023/4/16
+
+### Features
+### Bug fixes
+- result output throw error
+
 ## 3.32.0 - 2023/3/30
 
 ### Features
