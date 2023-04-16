@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-storybook",
-  "version": "3.32.0",
+  "version": "3.32.1",
   "description": "",
   "keywords": [
     "applitools",
@@ -73,7 +73,7 @@
     }
   },
   "dependencies": {
-    "@applitools/core": "2.4.10",
+    "@applitools/core": "2.4.13",
     "@applitools/driver": "1.11.41",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/logger": "1.1.48",
