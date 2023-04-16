@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.13 - 2023/4/16
+
+### Features
+### Bug fixes
+- format result `hostDisplaySize`
+
 ## 2.4.12 - 2023/4/12
 
 ### Features

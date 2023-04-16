@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - format result `hostDisplaySize`
+    - 
 "@applitools/eyes-selenium":
   feature:
     - 
