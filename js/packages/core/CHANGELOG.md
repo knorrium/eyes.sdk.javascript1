@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.1 - 2023/4/18
+
+### Features
+### Bug fixes
+- Fixed the issue with session metadata extraction
+
 ## 2.5.0 - 2023/4/18
 
 ### Features
