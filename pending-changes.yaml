@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed the issue with session metadata extraction
 "@applitools/eyes-selenium":
   feature:
     - 
