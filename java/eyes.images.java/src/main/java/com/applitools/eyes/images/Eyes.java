@@ -1037,6 +1037,7 @@ public class Eyes implements IEyesBase {
     }
 
     private Map<String, List<Region>> locateDto(ImageTargetDto target, VisualLocatorSettingsDto settings, ConfigurationDto config) {
-        return commandExecutor.locate(target, settings, config);
+        Map<String, List<RegionDto>> response = commandExecutor.locate(target, settings, config);
+        return LocateMapper.toLocateFromDto(response);
     }
 }

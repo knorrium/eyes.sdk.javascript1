@@ -1,8 +1,11 @@
-## [vNext] - dNext
+## [5.48.0] - 2023-04-18
 ### Updated
-- Updated core binaries to `2.4.9`.
+- Improve performance in DOM snapshot.
+### Added
+- Added support for `runner.setRemoveDuplicateTests(Boolean)`.
 ### Fixed
-- Fix `TestResults.delete` not properly deleting a test when getting results from `Runner.getAllTestResults`. [Trello 3193](https://trello.com/c/AiLEfEZZ)
+- Fixed issue with emulation driver detection.
+- Fixed `TestResults.delete` not deleting a test in some cases when getting results from `Runner.getAllTestResults`.
 
 ## [5.47.0] - 2023-04-05
 ### Updated

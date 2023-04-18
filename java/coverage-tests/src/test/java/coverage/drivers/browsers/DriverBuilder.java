@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 
 public class DriverBuilder {
 
@@ -12,6 +13,8 @@ public class DriverBuilder {
     protected boolean executionGrid = false;
     protected String browser = "chrome";
     protected String device;
+    protected String emulator;
+    private List<String> args;
 
     static HashMap<String, Builder> browserBuilders = new HashMap<String, Builder>()
     {{
@@ -26,9 +29,13 @@ public class DriverBuilder {
 
     static HashMap<String, DeviceBuilder> deviceBuilders = new HashMap<String, DeviceBuilder>()
     {{
-        put("Android 8.0 Chrome Emulator", new ChromeEmulatorBuilder());
         put("iPhone XS", new IPhoneXS());
         put("Pixel 3a XL", new Pixel3aXL());
+    }};
+
+    static HashMap<String, DeviceBuilder> emulatorBuilders = new HashMap<String, DeviceBuilder>()
+    {{
+        put("Android 8.0", new ChromeEmulatorBuilder());
     }};
 
     public DriverBuilder headless(boolean headless) {
@@ -42,8 +49,17 @@ public class DriverBuilder {
     }
 
     public DriverBuilder device(String device) {
-        // This method needed to setup the chrome emulation driver build
         this.device = device;
+        return this;
+    }
+
+    public DriverBuilder emulator(String emulator) {
+        this.emulator = emulator;
+        return this;
+    }
+
+    public DriverBuilder args(List<String> args) {
+        this.args = args;
         return this;
     }
 
@@ -58,13 +74,13 @@ public class DriverBuilder {
     }
 
     public WebDriver build() throws MalformedURLException {
-        if (device == null) {
+        if (device == null && emulator == null) {
             Builder builder = browserBuilders.get(browser);
             return builder.build(headless, legacy, executionGrid);
         } else {
-            DeviceBuilder builder = deviceBuilders.get(device);
+            DeviceBuilder builder = emulator == null ? deviceBuilders.get(device) : emulatorBuilders.get(emulator);
             builder.browser(browser);
-            return builder.build(headless, legacy, executionGrid);
+            return builder.build(headless, legacy, executionGrid, args);
         }
 
     }

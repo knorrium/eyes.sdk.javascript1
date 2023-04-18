@@ -7,6 +7,11 @@ on:
         description: Version to be set
         type: string
         required: true
+      server:
+        description: Distribution management repository (snapshot, maven, jfrog)
+        type: string
+        required: false
+        default: snapshot
       ref:
         description: Branch to be used
         type: string
@@ -30,6 +35,16 @@ jobs:
           echo "is not fork ${{github.event.pull_request.head.repo.fork == false }}"
           echo "is dispatch ${{ github.event_name == 'workflow_dispatch' }}"
           echo "release tag: $RELEASE_TAG"
+          
+          if [[ "$RELEASE_TAG" == *"SNAPSHOT"* && "${{inputs.server}}" != "snapshot" ]]; then
+            echo "The release tag contains 'SNAPSHOT' but the distribution repository is not snapshot!"
+            exit 1
+          else
+            if [[ "$RELEASE_TAG" != *"SNAPSHOT"* && "${{inputs.server}}" == "snapshot" ]]; then
+              echo "The distribution repository is snapshot but the release tag doesn't contains 'SNAPSHOT'"
+              exit 1
+            fi
+          fi
 
   tests:
     needs: debug
@@ -37,8 +52,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - working-directory: eyes.sdk.core
-          - working-directory: selenium4
+          - working-directory: ./java/eyes.sdk.core
+          - working-directory: ./java/selenium4
 
           - working-directory: ./java/eyes.images.java
             report-id: java_selenium
@@ -84,7 +99,7 @@ jobs:
           report: deploy
 
   arm64-tests:
-    needs: setup
+    needs: debug
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository and submodules
@@ -113,7 +128,7 @@ jobs:
             mvn test -Dtest="TestLinuxArmArchitecture" -DfailIfNoTests=false
 
   alpine-tests:
-    needs: setup
+    needs: debug
     runs-on: ubuntu-latest
     container: "alpine:latest"
     steps:
@@ -171,14 +186,14 @@ jobs:
 
       - name: Install gpg secret key
         run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+          cat <(echo -e "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
           which gpg
           gpg --version
 
       - name: Branch out
         run: |
-          git checkout -b "v${{inputs.version}}"
+          git checkout -b "java_v${{inputs.version}}"
 
       - name: Build project
         run: mvn clean install -DskipTests
@@ -196,10 +211,10 @@ jobs:
       - name: Tag and push
         run: |
           git tag $RELEASE_TAG
-          git push origin "v${{inputs.version}}" $RELEASE_TAG
+          git push origin "java_v${{inputs.version}}" $RELEASE_TAG
 
       - name: Package project
-        run: mvn clean package -P local-build -DskipTests
+        run: mvn clean package -P ${{inputs.server}} -DskipTests
 
       - name: Replace Core sources
         shell: 'script -q -e -c "bash {0}"'
@@ -209,40 +224,38 @@ jobs:
           rm -f $SOURCES
           echo "NA" > na.txt
           zip $SOURCES na.txt
-          gpg -s --armor -u "$GPG_KEY_EMAIL" --pinentry-mode loopback --passphrase "$GPG_KEY_PASSPHRASE" $SOURCES
+          gpg -s --armor --pinentry-mode loopback --passphrase ${{secrets.MAVEN_GPG_PASSPHRASE}} $SOURCES
           rm -f na.txt
           CONTENTS=$(jar tf $SOURCES)
           if [ "$CONTENTS" != "na.txt" ]; then
             echo "The JAR file does not contain only na.txt."
             exit 1
           fi
-        env:
-          GPG_KEY_EMAIL: ${{ secrets.GPG_KEY_EMAIL }}
-          GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
 
-#      - name: Set up Maven Central Repository
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: 8
-#          distribution: "temurin"
-#          server-id: ossrh
-#          server-username: MAVEN_USERNAME
-#          server-password: MAVEN_PASSWORD
-#
-#      - name: Publish
-#        if: success()
-#        run: mvn --batch-mode deploy
-#        env:
-#          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: "temurin"
+          server-id: ${{ inputs.server }} # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: MAVEN_USERNAME # env variable for username in deploy
+          server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
+
+      - name: Publish
+        if: success()
+        run: |
+          mvn --batch-mode -P ${{inputs.server}} deploy -DskipTests
+        env:
+         MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+         MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   release-mail:
     needs:
       - deploy
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./java/
     env:
       APPLITOOLS_REPORT_ID: ${{ needs.deploy.outputs.APPLITOOLS_REPORT_ID }}
     steps:
@@ -255,10 +268,9 @@ jobs:
         with:
           ref: ${{inputs.ref || github.ref}}
           lfs: true
-          submodules: recursive
-          token: ${{ secrets.SUBMODULES_GA_TOKEN }}
 
       - name: Selenium release mail
+        working-directory: ./java/
         run: |
           export APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID-java_selenium;
           echo "APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID";
@@ -273,9 +285,10 @@ jobs:
           APPIUM_JAVA="eyes-appium-java5@${{inputs.version}}";
           IMAGES_JAVA="eyes-images-java5@${{inputs.version}}";
           VERSION="$RELEASE_TAG;$SELENIUM_JAVA;$APPIUM_JAVA;$IMAGES_JAVA"
-          ./sendMail.sh "java" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP" "ido.elmaleh@applitools.com";
+          ./sendMail.sh "java" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP";
 
       - name: Playwright release mail
+        working-directory: ./java/
         run: |
           export APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID-java_playwright;
           echo "APPLITOOLS_REPORT_ID=$APPLITOOLS_REPORT_ID";
@@ -288,4 +301,4 @@ jobs:
           TEST_COVERAGE_GAP=$(cat testCoverageGap.txt);
           PLAYWRIGHT_JAVA="eyes-playwright-java5@${{inputs.version}}";
           VERSION="$RELEASE_TAG;$PLAYWRIGHT_JAVA"
-          ./sendMail.sh "java_playwright" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP" "ido.elmaleh@applitools.com";
+          ./sendMail.sh "java_playwright" $VERSION "$CHANGELOG" "$TEST_COVERAGE_GAP";

@@ -891,7 +891,8 @@ public class Eyes implements IEyesBase {
     }
 
     private Map<String, List<Region>> locateDto(ITargetDto target, VisualLocatorSettingsDto settings, ConfigurationDto config) {
-        return commandExecutor.locate(target, settings, config);
+        Map<String, List<RegionDto>> response = commandExecutor.locate(target, settings, config);
+        return LocateMapper.toLocateFromDto(response);
     }
 
     private Refer getRefer() {

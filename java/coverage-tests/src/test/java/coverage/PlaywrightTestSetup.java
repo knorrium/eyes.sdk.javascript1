@@ -57,7 +57,9 @@ public class PlaywrightTestSetup extends GlobalSetup {
     }
 
     // Eyes configuration
-
+    public void setRemoveDuplicateTests(Boolean removeDuplicateTests) { runner.setRemoveDuplicateTests(removeDuplicateTests); }
+    public void setRemoveDuplicateTestsPerBatch(Boolean removeDuplicateTestsPerBatch) { runner.setRemoveDuplicateTests(removeDuplicateTestsPerBatch); }
+    public void setBaselineEnvName(String baselineEnvName) { eyes.setBaselineEnvName(baselineEnvName); }
     public void setEnablePatterns(Boolean shouldSet) { eyes.setEnablePatterns(shouldSet); }
     public void setStitchOverlap(Integer overlap) { eyes.setStitchOverlap(overlap); }
     public void setAppName(String appName) { eyes.setAppName(appName);}

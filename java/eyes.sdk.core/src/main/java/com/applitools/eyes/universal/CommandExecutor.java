@@ -132,14 +132,14 @@ public class CommandExecutor {
     }
   }
 
-  public Map<String, List<Region>> locate(ITargetDto target, VisualLocatorSettingsDto locatorSettingsDto, ConfigurationDto config) {
+  public Map<String, List<RegionDto>> locate(ITargetDto target, VisualLocatorSettingsDto locatorSettingsDto, ConfigurationDto config) {
     RequestDto<LocateDto> request = new RequestDto<>();
     request.setName("Core.locate");
     request.setKey(UUID.randomUUID().toString());
     request.setPayload(new LocateDto(target, locatorSettingsDto, config));
     SyncTaskListener syncTaskListener = checkedCommand(request);
 
-    ResponseDto<Map<String, List<Region>>> locateResponse = (ResponseDto<Map<String, List<Region>>>) syncTaskListener.get();
+    ResponseDto<Map<String, List<RegionDto>>> locateResponse = (ResponseDto<Map<String, List<RegionDto>>>) syncTaskListener.get();
     if (locateResponse != null && locateResponse.getPayload().getError() != null) {
       String message = locateResponse.getPayload().getError().getMessage();
       if (message != null && message.contains("stale element reference")) {

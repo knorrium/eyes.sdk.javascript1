@@ -3,7 +3,7 @@ module.exports = {
   emitter: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/playwright/emitter.js",
   overrides: [
     "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/overrides.js",
-    "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/playwright/overrides.js"
+    "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/overrides/overrides-playwright.js"
   ],
   template: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/playwright/template.hbs",
   tests: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/coverage-tests.js",

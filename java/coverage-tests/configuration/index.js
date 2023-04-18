@@ -3,7 +3,7 @@ module.exports = {
   emitter: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/emitter.js",
   overrides: [
     "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/overrides.js",
-    "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/overrides.js"
+    "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/overrides/overrides-selenium.js"
   ],
   template: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/java/template.hbs",
   tests: "https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/coverage-tests.js",

@@ -26,7 +26,7 @@ public abstract class AbstractSDKListener implements WebSocketListener {
     protected static final Map<String, TypeReference<?>> typeReferences = new HashMap<String, TypeReference<?>>(){{
         put("Core.makeManager", new TypeReference<ResponseDto<Reference>>() {});
         put("Core.getECClient", new TypeReference<ResponseDto<MakeECClientResponsePayload>>() {});
-        put("Core.locate", new TypeReference<ResponseDto<Map<String, List<Region>>>>() {});
+        put("Core.locate", new TypeReference<ResponseDto<Map<String, List<RegionDto>>>>() {});
         put("Core.locateText", new TypeReference<ResponseDto<Map<String, List<TextRegion>>>>() {});
         put("Core.extractText", new TypeReference<ResponseDto<List<String>>>() {});
         put("Core.getViewportSize", new TypeReference<ResponseDto<RectangleSizeDto>>() {});

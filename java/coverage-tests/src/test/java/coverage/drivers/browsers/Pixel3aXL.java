@@ -8,6 +8,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import static coverage.drivers.CapabilitiesHelper.getPixel3aXL;
 
@@ -19,7 +20,7 @@ public class Pixel3aXL implements DeviceBuilder {
         this.browser = browser;
     }
 
-    public WebDriver build(boolean headless, boolean legacy, boolean executionGrid) throws MalformedURLException {
+    public WebDriver build(boolean headless, boolean legacy, boolean executionGrid, List<String> args) throws MalformedURLException {
         Capabilities caps = getPixel3aXL(legacy);
         MutableCapabilities appCap = new MutableCapabilities();
         appCap.setCapability("browserName", browser);

@@ -54,6 +54,7 @@ public abstract class EyesRunner {
   protected static AbstractSDKListener listener;
 
   private Boolean dontCloseBatches;
+  private Boolean removeDuplicateTests;
 
   protected Logger logger = new Logger();
 
@@ -123,7 +124,7 @@ public abstract class EyesRunner {
   }
 
   public TestResultsSummary getAllTestResults(boolean shouldThrowException) {
-    GetResultsSettings settings = new GetResultsSettings(shouldThrowException);
+    GetResultsSettings settings = new GetResultsSettings(shouldThrowException, removeDuplicateTests);
     TestResultsSummaryDto dto = commandExecutor.getResults(managerRef, settings);
     return TestResultsSummaryMapper.fromDto(dto, shouldThrowException);
   }
@@ -192,6 +193,18 @@ public abstract class EyesRunner {
     this.dontCloseBatches = dontCloseBatches;
   }
 
+  public Boolean isDontCloseBatches() {
+    return dontCloseBatches;
+  }
+
+  public void setRemoveDuplicateTests(Boolean removeDuplicateTests) {
+    this.removeDuplicateTests = removeDuplicateTests;
+  }
+
+  public Boolean getRemoveDuplicateTests() {
+    return removeDuplicateTests;
+  }
+
   public Logger getLogger() {
     return this.logger;
   }
@@ -235,9 +248,6 @@ public abstract class EyesRunner {
     this.commandExecutor = commandExecutor;
   }
 
-  public Boolean isDontCloseBatches() {
-    return dontCloseBatches;
-  }
 
   protected Refer getRefer() {
     return listener.getRefer();
