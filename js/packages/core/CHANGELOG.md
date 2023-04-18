@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.5.0 - 2023/4/18
+
+### Features
+- Added functional session feature
+### Bug fixes
+- Fixed issue with when webview were wasn't recognized as web compatible world
+
 ## 2.4.13 - 2023/4/16
 
 ### Features
