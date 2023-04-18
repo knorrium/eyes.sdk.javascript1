@@ -48,7 +48,7 @@
   "dependencies": {
     "@applitools/jsdom": "1.0.4",
     "@applitools/logger": "1.1.48",
-    "@applitools/req": "1.1.34",
+    "@applitools/req": "1.1.35",
     "@applitools/utils": "1.3.32",
     "abort-controller": "3.0.0",
     "css-tree": "2.3.1",
