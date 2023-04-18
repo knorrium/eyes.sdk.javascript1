@@ -63,13 +63,13 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/core-base": "1.1.48",
-    "@applitools/driver": "1.11.41",
+    "@applitools/core-base": "1.1.49",
+    "@applitools/driver": "1.11.42",
     "@applitools/execution-grid-tunnel": "1.0.24",
     "@applitools/logger": "1.1.48",
-    "@applitools/req": "1.1.34",
+    "@applitools/req": "1.1.35",
     "@applitools/socket": "1.0.10",
-    "@applitools/spec-driver-webdriver": "1.0.22",
+    "@applitools/spec-driver-webdriver": "1.0.23",
     "@applitools/utils": "1.3.32",
     "abort-controller": "3.0.0",
     "webdriver": "7",
