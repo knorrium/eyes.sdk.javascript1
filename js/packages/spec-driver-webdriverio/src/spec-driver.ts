@@ -337,11 +337,6 @@ export async function hover(browser: Driver, element: Element | Selector): Promi
     await extendedElement.moveTo()
   }
 }
-export async function scrollIntoView(browser: Driver, element: Element | Selector, align = false): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(browser, element) : element
-  const extendedElement = await browser.$(resolvedElement as any)
-  await extendedElement.scrollIntoView(align)
-}
 export async function waitUntilDisplayed(browser: Driver, selector: Selector, timeout: number): Promise<void> {
   const element = await findElement(browser, selector)
   if (process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION === '5') {

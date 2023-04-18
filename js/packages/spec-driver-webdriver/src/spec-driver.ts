@@ -345,9 +345,6 @@ export async function hover(driver: Driver, element: Element): Promise<any> {
     },
   ])
 }
-export async function scrollIntoView(driver: Driver, element: Element, align = false): Promise<void> {
-  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', [element, align])
-}
 
 // #endregion
 

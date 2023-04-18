@@ -273,10 +273,6 @@ export async function hover(driver: Driver, element: Element | Selector) {
     await driver.actions().move({origin: resolvedElement!}).perform()
   }
 }
-export async function scrollIntoView(driver: Driver, element: Element | Selector, align = false): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
-  await driver.executeScript('arguments[0].scrollIntoView(arguments[1])', resolvedElement, align)
-}
 export async function waitUntilDisplayed(driver: Driver, selector: Selector, timeout: number): Promise<void> {
   const element = await findElement(driver, selector)
   await driver.wait(Selenium.until.elementIsVisible(element!), timeout)

@@ -251,15 +251,6 @@ export async function hover(t: Driver, element: Element | Selector): Promise<voi
   if (isSelector(element)) element = await findElement(t, element)
   await t.hover(element)
 }
-export async function scrollIntoView(t: Driver, element: Element | Selector, align = false): Promise<void> {
-  if (isSelector(element)) element = await findElement(t, element)
-  // @ts-ignore
-  const scrollIntoView = testcafe.ClientFunction(() => element().scrollIntoView(align), {
-    boundTestRun: t,
-    dependencies: {element, align},
-  })
-  await scrollIntoView()
-}
 export async function waitUntilDisplayed(t: Driver, selector: Selector): Promise<void> {
   await selector.with({boundTestRun: t, visibilityCheck: true})
 }

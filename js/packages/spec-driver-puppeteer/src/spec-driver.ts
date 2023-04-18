@@ -210,10 +210,6 @@ export async function hover(frame: Context, element: Element | Selector): Promis
   const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
   await resolvedElement?.hover()
 }
-export async function scrollIntoView(frame: Context, element: Element | Selector, align = false): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
-  await frame.evaluate((element, align) => element?.scrollIntoView(align), resolvedElement, align)
-}
 export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
   await frame.waitForSelector(selector)
 }

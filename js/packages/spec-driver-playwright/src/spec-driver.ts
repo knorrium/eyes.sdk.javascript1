@@ -167,13 +167,6 @@ export async function hover(frame: Context, element: Element | Selector): Promis
   const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
   await resolvedElement?.hover()
 }
-export async function scrollIntoView(frame: Context, element: Element | Selector, align = false): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
-  await frame.evaluate(([element, align]) => element?.scrollIntoView(align), [
-    resolvedElement as Element<HTMLElement | SVGElement>,
-    align,
-  ] as const)
-}
 export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
   if (utils.types.instanceOf<Playwright.Locator>(selector, 'Locator')) return selector.waitFor()
   await frame.waitForSelector(selector)
