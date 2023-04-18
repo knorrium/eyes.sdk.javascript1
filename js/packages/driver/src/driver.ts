@@ -597,7 +597,7 @@ export class Driver<T extends SpecType> {
 
   async switchToMainContext(): Promise<Context<T>> {
     const environment = await this.getEnvironment()
-    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
+    if (!environment.isWeb) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to the main context')
     await this._spec.mainContext(this.currentContext.target)
@@ -606,7 +606,7 @@ export class Driver<T extends SpecType> {
 
   async switchToParentContext(elevation = 1): Promise<Context<T>> {
     const environment = await this.getEnvironment()
-    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
+    if (!environment.isWeb) throw new Error('Contexts are supported only for web drivers')
 
     this._logger.log('Switching to a parent context with elevation:', elevation)
     if (this.currentContext.path.length <= elevation) {
@@ -632,7 +632,7 @@ export class Driver<T extends SpecType> {
 
   async switchToChildContext(...references: ContextReference<T>[]): Promise<Context<T>> {
     const environment = await this.getEnvironment()
-    if (environment.isNative) throw new Error('Contexts are supported only for web drivers')
+    if (!environment.isWeb) throw new Error('Contexts are supported only for web drivers')
     this._logger.log('Switching to a child context with depth:', references.length)
     for (const reference of references) {
       if (reference === this.mainContext) continue
