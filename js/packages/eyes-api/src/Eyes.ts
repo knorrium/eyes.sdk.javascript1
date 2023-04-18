@@ -64,7 +64,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     const client = await core.getECClient({
       settings: {
         proxy: config?.proxy,
-        capabilities: {eyesServerUrl: config?.serverUrl, apiKey: config?.apiKey},
+        options: {eyesServerUrl: config?.serverUrl, apiKey: config?.apiKey},
       },
     })
     client.unref()
