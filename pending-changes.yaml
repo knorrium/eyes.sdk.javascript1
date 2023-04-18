@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Added functional session feature
   bug-fix:
-    - 
+    - Fixed issue with when webview were wasn't recognized as web compatible world
 "@applitools/eyes-selenium":
   feature:
     - 
