@@ -94,6 +94,12 @@ def test_image_extract_text_region(ocr_image, eyes):
     assert text == ["s the navigation bar"]
 
 
+def test_image_extract_text_with_hint(ocr_image, eyes):
+    text = eyes.extract_text(OCRRegion(ocr_image).hint("navigati0n bar"))
+
+    assert text == ["This is the navigati0n bar"]
+
+
 def test_images_send_dom(png_target, eyes, app_output):
     dom = {
         "childNodes": [],
