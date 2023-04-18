@@ -30,23 +30,23 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.0.tgz#459a0b04deca49ac7f0b4b4267ca110f07a45fb3"
-  integrity sha512-FjGEWOPFgkTTH04RyBxB2nd9zhGkEIpN+Mo6LlIBc+a4qHxLQOwuUpLqxaZ3vGics1j7HwgSZ58J2duKlxvEvA==
+"@applitools/core@2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.1.tgz#98625473ed9218a41d12533fd3439f9192bb7f6a"
+  integrity sha512-IcgqZoQa56Z7SN1mvBQhSXPUKx67zi7UtDW+cu8N77/FeQvkM+LUSVK1qOBLwWgxKpPPJKvaG+nYmjV85bTAIg==
   dependencies:
     "@applitools/core-base" "1.1.49"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.9"
-    "@applitools/driver" "1.11.42"
-    "@applitools/ec-client" "1.2.21"
+    "@applitools/driver" "1.11.43"
+    "@applitools/ec-client" "1.2.22"
     "@applitools/logger" "1.1.48"
     "@applitools/nml-client" "1.3.47"
     "@applitools/req" "1.1.35"
     "@applitools/screenshoter" "3.7.38"
     "@applitools/snippets" "2.4.19"
     "@applitools/socket" "1.0.10"
-    "@applitools/spec-driver-webdriver" "1.0.23"
+    "@applitools/spec-driver-webdriver" "1.0.24"
     "@applitools/ufg-client" "1.2.9"
     "@applitools/utils" "1.3.32"
     "@types/ws" "8.5.4"
@@ -85,28 +85,28 @@
     css-tree "2.3.1"
     pako "1.0.11"
 
-"@applitools/driver@1.11.42":
-  version "1.11.42"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.42.tgz#973781f7a8ec2e114f07060bd4b121d106fde5c4"
-  integrity sha512-7SU5nmHHkG/5vk60MF7kNPlspzmLuthkCA7y2oWHHtIEzLgiB1fz4mi7BchTCIPwip9EIApCD5zLBARW2iUMKQ==
+"@applitools/driver@1.11.43":
+  version "1.11.43"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.43.tgz#e1d17c15b97d2433fbbad4cc6fd0465aaef6979b"
+  integrity sha512-a+tRvFog/uyJ8HXdH/eo3Ahfo1Zrw8i0FIL0l5Q/YgRH6l4xP3fV/a5/S2xFteiGshCoh5btEPhkBM+dEUSS/Q==
   dependencies:
     "@applitools/logger" "1.1.48"
     "@applitools/snippets" "2.4.19"
     "@applitools/utils" "1.3.32"
     semver "7.3.7"
 
-"@applitools/ec-client@1.2.21":
-  version "1.2.21"
-  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.21.tgz#34e680bf41b30fd4ecb7f2d1974d33a6b0fa1141"
-  integrity sha512-c11De8D88pN4cqZ8hG7M2SzL7GY+O5U4eM3L0250rI7iBdVjMahKhuZwVJYnUAXehBsR423EyNDzQBVSayaWFQ==
+"@applitools/ec-client@1.2.22":
+  version "1.2.22"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.22.tgz#367f63f441425b19a35224cf07c58d2387ddc526"
+  integrity sha512-Hv5Flh7m33bGlCufQRlFGCsswymLsjl5SiwIsR0qZXMmRq0UZewIt3gKeI/bCpk1eHBC/E70ha0G0SaKzfGnjg==
   dependencies:
     "@applitools/core-base" "1.1.49"
-    "@applitools/driver" "1.11.42"
+    "@applitools/driver" "1.11.43"
     "@applitools/execution-grid-tunnel" "1.0.24"
     "@applitools/logger" "1.1.48"
     "@applitools/req" "1.1.35"
     "@applitools/socket" "1.0.10"
-    "@applitools/spec-driver-webdriver" "1.0.23"
+    "@applitools/spec-driver-webdriver" "1.0.24"
     "@applitools/utils" "1.3.32"
     abort-controller "3.0.0"
     webdriver "7"
@@ -274,12 +274,12 @@
     "@applitools/logger" "1.1.48"
     "@applitools/utils" "1.3.32"
 
-"@applitools/spec-driver-webdriver@1.0.23":
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.23.tgz#242d632bbe7c90d5995a5e9b9b8ec88e6bb81681"
-  integrity sha512-lXgNGGObKXzsZaVk1R3AcyaXT4evF/M42GJY8E6eR54Xc8DQ65m0sYlc6iaCuPgqEYlRuZ+onK/VDUZxJ9wE5w==
+"@applitools/spec-driver-webdriver@1.0.24":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.24.tgz#7974403ff6023a395ab334c66de579189905f8e1"
+  integrity sha512-Lta6H7BjyWyOLzvvmfW/fZ8stXxG2QUxmaNU3krU9xiKyx598Yhz1pn847xTiP5UaUb8bdF2q/cyb+n7gu4VVQ==
   dependencies:
-    "@applitools/driver" "1.11.42"
+    "@applitools/driver" "1.11.43"
     "@applitools/utils" "1.3.32"
     proxy-agent "5.0.0"
 
