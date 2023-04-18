@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import type {ECClientSettings} from './types'
+import type {ECClientSettings} from '../types'
+import {makeECClient} from '../client'
+import {makeTunnelManagerServer} from '../tunnels/manager-server'
 import yargs from 'yargs'
-import {makeECClient} from './client'
-import {makeTunnelManagerServer} from './tunnels/manager-server'
 
 yargs
   .command<ECClientSettings>({

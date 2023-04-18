@@ -3,6 +3,7 @@ import type {
   ImageTarget,
   Core,
   Eyes,
+  FunctionalSession,
   ServerSettings,
   OpenSettings,
   CheckSettings,
@@ -15,8 +16,9 @@ import type {
   CloseBatchSettings,
   DeleteTestSettings,
   LogEventSettings,
-  TestInfo,
-  AccountInfo,
+  VisualTest,
+  FunctionalTest,
+  Account,
   LocateResult,
   CheckResult,
   LocateTextResult,
@@ -30,14 +32,20 @@ import {makeUpload, type Upload} from './upload'
 import * as utils from '@applitools/utils'
 
 export interface CoreRequests extends Core {
+  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
+  openFunctionalSession(options: {settings: OpenSettings; logger?: Logger}): Promise<FunctionalSessionRequests>
   getBatchBranches(options: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}>
-  openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
 }
 
 export interface EyesRequests extends Eyes {
+  readonly core: CoreRequests
+  report(options: {settings?: ReportSettings; logger?: Logger}): Promise<void>
+}
+
+export interface FunctionalSessionRequests extends FunctionalSession {
   readonly core: CoreRequests
   report(options: {settings?: ReportSettings; logger?: Logger}): Promise<void>
 }
@@ -64,6 +72,7 @@ export function makeCoreRequests({
     getAccountInfo: getAccountInfoWithCache,
     getBatchBranches: getBatchBranchesWithCache,
     openEyes,
+    openFunctionalSession,
     locate,
     locateText,
     extractText,
@@ -136,7 +145,7 @@ export function makeCoreRequests({
       expected: [200, 201],
       logger,
     })
-    const test: TestInfo = await response.json().then(async result => {
+    const test: VisualTest = await response.json().then(async result => {
       const test = {
         testId: result.id,
         userTestId: settings.userTestId!,
@@ -152,10 +161,10 @@ export function makeCoreRequests({
         rendererId: settings.environment?.rendererId,
         rendererUniqueId: settings.environment?.rendererUniqueId,
         rendererInfo: settings.environment?.rendererInfo,
-      } as TestInfo
+      } as VisualTest
       if (result.renderingInfo) {
         const {serviceUrl, accessToken, resultsUrl, ...rest} = result.renderingInfo
-        test.account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as AccountInfo
+        test.account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as Account
         test.account.ufgServer = {
           serverUrl: serviceUrl,
           uploadUrl: test.account.uploadUrl,
@@ -176,6 +185,81 @@ export function makeCoreRequests({
     const upload = makeUpload({config: {uploadUrl: test.account.uploadUrl, proxy: settings.proxy}, logger})
 
     return makeEyesRequests({core, test, req, upload, logger})
+  }
+
+  async function openFunctionalSession({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings: OpenSettings
+    logger?: Logger
+  }): Promise<FunctionalSessionRequests> {
+    const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
+    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    logger.log('Request "openFunctionalSession" called with settings', settings)
+
+    const accountPromise = getAccountInfoWithCache({settings})
+
+    const initializedAt = new Date().toISOString()
+    const response = await req('/api/sessions/running', {
+      name: 'openFunctionalSession',
+      method: 'POST',
+      body: {
+        startInfo: {
+          agentId,
+          agentSessionId: settings.userTestId,
+          agentRunId: settings.userTestId,
+          sessionType: settings.sessionType,
+          appIdOrName: settings.appName,
+          scenarioIdOrName: settings.testName,
+          displayName: settings.displayName,
+          properties: settings.properties,
+          batchInfo: settings.batch && {
+            id: settings.batch.id,
+            name: settings.batch.name,
+            batchSequenceName: settings.batch.sequenceName,
+            startedAt: settings.batch.startedAt,
+            notifyOnCompletion: settings.batch.notifyOnCompletion,
+            properties: settings.batch.properties,
+          },
+          egSessionId: settings.environment?.ecSessionId ?? null,
+          environment:
+            settings.environment &&
+            (settings.environment.rawEnvironment ?? {
+              os: settings.environment.os,
+              osInfo: settings.environment.osInfo,
+              hostingApp: settings.environment.hostingApp,
+              hostingAppInfo: settings.environment.hostingAppInfo,
+              deviceInfo: settings.environment.deviceName,
+              displaySize: settings.environment.viewportSize && utils.geometry.round(settings.environment.viewportSize),
+              inferred: settings.environment.userAgent && `useragent:${settings.environment.userAgent}`,
+            }),
+          timeout: settings.abortIdleTestTimeout,
+          nonVisual: true,
+        },
+      },
+      expected: [200, 201],
+      logger,
+    })
+    const test: FunctionalTest = await response.json().then(async result => {
+      const account = await accountPromise
+      const test = {
+        testId: result.id,
+        userTestId: settings.userTestId!,
+        batchId: settings.batch?.id ?? result.batchId,
+        sessionId: result.sessionId,
+        appId: settings.appName,
+        resultsUrl: result.url,
+        initializedAt,
+        keepBatchOpen: !!settings.keepBatchOpen,
+        server: account.server,
+        account,
+      } as FunctionalTest
+      return test
+    })
+    logger.log('Request "openFunctionalSession" finished successfully with body', test)
+
+    return makeFunctionalSessionRequests({core, test, req, logger})
   }
 
   async function locate<TLocator extends string>({
@@ -307,7 +391,7 @@ export function makeCoreRequests({
   }: {
     settings: ServerSettings
     logger?: Logger
-  }): Promise<AccountInfo> {
+  }): Promise<Account> {
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "getAccountInfo" called with settings', settings)
@@ -323,7 +407,7 @@ export function makeCoreRequests({
         server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy, agentId},
         uploadUrl: resultsUrl,
         ...rest,
-      } as AccountInfo
+      } as Account
       account.ufgServer = {
         serverUrl: serviceUrl,
         uploadUrl: account.uploadUrl,
@@ -431,7 +515,7 @@ export function makeEyesRequests({
   logger: defaultLogger,
 }: {
   core: CoreRequests
-  test: TestInfo
+  test: VisualTest
   req: ReqEyes
   upload: Upload
   logger: Logger
@@ -579,6 +663,148 @@ export function makeEyesRequests({
         result.server = test.server
         // for backwards compatibility with outdated servers
         result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
+        logger.log('Request "close" finished successfully with body', result)
+        return [result]
+      })
+    return resultsPromise.then(() => undefined).catch(() => undefined)
+  }
+
+  async function abort({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: AbortSettings
+    logger?: Logger
+  } = {}): Promise<void> {
+    logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
+    if (resultsPromise) {
+      logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
+      return
+    }
+    resultsPromise = report({settings, logger})
+      .then(() =>
+        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+          name: 'abort',
+          method: 'DELETE',
+          query: {
+            aborted: true,
+          },
+          expected: 200,
+          logger,
+        }),
+      )
+      .then(async response => {
+        const result: Mutable<TestResult> = await response.json()
+        result.userTestId = test.userTestId
+        result.initializedAt = test.initializedAt
+        result.keepIfDuplicate = test.keepIfDuplicate
+        result.server = test.server
+        logger.log('Request "abort" finished successfully with body', result)
+        return [result]
+      })
+    return resultsPromise.then(() => undefined).catch(() => undefined)
+  }
+
+  async function getResults({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: GetResultsSettings
+    logger?: Logger
+  } = {}): Promise<TestResult[]> {
+    logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
+    if (!resultsPromise) {
+      logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
+      await abort({settings, logger})
+    }
+    const results = await resultsPromise!
+    logger.log('Request "getResults" finished successfully with body', results)
+    return results
+  }
+
+  async function report({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: ReportSettings
+    logger?: Logger
+  }): Promise<void> {
+    logger.log(`Request "report" called for test ${test.testId} with settings`, settings)
+    if (!settings?.testMetadata || utils.types.isEmpty(settings.testMetadata)) return
+    try {
+      await req(`/api/sessions/running/${encodeURIComponent(test.testId)}/selfhealdata`, {
+        name: 'reportSelfHealing',
+        method: 'PUT',
+        body: {
+          operations: settings.testMetadata.map(item => {
+            return {old: item?.originalSelector, new: item?.successfulSelector, timestamp: new Date().toISOString()}
+          }),
+        },
+        expected: 200,
+        logger,
+      })
+    } catch (error) {
+      logger.warn(error)
+    }
+  }
+}
+
+export function makeFunctionalSessionRequests({
+  core,
+  test,
+  req,
+  logger: defaultLogger,
+}: {
+  core: CoreRequests
+  test: FunctionalTest
+  req: ReqEyes
+  logger: Logger
+}): FunctionalSessionRequests {
+  let resultsPromise = undefined as Promise<TestResult[]> | undefined
+
+  const functionalSession = {
+    core,
+    test,
+    get running() {
+      return !resultsPromise
+    },
+    report,
+    close,
+    abort,
+    getResults,
+  }
+
+  return functionalSession
+
+  async function close({
+    settings,
+    logger = defaultLogger,
+  }: {
+    settings?: CloseSettings
+    logger?: Logger
+  } = {}): Promise<void> {
+    logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
+    if (resultsPromise) {
+      logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
+      return
+    }
+    resultsPromise = report({settings, logger})
+      .then(() =>
+        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+          name: 'close',
+          method: 'DELETE',
+          query: {aborted: false, nonVisualStatus: settings?.status ?? 'Completed'},
+          expected: 200,
+          logger,
+        }),
+      )
+      .then(async response => {
+        const result: Mutable<TestResult> = await response.json()
+        result.userTestId = test.userTestId
+        result.url = test.resultsUrl
+        result.initializedAt = test.initializedAt
+        result.keepIfDuplicate = test.keepIfDuplicate
+        result.server = test.server
         logger.log('Request "close" finished successfully with body', result)
         return [result]
       })

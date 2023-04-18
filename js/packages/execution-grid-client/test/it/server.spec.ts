@@ -1,13 +1,13 @@
 import {AbortController} from 'abort-controller'
 import {Builder} from 'selenium-webdriver'
 import {Command} from 'selenium-webdriver/lib/command'
-import {makeServer} from '../../src/proxy-server'
+import {makeServer} from '../../src/server'
 import * as utils from '@applitools/utils'
 import req from '@applitools/req'
 import nock from 'nock'
 import assert from 'assert'
 
-describe('proxy-server', () => {
+describe('server', () => {
   let proxy: any
 
   afterEach(async () => {
@@ -64,7 +64,7 @@ describe('proxy-server', () => {
     proxy = await makeServer({
       settings: {
         serverUrl: 'https://exec-wus.applitools.com',
-        capabilities: {apiKey: 'api-key', eyesServerUrl: 'http://server.url'},
+        options: {apiKey: 'api-key', eyesServerUrl: 'http://server.url'},
       },
     })
 
@@ -313,7 +313,7 @@ describe('proxy-server', () => {
 
   it('find element works with self healing', async () => {
     proxy = await makeServer({
-      settings: {serverUrl: 'https://exec-wus.applitools.com', capabilities: {useSelfHealing: true}},
+      settings: {serverUrl: 'https://exec-wus.applitools.com', options: {useSelfHealing: true}},
     })
     const expected = {
       successfulSelector: {using: 'css selector', value: 'actual-selector'},
@@ -336,11 +336,10 @@ describe('proxy-server', () => {
       })
 
     const driver = await new Builder().forBrowser('chrome').usingServer(proxy.url).build()
-    driver.getExecutor().defineCommand('getSessionMetadata', 'GET', '/session/:sessionId/applitools/metadata')
     await driver.findElement({css: 'blah'})
-    const result = await driver.execute(new Command('getSessionMetadata'))
+    const result: any[] = await driver.executeScript('applitools:metadata')
     assert.deepStrictEqual(result, [expected])
-    const noResult = await driver.execute(new Command('getSessionMetadata'))
+    const noResult: any[] = await driver.executeScript('applitools:metadata')
     assert.deepStrictEqual(noResult, [])
   })
 })

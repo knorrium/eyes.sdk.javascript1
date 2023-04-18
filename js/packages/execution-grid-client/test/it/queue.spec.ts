@@ -1,7 +1,7 @@
 import assert from 'assert'
 import {makeLogger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
-import {makeQueue} from '../../src/queue'
+import {makeQueue} from '../../src/utils/queue'
 
 describe('queue', () => {
   const logger = makeLogger()

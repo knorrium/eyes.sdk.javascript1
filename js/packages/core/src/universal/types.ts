@@ -104,7 +104,6 @@ export interface UniversalSpecDriver<T extends SpecType> {
   getCookies(options: {driver: T['driver'] | T['context']; context?: boolean}): Promise<Cookie[]>
   getDriverInfo(options: {driver: T['driver']}): Promise<DriverInfo>
   getCapabilities(options: {driver: T['driver']}): Promise<Record<string, any>>
-  getSessionMetadata(options: {driver: T['driver']}): Promise<any[] | null>
   getTitle(options: {driver: T['driver']}): Promise<string>
   getUrl(options: {driver: T['driver']}): Promise<string>
   takeScreenshot(options: {driver: T['driver']}): Promise<string>

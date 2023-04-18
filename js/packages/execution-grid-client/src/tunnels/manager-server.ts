@@ -83,7 +83,7 @@ export async function makeTunnelManagerServerProcess(
 ): Promise<TunnelManagerServer> {
   return new Promise((resolve, reject) => {
     const server = fork(
-      path.resolve(__dirname, '../../dist/cli.js'),
+      path.resolve(__dirname, '../../dist/cli/cli.js'),
       [`tunnel-manager`, `--config=${JSON.stringify(options)}`],
       {
         stdio: ['ignore', 'ignore', 'ignore', 'ipc'],

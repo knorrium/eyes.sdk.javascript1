@@ -44,6 +44,10 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
       const eyesRef = await socket.request('Core.openEyes', options)
       return makeEyes({socket, core, eyesRef})
     },
+    async openFunctionalSession(_options) {
+      // TODO
+      return null as never
+    },
     async makeManager(options) {
       const socket = await socketPromise
       const managerRef = await socket.request('Core.makeManager', options)

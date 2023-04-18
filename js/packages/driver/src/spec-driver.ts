@@ -69,8 +69,6 @@ export interface SpecDriver<T extends SpecType> {
   getWorlds?(driver: T['driver']): Promise<string[]>
   switchWorld?(driver: T['driver'], id: string): Promise<void>
   // #endregion
-
-  getSessionMetadata?(driver: T['driver']): Promise<any>
 }
 
 export type WaitOptions = {

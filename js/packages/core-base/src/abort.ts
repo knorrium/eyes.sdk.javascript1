@@ -1,10 +1,10 @@
 import type {AbortSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {type AbortController} from 'abort-controller'
-import {type EyesRequests} from './server/requests'
+import {type EyesRequests, type FunctionalSessionRequests} from './server/requests'
 
 type Options = {
-  requests: EyesRequests
+  requests: EyesRequests | FunctionalSessionRequests
   done: () => void
   controller: AbortController
   logger: Logger

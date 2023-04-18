@@ -3,7 +3,6 @@ import {type Cookie} from '@applitools/driver'
 import assert from 'assert'
 import * as spec from '../../src/spec-driver/webdriver'
 import * as utils from '@applitools/utils'
-import nock from 'nock'
 
 function extractElementId(element: any) {
   return element.elementId || element['element-6066-11e4-a52e-4f735466cecf'] || element.ELEMENT
@@ -152,19 +151,6 @@ describe('webdriver spec driver', async () => {
     })
     it('visit()', async () => {
       await visit()
-    })
-    it('getSessionMetadata()', async () => {
-      // when driver doens't respond to the command route
-      await assert.rejects(async () => await spec.getSessionMetadata(driver), {message: /unknown command/})
-
-      // when the driver does
-      // TODO: replace w/ a proper e2e test
-      const sessionId = driver.sessionId
-      nock('http://localhost:4444/wd/hub').persist().get(`/session/${sessionId}/applitools/metadata`).reply(200, {
-        value: [],
-      })
-      nock('http://localhost:4444/wd/hub').persist().delete(`/session/${sessionId}`).reply(200, {value: null})
-      assert.deepStrictEqual(await spec.getSessionMetadata(driver), [])
     })
   })
 

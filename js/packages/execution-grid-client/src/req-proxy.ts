@@ -1,6 +1,6 @@
 import {type IncomingMessage, type ServerResponse} from 'http'
 import {type Logger} from '@applitools/logger'
-import {makeReq, type Proxy, type Retry, type Options} from '@applitools/req'
+import {makeReq, type Req, type Proxy, type Retry, type Options} from '@applitools/req'
 import * as utils from '@applitools/utils'
 
 export type ReqProxyConfig = {
@@ -14,6 +14,8 @@ export type ReqProxyOptions = Options & {
   io: {request: IncomingMessage; response: ServerResponse; handle?: boolean}
   logger?: Logger
 }
+
+export type ReqProxy = Req<ReqProxyOptions>
 
 export function makeReqProxy(config: ReqProxyConfig) {
   return makeReq<ReqProxyOptions>({

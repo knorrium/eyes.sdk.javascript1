@@ -1,9 +1,9 @@
 import type {GetResultsSettings, TestResult} from './types'
 import {type Logger} from '@applitools/logger'
-import {type EyesRequests} from './server/requests'
+import {type EyesRequests, type FunctionalSessionRequests} from './server/requests'
 
 type Options = {
-  requests: EyesRequests
+  requests: EyesRequests | FunctionalSessionRequests
   logger: Logger
 }
 

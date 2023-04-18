@@ -498,7 +498,7 @@ export class Driver<T extends SpecType> {
 
   async getSessionMetadata(): Promise<any | undefined> {
     try {
-      const metadata = await this._spec.getSessionMetadata?.(this.target)
+      const metadata = this.currentContext.execute('applitools:metadata')
       this._logger.log('Extracted session metadata', metadata)
       return metadata
     } catch (err) {

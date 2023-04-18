@@ -61,10 +61,14 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
-    const environment = await driver?.getEnvironment()
-    if (environment?.isEC) {
+    const account = await core.getAccountInfo({
+      settings: settings as OpenSettings<TDefaultType> & OpenSettings<TType>,
+      logger,
+    })
+    if (account.ecEnabled) {
+      const environment = await driver?.getEnvironment()
       settings.properties ??= []
-      settings.properties.push({name: 'Running platform', value: 'Execution cloud'})
+      settings.properties.push({name: 'Execution cloud', value: environment?.isEC ? 'Yes' : 'No'})
     }
 
     core.logEvent({

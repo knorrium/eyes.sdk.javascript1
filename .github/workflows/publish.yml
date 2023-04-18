@@ -259,7 +259,18 @@ jobs:
           workflow: publish-ufg-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ufg-client.params.version}}"}'
   ec-client:
-    needs: [ setup, logger, req, socket, utils, test-server ]
+    needs:
+      [
+        setup,
+        core-base,
+        driver,
+        logger,
+        req,
+        socket,
+        spec-webdriver,
+        utils,
+        test-server
+      ]
     if: ${{fromJSON(needs.setup.outputs.packages).ec-client && !failure() && !cancelled()}}
     name: ec-client
     runs-on: ubuntu-latest

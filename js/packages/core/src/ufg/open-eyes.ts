@@ -1,4 +1,4 @@
-import type {DriverTarget, Core, Eyes, OpenSettings, TestInfo} from './types'
+import type {DriverTarget, Core, Eyes, OpenSettings, VisualTest} from './types'
 import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type Logger} from '@applitools/logger'
 import {type Renderer} from '@applitools/ufg-client'
@@ -63,7 +63,7 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
           server: account.server,
           ufgServer: account.ufgServer,
           account,
-        } as TestInfo,
+        } as VisualTest,
         get running() {
           return running
         },

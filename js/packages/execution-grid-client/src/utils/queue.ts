@@ -4,6 +4,7 @@ import * as utils from '@applitools/utils'
 
 export type Queue = {
   readonly corked: boolean
+  readonly pause: never
   run<TResult>(task: Task<TResult>): Promise<TResult>
   cancel(task: (signal: AbortSignal) => Promise<any>): void
   cork(): void
@@ -31,6 +32,7 @@ export function makeQueue({logger}: {logger: Logger}): Queue {
     get corked() {
       return corked
     },
+    pause: Symbol('pause queue') as never,
     run,
     cancel,
     cork,
@@ -62,7 +64,7 @@ export function makeQueue({logger}: {logger: Logger}): Queue {
       handle.running = false
       handle.controller.abort()
     }
-    handle.promise = new Promise((resolve, reject) => {
+    handle.promise = new Promise<TResult>((resolve, reject) => {
       handle.resolve = resolve
       handle.reject = reject
     })

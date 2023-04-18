@@ -113,9 +113,6 @@ export function makeSpec({
     async getCapabilities(driver: Driver): Promise<Record<string, any>> {
       return socket.request('Driver.getCapabilities', {driver})
     },
-    async getSessionMetadata(driver: Driver): Promise<any[] | null> {
-      return socket.request('Driver.getSessionMetadata', {driver})
-    },
     async getDriverInfo(driver: Driver): Promise<DriverInfo> {
       return socket.request('Driver.getDriverInfo', {driver})
     },
