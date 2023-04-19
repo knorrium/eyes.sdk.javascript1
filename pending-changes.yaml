@@ -20,9 +20,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - No features
+    - 
   bug-fix:
-    -
+    - 
 "@applitools/eyes-playwright":
   feature:
     - Make `locate` to return coordinates that could be directly used with the driver
