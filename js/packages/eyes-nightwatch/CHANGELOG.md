@@ -11,6 +11,20 @@
 
 
 
+## 1.15.0 - 2023/4/19
+
+### Features
+- Added `Resize` value to `StitchMode` enum
+- Improved extraction of nml element
+- Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
+- Make `locate` to return coordinates that could be directly used with the driver
+### Bug fixes
+- Avoid handing process when using execution cloud
+- Fixed slowness during ufg tests
+- Optimized number of requests during polling
+- Fixed screenshot framing
+- Fixed issue with css fetching for dom capture
+
 ## 1.14.0 - 2023/3/2
 
 ### Features
