@@ -35,16 +35,16 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.1.tgz#98625473ed9218a41d12533fd3439f9192bb7f6a"
-  integrity sha512-IcgqZoQa56Z7SN1mvBQhSXPUKx67zi7UtDW+cu8N77/FeQvkM+LUSVK1qOBLwWgxKpPPJKvaG+nYmjV85bTAIg==
+"@applitools/core@2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.2.tgz#2adb1bb0e7004e8b5d19dd4507eea7a7cc13550a"
+  integrity sha512-xbXXvNiLG7TGvKfr6E7S6q+MEn7kRRPc5ZjSapAEoSqrjErYN3OXAk4DKpNRlAgDzAzNoFywn6EpwFQ8r8+3Kw==
   dependencies:
     "@applitools/core-base" "1.1.49"
     "@applitools/dom-capture" "11.2.1"
     "@applitools/dom-snapshot" "4.7.9"
     "@applitools/driver" "1.11.43"
-    "@applitools/ec-client" "1.2.22"
+    "@applitools/ec-client" "1.2.23"
     "@applitools/logger" "1.1.48"
     "@applitools/nml-client" "1.3.47"
     "@applitools/req" "1.1.35"
@@ -100,10 +100,10 @@
     "@applitools/utils" "1.3.32"
     semver "7.3.7"
 
-"@applitools/ec-client@1.2.22":
-  version "1.2.22"
-  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.22.tgz#367f63f441425b19a35224cf07c58d2387ddc526"
-  integrity sha512-Hv5Flh7m33bGlCufQRlFGCsswymLsjl5SiwIsR0qZXMmRq0UZewIt3gKeI/bCpk1eHBC/E70ha0G0SaKzfGnjg==
+"@applitools/ec-client@1.2.23":
+  version "1.2.23"
+  resolved "https://registry.yarnpkg.com/@applitools/ec-client/-/ec-client-1.2.23.tgz#3a125226ad5c471d1fb0137936ba021b8e3a8204"
+  integrity sha512-YYamRWlclnOitpzNrDtcwAat+AL59mTIOlmUaki+dtfEf482e+Kxytpq5AdiTbIPRBA143D+b2PLtai+WJr7yA==
   dependencies:
     "@applitools/core-base" "1.1.49"
     "@applitools/driver" "1.11.43"
@@ -175,12 +175,12 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/eyes@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes/-/eyes-1.2.1.tgz#57118fe52215e11a2edf6f3b3b7f5497371faa68"
-  integrity sha512-G/HzAd+2viZl9vLEAUEbYdu6SPgl1oF6i1g94nF8sqnrljgKi5RAXPadMKhcfewv0UsyWCbNdnRtujAUHD3hvA==
+"@applitools/eyes@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes/-/eyes-1.2.2.tgz#1858219cbd765236c3251a5c9af6aa2dc2b28d8a"
+  integrity sha512-8DGzXnWawXNexlmVbIvGsm1vUR+iodIN5yQVACbS/ka1gUQ/uVsgyGvldjV/y5gokSydfWtYGecre2607URYSg==
   dependencies:
-    "@applitools/core" "2.5.1"
+    "@applitools/core" "2.5.2"
     "@applitools/logger" "1.1.48"
     "@applitools/utils" "1.3.32"
 
