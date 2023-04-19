@@ -27,8 +27,8 @@
       "default": "./dist/index.js"
     },
     "./cli": {
-      "types": "./types/cli.d.ts",
-      "default": "./dist/cli.js"
+      "types": "./types/cli/cli.d.ts",
+      "default": "./dist/cli/cli.js"
     },
     "./types": {
       "types": "./types/types.d.ts",
@@ -43,8 +43,8 @@
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "bin": {
-    "ec-client": "./dist/cli.js",
-    "eg-client": "./dist/cli.js"
+    "ec-client": "./dist/cli/cli.js",
+    "eg-client": "./dist/cli/cli.js"
   },
   "files": [
     "dist",
