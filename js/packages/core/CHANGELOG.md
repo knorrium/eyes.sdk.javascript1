@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.2 - 2023/4/19
+
+### Features
+### Bug fixes
+- Fixed functional test feature issues in ec client
+
 ## 2.5.1 - 2023/4/18
 
 ### Features
