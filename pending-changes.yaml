@@ -54,16 +54,9 @@ Apollo SDK:
     - Handed error during polling in long requests to eyes server
 "@applitools/eyes-nightwatch":
   feature:
-    - Added `Resize` value to `StitchMode` enum
-    - Improved extraction of nml element
-    - Added `removeDuplicateTests` property to the `RunnerOptions` to remove duplicated tests in the runner at the end of execution
-    - Make `locate` to return coordinates that could be directly used with the driver
+    - 
   bug-fix:
-    - Avoid handing process when using execution cloud
-    - Fixed slowness during ufg tests
-    - Optimized number of requests during polling
-    - Fixed screenshot framing
-    - Fixed issue with css fetching for dom capture
+    - 
 "@applitools/eyes-cypress":
   feature:
     - 
