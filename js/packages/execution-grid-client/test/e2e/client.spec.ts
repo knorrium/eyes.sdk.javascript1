@@ -54,6 +54,9 @@ describe('client', () => {
     const [result] = await driver.executeScript<any[]>('applitools:getResults')
     const info = await getTestInfo(result)
     assert.strictEqual(info.scenarioName, 'EC functional test')
+    assert.strictEqual(info.appName, 'default')
+    assert.strictEqual(info.startInfo.nonVisual, true)
+    assert.deepStrictEqual(info.startInfo.properties, [{name: 'Execution Cloud', value: 'Yes'}])
     // assert.strictEqual(info.status, 'Failed') bug on backend
   })
 })
