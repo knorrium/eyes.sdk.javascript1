@@ -1,4 +1,5 @@
 import type {SpecType as BaseSpecType} from '@applitools/driver'
+import type {SpecDriver} from '@applitools/driver'
 import * as eyes from '@applitools/eyes'
 import * as spec from './spec-driver'
 
@@ -23,8 +24,11 @@ export class CheckSettingsAutomation extends eyes.CheckSettingsAutomation<SpecTy
 export class CheckSettings extends CheckSettingsAutomation {}
 
 export type TargetAutomation = eyes.TargetAutomation<SpecType>
-export const TargetAutomation = {...eyes.TargetAutomation, spec} as TargetAutomation
-export const Target = {...eyes.Target, spec} as eyes.Target<SpecType>
+export const TargetAutomation = {
+  ...eyes.TargetAutomation,
+  spec: spec as unknown as SpecDriver<SpecType>,
+} as TargetAutomation
+export const Target = {...eyes.Target, spec: spec as unknown as SpecDriver<SpecType>} as eyes.Target<SpecType>
 
 export type OCRRegion = eyes.OCRRegion<SpecType>
 

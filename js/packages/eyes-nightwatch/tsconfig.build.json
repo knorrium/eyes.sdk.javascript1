@@ -13,7 +13,7 @@
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
       "rootFile": "./index.ts",
-      "allowModules": ["nightwatch"],
+      "allowModules": ["nightwatch", "selenium-webdriver"],
       "stripPrivate": true,
       "stripProtected": true,
       "stripInternal": true

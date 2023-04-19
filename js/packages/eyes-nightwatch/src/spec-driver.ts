@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/ban-types: ["error", {"types": {"Function": false}}] */
 import type {CommonSelector} from '@applitools/driver'
 import type * as Selenium from 'selenium-webdriver'
 import type * as Nightwatch from 'nightwatch'
@@ -16,7 +17,15 @@ export type Selector = spec.Selector
 export type NWDriver = Nightwatch.NightwatchBrowser & ApplitoolsBrand
 export type NWElement = Element & ApplitoolsBrand
 export type NWShadowRoot = ({id_: string} | ShadowRoot) & ApplitoolsBrand
-export type NWSelector = (Nightwatch.ElementProperties | string | Selenium.Locator | Selector) & ApplitoolsBrand
+export type NWSelector = (
+  | Nightwatch.ElementProperties
+  | string
+  | Exclude<Selenium.Locator, Function>
+  | ((webdriver: Selenium.WebDriver) => Promise<any>)
+  | {using: string; value: string}
+  | Selector
+) &
+  ApplitoolsBrand
 
 export type NWResponseElement = Nightwatch.NightwatchTypedCallbackResult<Element> & ApplitoolsBrand
 
