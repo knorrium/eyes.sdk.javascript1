@@ -14,6 +14,7 @@ export default function makeConfig(): {config: any; eyesConfig: EyesPluginConfig
       'disableBrowserFetching',
       'testConcurrency',
       'removeDuplicateTests',
+      'eyesFetchConcurrency',
     ],
   })
 
@@ -49,6 +50,7 @@ export default function makeConfig(): {config: any; eyesConfig: EyesPluginConfig
     eyesTestConcurrency: config.testConcurrency || DEFAULT_TEST_CONCURRENCY,
     eyesWaitBeforeCapture: config.waitBeforeCapture,
     eyesRemoveDuplicateTests: !!config.removeDuplicateTests,
+    universalDebug: process.env.APPLITOOLS_UNIVERSAL_DEBUG === 'true' ? true : false,
   }
 
   return {config, eyesConfig}

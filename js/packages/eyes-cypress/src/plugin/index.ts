@@ -24,12 +24,13 @@ export type EyesPluginConfig = {
   eyesPort?: number
   eyesIsGlobalHooksSupported?: boolean
   eyesRemoveDuplicateTests?: boolean
+  universalDebug?: boolean
 }
 
 const {config, eyesConfig} = makeConfig()
 const logger = makeLogger({level: config.showLogs ? 'info' : 'silent', label: 'eyes'})
 
-const startServer = makeStartServer({logger, eyesConfig})
+const startServer = makeStartServer({logger, eyesConfig: {...eyesConfig, universalDebug: config.universalDebug}})
 
 const pluginExport = makePluginExport({
   startServer,

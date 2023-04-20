@@ -134,6 +134,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
         (await socket.request('Core.makeManager', {
           concurrency: Cypress.config('eyesTestConcurrency'),
           type: 'ufg',
+          fetchConcurrency: Cypress.config('appliConfFile').eyesFetchConcurrency,
         }))
     }
 
@@ -182,6 +183,14 @@ Cypress.Commands.add('eyesClose', () => {
     closePromiseArr.push(p)
     return p
   })
+})
+
+// internal command //
+Cypress.Commands.add('debugHistory', async function () {
+  Cypress.log({name: 'Debug: history'})
+  const history = await socket.request('Debug.getHistory')
+
+  return history
 })
 
 function setRootContext() {

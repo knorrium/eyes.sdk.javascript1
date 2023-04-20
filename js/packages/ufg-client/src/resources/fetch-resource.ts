@@ -13,6 +13,7 @@ import {
 import {makeResource, type UrlResource, type ContentfulResource, FailedResource} from './resource'
 import {createCookieHeader} from '../utils/create-cookie-header'
 import {createUserAgentHeader} from '../utils/create-user-agent-header'
+import throat from 'throat'
 
 export type FetchResourceSettings = {
   referer?: string
@@ -30,12 +31,16 @@ export type FetchResource = (options: {
 export function makeFetchResource({
   retryLimit = 5,
   streamingTimeout = 30 * 1000,
+  fetchTimeout = 30 * 1000,
+  fetchConcurrency,
   cache = new Map(),
   fetch,
   logger,
 }: {
   retryLimit?: number
   streamingTimeout?: number
+  fetchConcurrency?: number
+  fetchTimeout?: number
   cache?: Map<string, Promise<ContentfulResource | FailedResource>>
   fetch?: Fetch
   logger?: Logger
@@ -47,8 +52,9 @@ export function makeFetchResource({
     },
     fetch,
   })
+  return fetchConcurrency ? throat(fetchConcurrency, fetchResource) : fetchResource
 
-  return async function fetchResource({
+  async function fetchResource({
     resource,
     settings = {},
   }: {
@@ -74,6 +80,7 @@ export function makeFetchResource({
         return proxy
       },
       hooks: [handleLogs({logger}), handleStreaming({timeout: streamingTimeout, logger})],
+      timeout: fetchTimeout,
     })
       .then(async response => {
         return response.ok

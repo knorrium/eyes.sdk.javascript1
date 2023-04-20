@@ -2,6 +2,7 @@ import * as utils from '@applitools/utils'
 
 export type RunnerOptions = {
   testConcurrency?: number
+  fetchConcurrency?: number
   /** @internal */
   legacyConcurrency?: number
   removeDuplicateTests?: boolean

@@ -117,6 +117,7 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
 
 export interface ManagerSettings {
   concurrency?: number
+  fetchConcurrency?: number
   /** @deprecated */
   legacyConcurrency?: number
   agentId?: string

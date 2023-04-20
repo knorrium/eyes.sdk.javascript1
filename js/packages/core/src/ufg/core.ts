@@ -21,6 +21,7 @@ type Options<TSpec extends SpecType> = {
   base?: BaseCore
   agentId?: string
   concurrency?: number
+  fetchConcurrency?: number
   cwd?: string
   logger?: Logger
 }
@@ -30,6 +31,7 @@ export function makeCore<TSpec extends SpecType>({
   spec,
   clients,
   base,
+  fetchConcurrency,
   agentId = 'core-ufg',
   cwd = process.cwd(),
   logger: defaultLogger,
@@ -47,7 +49,7 @@ export function makeCore<TSpec extends SpecType>({
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
-      getUFGClient: makeGetUFGClient({client: clients?.ufg, logger}),
+      getUFGClient: makeGetUFGClient({client: clients?.ufg, fetchConcurrency, logger}),
       getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
       openEyes: makeOpenEyes({spec, core, logger}),
     }

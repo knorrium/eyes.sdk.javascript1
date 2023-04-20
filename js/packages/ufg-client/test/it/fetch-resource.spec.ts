@@ -6,20 +6,31 @@ import assert from 'assert'
 describe('fetch-resource', () => {
   let server: any
 
-  before(async () => {
-    const authority = await generateCertificate({days: 1})
-    server = await makeTestServer({...authority, port: 12345})
-  })
-
-  after(async () => {
+  afterEach(async () => {
     await server.close()
   })
 
   it('works with a self-signed certificate', async () => {
+    const authority = await generateCertificate({days: 1})
+    server = await makeTestServer({...authority})
     const fetchResource = makeFetchResource({retryLimit: 0})
     const resource = await fetchResource({
       resource: makeResource({url: `https://localhost:${server.port}/page/smurfs.jpg`}),
     })
     assert.strictEqual((resource.hash as any).contentType, 'image/jpeg')
+  })
+
+  it('does not hang for unresponsive resource', async () => {
+    server = await makeTestServer({
+      middlewares: ['slow'],
+    })
+
+    const fetchResource = makeFetchResource({retryLimit: 1, fetchTimeout: 1000})
+    await assert.rejects(
+      fetchResource({
+        resource: makeResource({url: `http://localhost:${server.port}/page/smurfs.jpg`}),
+      }),
+      err => err.constructor.name === 'AbortError',
+    )
   })
 })

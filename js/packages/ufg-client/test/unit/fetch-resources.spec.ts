@@ -2,6 +2,7 @@ import {makeFetchResource} from '../../src/resources/fetch-resource'
 import {makeResource} from '../../src/resources/resource'
 import assert from 'assert'
 import nock from 'nock'
+import * as utils from '@applitools/utils'
 
 describe('fetch-resource', () => {
   const mockResource = makeResource({
@@ -70,6 +71,27 @@ describe('fetch-resource', () => {
 
     assert.deepStrictEqual(resource1, mockResource)
     assert.deepStrictEqual(resource2, mockResource)
+  })
+
+  it('fetch with concurrency limitation', async () => {
+    const mockResources = Array.from({length: 10}, (_, index) => makeResource({url: `http://something/${index}`}))
+    let count = 0
+    nock('http://something').get(/\d+/).times(mockResources.length).reply(limitServerParallelRequests)
+
+    const fetchResource = makeFetchResource({fetchConcurrency: 5})
+    const resResources = await Promise.all(mockResources.map(resource => fetchResource({resource})))
+
+    assert.strictEqual(
+      resResources.some(resource => utils.types.has(resource, `errorStatusCode`)),
+      false,
+    )
+
+    async function limitServerParallelRequests() {
+      count += 1
+      await utils.general.sleep(300)
+      count -= 1
+      return [count > 4 ? 504 : 200, 'font', {'Content-Type': `some-context-type`}]
+    }
   })
 
   describe('works with streamingTimeout', () => {

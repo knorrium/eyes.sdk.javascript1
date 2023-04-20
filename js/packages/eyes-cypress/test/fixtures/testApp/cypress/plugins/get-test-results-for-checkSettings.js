@@ -1,6 +1,4 @@
-// module.exports = require('./start-test-server');
-
-module.exports = (on, config) => {
+module.exports = (on, _config) => {
   on('task', {
     log(message) {
       console.log(`@@START@@ ${message} @@END@@`)

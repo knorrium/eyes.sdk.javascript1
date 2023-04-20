@@ -67,6 +67,7 @@ export default function makeStartServer({logger, eyesConfig}: {logger: Logger; e
       forkOptions,
       singleton: false,
       portResolutionMode: 'random',
+      debug: eyesConfig.universalDebug,
     })
 
     const managers: {manager: object; socketWithUniversal: SocketWithUniversal}[] = []

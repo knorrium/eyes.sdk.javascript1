@@ -3,6 +3,7 @@ import {type Logger} from '@applitools/logger'
 import {type HashedResource} from './resources/resource'
 import {type AbortSignal} from 'abort-controller'
 import {type ProcessResourcesSettings} from './resources/process-resources'
+import {type UFGRequestsConfig} from './server/requests'
 
 export type DomSnapshot = {
   cdt: any[]
@@ -239,6 +240,10 @@ export interface UFGClient {
   getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
   getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
   getCachedResourceUrls(): string[]
+}
+
+export type UFGClientConfig = UFGRequestsConfig & {
+  fetchConcurrency?: number
 }
 
 export type RendererEnvironment = {

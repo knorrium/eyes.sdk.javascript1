@@ -21,7 +21,11 @@ export abstract class EyesRunner {
 
   constructor(options?: RunnerOptions) {
     if (options) {
-      this._managerSettings = {concurrency: options.testConcurrency, legacyConcurrency: options.legacyConcurrency}
+      this._managerSettings = {
+        concurrency: options.testConcurrency,
+        legacyConcurrency: options.legacyConcurrency,
+        fetchConcurrency: options.fetchConcurrency,
+      }
       this._getResultsSettings = {removeDuplicateTests: options.removeDuplicateTests}
     }
   }

@@ -10,7 +10,7 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - 
+    - Add a timeout and max concurrency for fetching resources
   bug-fix:
     - Fixed typo in ec custom property
 "@applitools/eyes-selenium":
@@ -52,6 +52,7 @@ Apollo SDK:
     - Fixed incorrect calculation of the target element position.
     - Handle fake shadowRoot with UFG
     - Handed error during polling in long requests to eyes server
+    - 
 "@applitools/eyes-nightwatch":
   feature:
     - 
@@ -59,7 +60,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-cypress":
   feature:
-    - 
+    - Add a timeout and max concurrency for fetching resources
   bug-fix:
     - 
 "@applitools/eyes-storybook":

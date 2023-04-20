@@ -36,7 +36,10 @@ export interface UFGRequests {
   getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
 }
 
-export type UFGRequestsConfig = ReqUFGConfig & {uploadUrl: string; stitchingServiceUrl: string}
+export type UFGRequestsConfig = ReqUFGConfig & {
+  uploadUrl: string
+  stitchingServiceUrl: string
+}
 
 export function makeUFGRequests({
   config,
