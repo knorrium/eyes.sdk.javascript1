@@ -8,7 +8,6 @@ const {presult} = require('@applitools/functional-commons')
 const applitoolsConfig = require('../fixtures/testApp/applitools.config.js')
 const {expect} = require('chai')
 
-process.env.APPLITOOLS_UNIVERSAL_DEBUG = true
 const pexec = require('../util/pexec')
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-fetch-concurrency')
@@ -50,7 +49,7 @@ describe('works with fetchConcurrency', () => {
   })
 
   it('send fetchConcurrency to universal', async () => {
-    const config = {...applitoolsConfig, eyesFetchConcurrency: 5, failCypressOnDiff: false}
+    const config = {...applitoolsConfig, eyesFetchConcurrency: 5, failCypressOnDiff: false, universalDebug: true}
     fs.writeFileSync(`${targetTestAppPath}/applitools.config.js`, 'module.exports =' + JSON.stringify(config, 2, null))
     try {
       const [_err, stdout] = await presult(runCypress('get-test-results-for-checkSettings.js', 'fetchConcurrency.js'))
