@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.5.3 - 2023/4/20
+
+### Features
+- Add a timeout and max concurrency for fetching resources
+### Bug fixes
+- Fixed typo in ec custom property
+
 ## 2.5.2 - 2023/4/19
 
 ### Features
