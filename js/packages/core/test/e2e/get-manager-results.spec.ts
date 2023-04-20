@@ -114,7 +114,7 @@ describe('get manager results', () => {
     const testInfo = await getTestInfo(summary.results[0].result)
     assert.deepStrictEqual(testInfo.startInfo.properties, [
       {name: 'latest', value: 'true'},
-      {name: 'Execution cloud', value: 'No'},
+      {name: 'Execution Cloud', value: 'No'},
     ])
   })
 

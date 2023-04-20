@@ -68,7 +68,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     if (account.ecEnabled) {
       const environment = await driver?.getEnvironment()
       settings.properties ??= []
-      settings.properties.push({name: 'Execution cloud', value: environment?.isEC ? 'Yes' : 'No'})
+      settings.properties.push({name: 'Execution Cloud', value: environment?.isEC ? 'Yes' : 'No'})
     }
 
     core.logEvent({
