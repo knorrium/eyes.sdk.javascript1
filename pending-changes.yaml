@@ -59,7 +59,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-cypress":
   feature:
-    - Add a timeout and max concurrency for fetching resources
+    - 
   bug-fix:
     - 
 "@applitools/eyes-storybook":

@@ -12,6 +12,12 @@
 
 
 
+## 3.32.0 - 2023/4/21
+
+### Features
+- Add a timeout and max concurrency for fetching resources
+### Bug fixes
+
 ## 3.31.1 - 2023/4/14
 
 ### Features
