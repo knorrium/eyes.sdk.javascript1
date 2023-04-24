@@ -13,7 +13,7 @@ describe('Hello world', () => {
     cy.eyesCheckWindow('Main Page')
     cy.eyesClose()
     cy.debugHistory().then(history => {
-      cy.task('log', JSON.stringify({fetchConcurrency: history.managers[0].fetchConcurrency}))
+      cy.task('log', JSON.stringify({fetchConcurrency: history.managers[0].settings.fetchConcurrency}))
     })
   })
 })
