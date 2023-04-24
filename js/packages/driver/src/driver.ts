@@ -368,9 +368,9 @@ export class Driver<T extends SpecType> {
 
           windowSize = utils.geometry.scale(windowSize, 1 / this._viewport.pixelRatio)
           this._viewport.displaySize &&= utils.geometry.scale(this._viewport.displaySize, 1 / this._viewport.pixelRatio)
-        }
 
-        if (environment.isIOS) {
+          this._viewport.navigationBarSize ??= 0
+        } else if (environment.isIOS) {
           if (this._viewport.orientation?.startsWith('landscape')) this._viewport.statusBarSize = 0
         }
 
