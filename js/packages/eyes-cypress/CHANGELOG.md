@@ -12,6 +12,12 @@
 
 
 
+## 3.32.1 - 2023/4/24
+
+### Features
+### Bug fixes
+- Fix fetchConcurrency mapping
+
 ## 3.32.0 - 2023/4/21
 
 ### Features
