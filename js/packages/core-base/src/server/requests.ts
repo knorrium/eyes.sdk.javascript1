@@ -1,4 +1,4 @@
-import type {Mutable, MaybeArray, Region} from '@applitools/utils'
+import type {MaybeArray, Region} from '@applitools/utils'
 import type {
   ImageTarget,
   Core,
@@ -145,7 +145,7 @@ export function makeCoreRequests({
       expected: [200, 201],
       logger,
     })
-    const test: VisualTest = await response.json().then(async result => {
+    const test: VisualTest = await response.json().then(async (result: any) => {
       const test = {
         testId: result.id,
         userTestId: settings.userTestId!,
@@ -241,7 +241,7 @@ export function makeCoreRequests({
       expected: [200, 201],
       logger,
     })
-    const test: FunctionalTest = await response.json().then(async result => {
+    const test: FunctionalTest = await response.json().then(async (result: any) => {
       const account = await accountPromise
       const test = {
         testId: result.id,
@@ -291,7 +291,7 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json().then(results => {
+    const result = await response.json().then((results: any) => {
       return Object.entries<any[]>(results).reduce((results, [key, regions]) => {
         results[key as TLocator] =
           regions?.map(region => ({x: region.left, y: region.top, width: region.width, height: region.height})) ?? []
@@ -339,7 +339,7 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     logger.log('Request "locateText" finished successfully with body', result)
     return result
   }
@@ -380,7 +380,7 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     logger.log('Request "extractText" finished successfully with body', result)
     return result
   }
@@ -401,7 +401,7 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json().then(result => {
+    const result = await response.json().then((result: any) => {
       const {serviceUrl, accessToken, resultsUrl, ...rest} = result
       const account = {
         server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy, agentId},
@@ -439,7 +439,7 @@ export function makeCoreRequests({
     })
     const result =
       response.status === 200
-        ? await response.json().then(result => {
+        ? await response.json().then((result: any) => {
             return {branchName: result.scmSourceBranch, parentBranchName: result.scmTargetBranch}
           })
         : {branchName: undefined, parentBranchName: undefined}
@@ -560,7 +560,7 @@ export function makeEyesRequests({
       expected: 200,
       logger,
     })
-    const result: Mutable<CheckResult> = await response.json()
+    const result: any = await response.json()
     result.userTestId = test.userTestId
     logger.log('Request "check" finished successfully with body', result)
     return [result]
@@ -615,7 +615,7 @@ export function makeEyesRequests({
         supportsCheckAndClose = false
         return checkAndClose({target, settings})
       }
-      const result: Mutable<TestResult> = await response.json()
+      const result: any = await response.json()
       result.userTestId = test.userTestId
       result.url = test.resultsUrl
       result.isNew = test.isNew
@@ -654,7 +654,7 @@ export function makeEyesRequests({
         }),
       )
       .then(async response => {
-        const result: Mutable<TestResult> = await response.json()
+        const result: any = await response.json()
         result.userTestId = test.userTestId
         result.url = test.resultsUrl
         result.isNew = test.isNew
@@ -694,7 +694,7 @@ export function makeEyesRequests({
         }),
       )
       .then(async response => {
-        const result: Mutable<TestResult> = await response.json()
+        const result: any = await response.json()
         result.userTestId = test.userTestId
         result.initializedAt = test.initializedAt
         result.keepIfDuplicate = test.keepIfDuplicate
@@ -799,7 +799,7 @@ export function makeFunctionalSessionRequests({
         }),
       )
       .then(async response => {
-        const result: Mutable<TestResult> = await response.json()
+        const result: any = await response.json()
         result.userTestId = test.userTestId
         result.url = test.resultsUrl
         result.initializedAt = test.initializedAt
@@ -836,7 +836,7 @@ export function makeFunctionalSessionRequests({
         }),
       )
       .then(async response => {
-        const result: Mutable<TestResult> = await response.json()
+        const result: any = await response.json()
         result.userTestId = test.userTestId
         result.initializedAt = test.initializedAt
         result.keepIfDuplicate = test.keepIfDuplicate

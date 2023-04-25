@@ -1,4 +1,4 @@
-import {Response, type Request} from '@applitools/req'
+import {type Request} from '@applitools/req'
 import {makeReqEyes} from '../../src/server/req-eyes'
 import assert from 'assert'
 import nock from 'nock'
@@ -23,8 +23,8 @@ describe('req-eyes', () => {
       assert.strictEqual(request.url, 'https://eyesapi.applitools.com/request?apiKey=api-key')
       assert.strictEqual(request.headers.get('x-applitools-eyes-client'), 'agent-id')
       assert.ok(request.headers.has('x-applitools-eyes-client-request-id'))
-      assert.ok(request.agent)
-      return new Response()
+      assert.ok((request as any).agent)
+      return {status: 200}
     }
   })
 

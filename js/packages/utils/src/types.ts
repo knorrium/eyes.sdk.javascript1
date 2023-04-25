@@ -52,7 +52,7 @@ export function isObject(value: any): value is Record<PropertyKey, any> {
   return typeof value === 'object' && value !== null
 }
 
-export function isPlainObject(value: any): value is Record<PropertyKey, any> {
+export function isPlainObject(value: any): value is Record<string, any> {
   return isObject(value) && (!value.constructor || value.constructor.name === 'Object')
 }
 

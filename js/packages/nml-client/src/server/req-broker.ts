@@ -1,5 +1,5 @@
 import {type Logger} from '@applitools/logger'
-import globalReq, {makeReq, Response, type Req, type Options, type Proxy, type Hooks} from '@applitools/req'
+import globalReq, {makeReq, type Req, type Options, type Proxy, type Hooks} from '@applitools/req'
 
 export type ReqBrokerConfig = {
   proxy?: Proxy
@@ -97,7 +97,7 @@ function handleUnexpectedResponse(): Hooks<ReqBrokerOptions> {
             `There was a problem when interacting with the mobile application. The provided error message was "${error.message}" and had a stack trace of "${error.stack}"`,
           )
         }
-        return new Response(body, response)
+        return {...response, body}
       }
     },
   }

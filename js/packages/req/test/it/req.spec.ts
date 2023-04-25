@@ -1,7 +1,8 @@
 import assert from 'assert'
 import nock from 'nock'
 import {Request} from 'node-fetch'
-import {req} from '../../src/req'
+import {req} from '../../src/req.js'
+import * as utils from '@applitools/utils'
 
 describe('req', () => {
   it('works', async () => {
@@ -179,5 +180,18 @@ describe('req', () => {
     assert.strictEqual(response.status, 200)
     assert.deepStrictEqual(await response.json(), {hello: 'world'})
     assert.deepStrictEqual(await response.headers.get('after-response'), 'true')
+  })
+
+  it("doesn't hangs when cloning 100mb response body", async () => {
+    nock('https://eyesapi.applitools.com')
+      .get('/api/hello')
+      .reply(200, Buffer.alloc(1024 * 1024 * 100).fill('?'))
+
+    const response = await req('https://eyesapi.applitools.com/api/hello')
+
+    await Promise.race([
+      response.clone().arrayBuffer(),
+      utils.general.sleep(3000)?.then(() => Promise.reject(new Error('hangs'))),
+    ])
   })
 })

@@ -25,26 +25,32 @@
   "aliases": [
     "req"
   ],
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "default": "./dist/index.js"
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./types/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
-    "./dist/*": "./dist/*.js",
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
+  "types": "./types/index.d.cts",
+  "main": "./dist/index.cjs",
   "browser": {
     "proxy-agent": false
   },
-  "types": "./types/index.d.ts",
   "files": [
     "dist",
     "types"
   ],
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json && cp ./types/index.d.ts ./types/index.d.cts",
     "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
     "test:sanity": "yarn test",
     "deps": "bongo deps",
@@ -54,12 +60,12 @@
   },
   "dependencies": {
     "@applitools/utils": "1.3.32",
-    "@types/node-fetch": "2.6.2",
     "abort-controller": "3.0.0",
-    "node-fetch": "2.6.7",
+    "node-fetch": "3.3.1",
     "proxy-agent": "5.0.0"
   },
   "devDependencies": {
+    "@applitools/api-extractor": "^1.2.14",
     "@applitools/bongo": "^3.0.3",
     "@types/node": "^12.20.55",
     "nock": "^13.2.9"

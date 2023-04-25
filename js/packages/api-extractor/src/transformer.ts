@@ -35,7 +35,10 @@ export default function transformer(
 
   // TODO handle missed rootDir, outDir, declarationDir
   const rootFileName = path.resolve(options.rootDir, config.rootFile)
-  const declarationFileName = path.resolve(options.declarationDir, path.basename(rootFileName, '.ts') + '.d.ts')
+  const declarationFileName = path.resolve(
+    options.declarationDir,
+    path.basename(rootFileName).replace(/\.([cm]?ts)$/, '.d.$1'),
+  )
 
   // collection of everything is exported from the entry point
   const exports = {
@@ -48,7 +51,7 @@ export default function transformer(
 
   return function transformerFactory(context) {
     const host = context.getEmitHost()
-    host.isEmitBlocked = emitFileName => emitFileName.endsWith('.d.ts') && emitFileName !== declarationFileName
+    host.isEmitBlocked = emitFileName => /\.d\.[cm]?ts$/.test(emitFileName) && emitFileName !== declarationFileName
 
     return function transformSourceFile(sourceFile: ts.SourceFile): ts.SourceFile {
       if (sourceFile.fileName !== rootFileName) return sourceFile
@@ -214,7 +217,11 @@ export default function transformer(
     return Boolean(
       type.flags & ts.TypeFlags.Object &&
         type.symbol.flags &
-          (ts.SymbolFlags.TypeLiteral | ts.SymbolFlags.Interface | ts.SymbolFlags.Class | ts.SymbolFlags.Method),
+          (ts.SymbolFlags.TypeLiteral |
+            ts.SymbolFlags.Interface |
+            ts.SymbolFlags.Class |
+            ts.SymbolFlags.Method |
+            ts.SymbolFlags.Function),
     )
   }
 
@@ -259,13 +266,15 @@ export default function transformer(
   }
 
   function getModuleNameOfType(type: ts.Type): string {
-    const symbol = type.aliasSymbol ?? type.symbol
+    let symbol = type.aliasSymbol ?? type.symbol
+    while (symbol.parent) symbol = symbol.parent
     const sourceFile = symbol.declarations[0].getSourceFile()
     const fileName = sourceFile.fileName
     const dirName = fileName.includes('/node_modules/')
       ? sourceFile.fileName.replace(/\/node_modules\/.*$/, '')
       : program.getCurrentDirectory()
     const moduleName = config.allowModules?.find(moduleName => {
+      if (symbol.getName() === `"${moduleName}"`) return true
       const cache = modules.getOrCreateCacheForModuleName(moduleName, ts.ModuleKind.CommonJS)
       const module = cache.get(dirName) ?? cache.get(`${dirName}/node_modules`)
       if (!module?.resolvedModule) return false
@@ -299,7 +308,7 @@ export default function transformer(
       if (name === '__global') {
         // if global type's name already taken then add `globalThis`, otherwise nothing
         name = exports.names.has(chunks[0]) ? 'globalThis' : ''
-      } else if (symbol.flags & ts.SymbolFlags.ValueModule) {
+      } else if (!config.allowGlobalNamespaces.includes(name) && symbol.flags & ts.SymbolFlags.ValueModule) {
         // if type was imported from a module use import function to access the type
         name = `import('${getModuleNameOfType(type)}')`
       }
@@ -878,7 +887,8 @@ export default function transformer(
     isStatic?: boolean
   }) {
     const {symbol, node, isSignature, isStatic} = options
-    const signatures = checker.getTypeOfSymbolAtLocation(symbol, node).getCallSignatures()
+    const type = checker.getTypeOfSymbolAtLocation(symbol, node)
+    const signatures = type.isUnion() ? type.types.flatMap(type => type.getCallSignatures()) : type.getCallSignatures()
     let modifierFlags = ts.getCombinedModifierFlags(symbol.declarations[symbol.declarations.length - 1])
     modifierFlags |= isStatic ? ts.ModifierFlags.Static : 0 // add `static` modifier
     modifierFlags &= ~ts.ModifierFlags.Async // remove `async` modifier
@@ -1069,7 +1079,7 @@ export default function transformer(
     return ts.factory.createInterfaceDeclaration(
       modifiers,
       name,
-      /* typeParameters */ [],
+      node.typeParameters, // TODO figure out where it should come from
       heritageClauses,
       createTypeMembers({type, node}),
     )

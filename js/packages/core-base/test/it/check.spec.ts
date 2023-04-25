@@ -67,7 +67,7 @@ describe('check', () => {
       error => {
         return (
           error.message ===
-          'Request "check" that was sent to the address "[POST]https://localhost:3000/api/sessions/running/test-id?apiKey=my0api0key" failed due to unexpected status Bad Request(400)'
+          'Request "check" that was sent to the address "[POST]https://localhost:3000/api/sessions/running/test-id?apiKey=my0api0key" failed due to unexpected status (400)'
         )
       },
     )

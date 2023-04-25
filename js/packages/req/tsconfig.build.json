@@ -7,8 +7,16 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
+    "allowJs": true,
     "stripInternal": false,
     "removeComments": false,
+    "plugins": [{
+      "transform": "@applitools/api-extractor",
+      "afterDeclarations": true,
+      "rootFile": "./index.ts",
+      "allowGlobalNamespaces": ["NodeJS"],
+      "allowModules": ["http"],
+    }]
   },
   "exclude" : ["dist", "types", "test"]
 }

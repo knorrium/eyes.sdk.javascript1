@@ -11,6 +11,8 @@ packages/*/doc
 packages/*/bin
 packages/*/dist
 packages/*/types/**/*.d.ts
+packages/*/types/**/*.d.mts
+packages/*/types/**/*.d.cts
 
 # Coverage tests
 **/test/generic/
