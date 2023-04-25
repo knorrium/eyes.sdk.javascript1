@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
+    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-puppeteer'",
     "test": "yarn test:coverage",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-puppeteer' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",

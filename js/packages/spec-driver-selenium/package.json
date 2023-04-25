@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
+    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
     "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker --exit",
     "test:sanity": "yarn test",
     "setup": "yarn docker:setup",

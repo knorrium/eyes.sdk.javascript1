@@ -1,5 +1,5 @@
 /*
- * The types here are compiled via `ttsc` and `api-extractor`, and are used to describe the inputs to
+ * The types here are compiled via `tspc` and `api-extractor`, and are used to describe the inputs to
  * Eyes-Cypress custom commands. The reason they are not written in the `index.d.ts` file next to the
  * `declare global { namespace Cypress {...}}` statement is that `api-extractor` has a limitation (at
  * the time of writing this) that drops the `declare global` statement. So it's important to not pass

@@ -64,7 +64,7 @@
     "run:testcafe:8": "./node_modules/testcafe-8/bin/testcafe-with-v8-flag-filter.js",
     "run:testcafe:7": "./node_modules/testcafe-7/bin/testcafe-with-v8-flag-filter.js",
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts' '**/*.js'",
-    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
+    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-testcafe'",
     "test": "yarn test:it && yarn test:coverage",
     "test:sanity": "yarn test:it",

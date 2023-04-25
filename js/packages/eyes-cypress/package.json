@@ -27,7 +27,7 @@
   ],
   "scripts": {
     "lint": "eslint \"**/*.{js,ts}\"",
-    "build": "node ../../node_modules/.bin/ttsc",
+    "build": "node ../../node_modules/.bin/tspc",
     "generate:tests": "coverage-tests generate",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:ts && yarn test:components && yarn test:coverage",
     "test:sanity": "yarn test:unit && yarn test:it && yarn test:ts",

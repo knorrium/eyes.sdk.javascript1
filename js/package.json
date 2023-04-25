@@ -30,7 +30,6 @@
     "prettier": "^2.8.3",
     "ts-node": "^10.9.1",
     "ts-patch": "^3.0.0-rc2",
-    "ttypescript": "^1.5.15",
     "typescript": "^5.0.4",
     "yargs": "^17.6.2"
   }

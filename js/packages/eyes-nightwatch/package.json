@@ -42,7 +42,7 @@
   ],
   "scripts": {
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts' '**/*.js'",
-    "build": "node ../../node_modules/.bin/ttsc --project ./tsconfig.build.json",
+    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-nightwatch'",
     "test": "yarn test:it && yarn test:e2e && yarn test:coverage",
     "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker",
