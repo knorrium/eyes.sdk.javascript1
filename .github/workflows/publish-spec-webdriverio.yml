@@ -35,15 +35,15 @@ jobs:
       matrix:
         include:
           - framework-version: 5
-            node-version: 12
-          - framework-version: 6
-            node-version: 12
-          - framework-version: 7
             node-version: 14
-          - framework-version: 8
+          - framework-version: 6
+            node-version: 14
+          - framework-version: 7
             node-version: 16
           - framework-version: 8
             node-version: 18
+          - framework-version: 8
+            node-version: 20
     name: 'Test (wdio: ${{matrix.framework-version}}, node: ${{matrix.node-version}})'
     runs-on: ubuntu-latest
     env:

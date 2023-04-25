@@ -26,11 +26,7 @@ jobs:
   test:
     strategy:
       matrix:
-        include: 
-          - node-version: 12
-            framework-version: 1.21
-          - node-version: 14
-          - node-version: 16
+        node-version: [14, 16, 18, 20]
     name: 'Test (node: ${{matrix.node-version}})'
     runs-on: ubuntu-20.04
     env:

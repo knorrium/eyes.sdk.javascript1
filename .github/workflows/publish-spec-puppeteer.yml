@@ -26,11 +26,7 @@ jobs:
   test:
     strategy:
       matrix:
-        include: 
-          - node-version: 12
-            framework-version: 13.7
-          - node-version: 14
-          - node-version: 16
+        node-version: [14, 16, 18, 20]
     name: 'Test (pptr: ${{matrix.framework-version || ''latest''}} node: ${{matrix.node-version}})'
     runs-on: ubuntu-latest
     env:
