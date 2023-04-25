@@ -50,8 +50,8 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/logger": "1.1.51",
-    "@applitools/utils": "1.3.34"
+    "@applitools/logger": "1.1.52",
+    "@applitools/utils": "1.3.35"
   },
   "devDependencies": {
     "@applitools/bongo": "^3.0.3",
