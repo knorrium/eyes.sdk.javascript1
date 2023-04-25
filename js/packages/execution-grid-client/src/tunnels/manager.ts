@@ -45,7 +45,7 @@ export async function makeTunnelManager({
     retry: {
       validate: async ({response}) => {
         if (!response) return false
-        const body = await response
+        const body: any = await response
           .clone()
           .json()
           .catch(() => null)
@@ -100,7 +100,7 @@ export async function makeTunnelManager({
       },
     })
 
-    const body = await response.json().catch(() => null)
+    const body: any = await response.json().catch(() => null)
     if (response.status === 201) return {tunnelId: body, credentials}
 
     logger.error(`Failed to create tunnel with status ${response.status} and code ${body?.message ?? 'UNKNOWN_ERROR'}`)
@@ -122,7 +122,7 @@ export async function makeTunnelManager({
       },
     })
 
-    const body = await response.json().catch(() => null)
+    const body: any = await response.json().catch(() => null)
     if (response.status === 200) return
 
     logger.error(`Failed to delete tunnel with status ${response.status} and code ${body?.message ?? 'UNKNOWN_ERROR'}`)

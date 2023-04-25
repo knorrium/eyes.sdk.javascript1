@@ -21,7 +21,7 @@ export function makeFindElement({req}: Options) {
   }): Promise<void> {
     logger.log('Inspecting element lookup request to collect self-healing metadata')
     const proxyResponse = await req(request.url!, {io: {request, response, handle: false}, logger})
-    const responseBody = await proxyResponse.json()
+    const responseBody: any = await proxyResponse.json()
     if (responseBody?.appliCustomData?.selfHealing?.successfulSelector) {
       logger.log('Self-healed locators detected', responseBody.appliCustomData.selfHealing)
       session.metadata ??= []

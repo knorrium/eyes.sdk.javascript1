@@ -398,7 +398,9 @@ export default function transformer(
 
     type = !noReduce ? getTypeAlias(type) : type
 
-    if (isKnownType(type)) {
+    if (type.isThisType) {
+      return ts.factory.createThisTypeNode()
+    } else if (isKnownType(type)) {
       return createTypeReferenceNode({type, node})
     } else if (isPrimitiveType(type)) {
       return checker.typeToTypeNode(type, node, undefined)

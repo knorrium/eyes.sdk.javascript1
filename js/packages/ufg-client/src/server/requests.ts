@@ -90,8 +90,8 @@ export function makeUFGRequests({
       expected: 200,
       logger,
     })
-    const results = await response.json().then((results: any[]) => {
-      return results.map((result, index) => {
+    const results = await response.json().then((results: any) => {
+      return (results as any[]).map((result, index) => {
         return {
           rendererId: result.renderer,
           rendererUniqueId: utils.general.guid(),
@@ -158,8 +158,8 @@ export function makeUFGRequests({
       expected: 200,
       logger,
     })
-    const results = await response.json().then((results: any[]) => {
-      return results.map(result => {
+    const results = await response.json().then((results: any) => {
+      return (results as any[]).map(result => {
         return {jobId: result.jobId, renderId: result.renderId, status: result.renderStatus} as StartedRender
       })
     })
@@ -195,8 +195,8 @@ export function makeUFGRequests({
       },
       logger,
     })
-    const results = await response.json().then((results: any[]) => {
-      return results.map((result, index) => ({
+    const results = await response.json().then((results: any) => {
+      return (results as any[]).map((result, index) => ({
         renderId: renders[index].renderId,
         status: result.status,
         error: result.error,
@@ -236,7 +236,7 @@ export function makeUFGRequests({
       expected: 200,
       logger,
     })
-    const results = await response.json()
+    const results: any = await response.json()
     logger.log('Request "checkResources" finished successfully with body', results)
     return results
   }
@@ -274,7 +274,7 @@ export function makeUFGRequests({
       method: 'GET',
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     logger.log('Request "getChromeEmulationDevices" finished successfully with body', result)
     return result
   }
@@ -286,7 +286,7 @@ export function makeUFGRequests({
       method: 'GET',
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     logger.log('Request "getIOSDevices" finished successfully with body', result)
     return result
   }

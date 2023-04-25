@@ -1,16 +1,8 @@
 import type {Cookie} from '../types'
 import {type Logger} from '@applitools/logger'
-import {
-  makeReq,
-  Request,
-  Response,
-  AbortController,
-  type Fetch,
-  type Proxy,
-  type Hooks,
-  type AbortSignal,
-} from '@applitools/req'
+import {makeReq, type Fetch, type Proxy, type Hooks} from '@applitools/req'
 import {makeResource, type UrlResource, type ContentfulResource, FailedResource} from './resource'
+import {AbortController} from 'abort-controller'
 import {createCookieHeader} from '../utils/create-cookie-header'
 import {createUserAgentHeader} from '../utils/create-user-agent-header'
 import throat from 'throat'
@@ -120,26 +112,26 @@ function handleLogs({logger}: {logger?: Logger}): Hooks {
 function handleStreaming({timeout, logger}: {timeout: number; logger?: Logger}): Hooks {
   const controller = new AbortController()
   return {
-    async beforeRequest({request}: {request: Request & {signal?: AbortSignal}}) {
+    async beforeRequest({request}) {
       if (request.signal?.aborted) return
-      request.signal?.addEventListener('abort', () => controller.abort(), {once: true})
-      return new Request(request, {signal: controller.signal})
+      request.signal?.addEventListener('abort', () => controller.abort())
+      return {...request, signal: controller.signal}
     },
     async afterResponse({response}) {
       const contentLength = response.headers.get('Content-Length')
       const contentType = response.headers.get('Content-Type')
       const isProbablyStreaming = response.ok && !contentLength && contentType && /^(audio|video)\//.test(contentType)
       if (!isProbablyStreaming) return
-      return new Promise<Response>(resolve => {
+      return new Promise(resolve => {
         const timer = setTimeout(() => {
           controller.abort()
-          resolve(new Response(undefined, {status: 599}))
+          resolve({status: 599})
           logger?.log(`Resource with url ${response.url} was interrupted, due to it takes too long to download`)
         }, timeout)
         response
           .arrayBuffer()
-          .then(body => resolve(new Response(body, response)))
-          .catch(() => resolve(new Response(undefined, {status: 599})))
+          .then(body => resolve({...response, body: Buffer.from(body)}))
+          .catch(() => resolve({status: 599}))
           .finally(() => clearTimeout(timer))
       })
     },

@@ -90,7 +90,7 @@ export function makeStartSession({settings, req, tunnels}: Options) {
         logger,
       })
 
-      const responseBody = await proxyResponse.json()
+      const responseBody: any = await proxyResponse.json()
 
       logger.log(`Response was intercepted with body:`, responseBody)
 

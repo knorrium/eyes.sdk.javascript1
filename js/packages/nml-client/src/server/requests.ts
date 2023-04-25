@@ -50,7 +50,7 @@ export function makeNMLRequests({
       },
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     brokerUrl = result.nextPath
     return result.payload
   }
@@ -74,7 +74,7 @@ export function makeNMLRequests({
       },
       logger,
     })
-    const result = await response.json()
+    const result: any = await response.json()
     brokerUrl = result.nextPath
     const platformName = result.payload.result.resourceMap.metadata.platformName
     const snapshot = {platformName, vhsHash: result.payload.result.resourceMap.vhs} as TSnapshot

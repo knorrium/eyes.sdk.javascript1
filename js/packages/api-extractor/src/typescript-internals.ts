@@ -23,6 +23,7 @@ declare module 'typescript' {
 
   export interface Type {
     default?: ts.Type
+    isThisType?: boolean
   }
 
   export interface Node {

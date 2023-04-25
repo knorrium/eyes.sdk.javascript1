@@ -54,7 +54,8 @@ export function makeReqProxy(config: ReqProxyConfig) {
           io.response.sendDate = false
           if (io.handle !== false) {
             io.response.writeHead(response.status, Object.fromEntries(response.headers.entries()))
-            response.body.pipe(io.response)
+            if (response.body) response.body.pipe(io.response)
+            else io.response.end()
           }
         }
       },
