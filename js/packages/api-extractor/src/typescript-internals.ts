@@ -33,7 +33,9 @@ declare module 'typescript' {
     parent?: ts.Symbol
     checkFlags?: ts.CheckFlags
     nameType?: ts.UniqueESSymbolType
-    target?: ts.Symbol
+    links?: {
+      target?: ts.Symbol
+    }
   }
 
   export enum SymbolFlags {

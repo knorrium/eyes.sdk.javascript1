@@ -266,15 +266,16 @@ export default function transformer(
   }
 
   function getModuleNameOfType(type: ts.Type): string {
-    let symbol = type.aliasSymbol ?? type.symbol
-    while (symbol.parent) symbol = symbol.parent
+    const symbol = type.aliasSymbol ?? type.symbol
+    let parentSymbol = symbol
+    while (parentSymbol.parent) parentSymbol = parentSymbol.parent
     const sourceFile = symbol.declarations[0].getSourceFile()
     const fileName = sourceFile.fileName
     const dirName = fileName.includes('/node_modules/')
       ? sourceFile.fileName.replace(/\/node_modules\/.*$/, '')
       : program.getCurrentDirectory()
     const moduleName = config.allowModules?.find(moduleName => {
-      if (symbol.getName() === `"${moduleName}"`) return true
+      if (parentSymbol.getName() === `"${moduleName}"`) return true
       const cache = modules.getOrCreateCacheForModuleName(moduleName, ts.ModuleKind.CommonJS)
       const module = cache.get(dirName) ?? cache.get(`${dirName}/node_modules`)
       if (!module?.resolvedModule) return false
@@ -308,7 +309,7 @@ export default function transformer(
       if (name === '__global') {
         // if global type's name already taken then add `globalThis`, otherwise nothing
         name = exports.names.has(chunks[0]) ? 'globalThis' : ''
-      } else if (!config.allowGlobalNamespaces.includes(name) && symbol.flags & ts.SymbolFlags.ValueModule) {
+      } else if (!config.allowGlobalNamespaces?.includes(name) && symbol.flags & ts.SymbolFlags.ValueModule) {
         // if type was imported from a module use import function to access the type
         name = `import('${getModuleNameOfType(type)}')`
       }
@@ -641,8 +642,9 @@ export default function transformer(
 
     const type = checker.getTypeOfSymbolAtLocation(
       // if symbol is generic and the declaration of the generic is a descendant of the current node, then get generic type, otherwise calculated type in context
-      symbol.target && ts.findAncestor(symbol.target.valueDeclaration, ancestorNode => ancestorNode === node)
-        ? symbol.target
+      symbol.links?.target &&
+        ts.findAncestor(symbol.links.target.valueDeclaration, ancestorNode => ancestorNode === node)
+        ? symbol.links.target
         : symbol,
       node,
     )
@@ -784,8 +786,9 @@ export default function transformer(
     const optionalToken = isOptional(symbol) ? ts.factory.createToken(ts.SyntaxKind.QuestionToken) : undefined
     const type = checker.getTypeOfSymbolAtLocation(
       // if symbol is generic and the declaration of the generic is a descendant of the current node, then get generic type, otherwise calculated type in context
-      symbol.target && ts.findAncestor(symbol.target.valueDeclaration, ancestorNode => ancestorNode === node)
-        ? symbol.target
+      symbol.links?.target &&
+        ts.findAncestor(symbol.links.target.valueDeclaration, ancestorNode => ancestorNode === node)
+        ? symbol.links.target
         : symbol,
       node,
     )
@@ -938,12 +941,14 @@ export default function transformer(
     const propertyName = getPropertyName(symbol)
     const type = checker.getTypeOfSymbolAtLocation(symbol, node) as ts.LiteralType
     let initializer
-    if (typeof type.regularType.value === 'number') {
-      initializer = ts.factory.createNumericLiteral(type.regularType.value)
-    } else if (typeof type.regularType.value === 'string') {
-      initializer = ts.factory.createStringLiteral(type.regularType.value as any, /* isSingleQuote */ true)
-    } else {
-      initializer = ts.factory.createBigIntLiteral(type.regularType.value)
+    if (type.regularType.isLiteral()) {
+      if (typeof type.regularType.value === 'number') {
+        initializer = ts.factory.createNumericLiteral(type.regularType.value)
+      } else if (typeof type.regularType.value === 'string') {
+        initializer = ts.factory.createStringLiteral(type.regularType.value, /* isSingleQuote */ true)
+      } else {
+        initializer = ts.factory.createBigIntLiteral(type.regularType.value)
+      }
     }
 
     return ts.factory.createEnumMember(propertyName, initializer)
