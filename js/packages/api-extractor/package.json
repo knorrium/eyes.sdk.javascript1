@@ -1,6 +1,6 @@
 {
   "name": "@applitools/api-extractor",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "description": "Ultimate api extractor for typescript project",
   "keywords": [
     "applitools",
