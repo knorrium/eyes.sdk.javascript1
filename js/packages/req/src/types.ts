@@ -125,7 +125,9 @@ export interface Hooks<TOptions extends Options = Options> {
   beforeRequest?(options: {
     request: Request
     options?: TOptions
-  }): Awaitable<Request | (RequestInit & {url: string | URL}) | void>
+  }): Awaitable<
+    Request | (RequestInit & {request: Request}) | (RequestInit & {url: string | URL; request?: Request}) | void
+  >
   /**
    * Hook that will be executed before retrying the request. If this hook will return {@link stop}
    * it will prevent request from retrying and execution of other hooks
@@ -147,7 +149,9 @@ export interface Hooks<TOptions extends Options = Options> {
     response?: Response
     error?: Error
     options?: TOptions
-  }): Awaitable<Request | (RequestInit & {url: string | URL}) | void | Stop>
+  }): Awaitable<
+    Request | (RequestInit & {request: Request}) | (RequestInit & {url: string | URL; request?: Request}) | void | Stop
+  >
   /**
    * Hook that will be executed after getting the final response of the request (after all of the retries)
    * @example
@@ -163,7 +167,7 @@ export interface Hooks<TOptions extends Options = Options> {
     request: Request
     response: Response
     options?: TOptions
-  }): Awaitable<Response | (ResponseInit & {body?: BodyInit | null}) | void>
+  }): Awaitable<Response | (ResponseInit & {response?: Response; body?: BodyInit | null}) | void>
   /**
    * Hook that will be executed after request will throw an error
    * @example

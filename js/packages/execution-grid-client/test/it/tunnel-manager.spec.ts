@@ -48,8 +48,8 @@ describe('tunnel-manager', () => {
       .persist()
       .post('/tunnels')
       .reply(function () {
-        const apiKeyHeader = this.req.headers['x-eyes-api-key'][0]
-        const serverUrlHeader = this.req.headers['x-eyes-server-url'][0]
+        const apiKeyHeader = this.req.headers['x-eyes-api-key']
+        const serverUrlHeader = this.req.headers['x-eyes-server-url']
         if (apiKeyHeader === 'api-key' && serverUrlHeader === 'http://eyes-server') {
           return [201, `"tunnel-id"`]
         }
@@ -89,8 +89,8 @@ describe('tunnel-manager', () => {
       .persist()
       .delete('/tunnels/tunnel-id')
       .reply(function () {
-        const apiKeyHeader = this.req.headers['x-eyes-api-key'][0]
-        const eyesServerUrlHeader = this.req.headers['x-eyes-server-url']?.[0]
+        const apiKeyHeader = this.req.headers['x-eyes-api-key']
+        const eyesServerUrlHeader = this.req.headers['x-eyes-server-url']
         if (apiKeyHeader === 'api-key' && eyesServerUrlHeader === 'http://eyes-server') {
           return [200]
         }

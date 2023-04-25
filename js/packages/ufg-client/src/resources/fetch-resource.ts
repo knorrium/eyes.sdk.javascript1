@@ -115,7 +115,7 @@ function handleStreaming({timeout, logger}: {timeout: number; logger?: Logger}):
     async beforeRequest({request}) {
       if (request.signal?.aborted) return
       request.signal?.addEventListener('abort', () => controller.abort())
-      return {...request, signal: controller.signal}
+      return {request, signal: controller.signal}
     },
     async afterResponse({response}) {
       const contentLength = response.headers.get('Content-Length')
@@ -130,7 +130,7 @@ function handleStreaming({timeout, logger}: {timeout: number; logger?: Logger}):
         }, timeout)
         response
           .arrayBuffer()
-          .then(body => resolve({...response, body: Buffer.from(body)}))
+          .then(body => resolve({response, body: Buffer.from(body)}))
           .catch(() => resolve({status: 599}))
           .finally(() => clearTimeout(timer))
       })

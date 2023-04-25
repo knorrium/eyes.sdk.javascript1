@@ -140,7 +140,7 @@ function handleLongRequests({req}: {req: Req<ReqEyesOptions>}): Hooks {
           hooks: {
             beforeRetry({request, response}) {
               if (response && response.status === 200 && response.headers.has('Location')) {
-                return {...request, url: response.headers.get('Location')!}
+                return {request, url: response.headers.get('Location')!}
               }
             },
           },

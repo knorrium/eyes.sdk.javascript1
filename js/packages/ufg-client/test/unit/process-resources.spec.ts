@@ -1,5 +1,4 @@
 import {type UFGRequests} from '../../src/server/requests'
-import {Response, type Fetch, type Request} from '@applitools/req'
 import {makeResource} from '../../src/resources/resource'
 import {makeProcessResources} from '../../src/resources/process-resources'
 import {makeFetchResource} from '../../src/resources/fetch-resource'
@@ -7,23 +6,22 @@ import {makeUploadResource} from '../../src/resources/upload-resource'
 import {makeFixtureResources as makeFixtureCssResources} from '../fixtures/page/test.css.resources'
 import {makeFixtureResources as makeFixtureSvgResources} from '../fixtures/page/with-style.svg.resources'
 import {readFileSync} from 'fs'
-import {testServer} from '@applitools/test-server'
+import {makeTestServer} from '@applitools/test-server'
 import nock from 'nock'
 import assert from 'assert'
 
 describe('processResources', () => {
-  let server, baseUrl, fetchResource, uploadResource
+  let server, baseUrl: string
+  const fetchResource = makeFetchResource()
+  const uploadResource = makeUploadResource({
+    requests: {
+      checkResources: async ({resources}) => Array(resources.length).fill(true),
+    } as UFGRequests,
+  })
 
   before(async () => {
-    server = await testServer()
+    server = await makeTestServer()
     baseUrl = `http://localhost:${server.port}`
-
-    fetchResource = makeFetchResource()
-    uploadResource = makeUploadResource({
-      requests: {
-        checkResources: async ({resources}) => Array(resources.length).fill(true),
-      } as UFGRequests,
-    })
   })
 
   after(async () => {
@@ -139,20 +137,12 @@ describe('processResources', () => {
 
   it('fetches with user-agent and referer headers', async () => {
     const url = 'http://url.com/'
-    const fetchResource = makeFetchResource({
-      fetch: (async (request: Request) => {
-        if (
-          request.url === url &&
-          request.headers.get('Referer') === 'some-referer' &&
-          request.headers.get('User-Agent') === 'SomeUserAgent'
-        ) {
-          return new Response(Buffer.from('content'), {
-            status: 200,
-            headers: {'Content-Type': 'text/plain'},
-          })
-        }
-      }) as Fetch,
-    })
+    nock(url)
+      .get(/.*/)
+      .matchHeader('Referer', 'some-referer')
+      .matchHeader('User-Agent', 'SomeUserAgent')
+      .reply(200, 'content', {'Content-Type': 'text/plain'})
+    const fetchResource = makeFetchResource()
     const processResources = makeProcessResources({fetchResource, uploadResource})
 
     const resources = await processResources({
@@ -526,15 +516,15 @@ describe('processResources', () => {
   })
 
   it('make sure we send user agent when fetching google fonts', async () => {
-    const fetchResource = makeFetchResource({
-      fetch: (async (request: Request) => {
-        return new Response('font', {
-          status: 200,
-          headers: {'Content-Type': `application/${request.headers.get('User-Agent')}`},
-        })
-      }) as Fetch,
-    })
+    nock('https://fonts.googleapis.com')
+      .get(/.*/)
+      .matchHeader(
+        'User-Agent',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; rv:11.0) like Gecko',
+      )
+      .reply(200, 'font', {'Content-Type': 'application/x-font'})
 
+    const fetchResource = makeFetchResource()
     const processResources = makeProcessResources({fetchResource, uploadResource})
 
     const googleFontUrl = 'https://fonts.googleapis.com/css?family=Zilla+Slab'
@@ -548,10 +538,11 @@ describe('processResources', () => {
       },
     })
 
-    assert.deepStrictEqual(
-      (resources.mapping[googleFontUrl] as any).contentType,
-      `application/Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; rv:11.0) like Gecko`,
-    )
+    assert.deepStrictEqual(resources.mapping[googleFontUrl], {
+      contentType: 'application/x-font',
+      hash: '795ea3efa43d0872b63bf0067be97553b46983e4f075097669391e9d15388ecc',
+      hashFormat: 'sha256',
+    })
   })
 
   it('handles resources with errorStatusCode (non-200 resources) from prefilled resources', async () => {
@@ -616,15 +607,37 @@ describe('processResources', () => {
 
   it('handles cookies', async () => {
     const results = [] as any[]
-    const fetchResource = makeFetchResource({
-      fetch: (async (request: Request) => {
-        results.push({url: request.url, cookie: request.headers.get('Cookie')})
-        return new Response('content', {
-          status: 200,
-          headers: {'Content-Type': `text/plain`},
-        })
-      }) as Fetch,
-    })
+    nock('http://some-url.com')
+      .get(/.*/)
+      .reply(function (url) {
+        results.push({url: `http://some-url.com${url}`, cookie: this.req.headers.cookie})
+        return [200, 'content', {'Content-Type': 'text/plain'}]
+      })
+    nock('http://some-other-url.com')
+      .get(/.*/)
+      .reply(function (url) {
+        results.push({url: `http://some-other-url.com${url}`, cookie: this.req.headers.cookie})
+        return [200, 'content', {'Content-Type': 'text/plain'}]
+      })
+    nock('http://my-domain.com')
+      .get(/.*/)
+      .reply(function (url) {
+        results.push({url: `http://my-domain.com${url}`, cookie: this.req.headers.cookie})
+        return [200, 'content', {'Content-Type': 'text/plain'}]
+      })
+    nock('http://web.theweb.com')
+      .get(/.*/)
+      .reply(function (url) {
+        results.push({url: `http://web.theweb.com${url}`, cookie: this.req.headers.cookie})
+        return [200, 'content', {'Content-Type': 'text/plain'}]
+      })
+    nock('http://theinternet.com')
+      .get(/.*/)
+      .reply(function (url) {
+        results.push({url: `http://theinternet.com${url}`, cookie: this.req.headers.cookie})
+        return [200, 'content', {'Content-Type': 'text/plain'}]
+      })
+    const fetchResource = makeFetchResource()
     const processResources = makeProcessResources({fetchResource, uploadResource})
 
     await processResources({
@@ -669,8 +682,8 @@ describe('processResources', () => {
 
     assert.deepStrictEqual(results, [
       {url: 'http://some-url.com/images/image.png', cookie: 'hello=world;'},
-      {url: 'http://some-other-url.com/pictures/picture.jpeg', cookie: null}, // expired
-      {url: 'http://my-domain.com/static/style.css', cookie: null}, // non secure (http)
+      {url: 'http://some-other-url.com/pictures/picture.jpeg', cookie: undefined}, // expired
+      {url: 'http://my-domain.com/static/style.css', cookie: undefined}, // non secure (http)
       {url: 'http://web.theweb.com/resources/resource.css', cookie: 'resource=alright;'},
       {url: 'http://theinternet.com/assets/public/img.png', cookie: 'assets=okay;'},
     ])

@@ -97,7 +97,7 @@ function handleUnexpectedResponse(): Hooks<ReqBrokerOptions> {
             `There was a problem when interacting with the mobile application. The provided error message was "${error.message}" and had a stack trace of "${error.stack}"`,
           )
         }
-        return {...response, body}
+        return {response, body}
       }
     },
   }

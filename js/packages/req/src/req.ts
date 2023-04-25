@@ -169,7 +169,8 @@ function beforeRequest({request, options, ...rest}: Parameters<NonNullable<Hooks
     const result = await hooks.beforeRequest?.({request, options, ...rest})
     if (!result) return request
     else if (utils.types.instanceOf(result, Request)) return result
-    else return new Request(result.url, result)
+    else if (utils.types.has(result, 'url')) return new Request(result.url, result.request ?? result)
+    else return new Request(result.request, result)
   }, request as Awaitable<Request>)
 }
 
@@ -181,7 +182,8 @@ function beforeRetry({request, options, ...rest}: Parameters<NonNullable<Hooks['
     if (result === stop) return result
     else if (!result) return request
     else if (utils.types.instanceOf(result, Request)) return result
-    else return new Request(result.url, result)
+    else if (utils.types.has(result, 'url')) return new Request(result.url, result.request ?? result)
+    else return new Request(result.request, result)
   }, request as Awaitable<Request | Stop>)
 }
 
@@ -191,7 +193,7 @@ function afterResponse({response, options, ...rest}: Parameters<NonNullable<Hook
     const result = await hooks.afterResponse?.({response, options, ...rest})
     if (!result) return response
     else if (utils.types.instanceOf(result, Response)) return result
-    else return new Response(result.body, result)
+    else return new Response(result.body ?? result.response?.body, result.response ?? result)
   }, response as Awaitable<Response>)
 }
 
