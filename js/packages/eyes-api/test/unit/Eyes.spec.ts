@@ -33,23 +33,33 @@ describe('Eyes', () => {
     )
   })
 
-  it('should create vg eyes with concurrency', async () => {
+  it('should create ufg eyes with concurrency', async () => {
     const eyes = new Eyes(new api.VisualGridRunner({testConcurrency: 7}))
     assert.ok(eyes.runner instanceof api.VisualGridRunner)
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: 7, legacyConcurrency: undefined}}}],
+      [
+        {
+          command: 'makeManager',
+          data: {type: 'ufg', settings: {concurrency: 7, legacyConcurrency: undefined, fetchConcurrency: undefined}},
+        },
+      ],
     )
   })
 
-  it('should create vg eyes with legacy concurrency', async () => {
+  it('should create ufg eyes with legacy concurrency', async () => {
     const eyes = new Eyes(new api.VisualGridRunner(7))
     assert.ok(eyes.runner instanceof api.VisualGridRunner)
     await eyes.open(driver)
     assert.deepEqual(
       core.history.filter(h => h.command === 'makeManager'),
-      [{command: 'makeManager', data: {type: 'ufg', settings: {concurrency: undefined, legacyConcurrency: 7}}}],
+      [
+        {
+          command: 'makeManager',
+          data: {type: 'ufg', settings: {concurrency: undefined, legacyConcurrency: 7, fetchConcurrency: undefined}},
+        },
+      ],
     )
   })
 
