@@ -50,16 +50,16 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/image": "1.0.30",
-    "@applitools/logger": "1.1.50",
-    "@applitools/req": "1.2.0",
-    "@applitools/utils": "1.3.33",
+    "@applitools/image": "1.0.31",
+    "@applitools/logger": "1.1.51",
+    "@applitools/req": "1.2.1",
+    "@applitools/utils": "1.3.34",
     "abort-controller": "3.0.0",
     "throat": "6.0.2"
   },
   "devDependencies": {
     "@applitools/bongo": "^3.0.3",
-    "@applitools/test-server": "^1.1.29",
+    "@applitools/test-server": "^1.1.30",
     "@applitools/test-utils": "^1.5.16",
     "@types/node": "^12.20.55",
     "nock": "^13.2.8"
