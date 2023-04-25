@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriver",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "keywords": [
     "webdriver",
     "chrome devtools protocol",
@@ -61,14 +61,14 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/driver": "1.11.43",
-    "@applitools/utils": "1.3.32",
+    "@applitools/driver": "1.11.45",
+    "@applitools/utils": "1.3.34",
     "proxy-agent": "5.0.0"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.14",
+    "@applitools/api-extractor": "1.2.19",
     "@applitools/bongo": "^3.0.3",
-    "@applitools/test-server": "^1.1.28",
+    "@applitools/test-server": "^1.1.30",
     "@applitools/test-utils": "1.5.16",
     "@types/node": "^12.20.55",
     "nock": "^13.2.9",
