@@ -81,9 +81,9 @@
     "postversion": "bongo postversion"
   },
   "dependencies": {
-    "@applitools/logger": "1.1.48",
+    "@applitools/logger": "1.1.51",
     "@applitools/snippets": "2.4.19",
-    "@applitools/utils": "1.3.32",
+    "@applitools/utils": "1.3.34",
     "semver": "7.3.7"
   },
   "devDependencies": {
