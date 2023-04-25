@@ -18,12 +18,12 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/logger@1.1.51":
-  version "1.1.51"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.51.tgz#8bfc61389f0856201d977b9e6406cb87a98eeeaa"
-  integrity sha512-Y9OA2WvCiF26z6ffwwb3ySeN4pYzetk/ttAJ+RZagM0au2MQpkzY/c2IM2GysyELYtZc/s22dTWoHKH2ZrqzSw==
+"@applitools/logger@1.1.52":
+  version "1.1.52"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.52.tgz#01c15c9a43634eacb7022f9f82002d6a24109725"
+  integrity sha512-bloAZUIC8hOdQjobX2UjWI3bA/HRE7wPVm58W0DKJ++VKo/W5swF/WpG/0pgfsWMBL8ia8kgbZOkxopn6HnCDQ==
   dependencies:
-    "@applitools/utils" "1.3.34"
+    "@applitools/utils" "1.3.35"
     chalk "4.1.2"
     debug "4.3.3"
 
@@ -37,10 +37,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.32.tgz#cfe006146d1d589a442513c4973b950c607f405f"
   integrity sha512-GSMSf1NNW6fEm0u1ANGrQY+ESs8UgDYAZnaVrgjpFJ8ONL8eVDXn3tiIDdhmj/HKthAHqiYOYdRESmpuru/zrQ==
 
-"@applitools/utils@1.3.34":
-  version "1.3.34"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.34.tgz#f6e16b76160d62b13378deadb2a7e45eaac35f34"
-  integrity sha512-pbj5dyXK3nvWA+xs1t1Cdwz1OeWR3B/nQMKVdwlewbYsvKS9yzf/xVqqoZtPsRG0YHGAdsWe+4B8o/IgCl5ryA==
+"@applitools/utils@1.3.35":
+  version "1.3.35"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.35.tgz#21dd16536291c80c04b1133b89ac7514c3e11398"
+  integrity sha512-RerHkSBR7pVJXhTFEEpAVGh4xI76WM/vU9jR9s9d4X3Ao6y/MdgKp0BPNwv3A/ReSsCDhmr9nEu32Po49UflGQ==
 
 "@azure/abort-controller@^1.0.0":
   version "1.1.0"
