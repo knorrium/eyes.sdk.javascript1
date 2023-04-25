@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/api-extractor@^1.2.14":
-  version "1.2.14"
-  resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.14.tgz#5bd60a45ee753e1ca13ce59462145bd39b851799"
-  integrity sha512-doEJolnJYPwt/nWC17qqaVUSmv/Ieq9N0IJMGRGzMnEM16xIDV2R9RuG8B8Z7HSaI+cV7bNOTZc/LQ/6y7Rzvw==
+"@applitools/api-extractor@^1.2.17":
+  version "1.2.17"
+  resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.17.tgz#d444fbedb3360ea9c1364b64db43b0f5daf016c9"
+  integrity sha512-e+S89j3AqrHOxp/Xfh1CchhGxqAS9HpzeadHbo2aGbBHmfMknLbJ6GzNEhHxxXOdxrpjzCi6+CLO7aDlebWe+w==
 
 "@applitools/bongo@^3.0.3":
   version "3.0.3"
@@ -27,6 +27,11 @@
   version "1.3.32"
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.32.tgz#cfe006146d1d589a442513c4973b950c607f405f"
   integrity sha512-GSMSf1NNW6fEm0u1ANGrQY+ESs8UgDYAZnaVrgjpFJ8ONL8eVDXn3tiIDdhmj/HKthAHqiYOYdRESmpuru/zrQ==
+
+"@applitools/utils@1.3.33":
+  version "1.3.33"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.33.tgz#69804a19c2561966a332a7be90fa4e76d8971d29"
+  integrity sha512-knMdp9pM2t+62+TouFNUNvJugs0tcGXAUPEpfBfpYYRYAxklJNSawB9+Mrat486tBWucfyGx7WUiVePM7+1oLA==
 
 "@azure/abort-controller@^1.0.0":
   version "1.1.0"
