@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed issue with hanging requests
+    - 
 "@applitools/eyes-selenium":
   feature:
     - No features

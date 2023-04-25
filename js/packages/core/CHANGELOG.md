@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.4 - 2023/4/25
+
+### Features
+### Bug fixes
+- Fixed issue with hanging requests
+
 ## 2.5.3 - 2023/4/20
 
 ### Features
