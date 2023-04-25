@@ -70,9 +70,9 @@ jobs:
         run: |
           if [ ${{github.event.inputs.multienv}} = true ]
           then
-            echo "::set-output name=environments::[{\"framework-version\":\"4.4\",\"node-version\":16}, {\"framework-version\":3,\"node-version\":16}, {\"framework-version\":\"4.4\",\"node-version\":14}, {\"framework-version\":\"4.4\",\"node-version\":12}]"
+            echo "::set-output name=environments::[{\"framework-version\":\"4.4\",\"node-version\":18}, {\"framework-version\":\"4.4\",\"node-version\":16}, {\"framework-version\":\"4.4\",\"node-version\":14}]"
           else
-            echo "::set-output name=environments::[{\"framework-version\":\"4.4\",\"node-version\":16}]"
+            echo "::set-output name=environments::[{\"framework-version\":\"4.4\",\"node-version\":18}]"
           fi
   test:
     needs: [verify]
@@ -123,7 +123,7 @@ jobs:
       - name: Download testing artifacts
         uses: actions/download-artifact@v3
         with:
-          name: selenium-test-results-framework-4.4-node-16
+          name: selenium-test-results-framework-4.4-node-18
           path: ./js/packages/eyes-selenium
       - name: Publish to NPM
         uses: ./.github/actions/publish
