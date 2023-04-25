@@ -23,6 +23,11 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.32.tgz#cfe006146d1d589a442513c4973b950c607f405f"
   integrity sha512-GSMSf1NNW6fEm0u1ANGrQY+ESs8UgDYAZnaVrgjpFJ8ONL8eVDXn3tiIDdhmj/HKthAHqiYOYdRESmpuru/zrQ==
 
+"@applitools/utils@1.3.33":
+  version "1.3.33"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.33.tgz#69804a19c2561966a332a7be90fa4e76d8971d29"
+  integrity sha512-knMdp9pM2t+62+TouFNUNvJugs0tcGXAUPEpfBfpYYRYAxklJNSawB9+Mrat486tBWucfyGx7WUiVePM7+1oLA==
+
 "@azure/abort-controller@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@azure/abort-controller/-/abort-controller-1.1.0.tgz#788ee78457a55af8a1ad342acb182383d2119249"
