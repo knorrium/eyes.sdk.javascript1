@@ -18,34 +18,33 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.42":
-  version "1.11.42"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.42.tgz#973781f7a8ec2e114f07060bd4b121d106fde5c4"
-  integrity sha512-7SU5nmHHkG/5vk60MF7kNPlspzmLuthkCA7y2oWHHtIEzLgiB1fz4mi7BchTCIPwip9EIApCD5zLBARW2iUMKQ==
+"@applitools/driver@1.11.45":
+  version "1.11.45"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.45.tgz#0eb6dc91eb2ec7ad08fc336eb4030fb64a48fe63"
+  integrity sha512-MDskdlmwgQCe99LxxwyYYizqqKDHR8EUgrxOflnINaCPuRFq4ow7dwECI6VvhYeYWc1HeE1sm78zZjhHXqLN0A==
   dependencies:
-    "@applitools/logger" "1.1.48"
+    "@applitools/logger" "1.1.51"
     "@applitools/snippets" "2.4.19"
-    "@applitools/utils" "1.3.32"
+    "@applitools/utils" "1.3.34"
     semver "7.3.7"
 
-"@applitools/logger@1.1.48":
-  version "1.1.48"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.48.tgz#c8a0d8eb0edd1ee5742cdc93943cc65dac7be0f6"
-  integrity sha512-A/8Q9p2INPDOMGE8Hqodpw5UxXLGdW4z2w8gOzEJ3zi0MyLOY3lBZiaPKEP0nmOs29q4r/yr0srYY5j9FVAmCg==
+"@applitools/logger@1.1.51":
+  version "1.1.51"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.51.tgz#8bfc61389f0856201d977b9e6406cb87a98eeeaa"
+  integrity sha512-Y9OA2WvCiF26z6ffwwb3ySeN4pYzetk/ttAJ+RZagM0au2MQpkzY/c2IM2GysyELYtZc/s22dTWoHKH2ZrqzSw==
   dependencies:
-    "@applitools/utils" "1.3.32"
+    "@applitools/utils" "1.3.34"
     chalk "4.1.2"
     debug "4.3.3"
 
-"@applitools/req@1.1.35":
-  version "1.1.35"
-  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.1.35.tgz#f95a83fcff7553aa2dbbec5f5cad9358911afe4b"
-  integrity sha512-JKDFy3Y+EAORLzQ6oUa4lnAOvCCUbVol7ouJhId3kyQMye0rlQYCUVkwsrhc14BpvJjKyxABcIcQG8vp7xnaHg==
+"@applitools/req@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.2.1.tgz#b787bc879c4ce49efd0c668d27e62cd1e5049c2c"
+  integrity sha512-z4VgKfuFk0HmsQ8bScozTaJoCcgFfl/KOhGjkRmX0ILXwTD7biKiX4YMH0XTTmkNbWEcXO1bdsg4iVHgVgRelA==
   dependencies:
-    "@applitools/utils" "1.3.32"
-    "@types/node-fetch" "2.6.2"
+    "@applitools/utils" "1.3.34"
     abort-controller "3.0.0"
-    node-fetch "2.6.7"
+    node-fetch "3.3.1"
     proxy-agent "5.0.0"
 
 "@applitools/snippets@2.4.19":
@@ -53,21 +52,21 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.19.tgz#2633a0e6df6663ab3ddeb2ac4d21e748d3eea04d"
   integrity sha512-cXIB5fuVGYFQzZK3tylgIRLh5dTWoCS2v2ZDGpSgdWuz0NH5LArGQpqPr8svqv3nEHCKMBHCMbwEF/CoblIblA==
 
-"@applitools/spec-driver-webdriverio@^1.4.38":
-  version "1.4.38"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.38.tgz#ddcf614066452f1370412614f3d9f258c7fa8df8"
-  integrity sha512-Nsv89osGaV/Ahd2hSBuytItdnzYJA+h8clOITwSTCa7VPcJxZrG40Io6qWH1Ew3obgL1zidCjIoN7j4dvuXhbg==
+"@applitools/spec-driver-webdriverio@^1.4.40":
+  version "1.4.40"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.40.tgz#5d7e78eb60024c26092e076e125fc2fb6c64b5b1"
+  integrity sha512-ZEne81qykPW3hp1hIZ2E3wQ70dwbpsfw/HsNPJ4IS4nF+zSSJ97lWwsNPt0XGKvAtanHxC6TnhvLcY0aHa1wrA==
   dependencies:
-    "@applitools/driver" "1.11.42"
-    "@applitools/utils" "1.3.32"
+    "@applitools/driver" "1.11.45"
+    "@applitools/utils" "1.3.34"
 
-"@applitools/test-server@^1.1.28":
-  version "1.1.28"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.28.tgz#ba9f67ac5db33547ef47caa7c98981b770eb92e5"
-  integrity sha512-6nwnZbfPyVnSEIchypqbJuWqJfSxlEfO/JZ7DI6qBoZmUA28y+huPm59j3zO2TA9UABwTM3oNntZ99uKD1/eWA==
+"@applitools/test-server@^1.1.30":
+  version "1.1.30"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.1.30.tgz#e7e78d85ecfc630c35a50f6c8b71726138cf7715"
+  integrity sha512-7soqoVirlWikWfzKsSSwBiRaZSEImp8K4ODq7eV4JpFEOWjd+UwO5ap/36IlRsaV+vZXyIZWIH+Wn+16+OJTdQ==
   dependencies:
-    "@applitools/logger" "1.1.48"
-    "@applitools/utils" "1.3.32"
+    "@applitools/logger" "1.1.51"
+    "@applitools/utils" "1.3.34"
     body-parser "1.20.0"
     chalk "3.0.0"
     cookie-parser "1.4.5"
@@ -90,6 +89,11 @@
   version "1.3.32"
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.32.tgz#cfe006146d1d589a442513c4973b950c607f405f"
   integrity sha512-GSMSf1NNW6fEm0u1ANGrQY+ESs8UgDYAZnaVrgjpFJ8ONL8eVDXn3tiIDdhmj/HKthAHqiYOYdRESmpuru/zrQ==
+
+"@applitools/utils@1.3.34":
+  version "1.3.34"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.34.tgz#f6e16b76160d62b13378deadb2a7e45eaac35f34"
+  integrity sha512-pbj5dyXK3nvWA+xs1t1Cdwz1OeWR3B/nQMKVdwlewbYsvKS9yzf/xVqqoZtPsRG0YHGAdsWe+4B8o/IgCl5ryA==
 
 "@azure/abort-controller@^1.0.0":
   version "1.1.0"
@@ -260,7 +264,7 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.1.tgz#0ea7b61496902b95890dc4c3a116b60cb8dae812"
   integrity sha512-SZs7ekbP8CN0txVG2xVRH6EgKmEm31BOxA07vkFaETzZz1xh+cbt8BcI0slpymvwhx5dlFnQG2rTlPVQn+iRPQ==
 
-"@types/node-fetch@2.6.2", "@types/node-fetch@^2.5.0":
+"@types/node-fetch@^2.5.0":
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.2.tgz#d1a9c5fd049d9415dce61571557104dec3ec81da"
   integrity sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==
@@ -841,6 +845,11 @@ data-uri-to-buffer@3:
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz#594b8973938c5bc2c33046535785341abc4f3636"
   integrity sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==
 
+data-uri-to-buffer@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-4.0.1.tgz#d8feb2b2881e6a4f58c2e08acfd0e2834e26222e"
+  integrity sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==
+
 debug@2.6.9, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -1180,6 +1189,14 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
+fetch-blob@^3.1.2, fetch-blob@^3.1.4:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/fetch-blob/-/fetch-blob-3.2.0.tgz#f09b8d4bbd45adc6f0c20b7e787e793e309dcce9"
+  integrity sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==
+  dependencies:
+    node-domexception "^1.0.0"
+    web-streams-polyfill "^3.0.3"
+
 file-uri-to-path@2:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-2.0.0.tgz#7b415aeba227d575851e0a5b0c640d7656403fba"
@@ -1255,6 +1272,13 @@ form-data@^4.0.0:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
+
+formdata-polyfill@^4.0.10:
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz#24807c31c9d402e002ab3d8c720144ceb8848423"
+  integrity sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==
+  dependencies:
+    fetch-blob "^3.1.2"
 
 forwarded@0.2.0:
   version "0.2.0"
@@ -2073,6 +2097,11 @@ nock@^13.2.9:
     lodash "^4.17.21"
     propagate "^2.0.0"
 
+node-domexception@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
+  integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
+
 node-fetch@2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
@@ -2084,6 +2113,15 @@ node-fetch@2.6.7:
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
   dependencies:
     whatwg-url "^5.0.0"
+
+node-fetch@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.1.tgz#b3eea7b54b3a48020e46f4f88b9c5a7430d20b2e"
+  integrity sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==
+  dependencies:
+    data-uri-to-buffer "^4.0.0"
+    fetch-blob "^3.1.4"
+    formdata-polyfill "^4.0.10"
 
 node-fetch@^2.6.0:
   version "2.6.9"
@@ -2941,6 +2979,11 @@ vm2@^3.9.8:
   dependencies:
     acorn "^8.7.0"
     acorn-walk "^8.2.0"
+
+web-streams-polyfill@^3.0.3:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz#71c2718c52b45fd49dbeee88634b3a60ceab42a6"
+  integrity sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==
 
 webdriver@8.3.2:
   version "8.3.2"
