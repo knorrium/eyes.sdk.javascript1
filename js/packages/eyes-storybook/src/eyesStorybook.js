@@ -16,6 +16,7 @@ const getIframeUrl = require('./getIframeUrl');
 const createPagePool = require('./pagePool');
 const getClientAPI = require('../dist/getClientAPI');
 const {takeDomSnapshots} = require('@applitools/core');
+const {prepareTakeDomSnapshotsSettings} = require('./utils/prepare-settings');
 const {Driver} = require('@applitools/driver');
 const spec = require('@applitools/spec-driver-puppeteer');
 const {refineErrorMessage} = require('./errMessages');
@@ -117,14 +118,15 @@ async function eyesStorybook({
     const result = await takeDomSnapshots({
       logger,
       driver,
-      settings: {
-        layoutBreakpoints:
-          layoutBreakpoints !== undefined ? layoutBreakpoints : config.layoutBreakpoints,
-        renderers,
-        waitBeforeCapture,
-        skipResources,
-        disableBrowserFetching: !!config.disableBrowserFetchin,
-      },
+      settings: prepareTakeDomSnapshotsSettings({
+        config,
+        options: {
+          layoutBreakpoints,
+          renderers,
+          waitBeforeCapture,
+          skipResources,
+        },
+      }),
       provides: {
         getChromeEmulationDevices: client.getChromeEmulationDevices,
         getIOSDevices: client.getIOSDevices,
