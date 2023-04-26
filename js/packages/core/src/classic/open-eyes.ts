@@ -51,10 +51,10 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
         if (environment.isNative && environment.platformName) {
           settings.environment.os = environment.platformName
           if (!settings.keepPlatformNameAsIs) {
-            if (settings.environment.os?.startsWith('android')) {
+            if (/^android/i.test(settings.environment.os)) {
               settings.environment.os = `Android${settings.environment.os.slice(7)}`
             }
-            if (settings.environment.os?.startsWith('ios')) {
+            if (/^ios/i.test(settings.environment.os)) {
               settings.environment.os = `iOS${settings.environment.os.slice(3)}`
             }
           }

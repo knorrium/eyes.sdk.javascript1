@@ -1,4 +1,4 @@
-import type {AccountInfo, Core, Eyes, TestResult} from '@applitools/core-base'
+import type {Account, Core, Eyes, TestResult} from '@applitools/core-base'
 import * as utils from '@applitools/utils'
 import EventEmitter from 'events'
 
@@ -11,7 +11,7 @@ export function makeFakeCore({
       ? (...args: Parameters<(Core & Eyes)[TKey]>) => any
       : never
   }
-  account?: Partial<AccountInfo>
+  account?: Partial<Account>
 } = {}): Core & {emitter: EventEmitter; base: Core} {
   const emitter = new EventEmitter()
   return {
@@ -29,7 +29,7 @@ export function makeFakeCore({
           proxy: options.settings?.proxy,
         },
         ...account,
-      } as AccountInfo
+      } as Account
     },
     async closeBatch(options) {
       emitter.emit('closeBatch', options)
@@ -86,7 +86,13 @@ export function makeFakeCore({
             isNew: true,
             initializedAt: new Date().toISOString(),
             keepIfDuplicate: !!options.settings.baselineEnvName,
-            account: account as AccountInfo,
+            account: account as Account,
+            ufgServer: {
+              serverUrl: options.settings?.serverUrl,
+              uploadUrl: '',
+              stitchingServiceUrl: '',
+              accessToken: '',
+            },
             server: {
               serverUrl: options.settings?.serverUrl,
               apiKey: options.settings?.apiKey,
@@ -192,5 +198,6 @@ export function makeFakeCore({
         emitter.emit('afterOpenEyes', options)
       }
     },
+    openFunctionalSession: null as never,
   }
 }
