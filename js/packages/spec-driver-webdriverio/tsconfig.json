@@ -1,3 +1,4 @@
 {
-  "extends": "./tsconfig.base.v8",
+  "extends": ["../../tsconfig.base.json", "./tsconfig.v8.json"],
+  "ts-node": {"transpileOnly": true},
 }

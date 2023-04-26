@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.build",
   "compilerOptions": {
     "types": ["node", "mocha", "webdriverio", "./types/v5-async"]
   }

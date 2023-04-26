@@ -35,10 +35,10 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.4.tgz#0283c768d13f63100b053396f616d09fa037da0c"
-  integrity sha512-jzpEARnmBeiKZ9lI+hoirskpnMauAWtA/ZoTun7pDS3smH2AS91qRu69sorJUZPlG7iy1EkMsWI/BYLI2I4Adw==
+"@applitools/core@2.5.5":
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-2.5.5.tgz#fe02cb163863f0d386fa6ee58dab039c8032aaa1"
+  integrity sha512-ponQ+DvErw6ek9YW88BuGwyOg0gfVFQtg/icrop6jdT5zX0gH2hzAFZCuW2m2yUVwEN/RGYPRvYpmILN0xYUTg==
   dependencies:
     "@applitools/core-base" "1.1.52"
     "@applitools/dom-capture" "11.2.1"
@@ -175,12 +175,12 @@
     p-retry "^4.6.2"
     teen_process "^1.16.0"
 
-"@applitools/eyes@1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes/-/eyes-1.2.3.tgz#ccd716973600e6efe6ef1f09fc912593e54a4f04"
-  integrity sha512-kEn47vAJyGZAg1U2+CCnESSohbbtYhwrVj+XreEVAUTTtpNvxwq1W/usSZoYxR4xtq7hJmihShukL6Te8ELZ/Q==
+"@applitools/eyes@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes/-/eyes-1.2.4.tgz#48917dcf1141103c4a36494ee581e0d6995aad70"
+  integrity sha512-FBy4e1j4IzSAf5dO9mB8Q54WhxYuKfY5FZByMsEhGKvxI0fsyHNFAbEWvk0AKoqgIjCIWxzR7OAvAbzh1HUowA==
   dependencies:
-    "@applitools/core" "2.5.4"
+    "@applitools/core" "2.5.5"
     "@applitools/logger" "1.1.52"
     "@applitools/utils" "1.3.35"
 

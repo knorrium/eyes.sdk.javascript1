@@ -1,6 +1,3 @@
 {
-  "extends": "./tsconfig.build",
-  "compilerOptions": {
-    "types": ["node", "mocha", "./types/v8"],
-  }
+  "extends": ["./tsconfig.build.json", "./tsconfig.v8.json"],
 }
