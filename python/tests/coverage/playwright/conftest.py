@@ -54,4 +54,4 @@ def eyes(eyes_runner_class, stitch_mode):
     eyes.configure.set_hide_scrollbars(True)
     yield eyes
     # If the test was aborted before eyes.close was called, ends the test as aborted.
-    eyes.abort()
+    eyes.abort_async()

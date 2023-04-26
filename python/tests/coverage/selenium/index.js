@@ -4,8 +4,11 @@ module.exports = {
     name: "py-selenium",
     emitter: `${dir}/python/emitter.js`,
     emitOnly: test => {
-      return !(test.features && test.features.includes("image")) &&
-          !("env" in test && "device" in test.env);
+        let env = test.env || {}
+        let features = test.features || []
+        return !("device" in env) &&
+            !features.includes("image") &&
+            !features.includes("cached-selectors");
     },
     overrides: [`${dir}/js/overrides.js`, `${dir}/python/overrides.js`],
     template: `${dir}/python/selenium-template.hbs`,

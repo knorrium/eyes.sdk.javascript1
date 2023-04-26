@@ -16,6 +16,7 @@ from applitools.common import (
 )
 from applitools.common.selenium import Configuration
 
+from ..common.errors import USDKFailure
 from ..common.utils.general_utils import get_env_with_prefix
 from ..core.ec_client_settings import ECClientCapabilities, ECClientSettings
 from .__version__ import __version__

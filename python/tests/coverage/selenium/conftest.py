@@ -72,4 +72,4 @@ def eyes(eyes_runner_class, stitch_mode, emulation):
         eyes.add_property("Page", page)
     yield eyes
     # If the test was aborted before eyes.close was called, ends the test as aborted.
-    eyes.abort()
+    eyes.abort_async()

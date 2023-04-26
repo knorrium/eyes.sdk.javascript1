@@ -12,7 +12,8 @@ module.exports = {
             !["ie-11", "edge-18", "safari-11", "safari-12"].includes(env.browser) &&
             !env.emulation &&
             !features.includes("webdriver") &&
-            !features.includes("image")
+            !features.includes("image") &&
+            !features.includes("cached-selectors");
     },
     emitter: `${dir}/python/emitter.js`,
     overrides: [`${dir}/js/overrides.js`, `${dir}/python/overrides.js`],
