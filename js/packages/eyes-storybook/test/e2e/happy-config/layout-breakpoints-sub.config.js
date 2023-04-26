@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   appName: 'Layout breakpoints',
-  batchName: 'Layout breakpoints Layout breakpoints',
+  batchName: 'Layout breakpoints with story config',
   storybookConfigDir: path.resolve(__dirname, '../../fixtures/jsLayoutStorybook'),
   storybookStaticDir: path.resolve(__dirname, '../../fixtures'),
   browser: [
