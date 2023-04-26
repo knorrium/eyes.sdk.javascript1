@@ -3,6 +3,13 @@
 ## Unreleased
 
 
+## 3.33.1 - 2023/4/26
+
+### Features
+### Bug fixes
+- Make sure to pass LayoutBreakpoints and WaitBeforeCapture from story config to dom snapshot
+- Map UFG config correctly
+
 ## 3.33.0 - 2023/4/26
 
 ### Features

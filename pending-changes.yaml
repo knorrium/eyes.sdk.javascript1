@@ -66,8 +66,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Make sure to pass LayoutBreakpoints and WaitBeforeCapture from story config to dom snapshot
-    - Map UFG config correctly
+    - 
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`
