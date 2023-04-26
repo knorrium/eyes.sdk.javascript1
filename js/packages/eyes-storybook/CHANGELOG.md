@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.33.0 - 2023/4/26
+
+### Features
+### Bug fixes
+- Fixed `disableBrowserFetching` option behavior
+
 ## 3.32.1 - 2023/4/16
 
 ### Features
