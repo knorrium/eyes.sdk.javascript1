@@ -25,7 +25,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-playwright":
   feature:
-    - Make `locate` to return coordinates that could be directly used with the driver
+    - 
   bug-fix:
     - 
 "@applitools/eyes-puppeteer":
