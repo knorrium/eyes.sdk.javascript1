@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Prevented driver metadata extraction during check in ufg eyes
 "@applitools/eyes-selenium":
   feature:
     - No features
