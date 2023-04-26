@@ -11,7 +11,14 @@ const DOM_SNAPSHOTS_TIMEOUT = 5 * 60 * 1000;
 const utils = require('@applitools/utils');
 
 function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPagePerStory}) {
-  return async function getStoryData({story, storyUrl, page, renderers, waitBeforeStory}) {
+  return async function getStoryData({
+    story,
+    storyUrl,
+    page,
+    renderers,
+    waitBeforeStory,
+    layoutBreakpoints,
+  }) {
     const title = getStoryBaselineName(story);
     logger.log(`getting data from story`, title);
 
@@ -58,7 +65,7 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
     const domSnapshotsPromise = takeDomSnapshots({
       page,
       renderers,
-      layoutBreakpoints: eyesParameters ? eyesParameters.layoutBreakpoints : undefined,
+      layoutBreakpoints: eyesParameters ? eyesParameters.layoutBreakpoints : layoutBreakpoints,
       waitBeforeCapture: wait
         ? async () => {
             logger.log(`waiting before screenshot of ${title} ${wait}`);

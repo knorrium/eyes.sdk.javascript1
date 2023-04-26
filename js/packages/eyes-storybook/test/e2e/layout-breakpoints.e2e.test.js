@@ -66,4 +66,27 @@ describe('eyes-storybook', () => {
 
     await snap(output, 'layoutBreakpoints in story params');
   });
+
+  it('renders with layout breakpoints in sub config', async () => {
+    const [err, result] = await presult(
+      utils.process.sh(
+        `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
+          __dirname,
+          'happy-config/layout-breakpoints-sub.config.js',
+        )}`,
+        {spawnOptions},
+      ),
+    );
+    const stdout = err ? err.stdout : result.stdout;
+    //const stderr = err ? err.stderr : result.stderr;
+    const output = stdout
+      .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
+      .replace(
+        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
+        'See details at <some_url>',
+      )
+      .replace(version, '<version>')
+      .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
+    await snap(output, 'layout breakpoints story config');
+  });
 });

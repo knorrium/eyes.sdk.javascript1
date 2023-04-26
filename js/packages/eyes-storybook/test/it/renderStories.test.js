@@ -157,15 +157,13 @@ describe('renderStories', () => {
       {name: 's5', kind: 'k5'},
       {name: 's6', kind: 'k6'},
       {name: 's7', kind: 'k7'},
-    ];
-
-    const results = await renderStories(stories, {bla: true});
+    ].map(story => ({...story, config: {bla: true}}));
+    const results = await renderStories(stories);
     const expectedResults = await Promise.all(
       stories.map(async (story, i) => {
         const storyUrl = `http://something/iframe.html?eyes-storybook=true&selectedKind=${story.kind}&selectedStory=${story.name}`;
         const page = i % 3 === 0 ? 1 : i % 3 === 1 ? 2 : 3;
         return {
-          config: {bla: true},
           snapshots: {
             snapshots: `snapshot_${story.name}_${story.kind}_${storyUrl}_${page}`,
             cookies: [],
@@ -215,10 +213,14 @@ describe('renderStories', () => {
       pagePool,
     });
 
-    const results = await renderStories(
-      [{name: 's1', kind: 'k1', parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}}}],
-      {},
-    );
+    const results = await renderStories([
+      {
+        name: 's1',
+        kind: 'k1',
+        parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}},
+        config: {},
+      },
+    ]);
 
     expect(_waitBeforeCapture).to.eql('wait_some_value');
     expect(results[0].title).to.eql('k1: s1');
@@ -227,6 +229,7 @@ describe('renderStories', () => {
         name: 's1',
         kind: 'k1',
         parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}},
+        config: {},
       }),
     );
   });
@@ -256,8 +259,8 @@ describe('renderStories', () => {
       stream,
     });
 
-    const story = {name: 's1', kind: 'k1'};
-    const results = await renderStories([story], {});
+    const story = {name: 's1', kind: 'k1', config: {}};
+    const results = await renderStories([story]);
 
     expect(results[0].title).to.eql('k1: s1');
     expect(results[0].resultsOrErr).to.be.an.instanceOf(Error);
@@ -274,7 +277,7 @@ describe('renderStories', () => {
         logger,
         initPage: async ({pageId}) => (pageId === 0 ? page : browser.newPage()),
       });
-      const story = {name: 's1', kind: 'k1'};
+      const story = {name: 's1', kind: 'k1', config: {hello: 'world'}};
       pagePool.addToPool((await pagePool.createPage()).pageId);
       const title = getStoryTitle(story);
       const getStoryData = async () => {
@@ -297,7 +300,7 @@ describe('renderStories', () => {
         getClientAPI: () => {},
       });
 
-      const results = await renderStories([story], {hello: 'world'});
+      const results = await renderStories([story]);
       expect(results[0].resultsOrErr.message).to.equal(
         `[page 0] Failed to get story data for \"k1: s1\". Error: timeout reached when trying to take DOM for story ${title}`,
       );
@@ -331,8 +334,8 @@ describe('renderStories', () => {
       stream,
     });
 
-    const story = {name: 's1', kind: 'k1'};
-    const results = await renderStories([story], {});
+    const story = {name: 's1', kind: 'k1', config: {}};
+    const results = await renderStories([story]);
     expect(results[0].title).to.eql('k1: s1');
     expect(results[0].resultsOrErr).to.be.an.instanceOf(Error);
     expect(results[0].resultsOrErr.message).to.equal('bla');
@@ -379,14 +382,13 @@ describe('renderStories', () => {
           getClientAPI: () => {},
         });
 
-        const story = {name: 's1', kind: 'k1'};
-        const results = await renderStories([story], {hello: 'world'});
+        const story = {name: 's1', kind: 'k1', config: {hello: 'world'}};
+        const results = await renderStories([story]);
 
         const storyUrl = `http://something/iframe.html?eyes-storybook=true&selectedKind=${story.kind}&selectedStory=${story.name}`;
         expect(results[0].title).to.eql('k1: s1');
         expect(results.map(({resultsOrErr}) => resultsOrErr[0].arg)).to.eql([
           {
-            config: {hello: 'world'},
             story,
             url: storyUrl,
             snapshots: {
@@ -459,12 +461,11 @@ describe('renderStories', () => {
           maxPageTTL: 10,
         });
 
-        const story = {name: 's1', kind: 'k1'};
-        const results = await renderStories([story, story], {});
+        const story = {name: 's1', kind: 'k1', config: {}};
+        const results = await renderStories([story, story]);
 
         const storyUrl = `http://something/iframe.html?eyes-storybook=true&selectedKind=${story.kind}&selectedStory=${story.name}`;
         const expectedStory = {
-          config: {},
           story,
           url: storyUrl,
           snapshots: {

@@ -94,7 +94,7 @@ async function eyesStorybook({
   }
   const client = await makeUFGClient({
     config: {
-      ...account.ufg,
+      ...account.ufgServer,
       ...account,
       proxy,
       concurrency: testConcurrency,

@@ -67,7 +67,8 @@ function makeRenderStories({
               storyUrl,
               renderers: story.config.renderers,
               page,
-              waitBeforeStory: waitBeforeCapture,
+              layoutBreakpoints: story.config.layoutBreakpoints,
+              waitBeforeStory: waitBeforeCapture || story.config.waitBeforeCapture,
             }),
           );
 
