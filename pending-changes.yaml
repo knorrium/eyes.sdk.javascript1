@@ -30,7 +30,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-puppeteer":
   feature:
-    - Make `locate` to return coordinates that could be directly used with the driver
+    - 
   bug-fix:
     - 
 "@applitools/eyes-testcafe":

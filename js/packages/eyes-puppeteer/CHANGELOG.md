@@ -11,6 +11,12 @@
 
 
 
+## 1.16.0 - 2023/4/26
+
+### Features
+- Make `locate` to return coordinates that could be directly used with the driver
+### Bug fixes
+
 ## 1.15.1 - 2023/4/6
 
 ### Features
