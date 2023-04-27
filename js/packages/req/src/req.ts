@@ -1,11 +1,9 @@
 import type {Awaitable} from '@applitools/utils'
 import type {Options, Hooks, Retry} from './types.js'
 import {AbortController} from 'abort-controller'
-import {parse as urlToHttpOptions} from 'url' // should be replaced with `urlToHttpOptions` after supporting node >=16
-import {Agent as HttpsAgent} from 'https'
 import {stop, type Stop} from './stop.js'
+import {makeProxyAgent} from './proxy-agent.js'
 import globalFetch, {Request, Headers, Response} from 'node-fetch'
-import ProxyAgent from 'proxy-agent'
 import * as utils from '@applitools/utils'
 
 export type Req<TOptions extends Options = Options> = (
@@ -53,21 +51,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
         ? JSON.stringify(options?.body)
         : options?.body ?? (input as Request).body,
     highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
-    agent: url => {
-      const proxy = utils.types.isFunction(options?.proxy) ? options?.proxy(url) : options?.proxy
-      if (proxy) {
-        const proxyUrl = new URL(proxy.url)
-        proxyUrl.username = proxy.username ?? proxyUrl.username
-        proxyUrl.password = proxy.password ?? proxyUrl.password
-        const agent = new ProxyAgent({...urlToHttpOptions(proxyUrl.href), rejectUnauthorized: false} as any)
-        agent.callback = utils.general.wrap(agent.callback.bind(agent), (fn, request, options, ...rest) => {
-          return fn(request, {...options, rejectUnauthorized: false} as typeof options, ...rest)
-        })
-        return agent
-      } else if (url.protocol === 'https:') {
-        return new HttpsAgent({rejectUnauthorized: false})
-      }
-    },
+    agent: makeProxyAgent(options.proxy),
     signal: controller.signal,
   })
 
