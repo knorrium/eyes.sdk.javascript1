@@ -34,13 +34,13 @@
       },
       "require": {
         "types": "./types/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
+        "default": "./dist/index.cjs"
       }
     },
     "./package.json": "./package.json"
   },
   "types": "./types/index.d.cts",
-  "main": "./dist/cjs/index.cjs",
+  "main": "./dist/index.cjs",
   "browser": {
     "http-proxy-agent": false,
     "https-proxy-agent": false
@@ -53,7 +53,7 @@
     "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
     "build": "yarn build:ts && yarn build:cjs",
     "build:ts": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
-    "build:cjs": "ncc build ./dist/index.cjs --out ./dist/cjs && cp ./types/index.d.ts ./types/index.d.cts && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+    "build:cjs": "esbuild ./dist/index.js --outfile=./dist/index.cjs --bundle --platform=node --format=cjs --target=node12 && cp ./types/index.d.ts ./types/index.d.cts",
     "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
     "test:sanity": "yarn test",
     "deps": "bongo deps",
@@ -72,7 +72,7 @@
     "@applitools/api-extractor": "^1.2.19",
     "@applitools/bongo": "^3.0.3",
     "@types/node": "^12.20.55",
-    "@vercel/ncc": "^0.36.1",
+    "esbuild": "^0.17.18",
     "nock": "^13.2.9"
   },
   "engines": {
