@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "types": ["node", "mocha", "webdriverio", "./types/v6"]
   }
