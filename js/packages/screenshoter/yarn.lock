@@ -52,10 +52,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.19.tgz#2633a0e6df6663ab3ddeb2ac4d21e748d3eea04d"
   integrity sha512-cXIB5fuVGYFQzZK3tylgIRLh5dTWoCS2v2ZDGpSgdWuz0NH5LArGQpqPr8svqv3nEHCKMBHCMbwEF/CoblIblA==
 
-"@applitools/spec-driver-webdriverio@^1.4.41":
-  version "1.4.41"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.41.tgz#df89ea236c3cfe8867d696c124f76338ad581fea"
-  integrity sha512-XEhr3TOrQyOmpDvIuzLLaW/8djuX309QNfntHCcZFqeyfYivHbK0wfapMcturwCKfIa1vriRe4Mr+uQ4F8QNMA==
+"@applitools/spec-driver-webdriverio@^1.4.42":
+  version "1.4.42"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.42.tgz#f1710ee869699848d3e131636f5d9b4f37511d1d"
+  integrity sha512-wZSO2wkbvw8Zq/YjV0HvdJ7OOLHw4qDmyUVeGH+VtZNaQxCKsOFQPQOjJ9aVe3lpiC/1Y8/VQ8CREPcZfuwCrA==
   dependencies:
     "@applitools/driver" "1.11.46"
     "@applitools/utils" "1.3.35"
