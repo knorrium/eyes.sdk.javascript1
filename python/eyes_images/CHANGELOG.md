@@ -1,3 +1,7 @@
+## [vNext]
+### Fixed
+- Avoid extract_text_regions deprecation warning [Trello 3213](https://trello.com/c/IMTcxURl)
+
 ## [5.18.0] - 2023-04-26
 ### Add
 - DOM can now be attached to images.Eyes checks via `dom` method of target [Trello 3196](https://trello.com/c/FZ6KcVd6)

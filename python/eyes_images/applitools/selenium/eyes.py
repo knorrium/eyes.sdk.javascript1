@@ -176,14 +176,11 @@ class Eyes(object):
             self.configure,
         )
 
-    @deprecated.attribute(
-        "The `extract_text_regions` is deprecated. Use `locate_text` instead"
-    )
-    def extract_text_regions(self, config):
-        # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
-        return self.locate_text(config)
-
     def locate_text(self, config):
+        # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
+        return self.extract_text_regions(config)
+
+    def extract_text_regions(self, config):
         # type: (TextRegionSettings) -> PATTERN_TEXT_REGIONS
         return self._commands.core_locate_text(self.driver, config, self.configure)
 
