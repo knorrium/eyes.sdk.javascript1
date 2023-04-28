@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.7 - 2023/4/28
+
+### Features
+### Bug fixes
+- Fixed detection of emulated mobile drivers
+
 ## 2.5.6 - 2023/4/28
 
 ### Features
