@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed dynamic import issue in universal binaries
 "@applitools/eyes-selenium":
   feature:
     - 
