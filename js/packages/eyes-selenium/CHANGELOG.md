@@ -8,6 +8,12 @@
 
 
 
+## 4.65.4 - 2023/4/28
+
+### Features
+### Bug fixes
+- Fixed detection of emulated mobile drivers
+
 ## 4.65.3 - 2023/4/26
 
 ### Features
