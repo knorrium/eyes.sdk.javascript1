@@ -473,6 +473,7 @@ describe('driver mobile', () => {
       logger,
       spec,
       driver: new MockDriver({
+        device: {isMobile: true, name: 'iPhone'},
         ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1',
       }),
     })
@@ -483,14 +484,13 @@ describe('driver mobile', () => {
       platformVersion: '12',
       browserName: 'Safari',
       browserVersion: '12',
-      deviceName: null,
+      deviceName: 'iPhone',
       isAndroid: false,
       isChrome: false,
       isChromium: false,
       isEC: false,
       isEdge: false,
       isEdgeLegacy: false,
-      isEmulation: false,
       isIE: false,
       isIOS: true,
       isMac: false,

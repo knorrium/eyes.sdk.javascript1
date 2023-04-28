@@ -12,27 +12,27 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -56,7 +56,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed detection of emulated mobile drivers
 "@applitools/eyes-cypress":
   feature:
     - 

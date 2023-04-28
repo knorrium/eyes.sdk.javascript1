@@ -277,12 +277,12 @@ export class Driver<T extends SpecType> {
       }
 
       if (
-        !this._environment.isMobile &&
+        (this._environment.isAndroid || this._environment.isIOS) &&
         this._environment.isWeb &&
-        (this._environment.isAndroid || this._environment.isIOS)
+        !this._environment.isMobile
       ) {
         this._environment.isMobile = true
-        this._environment.isEmulation = this._environment.isChromium
+        this._environment.isEmulation = true
       }
 
       this._environment.isEC =
