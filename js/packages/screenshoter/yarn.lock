@@ -18,10 +18,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.46", "@applitools/driver@^1.11.46":
-  version "1.11.46"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.46.tgz#05bde4f23f19c638895a7b3f189b29bdf83aba3d"
-  integrity sha512-RMNdrU8eDysTXPdoLMRIKdPiKPwSx55f3UaeA74UkiEy5VHWFN7S1mdwrWpq9sg9BqTOqaUdL8gYGHSg0AEL1Q==
+"@applitools/driver@1.11.47", "@applitools/driver@^1.11.47":
+  version "1.11.47"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.47.tgz#10932f26caaf659ace928cac61ee8fd5f67a7c2b"
+  integrity sha512-g1NDb2w5IrNlKW3H5Lo/Gxhqf0L3DRDC22016G2NoomYRRyYIy1BtcIDfnI15QMPvbOr1kce59q2RXaqOci3kg==
   dependencies:
     "@applitools/logger" "1.1.52"
     "@applitools/snippets" "2.4.19"
@@ -52,12 +52,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.19.tgz#2633a0e6df6663ab3ddeb2ac4d21e748d3eea04d"
   integrity sha512-cXIB5fuVGYFQzZK3tylgIRLh5dTWoCS2v2ZDGpSgdWuz0NH5LArGQpqPr8svqv3nEHCKMBHCMbwEF/CoblIblA==
 
-"@applitools/spec-driver-webdriverio@^1.4.42":
-  version "1.4.42"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.42.tgz#f1710ee869699848d3e131636f5d9b4f37511d1d"
-  integrity sha512-wZSO2wkbvw8Zq/YjV0HvdJ7OOLHw4qDmyUVeGH+VtZNaQxCKsOFQPQOjJ9aVe3lpiC/1Y8/VQ8CREPcZfuwCrA==
+"@applitools/spec-driver-webdriverio@^1.4.43":
+  version "1.4.43"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.43.tgz#71d2b94c8233b9f64aad04af33f9b710a360c6a4"
+  integrity sha512-tSfq8X0TCuHcJRp/hvv2ReHNMLNCTwtVN+2fruRh0nPDH3wzrF5HWWzWAqhHRxJfcAcJt7VP6bEy2UbcIBpNtg==
   dependencies:
-    "@applitools/driver" "1.11.46"
+    "@applitools/driver" "1.11.47"
     "@applitools/utils" "1.3.35"
 
 "@applitools/test-utils@^1.5.16":
