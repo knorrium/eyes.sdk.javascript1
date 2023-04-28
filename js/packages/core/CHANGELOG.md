@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.6 - 2023/4/28
+
+### Features
+### Bug fixes
+- Fixed dynamic import issue in universal binaries
+
 ## 2.5.5 - 2023/4/26
 
 ### Features
