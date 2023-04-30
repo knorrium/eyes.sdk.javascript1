@@ -21,7 +21,7 @@ import com.applitools.utils.GeneralUtils;
 /**
  * command executor
  */
-public class CommandExecutor {
+public class CommandExecutor implements AutoCloseable {
 
   private static USDKConnection connection;
   private static volatile CommandExecutor instance;
@@ -356,5 +356,10 @@ public class CommandExecutor {
       default:
         throw new UnsupportedOperationException("Unsupported exception type: " + reason);
     }
+  }
+
+  @Override
+  public void close() {
+    connection.close();
   }
 }

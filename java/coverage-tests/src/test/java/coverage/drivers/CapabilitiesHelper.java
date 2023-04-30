@@ -23,32 +23,26 @@ public class CapabilitiesHelper {
 
     public static Capabilities getSafari11(boolean legacy) {
         SafariOptions safari = new SafariOptions();
-        if (legacy) {
-            safari.setCapability("version", "11.0");
-            safari.setCapability("platform", "macOS 10.12");
-        } else {
-            safari.setCapability("browserVersion", "11.0");
-            safari.setCapability("platformName", "macOS 10.12");
-        }
-        MutableCapabilities options = new MutableCapabilities();
-        options.setCapability("name", "Safari 11");
-        options.setCapability("seleniumVersion", "3.4.0");
-        return setSauceCredentials(safari, legacy, options);
+
+        safari.setPlatformName("macOS 10.12");
+        safari.setBrowserVersion("11.0");
+
+        Map<String, Object> sauceOptions = new HashMap<>();
+        sauceOptions.put("name", "Safari 11");
+
+        return setSauceCredentials(safari, legacy, sauceOptions);
     }
 
     public static Capabilities getSafari12(boolean legacy) {
         SafariOptions safari = new SafariOptions();
-        if (legacy) {
-            safari.setCapability("version", "12.1");
-            safari.setCapability("platform", "macOS 10.13");
-        } else {
-            safari.setCapability("browserVersion", "12.1");
-            safari.setCapability("platformName", "macOS 10.13");
-        }
-        MutableCapabilities options = new MutableCapabilities();
-        options.setCapability("name", "Safari 12");
-        options.setCapability("seleniumVersion", "3.4.0");
-        return setSauceCredentials(safari, legacy, options);
+
+        safari.setPlatformName("macOS 10.13");
+        safari.setBrowserVersion("12.1");
+
+        Map<String, Object> sauceOptions = new HashMap<>();
+        sauceOptions.put("name", "Safari 12");
+
+        return setSauceCredentials(safari, legacy, sauceOptions);
     }
 
     public static Capabilities getEdge18() {
@@ -190,6 +184,8 @@ public class CapabilitiesHelper {
     }
 
     public static Capabilities setSauceCredentials(Capabilities caps, boolean legacy, Capabilities options) {
+
+
         MutableCapabilities sauceOpts = new MutableCapabilities();
         sauceOpts.setCapability("username", System.getenv("SAUCE_USERNAME"));
         sauceOpts.setCapability("accessKey", System.getenv("SAUCE_ACCESS_KEY"));
@@ -201,6 +197,15 @@ public class CapabilitiesHelper {
             sauce.setCapability("sauce:options", sauceOpts);
             return caps.merge(sauce);
         }
+    }
+
+    public static Capabilities setSauceCredentials(Capabilities caps, boolean legacy, Map<String, Object> options) {
+
+        options.put("username", System.getenv("SAUCE_USERNAME"));
+        options.put("accessKey", System.getenv("SAUCE_ACCESS_KEY"));
+        MutableCapabilities sauce = new MutableCapabilities();
+        sauce.setCapability("sauce:options", options);
+        return caps.merge(sauce);
     }
 
     public static Capabilities setSauceCredentials(Capabilities caps) {

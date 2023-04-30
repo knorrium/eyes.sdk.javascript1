@@ -17,6 +17,8 @@ fi
 # Run UFG tests on EC
 if [[ "$1" == "true" ]]; then
   export UFG_ON_EG=true
+else
+  export UFG_ON_EG=false
 fi
 
 if [[ "$2" == "selenium" ]]; then

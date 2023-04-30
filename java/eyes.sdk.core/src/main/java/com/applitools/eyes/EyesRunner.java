@@ -17,7 +17,7 @@ import com.applitools.utils.ArgumentGuard;
 import com.applitools.utils.ClassVersionGetter;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class EyesRunner {
+public abstract class EyesRunner implements AutoCloseable {
   /**
    * command executor
    */
@@ -251,5 +251,10 @@ public abstract class EyesRunner {
 
   protected Refer getRefer() {
     return listener.getRefer();
+  }
+
+  @Override
+  public void close() {
+    commandExecutor.close();
   }
 }
