@@ -35,7 +35,16 @@ export function makeStartSession({settings, req, tunnels}: Options) {
 
     logger.log(`Request was intercepted with body:`, requestBody)
 
-    const capabilities: Record<string, any> = requestBody.capabilities?.alwaysMatch ?? requestBody.desiredCapabilities
+    let capabilities: Record<string, any> = {}
+
+    if (!utils.types.isEmpty(requestBody.desiredCapabilities)) {
+      capabilities = requestBody.desiredCapabilities
+    } else if (!utils.types.isEmpty(requestBody.capabilities?.alwaysMatch)) {
+      capabilities = requestBody.capabilities.alwaysMatch
+    } else if (!utils.types.isEmpty(requestBody.capabilities?.firstMatch?.[0])) {
+      capabilities = requestBody.capabilities?.firstMatch?.[0]
+    }
+
     const options = {
       ...settings.options,
       ...capabilities?.['applitools:options'],
@@ -58,11 +67,15 @@ export function makeStartSession({settings, req, tunnels}: Options) {
     const applitoolsCapabilities = Object.fromEntries(
       Object.entries(options).map(([key, value]) => [`applitools:${key}`, value]),
     )
-    if (requestBody.capabilities) {
-      requestBody.capabilities.alwaysMatch = {...requestBody.capabilities?.alwaysMatch, ...applitoolsCapabilities}
-    }
-    if (requestBody.desiredCapabilities) {
+
+    if (!utils.types.isEmpty(requestBody.desiredCapabilities)) {
       requestBody.desiredCapabilities = {...requestBody.desiredCapabilities, ...applitoolsCapabilities}
+    } else if (!utils.types.isEmpty(requestBody.capabilities?.alwaysMatch)) {
+      requestBody.capabilities.alwaysMatch = {...requestBody.capabilities?.alwaysMatch, ...applitoolsCapabilities}
+    } else if (!utils.types.isEmpty(requestBody.capabilities?.firstMatch?.[0])) {
+      requestBody.capabilities.firstMatch = [{...requestBody.capabilities.firstMatch[0], ...applitoolsCapabilities}]
+    } else {
+      requestBody.desiredCapabilities = {...applitoolsCapabilities}
     }
 
     logger.log('Request body has modified:', requestBody)

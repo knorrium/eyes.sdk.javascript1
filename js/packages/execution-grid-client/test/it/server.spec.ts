@@ -72,10 +72,10 @@ describe('server', () => {
       .persist()
       .post('/session')
       .reply((_url, body) => {
-        const {capabilities} = body as Record<string, any>
+        const {desiredCapabilities} = body as Record<string, any>
         if (
-          capabilities.alwaysMatch['applitools:apiKey'] === 'api-key' &&
-          capabilities.alwaysMatch['applitools:eyesServerUrl'] === 'http://server.url'
+          desiredCapabilities['applitools:apiKey'] === 'api-key' &&
+          desiredCapabilities['applitools:eyesServerUrl'] === 'http://server.url'
         ) {
           return [200, {value: {capabilities: {}, sessionId: 'session-guid'}}]
         } else {
@@ -103,10 +103,10 @@ describe('server', () => {
       .persist()
       .post('/session')
       .reply((_url, body) => {
-        const {capabilities} = body as Record<string, any>
+        const {desiredCapabilities} = body as Record<string, any>
         if (
-          capabilities.alwaysMatch['applitools:apiKey'] === 'api-key' &&
-          capabilities.alwaysMatch['applitools:eyesServerUrl'] === 'http://server.url'
+          desiredCapabilities['applitools:apiKey'] === 'api-key' &&
+          desiredCapabilities['applitools:eyesServerUrl'] === 'http://server.url'
         ) {
           return [200, {value: {capabilities: {}, sessionId: 'session-guid'}}]
         } else {
