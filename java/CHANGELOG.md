@@ -1,3 +1,9 @@
+## [5.50.0] - 2023-05-01
+### Features
+- Execution cloud support.
+### Bug fixes
+- 
+
 ## [5.49.0] - 2023-04-30
 ### Features
 - Make runners compatible with Java's AutoCloseable interface.
