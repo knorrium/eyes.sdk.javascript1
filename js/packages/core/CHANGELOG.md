@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.8 - 2023/5/1
+
+### Features
+### Bug fixes
+- Remove "Execution Cloud" custom property
+
 ## 2.5.7 - 2023/4/28
 
 ### Features
