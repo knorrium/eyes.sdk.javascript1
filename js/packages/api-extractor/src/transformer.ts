@@ -288,12 +288,13 @@ export default function transformer(
   }
 
   function getPropertyName(symbol: ts.Symbol): string | ts.PropertyName {
-    if (symbol.nameType && isSymbolType(symbol.nameType)) {
+    if (symbol.links?.nameType && isSymbolType(symbol.links.nameType)) {
       return ts.factory.createComputedPropertyName(
-        ts.factory.createIdentifier(`Symbol.${symbol.nameType.symbol.getName()}`),
+        ts.factory.createIdentifier(`Symbol.${symbol.links.nameType.symbol.getName()}`),
       )
     }
-    const name = symbol.nameType && isStringLiteral(symbol.nameType) ? symbol.nameType.value : symbol.getName()
+    const name =
+      symbol.links?.nameType && isStringLiteral(symbol.links.nameType) ? symbol.links.nameType.value : symbol.getName()
     return !/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(name)
       ? ts.factory.createStringLiteral(name, true /* isSingleQuoted */)
       : name

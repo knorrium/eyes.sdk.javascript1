@@ -33,9 +33,9 @@ declare module 'typescript' {
   export interface Symbol {
     parent?: ts.Symbol
     checkFlags?: ts.CheckFlags
-    nameType?: ts.UniqueESSymbolType
     links?: {
       target?: ts.Symbol
+      nameType?: ts.UniqueESSymbolType | ts.StringLiteralType
     }
   }
 
