@@ -57,7 +57,6 @@ export function makeExecuteScript({req, core}: Options) {
             proxy: session.proxy,
             appName: options?.appName ?? session.options.appName ?? ((await driver.getTitle()) || 'default'),
             testName: options?.testName ?? session.options.testName,
-            properties: [{name: 'Execution Cloud', value: 'Yes'}],
             batch: {...session.options.batch, ...options?.batch},
             environment: {
               hostingApp: `${environment.browserName ?? ''} ${environment.browserVersion ?? ''}`.trim(),

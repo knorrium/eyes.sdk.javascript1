@@ -12,17 +12,18 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Remove "Execution Cloud" custom property
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Remove "Execution Cloud" custom property
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
     - Fixed detection of emulated mobile drivers
+    - Remove "Execution Cloud" custom property
 "@applitools/eyes-playwright":
   feature:
     - 

@@ -112,10 +112,7 @@ describe('get manager results', () => {
     assert.deepStrictEqual(summary.results.length, 1)
 
     const testInfo = await getTestInfo(summary.results[0].result)
-    assert.deepStrictEqual(testInfo.startInfo.properties, [
-      {name: 'latest', value: 'true'},
-      {name: 'Execution Cloud', value: 'No'},
-    ])
+    assert.deepStrictEqual(testInfo.startInfo.properties, [{name: 'latest', value: 'true'}])
   })
 
   it('should not remove duplicates if baselineEnvName is used', async () => {
