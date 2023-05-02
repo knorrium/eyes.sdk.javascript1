@@ -12,18 +12,19 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with failed find element responses in EC
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with failed find element responses in EC
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
     - Fixed detection of emulated mobile drivers
     - Remove "Execution Cloud" custom property
+    - Fixed issue with failed find element responses in EC
 "@applitools/eyes-playwright":
   feature:
     - 
@@ -58,6 +59,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Fixed detection of emulated mobile drivers
+    - Fixed issue with failed find element responses in EC
 "@applitools/eyes-cypress":
   feature:
     - 
