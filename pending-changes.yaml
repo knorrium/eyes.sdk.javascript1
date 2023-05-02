@@ -64,7 +64,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Update internal dependencies
 "@applitools/eyes-storybook":
   feature:
     - 
