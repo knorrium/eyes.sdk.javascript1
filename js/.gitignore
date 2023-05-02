@@ -39,3 +39,4 @@ tmp
 tags
 tags.*
 packages/@applitools/
+.husky
