@@ -53,33 +53,13 @@
     binary "^0.3.0"
     is-localhost-ip "^2.0.0"
 
-"@applitools/execution-grid-tunnel@1.0.24":
-  version "1.0.24"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.24.tgz#aceb0a60de63c84c1028f2201b1c40001e6b7568"
-  integrity sha512-PVOHhTSqC5JCZh76GJCuShLjApogl5IzE5xaDOF0ptX1gvlEqN1MuONw/TTcT4P9j4Xs/XLU+T4o265R4Z+dbA==
+"@applitools/execution-grid-tunnel@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-2.0.1.tgz#0a392483e94cec03b45e23ccd11866cb3fd036a3"
+  integrity sha512-NIKfBvTpU8hmX1cGmuEEfGYr2UWE5DvU6m44MwrIxXAGKRmg4g4/Cfo5fgGu1m2JzN2a9rBpJbZxI7l9j/QwyQ==
   dependencies:
     "@applitools/eg-frpc" "1.0.3"
     "@applitools/eg-socks5-proxy-server" "^0.5.4"
-    "@applitools/execution-grid-tunnel" "^1.0.14"
-    "@applitools/logger" "^1.0.12"
-    dotenv "^16.0.0"
-    encoding "^0.1.13"
-    fastify "^3.24.1"
-    fastify-plugin "^3.0.1"
-    find-process "^1.4.7"
-    ini "^3.0.0"
-    node-cleanup "^2.1.2"
-    node-fetch "^2.6.7"
-    p-retry "^4.6.2"
-    teen_process "^1.16.0"
-
-"@applitools/execution-grid-tunnel@^1.0.14":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@applitools/execution-grid-tunnel/-/execution-grid-tunnel-1.0.15.tgz#9d63d89b64faed22e7b7e5ee762869d778d6a180"
-  integrity sha512-TgaQTYUNabSLbOxSB9opbyuMV6l4FelD/XqzA/I21UsJDVuJx6ymbQ6gSlFypQm+9Omzwdu0hFRYqkIufdYaKA==
-  dependencies:
-    "@applitools/eg-socks5-proxy-server" "^0.5.4"
-    "@applitools/execution-grid-tunnel" "^1.0.14"
     "@applitools/logger" "^1.0.12"
     dotenv "^16.0.0"
     encoding "^0.1.13"

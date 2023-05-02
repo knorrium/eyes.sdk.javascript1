@@ -5,6 +5,8 @@ import {type Logger} from '@applitools/logger'
 import {type ReqProxy} from '../req-proxy'
 import {type TunnelManager} from '../tunnels/manager'
 import {makeQueue, type Queue} from '../utils/queue'
+//@ts-ignore
+import {prepareEnvironment} from '@applitools/execution-grid-tunnel'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -58,6 +60,8 @@ export function makeStartSession({settings, req, tunnels}: Options) {
       options,
     } as ECSession
     if (options.tunnel && tunnels) {
+      // TODO should be removed once tunnel spawning issue is solved
+      await prepareEnvironment()
       session.tunnels = await tunnels.acquire(session.credentials)
       session.tunnels.forEach((tunnel, index) => {
         options[`x-tunnel-id-${index}`] = tunnel.tunnelId
