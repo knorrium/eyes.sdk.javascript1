@@ -2,8 +2,8 @@ from __future__ import absolute_import
 
 import typing as t
 
-from marshmallow import Schema, post_dump, post_load
-from marshmallow.fields import (
+from applitools.common.mmallow import (
+    BaseSchema,
     Boolean,
     DateTime,
     Dict,
@@ -12,10 +12,13 @@ from marshmallow.fields import (
     Integer,
     List,
     Nested,
+    Schema,
+    SchemaMeta,
     String,
+    post_dump,
+    post_load,
+    with_metaclass,
 )
-from marshmallow.schema import BaseSchema, SchemaMeta, with_metaclass
-
 from applitools.core import extract_text
 
 from .. import common

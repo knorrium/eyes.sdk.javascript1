@@ -3,8 +3,7 @@ from __future__ import absolute_import
 import enum
 import typing as t
 
-from marshmallow.fields import Dict, Field
-
+from applitools.common.mmallow import Dict, Field
 from applitools.selenium.optional_deps import StaleElementReferenceException
 
 from ..common import (

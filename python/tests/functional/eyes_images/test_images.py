@@ -6,7 +6,8 @@ import six
 from PIL import Image
 
 from applitools.common import MatchLevel, Region
-from applitools.images import Eyes, OCRRegion, Target
+from applitools.core.extract_text import TextRegion
+from applitools.images import Eyes, OCRRegion, Target, TextRegionSettings
 
 
 def test_image_check_fluent(target, eyes):
@@ -98,6 +99,19 @@ def test_image_extract_text_with_hint(ocr_image, eyes):
     text = eyes.extract_text(OCRRegion(ocr_image).hint("navigati0n bar"))
 
     assert text == ["This is the navigati0n bar"]
+
+
+def test_images_extract_text_regions(ocr_image, eyes):
+    regions = eyes.extract_text_regions(
+        TextRegionSettings("navigation").image(ocr_image)
+    )
+    assert regions == {
+        "navigation": [
+            TextRegion(
+                left=10, top=11, width=214, height=18, text="This is the navigation bar"
+            )
+        ]
+    }
 
 
 def test_images_send_dom(png_target, eyes, app_output):
