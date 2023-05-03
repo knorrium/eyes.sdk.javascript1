@@ -8,6 +8,13 @@
 
 
 
+## 4.65.6 - 2023/5/3
+
+### Features
+### Bug fixes
+- Fixed issue with failed find element responses in EC
+- Fixed issue when on certain browser versions test didn't target a previously created baseline
+
 ## 4.65.5 - 2023/5/1
 
 ### Features
