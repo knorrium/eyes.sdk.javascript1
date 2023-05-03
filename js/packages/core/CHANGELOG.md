@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.5.10 - 2023/5/3
+
+### Features
+### Bug fixes
+- Fixed regression with safari 11 screenshots
+
 ## 2.5.9 - 2023/5/3
 
 ### Features
