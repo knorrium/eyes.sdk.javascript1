@@ -680,14 +680,18 @@ export default function transformer(
       if (!ts.isUnionTypeNode(parameter.type)) {
         return parameters.map(group => [...group, parameter])
       }
+      const undefinedTypeNode = parameter.questionToken
+        ? parameter.type.types.find(typeNode => typeNode.kind === ts.SyntaxKind.UndefinedKeyword)
+        : null
       return parameter.type.types.flatMap(typeNode => {
+        if (typeNode === undefinedTypeNode) return []
         return parameters.map(parameters => {
           const parameterDeclaration = ts.factory.createParameterDeclaration(
             parameter.modifiers,
             parameter.dotDotDotToken,
             parameter.name,
             parameter.questionToken,
-            typeNode,
+            undefinedTypeNode ? ts.factory.createUnionTypeNode([undefinedTypeNode, typeNode]) : typeNode,
             parameter.initializer,
           )
           return [...parameters, parameterDeclaration]

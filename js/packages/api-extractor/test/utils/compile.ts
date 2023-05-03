@@ -5,12 +5,19 @@ import transformer, {TransformerConfig} from '../../src/transformer'
 
 type FileMapping = Record<string, string>
 
-export function compile({config, input}: {config: TransformerConfig; input: FileMapping}): string {
-  const options = {
-    rootDir: path.resolve('.'),
-    declarationDir: path.resolve('.'),
-    declaration: true,
-  }
+export function compile({
+  options = {},
+  config,
+  input,
+}: {
+  options?: ts.CompilerOptions
+  config: TransformerConfig
+  input: FileMapping
+}): string {
+  options.rootDir = path.resolve('.')
+  options.declarationDir = path.resolve('.')
+  options.declaration = true
+
   input = Object.fromEntries(Object.entries(input).map(([fileName, code]) => [path.resolve(fileName), code]))
 
   const host = ts.createCompilerHost(options)

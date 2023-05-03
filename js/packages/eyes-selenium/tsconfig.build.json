@@ -16,7 +16,8 @@
       "allowModules": ["selenium-webdriver"],
       "stripPrivate": true,
       "stripProtected": true,
-      "stripInternal": true
+      "stripInternal": true,
+      "generateSyntheticOverloads": true,
     }]
   },
   "exclude" : ["dist", "types", "test"]
