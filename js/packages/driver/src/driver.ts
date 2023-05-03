@@ -261,10 +261,10 @@ export class Driver<T extends SpecType> {
 
       if (this._environment.browserName) {
         this._environment.isIE = /(internet explorer|ie)/i.test(this._environment.browserName)
-        this._environment.isEdgeLegacy =
-          /edge/i.test(this._environment.browserName) && Number(this._environment.browserVersion) <= 44
-        this._environment.isEdge =
-          /edge/i.test(this._environment.browserName) && Number(this._environment.browserVersion) > 44
+        if (/edge/i.test(this._environment.browserName)) {
+          if (Number.parseInt(this._environment.browserVersion!) > 44) this._environment.isEdge = true
+          else this._environment.isEdgeLegacy = true
+        }
         this._environment.isChrome = /chrome/i.test(this._environment.browserName)
         this._environment.isChromium = this._environment.isChrome || this._environment.isEdge
       }

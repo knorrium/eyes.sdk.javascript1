@@ -19,7 +19,7 @@ async function makeTakeViewportScreenshot(options) {
         return makeTakeMainContextScreenshot(options)
       }
     } catch (ignored) {}
-  } else if (environment.browserName === 'Safari' && environment.browserVersion === '11') {
+  } else if (environment.browserName === 'Safari' && Number.parseInt(environment.browserVersion) === 11) {
     // safari 11 on macs takes full page screenshot
     return makeTakeSafari11Screenshot(options)
   }

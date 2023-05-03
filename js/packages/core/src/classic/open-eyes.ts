@@ -64,8 +64,8 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
         } else if (
           environment.isReliable &&
           environment.isChromium &&
-          ((environment.isWindows && Number.parseInt(environment.browserVersion as string) >= 107) ||
-            (environment.isMac && Number.parseInt(environment.browserVersion as string) >= 90))
+          ((environment.isWindows && Number.parseInt(environment.browserVersion!) >= 107) ||
+            (environment.isMac && Number.parseInt(environment.browserVersion!) >= 90))
         ) {
           settings.environment.os = `${environment.platformName} ${environment.platformVersion ?? ''}`.trim()
         }
