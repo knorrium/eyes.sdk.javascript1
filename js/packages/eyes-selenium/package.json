@@ -61,11 +61,11 @@
     "postpublish": "bongo send-release-notification --name 'js_selenium_4'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.2.6",
-    "@applitools/spec-driver-selenium": "1.5.42"
+    "@applitools/eyes": "1.2.8",
+    "@applitools/spec-driver-selenium": "1.5.44"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.20",
+    "@applitools/api-extractor": "1.2.21",
     "@applitools/bongo": "^3.0.3",
     "@applitools/sdk-coverage-tests": "3.0.2",
     "@applitools/test-utils": "1.5.16",
