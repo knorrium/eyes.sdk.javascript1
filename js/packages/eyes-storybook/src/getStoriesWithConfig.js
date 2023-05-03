@@ -13,7 +13,7 @@ function makeGetStoriesWithConfig({config}) {
   return function getStoriesWithConfig({stories, logger = console}) {
     const storiesWithTitle = addStoryTitleAndBaselineName(stories);
     if (!config.storyConfiguration) {
-      addConfigToStories({config: {}, stories: storiesWithTitle});
+      addConfigToStories({stories: storiesWithTitle});
     } else {
       const storyConfigurations = Array.isArray(config.storyConfiguration)
         ? config.storyConfiguration
@@ -54,8 +54,8 @@ function makeGetStoriesWithConfig({config}) {
   };
 
   function addConfigToStories({config, stories}) {
-    let currConfig = Object.keys(config).length === 0 ? basicConfig : config;
-    const configs = config.fakeIE ? splitConfigsByBrowser(currConfig) : [currConfig];
+    let currConfig = !config ? basicConfig : config;
+    const configs = currConfig.fakeIE ? splitConfigsByBrowser(currConfig) : [currConfig];
     for (const config of configs) {
       for (const story of stories) {
         addConfigToStory({
