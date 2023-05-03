@@ -11,6 +11,13 @@
 
 
 
+## 1.16.1 - 2023/5/3
+
+### Features
+### Bug fixes
+- Fixed detection of emulated mobile drivers
+- Fixed issue when on certain browser versions test didn't target a previously created baseline
+
 ## 1.16.0 - 2023/4/26
 
 ### Features
