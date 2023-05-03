@@ -85,7 +85,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       }
       let cleanupGeneratedSelectors
       if (environment.isWeb) {
-        userAgent = (await driver.getUserAgentLegacy()) ?? undefined
+        userAgent = await driver.getUserAgentLegacy()
         const generated = await generateSafeSelectors({
           context: driver.currentContext,
           elementReferences: [

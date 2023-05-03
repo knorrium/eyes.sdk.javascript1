@@ -1,358 +1,301 @@
 import {extractUserAgentEnvironment} from '../../src/user-agent'
 import assert from 'assert'
 
-describe('user agent legacy', () => {
-  it('should return Chrome as browser, Windows as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Windows',
-      platformVersion: '10',
-      browserName: 'Chrome',
-      browserVersion: '60',
-    })
-  })
-
-  it('should return Firefox as browser, Windows as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Windows',
-      platformVersion: '10',
-      browserName: 'Firefox',
-      browserVersion: '54',
-    })
-  })
-
-  it('should return Chrome as browser, Android as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Mobile Safari/537.36',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Android',
-      platformVersion: '6',
-      browserName: 'Chrome',
-      browserVersion: '60',
-    })
-  })
-
-  it('should return Safari as browser, iOS as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'iOS',
-      platformVersion: '10',
-      browserName: 'Safari',
-      browserVersion: '602',
-    })
-  })
-
-  it('should return Chrome as browser, Linux as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Linux',
-      platformVersion: undefined,
-      browserName: 'Chrome',
-      browserVersion: '51',
-    })
-  })
-
-  it('should return Edge as browser, Windows as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136',
-    )
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Windows',
-      platformVersion: '10',
-      browserName: 'Edge',
-      browserVersion: '12',
-    })
-  })
-
-  it('should return IE as browser, Windows as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)',
-    )
-    assert.deepStrictEqual(userAgent, {
+describe('user agent legacy parse platform', () => {
+  const data = [
+    {
+      userAgent:
+        'Mozilla/4.0 (compatible; MSIE 2.0; Windows 95; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)',
       platformName: 'Windows',
       platformVersion: undefined,
-      browserName: 'IE',
-      browserVersion: '9',
-    })
-  })
-
-  it('should return hidden IE as browser, Windows as OS', () => {
-    const userAgent = extractUserAgentEnvironment('Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko')
-    assert.deepStrictEqual(userAgent, {
+    },
+    {
+      userAgent: 'Mozilla/4.0 (compatible; MSIE 6.1; Windows XP; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
       platformName: 'Windows',
-      platformVersion: '8',
-      browserName: 'IE',
-      browserVersion: '11',
-    })
-  })
-
-  it('should return Unknown as browser, Unknown as OS', () => {
-    const userAgent = extractUserAgentEnvironment('Googlebot/2.1 (+http://www.google.com/bot.html)')
-    assert.deepStrictEqual(userAgent, {
-      platformName: 'Unknown',
+      platformVersion: '5.1',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36',
+      platformName: 'Windows',
+      platformVersion: '7',
+    },
+    {
+      userAgent: 'Opera/9.80 (Windows NT 6.1; WOW64; MRA 5.8 (build 4133)) Presto/2.12.388 Version/12.15',
+      platformName: 'Windows',
+      platformVersion: '7',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0',
+      platformName: 'Windows',
+      platformVersion: '10',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71',
+      platformName: 'Windows',
+      platformVersion: '10',
+    },
+    {
+      userAgent: 'Mozilla/4.0 (compatible; MSIE 5.21; Mac_PowerPC)',
+      platformName: 'Macintosh',
       platformVersion: undefined,
-      browserName: 'Unknown',
-      browserVersion: undefined,
-    })
-  })
-
-  it('should return Safari as browser, Mac OS X as OS', () => {
-    const userAgent = extractUserAgentEnvironment(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5',
-    )
-    assert.deepStrictEqual(userAgent, {
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X; it-it) AppleWebKit/124 (KHTML, like Gecko) Safari/125.1',
       platformName: 'Mac OS X',
-      platformVersion: '10',
-      browserName: 'Safari',
-      browserVersion: '11',
-    })
-  })
-  ;[
-    {
-      uaStr:
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
-      platformName: 'Windows',
-      platformVersion: '10',
-      browserName: 'Chrome',
-      browserVersion: '75',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (Linux; Android 9; Android SDK built for x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.105 Mobile Safari/537.36',
-      platformName: 'Android',
-      platformVersion: '9',
-      browserName: 'Chrome',
-      browserVersion: '72',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'Firefox',
-      browserVersion: '54',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'IE',
-      browserVersion: '11',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'IE',
-      browserVersion: '10',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/74.0.3729.157 Safari/537.36',
-      platformName: 'Linux',
       platformVersion: undefined,
-      browserName: 'Chrome',
-      browserVersion: '74',
     },
     {
-      uaStr: 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
-      platformName: 'Linux',
-      platformVersion: undefined,
-      browserName: 'Firefox',
-      browserVersion: '50',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (Linux; Android 6.0.1; SM-J700M Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
-      platformName: 'Android',
-      platformVersion: '6',
-      browserName: 'Chrome',
-      browserVersion: '69',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
-      platformName: 'iOS',
-      platformVersion: '12',
-      browserName: 'Safari',
-      browserVersion: '12',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (iPad; CPU OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1',
-      platformName: 'iOS',
-      platformVersion: '11',
-      browserName: 'Safari',
-      browserVersion: '11',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.1 Safari/605.1.15',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2',
       platformName: 'Mac OS X',
+      platformVersion: '10.6',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (X11; CrOS x86_64 6783.1.0) AppleWebKit/537.36 (KHTML, like Gecko) Edge/12.0',
+      platformName: 'Chrome OS',
+      platformVersion: undefined,
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (X11; U; Linux armv7l; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16',
+      platformName: 'Linux',
+      platformVersion: undefined,
+    },
+    {
+      userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/538.36 (KHTML, like Gecko) Edge/12.1',
+      platformName: 'Linux',
+      platformVersion: undefined,
+    },
+    {
+      userAgent: 'Opera/12.02 (Android 4.1; Linux; Opera Mobi/ADR-1111101157; U; en-US) Presto/2.9.201 Version/12.02',
+      platformName: 'Android',
+      platformVersion: '4.1',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Linux; U; Android 4.2.2; en-us; GT-I9100 Build/JDQ39E) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 CyanogenMod/10.1.3/i9100',
+      platformName: 'Android',
+      platformVersion: '4.2',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
+      platformName: 'Android',
+      platformVersion: '8.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Linux; Android 10; SM-G973U1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36',
+      platformName: 'Android',
       platformVersion: '10',
-      browserName: 'Safari',
-      browserVersion: '12',
     },
     {
-      uaStr:
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-      platformName: 'Windows',
-      platformVersion: '10',
-      browserName: 'Chrome',
-      browserVersion: '74',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'Chrome',
-      browserVersion: '33',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-      platformName: 'Windows',
-      platformVersion: '8',
-      browserName: 'Chrome',
-      browserVersion: '60',
-    },
-    /*
-       {
-       uaStr: 'Mozilla/5.0 (Linux; U; Android 4.2.2; en-us; GT-I9100 Build/JDQ39E) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30 CyanogenMod/10.1.3/i9100',
-       platformName: 'Android',
-       platformVersion: '4',
-       browserName: BrowserNames.AndroidBrowser,
-       browserVersion: '4',
-       },
-       {
-       uaStr: 'Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)',
-       platformName: 'Windows',
-       platformVersion: '6',
-       browserName: 'IE',
-       browserVersion: '7',
-       },
-       */
-    {
-      uaStr:
-        'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25',
-      platformName: 'iOS',
-      platformVersion: '6',
-      browserName: 'Safari',
-      browserVersion: '6',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko ) Version/5.1 Mobile/9B176 Safari/7534.48.3',
-      platformName: 'iOS',
-      platformVersion: '5',
-      browserName: 'Safari',
-      browserVersion: '5',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_3 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5',
-      platformName: 'iOS',
-      platformVersion: '4',
-      browserName: 'Safari',
-      browserVersion: '5',
-    },
-    {
-      uaStr:
+      userAgent:
         'Mozilla/5.0 (iPhone Simulator; U; CPU iPhone OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7D11 Safari/531.21.10',
       platformName: 'iOS',
-      platformVersion: '3',
-      browserName: 'Safari',
-      browserVersion: '4',
+      platformVersion: '3.2',
     },
     {
-      uaStr: 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'Firefox',
-      browserVersion: '54',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'IE',
-      browserVersion: '11',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
-      platformName: 'Windows',
-      platformVersion: '7',
-      browserName: 'IE',
-      browserVersion: '10',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/74.0.3729.157 Safari/537.36',
-      platformName: 'Linux',
-      platformVersion: undefined,
-      browserName: 'Chrome',
-      browserVersion: '74',
-    },
-    {
-      uaStr: 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0',
-      platformName: 'Linux',
-      platformVersion: undefined,
-      browserName: 'Firefox',
-      browserVersion: '50',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (Linux; Android 6.0.1; SM-J700M Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
-      platformName: 'Android',
-      platformVersion: '6',
-      browserName: 'Chrome',
-      browserVersion: '69',
-    },
-    {
-      uaStr:
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1',
+      userAgent:
+        'Mozilla/5.0 (iPod; U; CPU iPhone OS 4_3_3 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5',
       platformName: 'iOS',
-      platformVersion: '12',
-      browserName: 'Safari',
-      browserVersion: '12',
+      platformVersion: '4.3',
     },
     {
-      uaStr:
-        'Mozilla/5.0 (iPad; CPU OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1',
+      userAgent:
+        'Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko ) Version/5.1 Mobile/9B176 Safari/7534.48.3',
       platformName: 'iOS',
-      platformVersion: '11',
-      browserName: 'Safari',
-      browserVersion: '11',
+      platformVersion: '5.1',
     },
     {
-      uaStr:
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.1 Safari/605.1.15',
-      platformName: 'Mac OS X',
-      platformVersion: '10',
-      browserName: 'Safari',
-      browserVersion: '12',
+      userAgent:
+        'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25',
+      platformName: 'iOS',
+      platformVersion: '6.0',
+    },
+  ]
+
+  data.forEach(({userAgent, ...expectedPlatform}) => {
+    it(`should parse platform of ${userAgent}`, () => {
+      const {platformName, platformVersion} = extractUserAgentEnvironment(userAgent)
+      assert.deepStrictEqual({platformName, platformVersion}, expectedPlatform)
+    })
+  })
+})
+
+describe('user agent legacy parse browser', () => {
+  const data = [
+    {
+      userAgent: 'Opera/9.80 (Windows NT 6.1; WOW64; MRA 5.8 (build 4133)) Presto/2.12.388 Version/12.15',
+      browserName: 'Opera',
+      browserVersion: '12.15',
     },
     {
-      uaStr:
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.29 Safari/537.36 Edg/79.0.309.18',
-      platformName: 'Mac OS X',
-      platformVersion: '10',
+      userAgent: 'Opera/12.02 (Android 4.1; Linux; Opera Mobi/ADR-1111101157; U; en-US) Presto/2.9.201 Version/12.02',
+      browserName: 'Opera',
+      browserVersion: '12.02',
+    },
+    {
+      userAgent: 'Opera/9.80 (S60; SymbOS; Opera Mobi/1209; U; sk) Presto/2.5.28 Version/10.1',
+      browserName: 'Opera',
+      browserVersion: '10.1',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1468.0 Safari/537.36',
+      browserName: 'Chrome',
+      browserVersion: '28.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (X11; U; Linux armv7l; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16',
+      browserName: 'Chrome',
+      browserVersion: '10.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36',
+      browserName: 'Chrome',
+      browserVersion: '69.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Linux; Android 10; SM-G973U1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36',
+      browserName: 'Chrome',
+      browserVersion: '83.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25',
+      browserName: 'Safari',
+      browserVersion: '6.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko ) Version/5.1 Mobile/9B176 Safari/7534.48.3',
+      browserName: 'Safari',
+      browserVersion: '5.1',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X; it-it) AppleWebKit/124 (KHTML, like Gecko) Safari/125.1',
+      browserName: 'Safari',
+      browserVersion: '125.1',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0',
+      browserName: 'Firefox',
+      browserVersion: '23.0',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Windows NT 6.1; rv:14.0) Gecko/20100101 Firefox/18.0.1',
+      browserName: 'Firefox',
+      browserVersion: '18.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100809 Fedora/3.6.7-1.fc14 Firefox/3.6.7',
+      browserName: 'Firefox',
+      browserVersion: '3.6',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0',
+      browserName: 'IE',
+      browserVersion: '10.6',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
+      browserName: 'IE',
+      browserVersion: '10.0',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)',
+      browserName: 'IE',
+      browserVersion: '9.0',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko/20100101 Firefox/22.0',
+      browserName: 'IE',
+      browserVersion: '11.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; rv:11.1) like Gecko',
+      browserName: 'IE',
+      browserVersion: '11.1',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; .NET4.0E; .NET4.0C; .NET CLR 3.5.30729; .NET CLR 2.0.50727; .NET CLR 3.0.30729; InfoPath.3; MDDCJS; rv:11.3) like Gecko',
+      browserName: 'IE',
+      browserVersion: '11.3',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0',
       browserName: 'Edge',
-      browserVersion: '79',
+      browserVersion: '12.0',
     },
-  ].forEach(({uaStr, ...expected}) => {
-    it(`should parse ${uaStr}`, () => {
-      const userAgent = extractUserAgentEnvironment(uaStr)
-      assert.deepStrictEqual(userAgent, expected)
+    {
+      userAgent: 'Mozilla/5.0 (X11; CrOS x86_64 6783.1.0) AppleWebKit/537.36 (KHTML, like Gecko) Edge/12.0',
+      browserName: 'Edge',
+      browserVersion: '12.0',
+    },
+    {
+      userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/538.36 (KHTML, like Gecko) Edge/12.1',
+      browserName: 'Edge',
+      browserVersion: '12.1',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363',
+      browserName: 'Edge',
+      browserVersion: '18.18363',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71',
+      browserName: 'Edge',
+      browserVersion: '79.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36 Edg/84.0.522.48',
+      browserName: 'Edge',
+      browserVersion: '84.0',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Electron/11.2.1-RFV.1 Safari/537.36 TR-Electron/1.14.455 TR-EikonLight/1.14.300 P-Eikon5/1.14.300 RFV-Electron/1.14.455 RFV-Workspace/1.14.300',
+      browserName: 'Electron',
+      browserVersion: '11.2',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Teams/1.3.00.13565 Chrome/69.0.3497.128 Electron/4.2.12 Safari/537.36',
+      browserName: 'Electron',
+      browserVersion: '4.2',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Xbox/2003.1001.4.0 Chrome/69.0.3497.128 Electron/4.2.2 Safari/537.36',
+      browserName: 'Electron',
+      browserVersion: '4.2',
+    },
+    {
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Teams/1.3.00.18164 Chrome/69.0.3497.128 Electron/4.3.13 Safari/537.36',
+      browserName: 'Electron',
+      browserVersion: '4.3',
+    },
+  ]
+
+  data.forEach(({userAgent, ...expectedBrowser}) => {
+    it(`should parse platform of ${userAgent}`, () => {
+      const {browserName, browserVersion} = extractUserAgentEnvironment(userAgent)
+      assert.deepStrictEqual({browserName, browserVersion}, expectedBrowser)
     })
   })
 })
@@ -373,10 +316,11 @@ describe('user agent object', () => {
       platformName: 'Windows',
       platformVersion: '7',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 
@@ -394,10 +338,11 @@ describe('user agent object', () => {
       platformName: 'Windows',
       platformVersion: '8',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 
@@ -415,10 +360,11 @@ describe('user agent object', () => {
       platformName: 'Windows',
       platformVersion: '8.1',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 
@@ -437,10 +383,11 @@ describe('user agent object', () => {
       platformName: 'Windows',
       platformVersion: '10',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 
@@ -459,10 +406,11 @@ describe('user agent object', () => {
       platformName: 'Windows',
       platformVersion: '11',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 
@@ -481,10 +429,11 @@ describe('user agent object', () => {
       platformName: 'Mac OS X',
       platformVersion: '12.5',
       browserName: 'Chrome',
-      browserVersion: '107',
+      browserVersion: '107.0',
       deviceName: undefined,
       isChromium: true,
       isMobile: undefined,
+      isReliable: true,
     })
   })
 })

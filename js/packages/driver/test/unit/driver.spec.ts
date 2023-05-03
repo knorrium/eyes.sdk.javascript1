@@ -481,9 +481,9 @@ describe('driver mobile', () => {
     const environment = await driver.getEnvironment()
     assert.deepStrictEqual(environment, {
       platformName: 'iOS',
-      platformVersion: '12',
+      platformVersion: '12.3',
       browserName: 'Safari',
-      browserVersion: '12',
+      browserVersion: '12.1',
       deviceName: 'iPhone',
       isAndroid: false,
       isChrome: false,
@@ -498,6 +498,7 @@ describe('driver mobile', () => {
       isNative: false,
       isWeb: true,
       isWindows: false,
+      isReliable: false,
     })
   })
 
@@ -519,7 +520,7 @@ describe('driver mobile', () => {
       platformName: 'CorrectOS',
       platformVersion: 'X',
       browserName: 'Safari',
-      browserVersion: '12',
+      browserVersion: '12.1',
       isAndroid: false,
       isChrome: false,
       isChromium: false,
@@ -533,6 +534,7 @@ describe('driver mobile', () => {
       isNative: false,
       isWeb: true,
       isWindows: false,
+      isReliable: false,
     })
   })
 

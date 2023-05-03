@@ -42,7 +42,7 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
         settings.environment.ecSessionId = (await driver.getSessionId())!
       }
       if (environment.isWeb) {
-        settings.environment.userAgent ??= (await driver.getUserAgentLegacy()) ?? undefined
+        settings.environment.userAgent ??= await driver.getUserAgentLegacy()
       }
       if (!settings.environment.deviceName && environment.deviceName) {
         settings.environment.deviceName = environment.deviceName
@@ -62,6 +62,7 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaul
             settings.environment.os += ` ${environment.platformVersion}`
           }
         } else if (
+          environment.isReliable &&
           environment.isChromium &&
           ((environment.isWindows && Number.parseInt(environment.browserVersion as string) >= 107) ||
             (environment.isMac && Number.parseInt(environment.browserVersion as string) >= 90))

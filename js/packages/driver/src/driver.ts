@@ -208,18 +208,18 @@ export class Driver<T extends SpecType> {
     return this._driverInfo.capabilities
   }
 
-  async getUserAgent({force}: {force?: boolean} = {}): Promise<UserAgent | null> {
+  async getUserAgent({force}: {force?: boolean} = {}): Promise<UserAgent | undefined> {
     if (this._driverInfo?.userAgent === undefined || force) {
       this._driverInfo ??= {}
       this._driverInfo.userAgent ??= (await this.currentContext.executePoll(snippets.getUserAgent)) ?? null
       this._logger.log('Extracted user agent', this._driverInfo.userAgent)
     }
-    return this._driverInfo.userAgent ?? null
+    return this._driverInfo.userAgent ?? undefined
   }
 
-  async getUserAgentLegacy({force}: {force?: boolean} = {}): Promise<string | null> {
+  async getUserAgentLegacy({force}: {force?: boolean} = {}): Promise<string | undefined> {
     const userAgent = await this.getUserAgent({force})
-    return utils.types.isObject(userAgent) ? userAgent?.legacy ?? null : userAgent
+    return utils.types.isObject(userAgent) ? userAgent?.legacy : userAgent
   }
 
   async getEnvironment(): Promise<Environment> {
