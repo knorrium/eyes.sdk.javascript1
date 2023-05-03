@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriver",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "keywords": [
     "webdriver",
     "chrome devtools protocol",
