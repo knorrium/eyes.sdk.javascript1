@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.5.9 - 2023/5/3
+
+### Features
+### Bug fixes
+- Fixed issue with failed find element responses in EC
+- Fixed issue when on certain browser versions test didn't target a previously created baseline
+
 ## 2.5.8 - 2023/5/1
 
 ### Features
