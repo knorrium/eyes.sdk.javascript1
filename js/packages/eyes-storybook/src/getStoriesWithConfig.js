@@ -54,7 +54,8 @@ function makeGetStoriesWithConfig({config}) {
   };
 
   function addConfigToStories({config, stories}) {
-    const configs = config.fakeIE ? splitConfigsByBrowser(config) : [config];
+    let currConfig = Object.keys(config).length === 0 ? basicConfig : config;
+    const configs = config.fakeIE ? splitConfigsByBrowser(currConfig) : [currConfig];
     for (const config of configs) {
       for (const story of stories) {
         addConfigToStory({
