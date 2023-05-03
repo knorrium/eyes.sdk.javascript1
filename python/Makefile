@@ -163,6 +163,9 @@ unit_tests: install_eyes_robotframework install_unit_tests_requirements
 	$(PYTEST) -n6 tests/unit
 
 
+eyes_selenium_unit_tests: unit_tests
+
+
 eyes_selenium_installation_tests: install_eyes_robotframework install_installation_tests_requirements
 	$(PYTEST) tests/test_installation.py
 
@@ -209,6 +212,18 @@ eyes_selenium_functional_tests: install_eyes_selenium install_functional_tests_r
 
 eyes_selenium_sauce_functional_tests: install_eyes_selenium install_functional_tests_requirements
 	$(PYTEST) -n4 -m sauce tests/functional/eyes_selenium/
+
+
+eyes_images_all_tests: eyes_images_generated_tests eyes_images_functional_tests
+
+
+eyes_selenium_all_tests: eyes_selenium_generated_tests eyes_appium_generated_tests eyes_selenium_functional_tests eyes_selenium_sauce_functional_tests unit_tests
+
+
+eyes_playwright_all_tests: eyes_playwright_generated_tests eyes_playwright_functional_tests
+
+
+eyes_robotframework_all_tests: eyes_robotframework_functional_tests eyes_robotframework_sauce_functional_tests
 
 
 node_modules:
