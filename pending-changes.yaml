@@ -37,8 +37,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed detection of emulated mobile drivers
-    - Fixed issue when on certain browser versions test didn't target a previously created baseline
+    - 
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
