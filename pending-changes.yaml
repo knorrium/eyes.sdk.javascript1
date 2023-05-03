@@ -66,8 +66,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Update internal dependencies
-    - Fix coded regions by coordinates
+    - 
 "@applitools/eyes-storybook":
   feature:
     - Add the option to send a list of browsers from the component configuration

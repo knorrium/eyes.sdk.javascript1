@@ -12,6 +12,13 @@
 
 
 
+## 3.32.2 - 2023/5/3
+
+### Features
+### Bug fixes
+- Update internal dependencies
+- Fix coded regions by coordinates
+
 ## 3.32.1 - 2023/4/24
 
 ### Features
