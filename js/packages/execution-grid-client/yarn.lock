@@ -30,10 +30,10 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/driver@1.11.48":
-  version "1.11.48"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.48.tgz#8a99dc1d64a5474fcdf2485220af422ecd0a5d30"
-  integrity sha512-n5+Wyic1CX3NQx5wXMvhcqCHBef+09sikmreJxGGWZ1qSRe+nLX6jpir43XgxkP+1wkHO8fwoNLMf1ql7+/Iqg==
+"@applitools/driver@1.11.49":
+  version "1.11.49"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.49.tgz#671cda433545f0fd9ae27f36bf306843df6cd34c"
+  integrity sha512-KvYZ2Vv11MGRWP5cENXHSOiOiRK6FFfbBihfG6SpdlDZilGLTyttUmPoRno/N3RYBT2xzUix1NzhhHRHV5BMmQ==
   dependencies:
     "@applitools/logger" "1.1.52"
     "@applitools/snippets" "2.4.19"
@@ -124,12 +124,12 @@
     "@applitools/logger" "1.1.52"
     "@applitools/utils" "1.3.35"
 
-"@applitools/spec-driver-webdriver@1.0.29":
-  version "1.0.29"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.29.tgz#ec70ed2d4172ba433fa78f8965f8d53bce13b132"
-  integrity sha512-WHRHzp3IIr6rDuCpmpVRuhq0qM2rIob8t+nigWElMNBEl775s6gkafLU3VqrVnzhB7c0zYdU1Ls6bfq6HMe/4A==
+"@applitools/spec-driver-webdriver@1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.30.tgz#61a42ce483f6902331876cc4ef187407decba8d3"
+  integrity sha512-7DEoLArkHMG5etR+pH8Rn3PMbGexHjXsMJUj/5HfAWiaqik4W8GjjCoXm9MbuyDV4VXT5bNfQDsgwlsVtHa7rg==
   dependencies:
-    "@applitools/driver" "1.11.48"
+    "@applitools/driver" "1.11.49"
     "@applitools/utils" "1.3.35"
     proxy-agent "5.0.0"
 
