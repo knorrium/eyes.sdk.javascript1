@@ -58,17 +58,12 @@ function makeRenderStories({
         const story = stories[currIndex++];
         const storyUrl = getStoryUrl(story, storybookUrl);
         const title = getStoryBaselineName(story);
-        const {waitBeforeCapture} = (story.parameters && story.parameters.eyes) || {};
-
         try {
           let [error, storyData] = await presult(
             getStoryData({
               story,
               storyUrl,
-              renderers: story.config.renderers,
               page,
-              layoutBreakpoints: story.config.layoutBreakpoints,
-              waitBeforeStory: waitBeforeCapture || story.config.waitBeforeCapture,
             }),
           );
 
@@ -92,9 +87,7 @@ function makeRenderStories({
               getStoryData({
                 story,
                 storyUrl,
-                renderers: story.config.renderers,
                 page: newPageObj.page,
-                waitBeforeStory: waitBeforeCapture,
               }),
             );
             error = newError;
@@ -116,6 +109,7 @@ function makeRenderStories({
           });
           return onDoneStory(testResults, story);
         } catch (ex) {
+          logger.log(`[page ${pageId}] error while processing story "${title}". ${ex}`);
           return onDoneStory(ex, story);
         }
       }

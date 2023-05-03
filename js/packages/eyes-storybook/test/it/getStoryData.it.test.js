@@ -39,11 +39,10 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshots,
-      waitBeforeCapture: 2000,
     });
 
     const getStoryPromise = getStoryData({
-      story: {},
+      story: {config: {waitBeforeCapture: 2000}},
       storyUrl: 'http://localhost:7272/renderTimeoutNumber.html',
       page,
     });
@@ -80,11 +79,10 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshots,
-      waitBeforeCapture: '#newDiv',
     });
 
     const getStoryPromise = getStoryData({
-      story: {},
+      story: {config: {waitBeforeCapture: '#newDiv'}},
       storyUrl: 'http://localhost:7272/renderTimeoutSelector.html',
       page,
     });
@@ -120,12 +118,11 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshots,
-      // eslint-disable-next-line no-undef
-      waitBeforeCapture: () => window.ready === 'ok',
     });
 
     const getStoryPromise = getStoryData({
-      story: {},
+      // eslint-disable-next-line no-undef
+      story: {config: {waitBeforeCapture: () => window.ready === 'ok'}},
       storyUrl: 'http://localhost:7272/renderTimeoutFunction.html',
       page,
     });
@@ -155,8 +152,12 @@ describe('getStoryData', () => {
     await page.goto('http://localhost:7272/renderStorybookClientApiV5_2-iframe.html');
     const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal('story1');
-    expect((await getStoryData({story: {isApi: true, index: 1}, page}))[0].cdt).to.equal('story2');
+    expect(
+      (await getStoryData({story: {isApi: true, index: 0, config: {}}, page}))[0].cdt,
+    ).to.equal('story1');
+    expect(
+      (await getStoryData({story: {isApi: true, index: 1, config: {}}, page}))[0].cdt,
+    ).to.equal('story2');
   });
 
   // TODO: ask about this -- duplicate, no? the URL is slightly different
@@ -173,8 +174,12 @@ describe('getStoryData', () => {
     await page.goto('http://localhost:7272/renderStorybookClientApiV5-iframe.html');
     const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal('story1');
-    expect((await getStoryData({story: {isApi: true, index: 1}, page}))[0].cdt).to.equal('story2');
+    expect(
+      (await getStoryData({story: {isApi: true, index: 0, config: {}}, page}))[0].cdt,
+    ).to.equal('story1');
+    expect(
+      (await getStoryData({story: {isApi: true, index: 1, config: {}}, page}))[0].cdt,
+    ).to.equal('story2');
   });
 
   it('uses storybook client API V4 when possible', async () => {
@@ -190,9 +195,9 @@ describe('getStoryData', () => {
     await page.goto('http://localhost:7272/renderStorybookClientApiV4-iframe.html');
     const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
-    expect((await getStoryData({story: {isApi: true, index: 0}, page}))[0].cdt).to.equal(
-      'Button-With text',
-    );
+    expect(
+      (await getStoryData({story: {isApi: true, index: 0, config: {}}, page}))[0].cdt,
+    ).to.equal('Button-With text');
   });
 
   it('runs runBefore before extracting story data V5', async () => {
@@ -217,6 +222,7 @@ describe('getStoryData', () => {
             runBefore: {},
           },
         },
+        config: {},
       },
       page,
     });
@@ -246,6 +252,7 @@ describe('getStoryData', () => {
             runBefore: {},
           },
         },
+        config: {},
       },
       page,
     });
@@ -267,7 +274,7 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({logger, takeDomSnapshots});
 
     const [{cdt}] = await getStoryData({
-      story: {isApi: true, index: 0, parameters: {eyes: {runBefore: {}}}},
+      story: {isApi: true, index: 0, parameters: {eyes: {runBefore: {}}}, config: {}},
       page,
     });
 
@@ -294,7 +301,7 @@ describe('getStoryData', () => {
     });
 
     const [{cdt}] = await getStoryData({
-      story: {isApi: true, index: 0},
+      story: {isApi: true, index: 0, config: {}},
       storyUrl,
       page,
     });
@@ -321,7 +328,12 @@ describe('getStoryData', () => {
     });
 
     const [{cdt}] = await getStoryData({
-      story: {isApi: true, index: 0, parameters: {eyes: {queryParams: {theme: 'dark'}}}},
+      story: {
+        isApi: true,
+        index: 0,
+        parameters: {eyes: {queryParams: {theme: 'dark'}}},
+        config: {},
+      },
       storyUrl: `${storyUrl}?eyes-query-params=them&them=dark`,
       page,
     });
@@ -348,7 +360,7 @@ describe('getStoryData', () => {
     });
 
     const [{cdt}] = await getStoryData({
-      story: {isApi: true, index: 0},
+      story: {isApi: true, index: 0, config: {}},
       storyUrl,
       page,
     });

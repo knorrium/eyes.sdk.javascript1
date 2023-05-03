@@ -13,7 +13,7 @@ function makeGetStoriesWithConfig({config}) {
   return function getStoriesWithConfig({stories, logger = console}) {
     const storiesWithTitle = addStoryTitleAndBaselineName(stories);
     if (!config.storyConfiguration) {
-      addConfigToStories({config, stories: storiesWithTitle});
+      addConfigToStories({config: {}, stories: storiesWithTitle});
     } else {
       const storyConfigurations = Array.isArray(config.storyConfiguration)
         ? config.storyConfiguration
@@ -57,7 +57,7 @@ function makeGetStoriesWithConfig({config}) {
     const configs = config.fakeIE ? splitConfigsByBrowser(config) : [config];
     for (const config of configs) {
       for (const story of stories) {
-        addConfigToStoy({
+        addConfigToStory({
           story,
           config,
           isIE: shouldRenderIE(config),
@@ -66,7 +66,7 @@ function makeGetStoriesWithConfig({config}) {
     }
   }
 
-  function addConfigToStoy({story, config, isIE}) {
+  function addConfigToStory({story, config, isIE}) {
     const storiesToUpdate = isIE ? storiesWithConfigIE : storiesWithConfig;
     storiesToUpdate.set(story.baselineName, {
       ...story,
@@ -74,6 +74,13 @@ function makeGetStoriesWithConfig({config}) {
         ...basicConfig,
         ...storiesToUpdate.get(story.baselineName)?.config,
         ...config,
+        ...transformBrowser({...story.parameters?.eyes}),
+        properties: [
+          ...(basicConfig.properties || []),
+          ...(storiesToUpdate.get(story.baselineName)?.config.properties || []),
+          ...(config.properties || []),
+          ...(story.parameters?.eyes?.properties || []),
+        ],
       },
     });
   }

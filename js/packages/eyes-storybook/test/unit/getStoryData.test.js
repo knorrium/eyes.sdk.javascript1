@@ -38,7 +38,7 @@ describe('getStoryData', () => {
       waitBeforeCapture: 50,
     });
     const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
-      story: {},
+      story: {config: {}},
       storyUrl: 'url',
       page,
     });
@@ -78,7 +78,7 @@ describe('getStoryData', () => {
     });
 
     const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
-      story: {},
+      story: {config: {}},
       storyUrl: 'url',
       page,
     });
@@ -118,10 +118,9 @@ describe('getStoryData', () => {
     });
 
     const [{resourceUrls, resourceContents, cdt}] = await getStoryData({
-      story: {},
+      story: {config: {waitBeforeCapture}},
       storyUrl: 'url',
       page,
-      waitBeforeStory: waitBeforeCapture,
     });
 
     expect(resourceUrls).to.eql(['url1']);
@@ -147,11 +146,10 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshot,
-      waitBeforeCapture: 50,
     });
     let err;
     try {
-      await getStoryData({story: {}, storyUrl: 'url', page, waitBeforeStory: -5});
+      await getStoryData({story: {config: {waitBeforeCapture: -5}}, storyUrl: 'url', page});
     } catch (e) {
       err = e;
     }
@@ -176,11 +174,10 @@ describe('getStoryData', () => {
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshot,
-      waitBeforeCapture: -50,
     });
     let err;
     try {
-      await getStoryData({story: {}, storyUrl: 'url', page});
+      await getStoryData({story: {config: {waitBeforeCapture: -50}}, storyUrl: 'url', page});
     } catch (e) {
       err = e;
     }
@@ -204,7 +201,7 @@ describe('getStoryData', () => {
     });
     const [err] = await presult(
       getStoryData({
-        story: {isApi: true},
+        story: {isApi: true, config: {}},
         storyUrl: 'url',
         page,
       }),
@@ -244,7 +241,7 @@ describe('getStoryData', () => {
       reloadPagePerStory: true,
     });
     const data = await getStoryData({
-      story: {isApi: true},
+      story: {isApi: true, config: {}},
       storyUrl: 'url',
       page,
     });

@@ -8,6 +8,7 @@ const psetTimeout = require('util').promisify(setTimeout);
 const getStoryTitle = require('../../src/getStoryTitle');
 const getStoryBaselineName = require('../../src/getStoryBaselineName');
 const logger = require('../util/testLogger');
+const makeGetStoriesWithConfig = require('../../src/getStoriesWithConfig');
 
 describe('renderStory', () => {
   let performance, timeItAsync;
@@ -93,6 +94,7 @@ describe('renderStory', () => {
   });
 
   it('passes correct parameters to openEyes and checkAndClose - local configuration', async () => {
+    const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
     const openEyes = async x => {
       return {
         checkAndClose: async y => {
@@ -133,18 +135,12 @@ describe('renderStory', () => {
     const baseStory = {
       name: 'name',
       kind: 'kind',
+      parameters: {eyes: eyesOptions},
     };
     const title = getStoryTitle(baseStory);
     const baselineName = getStoryBaselineName(baseStory);
-    const story = {
-      ...baseStory,
-      parameters: {eyes: eyesOptions},
-      storyTitle: title,
-      baselineName,
-      config: {},
-    };
-
-    const results = await renderStory({story});
+    const storiesWithConfig = await getStoriesWithConfig({stories: [baseStory]});
+    const results = await renderStory({story: storiesWithConfig.stories[0]});
     deleteUndefinedPropsRecursive(results);
 
     const {properties} = eyesOptions;
@@ -316,6 +312,7 @@ describe('renderStory', () => {
       enablePatterns: 'global enablePatterns',
     };
 
+    const getStoriesWithConfig = makeGetStoriesWithConfig({config: globalConfig});
     const renderStory = makeRenderStory({
       ...defaultSettings,
       logger,
@@ -351,9 +348,8 @@ describe('renderStory', () => {
     const baseStory = {name: 'name', kind: 'kind', parameters: {eyes: eyesOptions}};
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
-    const story = {...baseStory, storyTitle: title, baselineName, config: globalConfig};
-
-    const results = await renderStory({story, config: globalConfig});
+    const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
+    const results = await renderStory({story: storiesWithConfig.stories[0]});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
@@ -449,6 +445,7 @@ describe('renderStory', () => {
   });
 
   it('passes local ignore param for backward compatibility', async () => {
+    const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
     const openEyes = async x => {
       return {
         checkAndClose: async y => {
@@ -475,8 +472,8 @@ describe('renderStory', () => {
     };
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
-    const story = {...baseStory, storyTitle: title, baselineName, config: {}};
-    const results = await renderStory({story});
+    const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
+    const results = await renderStory({story: storiesWithConfig.stories[0]});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
@@ -502,6 +499,7 @@ describe('renderStory', () => {
   });
 
   it('ignoreRegions take precedence over ignore param', async () => {
+    const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
     const openEyes = async x => {
       return {
         checkAndClose: async y => {
@@ -529,8 +527,8 @@ describe('renderStory', () => {
     };
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
-    const story = {...baseStory, storyTitle: title, baselineName, config: {}};
-    const results = await renderStory({story});
+    const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
+    const results = await renderStory({story: storiesWithConfig.stories[0]});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {

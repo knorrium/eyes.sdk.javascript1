@@ -16,11 +16,13 @@
         "test/fixtures/fakeIE",
         "test/fixtures/globalQueryParams",
         "test/fixtures/zeroStoriesRetry",
+        "test/fixtures/perComponentStorybook",
         "dist",
         "logs",
         "test/fixtures/storybook-storyStore7",
         "test/fixtures/storybook-with-errors-with-version/",
         "test/fixtures/floatingRegionStorybook",
+        "test/fixtures/waitBeforeCaptureLocal",
         "test/e2e/latest",
         "test/e2e/undefined"
     ],

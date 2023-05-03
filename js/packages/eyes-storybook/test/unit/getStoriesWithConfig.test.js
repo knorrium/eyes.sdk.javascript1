@@ -41,6 +41,7 @@ describe('getStoriesWithConfig', () => {
       waitBeforeCapture: 1000,
       batchName: 'this is an example',
       renderers: [{name: 'chrome', width: 800, height: 600}],
+      properties: [],
       storyConfiguration: {
         stories: ({kind}) => {
           return kind === 'Button';
@@ -115,6 +116,7 @@ describe('getStoriesWithConfig', () => {
     };
 
     const config = {
+      properties: [],
       matchLevel: 'layout',
       waitBeforeCapture: 1000,
       batchName: 'this is an example',
@@ -176,6 +178,7 @@ describe('getStoriesWithConfig', () => {
 
   it('merge multiple subsets', () => {
     const config = {
+      properties: [],
       matchLevel: 'layout',
       waitBeforeCapture: 1000,
       batchName: 'this is an example',
@@ -264,6 +267,7 @@ describe('getStoriesWithConfig', () => {
     };
 
     const config = {
+      properties: [],
       matchLevel: 'layout',
       waitBeforeCapture: 1000,
       batchName: 'this is an example',
@@ -348,6 +352,7 @@ describe('getStoriesWithConfig', () => {
 
   it('story config method with error', async () => {
     const config = {
+      properties: [],
       matchLevel: 'layout',
       waitBeforeCapture: 1000,
       batchName: 'this is an example',
@@ -401,6 +406,7 @@ describe('getStoriesWithConfig', () => {
 
   it('empty stories subset', () => {
     const config = {
+      properties: [],
       matchLevel: 'layout',
       waitBeforeCapture: 1000,
       batchName: 'this is an example',

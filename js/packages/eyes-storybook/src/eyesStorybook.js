@@ -112,7 +112,13 @@ async function eyesStorybook({
   });
   const pagePool = createPagePool({initPage, logger});
 
-  const doTakeDomSnapshots = async ({page, renderers, layoutBreakpoints, waitBeforeCapture}) => {
+  const doTakeDomSnapshots = async ({
+    page,
+    renderers,
+    layoutBreakpoints,
+    waitBeforeCapture,
+    disableBrowserFetching,
+  }) => {
     const driver = await new Driver({spec, driver: page, logger});
     const skipResources = client.getCachedResourceUrls();
     const result = await takeDomSnapshots({
@@ -125,6 +131,7 @@ async function eyesStorybook({
           renderers,
           waitBeforeCapture,
           skipResources,
+          disableBrowserFetching,
         },
       }),
       provides: {
@@ -175,7 +182,6 @@ async function eyesStorybook({
     const getStoryData = makeGetStoryData({
       logger,
       takeDomSnapshots: doTakeDomSnapshots,
-      waitBeforeCapture,
     });
     const closeSettings = {
       ...settings,

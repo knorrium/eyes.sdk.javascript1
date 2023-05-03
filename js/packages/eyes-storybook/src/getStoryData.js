@@ -10,15 +10,8 @@ const PAGE_EVALUATE_TIMEOUT = 120000;
 const DOM_SNAPSHOTS_TIMEOUT = 5 * 60 * 1000;
 const utils = require('@applitools/utils');
 
-function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPagePerStory}) {
-  return async function getStoryData({
-    story,
-    storyUrl,
-    page,
-    renderers,
-    waitBeforeStory,
-    layoutBreakpoints,
-  }) {
+function makeGetStoryData({logger, takeDomSnapshots, reloadPagePerStory}) {
+  return async function getStoryData({story, storyUrl, page}) {
     const title = getStoryBaselineName(story);
     logger.log(`getting data from story`, title);
 
@@ -50,7 +43,7 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
       await renderStoryLegacy();
     }
 
-    const wait = waitBeforeStory || waitBeforeCapture;
+    const wait = story.config.waitBeforeCapture;
     if (typeof wait === 'number') {
       utils.guard.isGreaterThenOrEqual(wait, 0, {name: 'waitBeforeCapture'});
     }
@@ -64,14 +57,15 @@ function makeGetStoryData({logger, takeDomSnapshots, waitBeforeCapture, reloadPa
     logger.log(`running takeDomSnapshot(s) for story ${title}`);
     const domSnapshotsPromise = takeDomSnapshots({
       page,
-      renderers,
-      layoutBreakpoints: eyesParameters ? eyesParameters.layoutBreakpoints : layoutBreakpoints,
+      renderers: story.config.renderers,
+      layoutBreakpoints: story.config.layoutBreakpoints,
       waitBeforeCapture: wait
         ? async () => {
             logger.log(`waiting before screenshot of ${title} ${wait}`);
             await waitFor(page, wait);
           }
         : undefined,
+      disableBrowserFetching: story.config.disableBrowserFetching,
     });
 
     const result = await ptimeoutWithError(

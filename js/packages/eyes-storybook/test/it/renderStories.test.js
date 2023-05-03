@@ -10,6 +10,7 @@ const logger = require('../util/testLogger');
 const puppeteer = require('puppeteer');
 const snap = require('@applitools/snaptdout');
 const getStoryTitle = require('../../src/getStoryTitle');
+const makeGetStoriesWithConfig = require('../../src/getStoriesWithConfig');
 
 const waitForQueuedRenders = () => {};
 
@@ -186,6 +187,7 @@ describe('renderStories', () => {
   });
 
   it('passes waitBeforeCapture to getStoryData', async () => {
+    const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
     const pagePool = createPagePool({
       logger,
       initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
@@ -193,8 +195,8 @@ describe('renderStories', () => {
     pagePool.addToPool((await pagePool.createPage()).pageId);
 
     let _waitBeforeCapture;
-    const getStoryData = async ({waitBeforeStory}) => {
-      _waitBeforeCapture = waitBeforeStory;
+    const getStoryData = async ({story}) => {
+      _waitBeforeCapture = story.config.waitBeforeCapture;
       return {};
     };
 
@@ -212,15 +214,14 @@ describe('renderStories', () => {
       stream,
       pagePool,
     });
-
-    const results = await renderStories([
-      {
-        name: 's1',
-        kind: 'k1',
-        parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}},
-        config: {},
-      },
-    ]);
+    const story = {
+      name: 's1',
+      kind: 'k1',
+      parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}},
+      config: {},
+    };
+    const storiesWithConfig = getStoriesWithConfig({stories: [story]});
+    const results = await renderStories(storiesWithConfig.stories);
 
     expect(_waitBeforeCapture).to.eql('wait_some_value');
     expect(results[0].title).to.eql('k1: s1');
@@ -229,7 +230,9 @@ describe('renderStories', () => {
         name: 's1',
         kind: 'k1',
         parameters: {eyes: {waitBeforeCapture: 'wait_some_value'}},
-        config: {},
+        config: {waitBeforeCapture: 'wait_some_value', properties: []},
+        storyTitle: 'k1: s1',
+        baselineName: 'k1: s1',
       }),
     );
   });

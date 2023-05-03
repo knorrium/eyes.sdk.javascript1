@@ -40,7 +40,6 @@ describe('eyes-storybook', () => {
       )
       .replace(version, '<version>')
       .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
-    console.log(output);
     await snap(output, 'wait before capture config');
   });
 
@@ -64,7 +63,28 @@ describe('eyes-storybook', () => {
       )
       .replace(version, '<version>')
       .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
-    console.log(output);
     await snap(output, 'wait before capture story config');
+  });
+
+  it('renders story with long before changes on resize component config', async () => {
+    const [err, result] = await presult(
+      utils.process.sh(
+        `node ${path.resolve(__dirname, '../../bin/eyes-storybook')} -f ${path.resolve(
+          __dirname,
+          'happy-config/wait-before-capture-component.config.js',
+        )}`,
+        {spawnOptions},
+      ),
+    );
+    const stdout = err ? err.stdout : result.stdout;
+    const output = stdout
+      .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
+      .replace(
+        /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
+        'See details at <some_url>',
+      )
+      .replace(version, '<version>')
+      .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
+    await snap(output, 'wait before capture component config');
   });
 });
