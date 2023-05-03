@@ -68,6 +68,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Update internal dependencies
+    - Fix coded regions by coordinates
 "@applitools/eyes-storybook":
   feature:
     - 

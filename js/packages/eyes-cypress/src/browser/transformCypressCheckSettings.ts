@@ -228,6 +228,15 @@ export function transformCypressCheckSettings(settings: CypressCheckSettings, re
           const currRegion = {region: region.selector, ...region}
           delete currRegion.selector
           resRegions.push(currRegion)
+        } else if (utils.types.has(region, 'left') && utils.types.has(region, 'top')) {
+          resRegions.push({
+            region: {
+              y: region.top,
+              x: region.left,
+              width: region.width,
+              height: region.height,
+            },
+          })
         } else {
           resRegions.push(region)
         }

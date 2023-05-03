@@ -12,7 +12,7 @@ describe('Coverage tests', () => {
     })
     cy.get('body > input[type=text]').type('My Input')
     cy.eyesCheckWindow({
-      ignore: [{x: 50, y: 50, width: 100, height: 100}],
+      ignore: {left: 50, top: 50, width: 100, height: 100},
       fully: true,
     })
     cy.eyesClose()
