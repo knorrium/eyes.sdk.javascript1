@@ -116,9 +116,22 @@ class CheckSettings(object):
 
     def content(self, *regions, **kwargs):
         # type: (Self, *Region, **Optional[CodedRegionPadding])  -> Self
-        """Shortcut to set the match level to :py:attr:`MatchLevel.CONTENT` if no args"""
+        """
+        Set match level to :py:attr:`MatchLevel.IGNORE_COLORS` if no args provided
+        or add one or more ignore colors regions with optional padding.
+
+        This method is kept for backward compatibility.
+        """
+        return self.ignore_colors(*regions, **kwargs)
+
+    def ignore_colors(self, *regions, **kwargs):
+        # type: (Self, *Region, **Optional[CodedRegionPadding])  -> Self
+        """
+        Set match level to :py:attr:`MatchLevel.IGNORE_COLORS` if no args provided
+        or add one or more ignore colors regions with optional padding.
+        """
         if not regions:
-            self.values.match_level = MatchLevel.CONTENT
+            self.values.match_level = MatchLevel.IGNORE_COLORS
             return self
         try:
             self.values.content_regions = self.__regions(

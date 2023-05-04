@@ -250,14 +250,70 @@ class SeleniumCheckSettings(CheckSettings):
 
     def content(self, *region, **kwargs):  # noqa
         """
-        Adds one or more content regions. And allow to set up paddings for them.
+        Adds one or more ignore colors regions. Optionally set up paddings for them.
 
-        :param kwargs: accepts `padding` parameter where there region paddings
-         could be specified.
+        :param kwargs: accepts `padding` parameter that specifies padding for regions.
          Example of definition: `padding=dict(top=10, left=10, right=11, bottom=12)`
-          where each keys are optional
+          where all keys are optional.
+
+        This method is kept for backward compatibility.
         """
-        return super(SeleniumCheckSettings, self).content(*region, **kwargs)
+        return super(SeleniumCheckSettings, self).ignore_colors(*region, **kwargs)
+
+    @overload  # noqa
+    def ignore_colors(
+        self,
+        *by,  # type: BySelector
+        **kwargs  # type: Union[Text, CodedRegionPadding]
+    ):
+        # type: (...) -> SeleniumCheckSettings
+        pass
+
+    @overload  # noqa
+    def ignore_colors(
+        self,
+        *element,  # type: AnyWebElement
+        **kwargs  # type: Union[CodedRegionPadding, Text]
+    ):
+        # type: (...) -> SeleniumCheckSettings
+        pass
+
+    @overload  # noqa
+    def ignore_colors(
+        self,
+        *css_selector,  # type: CssSelector
+        **kwargs  # type: Union[CodedRegionPadding,Text]
+    ):
+        # type: (...) -> SeleniumCheckSettings
+        pass
+
+    @overload  # noqa
+    def ignore_colors(
+        self,
+        *target_path,  # type: RegionLocator
+        **kwargs  # type: Union[CodedRegionPadding, Text]
+    ):
+        # type: (...) -> SeleniumCheckSettings
+        pass
+
+    @overload  # noqa
+    def ignore_colors(
+        self,
+        *region,  # type: Region
+        **kwargs  # type: Union[CodedRegionPadding, Text]
+    ):
+        # type: (...) -> SeleniumCheckSettings
+        pass
+
+    def ignore_colors(self, *region, **kwargs):  # noqa
+        """
+        Adds one or more ignore colors regions. Optionally set up paddings for them.
+
+        :param kwargs: accepts `padding` parameter that specifies padding for regions.
+         Example of definition: `padding=dict(top=10, left=10, right=11, bottom=12)`
+          where all keys are optional
+        """
+        return super(SeleniumCheckSettings, self).ignore_colors(*region, **kwargs)
 
     @overload  # noqa
     def ignore(

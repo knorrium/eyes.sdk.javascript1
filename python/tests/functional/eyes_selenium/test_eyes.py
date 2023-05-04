@@ -378,3 +378,23 @@ def test_runner_call_get_results_two_times(local_chrome_driver):
 
     assert len(all_results1) == 1
     assert len(all_results2) == 2
+
+
+def test_target_ignore_colors(local_chrome_driver, helpers):
+    eyes = Eyes()
+    eyes.open(
+        local_chrome_driver,
+        "USDK Tests",
+        "Test target ignore colors",
+        {"width": 800, "height": 600},
+    )
+    local_chrome_driver.get(
+        "https://applitools.github.io/demo/TestPages/SimpleTestPage"
+    )
+    eyes.check(Target.window().ignore_colors())
+    results = eyes.close(False)
+    results = helpers.get_test_info(results)
+
+    assert (
+        results["actualAppOutput"][0]["imageMatchSettings"]["matchLevel"] == "Content"
+    )
