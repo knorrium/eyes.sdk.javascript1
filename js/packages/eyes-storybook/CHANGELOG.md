@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.34.0 - 2023/5/4
+
+### Features
+- Add the option to send a list of browsers from the component configuration
+### Bug fixes
+
 ## 3.33.1 - 2023/4/26
 
 ### Features
