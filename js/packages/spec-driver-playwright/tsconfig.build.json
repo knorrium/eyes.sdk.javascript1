@@ -13,7 +13,7 @@
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
       "rootFile": "./index.ts",
-      "allowModules": ["@applitools/driver", "playwright"],
+      "allowModules": ["@applitools/driver", "playwright-core"],
     }]
   },
   "exclude" : ["dist", "types", "test"]
