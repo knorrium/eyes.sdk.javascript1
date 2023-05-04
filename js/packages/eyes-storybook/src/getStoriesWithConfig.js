@@ -13,7 +13,7 @@ function makeGetStoriesWithConfig({config}) {
   return function getStoriesWithConfig({stories, logger = console}) {
     const storiesWithTitle = addStoryTitleAndBaselineName(stories);
     if (!config.storyConfiguration) {
-      addConfigToStories({stories: storiesWithTitle});
+      addConfigToStories({config, stories: storiesWithTitle, isStoryConfig: false});
     } else {
       const storyConfigurations = Array.isArray(config.storyConfiguration)
         ? config.storyConfiguration
@@ -37,6 +37,7 @@ function makeGetStoriesWithConfig({config}) {
           addConfigToStories({
             config: transformBrowser(allowedProps(storyConfig)),
             stories: storiesSubset,
+            isStoryConfig: true,
           });
 
           remainingStories = remainingStories.filter(story => !storiesSubset.includes(story));
@@ -44,7 +45,7 @@ function makeGetStoriesWithConfig({config}) {
       }
 
       if (remainingStories.length) {
-        addConfigToStories({config: basicConfig, stories: remainingStories});
+        addConfigToStories({config: basicConfig, stories: remainingStories, isStoryConfig: true});
       }
     }
     return {
@@ -53,21 +54,21 @@ function makeGetStoriesWithConfig({config}) {
     };
   };
 
-  function addConfigToStories({config, stories}) {
-    let currConfig = !config ? basicConfig : config;
-    const configs = currConfig.fakeIE ? splitConfigsByBrowser(currConfig) : [currConfig];
+  function addConfigToStories({config, stories, isStoryConfig}) {
+    const configs = config.fakeIE ? splitConfigsByBrowser(config) : [config];
     for (const config of configs) {
       for (const story of stories) {
         addConfigToStory({
           story,
           config,
           isIE: shouldRenderIE(config),
+          isStoryConfig,
         });
       }
     }
   }
 
-  function addConfigToStory({story, config, isIE}) {
+  function addConfigToStory({story, config, isIE, isStoryConfig}) {
     const storiesToUpdate = isIE ? storiesWithConfigIE : storiesWithConfig;
     storiesToUpdate.set(story.baselineName, {
       ...story,
@@ -77,7 +78,7 @@ function makeGetStoriesWithConfig({config}) {
         ...config,
         ...transformBrowser({...story.parameters?.eyes}),
         properties: [
-          ...(basicConfig.properties || []),
+          ...(isStoryConfig ? basicConfig.properties || [] : []),
           ...(storiesToUpdate.get(story.baselineName)?.config.properties || []),
           ...(config.properties || []),
           ...(story.parameters?.eyes?.properties || []),
