@@ -23,8 +23,8 @@ async function startStorybookServer({
   let storybookPath, sbArg;
   const storybookPathV6 = resolve(packagePath, 'node_modules/.bin/start-storybook');
   const storybookPathV7 = resolve(packagePath, 'node_modules/.bin/sb');
-  if (fs.existsSync(resolve(packagePath, 'node_modules/.bin/sb'))) {
-    const version = await pexec('node_modules/.bin/sb --version');
+  if (fs.existsSync(storybookPathV7)) {
+    const version = await pexec(`${storybookPathV7} --version`);
     if (semver.satisfies(version.stdout, '<7.0.0')) {
       storybookPath = storybookPathV6;
     } else {
