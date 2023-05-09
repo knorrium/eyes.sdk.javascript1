@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.34.1 - 2023/5/9
+
+### Features
+### Bug fixes
+- Fix the issue where storybook v6 will not start if storybook cli is being used
+
 ## 3.34.0 - 2023/5/4
 
 ### Features
