@@ -71,7 +71,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fix the issue where storybook v6 will not start if storybook cli is being used
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`
