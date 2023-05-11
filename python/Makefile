@@ -41,6 +41,7 @@ install_eyes_playwright: eyes_playwright/dist install_eyes_images
 	python -m playwright install
 
 install_eyes_selenium: eyes_selenium/dist install_eyes_images
+	pip install 'urllib3<2.0.2'  # urllib3 2.0.2 breaks appium 2.9.0, remove this line when appium is fixed
 	python -m pip install eyes_selenium/dist/*
 
 
