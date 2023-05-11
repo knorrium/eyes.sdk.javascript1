@@ -80,6 +80,8 @@ class SuitePostProcessManager(object):
             t["test_name"]: (t["test_status"], t["steps"]) for t in self.current_suite
         }
         for robot_test in self.robot_test_suite.tests:
+            if robot_test.name not in robot_test_name_to_status:
+                continue  # skip non-eyes tests
             robot_test_status, steps_info = robot_test_name_to_status[robot_test.name]
             robot_test.status = robot_test_status
             check_keywords = (

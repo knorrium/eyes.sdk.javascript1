@@ -35,7 +35,7 @@ def test_automatic_core_universal_termination_on_python_termination(reason):
     python_process.stdin.write(b"\n")
     python_process.stdin.flush()
     python_process.wait()
-    sleep(1)  # core-universal receives EOF on stdin and terminates, might take time
+    sleep(2)  # core-universal receives EOF on stdin and terminates, might take time
 
     # psutils returns True when asking .is_running() on zombie process
     # so have to check status explicitly

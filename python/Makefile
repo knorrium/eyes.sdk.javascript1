@@ -201,7 +201,7 @@ eyes_playwright_functional_tests: install_eyes_playwright install_functional_tes
 
 
 eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements
-	$(PYTEST) -n8 -m "not sauce" tests/functional/eyes_robotframework/test_integration.py
+	$(PYTEST) -n8 -m "not sauce" tests/functional/eyes_robotframework/*.py
 
 
 eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_functional_tests_requirements
