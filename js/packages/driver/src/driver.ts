@@ -419,7 +419,10 @@ export class Driver<T extends SpecType> {
 
       if (environment.isWeb) {
         const browserViewport: Viewport = await this.execute(snippets.getViewport)
-        this._viewport = {...browserViewport, ...this._viewport}
+        this._viewport.viewportSize ??= browserViewport.viewportSize
+        this._viewport.pixelRatio ??= browserViewport.pixelRatio
+        this._viewport.viewportScale ??= browserViewport.viewportScale
+        this._viewport.orientation ??= browserViewport.orientation
       }
 
       this._viewport.pixelRatio ??= 1

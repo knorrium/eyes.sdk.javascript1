@@ -12,12 +12,12 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with viewport information extraction when switched to webview
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue with viewport information extraction when switched to webview
 "@applitools/eyes-webdriverio":
   feature:
     - 
@@ -26,6 +26,7 @@ Apollo SDK:
     - Remove "Execution Cloud" custom property
     - Fixed issue with failed find element responses in EC
     - Fixed issue when on certain browser versions test didn't target a previously created baseline
+    - Fixed issue with viewport information extraction when switched to webview
 "@applitools/eyes-playwright":
   feature:
     - 
@@ -62,6 +63,7 @@ Apollo SDK:
     - Fixed detection of emulated mobile drivers
     - Fixed issue with failed find element responses in EC
     - Fixed issue when on certain browser versions test didn't target a previously created baseline
+    - Fixed issue with viewport information extraction when switched to webview
 "@applitools/eyes-cypress":
   feature:
     - 
