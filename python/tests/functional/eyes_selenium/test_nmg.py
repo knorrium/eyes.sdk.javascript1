@@ -14,7 +14,7 @@ from applitools.selenium import Eyes, VisualGridRunner
 @pytest.mark.filterwarnings("ignore:desired_capabilities has been deprecated")
 def test_nmg_ios_basic(sauce_driver_url):
     caps = {
-        "app": "storage:filename=awesomeswift.app.zip",
+        "app": "storage:filename=awesomeswift_nmg.app.zip",
         "deviceName": "iPhone 12 Pro Simulator",
         "platformName": "iOS",
         "platformVersion": "15.2",
@@ -38,7 +38,7 @@ def test_nmg_ios_basic(sauce_driver_url):
 @pytest.mark.sauce
 def test_nmg_android_basic(sauce_driver_url):
     caps = {
-        "app": "storage:filename=android_nmg.apk",
+        "app": "storage:filename=SimpleRandomStock_nmg.apk",
         "appium:autoGrantPermissions": True,
         "deviceName": "Android GoogleAPI Emulator",
         "platformName": "Android",

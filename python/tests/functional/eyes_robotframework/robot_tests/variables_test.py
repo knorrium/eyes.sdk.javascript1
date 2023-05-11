@@ -41,7 +41,7 @@ def get_variables(
                 desired_caps.update(
                     {
                         "automationName": "UiAutomator2",
-                        "app": "storage:filename=android_nmg.apk",
+                        "app": "storage:filename=SimpleRandomStock_nmg.apk",
                         "clearSystemFiles": True,
                         "noReset": True,
                         "appium:autoGrantPermissions": True,
@@ -50,7 +50,7 @@ def get_variables(
             elif platform == "ios":
                 desired_caps.update(
                     {
-                        "app": "storage:filename=awesomeswift.app.zip",
+                        "app": "storage:filename=awesomeswift_nmg.app.zip",
                         "clearSystemFiles": True,
                         "noReset": True,
                         "automationName": "XCUITest",
