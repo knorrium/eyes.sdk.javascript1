@@ -66,7 +66,7 @@ export type CheckSettingsAutomation<TSpec extends Core.SpecType> = CheckSettings
   scrollRootElement?: ElementReference<TSpec>
   fully?: boolean
   disableBrowserFetching?: boolean
-  layoutBreakpoints?: boolean | number[]
+  layoutBreakpoints?: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean}
   visualGridOptions?: {[key: string]: any}
   nmgOptions?: {[key: string]: any}
   hooks?: {beforeCaptureScreenshot: string}
@@ -528,13 +528,12 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
     return this
   }
 
-  layoutBreakpoints(layoutBreakpoints: boolean | number[] = true): this {
-    if (!utils.types.isArray(layoutBreakpoints)) {
-      this._settings.layoutBreakpoints = layoutBreakpoints
-    } else if (layoutBreakpoints.length === 0) {
-      this._settings.layoutBreakpoints = false
-    } else {
-      this._settings.layoutBreakpoints = Array.from(new Set(layoutBreakpoints)).sort((a, b) => (a < b ? 1 : -1))
+  layoutBreakpoints(breakpoints: boolean | number[] = true, settings?: {reload?: boolean}): this {
+    this._settings.layoutBreakpoints = {
+      breakpoints: utils.types.isArray(breakpoints)
+        ? Array.from(new Set(breakpoints)).sort((a, b) => (a < b ? 1 : -1))
+        : breakpoints,
+      reload: settings?.reload,
     }
     return this
   }
@@ -638,7 +637,11 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
           }),
         accessibilityRegions: this._settings.accessibilityRegions,
         disableBrowserFetching: this._settings.disableBrowserFetching,
-        layoutBreakpoints: this._settings.layoutBreakpoints,
+        layoutBreakpoints: utils.types.isDefined(this._settings.layoutBreakpoints)
+          ? utils.types.has(this._settings.layoutBreakpoints, 'breakpoints')
+            ? this._settings.layoutBreakpoints
+            : {breakpoints: this._settings.layoutBreakpoints ?? false}
+          : undefined,
         ufgOptions: this._settings.visualGridOptions,
         nmgOptions: this._settings.nmgOptions,
         hooks: this._settings.hooks,

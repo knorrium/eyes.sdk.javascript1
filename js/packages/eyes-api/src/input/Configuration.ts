@@ -95,7 +95,7 @@ export type Configuration<TSpec extends Core.SpecType = Core.SpecType> = {
   concurrentSessions?: number
   browsersInfo?: (DesktopBrowserInfo | ChromeEmulationInfo | IOSDeviceInfo | AndroidDeviceInfo)[]
   visualGridOptions?: Record<string, any>
-  layoutBreakpoints?: boolean | number[]
+  layoutBreakpoints?: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean}
   disableBrowserFetching?: boolean
 
   waitBeforeCapture?: number
@@ -1017,10 +1017,10 @@ export class ConfigurationData<TSpec extends Core.SpecType = Core.SpecType> impl
     return this
   }
 
-  get layoutBreakpoints(): boolean | number[] {
+  get layoutBreakpoints(): boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean} {
     return this._config.layoutBreakpoints!
   }
-  set layoutBreakpoints(layoutBreakpoints: boolean | number[]) {
+  set layoutBreakpoints(layoutBreakpoints: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean}) {
     utils.guard.notNull(layoutBreakpoints, {name: 'layoutBreakpoints'})
     if (utils.types.isArray(layoutBreakpoints)) {
       this._config.layoutBreakpoints = layoutBreakpoints.length > 0 ? layoutBreakpoints : false
@@ -1028,10 +1028,12 @@ export class ConfigurationData<TSpec extends Core.SpecType = Core.SpecType> impl
       this._config.layoutBreakpoints = layoutBreakpoints
     }
   }
-  getLayoutBreakpoints(): boolean | number[] {
+  getLayoutBreakpoints(): boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean} {
     return this.layoutBreakpoints
   }
-  setLayoutBreakpoints(layoutBreakpoints: boolean | number[]): this {
+  setLayoutBreakpoints(
+    layoutBreakpoints: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean},
+  ): this {
     this.layoutBreakpoints = layoutBreakpoints
     return this
   }
@@ -1136,7 +1138,11 @@ export class ConfigurationData<TSpec extends Core.SpecType = Core.SpecType> impl
           return browserInfo
         }),
         ufgOptions: this.visualGridOptions,
-        layoutBreakpoints: this.layoutBreakpoints,
+        layoutBreakpoints: utils.types.isDefined(this.layoutBreakpoints)
+          ? utils.types.has(this.layoutBreakpoints, 'breakpoints')
+            ? this.layoutBreakpoints
+            : {breakpoints: this.layoutBreakpoints ?? false}
+          : undefined,
         disableBrowserFetching: this.disableBrowserFetching,
         autProxy: this.autProxy,
         sendDom: this.sendDom,

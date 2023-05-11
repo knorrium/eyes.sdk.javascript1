@@ -17,7 +17,7 @@ export * from './take-dom-snapshot'
 export type DomSnapshotsSettings = DomSnapshotSettings & {
   renderers: Renderer[]
   waitBeforeCapture?: number | (() => void)
-  layoutBreakpoints?: number[] | boolean
+  layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
 }
 
 export async function takeDomSnapshots<TSpec extends SpecType>({
@@ -60,7 +60,7 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
     const {name, width} = (await extractRendererInfo({renderer}))!
     const requiredWidths = await prev
     const requiredWidth = isStrictBreakpoints
-      ? calculateBreakpoint({breakpoints: settings.layoutBreakpoints as number[], value: width})
+      ? calculateBreakpoint({breakpoints: settings.layoutBreakpoints?.breakpoints as number[], value: width})
       : width
     let renderers = requiredWidths.get(requiredWidth)
     if (!renderers) requiredWidths.set(requiredWidth, (renderers = []))
@@ -68,7 +68,9 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
     return requiredWidths
   }, Promise.resolve(new Map<number, {name: string; width: number; index: number}[]>()))
 
-  const smallestBreakpoint = Math.min(...(isStrictBreakpoints ? (settings.layoutBreakpoints as number[]) : []))
+  const smallestBreakpoint = Math.min(
+    ...(isStrictBreakpoints ? (settings.layoutBreakpoints.breakpoints as number[]) : []),
+  )
 
   if (isStrictBreakpoints && requiredWidths.has(smallestBreakpoint - 1)) {
     const smallestBrowsers = requiredWidths
@@ -81,7 +83,7 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
     logger.console.log(message)
   }
 
-  logger.log(`taking multiple dom snapshots for breakpoints:`, settings.layoutBreakpoints)
+  logger.log(`taking multiple dom snapshots for breakpoints:`, settings.layoutBreakpoints.breakpoints)
   logger.log(`required widths: ${[...requiredWidths.keys()].join(', ')}`)
   const viewportSize = await driver.getViewportSize()
   const snapshots = Array(settings.renderers.length)
@@ -96,6 +98,10 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
     logger.log(`taking dom snapshot for width ${requiredWidth}`)
     try {
       await driver.setViewportSize({width: requiredWidth, height: viewportSize.height})
+      if (settings.layoutBreakpoints.reload) {
+        await driver.reloadPage()
+        await waitBeforeCapture()
+      }
     } catch (err) {
       logger.error(err)
       const actualViewportSize = await driver.getViewportSize()
@@ -122,6 +128,10 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
   }
 
   await driver.setViewportSize(viewportSize)
+  if (settings.layoutBreakpoints.reload) {
+    await driver.reloadPage()
+    await waitBeforeCapture()
+  }
   return snapshots
 
   function calculateBreakpoint({breakpoints, value}: {breakpoints: number[]; value: number}): number {

@@ -55,7 +55,7 @@ export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings
   renderers?: Renderer[]
   hooks?: {beforeCaptureScreenshot: string}
   disableBrowserFetching?: boolean
-  layoutBreakpoints?: boolean | number[]
+  layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
   ufgOptions?: Record<string, any>
   nmgOptions?: Record<string, any>
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}

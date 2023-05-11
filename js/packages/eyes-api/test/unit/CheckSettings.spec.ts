@@ -76,4 +76,20 @@ describe('CheckSettings', () => {
     const actual = checkSettings.toJSON().settings.densityMetrics
     assert.deepStrictEqual(actual, expected)
   })
+
+  describe('layoutBreakpoints', () => {
+    it('with boolean', () => {
+      const checkSettings = Target.window().layoutBreakpoints(true, {reload: true})
+      assert.deepStrictEqual(checkSettings.toJSON().settings, {layoutBreakpoints: {breakpoints: true, reload: true}})
+    })
+    it('with array of numbers', () => {
+      const checkSettings = Target.window().layoutBreakpoints([1, 2, 3], {reload: true})
+      assert.deepStrictEqual(checkSettings.toJSON().settings, {
+        layoutBreakpoints: {
+          breakpoints: [3, 2, 1],
+          reload: true,
+        },
+      })
+    })
+  })
 })

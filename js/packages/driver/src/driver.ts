@@ -88,6 +88,11 @@ export class Driver<T extends SpecType> {
     this._currentContext = context
   }
 
+  async reloadPage(): Promise<this> {
+    await this.mainContext.execute(snippets.reloadPage).catch(() => null)
+    return this.refresh()
+  }
+
   async refresh(): Promise<this> {
     this._driverInfo = undefined
     this._environment = undefined
