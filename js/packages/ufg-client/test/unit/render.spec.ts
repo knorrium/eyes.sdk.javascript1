@@ -1,5 +1,6 @@
 import {makeRender} from '../../src/render'
 import {type UFGRequests, type RenderRequest} from '../../src/server/requests'
+import {makeLogger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 import assert from 'assert'
 
@@ -32,6 +33,7 @@ describe('render', () => {
           })
         },
       } as UFGRequests,
+      logger: makeLogger(),
     })
 
     const renderResults = await Promise.all([
@@ -64,6 +66,7 @@ describe('render', () => {
           })
         },
       } as UFGRequests,
+      logger: makeLogger(),
     })
 
     const renderResults = await Promise.all([render({...createRenderRequest('page1')})])
@@ -87,6 +90,7 @@ describe('render', () => {
         },
       } as any as UFGRequests,
       batchingTimeout: 10,
+      logger: makeLogger(),
     })
 
     const render1Promise = render({...createRenderRequest('page1')})
@@ -110,6 +114,7 @@ describe('render', () => {
         },
       } as UFGRequests,
       batchingTimeout: 10,
+      logger: makeLogger(),
     })
 
     const render1Promise = render({...createRenderRequest('page1')})
@@ -127,6 +132,7 @@ describe('render', () => {
           })
         },
       } as UFGRequests,
+      logger: makeLogger(),
     })
 
     const renderPromise = render({...createRenderRequest('page1')})
@@ -155,6 +161,7 @@ describe('render', () => {
         },
       } as UFGRequests,
       batchingTimeout: 10,
+      logger: makeLogger(),
     })
 
     const render1Promise = render({...createRenderRequest('page1')})
@@ -180,6 +187,7 @@ describe('render', () => {
         },
       } as UFGRequests,
       batchingTimeout: 50,
+      logger: makeLogger(),
     })
 
     const renders = [] as Promise<any>[]
@@ -222,6 +230,7 @@ describe('render', () => {
       } as UFGRequests,
       concurrency: 2,
       batchingTimeout: 0,
+      logger: makeLogger(),
     })
 
     const render1 = render({...createRenderRequest('page1', 'renderer-1')})

@@ -2,8 +2,9 @@ import {type UFGRequests} from '../../src/server/requests'
 import {makeUploadResource} from '../../src/resources/upload-resource'
 import {makeResource, type ContentfulResource} from '../../src/resources/resource'
 import {makeResourceDom} from '../../src/resources/resource-dom'
-import * as utils from '@applitools/utils'
+import {makeLogger} from '@applitools/logger'
 import assert from 'assert'
+import * as utils from '@applitools/utils'
 
 describe('upload-resource', () => {
   function getKey(resource: ContentfulResource) {
@@ -29,6 +30,7 @@ describe('upload-resource', () => {
           return new Promise(resolve => queueMicrotask(resolve))
         },
       } as UFGRequests,
+      logger: makeLogger(),
     })
 
     const resource1 = makeResource({url: 'url1', value: Buffer.from('content1')})
@@ -89,6 +91,7 @@ describe('upload-resource', () => {
         },
       } as UFGRequests,
       batchingTimeout: 50,
+      logger: makeLogger(),
     })
 
     const resource1 = makeResource({url: 'url1', value: Buffer.from('content1')})

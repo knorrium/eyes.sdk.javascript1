@@ -5,9 +5,10 @@ import {makeUploadResource} from '../../src/resources/upload-resource'
 import {makeProcessResources} from '../../src/resources/process-resources'
 import {makeResourceDom} from '../../src/resources/resource-dom'
 import {testServer} from '@applitools/test-server'
-import assert from 'assert'
+import {makeLogger} from '@applitools/logger'
 import {makeFixtureResource as makeFixtureFrame1Resource} from '../fixtures/page/index.resource'
 import {makeFixtureResource as makeFixtureFrame2Resource} from '../fixtures/page-with-frames/inner/frame.resource'
+import assert from 'assert'
 
 describe('create-render-target', () => {
   let server: any, baseUrl: string
@@ -23,14 +24,16 @@ describe('create-render-target', () => {
 
   it('works', async () => {
     const processResources = makeProcessResources({
-      fetchResource: makeFetchResource(),
+      fetchResource: makeFetchResource({logger: makeLogger()}),
       uploadResource: makeUploadResource({
         requests: {
           checkResources: async ({resources}) => Array(resources.length).fill(true),
         } as UFGRequests,
+        logger: makeLogger(),
       }),
+      logger: makeLogger(),
     })
-    const createRenderTarget = makeCreateRenderTarget({processResources})
+    const createRenderTarget = makeCreateRenderTarget({processResources, logger: makeLogger()})
     const pageUrl = `${baseUrl}/page-with-frames/index.html`
     const frame1Url = `${baseUrl}/page/index.html`
     const frame2Url = `${baseUrl}/page-with-frames/inner/frame.html`

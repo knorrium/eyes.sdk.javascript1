@@ -1,3 +1,4 @@
+import {makeLogger} from '@applitools/logger'
 import {makeFetchResource} from '../../src/resources/fetch-resource'
 import {makeResource} from '../../src/resources/resource'
 import {makeTestServer, generateCertificate} from '@applitools/test-server'
@@ -13,7 +14,7 @@ describe('fetch-resource', () => {
   it('works with a self-signed certificate', async () => {
     const authority = await generateCertificate({days: 1})
     server = await makeTestServer({...authority})
-    const fetchResource = makeFetchResource({retryLimit: 0})
+    const fetchResource = makeFetchResource({retryLimit: 0, logger: makeLogger()})
     const resource = await fetchResource({
       resource: makeResource({url: `https://localhost:${server.port}/page/smurfs.jpg`}),
     })
@@ -25,7 +26,7 @@ describe('fetch-resource', () => {
       middlewares: ['slow'],
     })
 
-    const fetchResource = makeFetchResource({retryLimit: 1, fetchTimeout: 1000})
+    const fetchResource = makeFetchResource({retryLimit: 1, fetchTimeout: 1000, logger: makeLogger()})
     await assert.rejects(
       fetchResource({
         resource: makeResource({url: `http://localhost:${server.port}/page/smurfs.jpg`}),
