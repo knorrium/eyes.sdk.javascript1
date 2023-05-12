@@ -87,7 +87,7 @@ export function makeStartSession({settings, req, tunnels}: Options) {
     const queueKey = JSON.stringify(session.credentials)
     let queue = queues.get(queueKey)!
     if (!queue) {
-      queue = makeQueue({logger: logger.extend({tags: {queue: queueKey}})})
+      queue = makeQueue({logger: logger.extend({tags: [`queue-${queueKey}`]})})
       queues.set(queueKey, queue)
     }
 

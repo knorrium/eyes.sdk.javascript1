@@ -1,6 +1,7 @@
 import {AbortController} from 'abort-controller'
 import {Builder} from 'selenium-webdriver'
 import {Command} from 'selenium-webdriver/lib/command'
+import {makeLogger} from '@applitools/logger'
 import {makeServer} from '../../src/server'
 import * as utils from '@applitools/utils'
 import req from '@applitools/req'
@@ -16,7 +17,7 @@ describe('server', () => {
   })
 
   it('proxies webdriver requests', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -32,7 +33,7 @@ describe('server', () => {
   })
 
   it('performs retries on concurrency and availability errors', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
     let retries = 0
     nock('https://exec-wus.applitools.com')
@@ -66,6 +67,7 @@ describe('server', () => {
         serverUrl: 'https://exec-wus.applitools.com',
         options: {apiKey: 'api-key', eyesServerUrl: 'http://server.url'},
       },
+      logger: makeLogger(),
     })
 
     nock('https://exec-wus.applitools.com')
@@ -97,7 +99,7 @@ describe('server', () => {
   })
 
   it('adds `applitools:` capabilities from provided `applitools:options` capability', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -136,6 +138,7 @@ describe('server', () => {
   it('creates new tunnel when session is successfully created', async () => {
     proxy = await makeServer({
       settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+      logger: makeLogger(),
     })
 
     nock('https://exec-wus.applitools.com')
@@ -163,6 +166,7 @@ describe('server', () => {
   it('fails if new tunnel was not created', async () => {
     proxy = await makeServer({
       settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+      logger: makeLogger(),
     })
 
     nock('https://exec-wus.applitools.com')
@@ -186,6 +190,7 @@ describe('server', () => {
         serverUrl: 'https://exec-wus.applitools.com',
         tunnel: {serverUrl: 'http://eg-tunnel', pool: {timeout: {idle: 0}}},
       },
+      logger: makeLogger(),
     })
 
     nock('https://exec-wus.applitools.com')
@@ -217,7 +222,7 @@ describe('server', () => {
   })
 
   it('aborts proxy request if incoming request was aborted', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
     let count = 0
     nock('https://exec-wus.applitools.com')
@@ -255,7 +260,7 @@ describe('server', () => {
   })
 
   it('queue create session requests if they need retry', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
     let runningCount = 0
     nock('https://exec-wus.applitools.com')
@@ -288,7 +293,7 @@ describe('server', () => {
   })
 
   it('returns session details', async () => {
-    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}})
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
     const sessionId = 'session-guid'
     nock('https://exec-wus.applitools.com')
       .persist()
@@ -314,6 +319,7 @@ describe('server', () => {
   it('find element works with self healing', async () => {
     proxy = await makeServer({
       settings: {serverUrl: 'https://exec-wus.applitools.com', options: {useSelfHealing: true}},
+      logger: makeLogger(),
     })
     const expected = {
       successfulSelector: {using: 'css selector', value: 'actual-selector'},

@@ -31,9 +31,11 @@ export async function makeTunnelManagerServer({
   })
   const logger = makeLogger({
     handler: {type: 'rolling file', name: 'ec-tunnel-manager', dirname: LOG_DIRNAME},
-    label: 'ec-tunnel-manager',
     level: 'info',
-    colors: false,
+    format: {
+      label: 'ec-tunnel-manager',
+      colors: false,
+    },
   })
   logger.log('Server is started')
   const manager = await makeTunnelManager({settings, logger})
