@@ -1,7 +1,7 @@
 import forge from 'node-forge'
 import crypto from 'crypto'
 
-export async function generateCertificate({days = 1}: {days?: number} = {}): Promise<{key: Buffer; cert: Buffer}> {
+export async function generateCertificate({days = 1}: {days?: number} = {}): Promise<{key: string; cert: string}> {
   const keys = forge.pki.rsa.generateKeyPair(2048)
   const cert = forge.pki.createCertificate()
   cert.publicKey = keys.publicKey
@@ -21,7 +21,7 @@ export async function generateCertificate({days = 1}: {days?: number} = {}): Pro
   cert.sign(keys.privateKey)
 
   return {
-    cert: forge.pki.certificateToPem(cert),
     key: forge.pki.privateKeyToPem(keys.privateKey),
+    cert: forge.pki.certificateToPem(cert),
   }
 }

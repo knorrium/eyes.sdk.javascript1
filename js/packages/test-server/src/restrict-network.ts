@@ -7,17 +7,17 @@ export function restrictNetwork(validate: (options: SocketConnectOpts) => boolea
   Socket.prototype.connect = restrictedConnect as any
   return () => (Socket.prototype.connect = originalSocketConnect)
 
-  function restrictedConnect(...args: Parameters<typeof Socket.prototype.connect>[]) {
+  function restrictedConnect(this: Socket, ...args: any[]) {
     let options: SocketConnectOpts
     if (utils.types.isArray(args[0])) {
       // this is something that nodejs impl uses internally
-      options = args[0][0] as any as SocketConnectOpts
+      options = args[0][0]
     } else if (utils.types.isObject(args[0])) {
-      options = args[0]
+      options = args[0] as any
     } else if (utils.types.isString(args[0]) && !utils.types.isInteger(Number(args[0]))) {
       options = {path: args[0]}
     } else {
-      options = {port: args[0], host: utils.types.isString(args[1]) ? args[1] : 'localhost'}
+      options = {port: Number(args[0]), host: utils.types.isString(args[1]) ? args[1] : 'localhost'}
     }
 
     if (!validate(options)) {
@@ -27,6 +27,6 @@ export function restrictNetwork(validate: (options: SocketConnectOpts) => boolea
       throw error
     }
 
-    return originalSocketConnect.call(this, ...args)
+    return originalSocketConnect.apply(this, args as any)
   }
 }
