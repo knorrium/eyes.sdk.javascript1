@@ -33,7 +33,7 @@ describe('wait before capture', () => {
     await eyes.check({
       settings: {
         waitBeforeCapture: 1500,
-        layoutBreakpoints: true,
+        layoutBreakpoints: {breakpoints: true},
         renderers: [{name: 'chrome', width: 1000, height: 600}],
       },
     })
@@ -62,7 +62,7 @@ describe('wait before capture', () => {
     await eyes.check({
       settings: {
         waitBeforeCapture: 1500,
-        layoutBreakpoints: true,
+        layoutBreakpoints: {breakpoints: true},
         renderers: [{name: 'chrome', width: 390, height: 400}],
       },
     })

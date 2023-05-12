@@ -36,7 +36,7 @@ describe('take-dom-snapshots', () => {
     await takeDomSnapshots({
       driver,
       settings: {
-        layoutBreakpoints: true,
+        layoutBreakpoints: {breakpoints: true},
         renderers: [
           {width: 200, height: 400, name: 'chrome'},
           {width: 700, height: 900, name: 'chrome'},
@@ -59,7 +59,7 @@ describe('take-dom-snapshots', () => {
     await takeDomSnapshots({
       driver,
       settings: {
-        layoutBreakpoints: [200, 700, 1000],
+        layoutBreakpoints: {breakpoints: [200, 700, 1000]},
         renderers: [
           {width: 200, height: 400, name: 'chrome'},
           {width: 700, height: 900, name: 'chrome'},
@@ -82,7 +82,7 @@ describe('take-dom-snapshots', () => {
     await takeDomSnapshots({
       driver,
       settings: {
-        layoutBreakpoints: [400, 500],
+        layoutBreakpoints: {breakpoints: [400, 500]},
         renderers: [
           {width: 300, height: 400, name: 'chrome'},
           {width: 350, height: 400, name: 'chrome'},

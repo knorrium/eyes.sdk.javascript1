@@ -33,7 +33,7 @@ describe('lazy load', () => {
       settings: {
         fully: true,
         lazyLoad: true,
-        layoutBreakpoints: true,
+        layoutBreakpoints: {breakpoints: true},
         renderers: [{name: 'chrome', width: 1000, height: 600}],
       },
     })
