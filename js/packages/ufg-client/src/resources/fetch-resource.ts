@@ -6,6 +6,17 @@ import {AbortController} from 'abort-controller'
 import {createCookieHeader} from '../utils/create-cookie-header'
 import {createUserAgentHeader} from '../utils/create-user-agent-header'
 import throat from 'throat'
+import * as utils from '@applitools/utils'
+
+type Options = {
+  retryLimit?: number
+  streamingTimeout?: number
+  fetchConcurrency?: number
+  fetchTimeout?: number
+  cache?: Map<string, Promise<ContentfulResource | FailedResource>>
+  fetch?: Fetch
+  logger: Logger
+}
 
 export type FetchResourceSettings = {
   referer?: string
@@ -18,6 +29,7 @@ export type FetchResourceSettings = {
 export type FetchResource = (options: {
   resource: UrlResource
   settings?: FetchResourceSettings
+  logger?: Logger
 }) => Promise<ContentfulResource | FailedResource>
 
 export function makeFetchResource({
@@ -27,16 +39,8 @@ export function makeFetchResource({
   fetchConcurrency,
   cache = new Map(),
   fetch,
-  logger,
-}: {
-  retryLimit?: number
-  streamingTimeout?: number
-  fetchConcurrency?: number
-  fetchTimeout?: number
-  cache?: Map<string, Promise<ContentfulResource | FailedResource>>
-  fetch?: Fetch
-  logger?: Logger
-} = {}): FetchResource {
+  logger: mainLogger,
+}: Options): FetchResource {
   const req = makeReq({
     retry: {
       limit: retryLimit,
@@ -49,10 +53,13 @@ export function makeFetchResource({
   async function fetchResource({
     resource,
     settings = {},
+    logger = mainLogger,
   }: {
     resource: UrlResource
     settings?: FetchResourceSettings
+    logger?: Logger
   }): Promise<ContentfulResource | FailedResource> {
+    logger = logger.extend(mainLogger, {tags: [`fetch-resource-${utils.general.shortid()}`]})
     let runningRequest = cache.get(resource.id)
     if (runningRequest) return runningRequest
 

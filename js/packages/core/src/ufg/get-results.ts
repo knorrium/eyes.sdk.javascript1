@@ -9,14 +9,16 @@ type Options = {
   logger: Logger
 }
 
-export function makeGetResults({storage, logger: defaultLogger}: Options) {
+export function makeGetResults({storage, logger: mainLogger}: Options) {
   return async function getResults({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: GetResultsSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "getResults" is called with settings', settings)
     return Promise.all(
       Array.from(storage.values(), async promises => {

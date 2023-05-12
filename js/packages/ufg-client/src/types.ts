@@ -233,9 +233,18 @@ export type Renderer = (
 }
 
 export interface UFGClient {
-  createRenderTarget(options: {snapshot: Snapshot; settings?: ProcessResourcesSettings}): Promise<RenderTarget>
-  bookRenderer(options: {settings: RendererSettings}): Promise<RendererEnvironment>
-  render(options: {target: RenderTarget; settings: RenderSettings; signal?: AbortSignal}): Promise<RenderResult>
+  createRenderTarget(options: {
+    snapshot: Snapshot
+    settings?: ProcessResourcesSettings
+    logger?: Logger
+  }): Promise<RenderTarget>
+  bookRenderer(options: {settings: RendererSettings; logger?: Logger}): Promise<RendererEnvironment>
+  render(options: {
+    target: RenderTarget
+    settings: RenderSettings
+    signal?: AbortSignal
+    logger?: Logger
+  }): Promise<RenderResult>
   getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<ChromeEmulationDevice, any>>
   getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
   getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>

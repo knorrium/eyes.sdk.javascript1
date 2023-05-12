@@ -3,6 +3,7 @@ import {type Logger} from '@applitools/logger'
 import {type AbortSignal} from 'abort-controller'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
+import * as utils from '@applitools/utils'
 
 type Options = {
   requests: EyesRequests
@@ -11,16 +12,18 @@ type Options = {
   logger: Logger
 }
 
-export function makeCheckAndClose({requests, done, signal, logger: defaultLogger}: Options) {
+export function makeCheckAndClose({requests, done, signal, logger: mainLogger}: Options) {
   return async function checkAndClose({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target
     settings?: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`check-and-close-base-${utils.general.shortid()}`]})
+
     settings ??= {}
     settings.normalization ??= {}
     settings.normalization.limit = {

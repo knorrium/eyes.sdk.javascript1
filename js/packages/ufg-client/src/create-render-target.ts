@@ -1,23 +1,32 @@
 import type {DomSnapshot, RenderTarget, Snapshot} from './types'
+import {type Logger} from '@applitools/logger'
 import {type ProcessResources, type ProcessResourcesSettings, type ResourceMapping} from './resources/process-resources'
 import {makeResource, type HashedResource} from './resources/resource'
 import {makeResourceDom} from './resources/resource-dom'
 import {makeResourceVhs} from './resources/resource-vhs'
 import * as utils from '@applitools/utils'
 
-export function makeCreateRenderTarget({processResources}: {processResources: ProcessResources}) {
+type Options = {
+  processResources: ProcessResources
+  logger: Logger
+}
+
+export function makeCreateRenderTarget({processResources, logger: mainLogger}: Options) {
   return async function createRenderTarget({
     snapshot,
     settings,
+    logger = mainLogger,
   }: {
     snapshot: any
     settings?: ProcessResourcesSettings
+    logger?: Logger
   }): Promise<RenderTarget> {
-    const isWeb = !!snapshot.cdt
-    const processedSnapshotResources = await processSnapshotResources({snapshot, settings})
+    logger = logger.extend(mainLogger, {tags: [`render-target-${utils.general.shortid()}`]})
 
+    const processedSnapshotResources = await processSnapshotResources({snapshot, settings, logger})
     const resources = await processedSnapshotResources.promise
 
+    const isWeb = !!snapshot.cdt
     const hashedSnapshot = resources[isWeb ? snapshot.url : 'vhs'] as HashedResource
     if (isWeb) {
       delete resources[snapshot.url]
@@ -35,9 +44,11 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
   async function processSnapshotResources({
     snapshot,
     settings,
+    logger,
   }: {
     snapshot: Snapshot
     settings?: ProcessResourcesSettings
+    logger?: Logger
   }): Promise<{mapping: ResourceMapping; promise: Promise<ResourceMapping>}> {
     const [snapshotResources, ...frameResources] = await Promise.all([
       processResources({
@@ -62,9 +73,10 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
           ),
         },
         settings: {referer: utils.types.has(snapshot, 'url') ? snapshot.url : undefined, ...settings},
+        logger,
       }),
       ...(utils.types.has(snapshot, 'frames') ? snapshot.frames ?? [] : []).map(frameSnapshot => {
-        return processSnapshotResources({snapshot: frameSnapshot, settings})
+        return processSnapshotResources({snapshot: frameSnapshot, settings, logger})
       }),
     ])
 
@@ -92,7 +104,7 @@ export function makeCreateRenderTarget({processResources}: {processResources: Pr
           }),
         }
 
-    const processedDomResource = await processResources({resources: domResource})
+    const processedDomResource = await processResources({resources: domResource, logger})
 
     const frameResourceMapping = frameResources.reduce((mapping, resources) => {
       return Object.assign(mapping, resources.mapping)

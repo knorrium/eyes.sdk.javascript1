@@ -1,35 +1,46 @@
-import {type Logger} from '@applitools/logger'
 import {type ContentfulResource} from './resource'
 import {type UFGRequests} from '../server/requests'
-import * as utils from '@applitools/utils'
+import {mergeLoggers, type Logger} from '@applitools/logger'
 import throat from 'throat'
+import * as utils from '@applitools/utils'
 
-export type UploadResource = (options: {resource: ContentfulResource}) => Promise<void>
+type Options = {
+  requests: UFGRequests
+  concurrency?: number
+  timeout?: number
+  batchingTimeout?: number
+  logger: Logger
+}
+
+export type UploadResource = (options: {resource: ContentfulResource; logger?: Logger}) => Promise<void>
 
 export function makeUploadResource({
   requests,
   batchingTimeout = 300,
   concurrency = 100,
-  logger,
-}: {
-  requests: UFGRequests
-  batchingTimeout?: number
-  concurrency?: number
-  logger?: Logger
-}): UploadResource {
+  logger: mainLogger,
+}: Options): UploadResource {
   const uploadedResources = new Set<string>()
   const requestedResources = new Map<string, Promise<void>>()
   const uploadResourceWithConcurrency = throat(concurrency, requests.uploadResource)
   const uploadResourceWithBatching = utils.general.batchify(uploadResources, {timeout: batchingTimeout})
 
-  return async function uploadResource({resource}: {resource: ContentfulResource}): Promise<void> {
+  return async function uploadResource({
+    resource,
+    logger = mainLogger,
+  }: {
+    resource: ContentfulResource
+    logger?: Logger
+  }): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`upload-resource-${utils.general.shortid()}`]})
+
     const hash = resource.hash.hash
     if (uploadedResources.has(hash)) {
       return Promise.resolve()
     } else if (requestedResources.has(hash)) {
       return requestedResources.get(hash)
     } else {
-      const promise = uploadResourceWithBatching(resource)
+      const promise = uploadResourceWithBatching({resource, logger})
         .then(result => {
           uploadedResources.add(hash)
           return result
@@ -42,16 +53,23 @@ export function makeUploadResource({
     }
   }
 
-  async function uploadResources(batch: [ContentfulResource, {resolve(): void; reject(reason?: any): void}][]) {
+  async function uploadResources(
+    batch: [{resource: ContentfulResource; logger: Logger}, {resolve(): void; reject(reason?: any): void}][],
+  ) {
+    const logger = mergeLoggers(...batch.map(([{logger}]) => logger))
+
     try {
-      const presentedResources = await requests.checkResources({resources: batch.map(([resource]) => resource), logger})
+      const presentedResources = await requests.checkResources({
+        resources: batch.map(([{resource}]) => resource),
+        logger,
+      })
 
       presentedResources.forEach((presented, index) => {
-        const [resource, {resolve, reject}] = batch[index]
+        const [options, {resolve, reject}] = batch[index]
         if (presented) {
           resolve()
         } else {
-          uploadResourceWithConcurrency({resource, logger}).then(resolve, reject)
+          uploadResourceWithConcurrency(options).then(resolve, reject)
         }
       })
     } catch (err) {

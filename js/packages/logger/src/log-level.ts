@@ -1,5 +1,3 @@
-export type LogLevelName = keyof typeof LogLevel
-
 export enum LogLevel {
   silent = 0,
   fatal = 100,

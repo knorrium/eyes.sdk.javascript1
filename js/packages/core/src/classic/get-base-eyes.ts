@@ -11,12 +11,14 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeGetBaseEyes<TSpec extends SpecType>({settings, eyes, base, logger: defaultLogger}: Options<TSpec>) {
+export function makeGetBaseEyes<TSpec extends SpecType>({settings, eyes, base, logger: mainLogger}: Options<TSpec>) {
   const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, () => 'default')
   if (base) getBaseEyesWithCache.setCachedValue('default', Promise.resolve(base))
   return getBaseEyesWithCache
 
-  async function getBaseEyes({logger = defaultLogger}: {logger?: Logger} = {}): Promise<BaseEyes[]> {
+  async function getBaseEyes({logger = mainLogger}: {logger?: Logger} = {}): Promise<BaseEyes[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     const baseEyes = await eyes.core.base.openEyes({settings, logger})
     return [baseEyes]

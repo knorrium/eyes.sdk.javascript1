@@ -15,16 +15,18 @@ type Options = {
   logger: Logger
 }
 
-export function makeOpenFunctionalSession({requests, concurrency, logger: defaultLogger}: Options) {
+export function makeOpenFunctionalSession({requests, concurrency, logger: mainLogger}: Options) {
   const throttle = concurrency ? throat(concurrency) : (fn: () => any) => fn()
 
   return async function openFunctionalSession({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: OpenSettings
     logger?: Logger
   }): Promise<FunctionalSession> {
+    logger = logger.extend(mainLogger, {tags: [`functional-session-base-${utils.general.shortid()}`]})
+
     logger.log('Command "openFunctionalSession" is called with settings', settings)
 
     return new Promise<FunctionalSession>((resolve, reject) => {

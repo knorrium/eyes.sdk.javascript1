@@ -23,17 +23,19 @@ export function makeCheckAndClose<TSpec extends SpecType>({
   eyes,
   target: defaultTarget,
   spec,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   return async function checkAndClose({
     target = defaultTarget,
     settings = {},
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target?: Target<TSpec>
     settings?: CheckSettings<TSpec> & CloseSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "checkAndClose" is called with settings', settings)
     if (!target) throw new Error('Method was called with no target')
     const baseEyes = await eyes.getBaseEyes({logger})

@@ -35,17 +35,19 @@ export function makeCheck<TSpec extends SpecType>({
   target: defaultTarget,
   spec,
   signal,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   return async function check({
     target = defaultTarget,
     settings = {},
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: CheckSettings<TSpec>
     target?: Target<TSpec>
     logger?: Logger
   }): Promise<CheckResult[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "check" is called with settings', settings)
 
     if (signal?.aborted) {
@@ -169,16 +171,18 @@ export function makeCheck<TSpec extends SpecType>({
     }))
 
     const promises = uniqueRenderers.map(async (renderer, index) => {
+      const rendererLogger = logger.extend({tags: [`renderer-${utils.general.shortid()}`]})
+
       if (utils.types.has(renderer, 'name') && renderer.name === 'edge') {
         const message = chalk.yellow(
           `The 'edge' option that is being used in your browsers' configuration will soon be deprecated. Please change it to either 'edgelegacy' for the legacy version or to 'edgechromium' for the new Chromium-based version. Please note, when using the built-in BrowserType enum, then the values are BrowserType.EDGE_LEGACY and BrowserType.EDGE_CHROMIUM, respectively.`,
         )
-        logger.console.log(message)
+        rendererLogger.console.log(message)
       }
 
       try {
         if (signal?.aborted) {
-          logger.warn('Command "check" was aborted before rendering')
+          rendererLogger.warn('Command "check" was aborted before rendering')
           throw new AbortError('Command "check" was aborted before rendering')
         }
 
@@ -194,16 +198,19 @@ export function makeCheck<TSpec extends SpecType>({
             autProxy: settings.autProxy,
             userAgent,
           },
+          logger: rendererLogger,
         })
 
-        const [baseEyes] = await eyes.getBaseEyes({settings: {renderer, type: snapshotType}, logger})
+        const [baseEyes] = await eyes.getBaseEyes({settings: {renderer, type: snapshotType}, logger: rendererLogger})
 
         try {
           if (signal?.aborted) {
-            logger.warn('Command "check" was aborted before rendering')
+            rendererLogger.warn('Command "check" was aborted before rendering')
             throw new AbortError('Command "check" was aborted before rendering')
           } else if (!baseEyes.running) {
-            logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
+            rendererLogger.warn(
+              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+            )
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
             )
@@ -212,10 +219,12 @@ export function makeCheck<TSpec extends SpecType>({
           const renderTarget = await renderTargetPromise
 
           if (signal?.aborted) {
-            logger.warn('Command "check" was aborted before rendering')
+            rendererLogger.warn('Command "check" was aborted before rendering')
             throw new AbortError('Command "check" was aborted before rendering')
           } else if (!baseEyes.running) {
-            logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
+            rendererLogger.warn(
+              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+            )
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
             )
@@ -235,6 +244,7 @@ export function makeCheck<TSpec extends SpecType>({
               rendererId: baseEyes.test.rendererId!,
             },
             signal,
+            logger: rendererLogger,
           })
           let offset = 0
           const baseSettings = getBaseCheckSettings({
@@ -248,10 +258,12 @@ export function makeCheck<TSpec extends SpecType>({
           baseTarget.name = snapshotTitle
 
           if (signal?.aborted) {
-            logger.warn('Command "check" was aborted after rendering')
+            rendererLogger.warn('Command "check" was aborted after rendering')
             throw new AbortError('Command "check" was aborted after rendering')
           } else if (!baseEyes.running) {
-            logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
+            rendererLogger.warn(
+              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+            )
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
             )
@@ -260,11 +272,13 @@ export function makeCheck<TSpec extends SpecType>({
           const [result] = await baseEyes.check({
             target: {...baseTarget, isTransformed: true},
             settings: baseSettings,
-            logger,
+            logger: rendererLogger,
           })
 
           if (!baseEyes.running) {
-            logger.warn(`Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`)
+            rendererLogger.warn(
+              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+            )
             throw new AbortError(
               `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
             )
@@ -272,7 +286,7 @@ export function makeCheck<TSpec extends SpecType>({
 
           return {...result, eyes: baseEyes, renderer}
         } catch (error: any) {
-          if (baseEyes.running && !signal?.aborted) await baseEyes.abort({logger})
+          if (baseEyes.running && !signal?.aborted) await baseEyes.abort({logger: rendererLogger})
           error.info = {eyes: baseEyes}
           throw error
         }

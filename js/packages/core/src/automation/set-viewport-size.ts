@@ -8,16 +8,18 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeSetViewportSize<TSpec extends SpecType>({spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeSetViewportSize<TSpec extends SpecType>({spec, logger: mainLogger}: Options<TSpec>) {
   return async function setViewportSize({
     target,
     size,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: DriverTarget<TSpec>
     size: Size
     logger?: Logger
   }) {
+    logger = logger.extend(mainLogger)
+
     logger.log(`Command "setViewportSize" is called with size`, size)
     const driver = await makeDriver({driver: target, spec, logger})
     return driver.setViewportSize(size)

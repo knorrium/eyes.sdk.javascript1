@@ -27,9 +27,8 @@ export async function makeCoreServer({
   const logDirname = process.env.APPLITOOLS_LOG_DIR ?? path.resolve(os.tmpdir(), `applitools-logs`)
   const baseLogger = makeLogger({
     handler: {type: 'rolling file', name: 'universal', dirname: logDirname},
-    label: 'core-universal',
     level: 'info',
-    colors: false,
+    format: {label: 'core-universal', colors: false},
   })
   baseLogger.log('Core universal is going to be initialized with options', {
     debug,

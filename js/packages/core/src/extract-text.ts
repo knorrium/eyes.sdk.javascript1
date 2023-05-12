@@ -11,21 +11,22 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeExtractText<TSpec extends SpecType>({spec, core, logger: defaultLogger}: Options<TSpec>) {
+export function makeExtractText<TSpec extends SpecType>({spec, core, logger: mainLogger}: Options<TSpec>) {
   return async function extractText({
     target,
     settings,
     config,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target<TSpec, 'classic'>
     settings: MaybeArray<ExtractTextSettings<TSpec>>
     config?: Config<TSpec, 'classic'>
     logger?: Logger
   }): Promise<string[]> {
-    settings = utils.types.isArray(settings) ? settings : [settings]
-    settings = settings.map(settings => {
+    logger = logger.extend(mainLogger, {tags: [`extract-text-${utils.general.shortid()}`]})
+    ;(utils.types.isArray(settings) ? settings : [settings]).map(settings => {
       settings = {...config?.open, ...config?.screenshot, ...settings}
+      settings.userCommandId ??= `extract-text--${utils.general.guid()}`
       settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')
       return settings

@@ -1,13 +1,7 @@
+import type {Handler, FileHandler} from './types'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
-import {type Handler} from './handler'
-
-export type FileHandler = {
-  type: 'file'
-  filename?: string
-  append?: boolean
-}
 
 export function makeFileHandler({
   filename = process.env.APPLITOOLS_LOG_FILE ?? 'eyes.log',

@@ -1,5 +1,5 @@
+import {type Logger} from '@applitools/logger'
 import globalReq, {makeReq, type Req, type Options, type Proxy, type Hooks, type Fetch} from '@applitools/req'
-import {Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
 export type ReqEyesConfig = {

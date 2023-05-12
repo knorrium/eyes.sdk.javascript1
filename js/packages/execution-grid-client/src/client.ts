@@ -1,15 +1,17 @@
 import type {ECClient, ECClientSettings} from './types'
-import {type Logger} from '@applitools/logger'
+import {makeLogger, type Logger} from '@applitools/logger'
 import {makeServer} from './server'
 import * as utils from '@applitools/utils'
 
 export async function makeECClient({
   settings,
-  logger,
+  logger: defaultLogger,
 }: {
   settings?: Partial<ECClientSettings>
   logger?: Logger
 } = {}): Promise<ECClient> {
+  const logger = makeLogger({logger: defaultLogger, format: {label: 'ec-client'}})
+
   settings ??= {}
   settings.serverUrl ??= utils.general.getEnvValue('EG_SERVER_URL') ?? 'https://exec-wus.applitools.com'
   settings.proxy ??= utils.general.getEnvValue('PROXY_URL') ? {url: utils.general.getEnvValue('PROXY_URL')} : undefined

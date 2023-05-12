@@ -6,12 +6,14 @@ type Options = {
   logger: Logger
 }
 
-export function makeGetECClient({logger: defaultLogger}: Options) {
+export function makeGetECClient({logger: mainLogger}: Options) {
   return utils.general.cachify(getECClient, ([options]) => [options?.settings])
   async function getECClient({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {settings?: Partial<ECClientSettings>; logger?: Logger} = {}): Promise<ECClient> {
+    logger = logger.extend(mainLogger)
+
     const client = await makeECClient({settings, logger})
     return client
   }

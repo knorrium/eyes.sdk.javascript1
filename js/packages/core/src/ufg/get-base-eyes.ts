@@ -16,7 +16,7 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
   settings: defaultSettings,
   eyes,
   base,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, ([options]) => options?.settings)
   if (base) {
@@ -28,18 +28,20 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
 
   async function getBaseEyes({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: RendererSettings
     logger?: Logger
   } = {}): Promise<BaseEyes[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     if (!settings) throw new Error('')
     const ufgClient = await eyes.core.getUFGClient({
       config: {...eyes.test.ufgServer},
       logger,
     })
-    const environment = await ufgClient.bookRenderer({settings})
+    const environment = await ufgClient.bookRenderer({settings, logger})
     const baseEyes = await eyes.core.base.openEyes({
       settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},
       logger,

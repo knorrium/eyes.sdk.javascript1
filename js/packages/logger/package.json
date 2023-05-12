@@ -28,7 +28,7 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "browser": "./dist/browser.js",
+      "browser": "./dist/index-browser.js",
       "default": "./dist/index.js"
     },
     "./dist/*": "./dist/*.js",
@@ -36,7 +36,7 @@
   },
   "main": "./dist/index.js",
   "browser": {
-    ".": "./dist/browser.js",
+    ".": "./dist/index-browser.js",
     "./dist/handler-file.js": false,
     "./dist/handler-rolling-file.js": false,
     "util": false

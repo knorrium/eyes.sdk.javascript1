@@ -11,14 +11,16 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeClose<TSpec extends SpecType>({eyes, target, spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeClose<TSpec extends SpecType>({eyes, target, spec, logger: mainLogger}: Options<TSpec>) {
   return async function close({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "close" is called with settings', settings)
     settings ??= {}
     if (!settings.testMetadata) {

@@ -11,14 +11,16 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeAbort<TSpec extends SpecType>({eyes, target, spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeAbort<TSpec extends SpecType>({eyes, target, spec, logger: mainLogger}: Options<TSpec>) {
   return async function abort({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: AbortSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "abort" is called with settings', settings)
     settings ??= {}
     if (!settings.testMetadata) {

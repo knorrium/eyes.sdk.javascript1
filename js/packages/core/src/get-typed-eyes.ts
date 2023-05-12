@@ -8,7 +8,7 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   settings: OpenSettings<TType>
   target?: DriverTarget<TSpec>
   cores: {[TKey in 'classic' | 'ufg']: TypedCore<TSpec, TKey>}
-  logger?: Logger
+  logger: Logger
 }
 
 export function makeGetTypedEyes<TSpec extends SpecType, TDefaultType extends 'classic' | 'ufg'>({
@@ -16,18 +16,20 @@ export function makeGetTypedEyes<TSpec extends SpecType, TDefaultType extends 'c
   settings: defaultSettings,
   target,
   cores,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec, TDefaultType>) {
   let eyes: TypedEyes<TSpec, 'classic' | 'ufg'>
   return async function getTypedEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     type?: TType
     settings?: RendererSettings[]
     logger?: Logger
   } = {}): Promise<TypedEyes<TSpec, TType>> {
+    logger = logger.extend(mainLogger)
+
     if (!eyes) {
       eyes = await cores[type].openEyes({target, settings: defaultSettings, logger})
       return eyes as TypedEyes<TSpec, TType>

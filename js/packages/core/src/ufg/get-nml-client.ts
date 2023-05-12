@@ -8,7 +8,7 @@ type Options = {
   logger: Logger
 }
 
-export function makeGetNMLClient({client, logger: defaultLogger}: Options) {
+export function makeGetNMLClient({client, logger: mainLogger}: Options) {
   const getNMLClientWithCache = utils.general.cachify(getNMLClient, ([options]) =>
     client ? 'default' : [options.driver.guid, options.config],
   )
@@ -18,12 +18,14 @@ export function makeGetNMLClient({client, logger: defaultLogger}: Options) {
   async function getNMLClient({
     driver,
     config,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     driver: Driver<SpecType>
     config: Omit<NMLRequestsConfig, 'brokerUrl'>
     logger?: Logger
   }) {
+    logger = logger.extend(mainLogger)
+
     const brokerUrl = await driver.extractBrokerUrl()
     if (!brokerUrl) return null
     return makeNMLClient({config: {brokerUrl, ...config}, logger})

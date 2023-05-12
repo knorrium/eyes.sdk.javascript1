@@ -1,5 +1,4 @@
 import type {Region} from '@applitools/utils'
-import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Driver} from './driver'
 import {type Element} from './element'
@@ -8,26 +7,27 @@ export class HelperIOS<T extends SpecType> {
   static async make<T extends SpecType>(options: {
     spec: SpecDriver<T>
     driver: Driver<T>
-    logger: Logger
   }): Promise<HelperIOS<T> | null> {
-    const {spec, driver, logger} = options
+    const {spec, driver} = options
     const element = await driver.element({type: 'name', selector: 'applitools_grab_scrollable_data_button'})
-    return element ? new HelperIOS<T>({driver, element, spec, logger}) : null
+    return element ? new HelperIOS<T>({driver, element, spec}) : null
   }
 
-  private readonly _driver: Driver<T>
   private readonly _element: Element<T>
+  private readonly _driver: Driver<T>
   private readonly _spec: SpecDriver<T>
-  private _logger: Logger
 
   readonly name: 'ios'
 
-  constructor(options: {driver: Driver<T>; element: Element<T>; spec: SpecDriver<T>; logger: Logger}) {
+  constructor(options: {driver: Driver<T>; element: Element<T>; spec: SpecDriver<T>}) {
     this._driver = options.driver
     this._element = options.element
     this._spec = options.spec
-    this._logger = options.logger
     this.name = 'ios'
+  }
+
+  get logger() {
+    return this._driver.logger
   }
 
   async getContentRegion(element: Element<T>): Promise<Region | null> {

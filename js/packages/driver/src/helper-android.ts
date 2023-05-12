@@ -1,5 +1,4 @@
 import type {Location, Region} from '@applitools/utils'
-import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Driver} from './driver'
 import {type Element} from './element'
@@ -10,9 +9,8 @@ export class HelperAndroid<T extends SpecType> {
   static async make<T extends SpecType>(options: {
     spec: SpecDriver<T>
     driver: Driver<T>
-    logger: Logger
   }): Promise<HelperAndroid<T> | null> {
-    const {spec, driver, logger} = options
+    const {spec, driver} = options
     let legacy = false
     let input = await driver.element({type: 'xpath', selector: '//*[@content-desc="EyesAppiumHelperEDT"]'})
     if (!input) {
@@ -30,39 +28,43 @@ export class HelperAndroid<T extends SpecType> {
     return input
       ? new HelperAndroid<T>({
           spec,
+          driver,
           input,
           action,
           legacy,
-          logger,
           supportAsync: semverGte(version, '1.8.0'),
         })
       : null
   }
 
   private readonly _spec: SpecDriver<T>
+  private readonly _driver: Driver<T>
   private readonly _input: Element<T>
   private readonly _action: Element<T> | null
   private readonly _legacy: boolean
   private readonly _supportAsync: boolean = false
-  private _logger: Logger
 
   readonly name: 'android' | 'android-legacy'
 
   constructor(options: {
     spec: SpecDriver<T>
+    driver: Driver<T>
     input: Element<T>
     action: Element<T> | null
     legacy: boolean
     supportAsync: boolean
-    logger: Logger
   }) {
     this._spec = options.spec
+    this._driver = options.driver
     this._input = options.input
     this._action = options.action
     this._legacy = options.legacy
-    this._logger = options.logger
     this.name = this._legacy ? 'android-legacy' : 'android'
     this._supportAsync = options.supportAsync === true
+  }
+
+  get logger() {
+    return this._driver.logger
   }
 
   private async _getElementId(element: Element<T>): Promise<string | null> {
@@ -88,7 +90,7 @@ export class HelperAndroid<T extends SpecType> {
       text = await this._input.getText()
     }
     if (text === 'WAIT') {
-      this._logger.warn(`Helper library didn't provide a response for async command (${command}) during ${timeout}ms`)
+      this.logger.warn(`Helper library didn't provide a response for async command (${command}) during ${timeout}ms`)
       text = ''
     }
     return text

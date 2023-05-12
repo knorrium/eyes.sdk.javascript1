@@ -52,10 +52,10 @@ export class Driver<T extends SpecType> {
   protected readonly _spec: SpecDriver<T>
 
   constructor(options: DriverOptions<T>) {
+    this._logger = makeLogger({logger: options.logger, format: {label: 'driver'}})
     this._customConfig = options.customConfig ?? {}
     this._guid = utils.general.guid()
     this._spec = options.spec
-    this._logger = options.logger?.extend({label: 'driver'}) ?? makeLogger({label: 'driver'})
     this._target = this._spec.transformDriver?.(options.driver) ?? options.driver
 
     if (!this._spec.isDriver(this._target)) {
@@ -66,9 +66,12 @@ export class Driver<T extends SpecType> {
       spec: this._spec,
       context: this._spec.extractContext?.(this._target) ?? (this._target as T['context']),
       driver: this,
-      logger: this._logger,
     })
     this._currentContext = this._mainContext
+  }
+
+  get logger() {
+    return this._logger
   }
 
   get target(): T['driver'] {
@@ -82,6 +85,10 @@ export class Driver<T extends SpecType> {
   }
   get mainContext(): Context<T> {
     return this._mainContext
+  }
+
+  updateLogger(logger: Logger): void {
+    this._logger = logger.extend({label: 'driver'})
   }
 
   updateCurrentContext(context: Context<T>): void {
@@ -465,8 +472,8 @@ export class Driver<T extends SpecType> {
       const environment = await this.getEnvironment()
       this._logger.log(`Extracting helper for ${environment.isIOS ? 'ios' : 'android'}`)
       this._helper = environment.isIOS
-        ? await HelperIOS.make({spec: this._spec, driver: this, logger: this._logger})
-        : await HelperAndroid.make({spec: this._spec, driver: this, logger: this._logger})
+        ? await HelperIOS.make({spec: this._spec, driver: this})
+        : await HelperAndroid.make({spec: this._spec, driver: this})
       this._logger.log(`Extracted helper of type ${this._helper?.name}`)
     }
     this._logger.log(`Returning helper for of type ${this._helper?.name ?? null}`)
@@ -879,5 +886,6 @@ export async function makeDriver<T extends SpecType>(options: {
   logger?: Logger
 }): Promise<Driver<T>> {
   const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
+  if (options.logger) driver.updateLogger(options.logger)
   return driver.refresh()
 }

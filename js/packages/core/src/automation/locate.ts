@@ -12,16 +12,18 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeLocate<TSpec extends SpecType>({spec, core, logger: defaultLogger}: Options<TSpec>) {
+export function makeLocate<TSpec extends SpecType>({spec, core, logger: mainLogger}: Options<TSpec>) {
   return async function locate<TLocator extends string>({
     settings,
     target,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target<TSpec>
     settings: LocateSettings<TLocator, TSpec>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {
+    logger = logger.extend(mainLogger)
+
     logger.log(`Command "locate" is called with settings`, settings)
     if (!isDriver(target, spec)) {
       return core.base.locate({target, settings: settings as BaseLocateSettings<TLocator>, logger})

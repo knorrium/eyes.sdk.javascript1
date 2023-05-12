@@ -32,7 +32,7 @@ export function makeCore<TSpec extends SpecType>({
   cwd = process.cwd(),
   logger: defaultLogger,
 }: Options<TSpec> = {}): Core<TSpec, 'classic' | 'ufg'> {
-  const logger = defaultLogger?.extend({label: 'core'}) ?? makeLogger({label: 'core'})
+  const logger = makeLogger({logger: defaultLogger, format: {label: 'core'}})
   logger.log(`Core is initialized ${defaultBase ? 'with' : 'without'} custom base core`)
 
   const base = defaultBase ?? makeBaseCore({agentId, cwd, logger})

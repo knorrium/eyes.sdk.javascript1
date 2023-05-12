@@ -2,22 +2,25 @@ import type {Target, LocateSettings, LocateResult} from './types'
 import {type Logger} from '@applitools/logger'
 import {type CoreRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
+import * as utils from '@applitools/utils'
 
 type Options = {
   requests: CoreRequests
   logger: Logger
 }
 
-export function makeLocate({requests, logger: defaultLogger}: Options) {
+export function makeLocate({requests, logger: mainLogger}: Options) {
   return async function locate<TLocator extends string>({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {
+    logger = logger.extend(mainLogger, {tags: [`locate-base-${utils.general.shortid()}`]})
+
     const account = await requests.getAccountInfo({settings, logger})
     settings.normalization ??= {}
     settings.normalization.limit = {

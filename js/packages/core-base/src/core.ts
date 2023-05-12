@@ -22,7 +22,7 @@ export function makeCore({
   cwd = process.cwd(),
   logger: defaultLogger,
 }: Options): Core {
-  const logger = defaultLogger?.extend({label: 'core-base'}) ?? makeLogger({label: 'core-base'})
+  const logger = makeLogger({logger: defaultLogger, format: {label: 'core-base'}})
   logger.log(`Core is initialized in directory ${cwd} for agent ${agentId}`)
   const coreRequests = makeCoreRequests({agentId, logger})
 

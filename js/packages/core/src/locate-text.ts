@@ -10,18 +10,20 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeLocateText<TSpec extends SpecType>({spec, core, logger: defaultLogger}: Options<TSpec>) {
+export function makeLocateText<TSpec extends SpecType>({spec, core, logger: mainLogger}: Options<TSpec>) {
   return async function locateText<TPattern extends string>({
     target,
     settings,
     config,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target<TSpec, 'classic'>
     settings: LocateTextSettings<TPattern, TSpec>
     config?: Config<TSpec, 'classic'>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
+    logger = logger.extend(mainLogger, {tags: [`locate-text-${utils.general.shortid()}`]})
+
     settings = {...config?.open, ...config?.screenshot, ...settings}
     settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')

@@ -1,10 +1,6 @@
-import {type Handler} from './handler'
-
 /* eslint no-console: off */
 
-export type ConsoleHandler = {
-  type: 'console'
-}
+import type {Handler} from './types'
 
 export function makeConsoleHandler(): Handler {
   return {log, warn, error}

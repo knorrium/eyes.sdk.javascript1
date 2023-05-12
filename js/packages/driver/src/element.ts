@@ -1,5 +1,4 @@
 import type {Location, Size, Region} from '@applitools/utils'
-import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from './spec-driver'
 import {type Context} from './context'
 import {isSelector, isSimpleCommonSelector, type Selector, type CommonSelector} from './selector'
@@ -21,7 +20,6 @@ type ElementState = {
 type ElementOptions<T extends SpecType> = {
   spec: SpecDriver<T>
   context?: Context<T>
-  logger: Logger
 } & ({element: T['element']; selector?: Selector<T>; index?: number} | {selector: Selector<T>; index?: number})
 
 export class Element<T extends SpecType> {
@@ -33,14 +31,12 @@ export class Element<T extends SpecType> {
   private _index?: number
   private _state: ElementState = {}
   private _originalOverflow: any
-  private _logger: Logger
 
   protected readonly _spec: SpecDriver<T>
 
   constructor(options: ElementOptions<T>) {
     this._spec = options.spec
     this._context = options.context
-    this._logger = options.logger
 
     if (utils.types.has(options, 'element')) {
       this._target = this._spec.transformElement?.(options.element) ?? options.element
@@ -66,6 +62,10 @@ export class Element<T extends SpecType> {
     } else {
       this._commonSelector = null
     }
+  }
+
+  get logger() {
+    return this._context!.logger
   }
 
   get target() {
@@ -115,11 +115,11 @@ export class Element<T extends SpecType> {
       innerElement = innerElement instanceof Element ? innerElement.target : innerElement
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
-        this._logger.log('Checking if web element with selector', this.selector, 'contains element', innerElement)
+        this.logger.log('Checking if web element with selector', this.selector, 'contains element', innerElement)
         return false // TODO implement a snipped for web
       } else {
         if (this._state.containedElements?.has(innerElement)) return this._state.containedElements.get(innerElement)!
-        this._logger.log('Checking if native element with selector', this.selector, 'contains element', innerElement)
+        this.logger.log('Checking if native element with selector', this.selector, 'contains element', innerElement)
         // appium doesn't have a way to check if an element is contained in another element, so juristic applied
         if (await this.equals(innerElement)) return false
         // if the inner element region is contained in this element region, then it then could be assumed that the inner element is contained in this element
@@ -131,13 +131,12 @@ export class Element<T extends SpecType> {
         return contains
       }
     })
-    this._logger.log('Element with selector', this.selector, contains ? 'contains' : `doesn't contain`, innerElement)
+    this.logger.log('Element with selector', this.selector, contains ? 'contains' : `doesn't contain`, innerElement)
     return contains
   }
 
   async init(context: Context<T>): Promise<this> {
     this._context = context
-    this._logger = (context as any)._logger
     if (this._target) return this
 
     if (this._selector) {
@@ -152,12 +151,12 @@ export class Element<T extends SpecType> {
     const region = await this.withRefresh(async () => {
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
-        this._logger.log('Extracting region of web element with selector', this.selector)
+        this.logger.log('Extracting region of web element with selector', this.selector)
         return this.context.execute(snippets.getElementRect, [this, false])
       } else {
-        this._logger.log('Extracting region of native element with selector', this.selector)
+        this.logger.log('Extracting region of native element with selector', this.selector)
         const region = await this._spec.getElementRegion!(this.driver.target, this.target)
-        this._logger.log('Extracted native region', region)
+        this.logger.log('Extracted native region', region)
         const normalizedRegion = await this.driver.normalizeRegion(region)
 
         // if element is a child of scrolling element, then region location should be adjusted
@@ -167,7 +166,7 @@ export class Element<T extends SpecType> {
           : normalizedRegion
       }
     })
-    this._logger.log('Extracted region', region)
+    this.logger.log('Extracted region', region)
     return region
   }
 
@@ -175,13 +174,13 @@ export class Element<T extends SpecType> {
     const region = await this.withRefresh(async () => {
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
-        this._logger.log('Extracting region of web element with selector', this.selector)
+        this.logger.log('Extracting region of web element with selector', this.selector)
         return this.context.execute(snippets.getElementRect, [this, true])
       } else {
         return this.getRegion()
       }
     })
-    this._logger.log('Extracted client region', region)
+    this.logger.log('Extracted client region', region)
     return region
   }
 
@@ -190,10 +189,10 @@ export class Element<T extends SpecType> {
   ): Promise<Region> {
     const environment = await this.driver.getEnvironment()
     if (!environment.isNative) return null as never
-    this._logger.log('Extracting content region of native element with selector', this.selector)
+    this.logger.log('Extracting content region of native element with selector', this.selector)
     const helper = await this.driver.getHelper()
     let contentRegion = await helper?.getContentRegion(this, options)
-    this._logger.log('Extracted content region using helper library', contentRegion)
+    this.logger.log('Extracted content region using helper library', contentRegion)
 
     if (!contentRegion || !environment.isAndroid) {
       let attrContentRegion = null as Region | null
@@ -208,9 +207,9 @@ export class Element<T extends SpecType> {
             : size.height + size.scrollableOffset,
         }
       } catch (err: any) {
-        this._logger.warn(`Unable to get the attribute 'contentSize' due to the following error: '${err.message}'`)
+        this.logger.warn(`Unable to get the attribute 'contentSize' due to the following error: '${err.message}'`)
       }
-      this._logger.log('Extracted content region using attribute', attrContentRegion!)
+      this.logger.log('Extracted content region using attribute', attrContentRegion!)
 
       // ios workaround
       if (!attrContentRegion && environment.isIOS) {
@@ -231,11 +230,11 @@ export class Element<T extends SpecType> {
             }
           }
         } catch (err: any) {
-          this._logger.warn(
+          this.logger.warn(
             `Unable to calculate content region using iOS workaround due to the following error: '${err.message}'`,
           )
         }
-        this._logger.log('Extracted content region using iOS workaround', attrContentRegion)
+        this.logger.log('Extracted content region using iOS workaround', attrContentRegion)
       }
 
       if (attrContentRegion) {
@@ -259,10 +258,10 @@ export class Element<T extends SpecType> {
     const size = await this.withRefresh(async () => {
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
-        this._logger.log('Extracting content size of web element with selector', this.selector)
+        this.logger.log('Extracting content size of web element with selector', this.selector)
         return this.context.execute(snippets.getElementContentSize, [this])
       } else {
-        this._logger.log('Extracting content size of native element with selector', this.selector)
+        this.logger.log('Extracting content size of native element with selector', this.selector)
         try {
           const contentRegion = await this.getContentRegion(options)
           this._state.contentSize = utils.geometry.size(contentRegion)
@@ -275,19 +274,19 @@ export class Element<T extends SpecType> {
           }
           return this._state.contentSize
         } catch (err) {
-          this._logger.warn('Failed to extract content size, extracting client size instead')
-          this._logger.error(err)
+          this.logger.warn('Failed to extract content size, extracting client size instead')
+          this.logger.error(err)
           return utils.geometry.size(await this.getClientRegion())
         }
       }
     })
 
-    this._logger.log('Extracted content size', size)
+    this.logger.log('Extracted content size', size)
     return size
   }
 
   async isPager(): Promise<boolean> {
-    this._logger.log('Check if element with selector', this.selector, 'is scrollable by pages')
+    this.logger.log('Check if element with selector', this.selector, 'is scrollable by pages')
     const isPager = await this.withRefresh(async () => {
       const environment = await this.driver.getEnvironment()
       if (environment.isAndroid) {
@@ -297,12 +296,12 @@ export class Element<T extends SpecType> {
         return false
       }
     })
-    this._logger.log('Element scrollable by pages', isPager)
+    this.logger.log('Element scrollable by pages', isPager)
     return isPager
   }
 
   async isScrollable(): Promise<boolean> {
-    this._logger.log('Check if element with selector', this.selector, 'is scrollable')
+    this.logger.log('Check if element with selector', this.selector, 'is scrollable')
     const isScrollable = await this.withRefresh(async () => {
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
@@ -315,7 +314,7 @@ export class Element<T extends SpecType> {
         return ['XCUIElementTypeScrollView', 'XCUIElementTypeTable', 'XCUIElementTypeCollectionView'].includes(type)
       }
     })
-    this._logger.log('Element is scrollable', isScrollable)
+    this.logger.log('Element is scrollable', isScrollable)
     return isScrollable
   }
 
@@ -347,20 +346,20 @@ export class Element<T extends SpecType> {
         const helper = await this.driver.getHelper()
         if (helper?.name === 'android') {
           this._state.touchPadding = await helper.getTouchPadding()
-          this._logger.log('Touch padding extracted using helper library', this._state.touchPadding)
+          this.logger.log('Touch padding extracted using helper library', this._state.touchPadding)
         }
         if (!this._state.touchPadding) {
           this._state.touchPadding = await this.getAttribute('contentSize')
             .then(data => JSON.parse(data).touchPadding)
             .catch(err => {
-              this._logger.warn(
+              this.logger.warn(
                 `Unable to get the attribute 'contentSize' when looking up 'touchPadding' due to the following error: '${err.message}'`,
               )
             })
-          this._logger.log('Touch padding extracted using attribute', this._state.touchPadding)
+          this.logger.log('Touch padding extracted using attribute', this._state.touchPadding)
         }
         this._state.touchPadding ??= 20
-        this._logger.log('Touch padding set:', this._state.touchPadding)
+        this.logger.log('Touch padding set:', this._state.touchPadding)
       }
     }
     return this._state.touchPadding!
@@ -372,11 +371,11 @@ export class Element<T extends SpecType> {
       if (environment.isWeb) {
         return ''
       } else {
-        this._logger.log('Extracting text of native element with selector', this.selector)
+        this.logger.log('Extracting text of native element with selector', this.selector)
         return this._spec.getElementText!(this.context.target, this.target)
       }
     })
-    this._logger.log('Extracted element text', text)
+    this.logger.log('Extracted element text', text)
     return text
   }
 
@@ -393,7 +392,7 @@ export class Element<T extends SpecType> {
         const properties = await this.context.execute(snippets.getElementProperties, [this, [name]])
         return properties[name]
       } else {
-        this._logger.log(`Extracting "${name}" attribute of native element with selector`, this.selector)
+        this.logger.log(`Extracting "${name}" attribute of native element with selector`, this.selector)
         this._state.attributes ??= {}
         try {
           this._state.attributes[name] = await this._spec.getElementAttribute!(this.driver.target, this.target, name)
@@ -404,7 +403,7 @@ export class Element<T extends SpecType> {
         } finally {
           if (environment.isAndroid && name === 'contentSize') {
             // android has a bug when after extracting 'contentSize' attribute the element is being scrolled by undetermined number of pixels
-            this._logger.log('Stabilizing android scroll offset')
+            this.logger.log('Stabilizing android scroll offset')
             const originalScrollOffset = await this.getScrollOffset()
             await this.scrollTo({x: 0, y: 0}, {force: true})
             await this.scrollTo(originalScrollOffset)
@@ -413,7 +412,7 @@ export class Element<T extends SpecType> {
       }
     })
 
-    this._logger.log(`Extracted element "${name}" attribute:`, value)
+    this.logger.log(`Extracted element "${name}" attribute:`, value)
     return value
   }
 
@@ -426,7 +425,7 @@ export class Element<T extends SpecType> {
 
   async scrollTo(offset: Location, options?: {force: boolean}): Promise<Location> {
     return this.withRefresh(async () => {
-      this._logger.log(`Scrolling to offset (${offset.x}, ${offset.y}) element with selector`, this.selector)
+      this.logger.log(`Scrolling to offset (${offset.x}, ${offset.y}) element with selector`, this.selector)
       offset = utils.geometry.round({x: Math.max(offset.x, 0), y: Math.max(offset.y, 0)})
       const environment = await this.driver.getEnvironment()
       if (environment.isWeb) {
@@ -639,12 +638,12 @@ export class Element<T extends SpecType> {
   }
 
   async click(): Promise<void> {
-    this._logger.log(`Clicking on the element with selector`, this.selector)
+    this.logger.log(`Clicking on the element with selector`, this.selector)
     await this._spec.click?.(this.context.target, this.target)
   }
 
   async type(value: string): Promise<void> {
-    this._logger.log(`Typing text "${value}" in the element with selector`, this.selector)
+    this.logger.log(`Typing text "${value}" in the element with selector`, this.selector)
     await this._spec.setElementText?.(this.context.target, this.target, value)
   }
 

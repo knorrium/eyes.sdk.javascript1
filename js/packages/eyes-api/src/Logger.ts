@@ -20,7 +20,7 @@ export class Logger {
           ? this._options.handler.toJSON()
           : this._options.handler,
       level: this._options.show || utils.general.getEnvValue('SHOW_LOGS', 'boolean') ? 'info' : 'silent',
-      label: this._options.label,
+      format: {label: this._options.label},
     })
   }
 
@@ -99,19 +99,12 @@ export class Logger {
     this._logger?.close()
   }
 
-  tag(name: string, value: any): void {
-    this._logger?.tag(name, value)
-  }
-
   /** @internal */
-  extend(options?: logger.ExtendOptions): Logger
-  extend(label?: string): Logger
-  extend(optionsOrLabel?: logger.ExtendOptions | string): Logger {
-    if (utils.types.isString(optionsOrLabel)) return this.extend({label: optionsOrLabel})
-    if (this._logger) return new Logger(this._logger.extend(optionsOrLabel))
+  extend(label?: string): Logger {
+    if (this._logger) return new Logger(this._logger.extend({label}))
     return new Logger({
       show: this._options.show,
-      label: optionsOrLabel?.label ?? this._options.label,
+      label: label ?? this._options.label,
       handler: this._options.handler,
     })
   }

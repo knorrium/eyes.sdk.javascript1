@@ -15,16 +15,18 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeExtractText<TSpec extends SpecType>({core, spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeExtractText<TSpec extends SpecType>({core, spec, logger: mainLogger}: Options<TSpec>) {
   return async function extractText({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target<TSpec>
     settings: MaybeArray<ExtractTextSettings<TSpec>>
     logger?: Logger
   }): Promise<string[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "extractText" is called with settings', settings)
     if (!isDriver(target, spec)) {
       return core.base.extractText({target, settings: settings as MaybeArray<BaseExtractTextSettings>, logger})

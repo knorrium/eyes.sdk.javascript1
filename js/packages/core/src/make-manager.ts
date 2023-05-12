@@ -26,23 +26,28 @@ export function makeMakeManager<TSpec extends SpecType>({
   base,
   agentId: defaultAgentId,
   cwd = process.cwd(),
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   return async function makeManager<TType extends 'classic' | 'ufg' = 'classic'>({
     type = 'classic' as TType,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     type?: TType
     settings?: ManagerSettings
     logger?: Logger
   } = {}): Promise<EyesManager<TSpec, TType>> {
+    logger = logger.extend(mainLogger, {tags: [`manager-${type}-${utils.general.shortid()}`]})
+
     settings ??= {}
     settings.concurrency ??=
       defaultConcurrency ?? (utils.types.isInteger(settings.legacyConcurrency) ? settings.legacyConcurrency * 5 : 5)
     settings.batch ??= {}
     settings.batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
     settings.agentId ??= type === 'ufg' ? defaultAgentId?.replace(/(\/\d)/, '.visualgrid$1') : defaultAgentId
+
+    logger.log('Command "makeManager" is called with settings', settings)
+
     base ??= makeBaseCore({agentId: settings.agentId, concurrency: settings.concurrency, cwd, logger})
     const cores = {
       ufg: makeUFGCore({spec, base, fetchConcurrency: settings.fetchConcurrency, logger}),

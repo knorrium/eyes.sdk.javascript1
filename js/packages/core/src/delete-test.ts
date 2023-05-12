@@ -8,14 +8,15 @@ type Options = {
   logger: Logger
 }
 
-export function makeDeleteTest({core, logger: defaultLogger}: Options) {
+export function makeDeleteTest({core, logger: mainLogger}: Options) {
   return async function deleteTest({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: MaybeArray<DeleteTestSettings>
     logger?: Logger
   }): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`delete-test-${utils.general.shortid()}`]})
     ;(utils.types.isArray(settings) ? settings : [settings]).forEach(settings => {
       settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')

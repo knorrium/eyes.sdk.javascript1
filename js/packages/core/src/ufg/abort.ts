@@ -18,15 +18,17 @@ export function makeAbort<TSpec extends SpecType>({
   target,
   spec,
   controller,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   return async function abort({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: AbortSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "abort" is called with settings', settings)
     controller.abort()
     settings ??= {}

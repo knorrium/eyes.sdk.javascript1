@@ -8,7 +8,7 @@ type Options = {
   fetchConcurrency?: number
 }
 
-export function makeGetUFGClient({client, fetchConcurrency, logger: defaultLogger}: Options) {
+export function makeGetUFGClient({client, fetchConcurrency, logger: mainLogger}: Options) {
   // we are caching by the server config, therefor if the user creates another Runner / manager with the same server config but different
   // fetchConcurrency, it will not take any affect.
   const getUFGClientWithCache = utils.general.cachify(getUFGClient, ([options]) =>
@@ -17,7 +17,9 @@ export function makeGetUFGClient({client, fetchConcurrency, logger: defaultLogge
   if (client) getUFGClientWithCache.setCachedValue('default', Promise.resolve(client))
   return getUFGClientWithCache
 
-  async function getUFGClient({config, logger = defaultLogger}: {config: UFGClientConfig; logger?: Logger}) {
+  async function getUFGClient({config, logger = mainLogger}: {config: UFGClientConfig; logger?: Logger}) {
+    logger = logger.extend(mainLogger)
+
     return makeUFGClient({config: {...config, fetchConcurrency}, logger})
   }
 }

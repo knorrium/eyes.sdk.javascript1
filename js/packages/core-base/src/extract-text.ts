@@ -10,16 +10,18 @@ type Options = {
   logger: Logger
 }
 
-export function makeExtractText({requests, logger: defaultLogger}: Options) {
+export function makeExtractText({requests, logger: mainLogger}: Options) {
   return async function extractText({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target
     settings: MaybeArray<ExtractTextSettings>
     logger?: Logger
   }): Promise<string[]> {
+    logger = logger.extend(mainLogger, {tags: [`extract-text-base-${utils.general.shortid()}`]})
+
     logger.log('Command "extractText" is called with settings', settings)
     settings = utils.types.isArray(settings) ? settings : [settings]
     const results = await Promise.all(

@@ -53,13 +53,13 @@ export interface FunctionalSessionRequests extends FunctionalSession {
 export function makeCoreRequests({
   agentId: defaultAgentId,
   fetch,
-  logger,
+  logger: defaultLogger,
 }: {
   agentId: string
   fetch?: Fetch
   logger?: Logger
 }): CoreRequests {
-  const defaultLogger = logger?.extend({label: 'core-requests'}) ?? makeLogger({label: 'core-requests'})
+  const mainLogger = makeLogger({logger: defaultLogger, format: {label: 'core-requests'}})
 
   const getAccountInfoWithCache = utils.general.cachify(getAccountInfo, ([{settings}]) => {
     return [settings.serverUrl, settings.apiKey]
@@ -85,11 +85,13 @@ export function makeCoreRequests({
 
   async function openEyes({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: OpenSettings
     logger?: Logger
   }): Promise<EyesRequests> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "openEyes" called with settings', settings)
@@ -189,11 +191,13 @@ export function makeCoreRequests({
 
   async function openFunctionalSession({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: OpenSettings
     logger?: Logger
   }): Promise<FunctionalSessionRequests> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "openFunctionalSession" called with settings', settings)
@@ -265,12 +269,14 @@ export function makeCoreRequests({
   async function locate<TLocator extends string>({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: ImageTarget
     settings: LocateSettings<TLocator>
     logger?: Logger
   }): Promise<LocateResult<TLocator>> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "locate" called for target', target, 'with settings', settings)
@@ -305,12 +311,14 @@ export function makeCoreRequests({
   async function locateText<TPattern extends string>({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: ImageTarget
     settings: LocateTextSettings<TPattern>
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "locateText" called for target', target, 'with settings', settings)
@@ -347,12 +355,14 @@ export function makeCoreRequests({
   async function extractText({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: ImageTarget
     settings: ExtractTextSettings
     logger?: Logger
   }): Promise<string[]> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "extractText" called for target', target, 'with settings', settings)
@@ -387,11 +397,13 @@ export function makeCoreRequests({
 
   async function getAccountInfo({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: ServerSettings
     logger?: Logger
   }): Promise<Account> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "getAccountInfo" called with settings', settings)
@@ -424,11 +436,13 @@ export function makeCoreRequests({
 
   async function getBatchBranches({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: ServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "getBatchBranches" called with settings', settings)
@@ -447,7 +461,9 @@ export function makeCoreRequests({
     return result
   }
 
-  async function closeBatch({settings, logger = defaultLogger}: {settings: CloseBatchSettings; logger?: Logger}) {
+  async function closeBatch({settings, logger = mainLogger}: {settings: CloseBatchSettings; logger?: Logger}) {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "closeBatch" called with settings', settings)
@@ -460,7 +476,9 @@ export function makeCoreRequests({
     logger.log('Request "closeBatch" finished successfully')
   }
 
-  async function deleteTest({settings, logger = defaultLogger}: {settings: DeleteTestSettings; logger?: Logger}) {
+  async function deleteTest({settings, logger = mainLogger}: {settings: DeleteTestSettings; logger?: Logger}) {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
     const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
     logger.log('Request "deleteTest" called with settings', settings)
@@ -476,13 +494,9 @@ export function makeCoreRequests({
     logger.log('Request "deleteTest" finished successfully')
   }
 
-  async function logEvent({
-    settings,
-    logger = defaultLogger,
-  }: {
-    settings: MaybeArray<LogEventSettings>
-    logger?: Logger
-  }) {
+  async function logEvent({settings, logger = mainLogger}: {settings: MaybeArray<LogEventSettings>; logger?: Logger}) {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     settings = utils.types.isArray(settings) ? settings : [settings]
     const [config] = settings
     const agentId = `${defaultAgentId} ${config.agentId ? `[${config.agentId}]` : ''}`.trim()
@@ -512,7 +526,7 @@ export function makeEyesRequests({
   test,
   req,
   upload,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: {
   core: CoreRequests
   test: VisualTest
@@ -542,12 +556,14 @@ export function makeEyesRequests({
   async function check({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: ImageTarget
     settings: CheckSettings
     logger?: Logger
   }): Promise<CheckResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log('Request "check" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
@@ -569,12 +585,14 @@ export function makeEyesRequests({
   async function checkAndClose({
     target,
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: ImageTarget
     settings: CheckSettings & CloseSettings
     logger?: Logger
   }): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     if (!supportsCheckAndClose) {
       logger.log('Request "checkAndClose" is notSupported by the server, using "check" and "close" requests instead')
       await check({target, settings, logger})
@@ -630,11 +648,13 @@ export function makeEyesRequests({
 
   async function close({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
     if (resultsPromise) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
@@ -671,11 +691,13 @@ export function makeEyesRequests({
 
   async function abort({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: AbortSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
     if (resultsPromise) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
@@ -707,11 +729,13 @@ export function makeEyesRequests({
 
   async function getResults({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: GetResultsSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
     if (!resultsPromise) {
       logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
@@ -722,13 +746,9 @@ export function makeEyesRequests({
     return results
   }
 
-  async function report({
-    settings,
-    logger = defaultLogger,
-  }: {
-    settings?: ReportSettings
-    logger?: Logger
-  }): Promise<void> {
+  async function report({settings, logger = mainLogger}: {settings?: ReportSettings; logger?: Logger}): Promise<void> {
+    logger = logger.extend(mainLogger)
+
     logger.log(`Request "report" called for test ${test.testId} with settings`, settings)
     if (!settings?.testMetadata || utils.types.isEmpty(settings.testMetadata)) return
     try {
@@ -753,7 +773,7 @@ export function makeFunctionalSessionRequests({
   core,
   test,
   req,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: {
   core: CoreRequests
   test: FunctionalTest
@@ -778,11 +798,13 @@ export function makeFunctionalSessionRequests({
 
   async function close({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: CloseSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
     if (resultsPromise) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
@@ -813,11 +835,13 @@ export function makeFunctionalSessionRequests({
 
   async function abort({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: AbortSettings
     logger?: Logger
   } = {}): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
     if (resultsPromise) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
@@ -849,11 +873,13 @@ export function makeFunctionalSessionRequests({
 
   async function getResults({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: GetResultsSettings
     logger?: Logger
   } = {}): Promise<TestResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
     if (!resultsPromise) {
       logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
@@ -864,13 +890,9 @@ export function makeFunctionalSessionRequests({
     return results
   }
 
-  async function report({
-    settings,
-    logger = defaultLogger,
-  }: {
-    settings?: ReportSettings
-    logger?: Logger
-  }): Promise<void> {
+  async function report({settings, logger = mainLogger}: {settings?: ReportSettings; logger?: Logger}): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
+
     logger.log(`Request "report" called for test ${test.testId} with settings`, settings)
     if (!settings?.testMetadata || utils.types.isEmpty(settings.testMetadata)) return
     try {

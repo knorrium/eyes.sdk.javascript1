@@ -120,8 +120,8 @@ export interface ManagerSettings {
   fetchConcurrency?: number
   /** @deprecated */
   legacyConcurrency?: number
-  agentId?: string
   batch?: AutomationCore.Batch
+  agentId?: string
 }
 
 export type Config<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {

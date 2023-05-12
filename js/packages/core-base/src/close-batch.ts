@@ -9,14 +9,16 @@ type Options = {
   logger: Logger
 }
 
-export function makeCloseBatch({requests, logger: defaultLogger}: Options) {
+export function makeCloseBatch({requests, logger: mainLogger}: Options) {
   return async function closeBatch({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: MaybeArray<CloseBatchSettings>
     logger?: Logger
   }): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`close-batch-base-${utils.general.shortid()}`]})
+
     logger.log('Command "closeBatch" is called with settings', settings)
     settings = utils.types.isArray(settings) ? settings : [settings]
     const results = await Promise.allSettled(

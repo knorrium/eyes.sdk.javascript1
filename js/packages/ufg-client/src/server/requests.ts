@@ -41,15 +41,9 @@ export type UFGRequestsConfig = ReqUFGConfig & {
   stitchingServiceUrl: string
 }
 
-export function makeUFGRequests({
-  config,
-  logger: defaultLogger,
-}: {
-  config: UFGRequestsConfig
-  logger: Logger
-}): UFGRequests {
-  defaultLogger ??= makeLogger()
-  const req = makeReqUFG({config, logger: defaultLogger})
+export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; logger?: Logger}): UFGRequests {
+  const mainLogger = makeLogger({logger, format: {label: 'ufg-requests'}})
+  const req = makeReqUFG({config, logger: mainLogger})
 
   const getChromeEmulationDevicesWithCache = utils.general.cachify(getChromeEmulationDevices)
   const getIOSDevicesWithCache = utils.general.cachify(getIOSDevices)
@@ -68,11 +62,13 @@ export function makeUFGRequests({
 
   async function bookRenderers({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: RendererSettings[]
     logger?: Logger
   }): Promise<RendererEnvironment[]> {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "bookRenderers" called for with settings', settings)
     const response = await req('./job-info', {
       name: 'bookRenderers',
@@ -106,11 +102,13 @@ export function makeUFGRequests({
 
   async function startRenders({
     requests,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     requests: RenderRequest[]
     logger?: Logger
   }): Promise<StartedRender[]> {
+    logger = logger.extend(mainLogger, {tags: [`start-render-request-${utils.general.shortid()}`]})
+
     logger.log('Request "startRenders" called for requests', requests)
     const response = await req('./render', {
       name: 'startRenders',
@@ -169,11 +167,13 @@ export function makeUFGRequests({
 
   async function checkRenderResults({
     renders,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     renders: StartedRender[]
     logger?: Logger
   }): Promise<RenderResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "checkRenderResults" called for renders', renders)
     const response = await req('./render-status', {
       name: 'checkRenderResults',
@@ -220,11 +220,13 @@ export function makeUFGRequests({
 
   async function checkResources({
     resources,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     resources: ContentfulResource[]
     logger?: Logger
   }): Promise<(boolean | null)[]> {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "checkResources" called for resources', resources)
     const response = await req('./resources/query/resources-exist', {
       name: 'checkResources',
@@ -243,11 +245,13 @@ export function makeUFGRequests({
 
   async function uploadResource({
     resource,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     resource: ContentfulResource
     logger?: Logger
   }): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "uploadResource" called for resource', resource)
     await req(`./resources/sha256/${resource.hash.hash}`, {
       name: 'uploadResource',
@@ -265,9 +269,11 @@ export function makeUFGRequests({
     logger.log('Request "uploadResource" finished successfully')
   }
 
-  async function getChromeEmulationDevices({logger = defaultLogger}: {logger?: Logger} = {}): Promise<
+  async function getChromeEmulationDevices({logger = mainLogger}: {logger?: Logger} = {}): Promise<
     Record<ChromeEmulationDevice, any>
   > {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "getChromeEmulationDevices" called')
     const response = await req('./emulated-devices-sizes', {
       name: 'getChromeEmulationDevices',
@@ -279,7 +285,9 @@ export function makeUFGRequests({
     return result
   }
 
-  async function getIOSDevices({logger = defaultLogger}: {logger?: Logger} = {}): Promise<Record<IOSDevice, any>> {
+  async function getIOSDevices({logger = mainLogger}: {logger?: Logger} = {}): Promise<Record<IOSDevice, any>> {
+    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+
     logger.log('Request "getIOSDevices" called')
     const response = await req('./ios-devices-sizes', {
       name: 'getIOSDevices',

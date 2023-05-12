@@ -19,15 +19,15 @@ export function makeUFGClient({
   cache?: Map<string, any>
   logger?: Logger
 }): UFGClient {
-  logger = logger?.extend({label: 'ufg client'}) ?? makeLogger({label: 'ufg client'})
+  logger = makeLogger({logger, format: {label: 'ufg-client'}})
 
   const requests = makeUFGRequests({config, logger})
-  const fetchResource = makeFetchResource({logger, fetchConcurrency: config.fetchConcurrency})
+  const fetchResource = makeFetchResource({fetchConcurrency: config.fetchConcurrency, logger})
   const uploadResource = makeUploadResource({requests, logger})
   const processResources = makeProcessResources({fetchResource, uploadResource, cache, logger})
 
   return {
-    createRenderTarget: makeCreateRenderTarget({processResources}),
+    createRenderTarget: makeCreateRenderTarget({processResources, logger}),
     bookRenderer: makeBookRenderer({requests, logger}),
     render: makeRender({requests, logger}),
     getChromeEmulationDevices: requests.getChromeEmulationDevices,

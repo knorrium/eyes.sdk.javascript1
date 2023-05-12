@@ -42,7 +42,7 @@ export function makeSocket<
   const transport: Transport<TSocket> = utils.types.isString(options.transport)
     ? (transports[options.transport as keyof typeof transports] as Transport<TSocket>)
     : options.transport
-  const logger = options.logger?.extend({label: 'socket'}) ?? makeLogger({label: 'socket'})
+  const logger = makeLogger({logger: options.logger, format: {label: 'socket'}})
 
   use(target)
 

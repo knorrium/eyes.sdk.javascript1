@@ -9,14 +9,16 @@ type Options = {
   logger: Logger
 }
 
-export function makeDeleteTest({requests, logger: defaultLogger}: Options) {
+export function makeDeleteTest({requests, logger: mainLogger}: Options) {
   return async function deleteTest({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: MaybeArray<DeleteTestSettings>
     logger?: Logger
   }): Promise<void> {
+    logger = logger.extend(mainLogger, {tags: [`delete-test-base-${utils.general.shortid()}`]})
+
     logger.log('Command "deleteTest" is called with settings', settings)
     settings = utils.types.isArray(settings) ? settings : [settings]
     const results = await Promise.allSettled(settings.map(settings => requests.deleteTest({settings, logger})))

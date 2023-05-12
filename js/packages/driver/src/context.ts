@@ -1,6 +1,5 @@
 import type {Location, Size, Region} from '@applitools/utils'
 import type {Cookie} from './types'
-import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver, type WaitOptions} from './spec-driver'
 import {type Driver} from './driver'
 import {isSelector, isObjectCommonSelector, type Selector} from './selector'
@@ -33,7 +32,6 @@ type ContextOptions<T extends SpecType> = {
   reference?: ContextReference<T>
   element?: Element<T>
   scrollingElement?: Element<T>
-  logger: Logger
 }
 
 export class Context<T extends SpecType> {
@@ -45,7 +43,6 @@ export class Context<T extends SpecType> {
   private _reference?: ContextReference<T> | null
   private _scrollingElement?: Element<T> | null
   private _state: ContextState = {}
-  private _logger: Logger
 
   private _isReference(reference: any): reference is ContextReference<T> {
     return (
@@ -61,7 +58,6 @@ export class Context<T extends SpecType> {
 
   constructor(options: ContextOptions<T>) {
     this._spec = options.spec
-    this._logger = options.logger
 
     if (options.context) {
       if (this._spec.isContext?.(options.context) ?? this._spec.isDriver(options.context)) {
@@ -86,6 +82,10 @@ export class Context<T extends SpecType> {
     } else {
       throw new TypeError('Context constructor called with context reference of unknown type!')
     }
+  }
+
+  get logger() {
+    return this._driver!.logger
   }
 
   get target(): T['driver'] {
@@ -209,10 +209,10 @@ export class Context<T extends SpecType> {
 
     await this.parent.focus()
 
-    this._logger.log('Context initialization')
+    this.logger.log('Context initialization')
 
     if (utils.types.isInteger(this._reference)) {
-      this._logger.log('Getting context element using index:', this._reference)
+      this.logger.log('Getting context element using index:', this._reference)
       const elements = await this.parent.elements('frame, iframe')
       if (this._reference > elements.length) {
         throw new TypeError(`Context element with index ${this._reference} is not found`)
@@ -220,13 +220,13 @@ export class Context<T extends SpecType> {
       this._element = elements[this._reference]
     } else if (utils.types.isString(this._reference) || isSelector(this._reference, this._spec)) {
       if (utils.types.isString(this._reference)) {
-        this._logger.log('Getting context element by name or id', this._reference)
+        this.logger.log('Getting context element by name or id', this._reference)
         this._element = await this.parent
           .element(`iframe[name="${this._reference}"], iframe#${this._reference}`)
           .catch(() => null)
       }
       if (!this._element && isSelector(this._reference, this._spec)) {
-        this._logger.log('Getting context element by selector', this._reference)
+        this.logger.log('Getting context element by selector', this._reference)
         this._element = await this.parent.element(this._reference)
       }
       if (!this._element) {
@@ -235,11 +235,11 @@ export class Context<T extends SpecType> {
         )
       }
     } else if (this._spec.isElement(this._reference) || this._reference instanceof Element) {
-      this._logger.log('Initialize context from reference element', this._reference)
+      this.logger.log('Initialize context from reference element', this._reference)
       this._element =
         this._reference instanceof Element
           ? this._reference
-          : new Element({spec: this._spec, context: this.parent, element: this._reference, logger: this._logger})
+          : new Element({spec: this._spec, context: this.parent, element: this._reference})
     } else {
       throw new TypeError('Reference type does not supported')
     }
@@ -291,7 +291,7 @@ export class Context<T extends SpecType> {
       }
       return reference
     } else if (this._isReference(reference)) {
-      return new Context({spec: this._spec, parent: this, driver: this.driver, reference, logger: this._logger})
+      return new Context({spec: this._spec, parent: this, driver: this.driver, reference})
     } else if (utils.types.has(reference, 'reference')) {
       if (reference.reference instanceof Context) return this
       const parent = reference.parent ? await this.context(reference.parent) : this
@@ -301,7 +301,6 @@ export class Context<T extends SpecType> {
         driver: this.driver,
         reference: reference.reference,
         scrollingElement: reference?.scrollingElement,
-        logger: this._logger,
       })
     } else {
       throw new Error('Cannot get context using reference of unknown type!')
@@ -310,26 +309,24 @@ export class Context<T extends SpecType> {
 
   async element(elementOrSelector: ElementReference<T>): Promise<Element<T> | null> {
     if (this._spec.isElement(elementOrSelector)) {
-      return new Element({spec: this._spec, context: this, element: elementOrSelector, logger: this._logger})
+      return new Element({spec: this._spec, context: this, element: elementOrSelector})
     } else if (!isSelector(elementOrSelector, this._spec)) {
       throw new TypeError('Cannot find element using argument of unknown type!')
     }
     if (this.isRef) {
-      return new Element({spec: this._spec, context: this, selector: elementOrSelector, logger: this._logger})
+      return new Element({spec: this._spec, context: this, selector: elementOrSelector})
     }
-    this._logger.log('Finding element by selector: ', elementOrSelector)
+    this.logger.log('Finding element by selector: ', elementOrSelector)
     const [element] = await this._findElements(elementOrSelector, {all: false})
-    return element
-      ? new Element({spec: this._spec, context: this, element, selector: elementOrSelector, logger: this._logger})
-      : null
+    return element ? new Element({spec: this._spec, context: this, element, selector: elementOrSelector}) : null
   }
 
   async elements(selectorOrElement: ElementReference<T>): Promise<Element<T>[]> {
     if (isSelector(selectorOrElement, this._spec)) {
       if (this.isRef) {
-        return [new Element({spec: this._spec, context: this, selector: selectorOrElement, logger: this._logger})]
+        return [new Element({spec: this._spec, context: this, selector: selectorOrElement})]
       }
-      this._logger.log('Finding elements by selector: ', selectorOrElement)
+      this.logger.log('Finding elements by selector: ', selectorOrElement)
       const elements = await this._findElements(selectorOrElement, {all: true})
       return elements.map((element, index) => {
         return new Element({
@@ -338,22 +335,21 @@ export class Context<T extends SpecType> {
           element,
           selector: selectorOrElement,
           index,
-          logger: this._logger,
         })
       })
     } else if (this._spec.isElement(selectorOrElement)) {
-      return [new Element({spec: this._spec, context: this, element: selectorOrElement, logger: this._logger})]
+      return [new Element({spec: this._spec, context: this, element: selectorOrElement})]
     } else {
       throw new TypeError('Cannot find elements using argument of unknown type!')
     }
   }
 
   async waitFor(selector: Selector<T>, options?: WaitOptions): Promise<Element<T> | null> {
-    this._logger.log('Waiting for element by selector: ', selector, 'and options', options)
+    this.logger.log('Waiting for element by selector: ', selector, 'and options', options)
     const [element] = await this._findElements(selector, {
       wait: {state: 'exist', timeout: 10000, interval: 500, ...options},
     })
-    return element ? new Element({spec: this._spec, context: this, element, selector, logger: this._logger}) : null
+    return element ? new Element({spec: this._spec, context: this, element, selector}) : null
   }
 
   async execute(script: ((args: any) => any) | string, arg?: any): Promise<any> {
@@ -361,8 +357,8 @@ export class Context<T extends SpecType> {
     try {
       return await this._spec.executeScript(this.target, script, serialize.call(this, arg))
     } catch (err) {
-      this._logger.warn('Error during script execution with argument', arg)
-      this._logger.error(err)
+      this.logger.warn('Error during script execution with argument', arg)
+      this.logger.error(err)
       throw err
     }
 
@@ -385,7 +381,7 @@ export class Context<T extends SpecType> {
     script: ((arg: any) => any) | string | {main: ((arg: any) => any) | string; poll: ((arg: any) => any) | string},
     arg?: any | {main: any; poll: any; executionTimeout?: number; pollTimeout?: number},
   ): Promise<any> {
-    this._logger.log('Executing poll script')
+    this.logger.log('Executing poll script')
     const {main: mainScript, poll: pollScript} =
       utils.types.isString(script) || utils.types.isFunction(script) ? {main: script, poll: script} : script
     const {
@@ -411,7 +407,7 @@ export class Context<T extends SpecType> {
         } else if (response.status === 'WIP') {
           await utils.general.sleep(pollTimeout)
         }
-        this._logger.log('Polling...')
+        this.logger.log('Polling...')
         response = deserialize(await this.execute(pollScript, pollArg))
       }
       throw new Error('Poll script execution is timed out')
@@ -448,10 +444,10 @@ export class Context<T extends SpecType> {
         let selector
         if (environment.isIOS && !environment.isEmulation) {
           selector = 'html'
-          this._logger.log(`Using hardcoded default scrolling element for Safari on iOS - "${selector}"`)
+          this.logger.log(`Using hardcoded default scrolling element for Safari on iOS - "${selector}"`)
         } else {
           selector = await this.execute(snippets.getDocumentScrollingElement)
-          this._logger.log(`Using dynamic default scrolling element - "${selector}"`)
+          this.logger.log(`Using dynamic default scrolling element - "${selector}"`)
         }
         this._scrollingElement = await this.element({type: 'css', selector})
       } else {
@@ -474,8 +470,8 @@ export class Context<T extends SpecType> {
     try {
       return await this.execute(snippets.blurElement, [element])
     } catch (err) {
-      this._logger.warn('Cannot blur element', element)
-      this._logger.error(err)
+      this.logger.warn('Cannot blur element', element)
+      this.logger.error(err)
       return null
     }
   }
@@ -484,8 +480,8 @@ export class Context<T extends SpecType> {
     try {
       return await this.execute(snippets.focusElement, [element])
     } catch (err) {
-      this._logger.warn('Cannot focus element', element)
-      this._logger.error(err)
+      this.logger.warn('Cannot focus element', element)
+      this.logger.error(err)
       return null
     }
   }
@@ -570,7 +566,7 @@ export class Context<T extends SpecType> {
   }
 
   async getRegionInViewport(region: Region): Promise<Region> {
-    this._logger.log('Converting context region to viewport region', region)
+    this.logger.log('Converting context region to viewport region', region)
 
     if (region) region = utils.geometry.offsetNegative(region, await this.getInnerOffset())
     else region = {x: 0, y: 0, width: Infinity, height: Infinity}
@@ -587,7 +583,7 @@ export class Context<T extends SpecType> {
         environment.isWeb ||
         (!utils.geometry.equals(contextRegion, region) && utils.geometry.contains(contextRegion, region))
       ) {
-        this._logger.log('Intersecting context region', contextRegion, 'with context region', region)
+        this.logger.log('Intersecting context region', contextRegion, 'with context region', region)
 
         region = utils.geometry.intersect(contextRegion, utils.geometry.offset(region, contextRegion))
         // region = utils.geometry.intersect(contextScrollingRegion, region)
@@ -603,7 +599,7 @@ export class Context<T extends SpecType> {
     if (!environment.isWeb) return []
     await this.focus()
     const cookies = await this._spec.getCookies?.(this.target, true)
-    this._logger.log('Extracted context cookies', cookies)
+    this.logger.log('Extracted context cookies', cookies)
     return cookies ?? []
   }
 

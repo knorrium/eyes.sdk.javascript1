@@ -9,8 +9,8 @@ export type ProxyServerOptions = {
   logger?: Logger
 }
 
-export async function makeProxyServer({agentId = 'TestProxy', logger}: ProxyServerOptions = {}) {
-  logger = logger?.extend({label: 'proxy-server'}) ?? makeLogger({label: 'proxy-server'})
+export async function makeProxyServer({agentId = 'TestProxy', logger: defaultLogger}: ProxyServerOptions = {}) {
+  const logger = makeLogger({logger: defaultLogger, format: {label: 'proxy-server'}})
 
   const proxyServer = await makeServer()
 

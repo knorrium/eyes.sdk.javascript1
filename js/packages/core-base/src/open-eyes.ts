@@ -18,16 +18,18 @@ type Options = {
   logger: Logger
 }
 
-export function makeOpenEyes({requests, concurrency, cwd = process.cwd(), logger: defaultLogger}: Options) {
+export function makeOpenEyes({requests, concurrency, cwd = process.cwd(), logger: mainLogger}: Options) {
   const throttle = concurrency ? throat(concurrency) : (fn: () => any) => fn()
 
   return async function openEyes({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: OpenSettings
     logger?: Logger
   }): Promise<Eyes> {
+    logger = logger.extend(mainLogger, {tags: [`eyes-base-${utils.general.shortid()}`]})
+
     logger.log('Command "openEyes" is called with settings', settings)
     if (!settings.ignoreGitBranching && !settings.gitBranchingTimestamp) {
       let branchName = settings.branchName

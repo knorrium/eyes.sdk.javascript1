@@ -19,17 +19,19 @@ export function makeCheck<TSpec extends SpecType>({
   eyes,
   target: defaultTarget,
   spec,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec>) {
   return async function check({
     target = defaultTarget,
     settings = {},
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target?: Target<TSpec>
     settings?: CheckSettings<TSpec>
     logger?: Logger
   } = {}): Promise<CheckResult[]> {
+    logger = logger.extend(mainLogger)
+
     logger.log('Command "check" is called with settings', settings)
     if (!target) throw new Error('Method was called with no target')
     const baseEyes = await eyes.getBaseEyes()

@@ -181,7 +181,7 @@ export interface LocateSettings<TLocator extends string, TRegion = Region>
   locatorNames: TLocator[]
   firstOnly?: boolean
   /** @internal */
-  userLocateId?: string
+  userCommandId?: string
 }
 
 export type LocateResult<TLocator extends string> = Record<TLocator, Region[]>

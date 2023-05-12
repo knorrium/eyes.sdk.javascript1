@@ -12,6 +12,7 @@ import {type Logger} from '@applitools/logger'
 import {TestError} from './errors/test-error'
 import {InternalError} from './errors/internal-error'
 import {separateDuplicateResults} from './utils/separate-duplicate-results'
+import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   core: Core<TSpec>
@@ -22,15 +23,17 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
 export function makeGetManagerResults<TSpec extends SpecType, TType extends 'classic' | 'ufg'>({
   core,
   storage,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec, TType>) {
   return async function getManagerResults({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings?: GetManagerResultsSettings<TType>
     logger?: Logger
   } = {}): Promise<TestResultSummary<TType>> {
+    logger = logger.extend(mainLogger, {tags: [`get-eyes-manager-${utils.general.shortid()}`]})
+
     let containers = await storage.reduce(async (promise, eyes) => {
       try {
         const results = await eyes.getResults({settings: {...settings, throwErr: false}, logger})

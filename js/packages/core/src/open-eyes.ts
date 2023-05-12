@@ -28,14 +28,14 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
   core,
   cores,
   spec,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: Options<TSpec, TDefaultType>) {
   return async function openEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
     settings,
     config,
     target,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     type?: TType
     settings?: Partial<OpenSettings<TDefaultType> & OpenSettings<TType>>
@@ -43,6 +43,8 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     target?: DriverTarget<TSpec>
     logger?: Logger
   }): Promise<Eyes<TSpec, TType>> {
+    logger = logger.extend(mainLogger, {tags: [`eyes-${type}-${utils.general.shortid()}`]})
+
     settings = {...config?.open, ...settings} as Partial<OpenSettings<TDefaultType> & OpenSettings<TType>>
     settings.userTestId ??= `${settings.testName}--${utils.general.guid()}`
     settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'

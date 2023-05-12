@@ -18,18 +18,20 @@ type Options<TSpec extends SpecType> = {
   logger: Logger
 }
 
-export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: defaultLogger}: Options<TSpec>) {
+export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: mainLogger}: Options<TSpec>) {
   return async function openEyes({
     target,
     settings,
     base,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target?: DriverTarget<TSpec>
     settings: OpenSettings
     base?: BaseEyes[]
     logger?: Logger
   }): Promise<Eyes<TSpec>> {
+    logger = logger.extend(mainLogger)
+
     logger.log(
       `Command "openEyes" is called with ${target ? 'default driver and' : ''}`,
       ...(settings ? ['settings', settings] : []),

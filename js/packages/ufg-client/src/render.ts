@@ -1,23 +1,25 @@
 import type {RenderTarget, RenderSettings, RenderResult} from './types'
-import {type Logger} from '@applitools/logger'
 import {type AbortSignal} from 'abort-controller'
 import {type UFGRequests, type StartedRender} from './server/requests'
+import {mergeLoggers, type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 import throat from 'throat'
+
+type Options = {
+  requests: UFGRequests
+  concurrency?: number
+  timeout?: number
+  batchingTimeout?: number
+  logger: Logger
+}
 
 export function makeRender({
   requests,
   concurrency = utils.general.getEnvValue('CONCURRENT_RENDERS_PER_TEST', 'number') ?? 1,
   timeout = 60 * 60 * 1000,
   batchingTimeout = 300,
-  logger,
-}: {
-  requests: UFGRequests
-  concurrency?: number
-  timeout?: number
-  batchingTimeout?: number
-  logger?: Logger
-}) {
+  logger: mainLogger,
+}: Options) {
   const startRenderWithBatching = utils.general.batchify(startRenders, {timeout: batchingTimeout})
   const checkRenderResultWithBatching = utils.general.batchify(checkRenderResults, {timeout: batchingTimeout})
 
@@ -34,29 +36,35 @@ export function makeRender({
     target,
     settings,
     signal,
+    logger = mainLogger,
   }: {
     target: RenderTarget
     settings: RenderSettings
     signal?: AbortSignal
+    logger?: Logger
   }) {
+    logger = logger.extend(mainLogger, {tags: [`render-${utils.general.shortid()}`]})
+
     const timedOutAt = Date.now() + timeout
-    const render = await startRenderWithBatching({target, settings})
-    return checkRenderResultWithBatching({render, signal, timedOutAt})
+    const render = await startRenderWithBatching({target, settings, logger})
+    return checkRenderResultWithBatching({render, signal, timedOutAt, logger})
   }
 
   async function startRenders(
     batch: [
-      {target: RenderTarget; settings: RenderSettings},
+      {target: RenderTarget; settings: RenderSettings; logger: Logger},
       {resolve(result: StartedRender): void; reject(reason?: any): void},
     ][],
   ) {
+    const logger = mergeLoggers(...batch.map(([{logger}]) => logger))
+
     try {
       const renders = await requests.startRenders({requests: batch.map(([request]) => request), logger})
 
       renders.forEach((render, index) => {
         const [, {resolve, reject}] = batch[index]
         if (render.status === 'need-more-resources') {
-          logger?.error(`Got unexpected status ${render.status} in start render response`)
+          logger.error(`Got unexpected status ${render.status} in start render response`)
           reject(new Error(`Got unexpected status ${render.status} in start render response`))
         } else {
           resolve(render)
@@ -69,18 +77,20 @@ export function makeRender({
 
   async function checkRenderResults(
     batch: [
-      {render: StartedRender; signal?: AbortSignal; timedOutAt: number},
+      {render: StartedRender; signal?: AbortSignal; timedOutAt: number; logger: Logger},
       {resolve(result: RenderResult): void; reject(reason?: any): void},
     ][],
   ) {
+    const logger = mergeLoggers(...batch.map(([{logger}]) => logger))
+
     try {
       batch = batch.filter(([{render, signal, timedOutAt}, {reject}]) => {
         if (signal?.aborted) {
-          logger?.warn(`Render with id "${render.renderId}" aborted`)
+          logger.warn(`Render with id "${render.renderId}" aborted`)
           reject(new Error(`Render with id "${render.renderId}" aborted`))
           return false
         } else if (Date.now() >= timedOutAt) {
-          logger?.error(`Render with id "${render.renderId}" timed out`)
+          logger.error(`Render with id "${render.renderId}" timed out`)
           reject(new Error(`Render with id "${render.renderId}" timed out`))
           return false
         } else {
@@ -89,15 +99,15 @@ export function makeRender({
       })
       const results = await requests.checkRenderResults({renders: batch.map(([{render}]) => render), logger})
       results.forEach((result, index) => {
-        const [{render, signal, timedOutAt}, {resolve, reject}] = batch[index]
+        const [options, {resolve, reject}] = batch[index]
         if (result.status === 'error') {
-          logger?.error(`Render with id "${render.renderId}" failed due to an error - ${result.error}`)
-          reject(new Error(`Render with id "${render.renderId}" failed due to an error - ${result.error}`))
+          logger.error(`Render with id "${options.render.renderId}" failed due to an error - ${result.error}`)
+          reject(new Error(`Render with id "${options.render.renderId}" failed due to an error - ${result.error}`))
         } else if (result.status === 'rendered') {
           resolve(result)
         } else {
           // NOTE: this may create a long promise chain
-          checkRenderResultWithBatching({render, signal, timedOutAt}).then(resolve, reject)
+          checkRenderResultWithBatching(options).then(resolve, reject)
         }
       })
     } catch (err) {

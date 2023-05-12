@@ -11,18 +11,20 @@ type Options = {
   logger: Logger
 }
 
-export function makeCheck({requests, signal, logger: defaultLogger}: Options) {
+export function makeCheck({requests, signal, logger: mainLogger}: Options) {
   const queue = [] as (PromiseLike<void> & {resolve(): void})[]
 
   return async function check({
     target,
     settings = {},
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     target: Target
     settings?: CheckSettings
     logger?: Logger
   }): Promise<CheckResult[]> {
+    logger = logger.extend(mainLogger, {tags: [`check-base-${utils.general.shortid()}`]})
+
     settings ??= {}
     settings.stepIndex ??= queue.length
     settings.normalization ??= {}

@@ -1,14 +1,14 @@
-import {makeLogger} from '../../src'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as utils from '@applitools/utils'
+import {makeLogger, mergeLoggers} from '../../src'
 import assert from 'assert'
 import chalk from 'chalk'
 import debug from 'debug'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as utils from '@applitools/utils'
 
 describe('logger', () => {
   it('level silent', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'silent', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'silent', format: {timestamp: false}})
     const output = track(() => {
       logger.log('info')
       logger.warn('warn')
@@ -21,7 +21,7 @@ describe('logger', () => {
   })
 
   it('level fatal', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'fatal', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'fatal', format: {timestamp: false}})
     const output = track(() => {
       logger.log('info')
       logger.warn('warn')
@@ -34,7 +34,7 @@ describe('logger', () => {
   })
 
   it('level error', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'error', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'error', format: {timestamp: false}})
     const output = track(() => {
       logger.log('info')
       logger.warn('warn')
@@ -47,7 +47,7 @@ describe('logger', () => {
   })
 
   it('level warn', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'warn', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'warn', format: {timestamp: false}})
     const output = track(() => {
       logger.log('info')
       logger.warn('warn')
@@ -60,7 +60,7 @@ describe('logger', () => {
   })
 
   it('level info', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'info', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'info', format: {timestamp: false}})
     const output = track(() => {
       logger.log('info')
       logger.warn('warn')
@@ -73,33 +73,44 @@ describe('logger', () => {
   })
 
   it('label', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'info', label: 'TEST', timestamp: false})
+    const logger = makeLogger({handler: {type: 'console'}, level: 'info', format: {label: 'TEST', timestamp: false}})
     const output = track(() => {
       logger.log('info')
     })
 
-    assert.deepStrictEqual(output.stdout, ['TEST      | [INFO ] info\n'])
+    assert.deepStrictEqual(output.stdout, ['TEST | [INFO ] info\n'])
   })
 
   it('tags', () => {
-    const logger = makeLogger({handler: {type: 'console'}, level: 'info', tags: {tag: '@@@'}, timestamp: false})
+    const logger1 = makeLogger({
+      handler: {type: 'console'},
+      level: 'info',
+      format: {tags: ['@@@', '%%%'], timestamp: false},
+    })
+    const logger2 = makeLogger({
+      handler: {type: 'console'},
+      level: 'info',
+      format: {tags: [['@@@', '%%%'], ['$$$']], timestamp: false},
+    })
     const output = track(() => {
-      logger.log('info')
+      logger1.log('info')
+      logger2.log('info')
     })
 
-    assert.deepStrictEqual(output.stdout, ['[INFO ] {"tag":"@@@"} info\n'])
+    assert.deepStrictEqual(output.stdout, ['(@@@/%%%) | [INFO ] info\n', '(@@@/%%% & $$$) | [INFO ] info\n'])
   })
 
   it('colors', () => {
     const timestamp = new Date('2021-03-19T16:49:00.000Z') as any
-    const tags = {applitools: true}
     const logger = makeLogger({
       handler: {type: 'console'},
-      label: 'Applitools',
-      timestamp,
-      tags: tags,
       level: 'info',
-      colors: true,
+      format: {
+        label: 'Applitools',
+        tags: ['tag'],
+        timestamp,
+        colors: true,
+      },
     })
     const output = track(() => {
       logger.log('info')
@@ -108,15 +119,15 @@ describe('logger', () => {
       logger.fatal('fatal')
     })
 
-    const prelude = `${chalk.cyan('Applitools')} ${chalk.greenBright(timestamp.toISOString())}`
+    const prelude = `${chalk.cyan('Applitools')} ${chalk.blueBright('(tag)')} ${chalk.greenBright(
+      timestamp.toISOString(),
+    )}`
 
-    assert.deepStrictEqual(output.stdout, [
-      `${prelude} ${chalk.bgBlueBright.black(' INFO  ')} ${chalk.blueBright(JSON.stringify(tags))} info\n`,
-    ])
+    assert.deepStrictEqual(output.stdout, [`${prelude} ${chalk.bgBlueBright.black(' INFO  ')} info\n`])
     assert.deepStrictEqual(output.stderr, [
-      `${prelude} ${chalk.bgYellowBright.black(' WARN  ')} ${chalk.blueBright(JSON.stringify(tags))} warn\n`,
-      `${prelude} ${chalk.bgRedBright.white(' ERROR ')} ${chalk.blueBright(JSON.stringify(tags))} error\n`,
-      `${prelude} ${chalk.bgRed.white(' FATAL ')} ${chalk.blueBright(JSON.stringify(tags))} fatal\n`,
+      `${prelude} ${chalk.bgYellowBright.black(' WARN  ')} warn\n`,
+      `${prelude} ${chalk.bgRedBright.white(' ERROR ')} error\n`,
+      `${prelude} ${chalk.bgRed.white(' FATAL ')} fatal\n`,
     ])
   })
 
@@ -125,8 +136,10 @@ describe('logger', () => {
     const logger = makeLogger({
       handler: {type: 'file', filename},
       level: 'info',
-      tags: {tag: '&&&'},
-      timestamp: new Date('2021-03-19T16:49:00.000Z') as any,
+      format: {
+        tags: ['&&&'],
+        timestamp: new Date('2021-03-19T16:49:00.000Z'),
+      },
     })
 
     logger.log('info')
@@ -142,20 +155,22 @@ describe('logger', () => {
 
     assert.strictEqual(
       output,
-      '2021-03-19T16:49:00.000Z [INFO ] {"tag":"&&&"} info\n' +
-        '2021-03-19T16:49:00.000Z [WARN ] {"tag":"&&&"} warn\n' +
-        '2021-03-19T16:49:00.000Z [ERROR] {"tag":"&&&"} error\n' +
-        '2021-03-19T16:49:00.000Z [FATAL] {"tag":"&&&"} fatal\n',
+      '(&&&) | 2021-03-19T16:49:00.000Z [INFO ] info\n' +
+        '(&&&) | 2021-03-19T16:49:00.000Z [WARN ] warn\n' +
+        '(&&&) | 2021-03-19T16:49:00.000Z [ERROR] error\n' +
+        '(&&&) | 2021-03-19T16:49:00.000Z [FATAL] fatal\n',
     )
   })
 
   it('handler rolling file', async () => {
     const dirname = path.resolve(__dirname, 'test-logs')
     const logger = makeLogger({
-      handler: {type: 'rolling file', dirname, name: 'test', maxFileLength: 100},
+      handler: {type: 'rolling file', dirname, name: 'test', maxFileLength: 80},
       level: 'info',
-      tags: {tag: '&&&'},
-      timestamp: new Date('2021-03-19T16:49:00.000Z') as any,
+      format: {
+        tags: ['&&&'],
+        timestamp: new Date('2021-03-19T16:49:00.000Z'),
+      },
     })
 
     logger.log('info')
@@ -171,10 +186,10 @@ describe('logger', () => {
     const filenames = fs.readdirSync(dirname)
 
     const expected = [
-      '2021-03-19T16:49:00.000Z [INFO ] {"tag":"&&&"} info\n',
-      '2021-03-19T16:49:00.000Z [WARN ] {"tag":"&&&"} warn\n',
-      '2021-03-19T16:49:00.000Z [ERROR] {"tag":"&&&"} error\n',
-      '2021-03-19T16:49:00.000Z [FATAL] {"tag":"&&&"} fatal\n',
+      '(&&&) | 2021-03-19T16:49:00.000Z [INFO ] info\n',
+      '(&&&) | 2021-03-19T16:49:00.000Z [WARN ] warn\n',
+      '(&&&) | 2021-03-19T16:49:00.000Z [ERROR] error\n',
+      '(&&&) | 2021-03-19T16:49:00.000Z [FATAL] fatal\n',
     ]
 
     filenames.forEach((filename, index) => {
@@ -190,8 +205,8 @@ describe('logger', () => {
     debug.enable(process.env.DEBUG)
     Object.assign((debug as any).inspectOpts, {colors: false, hideDate: true})
 
-    const logger = makeLogger({label: 'label WITH SpAcEs AND uppeR CAseS', colors: false, timestamp: false})
-    const loggerExtended = logger.extend({label: 'label2', tags: {tag: '@@@'}})
+    const logger = makeLogger({format: {label: 'label WITH SpAcEs AND uppeR CAseS', colors: false, timestamp: false}})
+    const loggerExtended = logger.extend({label: 'label2', tags: ['@@@']})
     const output = track(() => {
       logger.log('log')
       logger.warn('warn')
@@ -208,17 +223,17 @@ describe('logger', () => {
       'appli:label-with-spaces-and-upper-cases [WARN ] warn\n',
       'appli:label-with-spaces-and-upper-cases [ERROR] error\n',
       'appli:label-with-spaces-and-upper-cases [FATAL] fatal\n',
-      'appli:label2 [INFO ] {"tag":"@@@"} log2\n',
-      'appli:label2 [WARN ] {"tag":"@@@"} warn2\n',
-      'appli:label2 [ERROR] {"tag":"@@@"} error2\n',
-      'appli:label2 [FATAL] {"tag":"@@@"} fatal2\n',
+      'appli:label2 (@@@) | [INFO ] log2\n',
+      'appli:label2 (@@@) | [WARN ] warn2\n',
+      'appli:label2 (@@@) | [ERROR] error2\n',
+      'appli:label2 (@@@) | [FATAL] fatal2\n',
     ])
   })
 
   it('handler custom', () => {
     const output = [] as string[]
     const handler = {log: (message: string) => output.push(message)}
-    const logger = makeLogger({handler, level: 'info', timestamp: new Date('2021-03-19T16:49:00.000Z') as any})
+    const logger = makeLogger({handler, level: 'info', format: {timestamp: new Date('2021-03-19T16:49:00.000Z')}})
 
     logger.log('info')
     logger.warn('warn')
@@ -233,13 +248,13 @@ describe('logger', () => {
     ])
   })
 
-  it('format', () => {
+  it('formatter', () => {
     const output = [] as string[]
-    const format = (chunks: any[], options?: Record<string, any>) => ({chunks, ...options} as any)
+    const formatter = (chunks: any[], options?: Record<string, any>) => ({chunks, ...options} as any)
     const handler = {log: (message: string) => output.push(message)}
-    const timestamp = new Date('2021-03-19T16:49:00.000Z') as any
+    const timestamp = new Date('2021-03-19T16:49:00.000Z')
     const label = 'Test'
-    const logger = makeLogger({handler, format, level: 'info', label, timestamp})
+    const logger = makeLogger({handler, level: 'info', format: {formatter, label, timestamp}})
 
     logger.log('info')
     logger.warn('warn')
@@ -247,10 +262,10 @@ describe('logger', () => {
     logger.fatal('fatal')
 
     assert.deepStrictEqual(output, [
-      {chunks: ['info'], label, level: 'info', tags: undefined, timestamp, colors: undefined},
-      {chunks: ['warn'], label, level: 'warn', tags: undefined, timestamp, colors: undefined},
-      {chunks: ['error'], label, level: 'error', tags: undefined, timestamp, colors: undefined},
-      {chunks: ['fatal'], label, level: 'fatal', tags: undefined, timestamp, colors: undefined},
+      {chunks: ['info'], formatter, label, level: 'info', timestamp, colors: undefined},
+      {chunks: ['warn'], formatter, label, level: 'warn', timestamp, colors: undefined},
+      {chunks: ['error'], formatter, label, level: 'error', timestamp, colors: undefined},
+      {chunks: ['fatal'], formatter, label, level: 'fatal', timestamp, colors: undefined},
     ])
   })
 
@@ -281,6 +296,25 @@ describe('logger', () => {
     assert.deepStrictEqual(stdout, [])
     assert.deepStrictEqual(stderr, [])
     assert.deepStrictEqual(output, ['info', 'warn', 'error', 'fatal'])
+  })
+
+  it('merged logger', () => {
+    const logger1 = makeLogger({
+      handler: {type: 'console'},
+      level: 'info',
+      format: {tags: ['a', 'b', 'c'], timestamp: false},
+    })
+    const logger2 = makeLogger({
+      handler: {type: 'console'},
+      level: 'info',
+      format: {tags: ['d', 'e', 'f'], timestamp: false},
+    })
+    const logger = mergeLoggers(logger1, logger2)
+    const output = track(() => {
+      logger.log('info')
+    })
+
+    assert.deepStrictEqual(output.stdout, ['(a/b/c & d/e/f) | [INFO ] info\n'])
   })
 
   function track(action: () => void) {

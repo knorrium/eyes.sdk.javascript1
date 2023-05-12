@@ -21,6 +21,13 @@ export function guid(): string {
   })
 }
 
+export function shortid(): string {
+  return 'xxx'.replace(/[x]/g, () => {
+    const r = (Math.random() * 36) | 0
+    return r.toString(36)
+  })
+}
+
 export function jwtDecode(token: string): Record<string, any> {
   let payloadSeg = token.split('.')[1]
   payloadSeg += new Array(5 - (payloadSeg.length % 4)).join('=')

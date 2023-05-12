@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-
+/* eslint no-console: off */
 import {makeCoreServer} from '../universal/core-server'
 import {makeCoreServerProcess} from '../universal/core-server-process'
+import {parseLogs, structureLogs} from '../troubleshoot/logs'
 import yargs from 'yargs'
+import * as utils from '@applitools/utils'
 
 yargs
   .example([
@@ -83,6 +85,29 @@ yargs
         console.log(port) // NOTE: this is a part of the generic protocol
       } else {
         makeCoreServer({...args, ...args.config})
+      }
+    },
+  })
+  .command({
+    command: 'logs [input]',
+    builder: yargs =>
+      yargs.options({
+        input: {
+          description: 'log input to process',
+          type: 'string',
+        },
+        structure: {
+          description: 'group logs by tag names',
+          type: 'boolean',
+        },
+      }),
+    handler: async (args: any) => {
+      const input = args.input ?? (await utils.streams.toBuffer(process.stdin)).toString('utf8')
+      const logs = parseLogs(input)
+      if (args.structure) {
+        console.log(JSON.stringify(structureLogs(logs), null, 2))
+      } else {
+        console.log(JSON.stringify(logs, null, 2))
       }
     },
   })
