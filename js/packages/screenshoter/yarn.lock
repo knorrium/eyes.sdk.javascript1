@@ -18,47 +18,47 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.11.49", "@applitools/driver@^1.11.49":
-  version "1.11.49"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.49.tgz#671cda433545f0fd9ae27f36bf306843df6cd34c"
-  integrity sha512-KvYZ2Vv11MGRWP5cENXHSOiOiRK6FFfbBihfG6SpdlDZilGLTyttUmPoRno/N3RYBT2xzUix1NzhhHRHV5BMmQ==
+"@applitools/driver@1.11.51", "@applitools/driver@^1.11.51":
+  version "1.11.51"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.11.51.tgz#a608e07cceff75930c579a4819cfb086f237d480"
+  integrity sha512-U/j+fM5J7nqhsMtT9/DaR6UFtcIuXTQu0Z443CRh7apk9WSx3nJX8Kx3b3AqnvBbsb/t9lZQtsF5VxXYAukgng==
   dependencies:
-    "@applitools/logger" "1.1.52"
-    "@applitools/snippets" "2.4.19"
-    "@applitools/utils" "1.3.35"
+    "@applitools/logger" "2.0.0"
+    "@applitools/snippets" "2.4.20"
+    "@applitools/utils" "1.3.36"
     semver "7.3.7"
 
-"@applitools/image@1.0.32":
-  version "1.0.32"
-  resolved "https://registry.yarnpkg.com/@applitools/image/-/image-1.0.32.tgz#3286cffff79f8e7faff5478c90cdb4d456bb1436"
-  integrity sha512-Ocx1NreaSVtvAGpsASy+glQVgw3QXgCRzW6+olxlJ/Lpq6ANvbtKOFV0q2NjxjgILQ3PzLwh/JyrynCbFlVYDg==
+"@applitools/image@1.0.33":
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/@applitools/image/-/image-1.0.33.tgz#4e4e051a246c7c11dede36bebd4421a0ebf6df1e"
+  integrity sha512-+kK/wti750pMhtdgywJ1lG+9I8L7lcQr/CZV7BuVH4OGf9FyXYNmg9UxfNE6IACERvjudPT/BJDzwuJcC9XlPQ==
   dependencies:
-    "@applitools/utils" "1.3.35"
+    "@applitools/utils" "1.3.36"
     bmpimagejs "1.0.4"
     jpeg-js "0.4.4"
     png-async "0.9.4"
 
-"@applitools/logger@1.1.52":
-  version "1.1.52"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-1.1.52.tgz#01c15c9a43634eacb7022f9f82002d6a24109725"
-  integrity sha512-bloAZUIC8hOdQjobX2UjWI3bA/HRE7wPVm58W0DKJ++VKo/W5swF/WpG/0pgfsWMBL8ia8kgbZOkxopn6HnCDQ==
+"@applitools/logger@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.0.tgz#0103b7386c8f6303143d5835e24d89e4dfce182c"
+  integrity sha512-81ulcrNwC1lX46OzrjU5WBHTefxrb3RHtUa919ksnEwWwSTs2brIDcgn2+O54oHQB9J78B8sZxH4RUYWDViZFg==
   dependencies:
-    "@applitools/utils" "1.3.35"
+    "@applitools/utils" "1.3.36"
     chalk "4.1.2"
     debug "4.3.3"
 
-"@applitools/snippets@2.4.19":
-  version "2.4.19"
-  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.19.tgz#2633a0e6df6663ab3ddeb2ac4d21e748d3eea04d"
-  integrity sha512-cXIB5fuVGYFQzZK3tylgIRLh5dTWoCS2v2ZDGpSgdWuz0NH5LArGQpqPr8svqv3nEHCKMBHCMbwEF/CoblIblA==
+"@applitools/snippets@2.4.20":
+  version "2.4.20"
+  resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.20.tgz#9c3322b94d88bfb7822d0014c1882e21bede58e4"
+  integrity sha512-T0D23RkKRa+92shWpnBtsPnmcY23qv8SOB/aVH+VvLqZrHxsof0otcWi0dNTYHQNr+7AfJeDgimWqirQ+7X0QQ==
 
-"@applitools/spec-driver-webdriverio@^1.4.45":
-  version "1.4.45"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.4.45.tgz#0e11a25ad02bb19673a878130f0825e929c892e6"
-  integrity sha512-3cgKh9HQ6rDarO/OfiiCP8W7dGi5Cfoh/4lgUmQkt1rSU58ze+IhUPc8pzFeebD6lidAH20mQz+IVD2U3DQFhQ==
+"@applitools/spec-driver-webdriverio@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriverio/-/spec-driver-webdriverio-1.5.0.tgz#6adb8bd03b96994e217b4cc02842239882e3e287"
+  integrity sha512-Asz3UWnKonm8jgT+NmoGwMVfvDL03onouOy74F9GVlEm5mPCwRFIfgjPTopfsagecwMdKJN0jAiLjqATvRUI3w==
   dependencies:
-    "@applitools/driver" "1.11.49"
-    "@applitools/utils" "1.3.35"
+    "@applitools/driver" "1.11.51"
+    "@applitools/utils" "1.3.36"
 
 "@applitools/test-utils@^1.5.16":
   version "1.5.16"
@@ -72,10 +72,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.32.tgz#cfe006146d1d589a442513c4973b950c607f405f"
   integrity sha512-GSMSf1NNW6fEm0u1ANGrQY+ESs8UgDYAZnaVrgjpFJ8ONL8eVDXn3tiIDdhmj/HKthAHqiYOYdRESmpuru/zrQ==
 
-"@applitools/utils@1.3.35":
-  version "1.3.35"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.35.tgz#21dd16536291c80c04b1133b89ac7514c3e11398"
-  integrity sha512-RerHkSBR7pVJXhTFEEpAVGh4xI76WM/vU9jR9s9d4X3Ao6y/MdgKp0BPNwv3A/ReSsCDhmr9nEu32Po49UflGQ==
+"@applitools/utils@1.3.36":
+  version "1.3.36"
+  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.36.tgz#c8bf55ffa68219728f4c37fa8af5abf2170ae8df"
+  integrity sha512-eROEssh7wIW+V87PvLiHI2hUPxqoBxXFMRx3+z5qOZqXUPSR1Uz7EMFwxZcDDR7T6C3O3UDckB2aVB5fJAg5JA==
 
 "@azure/abort-controller@^1.0.0":
   version "1.1.0"
