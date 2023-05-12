@@ -54,13 +54,13 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
     return Array(settings.renderers.length).fill(snapshot)
   }
 
-  const isStrictBreakpoints = utils.types.isArray(settings.layoutBreakpoints)
+  const isStrictBreakpoints = utils.types.isArray(settings.layoutBreakpoints?.breakpoints)
 
   const requiredWidths = await settings.renderers.reduce(async (prev, renderer, index) => {
     const {name, width} = (await extractRendererInfo({renderer}))!
     const requiredWidths = await prev
     const requiredWidth = isStrictBreakpoints
-      ? calculateBreakpoint({breakpoints: settings.layoutBreakpoints?.breakpoints as number[], value: width})
+      ? calculateBreakpoint({breakpoints: settings.layoutBreakpoints!.breakpoints as number[], value: width})
       : width
     let renderers = requiredWidths.get(requiredWidth)
     if (!renderers) requiredWidths.set(requiredWidth, (renderers = []))
