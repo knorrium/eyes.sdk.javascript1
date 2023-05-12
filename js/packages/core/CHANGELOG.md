@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.0.0 - 2023/5/12
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+### Bug fixes
+- Fixed issue with viewport information extraction when switched to webview
+
 ## 2.5.10 - 2023/5/3
 
 ### Features

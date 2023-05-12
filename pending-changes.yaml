@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
-    - Fixed issue with viewport information extraction when switched to webview
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Add support for reloading the page when using layoutBreakpoints
