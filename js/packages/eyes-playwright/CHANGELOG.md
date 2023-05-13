@@ -11,6 +11,12 @@
 
 
 
+## 1.17.0 - 2023/5/13
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+### Bug fixes
+
 ## 1.16.1 - 2023/5/3
 
 ### Features

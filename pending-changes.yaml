@@ -29,7 +29,7 @@ Apollo SDK:
     - Fixed issue with viewport information extraction when switched to webview
 "@applitools/eyes-playwright":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
     - 
 "@applitools/eyes-puppeteer":
