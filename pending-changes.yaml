@@ -34,7 +34,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-puppeteer":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
     - 
 "@applitools/eyes-testcafe":
