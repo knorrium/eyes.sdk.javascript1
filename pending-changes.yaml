@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Fixed issue with default settings in `extractText`
+    - 
 "@applitools/eyes-selenium":
   feature:
     - Add support for reloading the page when using layoutBreakpoints

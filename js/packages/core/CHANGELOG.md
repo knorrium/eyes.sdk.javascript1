@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.0.1 - 2023/5/13
+
+### Features
+### Bug fixes
+- Fixed issue with default settings in `extractText`
+
 ## 3.0.0 - 2023/5/12
 
 ### Features
