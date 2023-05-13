@@ -24,7 +24,9 @@ export function makeExtractText<TSpec extends SpecType>({spec, core, logger: mai
     logger?: Logger
   }): Promise<string[]> {
     logger = logger.extend(mainLogger, {tags: [`extract-text-${utils.general.shortid()}`]})
-    ;(utils.types.isArray(settings) ? settings : [settings]).map(settings => {
+
+    settings = utils.types.isArray(settings) ? settings : [settings]
+    settings = settings.map(settings => {
       settings = {...config?.open, ...config?.screenshot, ...settings}
       settings.userCommandId ??= `extract-text--${utils.general.guid()}`
       settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'

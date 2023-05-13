@@ -748,8 +748,8 @@ export class Driver<T extends SpecType> {
     let attempt = 0
     while (attempt++ < 3) {
       const requiredWindowSize = {
-        width: currentWindowSize.width + (requiredViewportSize.width - currentViewportSize.width),
-        height: currentWindowSize.height + (requiredViewportSize.height - currentViewportSize.height),
+        width: Math.max(0, currentWindowSize.width + (requiredViewportSize.width - currentViewportSize.width)),
+        height: Math.max(0, currentWindowSize.height + (requiredViewportSize.height - currentViewportSize.height)),
       }
       this._logger.log(`Attempt #${attempt} to set viewport size by setting window size to`, requiredWindowSize)
       await this._spec.setWindowSize!(this.target, requiredWindowSize)
