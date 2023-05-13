@@ -15,9 +15,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-selenium":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
-    - Fixed issue with viewport information extraction when switched to webview
+    - 
 "@applitools/eyes-webdriverio":
   feature:
     - Add support for reloading the page when using layoutBreakpoints
