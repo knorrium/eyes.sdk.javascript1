@@ -20,13 +20,9 @@ Apollo SDK:
     - 
 "@applitools/eyes-webdriverio":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
-    - Fixed detection of emulated mobile drivers
-    - Remove "Execution Cloud" custom property
-    - Fixed issue with failed find element responses in EC
-    - Fixed issue when on certain browser versions test didn't target a previously created baseline
-    - Fixed issue with viewport information extraction when switched to webview
+    - 
 "@applitools/eyes-playwright":
   feature:
     - 

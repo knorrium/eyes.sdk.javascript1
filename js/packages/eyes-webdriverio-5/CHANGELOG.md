@@ -10,6 +10,17 @@
 
 
 
+## 5.44.0 - 2023/5/13
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+### Bug fixes
+- Fixed detection of emulated mobile drivers
+- Remove "Execution Cloud" custom property
+- Fixed issue with failed find element responses in EC
+- Fixed issue when on certain browser versions test didn't target a previously created baseline
+- Fixed issue with viewport information extraction when switched to webview
+
 ## 5.43.4 - 2023/4/26
 
 ### Features
