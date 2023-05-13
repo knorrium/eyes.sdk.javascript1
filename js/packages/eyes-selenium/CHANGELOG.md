@@ -8,6 +8,13 @@
 
 
 
+## 4.66.0 - 2023/5/13
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+### Bug fixes
+- Fixed issue with viewport information extraction when switched to webview
+
 ## 4.65.6 - 2023/5/3
 
 ### Features
