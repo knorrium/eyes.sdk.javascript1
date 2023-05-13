@@ -13,7 +13,7 @@
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
       "rootFile": "./index.ts",
-      "allowModules": ["playwright"],
+      "allowModules": ["playwright-core"],
       "stripPrivate": true,
       "stripProtected": true,
       "stripInternal": true,
