@@ -18,7 +18,7 @@ from applitools.common.selenium import Configuration
 
 from ..common.errors import USDKFailure
 from ..common.utils.general_utils import get_env_with_prefix
-from ..core.ec_client_settings import ECClientCapabilities, ECClientSettings
+from ..core.ec_client_settings import ECClientCapabilitiesOptions, ECClientSettings
 from .__version__ import __version__
 from .command_executor import CommandExecutor
 from .fluent.selenium_check_settings import SeleniumCheckSettings
@@ -297,7 +297,7 @@ class Eyes(object):
             cls.DefaultRunner.Protocol, cls.DefaultRunner.BASE_AGENT_ID, __version__
         )
         result = cmd.core_make_ec_client(
-            ECClientSettings(ECClientCapabilities(api_key, server_url), proxy)
+            ECClientSettings(ECClientCapabilitiesOptions(api_key, server_url), proxy)
         )
         return result["url"]
 

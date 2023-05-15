@@ -413,13 +413,13 @@ class DeleteTestSettings(USDKSchema):
     proxy = Nested(Proxy, attribute="_connection_config.proxy")
 
 
-class ECClientCapabilities(USDKSchema):
+class ECClientCapabilitiesOptions(USDKSchema):
     server_url = String(dump_to="serverUrl")
     api_key = String(dump_to="apiKey")
 
 
 class ECClientSettings(USDKSchema):
-    capabilities = Nested(ECClientCapabilities)
+    options = Nested(ECClientCapabilitiesOptions)
     proxy = Nested(Proxy)
 
 

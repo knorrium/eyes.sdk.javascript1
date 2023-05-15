@@ -9,12 +9,14 @@ if TYPE_CHECKING:
 
 
 @attr.s
-class ECClientCapabilities(object):
+class ECClientCapabilitiesOptions(object):
     api_key = attr.ib(default=None)  # type: Optional[Text]
     server_url = attr.ib(default=None)  # type: Optional[Text]
 
 
 @attr.s
 class ECClientSettings(object):
-    capabilities = attr.ib(type=ECClientCapabilities)  # type: ECClientCapabilities
+    options = attr.ib(
+        type=ECClientCapabilitiesOptions
+    )  # type: ECClientCapabilitiesOptions
     proxy = attr.ib(default=None)  # type: Optional[ProxySettings]

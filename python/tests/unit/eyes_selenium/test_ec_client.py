@@ -13,12 +13,12 @@ def test_get_execution_cloud_url_no_args(monkeypatch):
 
         if PY2:  # work around __getitem__ bug in old mock
             assert c.mock_calls[:-1] == [
-                call(ANY, "Core.makeECClient", {"settings": {}}),
+                call(ANY, "Core.getECClient", {"settings": {}}),
             ]
             assert str(c.mock_calls[-1]) == "call().__getitem__(u'url')"
         else:
             assert c.mock_calls == [
-                call(ANY, "Core.makeECClient", {"settings": {}}),
+                call(ANY, "Core.getECClient", {"settings": {}}),
                 call().__getitem__("url"),
             ]
 
@@ -33,7 +33,7 @@ def test_get_execution_cloud_url_all_args(monkeypatch):
             assert c.mock_calls[:-1] == [
                 call(
                     ANY,
-                    "Core.makeECClient",
+                    "Core.getECClient",
                     {
                         "settings": {
                             "proxy": {
@@ -41,7 +41,7 @@ def test_get_execution_cloud_url_all_args(monkeypatch):
                                 "username": "u",
                                 "url": "http://u:p@host:80",
                             },
-                            "capabilities": {"apiKey": "key", "serverUrl": "url"},
+                            "options": {"apiKey": "key", "serverUrl": "url"},
                         }
                     },
                 )
@@ -51,7 +51,7 @@ def test_get_execution_cloud_url_all_args(monkeypatch):
             assert c.mock_calls == [
                 call(
                     ANY,
-                    "Core.makeECClient",
+                    "Core.getECClient",
                     {
                         "settings": {
                             "proxy": {
@@ -59,7 +59,7 @@ def test_get_execution_cloud_url_all_args(monkeypatch):
                                 "username": "u",
                                 "url": "http://u:p@host:80",
                             },
-                            "capabilities": {"apiKey": "key", "serverUrl": "url"},
+                            "options": {"apiKey": "key", "serverUrl": "url"},
                         }
                     },
                 ),

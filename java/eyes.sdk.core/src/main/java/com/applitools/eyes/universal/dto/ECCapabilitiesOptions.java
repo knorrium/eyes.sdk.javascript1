@@ -3,7 +3,7 @@ package com.applitools.eyes.universal.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ECCapabilities {
+public class ECCapabilitiesOptions {
 
     private String eyesServerUrl;
     private String apiKey;

@@ -78,7 +78,7 @@ class CommandExecutor(object):
         m = context.marshaller
         settings = m.marshal_ec_client_settings(ec_client_settings)
         return self._checked_command(
-            context, "Core.makeECClient", {"settings": settings}
+            context, "Core.getECClient", {"settings": settings}
         )
 
     def core_make_manager(

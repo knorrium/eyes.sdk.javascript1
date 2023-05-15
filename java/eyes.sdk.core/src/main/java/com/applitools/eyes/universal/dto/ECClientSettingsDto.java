@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ECClientSettingsDto {
 
     private String serverUrl;
-    private ECCapabilities capabilities;
+    private ECCapabilitiesOptions options;
     private Integer port;
     private ProxyDto proxy;
 
-    public ECClientSettingsDto(String serverUrl, ECCapabilities capabilities, Integer port, ProxyDto proxy) {
+    public ECClientSettingsDto(String serverUrl, ECCapabilitiesOptions options, Integer port, ProxyDto proxy) {
         this.serverUrl = serverUrl;
-        this.capabilities = capabilities;
+        this.options = options;
         this.port = port;
         this.proxy = proxy;
     }
@@ -25,12 +25,12 @@ public class ECClientSettingsDto {
         this.serverUrl = serverUrl;
     }
 
-    public ECCapabilities getCapabilities() {
-        return capabilities;
+    public ECCapabilitiesOptions getOptions() {
+        return options;
     }
 
-    public void setCapabilities(ECCapabilities capabilities) {
-        this.capabilities = capabilities;
+    public void setOptions(ECCapabilitiesOptions options) {
+        this.options = options;
     }
 
     public Integer getPort() {
@@ -53,7 +53,7 @@ public class ECClientSettingsDto {
     public String toString() {
         return "ECClientSettingsDto{" +
                 "serverUrl='" + serverUrl + '\'' +
-                ", capabilities=" + capabilities +
+                ", options=" + options +
                 ", port=" + port +
                 ", proxy=" + proxy +
                 '}';
