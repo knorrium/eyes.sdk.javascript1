@@ -4,7 +4,8 @@ import type * as WD from 'webdriver'
 import {parse as urlToHttpOptions} from 'url'
 import * as utils from '@applitools/utils'
 import WebDriver, {command} from 'webdriver'
-import ProxyAgent from 'proxy-agent'
+import createHttpProxyAgent from 'http-proxy-agent'
+import createHttpsProxyAgent from 'https-proxy-agent'
 import http from 'http'
 import https from 'https'
 
@@ -20,7 +21,7 @@ export type StaticDriver = {
   sessionId: string
   serverUrl: string
   capabilities: Record<string, any>
-  proxy?: {url: string}
+  proxy?: {url: string; username?: string; password?: string}
 }
 export type StaticElement = {elementId: string}
 
@@ -111,16 +112,20 @@ export function transformDriver(driver: Driver | StaticDriver): Driver {
   }
 
   if (driver.proxy?.url) {
-    const agent = new ProxyAgent({...urlToHttpOptions(driver.proxy.url), rejectUnauthorized: false} as any)
-    agent.callback = utils.general.wrap(agent.callback.bind(agent), (fn, request, options, ...rest) => {
+    const proxyUrl = new URL(driver.proxy.url)
+    proxyUrl.username = driver.proxy.username ?? proxyUrl.username
+    proxyUrl.password = driver.proxy.password ?? proxyUrl.password
+    const proxyOptions = {...urlToHttpOptions(proxyUrl.href), rejectUnauthorized: false}
+    const httpAgent = createHttpProxyAgent(proxyOptions)
+    const httpsAgent = createHttpsProxyAgent(proxyOptions)
+    httpsAgent.callback = utils.general.wrap(httpsAgent.callback.bind(httpsAgent), (fn, request, options, ...rest) => {
       return fn(request, {...options, rejectUnauthorized: false} as typeof options, ...rest)
     })
-    options.agent = {http: agent, https: agent}
+    options.agent = {http: httpAgent, https: httpsAgent}
   } else {
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    })
-    options.agent = {http: http.globalAgent, https: httpsAgent}
+    const httpAgent = http.globalAgent
+    const httpsAgent = new https.Agent({rejectUnauthorized: false})
+    options.agent = {http: httpAgent, https: httpsAgent}
   }
 
   if (!options.port) {
