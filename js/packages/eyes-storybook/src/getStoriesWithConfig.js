@@ -1,6 +1,6 @@
 const {splitConfigsByBrowser, shouldRenderIE} = require('./shouldRenderIE');
 const getStoryTitle = require('./getStoryTitle');
-const {transformBrowser} = require('./generateConfig');
+const {transformConfig} = require('./generateConfig');
 const {checkSettingsParams} = require('./checkSettingsParams');
 const getStoryBaselineName = require('./getStoryBaselineName');
 
@@ -34,8 +34,11 @@ function makeGetStoriesWithConfig({config}) {
               }
             })
             .filter(Boolean);
+
+          const storyConfigReduced = allowedProps(storyConfig);
+          transformConfig(storyConfigReduced);
           addConfigToStories({
-            config: transformBrowser(allowedProps(storyConfig)),
+            config: storyConfigReduced,
             stories: storiesSubset,
             isStoryConfig: true,
           });
@@ -70,13 +73,15 @@ function makeGetStoriesWithConfig({config}) {
 
   function addConfigToStory({story, config, isIE, isStoryConfig}) {
     const storiesToUpdate = isIE ? storiesWithConfigIE : storiesWithConfig;
+    const storyEyesParameters = {...story.parameters?.eyes};
+    transformConfig(storyEyesParameters);
     storiesToUpdate.set(story.baselineName, {
       ...story,
       config: {
         ...basicConfig,
         ...storiesToUpdate.get(story.baselineName)?.config,
         ...config,
-        ...transformBrowser({...story.parameters?.eyes}),
+        ...storyEyesParameters,
         properties: [
           ...(isStoryConfig ? basicConfig.properties || [] : []),
           ...(storiesToUpdate.get(story.baselineName)?.config.properties || []),

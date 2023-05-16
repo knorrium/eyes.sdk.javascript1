@@ -1,3 +1,4 @@
+const {describe, it} = require('mocha');
 const {prepareTakeDomSnapshotsSettings} = require('../../src/utils/prepare-settings');
 const assert = require('assert');
 

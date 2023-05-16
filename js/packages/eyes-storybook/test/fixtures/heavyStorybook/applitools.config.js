@@ -1,11 +1,12 @@
 module.exports = {
-  // concurrency: 1,
+  concurrency: 1000,
   // showLogs: true,
   appName: 'Heavy storybook',
   batchName: 'Heavy storybook',
   storybookConfigDir: 'test/fixtures/heavyStorybook/',
   storybookStaticDir: 'test/fixtures',
-  storybookPort: 9002,
+  // storybookPort: 9002,
+  storybookUrl: 'http://localhost:9002', // need to run `yarn storybook:heavy` in a separate terminal
   // browser: [
   //   {width: 1000, height: 600, name: 'chrome'},
   //   {width: 1000, height: 600, name: 'firefox'},
@@ -23,8 +24,13 @@ module.exports = {
   //   {width: 1000, height: 600, name: 'edgechromium-one-version-back'},
   //   {width: 1000, height: 600, name: 'edgechromium-two-versions-back'},
   // ],
-  // include: (() => {
-  //   let count = 0;
-  //   return () => count++ < 1;
-  // })()
+  // waitBeforeCapture: 300,
+  // puppeteerOptions: {
+  //   headless: false,
+  // },
+  disableBrowserFetching: true,
+  include: (() => {
+    let count = 0;
+    return () => count++ < 500;
+  })()
 };

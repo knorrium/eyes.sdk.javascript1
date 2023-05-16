@@ -77,12 +77,17 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     );
   }
 
-  transformBrowser(result);
+  transformConfig(result);
   if (!result.renderers) {
     result.renderers = [{name: 'chrome', width: 1024, height: 768}];
   }
 
   return result;
+}
+
+function transformConfig(result) {
+  transformLayoutBreakpoints(result);
+  transformBrowser(result);
 }
 
 function transformBrowser(result) {
@@ -104,4 +109,14 @@ function transformBrowser(result) {
   delete result.browser;
   return result;
 }
-module.exports = {generateConfig, transformBrowser};
+
+function transformLayoutBreakpoints(result) {
+  if (
+    utils.types.isBoolean(result.layoutBreakpoints) ||
+    utils.types.isArray(result.layoutBreakpoints)
+  ) {
+    result.layoutBreakpoints = {breakpoints: result.layoutBreakpoints};
+  }
+}
+
+module.exports = {generateConfig, transformConfig};

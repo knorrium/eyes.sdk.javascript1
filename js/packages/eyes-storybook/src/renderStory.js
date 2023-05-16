@@ -15,7 +15,7 @@ function makeRenderStory({
   const throttle = throat(storyDataGap);
   return function renderStory({story, snapshots, url}) {
     const config = story.config;
-    const {name, kind, parameters, hasPlayFunction} = story;
+    const {name, kind, hasPlayFunction} = story;
     const baselineName = story.baselineName;
     const title = story.storyTitle;
     const {

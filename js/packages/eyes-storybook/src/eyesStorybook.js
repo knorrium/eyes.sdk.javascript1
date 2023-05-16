@@ -25,7 +25,6 @@ const {makeCore} = require('@applitools/core');
 const {makeUFGClient} = require('@applitools/ufg-client');
 const makeGetStoriesWithConfig = require('./getStoriesWithConfig');
 
-const CONCURRENT_PAGES = 3;
 const MAX_RETRIES = 10;
 const RETRY_INTERVAL = 1000;
 
@@ -42,14 +41,12 @@ async function eyesStorybook({
   takeMemLoop();
   logger.log('eyesStorybook started');
 
-  const {
-    storybookUrl,
-    waitBeforeCapture,
-    readStoriesTimeout,
-    reloadPagePerStory,
-    proxy,
-    testConcurrency,
-  } = config;
+  const CONCURRENT_TABS = isNaN(Number(process.env.APPLITOOLS_CONCURRENT_TABS))
+    ? 3
+    : Number(process.env.APPLITOOLS_CONCURRENT_TABS);
+  logger.log(`Running with ${CONCURRENT_TABS} concurrent tabs`);
+
+  const {storybookUrl, readStoriesTimeout, reloadPagePerStory, proxy, testConcurrency} = config;
 
   let iframeUrl;
   try {
@@ -151,14 +148,21 @@ async function eyesStorybook({
     },
   });
   try {
-    const [stories] = await Promise.all(
-      [getStoriesWithSpinner()].concat(
-        new Array(CONCURRENT_PAGES).fill().map(async () => {
+    const stories = await getStoriesWithSpinner();
+
+    if (CONCURRENT_TABS <= 3) {
+      await Promise.all(
+        new Array(CONCURRENT_TABS).fill().map(async () => {
           const {pageId} = await pagePool.createPage();
           pagePool.addToPool(pageId);
         }),
-      ),
-    );
+      );
+    } else {
+      for (const _x of new Array(CONCURRENT_TABS).fill()) {
+        const {pageId} = await pagePool.createPage();
+        pagePool.addToPool(pageId);
+      }
+    }
 
     const filteredStories = filterStories({stories, config});
     const storiesIncludingVariations = addVariationStories({
