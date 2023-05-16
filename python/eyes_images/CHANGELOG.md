@@ -1,4 +1,4 @@
-## [vNext]
+## [5.18.1] - 2023-05-16
 ### Fixed
 - Avoid extract_text_regions deprecation warning [Trello 3213](https://trello.com/c/IMTcxURl)
 - Fix distutils deprecation warning caused by marshmallow dependency [Trello 3165](https://trello.com/c/aLfsFODx)
