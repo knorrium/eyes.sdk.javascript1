@@ -36,7 +36,6 @@ install_eyes_images: eyes_images/dist install_core_universal
 
 
 install_eyes_playwright: eyes_playwright/dist install_eyes_images
-	python -m pip install 'playwright<1.33'
 	python -m pip install eyes_playwright/dist/*
 	python -m playwright install
 
