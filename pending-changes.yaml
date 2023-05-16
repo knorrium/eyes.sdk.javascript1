@@ -68,7 +68,7 @@ Apollo SDK:
     - 
 "@applitools/eyes-storybook":
   feature:
-    - Add support for reloading the page when using layoutBreakpoints
+    - 
   bug-fix:
     - 
 "@applitools/eyes-browser-extension":
