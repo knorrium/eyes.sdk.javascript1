@@ -112,7 +112,7 @@ describe('getStoriesWithConfig', () => {
 
     const expectedSubConfig2 = {
       renderers: [{name: 'chrome', width: 1000, height: 800}],
-      layoutBreakpoints: true,
+      layoutBreakpoints: {breakpoints: true},
     };
 
     const config = {
@@ -218,7 +218,7 @@ describe('getStoriesWithConfig', () => {
           config: {
             ...expectedConfig,
             waitBeforeCapture: 5000,
-            layoutBreakpoints: true,
+            layoutBreakpoints: {breakpoints: true},
           },
         },
         {
@@ -231,7 +231,7 @@ describe('getStoriesWithConfig', () => {
             matchLevel: 'strict',
             renderers: [{width: 400, height: 400, name: 'chrome'}],
             useDom: true,
-            layoutBreakpoints: true,
+            layoutBreakpoints: {breakpoints: true},
           },
         },
         {
