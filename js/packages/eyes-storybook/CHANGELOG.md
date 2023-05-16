@@ -3,6 +3,12 @@
 ## Unreleased
 
 
+## 3.34.2 - 2023/5/16
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+### Bug fixes
+
 ## 3.34.1 - 2023/5/9
 
 ### Features
