@@ -140,7 +140,7 @@ jobs:
           apk add git
           apk add git-lfs
           apk add maven
-          apk add --no-cache openjdk8
+          apk add --no-cache openjdk11
           apk add --no-cache libstdc++
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
