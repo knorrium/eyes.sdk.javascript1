@@ -1,6 +1,7 @@
 package com.applitools;
 
 import com.applitools.eyes.*;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.visualgrid.model.VisualGridOption;
 
 /**
@@ -220,4 +221,12 @@ public interface ICheckSettings {
      * @return @return An updated clone of this settings object
      */
     ICheckSettings densityMetrics(int xDpi, int yDpi, Double scaleRatio);
+
+    /**
+     * sets layout breakpoints using options.
+     *
+     * @param layoutBreakpointsOptions  the layout breakpoints options
+     * @return an updated clone of this settings object
+     */
+    ICheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions);
 }

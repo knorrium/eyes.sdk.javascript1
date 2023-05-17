@@ -1,10 +1,10 @@
 package com.applitools.eyes.config;
 
 import com.applitools.eyes.*;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.selenium.BrowserType;
 import com.applitools.eyes.selenium.StitchMode;
 import com.applitools.eyes.visualgrid.model.*;
-import com.applitools.utils.ArgumentGuard;
 import com.applitools.utils.GeneralUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -68,15 +68,10 @@ public class Configuration implements IConfiguration {
 
     //Rendering Configuration
     private Boolean isRenderingConfig;
-
     private List<RenderBrowserInfo> browsersInfo = new ArrayList<>();
-
     private Set<Feature> features = new HashSet<>();
-
     private List<VisualGridOption> visualGridOptions = new ArrayList<>();
-
-    private Boolean isDefaultLayoutBreakpointsSet;
-    private List<Integer> layoutBreakpoints =  new ArrayList<>();
+    private LayoutBreakpointsOptions layoutBreakpointsOptions;
     private Boolean saveDebugScreenshots;
     private String debugScreenshotsPath;
     private String debugScreenshotsPrefix;
@@ -146,8 +141,7 @@ public class Configuration implements IConfiguration {
         this.disableBrowserFetching = other.isDisableBrowserFetching();
         this.useCookies = other.isUseCookies();
         this.debugResourceWriter = other.getDebugResourceWriter();
-        this.isDefaultLayoutBreakpointsSet = other.isDefaultLayoutBreakpointsSet();
-        this.layoutBreakpoints = other.getLayoutBreakpoints();
+        this.layoutBreakpointsOptions = other.getLayoutBreakpointsOptions();
         this.captureStatusBar = other.isCaptureStatusBar();
         this.useCeilForViewportSize = other.getUseCeilForViewportSize();
         this.waitBeforeCapture = other.getWaitBeforeCapture();
@@ -849,34 +843,31 @@ public class Configuration implements IConfiguration {
     }
 
     public Configuration setLayoutBreakpoints(Boolean shouldSet) {
-        this.isDefaultLayoutBreakpointsSet = shouldSet;
-        layoutBreakpoints.clear();
+        layoutBreakpointsOptions = layoutBreakpointsOptions != null ?
+                layoutBreakpointsOptions.breakpoints(shouldSet) : new LayoutBreakpointsOptions().breakpoints(shouldSet);
+        return this;
+    }
+
+    public Configuration setLayoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {
+        this.layoutBreakpointsOptions = layoutBreakpointsOptions;
         return this;
     }
 
     public Boolean isDefaultLayoutBreakpointsSet() {
-        return isDefaultLayoutBreakpointsSet;
+        return layoutBreakpointsOptions != null ? layoutBreakpointsOptions.isLayoutBreakpoints() : null;
     }
 
     public Configuration setLayoutBreakpoints(int... breakpoints) {
-        isDefaultLayoutBreakpointsSet = false;
-        layoutBreakpoints.clear();
-        if (breakpoints == null || breakpoints.length == 0) {
-            return this;
-        }
-
-        for (int breakpoint : breakpoints) {
-            ArgumentGuard.greaterThanZero(breakpoint, "breakpoint");
-            layoutBreakpoints.add(breakpoint);
-        }
-
-        Collections.sort(layoutBreakpoints);
+        layoutBreakpointsOptions = layoutBreakpointsOptions != null ?
+                layoutBreakpointsOptions.breakpoints(breakpoints) : new LayoutBreakpointsOptions().breakpoints(breakpoints);
         return this;
     }
 
     public List<Integer> getLayoutBreakpoints() {
-        return layoutBreakpoints;
+        return layoutBreakpointsOptions != null ? layoutBreakpointsOptions.getLayoutBreakpoints() : new ArrayList<>();
     }
+
+    public LayoutBreakpointsOptions getLayoutBreakpointsOptions() { return layoutBreakpointsOptions; }
 
     public Boolean isCaptureStatusBar() {
         return captureStatusBar;

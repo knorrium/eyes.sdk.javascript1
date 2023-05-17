@@ -61,9 +61,7 @@ public class ImagesCheckSettingsMapper {
         checkSettingsDto.setEnablePatterns(imagesCheckSettings.isEnablePatterns());
         checkSettingsDto.setIgnoreCaret(imagesCheckSettings.getIgnoreCaret());
         checkSettingsDto.setUfgOptions(VisualGridOptionMapper.toVisualGridOptionDtoList(imagesCheckSettings.getVisualGridOptions())); //I'm NEW - former visualGridOptions
-        checkSettingsDto.setLayoutBreakpoints(imagesCheckSettings
-                .getLayoutBreakpoints().isEmpty() ?
-                imagesCheckSettings.isDefaultLayoutBreakpointsSet() : imagesCheckSettings.getLayoutBreakpoints());
+        checkSettingsDto.setLayoutBreakpoints(LayoutBreakpointsMapper.toLayoutBreakpointsDto(imagesCheckSettings.getLayoutBreakpointsOptions()));
         checkSettingsDto.setDisableBrowserFetching(imagesCheckSettings.isDisableBrowserFetching());
         checkSettingsDto.setAutProxy(ProxyMapper.toAutProxyDto(config.getAutProxy()));
         checkSettingsDto.setHooks(imagesCheckSettings.getScriptHooks());

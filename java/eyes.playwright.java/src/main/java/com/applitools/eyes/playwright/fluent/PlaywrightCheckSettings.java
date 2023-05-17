@@ -5,19 +5,18 @@ import com.applitools.eyes.fluent.CheckSettings;
 import com.applitools.eyes.fluent.FloatingRegionByRectangle;
 import com.applitools.eyes.fluent.GetRegion;
 import com.applitools.eyes.fluent.SimpleRegionByRectangle;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.playwright.universal.dto.Element;
 import com.applitools.eyes.playwright.universal.dto.FrameLocator;
 import com.applitools.eyes.playwright.universal.dto.Selector;
 import com.applitools.eyes.selenium.StitchMode;
 import com.applitools.eyes.universal.Reference;
 import com.applitools.eyes.visualgrid.model.VisualGridOption;
-import com.applitools.utils.ArgumentGuard;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Locator;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrightCheckSettings {
@@ -30,12 +29,6 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
 
     /** The frame chain. */
     private final List<FrameLocator> frameChain = new ArrayList<>();
-
-    /** The layout breakpoints. */
-    private final List<Integer> layoutBreakpoints = new ArrayList<>();
-
-    /** Used to determine if using default layout breakpoints. */
-    private Boolean isDefaultLayoutBreakpointsSet;
 
     public PlaywrightCheckSettings() {
         super();
@@ -1124,40 +1117,38 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      * @param shouldSet  should enable this feature
      * @return an updated clone of this settings object
      */
+    @Override
     public PlaywrightCheckSettings layoutBreakpoints(Boolean shouldSet) {
         return setLayoutBreakpoints(shouldSet);
     }
 
     /**
-     * {@inheritDoc}
+     * Enable and set the layout breakpoints for the current target.
+     *
+     * @param layoutBreakpointsOptions  the layout breakpoints options
+     * @return an updated clone of this settings object
      */
     @Override
-    public PlaywrightCheckSettings setLayoutBreakpoints(int... breakpoints) {
-        PlaywrightCheckSettings clone = this.clone();
-        clone.isDefaultLayoutBreakpointsSet = false;
-        clone.layoutBreakpoints.clear();
-        if (breakpoints == null || breakpoints.length == 0) {
-            return this;
-        }
-
-        for (int breakpoint : breakpoints) {
-            ArgumentGuard.greaterThanZero(breakpoint, "breakpoint");
-            clone.layoutBreakpoints.add(breakpoint);
-        }
-
-        Collections.sort(clone.layoutBreakpoints);
-        return clone;
+    public PlaywrightCheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {
+        return (PlaywrightCheckSettings) super.layoutBreakpoints(layoutBreakpointsOptions);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Deprecated
+    @Override
+    public PlaywrightCheckSettings setLayoutBreakpoints(int... breakpoints) {
+        return (PlaywrightCheckSettings) super.setLayoutBreakpoints(breakpoints);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
     @Override
     public PlaywrightCheckSettings setLayoutBreakpoints(Boolean shouldSet) {
-        PlaywrightCheckSettings clone = this.clone();
-        clone.isDefaultLayoutBreakpointsSet = shouldSet;
-        clone.layoutBreakpoints.clear();
-        return clone;
+        return (PlaywrightCheckSettings) super.setLayoutBreakpoints(shouldSet);
     }
 
     /**
@@ -1165,7 +1156,7 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      */
     @Override
     public List<Integer> getLayoutBreakpoints() {
-        return layoutBreakpoints;
+        return super.getLayoutBreakpoints();
     }
 
     /**
@@ -1173,7 +1164,7 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      */
     @Override
     public Boolean isDefaultLayoutBreakpointsSet() {
-        return isDefaultLayoutBreakpointsSet;
+        return super.isDefaultLayoutBreakpointsSet();
     }
 
     /**
@@ -1455,8 +1446,6 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
         clone.targetElement = this.targetElement;
         clone.scrollRootElement = this.scrollRootElement;
         clone.frameChain.addAll(this.frameChain);
-        clone.isDefaultLayoutBreakpointsSet = this.isDefaultLayoutBreakpointsSet;
-        clone.layoutBreakpoints.addAll(this.layoutBreakpoints);
         return clone;
     }
 

@@ -49,7 +49,7 @@ public class CheckSettingsDto {
   private Boolean enablePatterns;
   private Boolean ignoreCaret;
   private Map<String, Object> ufgOptions;
-  private Object layoutBreakpoints;
+  private LayoutBreakpointsDto layoutBreakpoints;
   private Boolean disableBrowserFetching;
   private AutProxyDto autProxy;
   private Map<String, String> hooks;
@@ -295,11 +295,11 @@ public class CheckSettingsDto {
     this.ufgOptions = ufgOptions;
   }
 
-  public Object getLayoutBreakpoints() {
+  public LayoutBreakpointsDto getLayoutBreakpoints() {
     return layoutBreakpoints;
   }
 
-  public void setLayoutBreakpoints(Object layoutBreakpoints) {
+  public void setLayoutBreakpoints(LayoutBreakpointsDto layoutBreakpoints) {
     this.layoutBreakpoints = layoutBreakpoints;
   }
 

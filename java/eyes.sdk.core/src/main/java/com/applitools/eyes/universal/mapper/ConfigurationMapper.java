@@ -79,16 +79,7 @@ public class ConfigurationMapper {
     // EyesUFGConfig
     dto.setBrowsersInfo(RenderBrowserInfoMapper.toRenderBrowserInfoDtoList(config.getBrowsersInfo()));
     dto.setVisualGridOptions(VisualGridOptionMapper.toVisualGridOptionDtoList(config.getVisualGridOptions()));
-    Object layoutBreakpoints = null;
-    if (config.getLayoutBreakpoints().isEmpty()) {
-      if (config.isDefaultLayoutBreakpointsSet() != null) {
-        layoutBreakpoints = config.isDefaultLayoutBreakpointsSet();
-      }
-    } else {
-      layoutBreakpoints = config.getLayoutBreakpoints();
-    }
-
-    dto.setLayoutBreakpoints(layoutBreakpoints);
+    dto.setLayoutBreakpoints(LayoutBreakpointsMapper.toLayoutBreakpointsDto(config.getLayoutBreakpointsOptions()));
     dto.setDisableBrowserFetching(config.isDisableBrowserFetching());
 
     return dto;

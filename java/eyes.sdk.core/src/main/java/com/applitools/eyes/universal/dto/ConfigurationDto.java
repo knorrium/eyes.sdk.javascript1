@@ -609,7 +609,7 @@ public class ConfigurationDto {
   }
 
   @JsonIgnore
-  public void setLayoutBreakpoints(Object layoutBreakpoints) {
+  public void setLayoutBreakpoints(LayoutBreakpointsDto layoutBreakpoints) {
     this.check.setLayoutBreakpoints(layoutBreakpoints);
   }
 

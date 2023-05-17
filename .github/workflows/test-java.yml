@@ -26,24 +26,25 @@ on:
         description: Selenium Tests
         type: boolean
         required: false
-        default: false
+        default: true
       appium_tests:
         description: Appium SDK Tests
         type: boolean
         required: false
-        default: false
+        default: true
       images_tests:
         description: Images SDK Tests
         type: boolean
         required: false
-        default: false
+        default: true
       playwright_tests:
         description: Playwright SDK tests
         type: boolean
         required: false
-        default: false
+        default: true
 
 env:
+  JAVA_VERSION: 11
   APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
   APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
   APPLITOOLS_API_KEY_TEST_EYES: ${{ secrets.APPLITOOLS_API_KEY_TEST_EYES }}
@@ -76,6 +77,7 @@ jobs:
         uses: ./.github/actions/java/tests/
         with:
           working-directory: ./java/eyes.sdk.core
+          java-version: ${{ env.JAVA_VERSION }}
 
   appium-tests:
     needs: setup
@@ -96,6 +98,7 @@ jobs:
         uses: ./.github/actions/java/tests/
         with:
           working-directory: ./java/eyes.appium.java
+          java-version: ${{ env.JAVA_VERSION }}
 
   selenium-tests:
     needs: setup
@@ -117,6 +120,7 @@ jobs:
         with:
           working-directory: ./java/eyes.selenium.java
           test-type: unit it e2e
+          java-version: ${{ env.JAVA_VERSION }}
 
   playwright-tests:
     needs: setup
@@ -138,6 +142,7 @@ jobs:
         with:
           working-directory: ./java/eyes.playwright.java
           test-type: unit it e2e
+          java-version: ${{ env.JAVA_VERSION }}
 
   arm64-tests:
     needs: setup
@@ -150,7 +155,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
           cache: "maven"
       - uses: uraimo/run-on-arch-action@v2
@@ -177,7 +182,7 @@ jobs:
           apk add git
           apk add git-lfs
           apk add maven
-          apk add --no-cache openjdk8
+          apk add --no-cache openjdk11
           apk add --no-cache libstdc++
       - name: Checkout repository and submodules
         uses: actions/checkout@v3
@@ -196,7 +201,7 @@ jobs:
         run: |
           cd java;
           mvn clean install -DskipTests 
-          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false
+          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
@@ -218,6 +223,7 @@ jobs:
         uses: ./.github/actions/java/tests/
         with:
           working-directory: ./java/selenium4
+          java-version: ${{ env.JAVA_VERSION }}
 
   images-tests:
     needs: setup
@@ -238,6 +244,7 @@ jobs:
         uses: ./.github/actions/java/tests/
         with:
           working-directory: ./java/eyes.images.java
+          java-version: ${{ env.JAVA_VERSION }}
 
   generic-tests-selenium:
     needs: setup
@@ -259,6 +266,7 @@ jobs:
         with:
           working-directory: ./java/eyes.selenium.java
           test-type: coverage
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Save testing artifacts
         if: always()
@@ -290,6 +298,7 @@ jobs:
         with:
           working-directory: ./java/eyes.playwright.java
           test-type: coverage
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Save testing artifacts
         if: always()

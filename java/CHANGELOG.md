@@ -1,3 +1,9 @@
+## [5.51.0] - 2023-05-17
+### Features
+- Add support for reloading the page when using layoutBreakpoints.
+### Bug fixes
+-
+
 ## [5.50.0] - 2023-05-01
 ### Features
 - Execution cloud support.

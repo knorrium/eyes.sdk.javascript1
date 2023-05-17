@@ -3,18 +3,17 @@ package com.applitools.eyes.selenium.fluent;
 import com.applitools.eyes.*;
 import com.applitools.eyes.fluent.CheckSettings;
 import com.applitools.eyes.fluent.ICheckSettingsInternal;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.positioning.PositionProvider;
 import com.applitools.eyes.selenium.TargetPathLocator;
 import com.applitools.eyes.serializers.BySerializer;
 import com.applitools.eyes.serializers.WebElementSerializer;
-import com.applitools.utils.ArgumentGuard;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +32,6 @@ public class SeleniumCheckSettings extends CheckSettings implements ISeleniumChe
     private WebElement scrollRootElement;
     @JsonSerialize(using = BySerializer.class)
     private By scrollRootSelector;
-    private Boolean isDefaultLayoutBreakpointsSet;
-    private final List<Integer> layoutBreakpoints = new ArrayList<>();
 
     public SeleniumCheckSettings() {
     }
@@ -66,9 +63,6 @@ public class SeleniumCheckSettings extends CheckSettings implements ISeleniumChe
         clone.scrollRootElement = this.scrollRootElement;
         clone.scrollRootSelector = this.scrollRootSelector;
         clone.sendDom = this.sendDom;
-        clone.isDefaultLayoutBreakpointsSet = this.isDefaultLayoutBreakpointsSet;
-        clone.layoutBreakpoints.addAll(this.layoutBreakpoints);
-//        clone.pageId = this.pageId;
         return clone;
     }
 
@@ -964,34 +958,28 @@ public class SeleniumCheckSettings extends CheckSettings implements ISeleniumChe
         return clone;
     }
 
-    public SeleniumCheckSettings layoutBreakpoints(Boolean shouldSet) {
-        this.isDefaultLayoutBreakpointsSet = shouldSet;
-        layoutBreakpoints.clear();
-        return this;
-    }
-
     public Boolean isDefaultLayoutBreakpointsSet() {
-        return isDefaultLayoutBreakpointsSet;
+        return super.isDefaultLayoutBreakpointsSet();
     }
 
-    public SeleniumCheckSettings layoutBreakpoints(Integer... breakpoints) {
-        isDefaultLayoutBreakpointsSet = false;
-        layoutBreakpoints.clear();
-        if (breakpoints == null || breakpoints.length == 0) {
-            return this;
-        }
+    public SeleniumCheckSettings layoutBreakpoints(Boolean shouldSet) {
+        return (SeleniumCheckSettings) super.setLayoutBreakpoints(shouldSet);
+    }
 
-        for (int breakpoint : breakpoints) {
-            ArgumentGuard.greaterThanZero(breakpoint, "breakpoint");
-            layoutBreakpoints.add(breakpoint);
-        }
+    public SeleniumCheckSettings layoutBreakpoints(int... breakpoints) {
+        return (SeleniumCheckSettings) super.setLayoutBreakpoints(breakpoints);
+    }
 
-        Collections.sort(layoutBreakpoints);
-        return this;
+    public SeleniumCheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {
+        return (SeleniumCheckSettings) super.layoutBreakpoints(layoutBreakpointsOptions);
     }
 
     public List<Integer> getLayoutBreakpoints() {
-        return layoutBreakpoints;
+        return super.getLayoutBreakpoints();
+    }
+
+    public LayoutBreakpointsOptions getLayoutBreakpointsOptions() {
+        return super.getLayoutBreakpointsOptions();
     }
 
 

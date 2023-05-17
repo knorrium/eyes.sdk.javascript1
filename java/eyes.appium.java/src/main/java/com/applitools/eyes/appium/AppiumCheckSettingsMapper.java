@@ -4,16 +4,13 @@ import com.applitools.ICheckSettings;
 import com.applitools.eyes.config.Configuration;
 import com.applitools.eyes.universal.ManagerType;
 import com.applitools.eyes.universal.dto.CheckSettingsDto;
-import com.applitools.eyes.universal.mapper.AccessibilitySettingsMapper;
-import com.applitools.eyes.universal.mapper.NMGOptionsMapper;
-import com.applitools.eyes.universal.mapper.ProxyMapper;
-import com.applitools.eyes.universal.mapper.VisualGridOptionMapper;
+import com.applitools.eyes.universal.mapper.*;
 
 import java.util.Arrays;
 
 public class AppiumCheckSettingsMapper {
 
-    public static CheckSettingsDto toCheckSettingsDtoV3(ICheckSettings checkSettings, Configuration config) {
+    public static CheckSettingsDto toCheckSettingsDto(ICheckSettings checkSettings, Configuration config) {
         if (!(checkSettings instanceof AppiumCheckSettings)) {
             return null;
         }
@@ -59,7 +56,7 @@ public class AppiumCheckSettingsMapper {
         checkSettingsDto.setEnablePatterns(appiumCheckSettings.isEnablePatterns());
         checkSettingsDto.setIgnoreCaret(appiumCheckSettings.getIgnoreCaret());
         checkSettingsDto.setUfgOptions(VisualGridOptionMapper.toVisualGridOptionDtoList(appiumCheckSettings.getVisualGridOptions())); //I'm NEW - former visualGridOptions
-        checkSettingsDto.setLayoutBreakpoints(null); //TODO why I am null?
+        checkSettingsDto.setLayoutBreakpoints(LayoutBreakpointsMapper.toLayoutBreakpointsDto(appiumCheckSettings.getLayoutBreakpointsOptions()));
         checkSettingsDto.setDisableBrowserFetching(appiumCheckSettings.isDisableBrowserFetching());
         checkSettingsDto.setAutProxy(ProxyMapper.toAutProxyDto(config.getAutProxy()));
         checkSettingsDto.setHooks(appiumCheckSettings.getScriptHooks());

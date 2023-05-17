@@ -35,7 +35,7 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                 }
         ));
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
 
         SelectorRegionDto fallback_fallback = new SelectorRegionDto();
         fallback_fallback.setSelector("appiumByAccessibilityId");
@@ -72,7 +72,7 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                 }
         ));
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
 
         SelectorRegionDto fallback = new SelectorRegionDto();
         fallback.setSelector("appiumByXpath");
@@ -103,7 +103,7 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                 }
         ));
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
 
         SelectorRegionDto child = new SelectorRegionDto();
         child.setSelector("appiumByXpath");
@@ -135,7 +135,7 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                 }
         ));
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
 
         SelectorRegionDto child_child = new SelectorRegionDto();
         child_child.setSelector("appiumByXpath");
@@ -174,7 +174,7 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                         new NMGOptions("a3", null)
                 );
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
         Assert.assertEquals(dto.getType(), ManagerType.CLASSIC.value);
     }
 
@@ -188,11 +188,11 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
                         new NMGOptions("a3", null)
                         );
 
-        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
         Assert.assertNull(dto.getType());
 
         checkSettings = Target.window();
-        dto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, new Configuration());
+        dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, new Configuration());
         Assert.assertNull(dto.getType());
     }
 
@@ -201,8 +201,8 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
         AppiumCheckSettings checkSettings1 = Target.window().densityMetrics(10, 20);
         AppiumCheckSettings checkSettings2 = Target.window().densityMetrics(10, 20, 2.0);
 
-        CheckSettingsDto dto1 = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings1, new Configuration());
-        CheckSettingsDto dto2 = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings2, new Configuration());
+        CheckSettingsDto dto1 = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings1, new Configuration());
+        CheckSettingsDto dto2 = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings2, new Configuration());
 
         DensityMetrics densityMetrics1 = dto1.getDensityMetrics();
         DensityMetrics densityMetrics2 = dto2.getDensityMetrics();

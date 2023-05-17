@@ -25,6 +25,11 @@ inputs:
     type: string
     default: java_sdk
     required: false
+  java-version:
+    description: JDK version
+    type: string
+    default: 11
+    required: false
 
 runs:
   using: composite
@@ -32,7 +37,7 @@ runs:
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        java-version: 8
+        java-version: ${{ inputs.java-version }}
         distribution: "temurin"
         cache: "maven"
 

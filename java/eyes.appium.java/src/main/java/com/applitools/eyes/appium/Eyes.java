@@ -604,7 +604,7 @@ public class Eyes implements IEyesBase {
 
 
     public void check(ICheckSettings checkSettings) {
-        CheckSettingsDto checkSettingsDto = AppiumCheckSettingsMapper.toCheckSettingsDtoV3(checkSettings, configure());
+        CheckSettingsDto checkSettingsDto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, configure());
         DriverTargetDto driverTargetDto = DriverMapper.toDriverTargetDto(getDriver(), configure().getWebDriverProxy());
         this.checkDto(checkSettingsDto, driverTargetDto);
     }

@@ -3,10 +3,10 @@ package com.applitools.eyes.fluent;
 import com.applitools.ICheckSettings;
 import com.applitools.eyes.*;
 import com.applitools.eyes.locators.BaseOcrRegion;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.positioning.PositionProvider;
 import com.applitools.eyes.selenium.StitchMode;
 import com.applitools.eyes.visualgrid.model.VisualGridOption;
-import com.applitools.utils.ArgumentGuard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -46,8 +46,7 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
     protected Boolean enablePatterns;
     private Boolean ignoreCaret;
     private List<VisualGridOption> ufgOptions = new ArrayList<>();
-    private Boolean isDefaultLayoutBreakpointsSet;
-    private final List<Integer> layoutBreakpoints = new ArrayList<>();
+    private LayoutBreakpointsOptions layoutBreakpointsOptions;
     private Boolean disableBrowserFetching;
     private AutProxySettings autProxy;
     protected Map<String, String> scriptHooks = new HashMap<>();
@@ -495,6 +494,7 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
         clone.lazyLoadOptions = this.lazyLoadOptions;
         clone.densityMetrics = this.densityMetrics;
         clone.overlap = this.overlap;
+        clone.layoutBreakpointsOptions = this.layoutBreakpointsOptions;
     }
 
     public void setStitchContent(boolean stitchContent) {
@@ -746,35 +746,29 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
     }
 
     public ICheckSettings setLayoutBreakpoints(Boolean shouldSet) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(shouldSet));
+    }
+
+    public ICheckSettings setLayoutBreakpoints(int... breakpoints) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(breakpoints));
+    }
+
+    public ICheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {
         CheckSettings clone = this.clone();
-        clone.isDefaultLayoutBreakpointsSet = shouldSet;
-        clone.layoutBreakpoints.clear();
+        clone.layoutBreakpointsOptions = layoutBreakpointsOptions;
         return clone;
     }
 
     public Boolean isDefaultLayoutBreakpointsSet() {
-        return isDefaultLayoutBreakpointsSet;
-    }
-
-    public ICheckSettings setLayoutBreakpoints(int... breakpoints) {
-        CheckSettings clone = this.clone();
-        clone.isDefaultLayoutBreakpointsSet = false;
-        clone.layoutBreakpoints.clear();
-        if (breakpoints == null || breakpoints.length == 0) {
-            return this;
-        }
-
-        for (int breakpoint : breakpoints) {
-            ArgumentGuard.greaterThanZero(breakpoint, "breakpoint");
-            clone.layoutBreakpoints.add(breakpoint);
-        }
-
-        Collections.sort(clone.layoutBreakpoints);
-        return clone;
+        return layoutBreakpointsOptions != null ? layoutBreakpointsOptions.isLayoutBreakpoints() : null;
     }
 
     public List<Integer> getLayoutBreakpoints() {
-        return layoutBreakpoints;
+        return layoutBreakpointsOptions != null ? layoutBreakpointsOptions.getLayoutBreakpoints() : new ArrayList<>();
+    }
+
+    public LayoutBreakpointsOptions getLayoutBreakpointsOptions() {
+        return layoutBreakpointsOptions;
     }
 
     public ICheckSettings pageId(String pageId) {

@@ -6,6 +6,7 @@ import com.applitools.eyes.selenium.fluent.SeleniumCheckSettings;
 import com.applitools.eyes.universal.dto.CheckSettingsDto;
 import com.applitools.eyes.universal.dto.DebugScreenshotHandlerDto;
 import com.applitools.eyes.universal.mapper.AccessibilitySettingsMapper;
+import com.applitools.eyes.universal.mapper.LayoutBreakpointsMapper;
 import com.applitools.eyes.universal.mapper.ProxyMapper;
 import com.applitools.eyes.universal.mapper.VisualGridOptionMapper;
 
@@ -20,7 +21,7 @@ import static com.applitools.eyes.universal.mapper.SettingsMapper.toNormalizatio
 public class CheckSettingsMapper {
 
   public static CheckSettingsDto toCheckSettingsDtoV3(ICheckSettings checkSettings, Configuration config) {
-    if (!(checkSettings instanceof SeleniumCheckSettings)) {
+  if (!(checkSettings instanceof SeleniumCheckSettings)) {
       return null;
     }
 
@@ -64,9 +65,7 @@ public class CheckSettingsMapper {
     checkSettingsDto.setEnablePatterns(seleniumCheckSettings.isEnablePatterns());
     checkSettingsDto.setIgnoreCaret(seleniumCheckSettings.getIgnoreCaret());
     checkSettingsDto.setUfgOptions(VisualGridOptionMapper.toVisualGridOptionDtoList(seleniumCheckSettings.getVisualGridOptions())); //I'm NEW - former visualGridOptions
-    checkSettingsDto.setLayoutBreakpoints(seleniumCheckSettings
-            .getLayoutBreakpoints().isEmpty() ?
-            seleniumCheckSettings.isDefaultLayoutBreakpointsSet() : seleniumCheckSettings.getLayoutBreakpoints());
+    checkSettingsDto.setLayoutBreakpoints(LayoutBreakpointsMapper.toLayoutBreakpointsDto(seleniumCheckSettings.getLayoutBreakpointsOptions()));
     checkSettingsDto.setDisableBrowserFetching(seleniumCheckSettings.isDisableBrowserFetching());
     checkSettingsDto.setAutProxy(ProxyMapper.toAutProxyDto(config.getAutProxy()));
     checkSettingsDto.setHooks(seleniumCheckSettings.getScriptHooks());

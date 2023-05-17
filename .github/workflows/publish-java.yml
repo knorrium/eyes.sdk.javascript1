@@ -20,6 +20,7 @@ on:
 env:
   RELEASE_TAG: 'java_sdks@${{inputs.version}}'
   BRANCH: 'java_v${{inputs.version}}'
+  JAVA_VERSION: 11
   APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
   APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
   APPLITOOLS_API_KEY_TEST_EYES: ${{ secrets.APPLITOOLS_API_KEY_TEST_EYES }}
@@ -98,6 +99,7 @@ jobs:
           test-type: ${{ matrix.test-type }}
           report-id: ${{ matrix.report-id }}
           report: deploy
+          java-version: ${{ env.JAVA_VERSION }}
 
   arm64-tests:
     needs: debug
@@ -111,7 +113,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
           cache: "maven"
       - uses: uraimo/run-on-arch-action@v2
@@ -158,7 +160,7 @@ jobs:
         run: |
           cd java;
           mvn clean install -DskipTests 
-          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false
+          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
@@ -236,7 +238,7 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
           server-id: ${{ inputs.server }} # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: MAVEN_USERNAME # env variable for username in deploy

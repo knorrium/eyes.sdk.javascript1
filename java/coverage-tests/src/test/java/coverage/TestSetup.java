@@ -1,6 +1,7 @@
 package coverage;
 
 import com.applitools.eyes.*;
+import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.selenium.ClassicRunner;
 import com.applitools.eyes.selenium.Configuration;
 import com.applitools.eyes.selenium.Eyes;
@@ -55,7 +56,7 @@ public class TestSetup extends GlobalSetup {
     }
 
     // Eyes configuration
-
+    public void setViewportSize(RectangleSize viewportSize) { eyes.configure().setViewportSize(viewportSize); }
     public void setRemoveDuplicateTests(Boolean removeDuplicateTests) { runner.setRemoveDuplicateTests(removeDuplicateTests); }
     public void setRemoveDuplicateTestsPerBatch(Boolean removeDuplicateTestsPerBatch) { runner.setRemoveDuplicateTests(removeDuplicateTestsPerBatch); }
     public void setBaselineEnvName(String baselineEnvName) { eyes.setBaselineEnvName(baselineEnvName); }
@@ -97,6 +98,11 @@ public class TestSetup extends GlobalSetup {
     public void setLayoutBreakpoints(int... breakpoints) {
             eyes.configure().setLayoutBreakpoints(breakpoints);
     }
+
+    public void setLayoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {
+        eyes.configure().setLayoutBreakpoints(layoutBreakpointsOptions);
+    }
+
     public void setLayoutBreakpoints(boolean shouldSet) {
         eyes.configure().setLayoutBreakpoints(shouldSet);
     }

@@ -7,8 +7,8 @@ import com.applitools.eyes.playwright.universal.Refer;
 import com.applitools.eyes.universal.Reference;
 import com.applitools.eyes.universal.dto.CheckSettingsDto;
 import com.applitools.eyes.universal.dto.DebugScreenshotHandlerDto;
-import com.applitools.eyes.universal.dto.ImageCropRectDto;
 import com.applitools.eyes.universal.mapper.AccessibilitySettingsMapper;
+import com.applitools.eyes.universal.mapper.LayoutBreakpointsMapper;
 import com.applitools.eyes.universal.mapper.ProxyMapper;
 import com.applitools.eyes.universal.mapper.VisualGridOptionMapper;
 
@@ -62,9 +62,7 @@ public class PlaywrightCheckSettingsMapper {
         checkSettingsDto.setEnablePatterns(playwrightCheckSettings.isEnablePatterns());
         checkSettingsDto.setIgnoreCaret(playwrightCheckSettings.getIgnoreCaret());
         checkSettingsDto.setUfgOptions(VisualGridOptionMapper.toVisualGridOptionDtoList(playwrightCheckSettings.getVisualGridOptions()));
-        checkSettingsDto.setLayoutBreakpoints(playwrightCheckSettings
-                .getLayoutBreakpoints().isEmpty() ?
-                playwrightCheckSettings.isDefaultLayoutBreakpointsSet() : playwrightCheckSettings.getLayoutBreakpoints());
+        checkSettingsDto.setLayoutBreakpoints(LayoutBreakpointsMapper.toLayoutBreakpointsDto(playwrightCheckSettings.getLayoutBreakpointsOptions()));
         checkSettingsDto.setDisableBrowserFetching(playwrightCheckSettings.isDisableBrowserFetching());
         checkSettingsDto.setAutProxy(ProxyMapper.toAutProxyDto(config.getAutProxy()));
         checkSettingsDto.setHooks(playwrightCheckSettings.getScriptHooks());
