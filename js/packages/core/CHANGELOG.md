@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.0.2 - 2023/5/18
+
+### Features
+### Bug fixes
+- Fixed issue with Safari mobile screenshots
+
 ## 3.0.1 - 2023/5/13
 
 ### Features
