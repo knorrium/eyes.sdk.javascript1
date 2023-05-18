@@ -132,7 +132,7 @@ describe('git', () => {
           upperVersion: '1.0.24',
           expandAutoCommitLogEntries: true,
         }),
-        ['35aa793f9 [api, types] add new ufg devices'],
+        ['0767609bd [auto commit] @applitools/types: upgrade deps', '35aa793f9 [api, types] add new ufg devices'],
       )
       assert.deepStrictEqual(
         await gitLog({
@@ -141,7 +141,10 @@ describe('git', () => {
           upperVersion: '12.24.13',
           expandAutoCommitLogEntries: true,
         }),
-        ['74e991ad1 handle case with `spec.getCookies` throws an error when trying to get cookies of the browser'],
+        [
+          'ba0aa7fc2 [auto commit] @applitools/eyes-sdk-core: upgrade deps',
+          '74e991ad1 handle case with `spec.getCookies` throws an error when trying to get cookies of the browser',
+        ],
       )
     })
     it.skip('should include external dep updates in consolidated list of commits', async () => {

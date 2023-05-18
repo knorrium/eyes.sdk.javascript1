@@ -161,7 +161,7 @@ yargs
 
       await gitAdd(pendingChangesFilePath)
       await gitAdd('CHANGELOG.md')
-      await gitCommit('[auto commit] updated changelog')
+      await gitCommit('chore(auto-commit): updated changelog')
     },
   )
   .command(
@@ -331,7 +331,7 @@ async function commitFiles({cwd, commit}) {
     console.log(`[bongo] committing changed files:\n${(await gitStatus()).stdout}`)
     if (await isChanged(...files)) {
       const pkgName = JSON.parse(fs.readFileSync(path.resolve(cwd, 'package.json'))).name
-      await gitCommit(`[auto commit] ${pkgName}: upgrade deps`)
+      await gitCommit(`chore(auto-commit): upgrade deps ${pkgName}`)
       console.log(`[bongo] actually committed files`)
     }
   }
