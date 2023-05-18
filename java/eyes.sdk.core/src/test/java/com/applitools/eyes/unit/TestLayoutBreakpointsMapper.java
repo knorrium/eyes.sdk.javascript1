@@ -37,6 +37,26 @@ public class TestLayoutBreakpointsMapper {
     }
 
     @Test
+    public void testExplicitLayoutBreakpointsMappingWithArray() {
+        int[] breakpoints = {10, 20, 30};
+        LayoutBreakpointsOptions options = new LayoutBreakpointsOptions().breakpoints(breakpoints);
+        LayoutBreakpointsDto dto = LayoutBreakpointsMapper.toLayoutBreakpointsDto(options);
+
+        Assert.assertEquals(dto.getBreakpoints(), new ArrayList<Integer>() {{ add(10); add(20); add(30);}});
+        Assert.assertNull(dto.getReload());
+    }
+
+    @Test
+    public void testExplicitLayoutBreakpointsMappingWithIntegerArray() {
+        Integer[] breakpoints = {10, 20, 30};
+        LayoutBreakpointsOptions options = new LayoutBreakpointsOptions().breakpoints(breakpoints);
+        LayoutBreakpointsDto dto = LayoutBreakpointsMapper.toLayoutBreakpointsDto(options);
+
+        Assert.assertEquals(dto.getBreakpoints(), new ArrayList<Integer>() {{ add(10); add(20); add(30);}});
+        Assert.assertNull(dto.getReload());
+    }
+
+    @Test
     public void testLayoutBreakpointsReloadMapping() {
         LayoutBreakpointsOptions options = new LayoutBreakpointsOptions().breakpoints().reload();
         LayoutBreakpointsDto dto = LayoutBreakpointsMapper.toLayoutBreakpointsDto(options);

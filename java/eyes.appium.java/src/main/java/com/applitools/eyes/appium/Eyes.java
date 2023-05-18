@@ -109,7 +109,7 @@ public class Eyes implements IEyesBase {
      * @param runner0 the runner
      */
     public Eyes(EyesRunner runner0) {
-        if (runner0 instanceof ClassicRunner) {
+        if (runner0.getClass() ==  ClassicRunner.class) {
             String warning = GeneralUtils.createEyesMessageWithLevel("Eyes Appium was run with ClassicRunner. " +
                     "We recommend using AppiumRunner for full compatibility.", "warning");
             System.out.println(warning);

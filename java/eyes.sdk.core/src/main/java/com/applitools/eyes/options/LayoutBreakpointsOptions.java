@@ -3,6 +3,7 @@ package com.applitools.eyes.options;
 import com.applitools.utils.ArgumentGuard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +36,13 @@ public class LayoutBreakpointsOptions {
         return this;
     }
 
-    public LayoutBreakpointsOptions breakpoints(int... breakpoints) {
+    public LayoutBreakpointsOptions breakpoints(int[] breakpoints) {
+        return breakpoints(
+                Arrays.stream(breakpoints).boxed().toArray(Integer[]::new)
+        );
+    }
+
+    public LayoutBreakpointsOptions breakpoints(Integer... breakpoints) {
         isLayoutBreakpoints = null;
         layoutBreakpoints.clear();
 

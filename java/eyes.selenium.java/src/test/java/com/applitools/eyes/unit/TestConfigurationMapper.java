@@ -8,9 +8,14 @@ import com.applitools.eyes.universal.dto.IOSDeviceRendererDto;
 import com.applitools.eyes.universal.mapper.ConfigurationMapper;
 import com.applitools.eyes.utils.ReportingTestSuite;
 import com.applitools.eyes.visualgrid.model.*;
+import org.checkerframework.checker.units.qual.C;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class TestConfigurationMapper extends ReportingTestSuite {
 
@@ -106,5 +111,39 @@ public class TestConfigurationMapper extends ReportingTestSuite {
         Assert.assertEquals(((AndroidDeviceRendererDto) dto.getBrowsersInfo().get(1)).getAndroidDeviceInfo().getVersion(), "testVersionAndroid");
         Assert.assertEquals(((AndroidDeviceRendererDto) dto.getBrowsersInfo().get(2)).getAndroidDeviceInfo().getVersion(), "latest");
         Assert.assertNull(((AndroidDeviceRendererDto) dto.getBrowsersInfo().get(3)).getAndroidDeviceInfo().getVersion());
+    }
+
+    @Test
+    public void testLayoutBreakpoints() {
+        Configuration config = new Configuration();
+
+        config.setLayoutBreakpoints(10, 20, 30);
+        config = new Configuration(config);
+        ConfigurationDto dto = ConfigurationMapper.toConfigurationDto(config, null);
+
+        Assert.assertEquals(Arrays.asList(10, 20, 30), dto.getLayoutBreakpoints().getBreakpoints());
+
+        config = new Configuration();
+        int[] arr = {10, 20, 30};
+        config.setLayoutBreakpoints(arr);
+        config = new Configuration(config);
+        dto = ConfigurationMapper.toConfigurationDto(config, null);
+
+        Assert.assertEquals(Arrays.asList(10, 20, 30), dto.getLayoutBreakpoints().getBreakpoints());
+
+        config = new Configuration();
+        Integer[] array = {10, 20, 30};
+        config.setLayoutBreakpoints(array);
+        config = new Configuration(config);
+        dto = ConfigurationMapper.toConfigurationDto(config, null);
+
+        Assert.assertEquals(Arrays.asList(10, 20, 30), dto.getLayoutBreakpoints().getBreakpoints());
+
+        config = new Configuration();
+        config.setLayoutBreakpoints(true);
+        config = new Configuration(config);
+        dto = ConfigurationMapper.toConfigurationDto(config, null);
+
+        Assert.assertTrue((Boolean) dto.getLayoutBreakpoints().getBreakpoints());
     }
 }

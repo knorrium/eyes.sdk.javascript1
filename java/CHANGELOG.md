@@ -1,3 +1,9 @@
+## [5.52.0] - 2023-05-18
+### Features
+- Add emulation device `Galaxy S22`. 
+### Bug fixes
+- Fixed layoutBreakpoints to accept Integer array input type.
+
 ## [5.51.0] - 2023-05-17
 ### Features
 - Add support for reloading the page when using layoutBreakpoints.

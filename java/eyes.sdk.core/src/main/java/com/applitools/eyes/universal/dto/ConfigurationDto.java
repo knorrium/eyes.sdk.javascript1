@@ -604,7 +604,7 @@ public class ConfigurationDto {
   }
 
   @JsonIgnore
-  public Object getLayoutBreakpoints() {
+  public LayoutBreakpointsDto getLayoutBreakpoints() {
     return check.getLayoutBreakpoints();
   }
 

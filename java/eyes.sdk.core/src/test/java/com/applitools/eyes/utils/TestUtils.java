@@ -3,10 +3,12 @@ package com.applitools.eyes.utils;
 import com.applitools.connectivity.RestClient;
 import com.applitools.eyes.*;
 import com.applitools.eyes.metadata.BatchInfo;
+import com.applitools.eyes.metadata.DeviceNames;
 import com.applitools.eyes.metadata.SessionResults;
 import com.applitools.utils.ArgumentGuard;
 import com.applitools.utils.ClassVersionGetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,14 +17,12 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 public class TestUtils {
     public final static boolean runOnCI = System.getenv("CI") != null;
@@ -218,5 +218,31 @@ public class TestUtils {
         jsonMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         return jsonMapper.readValue(srStr, BatchInfo.class);
+    }
+
+    public static HashMap<String, DeviceNames> getEmulatedDevicesSeizes() throws java.io.IOException {
+        String devicesUrl = "https://render-wus.applitools.com/emulated-devices-sizes";
+        URI apiSessionUri = UriBuilder.fromUri(devicesUrl)
+                .queryParam("format", "json")
+                .build();
+
+        RestClient client = new RestClient(new Logger(new StdoutLogHandler()), apiSessionUri, DEFAULT_CLIENT_TIMEOUT);
+
+        String srStr = client.sendHttpRequest(apiSessionUri.toString(), HttpMethod.GET, MediaType.APPLICATION_JSON).getBodyString();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        jsonMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        return jsonMapper.readValue(srStr, new TypeReference<HashMap<String, DeviceNames>>(){});
+    }
+
+    public static HashMap<String, DeviceNames> getDeviceNames() {
+        HashMap<String, DeviceNames> names;
+        try {
+            names = getEmulatedDevicesSeizes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return names;
     }
 }

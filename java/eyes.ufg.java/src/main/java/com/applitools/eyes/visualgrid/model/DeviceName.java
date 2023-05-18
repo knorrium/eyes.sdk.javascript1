@@ -25,6 +25,7 @@ public enum DeviceName {
     Galaxy_S10("Galaxy S10"),
     Galaxy_S10_Plus("Galaxy S10 Plus"),
     Galaxy_S20("Galaxy S20"),
+    Galaxy_S22("Galaxy S22"),
     iPad("iPad"),
     iPad_6th_Gen("iPad 6th Gen"),
     iPad_7th_Gen("iPad 7th Gen"),
@@ -69,6 +70,8 @@ public enum DeviceName {
     Pixel_4_XL("Pixel 4 XL"),
     Pixel_5("Pixel 5"),
     Galaxy_Tab_S7("Galaxy Tab S7"),
+    Huawei_Matepad_11("Huawei Matepad 11"),
+    Huawei_Mate_50_Pro("Huawei Mate 50 Pro"),
 
     /**
      * @deprecated Use {@link #iPhone_6_7_8_Plus}

@@ -857,7 +857,13 @@ public class Configuration implements IConfiguration {
         return layoutBreakpointsOptions != null ? layoutBreakpointsOptions.isLayoutBreakpoints() : null;
     }
 
-    public Configuration setLayoutBreakpoints(int... breakpoints) {
+    public Configuration setLayoutBreakpoints(int[] breakpoints) {
+        layoutBreakpointsOptions = layoutBreakpointsOptions != null ?
+                layoutBreakpointsOptions.breakpoints(breakpoints) : new LayoutBreakpointsOptions().breakpoints(breakpoints);
+        return this;
+    }
+
+    public Configuration setLayoutBreakpoints(Integer... breakpoints) {
         layoutBreakpointsOptions = layoutBreakpointsOptions != null ?
                 layoutBreakpointsOptions.breakpoints(breakpoints) : new LayoutBreakpointsOptions().breakpoints(breakpoints);
         return this;

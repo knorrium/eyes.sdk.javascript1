@@ -141,8 +141,4 @@ public interface IPlaywrightCheckSettings extends ICheckSettings {
     PlaywrightCheckSettings scrollRootElement(Locator locator);
 
     PlaywrightCheckSettings scrollRootElement(ElementHandle elementHandle);
-
-    PlaywrightCheckSettings layoutBreakpoints(int... breakpoints);
-
-    PlaywrightCheckSettings layoutBreakpoints(Boolean shouldSet);
 }

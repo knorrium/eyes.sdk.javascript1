@@ -963,11 +963,15 @@ public class SeleniumCheckSettings extends CheckSettings implements ISeleniumChe
     }
 
     public SeleniumCheckSettings layoutBreakpoints(Boolean shouldSet) {
-        return (SeleniumCheckSettings) super.setLayoutBreakpoints(shouldSet);
+        return (SeleniumCheckSettings) super.layoutBreakpoints(shouldSet);
     }
 
-    public SeleniumCheckSettings layoutBreakpoints(int... breakpoints) {
-        return (SeleniumCheckSettings) super.setLayoutBreakpoints(breakpoints);
+    public SeleniumCheckSettings layoutBreakpoints(Integer... breakpoints) {
+        return (SeleniumCheckSettings) super.layoutBreakpoints(breakpoints);
+    }
+
+    public SeleniumCheckSettings layoutBreakpoints(int[] breakpoints) {
+        return (SeleniumCheckSettings) super.layoutBreakpoints(breakpoints);
     }
 
     public SeleniumCheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions) {

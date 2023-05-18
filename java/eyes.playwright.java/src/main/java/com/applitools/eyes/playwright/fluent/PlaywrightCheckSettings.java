@@ -1107,8 +1107,18 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      * @param breakpoints  one or more viewport widths explicitly
      * @return an updated clone of this settings object
      */
-    public PlaywrightCheckSettings layoutBreakpoints(int... breakpoints) {
-        return setLayoutBreakpoints(breakpoints);
+    public PlaywrightCheckSettings layoutBreakpoints(int[] breakpoints) {
+        return (PlaywrightCheckSettings) super.layoutBreakpoints(breakpoints);
+    }
+
+    /**
+     * Enable and set the layout breakpoints for the current target.
+     *
+     * @param breakpoints  one or more viewport widths explicitly
+     * @return an updated clone of this settings object
+     */
+    public PlaywrightCheckSettings layoutBreakpoints(Integer... breakpoints) {
+        return (PlaywrightCheckSettings) super.layoutBreakpoints(breakpoints);
     }
 
     /**
@@ -1119,7 +1129,7 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      */
     @Override
     public PlaywrightCheckSettings layoutBreakpoints(Boolean shouldSet) {
-        return setLayoutBreakpoints(shouldSet);
+        return (PlaywrightCheckSettings) super.layoutBreakpoints(shouldSet);
     }
 
     /**
@@ -1139,7 +1149,16 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
     @Deprecated
     @Override
     public PlaywrightCheckSettings setLayoutBreakpoints(int... breakpoints) {
-        return (PlaywrightCheckSettings) super.setLayoutBreakpoints(breakpoints);
+        return layoutBreakpoints(breakpoints);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    @Override
+    public PlaywrightCheckSettings setLayoutBreakpoints(Integer... breakpoints) {
+        return layoutBreakpoints(breakpoints);
     }
 
     /**
@@ -1148,7 +1167,7 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
     @Deprecated
     @Override
     public PlaywrightCheckSettings setLayoutBreakpoints(Boolean shouldSet) {
-        return (PlaywrightCheckSettings) super.setLayoutBreakpoints(shouldSet);
+        return layoutBreakpoints(shouldSet);
     }
 
     /**

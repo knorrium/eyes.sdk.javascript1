@@ -745,10 +745,31 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
         return clone;
     }
 
+    @Override
+    public ICheckSettings layoutBreakpoints(Boolean shouldSet) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(shouldSet));
+    }
+
+    @Override
+    public ICheckSettings layoutBreakpoints(Integer... breakpoints) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(breakpoints));
+    }
+
+    public ICheckSettings layoutBreakpoints(int[] breakpoints) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(breakpoints));
+    }
+
+    @Deprecated
     public ICheckSettings setLayoutBreakpoints(Boolean shouldSet) {
         return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(shouldSet));
     }
 
+    @Deprecated
+    public ICheckSettings setLayoutBreakpoints(Integer... breakpoints) {
+        return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(breakpoints));
+    }
+
+    @Deprecated
     public ICheckSettings setLayoutBreakpoints(int... breakpoints) {
         return layoutBreakpoints(new LayoutBreakpointsOptions().breakpoints(breakpoints));
     }

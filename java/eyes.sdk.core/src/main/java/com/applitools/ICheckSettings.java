@@ -229,4 +229,8 @@ public interface ICheckSettings {
      * @return an updated clone of this settings object
      */
     ICheckSettings layoutBreakpoints(LayoutBreakpointsOptions layoutBreakpointsOptions);
+
+    ICheckSettings layoutBreakpoints(Integer... breakpoints);
+
+    ICheckSettings layoutBreakpoints(Boolean shouldSet);
 }
