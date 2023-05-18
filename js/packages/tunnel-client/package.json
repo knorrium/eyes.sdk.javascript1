@@ -1,6 +1,6 @@
 {
   "name": "@applitools/tunnel-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
