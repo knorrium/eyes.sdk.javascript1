@@ -28,15 +28,6 @@
     jpeg-js "0.4.4"
     png-async "0.9.4"
 
-"@applitools/logger@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.0.tgz#0103b7386c8f6303143d5835e24d89e4dfce182c"
-  integrity sha512-81ulcrNwC1lX46OzrjU5WBHTefxrb3RHtUa919ksnEwWwSTs2brIDcgn2+O54oHQB9J78B8sZxH4RUYWDViZFg==
-  dependencies:
-    "@applitools/utils" "1.3.36"
-    chalk "4.1.2"
-    debug "4.3.3"
-
 "@applitools/logger@2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.1.tgz#6c69e43b73d9c1cd6418ec19cc19e3013d2d72a8"
@@ -46,24 +37,24 @@
     chalk "4.1.2"
     debug "4.3.3"
 
-"@applitools/req@1.2.7":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.2.7.tgz#2ad129237609af3b9fbe666141c78118f9f5a1bf"
-  integrity sha512-tHz8+2WQSAlZHcYQO3bZuRlKAM4cyc/Eefk4qCmrqSmCGdPJ4Ys5IBCxJEQJyEX4i3NYkCKXq7IViidNXLWKrw==
+"@applitools/req@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@applitools/req/-/req-1.3.0.tgz#d88d7ce17dc037d56c2eea7674921a81502fa7a7"
+  integrity sha512-DwoWjMuP9VKpdCMqg91ItrQNKsjpGuYGAqvFitOpu4bs1kP0lcZHOHBuiHyNj97oUccJ1TT3RRrzrkA+byWseg==
   dependencies:
-    "@applitools/utils" "1.3.36"
+    "@applitools/utils" "1.3.37"
     abort-controller "3.0.0"
     http-proxy-agent "5.0.0"
     https-proxy-agent "5.0.1"
     node-fetch "3.3.1"
 
-"@applitools/test-server@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.0.tgz#98b7410ada3a1b005ab2d9c4a2b05aef95f3f4ae"
-  integrity sha512-R4fkwE3Zls2Ce65qQVb2ZJTI4P3h2hRE3TSt8TiX01WRcio1oW+ULaBM/15JeNQ2iKc1oeso5j0+mDrjPw64TA==
+"@applitools/test-server@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.1.tgz#677f4598783ae4f0306846a14df4c0f64587d096"
+  integrity sha512-3JIp5xZ+XY5TjB4KU1u7XMhlqYeNmWbmcCzvNY2cP0qSpUiSwa/BUHPPDD2cjzl+ZurUh2Mt/VZkuBcow0Jpfg==
   dependencies:
-    "@applitools/logger" "2.0.0"
-    "@applitools/utils" "1.3.36"
+    "@applitools/logger" "2.0.1"
+    "@applitools/utils" "1.3.37"
     body-parser "1.20.0"
     cookie-parser "1.4.5"
     cors "2.8.5"
@@ -79,11 +70,6 @@
   integrity sha512-sBSWfP2zL520vTzSqRAWyDrMYO118un+YDtK3TocwKqhMec3giwvHqqSJAV2SwRTwL/dvbl3nMAhs8nbQboM7w==
   dependencies:
     node-fetch "2.6.1"
-
-"@applitools/utils@1.3.36":
-  version "1.3.36"
-  resolved "https://registry.yarnpkg.com/@applitools/utils/-/utils-1.3.36.tgz#c8bf55ffa68219728f4c37fa8af5abf2170ae8df"
-  integrity sha512-eROEssh7wIW+V87PvLiHI2hUPxqoBxXFMRx3+z5qOZqXUPSR1Uz7EMFwxZcDDR7T6C3O3UDckB2aVB5fJAg5JA==
 
 "@applitools/utils@1.3.37":
   version "1.3.37"
