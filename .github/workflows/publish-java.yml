@@ -137,6 +137,7 @@ jobs:
     steps:
       - name: Installing dependencies
         run: |
+          apk update
           apk add git
           apk add git-lfs
           apk add maven
