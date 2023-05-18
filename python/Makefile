@@ -93,22 +93,20 @@ uninstall:
 
 
 publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	bash ./ci_scripts/send_mail.sh python ${SDK_VERSION} eyes_images/CHANGELOG.md
+	cd eyes_images && npx bongo send-release-notification --name python --version "${SDK_VERSION}"
 	twine upload --verbose eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
 publish_testing_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	echo bash ./ci_scripts/send_mail.sh python ${SDK_VERSION} eyes_images/CHANGELOG.md
 	twine upload --verbose --repository testpypi eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
 publish_eyes_robotframework: eyes_robotframework/dist install_publish_requirements
-	bash ./ci_scripts/send_mail.sh robotframework ${SDK_VERSION} eyes_robotframework/CHANGELOG.md
+	cd eyes_robotframework && npx bongo send-release-notification --name robotframework --version "${SDK_VERSION}"
 	twine upload --verbose eyes_robotframework/dist/*
 
 
 publish_testing_eyes_robotframework: eyes_robotframework/dist install_publish_requirements
-	echo bash ./ci_scripts/send_mail.sh robotframework ${SDK_VERSION} eyes_robotframework/CHANGELOG.md
 	twine upload --verbose --repository testpypi eyes_robotframework/dist/*
 
 

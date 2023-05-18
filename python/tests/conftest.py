@@ -38,16 +38,8 @@ def pytest_sessionfinish(session, exitstatus):
         reported_name, group = sdk_name_group(
             is_generic, selenium_version, suite_dir, releasing_package
         )
-        cmd = [
-            npx,
-            "bongo",
-            "report",
-            "--verbose",
-            "--reportId",
-            git_sha,
-            "--name",
-            reported_name,
-        ]
+        cmd = [npx, "bongo", "report", "--verbose"]
+        cmd += ["--reportId", reported_name + "_" + git_sha, "--name", reported_name]
         if group:
             cmd += ["--group", group]
         if is_generic:
