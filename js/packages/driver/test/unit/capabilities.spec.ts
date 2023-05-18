@@ -1413,6 +1413,61 @@ describe('capabilities', () => {
     })
   })
 
+  it('should work with Safari on iPhone 14 Pro Max using Appium 2.0 is BS', () => {
+    const capabilities = {
+      capabilities: {
+        sessionId: '7fa5bcd87f253ebccfb241a34f746e0c17aa48fc',
+        os: 'MAC',
+        osVersion: '16.0',
+        browser: 'iphone',
+        browserName: 'iphone',
+        version: 'iphone',
+        browserVersion: 'iphone',
+        device: 'iPhone 14 Pro Max-16.0',
+        deviceName: 'iPhone 14 Pro Max-16.0',
+        orientation: 'portrait',
+        deviceOrientation: 'portrait',
+        acceptSslCerts: false,
+      },
+      sessionId: '7fa5bcd87f253ebccfb241a34f746e0c17aa48fc',
+      os: 'MAC',
+      osVersion: '16.0',
+      browser: 'iphone',
+      browserName: 'iphone',
+      version: 'iphone',
+      browserVersion: 'iphone',
+      device: 'iPhone 14 Pro Max-16.0',
+      deviceName: 'iPhone 14 Pro Max-16.0',
+      orientation: 'portrait',
+      deviceOrientation: 'portrait',
+      acceptSslCerts: false,
+    }
+
+    const environment = extractCapabilitiesEnvironment(capabilities)
+    const viewport = extractCapabilitiesViewport(capabilities)
+
+    assert.deepStrictEqual(environment, {
+      browserName: 'iphone',
+      browserVersion: 'iphone',
+      platformName: undefined,
+      platformVersion: undefined,
+      deviceName: 'iPhone 14 Pro Max-16.0',
+      isW3C: true,
+      isECClient: false,
+      isMobile: true,
+      isNative: false,
+      isChrome: false,
+      isIOS: true,
+      isAndroid: false,
+    })
+    assert.deepStrictEqual(viewport, {
+      displaySize: undefined,
+      orientation: 'portrait',
+      pixelRatio: undefined,
+      statusBarSize: undefined,
+    })
+  })
+
   it('should work with Safari on iPad 5th using Appium 1.7 in BS', () => {
     const capabilities = {
       udid: '73b681dedf50e5a3df3ea4c0e0bc87641bd177b2',

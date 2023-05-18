@@ -36,7 +36,11 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
     environment.isAndroid = isAndroid(capabilities)
     if (!environment.browserName) {
       environment.isNative = true
-    } else if (environment.isIOS && !/mobilesafari/i.test(capabilities.CFBundleIdentifier)) {
+    } else if (
+      environment.isIOS &&
+      capabilities.CFBundleIdentifier &&
+      !/mobilesafari/i.test(capabilities.CFBundleIdentifier)
+    ) {
       environment.browserName = undefined
       environment.isNative = true
     } else {
