@@ -1,6 +1,8 @@
 import {type Transport} from '../transport'
 
-export const transport: Transport<WebSocket> = {
+export type Data = string | Uint8Array
+
+export const transport: Transport<WebSocket, Data> = {
   isReady(socket) {
     return socket.readyState === 1 // OPEN
   },
@@ -9,7 +11,7 @@ export const transport: Transport<WebSocket> = {
     return () => socket.removeEventListener('open', callback)
   },
   onMessage(socket, callback) {
-    const handler = (event: MessageEvent<string | Uint8Array>) => callback(event.data)
+    const handler = (event: MessageEvent<Data>) => callback(event.data)
     socket.addEventListener('message', handler)
     return () => socket.removeEventListener('message', handler)
   },
@@ -22,8 +24,14 @@ export const transport: Transport<WebSocket> = {
     socket.addEventListener('error', handler)
     return () => socket.removeEventListener('error', handler)
   },
-  send(socket, data: Uint8Array | string) {
+  send(socket, data) {
     socket.send(data)
+  },
+  serialize(data) {
+    return JSON.stringify(data)
+  },
+  deserialize(data) {
+    return JSON.parse(Buffer.from(data).toString())
   },
 }
 

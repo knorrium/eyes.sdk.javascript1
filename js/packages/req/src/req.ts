@@ -23,102 +23,110 @@ export function makeReq<TOptions extends Options = Options, TBaseOptions extends
 
 export async function req(input: string | URL | Request, ...requestOptions: Options[]): Promise<Response> {
   const options = mergeOptions({}, ...requestOptions)
-  const fetch = options?.fetch ?? globalFetch
 
   if (options?.hooks) options.hooks = utils.types.isArray(options.hooks) ? options.hooks : [options.hooks]
   if (options?.retry) options.retry = utils.types.isArray(options.retry) ? options.retry : [options.retry]
-  if (options?.headers) {
+  if (options?.headers)
     options.headers = Object.fromEntries(Object.entries(options.headers).filter(([_, value]) => value))
-  }
 
   const controller = new AbortController()
-  if (options?.signal) options.signal.onabort = () => controller.abort()
+  const timeout = options?.timeout ? setTimeout(() => controller.abort(), options.timeout) : null
 
-  const url = new URL(String((input as Request).url ?? input), options?.baseUrl)
-  if (options?.query) {
-    Object.entries(options.query).forEach(([key, value]) => {
-      if (!utils.types.isNull(value)) url.searchParams.set(key, String(value))
-    })
-  }
-  let request = new Request(url, {
-    method: options?.method ?? (input as Request).method,
-    headers: {
-      ...Object.fromEntries((input as Request).headers?.entries() ?? []),
-      ...Object.fromEntries(new Headers(options?.headers as Record<string, string>).entries()),
-    },
-    body:
-      utils.types.isPlainObject(options?.body) || utils.types.isArray(options?.body) || options?.body === null
-        ? JSON.stringify(options?.body)
-        : options?.body ?? (input as Request).body,
-    highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
-    agent: makeProxyAgent(options.proxy),
-    signal: controller.signal,
-  })
-
-  request = await beforeRequest({request, options})
-  const timer = options?.timeout ? setTimeout(() => controller.abort(), options.timeout) : null
   try {
-    let response = await fetch(request)
-
-    // if the request has to be retried due to status code
-    const retry = await (options?.retry as Retry[])?.reduce(async (prev, retry) => {
-      const result = await prev
-      return (
-        result ??
-        ((retry.statuses?.includes(response.status) || (await retry.validate?.({response}))) &&
-        (!retry.limit || !retry.attempt || retry.attempt < retry.limit)
-          ? retry
-          : null)
-      )
-    }, Promise.resolve(null as Retry | null))
-    if (retry) {
-      retry.attempt ??= 0
-      const delay = response.headers.has('Retry-After')
-        ? Number(response.headers.get('Retry-After')) * 1000
-        : utils.types.isArray(retry.timeout)
-        ? retry.timeout[Math.min(retry.attempt, retry.timeout.length - 1)]
-        : retry.timeout ?? 0
-      await utils.general.sleep(delay)
-      retry.attempt += 1
-
-      const retryRequest = await beforeRetry({request, response, attempt: retry.attempt, stop, options})
-      if (retryRequest !== stop) {
-        return req(retryRequest, options)
-      }
-    }
-
-    response = await afterResponse({request, response, options})
-    return response
-  } catch (error: any) {
-    // if the request has to be retried due to network error
-    const retry = await (options?.retry as Retry[])?.reduce((prev, retry) => {
-      return prev.then(async result => {
-        return result ??
-          ((retry.codes?.includes(error.code) || (await retry.validate?.({error}))) &&
-            (!retry.limit || !retry.attempt || retry.attempt < retry.limit))
-          ? retry
-          : null
-      })
-    }, Promise.resolve(null as Retry | null))
-    if (retry) {
-      retry.attempt ??= 0
-      const delay = utils.types.isArray(retry.timeout)
-        ? retry.timeout[Math.min(retry.attempt, retry.timeout.length)]
-        : retry.timeout ?? 0
-      await utils.general.sleep(delay)
-      retry.attempt = retry.attempt + 1
-
-      const retryRequest = await beforeRetry({request, error, attempt: retry.attempt, stop, options})
-      if (retryRequest !== stop) {
-        return req(retryRequest, options)
-      }
-    }
-
-    error = await afterError({request, error, options})
-    throw error
+    return await req(input, options)
   } finally {
-    if (timer) clearTimeout(timer)
-    if (options?.signal) options.signal.onabort = null
+    if (timeout) clearTimeout(timeout)
+  }
+
+  async function req(input: string | URL | Request, options: Options): Promise<Response> {
+    const fetch = options?.fetch ?? globalFetch
+
+    if (options?.signal) options.signal.onabort = () => controller.abort()
+
+    const url = new URL(String((input as Request).url ?? input), options?.baseUrl)
+    if (options?.query) {
+      Object.entries(options.query).forEach(([key, value]) => {
+        if (!utils.types.isNull(value)) url.searchParams.set(key, String(value))
+      })
+    }
+    let request = new Request(url, {
+      method: options?.method ?? (input as Request).method,
+      headers: {
+        ...Object.fromEntries((input as Request).headers?.entries() ?? []),
+        ...Object.fromEntries(new Headers(options?.headers as Record<string, string>).entries()),
+      },
+      body:
+        utils.types.isPlainObject(options?.body) || utils.types.isArray(options?.body) || options?.body === null
+          ? JSON.stringify(options?.body)
+          : options?.body ?? (input as Request).body,
+      highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
+      agent: makeProxyAgent(options.proxy),
+      signal: controller.signal,
+    })
+
+    request = await beforeRequest({request, options})
+    try {
+      let response = await fetch(request)
+
+      // if the request has to be retried due to status code
+      const retry = await (options?.retry as Retry[])?.reduce(async (prev, retry) => {
+        const result = await prev
+        return (
+          result ??
+          ((retry.statuses?.includes(response.status) || (await retry.validate?.({response}))) &&
+          (!retry.limit || !retry.attempt || retry.attempt < retry.limit)
+            ? retry
+            : null)
+        )
+      }, Promise.resolve(null as Retry | null))
+      if (retry) {
+        retry.attempt ??= 0
+        const delay = response.headers.has('Retry-After')
+          ? Number(response.headers.get('Retry-After')) * 1000
+          : utils.types.isArray(retry.timeout)
+          ? retry.timeout[Math.min(retry.attempt, retry.timeout.length - 1)]
+          : retry.timeout ?? 0
+        await utils.general.sleep(delay)
+        retry.attempt += 1
+
+        const retryRequest = await beforeRetry({request, response, attempt: retry.attempt, stop, options})
+        if (retryRequest !== stop) {
+          return req(retryRequest, options)
+        }
+      }
+
+      response = await afterResponse({request, response, options})
+      return response
+    } catch (error: any) {
+      // if the request has to be retried due to network error
+      const retry = await (options?.retry as Retry[])?.reduce((prev, retry) => {
+        return prev.then(async result => {
+          return result ??
+            ((retry.codes?.includes(error.code) || (await retry.validate?.({error}))) &&
+              (!retry.limit || !retry.attempt || retry.attempt < retry.limit))
+            ? retry
+            : null
+        })
+      }, Promise.resolve(null as Retry | null))
+      if (retry) {
+        retry.attempt ??= 0
+        const delay = utils.types.isArray(retry.timeout)
+          ? retry.timeout[Math.min(retry.attempt, retry.timeout.length)]
+          : retry.timeout ?? 0
+        await utils.general.sleep(delay)
+        retry.attempt = retry.attempt + 1
+
+        const retryRequest = await beforeRetry({request, error, attempt: retry.attempt, stop, options})
+        if (retryRequest !== stop) {
+          return req(retryRequest, options)
+        }
+      }
+
+      error = await afterError({request, error, options})
+      throw error
+    } finally {
+      if (options?.signal) options.signal.onabort = null
+    }
   }
 }
 

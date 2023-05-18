@@ -1,11 +1,13 @@
 import {type Transport} from '../transport'
 import {type EventEmitter} from 'events'
 
+export type Data = any
+
 export type Options = {
   events: {message: string; emit: string}
 }
 
-export function makeTransport(options: Options): Transport<EventEmitter> {
+export function makeTransport(options: Options): Transport<EventEmitter, Data> {
   return {
     isReady() {
       return true

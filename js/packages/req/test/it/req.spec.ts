@@ -5,6 +5,10 @@ import {req} from '../../src/req.js'
 import * as utils from '@applitools/utils'
 
 describe('req', () => {
+  beforeEach(() => {
+    nock.cleanAll()
+  })
+
   it('works', async () => {
     nock('https://eyesapi.applitools.com').get('/api/hello').reply(200, {hello: 'world'})
     const response = await req('https://eyesapi.applitools.com/api/hello')
@@ -161,6 +165,19 @@ describe('req', () => {
 
     await assert.rejects(
       () => req('https://eyesapi.applitools.com/api/hello', {timeout: 1000}),
+      error => error.constructor.name === 'AbortError',
+    )
+  })
+
+  it('aborts retry request on timeout', async () => {
+    nock('https://eyesapi.applitools.com').get('/api/hello').reply(500).persist()
+
+    await assert.rejects(
+      () =>
+        req('https://eyesapi.applitools.com/api/hello', {
+          retry: {validate: ({response}) => response?.status === 500},
+          timeout: 1000,
+        }),
       error => error.constructor.name === 'AbortError',
     )
   })

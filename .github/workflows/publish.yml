@@ -269,7 +269,8 @@ jobs:
         socket,
         spec-webdriver,
         utils,
-        test-server
+        test-server,
+        test-utils
       ]
     if: ${{fromJSON(needs.setup.outputs.packages).ec-client && !failure() && !cancelled()}}
     name: ec-client
@@ -282,6 +283,19 @@ jobs:
         with:
           workflow: publish-ec-client.yml
           inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).ec-client.params.version}}"}'
+  tunnel-client:
+    needs: [ setup, req, socket, utils ]
+    if: ${{fromJSON(needs.setup.outputs.packages).tunnel-client && !failure() && !cancelled()}}
+    name: tunnel-client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Run remote workflow
+        uses: ./.github/actions/run
+        with:
+          workflow: publish-tunnel-client.yml
+          inputs: '{"version": "${{fromJSON(needs.setup.outputs.packages).tunnel-client.params.version}}"}'
   nml-client:
     needs:
       [

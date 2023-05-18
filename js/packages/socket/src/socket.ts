@@ -3,14 +3,12 @@ import {type Transport} from './transport'
 import * as transports from './transports'
 import * as utils from '@applitools/utils'
 
-export type WaitOptions = {timeout: number}
-
 export interface Socket<TSocket = unknown> {
   readonly ready: boolean
   readonly target: TSocket
   use(socket: TSocket): void
   cleanup(): void
-  emit(type: string | {name: string; key: string}, payload?: Record<string, any>): () => void
+  emit(type: string | {name: string; key: string}, payload?: any): () => void
   on(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): () => void
   once(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): () => void
   off(type: string | {name: string; key: string}, fn: (payload?: any, key?: string) => any): boolean
@@ -20,18 +18,20 @@ export interface Socket<TSocket = unknown> {
   wait<TResult>(name: string, fn: (payload?: any) => TResult, options?: WaitOptions): PromiseLike<TResult>
 }
 
-export interface SocketOptions<TTransport extends keyof typeof transports | Transport<unknown>> {
+export type WaitOptions = {timeout: number}
+
+export interface SocketOptions<TTransport extends keyof typeof transports | Transport<unknown, unknown>> {
   transport: TTransport
   logger?: Logger
 }
 
 export function makeSocket<
-  TTransport extends keyof typeof transports | Transport<unknown>,
+  TTransport extends keyof typeof transports | Transport<unknown, unknown>,
   TSocket extends TTransport extends keyof typeof transports
-    ? (typeof transports)[TTransport] extends Transport<infer USocket>
+    ? (typeof transports)[TTransport] extends Transport<infer USocket, any>
       ? USocket
       : never
-    : TTransport extends Transport<infer USocket>
+    : TTransport extends Transport<infer USocket, any>
     ? USocket
     : never,
 >(target: TSocket, options: SocketOptions<TTransport>): Socket<TSocket> {
@@ -39,8 +39,8 @@ export function makeSocket<
   const listeners = new Map<string, Set<(...args: any[]) => any>>()
   const queue = new Set<() => any>()
   const offs = new Set<() => any>()
-  const transport: Transport<TSocket> = utils.types.isString(options.transport)
-    ? (transports[options.transport as keyof typeof transports] as Transport<TSocket>)
+  const transport: Transport<TSocket, unknown> = utils.types.isString(options.transport)
+    ? (transports[options.transport as keyof typeof transports] as Transport<TSocket, any>)
     : options.transport
   const logger = makeLogger({logger: options.logger, format: {label: 'socket'}})
 
@@ -224,11 +224,10 @@ export function makeSocket<
 
   function serialize(type: string | {name: string; key?: string}, payload: any) {
     const message = utils.types.isString(type) ? {name: type, payload} : {name: type.name, key: type.key, payload}
-    const data = JSON.stringify(message)
-    return transport.format?.(data) ?? data
+    return transport.serialize?.(message) ?? message
   }
 
-  function deserialize(message: string) {
-    return JSON.parse(message)
+  function deserialize(message: any) {
+    return transport.deserialize?.(message) ?? message
   }
 }

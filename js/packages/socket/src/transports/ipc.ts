@@ -1,7 +1,9 @@
 import {type Transport} from '../transport'
 import {type Socket} from 'net'
 
-export const transport: Transport<Socket> = {
+export type Data = string | Uint8Array
+
+export const transport: Transport<Socket, Data> = {
   isReady(socket) {
     return !(socket as any).pending
   },
@@ -10,7 +12,7 @@ export const transport: Transport<Socket> = {
     return () => socket.off('ready', callback)
   },
   onMessage(socket, callback) {
-    const handler = (data: string | Uint8Array) => splitMessages(data).forEach(data => callback(data))
+    const handler = (data: Data) => splitMessages(data).forEach(data => callback(data))
     socket.on('data', handler)
     return () => socket.off('data', handler)
   },
@@ -25,12 +27,15 @@ export const transport: Transport<Socket> = {
   send(socket, data) {
     socket.write(data)
   },
-  format(data) {
+  serialize(data) {
     const header = Buffer.allocUnsafe(4)
-    const buffer = Buffer.from(data)
+    const buffer = Buffer.from(JSON.stringify(data))
     header.writeUint32BE(buffer.byteLength)
     const format = Buffer.concat([header, buffer])
     return format
+  },
+  deserialize(data) {
+    return JSON.parse(Buffer.from(data).toString())
   },
 }
 
