@@ -8,6 +8,12 @@
 
 
 
+## 4.66.1 - 2023/5/19
+
+### Features
+### Bug fixes
+- Fixed issue with Safari mobile screenshots
+
 ## 4.66.0 - 2023/5/13
 
 ### Features
