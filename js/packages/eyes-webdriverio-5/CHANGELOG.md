@@ -10,6 +10,12 @@
 
 
 
+## 5.44.1 - 2023/5/19
+
+### Features
+### Bug fixes
+- Fixed issue with Safari mobile screenshots
+
 ## 5.44.0 - 2023/5/13
 
 ### Features
