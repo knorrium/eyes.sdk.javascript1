@@ -192,3 +192,19 @@ class SessionKeywords(LibraryComponent):
         if self.current_eyes:
             return self.current_eyes.is_open
         return False
+
+    @keyword("Get Execution Cloud URL")
+    def get_execution_cloud_url(self):
+        # type: () -> Text
+        """
+        Returns an Execution Cloud url that can be used by Open Browser keyword
+        to obtain selenium Chrome instance
+
+        *Example:*
+            | ${remote_url}= | Get Execution Cloud URL |
+        """
+
+        config = self.get_configuration()
+        return Eyes.get_execution_cloud_url(
+            config.api_key, config.server_url, config.proxy
+        )

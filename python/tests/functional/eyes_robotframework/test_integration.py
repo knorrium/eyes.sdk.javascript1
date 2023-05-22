@@ -1,9 +1,11 @@
 import os
 import subprocess
-from os import path
+import sys
+from os import chdir, getcwd, path
 from typing import TYPE_CHECKING
 
 import pytest
+from robot import run_cli
 from robot.result import ExecutionResult
 
 from EyesLibrary.test_results_manager import (
@@ -24,20 +26,23 @@ backend_to_backend_name = {
 }
 
 
-def run_robot(*args, output_file_path=None):
+def run_robot(*args, output_file_path=None, isolation=True):
     test_dir = path.join(path.dirname(__file__), "robot_tests")
     call_args = (
-        "python",
-        "-m",
-        "robot",
         "--output={}.xml".format(output_file_path),
         "--report={}.html".format(output_file_path),
         "--log={}-log.html".format(output_file_path),
     ) + args
-    result = subprocess.run(
-        call_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=test_dir
-    )
-    return result.returncode, result.stdout.decode()
+    if isolation:
+        robot = (sys.executable, "-m", "robot")
+        subprocess.run(robot + call_args, cwd=test_dir)
+    else:
+        dir = getcwd()
+        chdir(test_dir)
+        try:
+            run_cli(call_args, exit=False)
+        finally:
+            chdir(dir)
 
 
 def from_suite(suite):
@@ -171,3 +176,11 @@ def test_suite_mobile_native(data, tmp_path):
     result = ExecutionResult(output_file_path + ".xml")
     not_passed = [t for t in result.suite.tests if t.status != "PASS"]
     assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+
+
+def test_execution_cloud(tmp_path):
+    output_file_path = os.path.join(tmp_path, "web_ec")
+    run_robot("web_ec.robot", output_file_path=output_file_path, isolation=False)
+
+    result = ExecutionResult(output_file_path + ".xml")
+    assert [t.status for t in result.suite.tests] == ["PASS"], str(result.errors)

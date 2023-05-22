@@ -1,3 +1,7 @@
+## [vNext]
+### Added
+- Get Execution Cloud URL  keyword [Trello 3228](https://trello.com/c/WJDMOddC)
+
 ## [5.11.2] - 2023-05-11
 ### Fixed
 - PropagateEyesTestResults model modifier failure in UFG test suites [Trello 3216](https://trello.com/c/EnWBl1se)
