@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.0.3 - 2023/5/22
+
+### Features
+### Bug fixes
+- Add isProcess property when calling makeCoreServer
+
 ## 3.0.2 - 2023/5/18
 
 ### Features

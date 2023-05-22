@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Add isProcess property when calling makeCoreServer
+    - 
 "@applitools/eyes-selenium":
   feature:
     - 
