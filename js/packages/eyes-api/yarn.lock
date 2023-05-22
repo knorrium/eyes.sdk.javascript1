@@ -30,10 +30,10 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-3.0.2.tgz#94889c493bae852fe28b9f7464145584d4079334"
-  integrity sha512-PCWPHmNvuoN8VVFzd0lWyyRBFJzIEeSRN0M7YJ6En0ymtB8n4yO3mH67R3xhHHmkyjgi+MeBfLQJT/uXOyJ3UA==
+"@applitools/core@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-3.0.3.tgz#38bb82aacf0cedd9fef855e99b8175c4bd8906f0"
+  integrity sha512-lPI5qrNQMqBvjeGvlhEJVIFENnbGc5pjLI7HJi/R+At62BjTCgNSAurFkDpYOs29cqcTyN6Mi+JBlS4g7ZOD7A==
   dependencies:
     "@applitools/core-base" "1.1.55"
     "@applitools/dom-capture" "11.2.2"
@@ -47,7 +47,7 @@
     "@applitools/snippets" "2.4.21"
     "@applitools/socket" "1.1.0"
     "@applitools/spec-driver-webdriver" "1.0.32"
-    "@applitools/ufg-client" "1.2.15"
+    "@applitools/ufg-client" "1.2.16"
     "@applitools/utils" "1.3.37"
     "@types/ws" "8.5.4"
     abort-controller "3.0.0"
@@ -264,10 +264,10 @@
     http-proxy-agent "5.0.0"
     https-proxy-agent "5.0.1"
 
-"@applitools/ufg-client@1.2.15":
-  version "1.2.15"
-  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.2.15.tgz#f944371bbcd0e8c6b757e77ea2cfd9ac90709e6a"
-  integrity sha512-toYQECgv5otvdQCELuLqlGyuh+mUhKKmKd5tH3zAHcEnNHgKBciRFa1YdTA1qCuAP+CaIeE4OJPcSzB3Kp9ehQ==
+"@applitools/ufg-client@1.2.16":
+  version "1.2.16"
+  resolved "https://registry.yarnpkg.com/@applitools/ufg-client/-/ufg-client-1.2.16.tgz#4106d7b01dc5407578e3fb41a155059718ae189f"
+  integrity sha512-D1yaEl4934zPdmxWTCIp/HPPp9hQsMTxP2e5xTEf/5AY48Yze71yuMZC4Ttr9vkJ++wC5NEs5zbDbLLpIE8oDg==
   dependencies:
     "@applitools/jsdom" "1.0.4"
     "@applitools/logger" "2.0.1"
