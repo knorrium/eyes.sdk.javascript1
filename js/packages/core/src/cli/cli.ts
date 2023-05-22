@@ -80,11 +80,11 @@ yargs
       }),
     handler: async (args: any) => {
       if (args.fork) {
-        const {port} = await makeCoreServerProcess({...args, fork: false})
+        const {port} = await makeCoreServerProcess({...args, fork: false, isProcess: true})
         // eslint-disable-next-line no-console
         console.log(port) // NOTE: this is a part of the generic protocol
       } else {
-        makeCoreServer({...args, ...args.config})
+        makeCoreServer({...args, ...args.config, isProcess: true})
       }
     },
   })

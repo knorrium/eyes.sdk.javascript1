@@ -36,6 +36,9 @@
   },
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
+  "browser": {
+    "@applitools/ec-client": false
+  },
   "files": [
     "dist",
     "types"

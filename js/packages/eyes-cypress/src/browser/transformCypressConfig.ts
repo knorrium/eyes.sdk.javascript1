@@ -1,6 +1,7 @@
 import type {CypressEyesConfig} from '../expose'
 import type {SpecType, Config} from '@applitools/core'
 import {transformBrowsers, transformAccessibilityValidation} from './utils'
+import * as utils from '@applitools/utils'
 
 export function transformCypressConfig(config: CypressEyesConfig): Config<SpecType, 'ufg'> {
   return {
@@ -38,7 +39,11 @@ export function transformCypressConfig(config: CypressEyesConfig): Config<SpecTy
       ignoreCaret: config.ignoreCaret,
       ignoreDisplacements: config.ignoreDisplacements,
       accessibilitySettings: transformAccessibilityValidation(config.accessibilityValidation),
-      layoutBreakpoints: config.layoutBreakpoints,
+      layoutBreakpoints: config.layoutBreakpoints
+        ? utils.types.has(config.layoutBreakpoints, 'breakpoints')
+          ? config.layoutBreakpoints
+          : {breakpoints: config.layoutBreakpoints}
+        : undefined,
       sendDom: config.sendDom,
       useDom: config.useDom,
       enablePatterns: config.enablePatterns,

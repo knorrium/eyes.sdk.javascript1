@@ -11,7 +11,10 @@ export function executeScript(context: Context, script: string, arg: any): any {
     const prepScirpt = script.replace('function(arg)', 'function func(arg)')
     scriptToExecute = prepScirpt.concat(' return func(arg)')
   }
-
+  if (!context.defaultView) {
+    // after reload the window is null
+    context = fallBackToMainContext()
+  }
   const executor = new context.defaultView.Function('arg', scriptToExecute)
   return executor(arg)
 }
@@ -25,6 +28,9 @@ export function parentContext(context: Context): Context {
   // because Cypress doesn't support cross origin iframe, then childContext might return null, and then the input to parentContext might be null
   if (!context) {
     throw new Error('Context is not accessible')
+  } else if (!context.defaultView) {
+    // after reload the window is null
+    return fallBackToMainContext()
   }
 
   return context === mainContext() ? context : context.defaultView.frameElement.ownerDocument
@@ -92,12 +98,23 @@ export function getTitle(context: Context): string {
 }
 
 export function getUrl(context: Context): string {
+  if (context && !context.location) {
+    // after reload, the location is null
+    context = fallBackToMainContext()
+  }
   return context.location.href
 }
 
 export function getCookies(): Array<any> {
   //@ts-ignore
   return Cypress.automation('get:cookies', {})
+}
+
+function fallBackToMainContext(): Context {
+  const context = mainContext()
+  //@ts-ignore
+  context['applitools-marker'] = 'root-context'
+  return context
 }
 
 // export function takeScreenshot(page: Driver): Promise<Buffer>;

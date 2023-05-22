@@ -15,6 +15,7 @@ export type Options = ServerOptions & {
   shutdownMode?: 'lazy' | 'stdin'
   idleTimeout?: number
   printStdout?: boolean
+  isProcess?: boolean
 }
 
 export async function makeCoreServer({
@@ -22,6 +23,7 @@ export async function makeCoreServer({
   shutdownMode = 'lazy',
   idleTimeout = 900000, // 15min
   printStdout = false,
+  isProcess = false,
   ...handlerOptions
 }: Options = {}): Promise<{port: number; close?: () => void}> {
   const logDirname = process.env.APPLITOOLS_LOG_DIR ?? path.resolve(os.tmpdir(), `applitools-logs`)
@@ -38,9 +40,11 @@ export async function makeCoreServer({
     ...handlerOptions,
   })
   const {server, port} = await makeServer({...handlerOptions, debug})
-  // eslint-disable-next-line no-console
-  console.log(port) // NOTE: this is a part of the generic protocol
-  process.send?.({name: 'port', payload: {port}}) // NOTE: this is a part of the js specific protocol
+  if (isProcess) {
+    // eslint-disable-next-line no-console
+    console.log(port) // NOTE: this is a part of the generic protocol
+    process.send?.({name: 'port', payload: {port}}) // NOTE: this is a part of the js specific protocol
+  }
   if (!server) {
     baseLogger.console.log(`You are trying to spawn a duplicated server, use the server on port ${port} instead`)
     return {port}

@@ -7,7 +7,7 @@
  * correct types for the SDK just like all other conventional SDK's.
  **/
 /// <reference types="cypress" />
-import type * as api from '@applitools/eyes-api'
+import type * as api from '@applitools/eyes'
 import type * as core from '@applitools/core'
 import {
   type EyesSelector,
@@ -15,7 +15,7 @@ import {
   type DeviceName,
   type ScreenOrientationPlain,
   type AccessibilityRegionTypePlain,
-} from '@applitools/eyes-api'
+} from '@applitools/eyes'
 
 export type MaybeArray<T> = T | T[]
 export type {EyesSelector, TestResultsStatus, DeviceName, ScreenOrientationPlain}

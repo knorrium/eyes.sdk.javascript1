@@ -3,7 +3,7 @@ import type * as BaseCore from '@applitools/core-base/types'
 import {type SpecType, type Driver, type ElementReference, type ContextReference} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 
-export * from '@applitools/core-base/types'
+export type * from '@applitools/core-base/types'
 
 export type DriverTarget<TSpec extends SpecType> = TSpec['driver'] | Driver<TSpec>
 export type Target<TSpec extends SpecType> = DriverTarget<TSpec> | BaseCore.Target

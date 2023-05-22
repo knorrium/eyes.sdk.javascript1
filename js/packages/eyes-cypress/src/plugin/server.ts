@@ -1,12 +1,10 @@
 import connectSocket, {type SocketWithUniversal} from './webSocket'
-import {type CloseBatchSettings, makeCoreServerProcess} from '@applitools/core'
+import {type CloseBatchSettings, makeCoreServer} from '@applitools/core'
 import handleTestResults from './handleTestResults'
 import path from 'path'
 import fs from 'fs'
-import {lt as semverLt} from 'semver'
 import {Server as HttpsServer} from 'https'
 import {Server as WSServer} from 'ws'
-import which from 'which'
 import {type Logger} from '@applitools/logger'
 import {AddressInfo} from 'net'
 import {promisify} from 'util'
@@ -20,7 +18,7 @@ export type StartServerReturn = {
 }
 
 export default function makeStartServer({logger, eyesConfig}: {logger: Logger; eyesConfig: EyesPluginConfig}) {
-  return async function startServer(options?: Cypress.PluginConfigOptions): Promise<StartServerReturn> {
+  return async function startServer(): Promise<StartServerReturn> {
     const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
     const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
     const https = new HttpsServer({
@@ -32,39 +30,14 @@ export default function makeStartServer({logger, eyesConfig}: {logger: Logger; e
     const port = (https.address() as AddressInfo).port
     const wss = new WSServer({server: https, path: '/eyes', maxPayload: 254 * 1024 * 1024})
 
-    wss.on('close', () => https.close())
+    wss.on('close', () => {
+      https.close()
+      closeUniversalServer()
+    })
 
-    const forkOptions: {
-      detached: boolean
-      execPath?: string
-    } = {
-      detached: true,
-    }
-
-    const cypressVersion = require('cypress/package.json').version
-
-    // `cypress` version below `7.0.0` has an old Electron version which not support async shell process.
-    // By passing `execPath` with the node process cwd it will switch the `node` process to be the like the OS have
-    // and will not use the unsupported `Cypress Helper.app` with the not supported shell process Electron
-    const isCypressVersionBelow7 = semverLt(cypressVersion, '7.0.0')
-
-    // `nodeVersion` property set the way the `node` process will be executed
-    // if set to `system` it will use the `node` process that the OS have
-    // if set to `bundled` it will use the `node` process that the `Cypress Helper.app` have
-    //
-    // [doc link](https://docs.cypress.io/guides/references/configuration#Node-version)
-    //
-    // this is why if `nodeVersion` exits and not set to `system` we need to tell to the `universal` server the `execPath` to `node`
-    const isNodeVersionSystem = !!options?.nodeVersion && options.nodeVersion !== 'system'
-
-    if (isCypressVersionBelow7 || isNodeVersionSystem) {
-      forkOptions.execPath = await which('node')
-    }
-
-    const {port: universalPort, close: closeUniversalServer} = await makeCoreServerProcess({
+    const {port: universalPort, close: closeUniversalServer} = await makeCoreServer({
       idleTimeout: 0,
-      shutdownMode: 'stdin',
-      forkOptions,
+      printStdout: true,
       singleton: false,
       portResolutionMode: 'random',
       debug: eyesConfig.universalDebug,

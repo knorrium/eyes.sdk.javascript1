@@ -8,7 +8,6 @@ import {resolve} from 'path'
 function printTestResults(testResultsArr: any) {
   const logger = makeLogger({
     level: testResultsArr.resultConfig.showLogs ? 'info' : 'silent',
-    label: 'eyes',
   })
   if (!testResultsArr.testResults) return
   const {passed, failed, diffs} = getErrorsAndDiffs(testResultsArr.testResults)

@@ -29,6 +29,9 @@
   },
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
+  "browser": {
+    "@applitools/jsdom": false
+  },
   "files": [
     "dist",
     "types"

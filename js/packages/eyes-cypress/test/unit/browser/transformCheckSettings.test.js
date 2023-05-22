@@ -79,7 +79,7 @@ describe('eyes check mapping', () => {
       ufgOptions: {
         polyfillAdoptedStyleSheets: true,
       },
-      layoutBreakpoints: [500, 1000],
+      layoutBreakpoints: {breakpoints: [500, 1000]},
       waitBeforeCapture: 2000,
       ignoreDisplacements: true,
       fully: false,

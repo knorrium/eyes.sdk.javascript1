@@ -26,7 +26,11 @@ export function transformCypressCheckSettings(settings: CypressCheckSettings, re
     renderers: transformBrowsers(settings.browser),
     hooks: settings.scriptHooks,
     disableBrowserFetching: settings.disableBrowserFetching,
-    layoutBreakpoints: settings.layoutBreakpoints,
+    layoutBreakpoints: settings.layoutBreakpoints
+      ? utils.types.has(settings.layoutBreakpoints, 'breakpoints')
+        ? settings.layoutBreakpoints
+        : {breakpoints: settings.layoutBreakpoints}
+      : undefined,
     ufgOptions: settings.visualGridOptions,
     name: settings.tag,
     ignoreRegions: transformRegionsWithOptions(settings.ignore),
