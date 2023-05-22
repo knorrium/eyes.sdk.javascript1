@@ -65,6 +65,7 @@ Apollo SDK:
 "@applitools/eyes-cypress":
   feature:
     - Add support for reloading the page when using layoutBreakpoints
+    - Internal improvements
     - Start universal core in the plugin process
   bug-fix:
     - 

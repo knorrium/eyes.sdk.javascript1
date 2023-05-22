@@ -187,6 +187,11 @@ export async function makeCoreServer({
     socket.command('Debug.getHistory', async () => {
       return getHistory()
     })
+
+    socket.command('Core.logEvent', async ({settings}) => {
+      const core = await corePromise
+      core.logEvent({settings})
+    })
   })
 
   return {port, close: () => server.close()}

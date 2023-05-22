@@ -9,6 +9,7 @@ import {type Logger} from '@applitools/logger'
 import {AddressInfo} from 'net'
 import {promisify} from 'util'
 import {EyesPluginConfig} from './index'
+
 export type StartServerReturn = {
   server: Omit<SocketWithUniversal, 'disconnect' | 'ref' | 'unref' | 'send' | 'request' | 'setPassthroughListener'>
   port: number
@@ -16,9 +17,17 @@ export type StartServerReturn = {
   closeBatches: (settings: CloseBatchSettings | CloseBatchSettings[]) => Promise<void>
   closeUniversalServer: () => void
 }
-
-export default function makeStartServer({logger, eyesConfig}: {logger: Logger; eyesConfig: EyesPluginConfig}) {
-  return async function startServer(): Promise<StartServerReturn> {
+const PUBLIC_CLOUD = 'https://eyesapi.applitools.com'
+export default function makeStartServer({
+  logger,
+  eyesConfig,
+  config,
+}: {
+  logger: Logger
+  eyesConfig: EyesPluginConfig
+  config: any
+}) {
+  return async function startServer(options?: Cypress.PluginConfigOptions): Promise<StartServerReturn> {
     const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
     const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
     const https = new HttpsServer({
@@ -62,6 +71,24 @@ export default function makeStartServer({logger, eyesConfig}: {logger: Logger; e
       socketWithClient.on('message', (message: string) => {
         const msg = JSON.parse(message)
         logger.log('==> ', message.toString().slice(0, 1000))
+        if (msg.name === 'EyesManager.openEyes') {
+          logger.log('==> ', 'Core.logEvent')
+          socketWithUniversal.request('Core.logEvent', {
+            settings: {
+              serverUrl: config.serverUrl ? config.serverUrl : PUBLIC_CLOUD,
+              apiKey: config.apiKey,
+              agentId: `eyes.cypress/${require('../../package.json').version}`,
+              proxy: config.proxy,
+              level: 'Notice',
+              event: {
+                type: 'CypressTestingType',
+                testingType: options?.testingType,
+                cypressVersion: require('cypress/package.json').version,
+              },
+            },
+            logger,
+          })
+        }
         if (msg.name === 'Core.makeSDK') {
           const newMessage = Buffer.from(
             JSON.stringify({
