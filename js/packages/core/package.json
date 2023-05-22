@@ -90,7 +90,7 @@
     "@applitools/snippets": "2.4.21",
     "@applitools/socket": "1.1.0",
     "@applitools/spec-driver-webdriver": "1.0.32",
-    "@applitools/ufg-client": "1.2.15",
+    "@applitools/ufg-client": "1.2.16",
     "@applitools/utils": "1.3.37",
     "@types/ws": "8.5.4",
     "abort-controller": "3.0.0",
