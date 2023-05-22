@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.1.0 - 2023/5/22
+
+### Features
+- Add an API to send logEvents
+### Bug fixes
+
 ## 3.0.3 - 2023/5/22
 
 ### Features
