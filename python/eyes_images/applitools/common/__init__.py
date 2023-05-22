@@ -32,6 +32,7 @@ from .geometry import (  # noqa
     Region,
     SubregionForStitching,
 )
+from .layout_breakpoints_options import LayoutBreakpointsOptions
 from .logger import FileLogger, StdoutLogger  # noqa
 from .match import (  # noqa
     ExactMatchSettings,
@@ -69,15 +70,16 @@ __all__ = (
     + test_results.__all__  # noqa
     + server.__all__  # noqa
     + (
-        "logger",
-        "StitchMode",
+        "AccessibilityGuidelinesVersion",
+        "AccessibilityLevel",
+        "AccessibilityRegionType",
+        "AccessibilitySettings",
         "ChromeEmulationInfo",
         "DesktopBrowserInfo",
         "DeviceName",
+        "LayoutBreakpointsOptions",
         "ScreenOrientation",
-        "AccessibilityRegionType",
-        "AccessibilitySettings",
-        "AccessibilityLevel",
-        "AccessibilityGuidelinesVersion",
+        "StitchMode",
+        "logger",
     )  # noqa
 )

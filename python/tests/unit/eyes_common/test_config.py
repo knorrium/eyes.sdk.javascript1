@@ -7,6 +7,7 @@ from applitools.common import (
     BatchInfo,
     Configuration,
     FailureReports,
+    LayoutBreakpointsOptions,
     MatchLevel,
     ProxySettings,
     Region,
@@ -124,7 +125,7 @@ def test_set_value_to_sel_conf():
     assert conf.disable_browser_fetching is True
     assert conf.enable_cross_origin_rendering is False
     assert conf.dont_use_cookies is True
-    assert conf.layout_breakpoints is True
+    assert conf.layout_breakpoints == LayoutBreakpointsOptions(True)
     assert conf.wait_before_capture == 5
 
 
@@ -132,7 +133,21 @@ def test_layout_breakpoints_list():
     conf = SeleniumConfiguration()
     conf.set_layout_breakpoints(1, 2, 3)
 
-    assert conf.layout_breakpoints == [1, 2, 3]
+    assert conf.layout_breakpoints == LayoutBreakpointsOptions([1, 2, 3])
+
+
+def test_layout_breakpoints_bool():
+    conf = SeleniumConfiguration()
+    conf.set_layout_breakpoints(True)
+
+    assert conf.layout_breakpoints == LayoutBreakpointsOptions(True)
+
+
+def test_layout_breakpoints_reload():
+    conf = SeleniumConfiguration()
+    conf.set_layout_breakpoints(True, reload=True)
+
+    assert conf.layout_breakpoints == LayoutBreakpointsOptions(True, True)
 
 
 def test_add_browser():

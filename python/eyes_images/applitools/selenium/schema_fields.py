@@ -16,6 +16,7 @@ from ..common import (
     TestFailedError,
 )
 from ..common.errors import USDKFailure
+from ..common.layout_breakpoints_options import LayoutBreakpointsOptions as LBO
 from ..core import FloatingRegionByRectangle, RegionByRectangle
 from ..core.extract_text import OCRRegion
 from ..core.fluent import AccessibilityRegionByRectangle
@@ -110,6 +111,22 @@ class FrameReference(Field):
             return frame.frame_name_or_id
         else:
             return frame.frame_locator.to_dict(self.context["registry"])
+
+
+class LayoutBreakpoints(Field):
+    """This custom field serializer is needed to provide backward compatibility with
+    code that explicitly sets value of layout_breakpoints configuration attribute"""
+
+    def _serialize(self, lbo, _, __):
+        # type: (t.Union[bool, list, tuple, LBO], t.Any, t.Any) -> dict
+        if isinstance(lbo, (bool, list)):
+            lbo = LBO(lbo)
+        elif isinstance(lbo, tuple):
+            lbo = LBO(list(lbo))
+        from .schema import LayoutBreakpointsOptions
+
+        res = check_error(LayoutBreakpointsOptions().dump(lbo))
+        return res
 
 
 class NormalizationField(Field):

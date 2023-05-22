@@ -7,6 +7,7 @@ from six import string_types
 
 from applitools.common.accessibility import AccessibilityRegionType
 from applitools.common.geometry import AccessibilityRegion, Region
+from applitools.common.layout_breakpoints_options import LayoutBreakpointsOptions
 from applitools.common.ultrafastgrid import VisualGridOption
 from applitools.common.utils import argument_guard
 from applitools.common.validators import is_list_or_tuple, is_webelement
@@ -60,7 +61,9 @@ class SeleniumCheckSettingsValues(CheckSettingsValues):
     visual_grid_options = attr.ib(default=())  # type: Tuple[VisualGridOption]
     disable_browser_fetching = attr.ib(default=None)  # type: Optional[bool]
     ocr_region = attr.ib(init=False, default=None)  # type: Optional[OCRRegion]
-    layout_breakpoints = attr.ib(default=None)  # type: Optional[Union[bool, List[int]]]
+    layout_breakpoints = attr.ib(
+        default=None
+    )  # type: Union[bool, List[int], LayoutBreakpointsOptions, None]
     lazy_load = attr.ib(default=None)  # type: Optional[LazyLoadOptions]
     webview = attr.ib(default=None)  # type: Union[None, bool, Text]
 
@@ -597,20 +600,27 @@ class SeleniumCheckSettings(CheckSettings):
         return self
 
     @overload
-    def layout_breakpoints(self, enabled):
-        # type: (bool) -> SeleniumCheckSettings
+    def layout_breakpoints(self, enabled, reload=None):
+        # type: (bool, Optional[bool]) -> SeleniumCheckSettings
         pass
 
     @overload
-    def layout_breakpoints(self, *breakpoints):
-        # type: (*int) -> SeleniumCheckSettings
+    def layout_breakpoints(self, *breakpoints, **kwargs):
+        # type: (*int, Optional[bool]) -> SeleniumCheckSettings
         pass
 
-    def layout_breakpoints(self, enabled_or_first, *rest):
+    def layout_breakpoints(self, enabled_or_first, *rest, **kwargs):
+        reload = kwargs.pop("reload", None)
+        assert not kwargs, "Unexpected keyword arguments {}".format(kwargs)
         if isinstance(enabled_or_first, bool):
-            self.values.layout_breakpoints = enabled_or_first
+            assert not rest, "reload is keyword-only argument"
+            self.values.layout_breakpoints = LayoutBreakpointsOptions(
+                enabled_or_first, reload
+            )
         elif isinstance(enabled_or_first, int):
-            self.values.layout_breakpoints = [enabled_or_first] + list(rest)
+            self.values.layout_breakpoints = LayoutBreakpointsOptions(
+                [enabled_or_first] + list(rest), reload
+            )
         else:
             raise TypeError(
                 "{} is not an instance of bool or int".format(enabled_or_first)

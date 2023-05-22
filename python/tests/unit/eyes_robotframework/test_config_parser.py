@@ -1,7 +1,9 @@
+from textwrap import dedent
+
 import pytest
 import trafaret as t
 
-from applitools.common import AndroidVersion, IosVersion
+from applitools.common import AndroidVersion, IosVersion, LayoutBreakpointsOptions
 from applitools.selenium import BrowserType, RectangleSize, StitchMode
 from EyesLibrary import RobotConfiguration
 from EyesLibrary.config_parser import (
@@ -148,3 +150,82 @@ def test_native_mobile_grid_config_options():
 
     assert web_config.browsers_info[0].ios_version is IosVersion.LATEST
     assert web_config.browsers_info[1].android_version is AndroidVersion.LATEST
+
+
+def test_layout_breakpoints_legacy_bool():
+    config = dedent(
+        """
+    web_ufg:
+      layout_breakpoints: true
+    """
+    )
+
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.web_ufg, RobotConfiguration()
+    ).check(unicode_yaml_load(config))
+
+    assert web_config.layout_breakpoints is True
+
+
+def test_layout_breakpoints_legacy_list():
+    config = dedent(
+        """
+    web_ufg:
+      layout_breakpoints: [1, 2, 3]
+    """
+    )
+
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.web_ufg, RobotConfiguration()
+    ).check(unicode_yaml_load(config))
+
+    assert web_config.layout_breakpoints == [1, 2, 3]
+
+
+def test_layout_breakpoints_list():
+    config = dedent(
+        """
+    web_ufg:
+      layout_breakpoints:
+        breakpoints: [1, 2, 3]
+    """
+    )
+
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.web_ufg, RobotConfiguration()
+    ).check(unicode_yaml_load(config))
+
+    assert web_config.layout_breakpoints.breakpoints == [1, 2, 3]
+
+
+def test_layout_breakpoints_bool():
+    config = dedent(
+        """
+    web_ufg:
+      layout_breakpoints:
+        breakpoints: true
+    """
+    )
+
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.web_ufg, RobotConfiguration()
+    ).check(unicode_yaml_load(config))
+
+    assert web_config.layout_breakpoints.breakpoints is True
+
+
+def test_layout_breakpoints_reload():
+    config = dedent(
+        """
+    web_ufg:
+      layout_breakpoints:
+        breakpoints: true
+        reload: true
+    """
+    )
+
+    web_config = ConfigurationTrafaret(
+        SelectedRunner.web_ufg, RobotConfiguration()
+    ).check(unicode_yaml_load(config))
+
+    assert web_config.layout_breakpoints == LayoutBreakpointsOptions(True, True)

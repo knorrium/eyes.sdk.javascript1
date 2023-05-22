@@ -1,6 +1,7 @@
 ## [vNext]
 ### Added
 - Get Execution Cloud URL  keyword [Trello 3228](https://trello.com/c/WJDMOddC)
+- Support of reloading the browser after resizing the page with Layout Breakpoints [Trello 99](https://trello.com/c/3KZDat3M)
 
 ## [5.11.2] - 2023-05-11
 ### Fixed

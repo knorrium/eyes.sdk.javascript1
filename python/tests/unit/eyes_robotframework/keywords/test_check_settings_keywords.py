@@ -196,6 +196,8 @@ def test_layout_breakpoints(check_settings_keyword):
     assert res == check_settings_keyword.enable_layout_breakpoints()
     res = SeleniumCheckSettings().layout_breakpoints(40, 50, 40, 60)
     assert res == check_settings_keyword.layout_breakpoints("40 50 40 60")
+    res = SeleniumCheckSettings().layout_breakpoints(40, 50, 40, 60, reload=True)
+    assert res == check_settings_keyword.layout_breakpoints("40 50 40 60", reload=True)
 
 
 def test_before_render_screenshot_hook(check_settings_keyword):

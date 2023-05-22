@@ -71,7 +71,9 @@ web_ufg:
 #  disable_browser_fetching: false
 #  enable_cross_origin_rendering: false
 #  dont_use_cookies: false
-#  layout_breakpoints: true
+#  layout_breakpoints:
+#    breakpoints: true
+#    reload: true
   browsers:
     desktop:
       - browser_type: CHROME  # names from BrowserType

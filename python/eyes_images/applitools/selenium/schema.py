@@ -48,6 +48,7 @@ from .schema_fields import (
     EnvironmentField,
     Error,
     FrameReference,
+    LayoutBreakpoints,
     NormalizationField,
     RegionReference,
     StitchOverlap,
@@ -192,6 +193,11 @@ class Batch(USDKSchema):
     properties = List(Dict())
 
 
+class LayoutBreakpointsOptions(USDKSchema):
+    breakpoints = Field()
+    reload = Boolean()
+
+
 class Proxy(USDKSchema):
     url = String(required=True)
     username = String()
@@ -298,7 +304,7 @@ class EyesConfig(USDKSchema):
     # enablePatterns
     # ignoreCaret
     visual_grid_options = VisualGridOptions(dump_to="ufgOptions")
-    layout_breakpoints = Field(dump_to="layoutBreakpoints")
+    layout_breakpoints = LayoutBreakpoints(dump_to="layoutBreakpoints")
     disable_browser_fetching = Boolean(dump_to="disableBrowserFetching")
     match_timeout = Float(dump_to="retryTimeout")
     browsers_info = List(BrowserInfo(), dump_to="renderers")
@@ -341,7 +347,7 @@ class OpenSettings(USDKSchema):
 class CheckSettings(USDKSchema):
     name = String()
     disable_browser_fetching = Boolean(dump_to="disableBrowserFetching")
-    layout_breakpoints = Field(dump_to="layoutBreakpoints")
+    layout_breakpoints = Nested(LayoutBreakpointsOptions, dump_to="layoutBreakpoints")
     visual_grid_options = VisualGridOptions(dump_to="ufgOptions")
     script_hooks = Dict(dump_to="hooks")
     page_id = String(dump_to="pageId")

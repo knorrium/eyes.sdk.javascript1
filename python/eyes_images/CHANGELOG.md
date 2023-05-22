@@ -1,3 +1,7 @@
+## [vNext]
+### Added
+- Support of reloading the browser after resizing the page with layout_breakpoints [Trello 99](https://trello.com/c/3KZDat3M)
+
 ## [5.18.1] - 2023-05-16
 ### Fixed
 - Avoid extract_text_regions deprecation warning [Trello 3213](https://trello.com/c/IMTcxURl)

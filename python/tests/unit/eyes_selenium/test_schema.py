@@ -160,7 +160,7 @@ def test_config_marshal(monkeypatch):
         "enablePatterns": True,
         "fully": True,
         "hideScrollbars": True,
-        "layoutBreakpoints": [1, 2, 3],
+        "layoutBreakpoints": {"breakpoints": [1, 2, 3]},
         "normalization": {
             "cut": {"bottom": 2.0, "left": 3.0, "right": 4.0, "top": 1.0},
             "rotation": 90,
@@ -205,6 +205,17 @@ def test_config_marshal(monkeypatch):
     }
 
 
+def test_legacy_config_layout_breakpoints_marshal():
+    config = Configuration()
+    config.layout_breakpoints = (1, 2, 3)
+
+    serializer = schema.EyesConfig()
+    json, errors = serializer.dump(config)
+
+    assert errors == {}
+    assert json == {"layoutBreakpoints": {"breakpoints": [1, 2, 3]}}
+
+
 def test_check_settings_marshal():
     serializer = schema.CheckSettings(
         context={"registry": SeleniumWebdriverObjectRegistry()}
@@ -215,7 +226,7 @@ def test_check_settings_marshal():
         .disable_browser_fetching(True)
         .visual_grid_options(VisualGridOption("vo key", "vo value"))
     )
-    check_settings.layout_breakpoints(True)
+    check_settings.layout_breakpoints(True, reload=True)
     check_settings.before_render_screenshot_hook("hook")
     check_settings.page_id("page id")
     check_settings.variation_group_id("vargroup id")
@@ -301,7 +312,7 @@ def test_check_settings_marshal():
                 "regionId": "ignore id",
             }
         ],
-        "layoutBreakpoints": True,
+        "layoutBreakpoints": {"breakpoints": True, "reload": True},
         "layoutRegions": [
             {"region": {"height": 4.0, "width": 3.0, "x": 1.0, "y": 2.0}}
         ],

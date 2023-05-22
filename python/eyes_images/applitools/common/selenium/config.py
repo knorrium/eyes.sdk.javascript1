@@ -5,6 +5,7 @@ import attr
 from six import raise_from
 
 from applitools.common.config import Configuration as ConfigurationBase
+from applitools.common.layout_breakpoints_options import LayoutBreakpointsOptions
 from applitools.common.ultrafastgrid import (
     AndroidDeviceInfo,
     ChromeEmulationInfo,
@@ -48,7 +49,9 @@ class Configuration(ConfigurationBase):
     enable_cross_origin_rendering = attr.ib(default=None)  # type: Optional[bool]
     dont_use_cookies = attr.ib(default=None)  # type: Optional[bool]
     dont_close_batches = attr.ib(default=None)  # type: Optional[bool]
-    layout_breakpoints = attr.ib(default=None)  # type: Optional[Union[bool, List[int]]]
+    layout_breakpoints = attr.ib(
+        default=None
+    )  # type: Union[bool, List[int], LayoutBreakpointsOptions, None]
     scale_ratio = attr.ib(default=None)  # type: Optional[float]
     cut_provider = attr.ib(default=None)  # type: Optional[CutProvider]
     rotation = attr.ib(default=None)  # type: Optional[int]
@@ -103,20 +106,25 @@ class Configuration(ConfigurationBase):
         return self
 
     @overload
-    def set_layout_breakpoints(self, enabled):
-        # type: (bool) -> Configuration
+    def set_layout_breakpoints(self, enabled, reload=None):
+        # type: (bool, Optional[bool]) -> Configuration
         pass
 
     @overload
-    def set_layout_breakpoints(self, *breakpoints):
-        # type: (*int) -> Configuration
+    def set_layout_breakpoints(self, *breakpoints, **kwargs):
+        # type: (*int, Optional[bool]) -> Configuration
         pass
 
-    def set_layout_breakpoints(self, enabled_or_first, *rest):
+    def set_layout_breakpoints(self, enabled_or_first, *rest, **kwargs):
+        reload = kwargs.pop("reload", None)
+        assert not kwargs, "Unexpected keyword arguments {}".format(kwargs)
         if isinstance(enabled_or_first, bool):
-            self.layout_breakpoints = enabled_or_first
+            assert not rest, "reload is keyword-only argument"
+            self.layout_breakpoints = LayoutBreakpointsOptions(enabled_or_first, reload)
         elif isinstance(enabled_or_first, int):
-            self.layout_breakpoints = [enabled_or_first] + list(rest)
+            self.layout_breakpoints = LayoutBreakpointsOptions(
+                [enabled_or_first] + list(rest), reload
+            )
         else:
             raise TypeError(
                 "{} is not an instance of bool or int".format(enabled_or_first)

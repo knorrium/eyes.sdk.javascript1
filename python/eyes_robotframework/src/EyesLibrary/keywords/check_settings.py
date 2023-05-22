@@ -662,10 +662,11 @@ class UFGCheckSettingsKeywords(LibraryComponent):
         """
         return self.current_check_settings.layout_breakpoints(True)
 
-    @keyword("Layout Breakpoints", types=(str,), tags=(UFG_RELATED,))
+    @keyword("Layout Breakpoints", types=(str, bool), tags=(UFG_RELATED,))
     def layout_breakpoints(
         self,
         breakpoints,  # type:str
+        reload=None,  # type: bool
     ):
         # type: (...)->SeleniumCheckSettings
         """
@@ -679,7 +680,9 @@ class UFGCheckSettingsKeywords(LibraryComponent):
 
         """
         breakpoints = [int(b) for b in breakpoints.split(" ")]
-        return self.current_check_settings.layout_breakpoints(*breakpoints)
+        return self.current_check_settings.layout_breakpoints(
+            *breakpoints, reload=reload
+        )
 
     @keyword("Before Render Screenshot Hook", types=(str,), tags=(UFG_RELATED,))
     def before_render_screenshot_hook(

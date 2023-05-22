@@ -18,6 +18,7 @@ from applitools.common import (
     IosDeviceInfo,
     IosDeviceName,
     IosVersion,
+    LayoutBreakpointsOptions,
     ProxySettings,
     RectangleSize,
     ScreenOrientation,
@@ -199,6 +200,19 @@ class ChromeEmulationInfoTrafaret(trf.Trafaret):
         return [ChromeEmulationInfo(**dct) for dct in sanitized]
 
 
+class LayoutBreakpointsTrafaret(trf.Trafaret):
+    scheme = trf.Dict(
+        {
+            "breakpoints": trf.Bool | trf.List(trf.Int),
+            trf.Key("reload", optional=True): trf.Bool,
+        }
+    )
+
+    def check_and_return(self, value, context=None):
+        sanitized = self.scheme.check(value, context)
+        return LayoutBreakpointsOptions(**sanitized)
+
+
 class RunnerOptionsTrafaret(trf.Trafaret):
     scheme = trf.Dict({trf.Key("test_concurrency"): trf.Int})
 
@@ -299,7 +313,9 @@ class ConfigurationTrafaret(trf.Trafaret):  # typedef
             trf.Key("disable_browser_fetching", optional=True): trf.Bool,
             trf.Key("enable_cross_origin_rendering", optional=True): trf.Bool,
             trf.Key("dont_use_cookies", optional=True): trf.Bool,
-            trf.Key("layout_breakpoints", optional=True): trf.Bool | trf.List(trf.Int),
+            trf.Key("layout_breakpoints", optional=True): trf.Bool
+            | trf.List(trf.Int)
+            | LayoutBreakpointsTrafaret,
             trf.Key("browsers", optional=True) >> "browsers_info": BrowsersTrafaret,
         },
     )
