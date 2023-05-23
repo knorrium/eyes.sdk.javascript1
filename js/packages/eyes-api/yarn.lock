@@ -30,10 +30,10 @@
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/core@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-3.0.3.tgz#38bb82aacf0cedd9fef855e99b8175c4bd8906f0"
-  integrity sha512-lPI5qrNQMqBvjeGvlhEJVIFENnbGc5pjLI7HJi/R+At62BjTCgNSAurFkDpYOs29cqcTyN6Mi+JBlS4g7ZOD7A==
+"@applitools/core@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@applitools/core/-/core-3.1.0.tgz#2141233102d46d137c7262dc145a7306ab0ed3bd"
+  integrity sha512-hvz6F1MM1i0N0EqgB07I1HsadpY5jfDFGyHL8ijzDGAWCAESMWUXn8OSxy+LudhKAZCqs+hV6XMjRji06vNpzQ==
   dependencies:
     "@applitools/core-base" "1.1.55"
     "@applitools/dom-capture" "11.2.2"
