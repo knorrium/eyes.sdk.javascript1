@@ -12,6 +12,14 @@
 
 
 
+## 3.33.0 - 2023/5/23
+
+### Features
+- Add support for reloading the page when using layoutBreakpoints
+- Internal improvements
+- Start universal core in the plugin process
+### Bug fixes
+
 ## 3.32.2 - 2023/5/3
 
 ### Features
