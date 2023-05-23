@@ -69,7 +69,7 @@ export default function makePluginExport({
       origOn: Cypress.PluginEvents,
       cypressConfig: Cypress.PluginConfigOptions,
     ): Promise<EyesPluginConfig> {
-      const {server, port, closeManager, closeBatches, closeUniversalServer} = await startServer()
+      const {server, port, closeManager, closeBatches, closeUniversalServer} = await startServer(cypressConfig)
       eyesServer = server
 
       const globalHooks: any = makeGlobalRunHooks({

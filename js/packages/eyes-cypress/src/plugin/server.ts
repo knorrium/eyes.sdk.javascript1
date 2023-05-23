@@ -71,7 +71,7 @@ export default function makeStartServer({
       socketWithClient.on('message', (message: string) => {
         const msg = JSON.parse(message)
         logger.log('==> ', message.toString().slice(0, 1000))
-        if (msg.name === 'EyesManager.openEyes') {
+        if (msg.name === 'Core.makeCore') {
           logger.log('==> ', 'Core.logEvent')
           socketWithUniversal.request('Core.logEvent', {
             settings: {
@@ -82,7 +82,7 @@ export default function makeStartServer({
               level: 'Notice',
               event: {
                 type: 'CypressTestingType',
-                testingType: options?.testingType,
+                testingType: options?.testingType === 'component' ? 'component' : 'e2e',
                 cypressVersion: require('cypress/package.json').version,
               },
             },
