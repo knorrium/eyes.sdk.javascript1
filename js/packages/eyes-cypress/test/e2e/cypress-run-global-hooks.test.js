@@ -53,7 +53,7 @@ describe('global hooks', () => {
     expect(err.stdout).to.contain('Eyes-Cypress detected diffs or errors')
   })
 
-  it('works with cypress version 4 (< 6.2.0 no global hooks available)', async () => {
+  it('works with cypress version 4: < 6.2.0 no global hooks available', async () => {
     await pexec(`npm install cypress@4`)
     const [err, _stdout] = await presult(runCypress('fail.js'))
     expect(err).not.to.be.undefined
