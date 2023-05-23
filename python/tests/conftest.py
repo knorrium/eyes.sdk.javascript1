@@ -40,8 +40,6 @@ def pytest_sessionfinish(session, exitstatus):
         )
         cmd = [npx, "bongo", "report", "--verbose"]
         cmd += ["--reportId", reported_name + "_" + git_sha, "--name", reported_name]
-        if group:
-            cmd += ["--group", group]
         if is_generic:
             remove_test_name_prefix("coverage-test-report.xml")
             cmd += ["--metaDir", "."]
