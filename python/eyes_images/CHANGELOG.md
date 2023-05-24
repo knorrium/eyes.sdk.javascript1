@@ -1,4 +1,4 @@
-## [vNext]
+## [5.19.0] - 2023-05-24
 ### Added
 - Support of reloading the browser after resizing the page with layout_breakpoints [Trello 99](https://trello.com/c/3KZDat3M)
 
