@@ -224,12 +224,12 @@ yargs
     {
       recipient: {alias: 'r', type: 'string'},
       name: {alias: 'n', type: 'string', description: 'the sdk name'},
-      version: {alias: 'v', type: 'string', description: 'the sdk version name'},
+      releaseVersion: {alias: 'rv', type: 'string', description: 'the sdk version name'},
     },
     async args =>
       await sendReleaseNotification({
         name: args.name,
-        version: args.version,
+        version: args.releaseVersion,
         targetFolder: args.cwd,
         recipient: args.recipient,
       }),
