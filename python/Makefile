@@ -93,7 +93,7 @@ uninstall:
 
 
 publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	cd eyes_images && npx bongo send-release-notification --verbose --name python --version "${SDK_VERSION}"
+	cd eyes_images && npx bongo send-release-notification --verbose --name python --releaseVersion "${SDK_VERSION}"
 	twine upload --verbose eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
@@ -102,7 +102,7 @@ publish_testing_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_seleni
 
 
 publish_eyes_robotframework: eyes_robotframework/dist install_publish_requirements
-	cd eyes_robotframework && npx bongo send-release-notification --verbose --name robotframework --version "${SDK_VERSION}"
+	cd eyes_robotframework && npx bongo send-release-notification --verbose --name robotframework --releaseVersion "${SDK_VERSION}"
 	twine upload --verbose eyes_robotframework/dist/*
 
 
