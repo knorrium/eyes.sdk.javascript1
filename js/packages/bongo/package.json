@@ -1,6 +1,6 @@
 {
   "name": "@applitools/bongo",
-  "version": "3.0.4",
+  "version": "4.0.0",
   "engines": {
     "node": ">=12.0.0"
   },
