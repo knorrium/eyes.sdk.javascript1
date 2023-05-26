@@ -28,11 +28,13 @@ def pytest_sessionfinish(session, exitstatus):
         from selenium import __version__ as selenium_version
     except ImportError:
         selenium_version = "4"
+    is_generic = path.exists("coverage-tests-metadata.json")
+    if is_generic:
+        remove_test_name_prefix("coverage-test-report.xml")
     if environ.get("BONGO_REPORT_TESTS", "false").lower() not in ("false", "0"):
         releasing_package = environ.get("RELEASING_PACKAGE")
         npx = "npx.cmd" if platform == "win32" else "npx"
         git_sha = check_output(["git", "log", "-n1", "--format=%H"]).decode().strip()
-        is_generic = path.exists("coverage-tests-metadata.json")
         suite_dir = path.basename(getcwd())
         selenium_version = int(selenium_version.split(".", 1)[0])
         reported_name, group = sdk_name_group(
@@ -41,14 +43,14 @@ def pytest_sessionfinish(session, exitstatus):
         cmd = [npx, "bongo", "report", "--verbose"]
         cmd += ["--reportId", reported_name + "_" + git_sha, "--name", reported_name]
         if is_generic:
-            remove_test_name_prefix("coverage-test-report.xml")
             cmd += ["--metaDir", "."]
         if not releasing_package:
             cmd.append("--sandbox")
         flush = {} if PY2 else {"flush": True}
         print("\n\nReporting tests:", " ".join(cmd), **flush)
         check_call(cmd)
-    remove("coverage-test-report.xml")
+    if environ.get("CI", "false").lower() not in ("true", "1"):
+        remove("coverage-test-report.xml")
 
 
 @pytest.fixture(scope="session")
