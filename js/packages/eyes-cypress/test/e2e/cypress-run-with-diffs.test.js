@@ -12,7 +12,7 @@ const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/tes
 async function runCypress(pluginsFile, testFile) {
   return (
     await pexec(
-      `./node_modules/.bin/cypress run --headless --config testFiles=${testFile},integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/${pluginsFile},supportFile=cypress/support/index-run.js`,
+      `./node_modules/.bin/cypress run --browser=chrome --headless --config testFiles=${testFile},integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/${pluginsFile},supportFile=cypress/support/index-run.js`,
       {
         maxBuffer: 10000000,
       },
@@ -48,7 +48,7 @@ describe('works for diffs with global hooks', () => {
   })
 
   it('works for diffs with global hooks', async () => {
-    const [err, _v] = await presult(runCypress('index-run.js', 'helloworldDiffs.js'))
+    const [err, _v] = await presult(runCypress('global-hooks.js', 'helloworldDiffs.js'))
     expect(err.stdout).to.includes('Eyes-Cypress detected diffs')
   })
 })

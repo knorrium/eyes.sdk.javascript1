@@ -13,7 +13,7 @@ const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/tes
 async function runCypress(testFile) {
   return (
     await pexec(
-      `./node_modules/.bin/cypress run --headless --config testFiles=${testFile},integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/index-run.js,supportFile=cypress/support/index-run.js`,
+      `./node_modules/.bin/cypress run --browser=chrome --headless --config testFiles=${testFile},integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/global-hooks.js,supportFile=cypress/support/index-run.js`,
       {
         maxBuffer: 10000000,
       },
