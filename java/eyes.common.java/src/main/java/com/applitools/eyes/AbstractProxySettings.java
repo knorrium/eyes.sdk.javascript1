@@ -18,7 +18,7 @@ public abstract class AbstractProxySettings {
     protected String uri;
     protected String username;
     protected String password;
-    protected int port;
+    protected Integer port;
 
     /**
      * @param uri      The proxy's URI.
@@ -26,7 +26,7 @@ public abstract class AbstractProxySettings {
      * @param username The username to be sent to the proxy.
      * @param password The password to be sent to the proxy.
      */
-    public AbstractProxySettings(String uri, int port, String username, String password) {
+    public AbstractProxySettings(String uri, Integer port, String username, String password) {
         ArgumentGuard.notNull(uri, "uri");
         this.uri = uri;
         this.port = port;
@@ -38,7 +38,7 @@ public abstract class AbstractProxySettings {
      * @param uri  The proxy's URI.
      * @param port The proxy's port
      */
-    public AbstractProxySettings(String uri, int port) {
+    public AbstractProxySettings(String uri, Integer port) {
         this(uri, port, null, null);
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractProxySettings {
      * @param password The password to be sent to the proxy.
      */
     public AbstractProxySettings(String uri, String username, String password) {
-        this(uri, 8888, username, password);
+        this(uri, null, username, password);
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class AbstractProxySettings {
      */
     @SuppressWarnings("UnusedDeclaration")
     public AbstractProxySettings(String uri) {
-        this(uri, 8888, null, null);
+        this(uri, null, null, null);
     }
 
     /**
@@ -89,11 +89,24 @@ public abstract class AbstractProxySettings {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractProxySettings that = (AbstractProxySettings) o;
-        return port == that.port && Objects.equals(uri, that.uri) && Objects.equals(username, that.username) && Objects.equals(password, that.password);
+        return Objects.equals(port, that.port) && Objects.equals(uri, that.uri) && Objects.equals(username, that.username) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(uri, username, password, port);
+    }
+
+    @Override
+    public String toString() {
+        String[] url = uri.split("://", 2);
+        String protocol = url[0] + "://";
+        String host = url[1];
+
+        if (username != null && password != null) {
+            return protocol + username + ':' + password + '@' + host;
+        }
+
+        return protocol + host;
     }
 }

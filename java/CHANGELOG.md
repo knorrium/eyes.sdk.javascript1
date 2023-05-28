@@ -1,3 +1,8 @@
+## [5.53.0] - 2023-05-28
+### Features
+- Internal improvements.
+### Bug fixes
+
 ## [5.52.0] - 2023-05-18
 ### Features
 - Add emulation device `Galaxy S22`. 

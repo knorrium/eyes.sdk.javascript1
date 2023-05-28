@@ -210,7 +210,7 @@ jobs:
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Actions"
           git add pom.xml
-          git commit -m "Version up ${{ inputs.version }}"
+          git commit -m "chore(java): Version up ${{ inputs.version }}"
 
       - name: Tag and push
         run: |
