@@ -1,6 +1,6 @@
 {
   "name": "@applitools/ec-client",
-  "version": "1.2.31",
+  "version": "1.2.32",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
