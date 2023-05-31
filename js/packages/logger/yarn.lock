@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.4.tgz#c9633990dd215b6439d7314ae41d95fe7344aa3e"
-  integrity sha512-hKdjTfSsf0vIzr013ScdMqw90nXbSEtIpTZ3Ac343/PeRSQt2kCLWdLNusb7EJ0Jtw0yzj/nJmL9kVpujXt52w==
+"@applitools/bongo@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-4.0.0.tgz#a953f53637a5f636dc9194b639151bae9907cf00"
+  integrity sha512-DFc7HQfqy2mltV6XT6HJ7iIC2wL6kT7GjYg8xmuJNzHYgIEfGpfOn3hz9HzhUNrfIzZnL3TymPJLQz47TFA8yA==
   dependencies:
     "@applitools/utils" "1.3.37"
     "@azure/storage-blob" "12.2.0-preview.1"
