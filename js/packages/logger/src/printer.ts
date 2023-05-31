@@ -1,7 +1,7 @@
 import type {Printer, PrinterOptions} from './types'
 import {LogLevel} from './log-level'
 
-export function makePrinter({handler, level, format}: PrinterOptions): Printer {
+export function makePrinter({handler, level = LogLevel.silent, format}: PrinterOptions): Printer {
   const formatter = format?.formatter ?? ((chunks, options) => ({chunks, options, isRaw: true} as any))
 
   return {debug, log, info: log, warn, error, fatal, verbose: log}

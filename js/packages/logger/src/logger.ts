@@ -36,11 +36,10 @@ export function makeLogger({logger: baseLogger, ...options}: LoggerOptions & {ex
   }
 
   if (!utils.types.isNumber(options.level)) {
-    options.level =
-      options.level ??
-      (process.env.APPLITOOLS_LOG_LEVEL as LogLevelName) ??
-      (process.env.APPLITOOLS_SHOW_LOGS === 'true' ? 'all' : 'silent')
-    options.level = LogLevel[options.level] ?? LogLevel.silent
+    options.level ??=
+      (utils.general.getEnvValue('LOG_LEVEL') as LogLevelName) ??
+      (utils.general.getEnvValue('SHOW_LOGS', 'boolean') ? 'all' : undefined)
+    options.level = LogLevel[options.level]
   }
 
   if (utils.types.has(options.handler, 'type')) {
@@ -122,6 +121,7 @@ function mergeOptions(...options: LoggerOptions[]): LoggerOptions {
     return {
       ...baseOptions,
       ...currentOptions,
+      level: currentOptions.level ?? baseOptions.level,
       format: {
         ...baseOptions.format,
         ...currentOptions.format,

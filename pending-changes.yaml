@@ -12,7 +12,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Fixed issue when logs are not show up
 "@applitools/eyes-selenium":
   feature:
     - 
