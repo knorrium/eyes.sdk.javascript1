@@ -10,6 +10,7 @@ type Options = {
   concurrency?: number
   timeout?: number
   batchingTimeout?: number
+  pollingTimeout?: number
   logger: Logger
 }
 
@@ -18,6 +19,7 @@ export function makeRender({
   concurrency = utils.general.getEnvValue('CONCURRENT_RENDERS_PER_TEST', 'number') ?? 1,
   timeout = 60 * 60 * 1000,
   batchingTimeout = 300,
+  pollingTimeout = 500,
   logger: mainLogger,
 }: Options) {
   const startRenderWithBatching = utils.general.batchify(startRenders, {timeout: batchingTimeout})
@@ -98,7 +100,7 @@ export function makeRender({
         }
       })
       const results = await requests.checkRenderResults({renders: batch.map(([{render}]) => render), logger})
-      results.forEach((result, index) => {
+      results.forEach(async (result, index) => {
         const [options, {resolve, reject}] = batch[index]
         if (result.status === 'error') {
           logger.error(`Render with id "${options.render.renderId}" failed due to an error - ${result.error}`)
@@ -107,6 +109,7 @@ export function makeRender({
           resolve(result)
         } else {
           // NOTE: this may create a long promise chain
+          await utils.general.sleep(pollingTimeout)
           checkRenderResultWithBatching(options).then(resolve, reject)
         }
       })

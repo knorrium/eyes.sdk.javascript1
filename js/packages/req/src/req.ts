@@ -192,6 +192,6 @@ function afterResponse({response, options, ...rest}: Parameters<NonNullable<Hook
 function afterError({error, options, ...rest}: Parameters<NonNullable<Hooks['afterError']>>[0]) {
   return ((options?.hooks ?? []) as Hooks[])?.reduce(async (error, hooks) => {
     error = await error
-    return (await hooks.afterError?.({error, ...rest})) || error
+    return (await hooks.afterError?.({error, options, ...rest})) || error
   }, error as Awaitable<Error>)
 }

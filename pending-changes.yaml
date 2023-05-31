@@ -12,27 +12,27 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-selenium":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-webdriverio":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-playwright":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-puppeteer":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
@@ -62,16 +62,17 @@ Apollo SDK:
     - Fixed issue when on certain browser versions test didn't target a previously created baseline
     - Fixed issue with viewport information extraction when switched to webview
     - Fixed issue with Safari mobile screenshots
+    - Increase timeout for rendering results polling
 "@applitools/eyes-cypress":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-storybook":
   feature:
     - 
   bug-fix:
-    - 
+    - Increase timeout for rendering results polling
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`

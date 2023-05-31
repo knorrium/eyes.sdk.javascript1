@@ -180,7 +180,7 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
       method: 'POST',
       body: renders.map(render => render.renderId),
       expected: 200,
-      timeout: 15000,
+      timeout: 60000,
       hooks: {
         afterOptionsMerged({options}) {
           options.retry = [
