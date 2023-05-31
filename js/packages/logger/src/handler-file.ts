@@ -29,8 +29,5 @@ export function makeFileHandler({
 
 function ensureDirectoryExistence(filename: string) {
   const dirname = path.dirname(filename)
-  if (!fs.existsSync(dirname)) {
-    ensureDirectoryExistence(dirname)
-    fs.mkdirSync(dirname)
-  }
+  fs.mkdirSync(dirname, { recursive: true });
 }
