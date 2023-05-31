@@ -21,7 +21,7 @@ describe('client', () => {
 
     // execute script works as expected
     const title = await driver.executeScript('return document.title')
-    assert.strictEqual(title, 'ACME demo app')
+    assert.strictEqual(title, 'ACME Demo App by Applitools')
 
     // find element (important! without self healing logic) returns a proper error
     await assert.rejects(
