@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 3.2.1 - 2023/5/31
+
+### Features
+### Bug fixes
+- Increase timeout for rendering results polling
+
 ## 3.2.0 - 2023/5/31
 
 ### Features
