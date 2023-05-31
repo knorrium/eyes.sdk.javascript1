@@ -281,11 +281,13 @@ export function makeCheck<TSpec extends SpecType>({
 
           return {...result, eyes: baseEyes, renderer}
         } catch (error: any) {
+          rendererLogger.error(`Renderer with id ${baseEyes.test.rendererId} failed due to an error`, error)
           if (baseEyes.running && !signal?.aborted) await baseEyes.abort({logger: rendererLogger})
           error.info = {eyes: baseEyes}
           throw error
         }
       } catch (error: any) {
+        rendererLogger.error(`Renderer with id ${renderer.id} failed before rendering started due to an error`, error)
         error.info = {...error.info, userTestId: eyes.test.userTestId, renderer}
         throw error
       }
