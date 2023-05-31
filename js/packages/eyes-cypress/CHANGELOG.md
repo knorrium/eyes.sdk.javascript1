@@ -12,6 +12,13 @@
 
 
 
+## 3.33.1 - 2023/5/31
+
+### Features
+### Bug fixes
+- Increase timeout for rendering results polling
+- Fixed issue when logs are not show up
+
 ## 3.33.0 - 2023/5/23
 
 ### Features
