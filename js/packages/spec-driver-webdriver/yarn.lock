@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@applitools/api-extractor/-/api-extractor-1.2.21.tgz#a6e7850c2099fb4e912438539ab21dfe9f1d547e"
   integrity sha512-Sh8cV2k6fA9O+ia2A9Am6+TQhBty5ComWOwIDDYWA2K6ub4VyG2bTuye7+C+VCEMNYH3ISidI5EIT66Vgxwr7Q==
 
-"@applitools/bongo@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.4.tgz#c9633990dd215b6439d7314ae41d95fe7344aa3e"
-  integrity sha512-hKdjTfSsf0vIzr013ScdMqw90nXbSEtIpTZ3Ac343/PeRSQt2kCLWdLNusb7EJ0Jtw0yzj/nJmL9kVpujXt52w==
+"@applitools/bongo@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-4.0.0.tgz#a953f53637a5f636dc9194b639151bae9907cf00"
+  integrity sha512-DFc7HQfqy2mltV6XT6HJ7iIC2wL6kT7GjYg8xmuJNzHYgIEfGpfOn3hz9HzhUNrfIzZnL3TymPJLQz47TFA8yA==
   dependencies:
     "@applitools/utils" "1.3.37"
     "@azure/storage-blob" "12.2.0-preview.1"
@@ -23,20 +23,20 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/driver@1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.12.0.tgz#f39c4d4ae4ffbc6ff7eb00ec03d41d455eea8d72"
-  integrity sha512-lnkdqxWX8TISfhz1RgNVXVfoSMpvLdzSwM5by5fWN6sEuZSdJin1pQFmatteertWPztEs9S5/WaDRXs9DDvuYw==
+"@applitools/driver@1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.12.1.tgz#7a25f8da202f8d73327062f2151a88278c4159cc"
+  integrity sha512-/ku686w2BqCOVL1brBAgrGNGiFqPp+o9vUxmfNXTvsmrAYCsefyZ9R8APoRX0tQgNKr203F9UgaNDRRRmr+Uug==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/snippets" "2.4.21"
     "@applitools/utils" "1.3.37"
     semver "7.3.7"
 
-"@applitools/logger@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.1.tgz#6c69e43b73d9c1cd6418ec19cc19e3013d2d72a8"
-  integrity sha512-5F91vcnr0b7U2J44M999yEYkNhQa++Wrch0h8Qp5TYXhqUP3xqTk19Vgi08ZMDyTmJe/CfinxilmuSqZJbz03A==
+"@applitools/logger@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.2.tgz#d643ec69fcd6a50a6419b11b7c2793dba18988d4"
+  integrity sha512-tprqwPbP0q4bQ1wPJaLCb2nmFywRPJlwEADWJJ5oKJBhbvpqEKo6542GNp4DIebugLy99HUvkCTQS8ngKG0jdg==
   dependencies:
     "@applitools/utils" "1.3.37"
     chalk "4.1.2"
@@ -47,12 +47,12 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.21.tgz#7cdcb089995d745a5b70d26511b9299d464e407f"
   integrity sha512-3l+6pR0cJJjpG5subgqoI55vFFZ94//CS7jdhWuVwUtQJzeq6QSD6m/H+qfa8A7Sg9mzXnbyUenWQ7fpUk/5Fg==
 
-"@applitools/test-server@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.1.tgz#677f4598783ae4f0306846a14df4c0f64587d096"
-  integrity sha512-3JIp5xZ+XY5TjB4KU1u7XMhlqYeNmWbmcCzvNY2cP0qSpUiSwa/BUHPPDD2cjzl+ZurUh2Mt/VZkuBcow0Jpfg==
+"@applitools/test-server@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.2.tgz#9fc6d1598b04691fb1fa2df31d8a98efc49b1d09"
+  integrity sha512-nLjmyF2ZDR1QRt+F9t17v6NZ8T2c4ZWIfioEq9EtuW/6d+V+aY2r52+3evzlD/HYFVsZFF/+0sfMhHFpyQqLYA==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/utils" "1.3.37"
     body-parser "1.20.0"
     cookie-parser "1.4.5"
