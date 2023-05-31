@@ -11,6 +11,12 @@
 
 
 
+## 1.17.1 - 2023/5/31
+
+### Features
+### Bug fixes
+- Increase timeout for rendering results polling
+
 ## 1.17.0 - 2023/5/13
 
 ### Features
