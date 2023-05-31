@@ -68,6 +68,7 @@ Apollo SDK:
     - 
   bug-fix:
     - Increase timeout for rendering results polling
+    - Fixed issue when logs are not show up
 "@applitools/eyes-storybook":
   feature:
     - 
