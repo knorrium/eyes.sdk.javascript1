@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.4.tgz#c9633990dd215b6439d7314ae41d95fe7344aa3e"
-  integrity sha512-hKdjTfSsf0vIzr013ScdMqw90nXbSEtIpTZ3Ac343/PeRSQt2kCLWdLNusb7EJ0Jtw0yzj/nJmL9kVpujXt52w==
+"@applitools/bongo@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-4.0.0.tgz#a953f53637a5f636dc9194b639151bae9907cf00"
+  integrity sha512-DFc7HQfqy2mltV6XT6HJ7iIC2wL6kT7GjYg8xmuJNzHYgIEfGpfOn3hz9HzhUNrfIzZnL3TymPJLQz47TFA8yA==
   dependencies:
     "@applitools/utils" "1.3.37"
     "@azure/storage-blob" "12.2.0-preview.1"
@@ -18,10 +18,10 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/logger@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.1.tgz#6c69e43b73d9c1cd6418ec19cc19e3013d2d72a8"
-  integrity sha512-5F91vcnr0b7U2J44M999yEYkNhQa++Wrch0h8Qp5TYXhqUP3xqTk19Vgi08ZMDyTmJe/CfinxilmuSqZJbz03A==
+"@applitools/logger@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.2.tgz#d643ec69fcd6a50a6419b11b7c2793dba18988d4"
+  integrity sha512-tprqwPbP0q4bQ1wPJaLCb2nmFywRPJlwEADWJJ5oKJBhbvpqEKo6542GNp4DIebugLy99HUvkCTQS8ngKG0jdg==
   dependencies:
     "@applitools/utils" "1.3.37"
     chalk "4.1.2"
