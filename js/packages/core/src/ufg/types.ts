@@ -26,7 +26,7 @@ export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec>
     config: Omit<NMLRequestsConfig, 'brokerUrl'>
     driver: Driver<TSpec>
     logger?: Logger
-  }): Promise<NMLClient | null>
+  }): Promise<NMLClient>
   openEyes(options: {
     target?: AutomationCore.DriverTarget<TSpec>
     settings: AutomationCore.OpenSettings

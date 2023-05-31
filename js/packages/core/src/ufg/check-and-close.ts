@@ -13,7 +13,6 @@ import {
   type Cookie,
 } from '@applitools/driver'
 import {takeDomSnapshots} from './utils/take-dom-snapshots'
-import {takeVHSes} from './utils/take-vhses'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
@@ -146,11 +145,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
         snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
       } else {
         const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
-        if (nmlClient) {
-          snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
-        } else {
-          snapshots = await takeVHSes({driver, ...snapshotOptions, logger})
-        }
+        snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
       }
 
       await currentContext.focus()

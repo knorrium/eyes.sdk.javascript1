@@ -27,7 +27,7 @@ export function makeGetNMLClient({client, logger: mainLogger}: Options) {
     logger = logger.extend(mainLogger)
 
     const brokerUrl = await driver.extractBrokerUrl()
-    if (!brokerUrl) return null
+    if (!brokerUrl) throw new Error('Unable to extract broker url from the device')
     return makeNMLClient({config: {brokerUrl, ...config}, logger})
   }
 }
