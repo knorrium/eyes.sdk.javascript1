@@ -8,6 +8,12 @@
 
 
 
+## 4.66.2 - 2023/5/31
+
+### Features
+### Bug fixes
+- Increase timeout for rendering results polling
+
 ## 4.66.1 - 2023/5/19
 
 ### Features
