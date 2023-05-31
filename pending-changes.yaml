@@ -32,7 +32,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Increase timeout for rendering results polling
+    - 
 "@applitools/eyes-testcafe":
   feature:
     - Added new selector extensions `child` and `fallback`
