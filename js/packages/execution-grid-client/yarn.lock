@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.4.tgz#c9633990dd215b6439d7314ae41d95fe7344aa3e"
-  integrity sha512-hKdjTfSsf0vIzr013ScdMqw90nXbSEtIpTZ3Ac343/PeRSQt2kCLWdLNusb7EJ0Jtw0yzj/nJmL9kVpujXt52w==
+"@applitools/bongo@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-4.0.0.tgz#a953f53637a5f636dc9194b639151bae9907cf00"
+  integrity sha512-DFc7HQfqy2mltV6XT6HJ7iIC2wL6kT7GjYg8xmuJNzHYgIEfGpfOn3hz9HzhUNrfIzZnL3TymPJLQz47TFA8yA==
   dependencies:
     "@applitools/utils" "1.3.37"
     "@azure/storage-blob" "12.2.0-preview.1"
@@ -18,24 +18,24 @@
     xml-js "1.6.11"
     yargs "15.0.2"
 
-"@applitools/core-base@1.1.55":
-  version "1.1.55"
-  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.55.tgz#0661cbf8685fb7fc1ed366a928785bba6fa4e86f"
-  integrity sha512-J1Z2ZJW9opgQBObGDvEuhzFCbKRqqqFQBka9EMwECSsgru+EmxfxVRbRJPiOKv0SMXPS/00ehtdIPxeXR986Fg==
+"@applitools/core-base@1.1.56":
+  version "1.1.56"
+  resolved "https://registry.yarnpkg.com/@applitools/core-base/-/core-base-1.1.56.tgz#e58e3122d8ef5f9e8e847b78100cec1ccee28913"
+  integrity sha512-eIHqaRUgXjle9n5V4mVIqhkINui7I9pQzaV2n8TV1vKPnTx7z53NzAW6Z9Gikoi4svG1In7pbg55kNtTtVmnPA==
   dependencies:
     "@applitools/image" "1.0.34"
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/req" "1.3.0"
     "@applitools/utils" "1.3.37"
     abort-controller "3.0.0"
     throat "6.0.2"
 
-"@applitools/driver@1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.12.0.tgz#f39c4d4ae4ffbc6ff7eb00ec03d41d455eea8d72"
-  integrity sha512-lnkdqxWX8TISfhz1RgNVXVfoSMpvLdzSwM5by5fWN6sEuZSdJin1pQFmatteertWPztEs9S5/WaDRXs9DDvuYw==
+"@applitools/driver@1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@applitools/driver/-/driver-1.12.1.tgz#7a25f8da202f8d73327062f2151a88278c4159cc"
+  integrity sha512-/ku686w2BqCOVL1brBAgrGNGiFqPp+o9vUxmfNXTvsmrAYCsefyZ9R8APoRX0tQgNKr203F9UgaNDRRRmr+Uug==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/snippets" "2.4.21"
     "@applitools/utils" "1.3.37"
     semver "7.3.7"
@@ -82,10 +82,10 @@
     jpeg-js "0.4.4"
     png-async "0.9.4"
 
-"@applitools/logger@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.1.tgz#6c69e43b73d9c1cd6418ec19cc19e3013d2d72a8"
-  integrity sha512-5F91vcnr0b7U2J44M999yEYkNhQa++Wrch0h8Qp5TYXhqUP3xqTk19Vgi08ZMDyTmJe/CfinxilmuSqZJbz03A==
+"@applitools/logger@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.2.tgz#d643ec69fcd6a50a6419b11b7c2793dba18988d4"
+  integrity sha512-tprqwPbP0q4bQ1wPJaLCb2nmFywRPJlwEADWJJ5oKJBhbvpqEKo6542GNp4DIebugLy99HUvkCTQS8ngKG0jdg==
   dependencies:
     "@applitools/utils" "1.3.37"
     chalk "4.1.2"
@@ -116,30 +116,30 @@
   resolved "https://registry.yarnpkg.com/@applitools/snippets/-/snippets-2.4.21.tgz#7cdcb089995d745a5b70d26511b9299d464e407f"
   integrity sha512-3l+6pR0cJJjpG5subgqoI55vFFZ94//CS7jdhWuVwUtQJzeq6QSD6m/H+qfa8A7Sg9mzXnbyUenWQ7fpUk/5Fg==
 
-"@applitools/socket@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.1.0.tgz#b34d74ea0444c775556dc8ea765e993393178f96"
-  integrity sha512-WJVCVlkRI+ewraOhgSYEapeTAO1etnBQZDepCQEwIePwJeYNSXUWuoQGT7dMrNHPMMowFRlmjO8VnwLB1Se4EA==
+"@applitools/socket@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/socket/-/socket-1.1.1.tgz#765a3960a26c9f19fa99293558a57909e4cef20d"
+  integrity sha512-lQjglDC8r2QOVAQmZ+dqsTrtHMQ/9uAGsoMpFQo9amf+/DOipIwLKo0kGx+bMYmfDnAChlifukmMvrl9o1NcTQ==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/utils" "1.3.37"
 
-"@applitools/spec-driver-webdriver@1.0.32":
-  version "1.0.32"
-  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.32.tgz#f40db6ba9e6682d9e78ae9b9b569dde80d3b3ffc"
-  integrity sha512-fMFoXvSDIjYlH5PWRCvzEq8lQYiau1OVgnnmNd7njo5qo7/6YCmQoWbtJ188nwPsnxKu4gON+HzZv8dTUD2SpA==
+"@applitools/spec-driver-webdriver@1.0.33":
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/@applitools/spec-driver-webdriver/-/spec-driver-webdriver-1.0.33.tgz#6df9f773ea1b478f942cc1550df90b4b47f52062"
+  integrity sha512-5QbP945AyS5CjvqQ9N0d8UfnVKDjOsEhennm++W3xNBaBAGIQia2yP5xT3DFuEBH2fZCxJE+Cd/X1X4IbqGdfg==
   dependencies:
-    "@applitools/driver" "1.12.0"
+    "@applitools/driver" "1.12.1"
     "@applitools/utils" "1.3.37"
     http-proxy-agent "5.0.0"
     https-proxy-agent "5.0.1"
 
-"@applitools/test-server@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.1.tgz#677f4598783ae4f0306846a14df4c0f64587d096"
-  integrity sha512-3JIp5xZ+XY5TjB4KU1u7XMhlqYeNmWbmcCzvNY2cP0qSpUiSwa/BUHPPDD2cjzl+ZurUh2Mt/VZkuBcow0Jpfg==
+"@applitools/test-server@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.2.tgz#9fc6d1598b04691fb1fa2df31d8a98efc49b1d09"
+  integrity sha512-nLjmyF2ZDR1QRt+F9t17v6NZ8T2c4ZWIfioEq9EtuW/6d+V+aY2r52+3evzlD/HYFVsZFF/+0sfMhHFpyQqLYA==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/utils" "1.3.37"
     body-parser "1.20.0"
     cookie-parser "1.4.5"
