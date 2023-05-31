@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@applitools/bongo@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-3.0.4.tgz#c9633990dd215b6439d7314ae41d95fe7344aa3e"
-  integrity sha512-hKdjTfSsf0vIzr013ScdMqw90nXbSEtIpTZ3Ac343/PeRSQt2kCLWdLNusb7EJ0Jtw0yzj/nJmL9kVpujXt52w==
+"@applitools/bongo@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/bongo/-/bongo-4.0.0.tgz#a953f53637a5f636dc9194b639151bae9907cf00"
+  integrity sha512-DFc7HQfqy2mltV6XT6HJ7iIC2wL6kT7GjYg8xmuJNzHYgIEfGpfOn3hz9HzhUNrfIzZnL3TymPJLQz47TFA8yA==
   dependencies:
     "@applitools/utils" "1.3.37"
     "@azure/storage-blob" "12.2.0-preview.1"
@@ -51,10 +51,10 @@
     ws "^8.2.3"
     xml-name-validator "^4.0.0"
 
-"@applitools/logger@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.1.tgz#6c69e43b73d9c1cd6418ec19cc19e3013d2d72a8"
-  integrity sha512-5F91vcnr0b7U2J44M999yEYkNhQa++Wrch0h8Qp5TYXhqUP3xqTk19Vgi08ZMDyTmJe/CfinxilmuSqZJbz03A==
+"@applitools/logger@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/logger/-/logger-2.0.2.tgz#d643ec69fcd6a50a6419b11b7c2793dba18988d4"
+  integrity sha512-tprqwPbP0q4bQ1wPJaLCb2nmFywRPJlwEADWJJ5oKJBhbvpqEKo6542GNp4DIebugLy99HUvkCTQS8ngKG0jdg==
   dependencies:
     "@applitools/utils" "1.3.37"
     chalk "4.1.2"
@@ -71,12 +71,12 @@
     https-proxy-agent "5.0.1"
     node-fetch "3.3.1"
 
-"@applitools/test-server@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.1.tgz#677f4598783ae4f0306846a14df4c0f64587d096"
-  integrity sha512-3JIp5xZ+XY5TjB4KU1u7XMhlqYeNmWbmcCzvNY2cP0qSpUiSwa/BUHPPDD2cjzl+ZurUh2Mt/VZkuBcow0Jpfg==
+"@applitools/test-server@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@applitools/test-server/-/test-server-1.2.2.tgz#9fc6d1598b04691fb1fa2df31d8a98efc49b1d09"
+  integrity sha512-nLjmyF2ZDR1QRt+F9t17v6NZ8T2c4ZWIfioEq9EtuW/6d+V+aY2r52+3evzlD/HYFVsZFF/+0sfMhHFpyQqLYA==
   dependencies:
-    "@applitools/logger" "2.0.1"
+    "@applitools/logger" "2.0.2"
     "@applitools/utils" "1.3.37"
     body-parser "1.20.0"
     cookie-parser "1.4.5"
