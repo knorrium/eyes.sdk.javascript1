@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 3.2.0 - 2023/5/31
+
+### Features
+- Drop support of legacy vhs extraction
+### Bug fixes
+- Fixed issue when logs are not show up
+
 ## 3.1.0 - 2023/5/22
 
 ### Features

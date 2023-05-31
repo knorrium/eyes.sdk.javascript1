@@ -10,9 +10,9 @@ Apollo SDK:
       An example of how to inline `markdown code highlights`
 "@applitools/core":
   feature:
-    - Drop support of legacy vhs extraction
+    - 
   bug-fix:
-    - Fixed issue when logs are not show up 
+    - 
 "@applitools/eyes-selenium":
   feature:
     - 
