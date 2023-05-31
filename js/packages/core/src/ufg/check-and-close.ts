@@ -270,11 +270,13 @@ export function makeCheckAndClose<TSpec extends SpecType>({
 
           return {...result, userTestId: eyes.test.userTestId, eyes: baseEyes, renderer}
         } catch (error: any) {
+          rendererLogger.error(`Renderer with id ${baseEyes.test.rendererId} failed due to an error`, error)
           await baseEyes.abort({logger: rendererLogger})
           error.info = {eyes: baseEyes}
           throw error
         }
       } catch (error: any) {
+        rendererLogger.error(`Renderer with id ${renderer.id} failed before rendering started due to an error`, error)
         error.info = {...error.info, userTestId: eyes.test.userTestId, renderer}
         throw error
       }
