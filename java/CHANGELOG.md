@@ -1,7 +1,15 @@
+## [5.54.0] - 2023-06-01
+### Features
+- 
+### Bug fixes
+- Increase timeout for rendering results polling.
+- Fixed issue when logs are not showing up.
+
 ## [5.53.0] - 2023-05-28
 ### Features
 - Internal improvements.
 ### Bug fixes
+- 
 
 ## [5.52.0] - 2023-05-18
 ### Features
