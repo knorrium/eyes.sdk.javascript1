@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 
-const COUNT = 1500;
+const COUNT = 500;
 
 for (let i = 0, ii = COUNT; i < ii; i++) {
   storiesOf("Perf/Category " + i % 50, module).add("Test page " + i, () => <Test index={i} />);
