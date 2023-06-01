@@ -1,8 +1,23 @@
+import atexit
+import contextlib
 import sys
 from logging import getLogger
 from subprocess import PIPE, Popen  # nosec
 
-from pkg_resources import resource_filename
+try:
+    # assume python>=3.9 and try to import new resources API
+    from importlib.resources import as_file, files
+
+    def resource_filename(package, file_name):
+        cleanup_manager = contextlib.ExitStack()
+        ref = files(package) / file_name
+        path = cleanup_manager.enter_context(as_file(ref))
+        atexit.register(cleanup_manager.close)
+        return path
+
+except ImportError:
+    # fallback to python<3.9 API (not available in python>=3.12)
+    from pkg_resources import resource_filename
 
 logger = getLogger(__name__)
 
@@ -11,8 +26,6 @@ executable_path = resource_filename("applitools.core_universal", "bin/" + _exe_n
 
 
 class SDKServer(object):
-    log_file_name = None  # backward compatibility with eyes-selenium<=5.6
-
     def __init__(self):
         """Start core-universal service subprocess and obtain its port number."""
         command = [

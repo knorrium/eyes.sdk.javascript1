@@ -1,7 +1,6 @@
 import pytest
 from appium.version import version as appium_version
 from appium.webdriver.common.mobileby import MobileBy
-from pkg_resources import parse_version
 from selenium.webdriver.common.by import By
 
 from applitools.selenium.fluent.target_path import (
@@ -14,6 +13,10 @@ from applitools.selenium.fluent.target_path import (
     TargetPath,
 )
 from applitools.selenium.object_registry import SeleniumWebdriverObjectRegistry
+
+
+def parse_version(version_str):
+    return tuple(int(c) for c in version_str.split(".")[:2])
 
 
 @pytest.fixture
