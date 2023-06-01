@@ -10,6 +10,12 @@
 
 
 
+## 5.44.2 - 2023/6/1
+
+### Features
+### Bug fixes
+- Increase timeout for rendering results polling
+
 ## 5.44.1 - 2023/5/19
 
 ### Features
