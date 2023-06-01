@@ -6,7 +6,7 @@ module.exports = {
   storybookConfigDir: 'test/fixtures/heavyStorybook/',
   storybookStaticDir: 'test/fixtures',
   // storybookPort: 9002,
-  storybookUrl: 'http://localhost:9002', // need to run `yarn storybook:heavy` in a separate terminal
+  // storybookUrl: 'http://localhost:9002', // need to run `yarn storybook:heavy` in a separate terminal
   // browser: [
   //   {width: 1000, height: 600, name: 'chrome'},
   //   {width: 1000, height: 600, name: 'firefox'},
