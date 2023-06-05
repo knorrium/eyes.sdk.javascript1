@@ -34,6 +34,7 @@ async function eyesStorybook({
   performance,
   timeItAsync,
   outputStream = process.stderr,
+  isVersion7,
 }) {
   let memoryTimeout;
   let renderIE = false;
@@ -213,6 +214,7 @@ async function eyesStorybook({
       logger,
       stream: outputStream,
       pagePool,
+      isVersion7,
     });
 
     logger.log('finished creating functions');

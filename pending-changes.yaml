@@ -72,6 +72,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
+    - Add support for variations in storybook 7
     - Increase timeout for rendering results polling
 "@applitools/eyes-browser-extension":
   feature:

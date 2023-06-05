@@ -2,6 +2,7 @@ import React from 'react';
 import { within, userEvent } from '@storybook/testing-library';
 
 import { LoginForm } from './LoginForm';
+import {Theme} from './Theme';
 
 // Function to emulate pausing between interactions
 function sleep(ms) {
@@ -25,6 +26,8 @@ export default exports
 const Template = (args) => <LoginForm {...args} />;
 export const EmptyForm = Template.bind({});
 export const FilledForm = Template.bind({});
+const themeTemplate = (args) => <Theme {...args} />;
+export const MyTheme =  themeTemplate.bind({});
 if (isInteractionsCompetiable){
   FilledForm.play = async ({ canvasElement }) => {
     // Starts querying the component from its root element

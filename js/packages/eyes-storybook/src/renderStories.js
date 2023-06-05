@@ -13,6 +13,7 @@ function makeRenderStories({
   stream,
   getClientAPI,
   maxPageTTL = 60000,
+  isVersion7,
 }) {
   let newPageIdToAdd;
 
@@ -56,7 +57,7 @@ function makeRenderStories({
 
       async function processStory() {
         const story = stories[currIndex++];
-        const storyUrl = getStoryUrl(story, storybookUrl);
+        const storyUrl = getStoryUrl(story, storybookUrl, isVersion7);
         const title = getStoryBaselineName(story);
         try {
           let [error, storyData] = await presult(

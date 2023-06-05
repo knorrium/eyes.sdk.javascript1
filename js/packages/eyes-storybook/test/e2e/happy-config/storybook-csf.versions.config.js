@@ -21,4 +21,9 @@ module.exports = {
     {width: 640, height: 480, name: 'chrome'},
     {width: 1280, height: 960, name: 'chrome'},
   ],
+  variations: ({name}) => {
+    if (/Them/.test(name)) {
+      return [{queryParams: {theme: 'dark'}}];
+    }
+  },
 };

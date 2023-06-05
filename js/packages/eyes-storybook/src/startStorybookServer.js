@@ -1,13 +1,6 @@
 'use strict';
-const {resolve} = require('path');
 const ora = require('ora');
 const StorybookConnector = require('./storybookConnector');
-const fs = require('fs');
-const {exec} = require('child_process');
-const {promisify: p} = require('util');
-const pexec = p(exec);
-// eslint-disable-next-line
-const semver = require('semver');
 
 async function startStorybookServer({
   packagePath,
@@ -18,22 +11,10 @@ async function startStorybookServer({
   showStorybookOutput,
   logger,
   startStorybookServerTimeout,
+  storybookPath,
+  sbArg,
 }) {
   const isWindows = process.platform.startsWith('win');
-  let storybookPath, sbArg;
-  const storybookPathV6 = resolve(packagePath, 'node_modules/.bin/start-storybook');
-  const storybookPathV7 = resolve(packagePath, 'node_modules/.bin/sb');
-  if (fs.existsSync(storybookPathV7)) {
-    const version = await pexec(`${storybookPathV7} --version`);
-    if (semver.satisfies(version.stdout, '<7.0.0')) {
-      storybookPath = storybookPathV6;
-    } else {
-      storybookPath = storybookPathV7;
-      sbArg = 'dev';
-    }
-  } else {
-    storybookPath = storybookPathV6;
-  }
 
   const storybookConnector = new StorybookConnector({
     storybookPath,
