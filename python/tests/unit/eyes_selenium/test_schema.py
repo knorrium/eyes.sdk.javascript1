@@ -31,8 +31,14 @@ from applitools.common import (
     SessionType,
     TestResults,
     VisualGridOption,
+    schema,
 )
 from applitools.common.accessibility import SessionAccessibilityStatus
+from applitools.common.batch_close import BatchClose
+from applitools.common.cut import FixedCutProvider
+from applitools.common.extract_text import OCRRegion, TextRegionSettings
+from applitools.common.fluent.target_path import TargetPath
+from applitools.common.locators import VisualLocatorSettings
 from applitools.common.selenium import BrowserType, Configuration
 from applitools.common.test_results import (
     SessionUrls,
@@ -41,10 +47,6 @@ from applitools.common.test_results import (
     TestResultsStatus,
     TestResultsSummary,
 )
-from applitools.core import BatchClose, TextRegionSettings, VisualLocatorSettings
-from applitools.core.cut import FixedCutProvider
-from applitools.core.extract_text import OCRRegion
-from applitools.selenium import TargetPath, schema
 from applitools.selenium.fluent import SeleniumCheckSettings
 from applitools.selenium.object_registry import SeleniumWebdriverObjectRegistry
 

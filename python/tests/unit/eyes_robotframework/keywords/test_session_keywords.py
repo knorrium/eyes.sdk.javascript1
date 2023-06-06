@@ -16,7 +16,7 @@ def test_get_execution_cloud_url(session_keyword, eyes_library_with_selenium):
     eyes_library_with_selenium._configuration.set_server_url("https://eyes.server")
 
     with patch(
-        "applitools.selenium.command_executor.CommandExecutor._checked_command"
+        "applitools.common.command_executor.CommandExecutor._checked_command"
     ) as c:
         session_keyword.get_execution_cloud_url()
         # the last element in mock call triggers mock error on Python 2

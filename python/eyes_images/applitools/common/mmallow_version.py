@@ -1,3 +1,6 @@
+from __future__ import absolute_import, division, print_function
+
+
 class LooseVersion(object):
     """Minimal replacement for deprecated distutils.version.LooseVersion"""
 

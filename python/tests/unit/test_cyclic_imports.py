@@ -5,7 +5,7 @@ from sys import executable
 import pytest
 
 import EyesLibrary
-from applitools import common, core, core_universal, images, selenium
+from applitools import common, core_universal, images, selenium
 
 
 def enum_modules(package):
@@ -20,9 +20,7 @@ def enum_modules(package):
                 yield package.__name__ + "." + module_path[:-3]
 
 
-@pytest.mark.parametrize(
-    "pkg", [common, core, images, selenium, core_universal, EyesLibrary]
-)
+@pytest.mark.parametrize("pkg", [common, images, selenium, core_universal, EyesLibrary])
 def test_cyclic_imports(pkg):
     for module in enum_modules(pkg):
         if module.endswith("__main__"):

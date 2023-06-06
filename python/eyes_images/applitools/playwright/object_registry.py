@@ -1,9 +1,9 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from typing import TYPE_CHECKING
 
 from ..common.object_registry import ObjectRegistry, RefId
-from .optional_deps import PlaywrightLocator
+from ..common.optional_deps import PlaywrightLocator
 
 if TYPE_CHECKING:
     from typing import Text

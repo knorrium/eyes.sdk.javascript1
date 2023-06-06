@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 from typing import TYPE_CHECKING
 
 from .schema import (
@@ -20,14 +22,14 @@ if TYPE_CHECKING:
     from typing import List, Tuple
 
     from .. import common
-    from ..common import config as cfg
-    from ..common import target as t
-    from ..common.utils.custom_types import ViewPort
-    from ..core import ec_client_settings, extract_text, locators
-    from ..core.batch_close import _EnabledBatchClose  # noqa
+    from . import config as cfg
+    from . import ec_client_settings, extract_text, locators
+    from . import target as t
+    from .batch_close import _EnabledBatchClose  # noqa
     from .fluent import selenium_check_settings as cs
     from .object_registry import ObjectRegistry
     from .optional_deps import WebDriver
+    from .utils.custom_types import ViewPort
 
 
 class Marshaller(object):

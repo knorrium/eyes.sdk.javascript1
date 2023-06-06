@@ -1,12 +1,13 @@
+from __future__ import absolute_import, division, print_function
+
 from abc import ABCMeta, abstractmethod
 from typing import Optional, Text
 
 import attr
 from six import add_metaclass
 
-from applitools.common.geometry import RectangleSize
-from applitools.common.selenium.misc import BrowserType
-
+from ..geometry import RectangleSize
+from ..selenium.misc import BrowserType
 from .config import (
     AndroidDeviceName,
     AndroidVersion,

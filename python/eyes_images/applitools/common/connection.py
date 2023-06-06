@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import atexit
 import logging
 import weakref
@@ -9,14 +11,13 @@ from typing import TYPE_CHECKING
 from six import moves
 from websocket import WebSocket
 
-from applitools.core_universal import get_instance
-
+from ..core_universal import get_instance
 from .object_registry import RefId
 
 if TYPE_CHECKING:
     from typing import Optional, Text
 
-    from ..selenium.command_context import CommandContext
+    from .command_context import CommandContext
 
 _all_sockets = []
 _logger = logging.getLogger(__name__)

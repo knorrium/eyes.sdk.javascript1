@@ -3,8 +3,8 @@ from mock import Mock
 
 from applitools.common import MatchLevel
 from applitools.common.accessibility import AccessibilityRegionType
+from applitools.common.fluent.check_settings import CheckSettings
 from applitools.common.geometry import AccessibilityRegion, Region
-from applitools.core import CheckSettings
 
 
 def test_set_get_use_dom():
@@ -55,8 +55,8 @@ def test_set_match_regions_level():
 
     cs = CheckSettings().content(Region.EMPTY())
     assert cs.values.match_level is None
-    cs = cs.content()
-    assert cs.values.match_level == MatchLevel.CONTENT
+    cs = cs.ignore_colors()
+    assert cs.values.match_level == MatchLevel.IGNORE_COLORS
 
     cs = CheckSettings().strict(Region.EMPTY())
     assert cs.values.match_level is None

@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import sys
 
 # distutils is removed in python 3.12 but marshmallow<3

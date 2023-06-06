@@ -1,10 +1,13 @@
-from itertools import count
+from __future__ import absolute_import, division, print_function
+
 from typing import TYPE_CHECKING
 
 from .marshaller import Marshaller
 
 if TYPE_CHECKING:
-    from ..common.connection import USDKConnection
+    from typing import List, Union
+
+    from .connection import USDKConnection
     from .object_registry import ObjectRegistry
 
 
@@ -16,10 +19,11 @@ class CommandContext(object):
         self.key = self.object_registry.next_command_key()
         self.marshaller = Marshaller(self.object_registry)
 
+    @staticmethod
+    def commands_or_kind():
+        # type: () -> Union[str, List[str]]
+        return "webdriver"
+
     def execute_callback(self, command):
         # type: (dict) -> None
         raise NotImplementedError
-
-
-class SeleniumWebdriverCommandContext(CommandContext):
-    pass

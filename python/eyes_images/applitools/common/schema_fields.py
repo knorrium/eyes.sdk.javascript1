@@ -1,12 +1,9 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import enum
-import typing as t
+from typing import TYPE_CHECKING
 
-from applitools.common.mmallow import Dict, Field
-from applitools.selenium.optional_deps import StaleElementReferenceException
-
-from ..common import (
+from . import (
     AndroidDeviceInfo,
     ChromeEmulationInfo,
     DesktopBrowserInfo,
@@ -15,21 +12,28 @@ from ..common import (
     NewTestError,
     TestFailedError,
 )
-from ..common.errors import USDKFailure
-from ..common.layout_breakpoints_options import LayoutBreakpointsOptions as LBO
-from ..core import FloatingRegionByRectangle, RegionByRectangle
-from ..core.extract_text import OCRRegion
-from ..core.fluent import AccessibilityRegionByRectangle
-from .fluent import FloatingRegionBySelector, RegionBySelector
-from .fluent.region import AccessibilityRegionBySelector
+from .errors import USDKFailure
+from .extract_text import OCRRegion
+from .fluent.region import (
+    AccessibilityRegionByRectangle,
+    AccessibilityRegionBySelector,
+    FloatingRegionByRectangle,
+    FloatingRegionBySelector,
+    RegionByRectangle,
+    RegionBySelector,
+)
 from .fluent.target_path import RegionLocator
+from .layout_breakpoints_options import LayoutBreakpointsOptions as LBO
+from .mmallow import Dict, Field
+from .optional_deps import StaleElementReferenceException
 
-if t.TYPE_CHECKING:
-    from applitools.common import config as cfg
-    from applitools.common import ultrafastgrid as ufg
-    from applitools.core.fluent import region
-    from applitools.selenium.fluent import selenium_check_settings as cs
-    from applitools.selenium.fluent import target_path
+if TYPE_CHECKING:
+    import typing as t
+
+    from . import config as cfg
+    from . import ultrafastgrid as ufg
+    from .fluent import region, target_path
+    from .fluent import web_check_settings as cs
 
 
 class Enum(Field):
@@ -149,7 +153,7 @@ class TargetReference(Field):
     _CHECK_ATTRIBUTE = False  # it might be target_locator or target_region
 
     def _serialize(self, _, __, check_settings):
-        # type: (t.Any, t.Any, cs.SeleniumCheckSettingsValues) -> t.Optional[dict]
+        # type: (t.Any, t.Any, cs.WebCheckSettingsValues) -> t.Optional[dict]
         if check_settings.target_locator:
             return check_settings.target_locator.to_dict(self.context["registry"])
         elif check_settings.target_region:

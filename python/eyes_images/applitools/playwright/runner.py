@@ -1,16 +1,21 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-from applitools.selenium import runner as selenium_runner
-from applitools.selenium.runner import RunnerOptions  # noqa
+from applitools.common.runner import (
+    ClassicEyesRunner,
+    RunnerOptions,
+    VisualGridEyesRunner,
+)
 
 from .protocol import PlaywrightSpecDriver
 
+__all__ = "ClassicRunner", "VisualGridRunner", "RunnerOptions"
 
-class ClassicRunner(selenium_runner.ClassicRunner):
+
+class ClassicRunner(ClassicEyesRunner):
     BASE_AGENT_ID = "eyes.playwright.python"
     Protocol = PlaywrightSpecDriver
 
 
-class VisualGridRunner(selenium_runner.VisualGridRunner):
+class VisualGridRunner(VisualGridEyesRunner):
     BASE_AGENT_ID = "eyes.playwright.visualgrid.python"
     Protocol = PlaywrightSpecDriver

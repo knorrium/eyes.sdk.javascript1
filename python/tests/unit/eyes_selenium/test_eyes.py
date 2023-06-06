@@ -2,8 +2,8 @@ import mock
 import pytest
 
 from applitools.common import EyesError, MatchLevel, StitchMode
+from applitools.common.cut import FixedCutProvider, UnscaledFixedCutProvider
 from applitools.common.selenium import Configuration
-from applitools.core import FixedCutProvider, UnscaledFixedCutProvider
 from applitools.selenium import Eyes, Target
 
 

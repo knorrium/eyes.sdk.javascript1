@@ -3,7 +3,7 @@ from appium.version import version as appium_version
 from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.common.by import By
 
-from applitools.selenium.fluent.target_path import (
+from applitools.common.fluent.target_path import (
     ElementReference,
     ElementSelector,
     FrameLocator,

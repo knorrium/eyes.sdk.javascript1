@@ -1,5 +1,8 @@
-from .check_settings import CheckSettings, CheckSettingsValues
-from .region import (
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+from applitools.common import deprecated
+from applitools.common.fluent.check_settings import CheckSettings, CheckSettingsValues
+from applitools.common.fluent.region import (
     AccessibilityRegionByRectangle,
     FloatingRegionByRectangle,
     GetAccessibilityRegion,
@@ -8,13 +11,14 @@ from .region import (
     RegionByRectangle,
 )
 
+deprecated.module(__name__)
 __all__ = (
+    "AccessibilityRegionByRectangle",
     "CheckSettings",
     "CheckSettingsValues",
-    "GetRegion",
-    "GetFloatingRegion",
     "FloatingRegionByRectangle",
-    "RegionByRectangle",
     "GetAccessibilityRegion",
-    "AccessibilityRegionByRectangle",
+    "GetFloatingRegion",
+    "GetRegion",
+    "RegionByRectangle",
 )

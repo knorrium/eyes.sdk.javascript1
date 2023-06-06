@@ -1,12 +1,14 @@
+from __future__ import absolute_import, division, print_function
+
 from base64 import b64encode
 from typing import TYPE_CHECKING, ByteString, Optional, Text, Union, overload
 
 import attr
 from six import PY2, BytesIO, binary_type, string_types
 
-from applitools.selenium.fluent import SeleniumCheckSettings
-from applitools.selenium.fluent.selenium_check_settings import (
-    SeleniumCheckSettingsValues,
+from applitools.common.fluent.web_check_settings import (
+    WebCheckSettings,
+    WebCheckSettingsValues,
 )
 
 from .optional_deps import Image, PathLike, fspath
@@ -16,16 +18,14 @@ if TYPE_CHECKING:
 
 
 @attr.s
-class ImagesCheckSettingsValues(SeleniumCheckSettingsValues):
+class ImagesCheckSettingsValues(WebCheckSettingsValues):
     image = attr.ib(default=None)  # type: Optional[Text]
     dom = attr.ib(default=None)  # type: Optional[Text]
 
 
 @attr.s
-class ImagesCheckSettings(SeleniumCheckSettings):
-    values = attr.ib(
-        factory=ImagesCheckSettingsValues
-    )  # type: ImagesCheckSettingsValues
+class ImagesCheckSettings(WebCheckSettings):
+    Values = ImagesCheckSettingsValues
 
     def with_dom(self, dom):
         # type: (Text) -> ImagesCheckSettings

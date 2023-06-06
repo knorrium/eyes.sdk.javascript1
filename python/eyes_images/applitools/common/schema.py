@@ -1,8 +1,25 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-import typing as t
+from typing import TYPE_CHECKING
 
-from applitools.common.mmallow import (
+from .. import common
+from . import (
+    AccessibilityGuidelinesVersion,
+    AccessibilityLevel,
+    AccessibilityRegionType,
+    AndroidDeviceName,
+    AndroidVersion,
+    DeviceName,
+    IosDeviceName,
+    IosVersion,
+    MatchLevel,
+    ScreenOrientation,
+    SessionType,
+    StitchMode,
+    extract_text,
+)
+from .accessibility import AccessibilityStatus
+from .mmallow import (
     BaseSchema,
     Boolean,
     DateTime,
@@ -19,27 +36,6 @@ from applitools.common.mmallow import (
     post_load,
     with_metaclass,
 )
-from applitools.core import extract_text
-
-from .. import common
-from ..common import (
-    AccessibilityGuidelinesVersion,
-    AccessibilityLevel,
-    AccessibilityRegionType,
-    AndroidDeviceName,
-    AndroidVersion,
-    DeviceName,
-    IosDeviceName,
-    IosVersion,
-    MatchLevel,
-    ScreenOrientation,
-    SessionType,
-    StitchMode,
-)
-from ..common.accessibility import AccessibilityStatus
-from ..common.selenium import BrowserType
-from ..common.test_results import TestResultsStatus
-from .schema_fields import demarshal_error  # noqa
 from .schema_fields import (
     BrowserInfo,
     DebugScreenshots,
@@ -55,10 +51,15 @@ from .schema_fields import (
     TargetReference,
     VisualGridOptions,
     check_error,
+    demarshal_error,
 )
+from .selenium.misc import BrowserType
+from .test_results import TestResultsStatus
 
-if t.TYPE_CHECKING:
-    from applitools.common import config
+if TYPE_CHECKING:
+    import typing as t
+
+    from . import config
 
 
 # Default marshmallow.Schema has no option to skip attributes with None value

@@ -1,29 +1,29 @@
+from __future__ import absolute_import, division, print_function
+
 from copy import deepcopy
 from typing import TYPE_CHECKING, List, Optional, Text, Tuple, Union, overload
 
 import attr
 from six import raise_from
 
-from applitools.common.config import Configuration as ConfigurationBase
-from applitools.common.layout_breakpoints_options import LayoutBreakpointsOptions
-from applitools.common.ultrafastgrid import (
+from ..config import Configuration as ConfigurationBase
+from ..layout_breakpoints_options import LayoutBreakpointsOptions
+from ..ultrafastgrid import (
     AndroidDeviceInfo,
     ChromeEmulationInfo,
     DesktopBrowserInfo,
     IosDeviceInfo,
     IRenderBrowserInfo,
-    RenderBrowserInfo,
     ScreenOrientation,
     VisualGridOption,
 )
-from applitools.common.utils import argument_guard
-from applitools.common.validators import is_list_or_tuple
-
+from ..utils import argument_guard
+from ..validators import is_list_or_tuple
 from .misc import BrowserType, StitchMode
 
 if TYPE_CHECKING:
-    from applitools.common.ultrafastgrid import DeviceName
-    from applitools.core.cut import CutProvider
+    from ..cut import CutProvider
+    from ..ultrafastgrid import DeviceName
 
 __all__ = ("Configuration",)
 

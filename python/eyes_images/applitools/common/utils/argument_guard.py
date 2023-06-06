@@ -1,6 +1,8 @@
+from __future__ import absolute_import, division, print_function
+
 from six import iteritems
 
-from applitools.common.validators import is_list_or_tuple
+from ..validators import is_list_or_tuple
 
 
 def get_name_from_param(param):

@@ -1,6 +1,6 @@
 import pytest
 
-from applitools.core import VisualLocator
+from applitools.common.locators import VisualLocator
 
 
 def test_wrong_visual_locator_names():

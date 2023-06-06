@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from mock import ANY, call, patch
 from six import PY2
 
@@ -7,7 +9,7 @@ from applitools.selenium import Eyes
 
 def test_get_execution_cloud_url_no_args(monkeypatch):
     with patch(
-        "applitools.selenium.command_executor.CommandExecutor._checked_command"
+        "applitools.common.command_executor.CommandExecutor._checked_command"
     ) as c:
         Eyes.get_execution_cloud_url()
 
@@ -25,7 +27,7 @@ def test_get_execution_cloud_url_no_args(monkeypatch):
 
 def test_get_execution_cloud_url_all_args(monkeypatch):
     with patch(
-        "applitools.selenium.command_executor.CommandExecutor._checked_command"
+        "applitools.common.command_executor.CommandExecutor._checked_command"
     ) as c:
         Eyes.get_execution_cloud_url("key", "url", ProxySettings("http://u:p@host:80"))
 

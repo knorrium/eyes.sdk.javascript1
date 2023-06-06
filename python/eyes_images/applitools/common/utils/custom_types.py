@@ -1,11 +1,11 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from typing import TYPE_CHECKING, Dict, List, Text, Union
 
 if TYPE_CHECKING:
-    from applitools.common.geometry import RectangleSize, Region
-    from applitools.core.triggers import ActionTrigger
-    from applitools.selenium.optional_deps import AppiumWebElement, WebElement
+    from ..geometry import RectangleSize, Region
+    from ..optional_deps import AppiumWebElement, WebElement
+    from ..triggers import ActionTrigger
 
     ViewPort = Union[Dict[Text, int], RectangleSize]  # typedef
     CodedRegionPadding = Union[int, Dict[Text, int]]  # typedef

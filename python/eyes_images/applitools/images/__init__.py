@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 from applitools.common import (
     BatchInfo,
     Configuration,
@@ -15,43 +17,43 @@ from applitools.common.accessibility import (
     AccessibilityRegionType,
     AccessibilitySettings,
 )
-from applitools.common.geometry import AccessibilityRegion, RectangleSize, Region
-from applitools.core.batch_close import BatchClose
-from applitools.core.cut import (
+from applitools.common.batch_close import BatchClose
+from applitools.common.cut import (
     FixedCutProvider,
     NullCutProvider,
     UnscaledFixedCutProvider,
 )
-from applitools.core.fluent.region import AccessibilityRegionByRectangle
+from applitools.common.fluent.region import AccessibilityRegionByRectangle
+from applitools.common.geometry import AccessibilityRegion, RectangleSize, Region
 
 from .extract_text import OCRRegion, TextRegionSettings
 from .eyes import Eyes
 from .fluent import Target
 
 __all__ = (
-    "Eyes",
-    "BatchInfo",
-    "Region",
-    "MatchLevel",
-    "logger",
-    "StdoutLogger",
-    "FileLogger",
-    "Target",
-    "FixedCutProvider",
-    "UnscaledFixedCutProvider",
-    "NullCutProvider",
-    "RectangleSize",
-    "TestResults",
-    "TestResultContainer",
-    "TestResultsSummary",
-    "BatchClose",
-    "Configuration",
-    "AccessibilityRegionType",
-    "AccessibilityLevel",
-    "AccessibilitySettings",
     "AccessibilityGuidelinesVersion",
-    "AccessibilityRegionByRectangle",
+    "AccessibilityLevel",
     "AccessibilityRegion",
+    "AccessibilityRegionByRectangle",
+    "AccessibilityRegionType",
+    "AccessibilitySettings",
+    "BatchClose",
+    "BatchInfo",
+    "Configuration",
+    "Eyes",
+    "FileLogger",
+    "FixedCutProvider",
+    "MatchLevel",
+    "NullCutProvider",
     "OCRRegion",
+    "RectangleSize",
+    "Region",
+    "StdoutLogger",
+    "Target",
+    "TestResultContainer",
+    "TestResults",
+    "TestResultsSummary",
     "TextRegionSettings",
+    "UnscaledFixedCutProvider",
+    "logger",
 )

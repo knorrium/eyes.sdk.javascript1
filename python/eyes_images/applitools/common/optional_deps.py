@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 try:
     from appium.webdriver import WebElement as AppiumWebElement
 except ImportError:
@@ -23,3 +25,16 @@ except ImportError:
     StaleElementReferenceException = SeleniumNotInstalled
     WebDriver = SeleniumNotInstalled
     WebElement = SeleniumNotInstalled
+
+try:
+    from playwright.sync_api import ElementHandle
+    from playwright.sync_api import Locator as PlaywrightLocator
+    from playwright.sync_api import Page
+except ImportError:
+
+    class PlaywrightNotInstalled(object):
+        """Please install playwright package to use this functionality"""
+
+    Page = PlaywrightNotInstalled
+    PlaywrightLocator = PlaywrightNotInstalled
+    ElementHandle = PlaywrightNotInstalled

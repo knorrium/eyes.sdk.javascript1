@@ -1,18 +1,27 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import base64
 import re
 import sys
 import traceback
+from typing import TYPE_CHECKING
 
-from applitools.selenium.command_context import CommandContext
+from applitools.common.command_context import CommandContext
 
-from .optional_deps import PlaywrightLocator
+from ..common.optional_deps import PlaywrightLocator
 
 camel_to_snake = re.compile(r"([A-Z]+)")
+if TYPE_CHECKING:
+    from typing import List
 
 
 class PlaywrightSpecDriverCommandContext(CommandContext):
+    @staticmethod
+    def commands_or_kind():  # type: () -> List[str]
+        class_methods = set(dir(CommandContext))
+        proto_methods = set(dir(PlaywrightSpecDriverCommandContext)) - class_methods
+        return [snake_to_camel(m) for m in proto_methods if not m.startswith("_")]
+
     def execute_callback(self, command):
         name, key = command["name"], command["key"]
         assert name.startswith("Driver.")
@@ -25,6 +34,12 @@ class PlaywrightSpecDriverCommandContext(CommandContext):
             stack = "".join(traceback.format_tb(sys.exc_info()[2]))
             error = {"message": repr(exc), "stack": stack}
             self._connection.response(key, name, error=error)
+
+    def is_driver(self):
+        raise NotImplementedError("Should never be called")
+
+    # dummy methods expected to be present in commands list
+    is_element = is_selector = is_driver
 
     def get_driver_info(self, driver):
         return {"features": {"allCookies": True, "canExecuteOnlyFunctionScripts": True}}
@@ -144,3 +159,8 @@ def _convert_selector(selector):
         return prefix[selector["type"]] + "=" + selector["selector"]
     else:
         return selector
+
+
+def snake_to_camel(identifier):
+    pascal = "".join(identifier.title().split("_"))
+    return pascal[0].lower() + pascal[1:]

@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 import uuid
 from copy import copy, deepcopy
 from datetime import datetime
@@ -8,20 +10,20 @@ import six
 from six import string_types
 from six.moves.urllib.parse import urlparse, urlunsplit
 
-from applitools.common import deprecated
-from applitools.common.accessibility import AccessibilitySettings
-from applitools.common.geometry import RectangleSize
-from applitools.common.match import ImageMatchSettings, MatchLevel
-from applitools.common.server import FailureReports, SessionType
-from applitools.common.utils import argument_guard
-from applitools.common.utils.converters import str2bool
-from applitools.common.utils.datetime_utils import UTC
-from applitools.common.utils.general_utils import get_env_with_prefix
+from . import deprecated
+from .accessibility import AccessibilitySettings
+from .geometry import RectangleSize
+from .match import ImageMatchSettings, MatchLevel
+from .server import FailureReports, SessionType
+from .utils import argument_guard
+from .utils.converters import str2bool
+from .utils.datetime_utils import UTC
+from .utils.general_utils import get_env_with_prefix
 
 if TYPE_CHECKING:
     from typing import TYPE_CHECKING, Dict, List, Optional, Text, TypeVar
 
-    from applitools.common.utils.custom_types import ViewPort
+    from .utils.custom_types import ViewPort
 
     Self = TypeVar("Self", bound="Configuration")  # typedef
 

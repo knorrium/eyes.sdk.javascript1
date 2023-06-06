@@ -1,17 +1,24 @@
-import typing as tp
+from __future__ import absolute_import, division, print_function
+
 import warnings
 from functools import wraps
 from inspect import getcallargs
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Callable, Optional, Text
 
 
-def module(name, recommendation):
-    # type: (tp.Text, tp.Text) -> None
-    message = "Module {} is deprecated: {}".format(name, recommendation)
+def module(name, recommendation=None):
+    # type: (Text, Optional[Text]) -> None
+    message = "Module {} is deprecated".format(name)
+    if recommendation:
+        message += ": " + recommendation
     warnings.warn(message, stacklevel=2, category=ImportWarning)
 
 
 def argument(name, recommendation):
-    # type: (tp.Text, tp.Text) -> tp.Callable[[tp.Callable], tp.Callable]
+    # type: (Text, Text) -> Callable[[Callable], Callable]
     def wrapper(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
@@ -30,7 +37,7 @@ def argument(name, recommendation):
 
 
 def attribute(recommendation):
-    # type: (tp.Text) -> tp.Callable[[tp.Callable], tp.Callable]
+    # type: (Text) -> Callable[[Callable], Callable]
     def wrapper(attr):
         @wraps(attr)
         def wrapped(*args, **kwargs):

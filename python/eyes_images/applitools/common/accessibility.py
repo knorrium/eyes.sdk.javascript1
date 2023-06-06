@@ -1,8 +1,10 @@
+from __future__ import absolute_import, division, print_function
+
 from enum import Enum
 
 import attr
 
-from applitools.common import deprecated
+from . import deprecated
 
 
 class AccessibilityGuidelinesVersion(Enum):

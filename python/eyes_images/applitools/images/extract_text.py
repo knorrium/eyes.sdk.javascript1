@@ -1,8 +1,10 @@
+from __future__ import absolute_import, division, print_function
+
 from typing import List, Optional, Text, Union
 
 from applitools.common import Region
-from applitools.core import TextRegionSettings as TextRegionSettingsBase
-from applitools.core.extract_text import OCRRegion as BaseOCRRegion
+from applitools.common.extract_text import OCRRegion as BaseOCRRegion
+from applitools.common.extract_text import TextRegionSettings as TextRegionSettingsBase
 
 from .fluent import Image, image_path_or_bytes
 

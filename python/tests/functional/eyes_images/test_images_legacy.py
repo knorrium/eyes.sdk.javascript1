@@ -10,7 +10,7 @@ from applitools.common import (
     AccessibilitySettings,
     DiffsFoundError,
 )
-from applitools.core.extract_text import TextRegion
+from applitools.common.extract_text import TextRegion
 from applitools.images import (
     Eyes,
     OCRRegion,

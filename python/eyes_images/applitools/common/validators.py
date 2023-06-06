@@ -1,4 +1,12 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
+
+from .optional_deps import (
+    AppiumWebElement,
+    ElementHandle,
+    EventFiringWebElement,
+    PlaywrightLocator,
+    WebElement,
+)
 
 
 def is_list_or_tuple(elm):
@@ -6,13 +14,6 @@ def is_list_or_tuple(elm):
 
 
 def is_webelement(elm):
-    from applitools.playwright.optional_deps import ElementHandle, PlaywrightLocator
-    from applitools.selenium.optional_deps import (
-        AppiumWebElement,
-        EventFiringWebElement,
-        WebElement,
-    )
-
     return isinstance(
         elm,
         (

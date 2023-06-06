@@ -12,11 +12,11 @@ import yaml
 from robot.libraries.BuiltIn import BuiltIn
 
 from applitools.common import RectangleSize, Region
+from applitools.common.fluent.target_path import RegionLocator
 from applitools.common.utils import argument_guard
 from applitools.common.validators import is_webelement
 from applitools.selenium import Target, TargetPath
 from applitools.selenium.fluent import SeleniumCheckSettings
-from applitools.selenium.fluent.target_path import RegionLocator
 
 from .keywords_list import CHECK_SETTINGS_KEYWORDS_LIST, TARGET_PATH_KEYWORDS_LIST
 

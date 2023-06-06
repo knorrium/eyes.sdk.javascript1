@@ -1,7 +1,9 @@
+from __future__ import absolute_import, division, print_function
+
 """
 Stub module that that supported original log handling.
 """
-from applitools.common import deprecated
+from . import deprecated
 
 __all__ = ("StdoutLogger", "FileLogger")
 

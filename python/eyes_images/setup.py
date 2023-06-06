@@ -12,7 +12,7 @@ def read(filename):
 
 
 def get_version():
-    version_file = read("applitools/selenium/__version__.py")
+    version_file = read("applitools/common/__version__.py")
     try:
         version = re.findall(r"^__version__ = \"([^']+)\"\r?$", version_file, re.M)[0]
     except IndexError:

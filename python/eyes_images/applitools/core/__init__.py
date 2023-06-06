@@ -1,8 +1,11 @@
-from .batch_close import BatchClose
-from .cut import FixedCutProvider, NullCutProvider, UnscaledFixedCutProvider
-from .extract_text import TextRegionSettings
-from .feature import Feature
-from .fluent import (
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+from ..common import deprecated
+from ..common.batch_close import BatchClose
+from ..common.cut import FixedCutProvider, NullCutProvider, UnscaledFixedCutProvider
+from ..common.extract_text import TextRegionSettings
+from ..common.feature import Feature
+from ..common.fluent import (
     CheckSettings,
     CheckSettingsValues,
     FloatingRegionByRectangle,
@@ -10,24 +13,26 @@ from .fluent import (
     GetRegion,
     RegionByRectangle,
 )
-from .locators import VisualLocator, VisualLocatorSettings
-from .triggers import MouseTrigger, TextTrigger
+from ..common.locators import VisualLocator, VisualLocatorSettings
+from ..common.triggers import MouseTrigger, TextTrigger
 
+deprecated.module(__name__)
 __all__ = (
-    "TextTrigger",
-    "MouseTrigger",
-    "Feature",
-    "FixedCutProvider",
-    "NullCutProvider",
-    "UnscaledFixedCutProvider",
+    "BatchClose",
     "CheckSettings",
     "CheckSettingsValues",
-    "GetRegion",
-    "GetFloatingRegion",
+    "Feature",
+    "FixedCutProvider",
     "FloatingRegionByRectangle",
+    "GetFloatingRegion",
+    "GetRegion",
+    "MouseTrigger",
+    "NullCutProvider",
     "RegionByRectangle",
-    "BatchClose",
+    "TextRegionSettings",
+    "TextTrigger",
+    "UnscaledFixedCutProvider",
     "VisualLocator",
     "VisualLocatorSettings",
-    "TextRegionSettings",
+    "__version__",
 )

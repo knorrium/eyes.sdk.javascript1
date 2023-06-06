@@ -1,25 +1,21 @@
+from __future__ import absolute_import, division, print_function
+
 from typing import TYPE_CHECKING, ByteString, Union, overload
 
 from six import string_types
 
-from applitools.common import (
-    EyesError,
-    FailureReports,
-    Region,
-    TestFailedError,
-    deprecated,
+from applitools.common import FailureReports, Region, TestFailedError
+from applitools.common.eyes import EyesBase
+from applitools.common.schema import (
+    demarshal_locate_text_result,
+    demarshal_match_result,
 )
 from applitools.common.selenium import Configuration
 from applitools.common.target import ImageTarget
 from applitools.images.extract_text import OCRRegion, TextRegionSettings
 from applitools.images.fluent import Image, ImagesCheckSettings, Target
-from applitools.selenium import ClassicRunner
-from applitools.selenium.runner import log_session_results_and_raise_exception
-from applitools.selenium.schema import (
-    demarshal_locate_text_result,
-    demarshal_match_result,
-    demarshal_test_results,
-)
+
+from .runner import ClassicRunner
 
 if TYPE_CHECKING:
     from typing import List, Optional, Text
@@ -27,45 +23,25 @@ if TYPE_CHECKING:
     from applitools.common import TestResults
     from applitools.common.utils.custom_types import ViewPort
 
-    from ..core.extract_text import PATTERN_TEXT_REGIONS
+    from ..common.extract_text import PATTERN_TEXT_REGIONS
 
 
-class Eyes(object):
+class Eyes(EyesBase):
+    _Configuration = Configuration
+    _DefaultRunner = ClassicRunner
+
     def __init__(self):
-        self.configure = Configuration()
-        self._object_registry = None
-        self._runner = ClassicRunner()
-        self._commands = self._runner._commands  # noqa
-        self._eyes_ref = None
-
-    def get_configuration(self):
-        # type: () -> Configuration
-        return self.configure.clone()
-
-    def set_configuration(self, configuration):
-        # type: (Configuration) -> None
-        self.configure = configuration.clone()
+        super(Eyes, self).__init__(None)
 
     def open(self, app_name=None, test_name=None, dimension=None):
         # type: (Text, Text, Optional[ViewPort]) -> None
-        if app_name is not None:
-            self.configure.app_name = app_name
-        if test_name is not None:
-            self.configure.test_name = test_name
-        if dimension is not None:
-            self.configure.viewport_size = dimension
-        if self.configure.app_name is None:
-            raise ValueError("app_name should be set via configuration or an argument")
-        if self.configure.test_name is None:
-            raise ValueError("test_name should be set via configuration or an argument")
-
-        self._runner._set_connection_config(self.configure)  # noqa, friend
-        self._object_registry = self._runner.Protocol.object_registry()
-        self._eyes_ref = self._commands.manager_open_eyes(
-            self._object_registry,
-            self._runner._ref,  # noqa
-            config=self.configure,
-        )
+        if not self.configure.is_disabled:
+            self._prepare_open(app_name, test_name, dimension)
+            self._eyes_ref = self._commands.manager_open_eyes(
+                self._object_registry,
+                self._runner._ref,  # noqa
+                config=self.configure,
+            )
 
     @overload
     def check(self, name, check_settings):
@@ -91,17 +67,17 @@ class Eyes(object):
             self._eyes_ref,
             ImageTarget(check_settings.values.image, check_settings.values.dom),
             check_settings,
-            self.configure,
+            self.configuration,
         )
         # Original API only returns one result
         results = demarshal_match_result(results[0])
         if (
             not results.as_expected
-            and self.configure.failure_reports is FailureReports.IMMEDIATE
+            and self.configuration.failure_reports is FailureReports.IMMEDIATE
         ):
             raise TestFailedError(
                 "Mismatch found in '{}' of '{}'".format(
-                    self.configure.test_name, self.configure.app_name
+                    self.configuration.test_name, self.configuration.app_name
                 )
             )
         else:
@@ -122,7 +98,7 @@ class Eyes(object):
         return self._commands.core_extract_text(
             ImageTarget(image),
             regions,
-            self.configure,
+            self.configuration,
         )
 
     def locate_text(self, config):
@@ -134,7 +110,7 @@ class Eyes(object):
         result = self._commands.core_locate_text(
             ImageTarget(config._image),  # noqa
             config,
-            self.configure,
+            self.configuration,
         )
         return demarshal_locate_text_result(result)
 
@@ -146,54 +122,8 @@ class Eyes(object):
         :param raise_ex: If true, an exception will be raised for failed/new tests.
         :return: The test results.
         """
-        if not self.is_open:
-            raise EyesError("Eyes not open")
-        self._commands.eyes_close(
-            self._object_registry, self._eyes_ref, raise_ex, self.configure
-        )
-        results = self._commands.eyes_get_results(self._eyes_ref, raise_ex)
-        self._eyes_ref = None
-        results = demarshal_test_results(results, self.configure)
-        if results:
-            for r in results:
-                log_session_results_and_raise_exception(False, r)
-            return results[0]  # Original interface returns just one result
-        else:  # eyes are already aborted by closed runner
-            return None
+        return self._close(raise_ex, True)
 
     def abort(self):
         # type: () -> Optional[TestResults]
-        if self.configure.is_disabled:
-            return None
-        elif self.is_open:
-            self._commands.eyes_abort(self._object_registry, self._eyes_ref)
-            results = self._commands.eyes_get_results(self._eyes_ref, False)
-            self._eyes_ref = None
-            if results:  # abort after close does not return results
-                results = demarshal_test_results(results, self.configure)
-                for r in results:
-                    log_session_results_and_raise_exception(False, r)
-                return results[0]  # Original interface returns just one result
-            else:
-                return None
-
-    @property
-    def configuration(self):
-        # type: () -> Configuration
-        return self.configure
-
-    @property
-    def is_open(self):
-        return self._eyes_ref is not None
-
-    def __getattr__(self, item):
-        return getattr(self.configure, item)
-
-    def __setattr__(self, key, value):
-        if "configure" in vars(self) and (
-            key in vars(self.configure)
-            or key in ("match_level", "ignore_displacements")
-        ):
-            return setattr(self.configure, key, value)
-        else:
-            return super(Eyes, self).__setattr__(key, value)
+        return self._abort(True)

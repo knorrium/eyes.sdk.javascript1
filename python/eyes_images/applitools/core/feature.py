@@ -1,6 +1,7 @@
-from enum import Enum
+from __future__ import absolute_import, division, print_function, unicode_literals
 
+from ..common import deprecated
+from ..common.feature import Feature
 
-class Feature(Enum):
-    TARGET_WINDOW_CAPTURES_SELECTED_FRAME = "Target window captures selected frame"
-    SCALE_MOBILE_APP = "Scale mobile app"
+deprecated.module(__name__)
+__all__ = ("Feature",)

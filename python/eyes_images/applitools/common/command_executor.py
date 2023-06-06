@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import logging
 from enum import Enum
@@ -6,26 +6,26 @@ from os import getcwd
 from threading import Lock
 from typing import TYPE_CHECKING, Any, List, Optional, Text
 
-from ..common import TestResults
-from ..common.connection import USDKConnection
-from ..common.errors import USDKFailure
-from ..common.target import ImageTarget
+from .connection import USDKConnection
+from .errors import USDKFailure
 from .schema import demarshal_error
+from .target import ImageTarget
+from .test_results import TestResults
 
 if TYPE_CHECKING:
     from typing import Tuple, Type, Union
 
-    from ..common.selenium import Configuration
-    from ..common.utils.custom_types import ViewPort
-    from ..core import TextRegionSettings, VisualLocatorSettings
-    from ..core.batch_close import _EnabledBatchClose  # noqa
-    from ..core.ec_client_settings import ECClientSettings
-    from ..core.extract_text import OCRRegion
+    from .batch_close import _EnabledBatchClose  # noqa
     from .command_context import CommandContext
-    from .fluent import SeleniumCheckSettings
+    from .ec_client_settings import ECClientSettings
+    from .extract_text import OCRRegion, TextRegionSettings
+    from .fluent.web_check_settings import WebCheckSettings
+    from .locators import VisualLocatorSettings
     from .object_registry import ObjectRegistry
     from .optional_deps import WebDriver
     from .protocol import USDKProtocol
+    from .selenium import Configuration
+    from .utils.custom_types import ViewPort
 
 logger = logging.getLogger(__name__)
 
@@ -62,13 +62,12 @@ class CommandExecutor(object):
 
     def make_core(self, agent_id, cwd):
         # type: (Text, Text) -> None
-        spec = self._protocol.COMMANDS if self._protocol.COMMANDS else "webdriver"
         self._connection.notification(
             "Core.makeCore",
             {
                 "agentId": agent_id,
                 "cwd": cwd,
-                "spec": spec,
+                "spec": self._protocol.commands_or_kind(),
             },
         )
 
@@ -169,7 +168,7 @@ class CommandExecutor(object):
         object_registry,  # type: ObjectRegistry
         eyes,  # type: dict
         target,  # type: Optional[ImageTarget]
-        settings,  # type: SeleniumCheckSettings
+        settings,  # type: WebCheckSettings
         config,  # type: Configuration
     ):
         # type: (...) -> dict

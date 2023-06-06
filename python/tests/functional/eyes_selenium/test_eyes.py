@@ -5,8 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 from applitools.common import DesktopBrowserInfo, NewTestError
+from applitools.common.locators import VisualLocator
 from applitools.common.selenium import BrowserType
-from applitools.core import VisualLocator
 from applitools.selenium import (
     ClassicRunner,
     Eyes,

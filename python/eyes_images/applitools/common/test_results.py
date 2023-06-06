@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 from collections import namedtuple
 from enum import Enum
@@ -147,9 +147,9 @@ class TestResults(object):
 
     def delete(self):
         # type: () -> None
-        from applitools.selenium.__version__ import __version__
-        from applitools.selenium.command_executor import CommandExecutor
-        from applitools.selenium.eyes import EyesRunner
+        from .__version__ import __version__
+        from .command_executor import CommandExecutor
+        from .runner import EyesRunner
 
         cmd = CommandExecutor.get_instance(
             EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, __version__

@@ -5,9 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement as SeleniumWebElement
 
 from applitools.common import FloatingBounds
+from applitools.common.fluent.target_path import TargetPath
 from applitools.selenium import AccessibilityRegionType, Region, Target
 from applitools.selenium.fluent import SeleniumCheckSettings
-from applitools.selenium.fluent.target_path import TargetPath
 
 
 def get_cs_from_method(method_name, *args, **kwargs):

@@ -5,10 +5,10 @@ from os import getcwd
 from mock import ANY
 from pytest import raises
 
+from applitools.common.command_executor import CommandExecutor, ManagerType
 from applitools.common.connection import USDKConnection
 from applitools.common.errors import USDKFailure
 from applitools.common.selenium import Configuration
-from applitools.selenium.command_executor import CommandExecutor, ManagerType
 from applitools.selenium.fluent import SeleniumCheckSettings
 from applitools.selenium.object_registry import SeleniumWebdriverObjectRegistry
 from applitools.selenium.protocol import SeleniumWebDriver

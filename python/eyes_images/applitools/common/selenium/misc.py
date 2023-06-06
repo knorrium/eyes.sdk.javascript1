@@ -1,7 +1,9 @@
+from __future__ import absolute_import, division, print_function
+
 import warnings
 from enum import Enum
 
-from applitools.common.utils.general_utils import DynamicEnumGetter
+from ..utils.general_utils import DynamicEnumGetter
 
 
 class BrowserType(Enum):

@@ -6,9 +6,9 @@ from applitools.common import (
     IosDeviceName,
     IosVersion,
     ScreenOrientation,
+    schema,
 )
-from applitools.selenium import schema
-from applitools.selenium.schema import demarshal_error
+from applitools.common.schema import demarshal_error
 
 
 def test_demarshal_browser_info():

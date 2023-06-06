@@ -1,3 +1,3 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
-from ..selenium.__version__ import __version__  # noqa
+from ..common.__version__ import __version__  # noqa

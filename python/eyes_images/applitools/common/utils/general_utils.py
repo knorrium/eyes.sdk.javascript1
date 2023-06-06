@@ -1,17 +1,15 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import os
-import typing
+from typing import TYPE_CHECKING
 
 """
 General purpose utilities.
 """
 
 
-if typing.TYPE_CHECKING:
-    from typing import Any, Callable, List, Optional, Text
-
-    T = typing.TypeVar("T")
+if TYPE_CHECKING:
+    from typing import Any, Callable, Optional, Text
 
 
 def cached_property(f):

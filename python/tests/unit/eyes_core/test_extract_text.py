@@ -1,4 +1,4 @@
-from applitools.core import TextRegionSettings
+from applitools.common.extract_text import TextRegionSettings
 
 
 def test_text_region_settings():

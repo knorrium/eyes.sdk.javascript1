@@ -1,6 +1,8 @@
-import typing
+from __future__ import absolute_import, division, print_function
+
 import warnings
 from enum import Enum
+from typing import TYPE_CHECKING
 
 import attr
 
@@ -8,10 +10,10 @@ from .accessibility import AccessibilitySettings
 from .geometry import AccessibilityRegion, Rectangle, Region
 from .utils.general_utils import DynamicEnumGetter
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from typing import List, Optional, Text, Union
 
-    from applitools.common import Point
+    from . import Point
 
 __all__ = (
     "MatchLevel",

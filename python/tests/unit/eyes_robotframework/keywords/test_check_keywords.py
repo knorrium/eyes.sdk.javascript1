@@ -9,9 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from applitools.common import Region
-from applitools.core import RegionByRectangle
+from applitools.common.fluent import RegionByRectangle
+from applitools.common.fluent.target_path import TargetPath
 from applitools.selenium.fluent import FrameLocator, RegionBySelector
-from applitools.selenium.fluent.target_path import TargetPath
 from EyesLibrary import TargetPathKeywords
 from EyesLibrary.keywords.check_settings import CheckSettingsKeywords
 
