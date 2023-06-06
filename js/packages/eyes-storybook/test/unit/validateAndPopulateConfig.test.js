@@ -49,7 +49,6 @@ describe('validateAndPopulateConfig', () => {
     const config = {apiKey: 'bla', storybookUrl: 'bla'};
     await validateAndPopulateConfig({
       config,
-      logger: console,
       packagePath: packageJsonWithAppNamePath,
     });
     expect(config.appName).to.equal('bla');
@@ -60,7 +59,6 @@ describe('validateAndPopulateConfig', () => {
     const config = {apiKey: 'bla', storybookUrl: 'url', appName: 'bla'};
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.agentId).to.equal(`eyes-storybook/${version}`);
   });
@@ -69,7 +67,6 @@ describe('validateAndPopulateConfig', () => {
     const config = {apiKey: 'bla', storybookUrl: 'url', appName: 'bla', runInDocker: true};
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.puppeteerOptions).to.eql({
       args: ['--disable-dev-shm-usage'],
@@ -86,7 +83,6 @@ describe('validateAndPopulateConfig', () => {
     };
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.puppeteerOptions).to.eql({
       bla: true,
@@ -104,7 +100,6 @@ describe('validateAndPopulateConfig', () => {
     };
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.puppeteerOptions).to.eql({
       bla: true,
@@ -122,7 +117,6 @@ describe('validateAndPopulateConfig', () => {
     };
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.puppeteerOptions).to.eql({
       bla: true,
@@ -140,7 +134,6 @@ describe('validateAndPopulateConfig', () => {
     };
     await validateAndPopulateConfig({
       config,
-      logger: console,
     });
     expect(config.puppeteerOptions).to.eql({
       bla: true,

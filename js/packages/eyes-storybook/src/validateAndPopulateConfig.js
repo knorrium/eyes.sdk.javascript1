@@ -17,8 +17,9 @@ const {promisify: p} = require('util');
 const pexec = p(exec);
 // eslint-disable-next-line
 const semver = require('semver');
+const {makeLogger} = require('@applitools/logger');
 
-async function validateAndPopulateConfig({config, packagePath = '', logger}) {
+async function validateAndPopulateConfig({config, packagePath = '', logger = makeLogger()}) {
   if (!config.apiKey) {
     throw new Error(missingApiKeyFailMsg);
   }
@@ -27,12 +28,7 @@ async function validateAndPopulateConfig({config, packagePath = '', logger}) {
   const packageJson = fs.existsSync(packageJsonPath) ? require(packageJsonPath) : undefined;
   const {storybookPath, isVersion7, sbArg} = await determineStorybookVersion(packagePath);
   logger.log(
-    '[validateAndPopulateConfig] storybookPath',
-    storybookPath,
-    'isVersion7',
-    isVersion7,
-    'sbArg',
-    sbArg,
+    `[validateAndPopulateConfig] storybookPath=${storybookPath} isVersion7=${isVersion7} sbArg=${sbArg}`,
   );
 
   if (!config.appName) {
