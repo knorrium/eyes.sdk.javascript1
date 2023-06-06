@@ -3,7 +3,6 @@ const ora = require('ora');
 const StorybookConnector = require('./storybookConnector');
 
 async function startStorybookServer({
-  packagePath,
   storybookPort,
   storybookHost,
   storybookConfigDir,

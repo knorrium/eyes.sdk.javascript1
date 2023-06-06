@@ -26,6 +26,14 @@ async function validateAndPopulateConfig({config, packagePath = '', logger}) {
   const packageJsonPath = `${packagePath}/package.json`;
   const packageJson = fs.existsSync(packageJsonPath) ? require(packageJsonPath) : undefined;
   const {storybookPath, isVersion7, sbArg} = await determineStorybookVersion(packagePath);
+  logger.log(
+    '[validateAndPopulateConfig] storybookPath',
+    storybookPath,
+    'isVersion7',
+    isVersion7,
+    'sbArg',
+    sbArg,
+  );
 
   if (!config.appName) {
     if (!packageJson) {

@@ -35,7 +35,6 @@ describe('storybook-csf', () => {
     await pexec(
       `cp -r ${storybookSourceDir}/stories/. ${storybookSourceDir}/${storybookVersion}/stories`,
     );
-    process.chdir(currCWD);
   });
 
   for (const version of versions) {
@@ -45,9 +44,10 @@ describe('storybook-csf', () => {
         if (parseInt(process.versions.node) === 14 && version === '7.0') {
           return;
         }
-        const [err, result] = await presult(
-          utils.process.sh(`node ${eyesStorybookPath} -f ${testConfigFile}`, {spawnOptions}),
-        );
+
+        const cmd = `node ${eyesStorybookPath} -f ${testConfigFile}`;
+        // console.log(cmd)
+        const [err, result] = await presult(utils.process.sh(cmd, {spawnOptions}));
         const stdout = err ? err.stdout : result.stdout;
         const output = stdout
           .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds')
@@ -58,6 +58,7 @@ describe('storybook-csf', () => {
           .replace(version, '<version>')
           .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
 
+        // console.log(output)
         await snap(output, `storybook with CSF and render error version ${version}`);
       });
     }
@@ -65,5 +66,6 @@ describe('storybook-csf', () => {
 
   afterEach(() => {
     delete process.env.STORYBOOK_VERSIONS_ERROR_TEST;
+    process.chdir(currCWD);
   });
 });

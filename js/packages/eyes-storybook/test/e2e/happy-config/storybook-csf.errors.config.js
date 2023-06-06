@@ -8,9 +8,5 @@ module.exports = {
     `../../fixtures/storybook-with-errors-with-version/${process.env.STORYBOOK_VERSIONS_ERROR_TEST}/.storybook`,
   ),
   storybookStaticDir: path.resolve(__dirname, '../../fixtures'),
-  packagePath: path.resolve(
-    __dirname,
-    `../../fixtures/storybook-with-errors-with-version/${process.env.STORYBOOK_VERSIONS_ERROR_TEST}/`,
-  ),
   browser: [{width: 1280, height: 960, name: 'chrome'}],
 };
