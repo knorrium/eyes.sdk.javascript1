@@ -70,7 +70,10 @@ export class HelperAndroid<T extends SpecType> {
   private async _getElementId(element: Element<T>): Promise<string | null> {
     const resourceId = await element.getAttribute('resource-id')
     if (!resourceId) return null
-    return resourceId.split('/')[1]
+    this.logger.log(`Helper library resource-id: ${resourceId}`)
+    const result = resourceId.split('/')
+    if (result.length === 1) return result[0]
+    return result[1]
   }
 
   private async _command(command: string): Promise<string> {
