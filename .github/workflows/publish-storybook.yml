@@ -68,6 +68,7 @@ jobs:
     needs: [verify]
     strategy:
       max-parallel: 3
+      fail-fast: false
       matrix:
         include: ${{fromJSON(needs.verify.outputs.environments)}}
     name: 'Test (node: ${{matrix.node-version}})'
@@ -88,6 +89,7 @@ jobs:
   test-versions:
     needs: [verify]
     strategy:
+      fail-fast: false
       matrix:
         storybook-version: ["5.0.0", "5.3.21", "6.3.12", "latest", "next"]
     name: 'Test (storybook: ${{matrix.storybook-version}})'
