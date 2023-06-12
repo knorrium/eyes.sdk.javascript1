@@ -45,7 +45,7 @@ const {performance, timeItAsync} = makeTiming();
     );
     if (err) {
       console.log(chalk.red(err.message));
-      process.exit(config.exitcode ? config.exitcode : 0);
+      process.exit(config.exitcode ? 1 : 0);
     } else {
       const totalTime = performance['eyesStorybook'];
       const {exitCode, summary, outputStr} = processResults({
@@ -53,6 +53,7 @@ const {performance, timeItAsync} = makeTiming();
         totalTime,
         testConcurrency: config.testConcurrency,
         saveNewTests: config.saveNewTests,
+        configExitCode: config.exitcode,
       });
       console.log(outputStr);
       if (config.jsonFilePath) {
@@ -64,7 +65,7 @@ const {performance, timeItAsync} = makeTiming();
       if (config.xmlFilePath) {
         handleXmlFile(config.xmlFilePath, summary, {totalTime});
       }
-      process.exit(config.exitcode ? exitCode : 0);
+      process.exit(exitCode);
     }
   } catch (ex) {
     console.log(ex);

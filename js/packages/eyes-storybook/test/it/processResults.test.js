@@ -140,12 +140,27 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(
       outputStr.replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds'),
       'single diff',
     );
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('works with multiple diffs', async () => {
@@ -205,12 +220,27 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(
       outputStr.replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds'),
       'multi diff',
     );
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('works with 1 error', async () => {
@@ -260,9 +290,24 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(outputStr, 'single err');
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(1);
   });
 
   it('works with multiple errors', async () => {
@@ -314,9 +359,24 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(outputStr, 'multi err');
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(1);
   });
 
   it('works with diffs and errors', async () => {
@@ -373,12 +433,27 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(
       outputStr.replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds'),
       'diffs and errors',
     );
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(1);
   });
 
   it('works with no diifs and no errors', async () => {
@@ -415,9 +490,24 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
     await snap(outputStr, 'no diff no errors');
     expect(exitCode).to.eql(0);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('works with no diffs no errors and no succeeses', async () => {
@@ -441,10 +531,25 @@ describe('processResults', () => {
       results: {summary, results},
       totalTime: 10000,
       concurrency: 1,
+      configExitCode: true,
     });
-    console.log(outputStr);
+    // console.log(outputStr);
     await snap(outputStr, 'empty');
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('passes errors to the formatter correctly', async () => {
@@ -538,9 +643,24 @@ describe('processResults', () => {
       totalTime: 10000,
       concurrency: 1,
       saveNewTests: false,
+      configExitCode: true,
     });
     await snap(outputStr, 'new without saving');
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('works with two new tests while saveNewTests set to false', async () => {
@@ -599,10 +719,25 @@ describe('processResults', () => {
     const {outputStr, exitCode} = processResults({
       results: {summary, results},
       saveNewTests: false,
+      configExitCode: true,
     });
-    console.log(outputStr);
+    // console.log(outputStr);
     await snap(outputStr, 'two new without saving');
     expect(exitCode).to.eql(1);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 
   it('works with new test while saveNewTests unset or set to true', async () => {
@@ -638,8 +773,22 @@ describe('processResults', () => {
     const {outputStr, exitCode} = processResults({
       results: {summary, results},
     });
-    console.log(outputStr);
+    // console.log(outputStr);
     await snap(outputStr, 'new with saving');
     expect(exitCode).to.eql(0);
+
+    // test exitcode false
+    const {exitCode: exitCodeFalse} = processResults({
+      results: {summary, results},
+      configExitCode: false,
+    });
+    expect(exitCodeFalse).to.eql(0);
+
+    // test exitcode 'nodiffs'
+    const {exitCode: exitCodeNoDiffs} = processResults({
+      results: {summary, results},
+      configExitCode: 'nodiffs',
+    });
+    expect(exitCodeNoDiffs).to.eql(0);
   });
 });
