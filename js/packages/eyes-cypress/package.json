@@ -103,5 +103,8 @@
   "engines": {
     "node": ">=12.13.0"
   },
-  "xvfb": true
+  "xvfb": true,
+  "publishConfig": {
+    "access": "public"
+  }
 }

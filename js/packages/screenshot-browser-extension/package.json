@@ -1,6 +1,7 @@
 {
   "name": "@applitools/centra",
   "version": "1.0.1",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/applitools/eyes.sdk.javascript1.git",
