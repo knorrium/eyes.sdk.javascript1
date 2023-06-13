@@ -29,6 +29,7 @@ jobs:
 
   js-release:
     needs: [setup]
+    concurrency: js-release
     strategy:
       fail-fast: false
       matrix: 
