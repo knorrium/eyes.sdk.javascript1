@@ -89,7 +89,7 @@ jobs:
       matrix: 
         include: ${{fromJSON(needs.setup.outputs.tests)}}
     name: Test / ${{matrix.display-name}}
-    concurrency: ${{matrix.concurrency || null}}
+    concurrency: ${{matrix.concurrency || format('{0}-{1}', github.job, strategy.job-index)}}
     timeout-minutes: 60
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     container: ${{matrix.container}}
