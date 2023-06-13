@@ -132,10 +132,14 @@
         <module>eyes.selenium.java</module>
         <module>eyes.selenium.common</module>
         <module>eyes.appium.java</module>
-        <module>eyes-universal-core</module>
-        <module>selenium4</module>
         <module>eyes.images.java</module>
         <module>eyes.playwright.java</module>
+        <module>eyes.universal.core/eyes-universal-core</module>
+        <module>eyes.universal.core/eyes-universal-core-win</module>
+        <module>eyes.universal.core/eyes-universal-core-mac</module>
+        <module>eyes.universal.core/eyes-universal-core-linux</module>
+        <module>eyes.universal.core/eyes-universal-core-arm</module>
+        <module>eyes.universal.core/eyes-universal-core-alpine</module>
     </modules>
 
     <distributionManagement>

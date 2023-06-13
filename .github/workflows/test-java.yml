@@ -168,9 +168,10 @@ jobs:
             apt-get update
             apt-get install --no-install-recommends -y ca-certificates maven
           run: |
-            cd java;
+            cd java
             mvn clean install -DskipTests 
-            mvn test -Dtest="TestLinuxArmArchitecture" -DfailIfNoTests=false
+            cd eyes.universal.core/eyes-universal-core
+            mvn test -Dtest="TestCoreBinaries#testArm64Binaries"
 
   alpine-tests:
     needs: setup
@@ -198,33 +199,72 @@ jobs:
         with:
           node-version: 16
 
-      - name: Test
+      - name: Clean install
         run: |
-          cd java;
-          mvn clean install -DskipTests 
-          mvn test -Dtest="TestAlpineContainer" -DfailIfNoTests=false -Dsurefire.failIfNoSpecifiedTests=false
+          cd java
+          mvn clean install -DskipTests
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
-  other-tests:
+      - name: Test
+        run: |
+          cd java/eyes.universal.core/eyes-universal-core
+          mvn test -Dtest="TestCoreBinaries#testAlpineBinaries"
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+
+  windows-tests:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository and submodules
+      - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           lfs: true
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          node-version: 16
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Clean install
+        run: |
+          cd java
+          mvn clean install -DskipTests 
 
       - name: Test
-        uses: ./.github/actions/java/tests/
+        run: |
+          cd java/eyes.universal.core/eyes-universal-core
+          mvn test -Dtest="TestCoreBinaries#testWindowsBinaries"
+
+  macos-tests:
+    needs: setup
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
-          working-directory: ./java/selenium4
+          lfs: true
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: Clean install
+        run: |
+          cd java
+          mvn clean install -DskipTests 
+
+      - name: Test
+        run: |
+          cd java/eyes.universal.core/eyes-universal-core
+          mvn test -Dtest="TestCoreBinaries#testMacosBinaries"
+
 
   images-tests:
     needs: setup

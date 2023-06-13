@@ -37,7 +37,7 @@ public class CapabilitiesHelper {
         SafariOptions safari = new SafariOptions();
 
         safari.setPlatformName("macOS 10.13");
-        safari.setBrowserVersion("12.1");
+        safari.setBrowserVersion("12");
 
         Map<String, Object> sauceOptions = new HashMap<>();
         sauceOptions.put("name", "Safari 12");
@@ -189,6 +189,7 @@ public class CapabilitiesHelper {
         MutableCapabilities sauceOpts = new MutableCapabilities();
         sauceOpts.setCapability("username", System.getenv("SAUCE_USERNAME"));
         sauceOpts.setCapability("accessKey", System.getenv("SAUCE_ACCESS_KEY"));
+        sauceOpts.setCapability("idleTimeout", 300);
         sauceOpts = sauceOpts.merge(options);
         if (legacy) {
             return caps.merge(sauceOpts);
@@ -201,8 +202,11 @@ public class CapabilitiesHelper {
 
     public static Capabilities setSauceCredentials(Capabilities caps, boolean legacy, Map<String, Object> options) {
 
+
         options.put("username", System.getenv("SAUCE_USERNAME"));
         options.put("accessKey", System.getenv("SAUCE_ACCESS_KEY"));
+        options.put("idleTimeout", 600);
+        options.put("commandTimeout", 600);
         MutableCapabilities sauce = new MutableCapabilities();
         sauce.setCapability("sauce:options", options);
         return caps.merge(sauce);

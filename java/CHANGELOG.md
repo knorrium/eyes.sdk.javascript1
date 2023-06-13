@@ -1,3 +1,9 @@
+## [5.55.0] - 2023-06-13
+### Features
+- Dynamically use modules to scale down the final core jar size.
+### Bug fixes
+-
+
 ## [5.54.0] - 2023-06-01
 ### Features
 - 
