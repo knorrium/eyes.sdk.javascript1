@@ -204,8 +204,8 @@ async function main() {
     const changedFiles = execSync(`git --no-pager diff --name-only origin/${process.env.GITHUB_BASE_REF || 'master'}`, {encoding: 'utf8'})
     const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
       const changedPackage = Object.values(packages).find(changedPackage => {
-        const changedPackagePath = path.resolve(process.cwd(), changedPackage.path)
-        const changedFilePath = path.resolve(process.cwd(), changedFile, './')
+        const changedPackagePath = path.resolve(process.cwd(), changedPackage.path) + '/'
+        const changedFilePath = path.resolve(process.cwd(), changedFile)
         return changedFilePath.startsWith(changedPackagePath)
       })
       if (changedPackage) changedPackageNames.add(changedPackage.component)
