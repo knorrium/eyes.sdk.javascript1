@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+
+## 3.35.0 - 2023/6/13
+
+### Features
+### Bug fixes
+- Add support for variations in storybook 7
+- Increase timeout for rendering results polling
+- Add the option to not fail on visual differences using exitcode `nodiffs`
+
 ## 3.34.2 - 2023/5/16
 
 ### Features

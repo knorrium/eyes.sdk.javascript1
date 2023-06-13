@@ -72,10 +72,7 @@ Apollo SDK:
   feature:
     - 
   bug-fix:
-    - Add support for variations in storybook 7
-    - Increase timeout for rendering results polling
-    - |
-      Add the option to not fail on visual differences using exitcode `nodiffs`
+    - 
 "@applitools/eyes-browser-extension":
   feature:
     - Added new selector extensions `child` and `fallback`
