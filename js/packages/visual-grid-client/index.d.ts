@@ -70,7 +70,7 @@ declare namespace Eyes {
 
       /**
        * The method to use when comparing two screenshots, which expresses the extent to which the two images are expected to match.
-       * Read more about match levels https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels .
+       * Read more about match levels https://applitools.com/docs/common/cmn-eyes-match-levels.html .
        * Default value: Strict
        */
       matchLevel?: 'Strict' | 'Exact' | 'Layout' | 'Content'
@@ -291,19 +291,19 @@ declare namespace Eyes {
 
       /**
        * A single or an array of regions to match as layout level.
-       * See: https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels
+       * See: https://applitools.com/docs/common/cmn-eyes-match-levels.html
        */
       layout?: Region | Selector | (Region | Selector)[]
 
       /**
        * A single or an array of regions to match as content level.
-       * See: https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels
+       * See: https://applitools.com/docs/common/cmn-eyes-match-levels.html
        */
       content?: Region | Selector | (Region | Selector)[]
 
       /**
        * A single or an array of regions to match as strict level.
-       * See: https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels
+       * See: https://applitools.com/docs/common/cmn-eyes-match-levels.html
        */
       strict?: Region | Selector | (Region | Selector)[]
 

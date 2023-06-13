@@ -232,7 +232,7 @@ eyes.checkWindow({ tag: 'your tag', target: 'your target mode' })
     ```
 
 - #### layout
-  (optional): A single or an array of regions to match as [layout level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+  (optional): A single or an array of regions to match as [layout level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
     ```js
     eyes.checkWindow({
       layout: [
@@ -244,7 +244,7 @@ eyes.checkWindow({ tag: 'your tag', target: 'your target mode' })
     ```
 
 - #### strict
-  (optional): A single or an array of regions to match as [strict level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+  (optional): A single or an array of regions to match as [strict level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
     ```js
     eyes.checkWindow({
       strict: [
@@ -256,7 +256,7 @@ eyes.checkWindow({ tag: 'your tag', target: 'your target mode' })
     ```
 
 - #### content
-  (optional): A single or an array of regions to match as [content level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+  (optional): A single or an array of regions to match as [content level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
     ```js
     eyes.checkWindow({
       content: [

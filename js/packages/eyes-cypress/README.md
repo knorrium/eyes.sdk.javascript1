@@ -486,7 +486,7 @@ cy.get('.some-div-to-float').then($el => {
 
 ##### `layout`
 
-(optional): A single or an array of regions to match as [layout level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+(optional): A single or an array of regions to match as [layout level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
 
   ```js
   cy.eyesCheckWindow({
@@ -506,7 +506,7 @@ cy.get('.some-div-to-float').then($el => {
 
 ##### `strict`
 
-(optional): A single or an array of regions to match as [strict level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+(optional): A single or an array of regions to match as [strict level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
 
   ```js
   cy.eyesCheckWindow({
@@ -526,7 +526,7 @@ cy.get('.some-div-to-float').then($el => {
 
 ##### `content`
 
-(optional): A single or an array of regions to match as [content level.](https://help.applitools.com/hc/en-us/articles/360007188591-Match-Levels) For example:
+(optional): A single or an array of regions to match as [content level.](https://applitools.com/docs/common/cmn-eyes-match-levels.html) For example:
 
   ```js
   cy.eyesCheckWindow({
