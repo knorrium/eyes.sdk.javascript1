@@ -2827,8 +2827,6 @@ main()
 });
 async function main() {
     const packages = await getPackages();
-    console.log(getChangedPackagesInput());
-    return 0;
     const envs = core.getInput('env').split(/[;\s]+/).reduce((envs, env) => {
         const [key, value] = env.split('=');
         return { ...envs, [key]: value };
@@ -2992,13 +2990,9 @@ async function main() {
     function getChangedPackagesInput() {
         const changedFiles = (0,external_node_child_process_namespaceObject.execSync)(`git --no-pager diff --name-only origin/${process.env.GITHUB_BASE_REF || 'master'}`, { encoding: 'utf8' });
         const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
-            if (changedFile.includes('spec-driver-webdriverio'))
-                console.log(changedFile);
             const changedPackage = Object.values(packages).find(changedPackage => {
                 const changedPackagePath = external_node_path_namespaceObject.resolve(process.cwd(), changedPackage.path) + '/';
                 const changedFilePath = external_node_path_namespaceObject.resolve(process.cwd(), changedFile);
-                if (changedFile.includes('spec-driver-webdriverio'))
-                    console.log(changedPackagePath, changedFilePath);
                 return changedFilePath.startsWith(changedPackagePath);
             });
             if (changedPackage)
