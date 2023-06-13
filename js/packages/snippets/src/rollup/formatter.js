@@ -1,3 +1,5 @@
+/* eslint "no-console": "off" */
+
 const path = require('path')
 
 const formats = {
@@ -16,7 +18,7 @@ const formats = {
   },
 }
 
-module.exports = function() {
+module.exports = function () {
   const state = {}
   return {
     outputOptions(outputOptions) {

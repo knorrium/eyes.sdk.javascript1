@@ -19,7 +19,7 @@ describe('lazyLoad', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -99,7 +99,7 @@ describe('lazyLoad', () => {
   for (const name of ['internet explorer', 'ios safari']) {
     describe(name, () => {
       let driver
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -109,7 +109,7 @@ describe('lazyLoad', () => {
       it('works on a page that can scroll', async () => {
         await driver.url(pages.snippetsTestPage)
         await driver.execute(`window.scrollTo(${startingPosition.x}, ${startingPosition.y})`)
-        const scrollableHeight = await driver.execute(function() {
+        const scrollableHeight = await driver.execute(function () {
           return document.documentElement.scrollHeight - document.documentElement.clientHeight
         })
         await driver.execute(lazyLoad, [null, options])
@@ -125,7 +125,7 @@ describe('lazyLoad', () => {
         assert.deepStrictEqual(resetScroll.y, startingPosition.y)
       })
 
-      it('works on a page that cannot scroll', async function() {
+      it('works on a page that cannot scroll', async function () {
         // In new Safari (observed in 15.5 at least) a page that doesn't scroll still have
         // a (small) scroll effect so the snippet thinks it can keep scrolling, and tries until
         // exhaustion. This should be fixed, but it's not a breaking issue. Just a matter of

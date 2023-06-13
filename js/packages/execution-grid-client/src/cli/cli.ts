@@ -3,10 +3,10 @@
 import type {ECClientSettings} from '../types'
 import {makeECClient} from '../client'
 import {makeTunnelManagerServer} from '../tunnels/manager-server'
-import yargs from 'yargs'
+import yargs, {type CommandModule} from 'yargs'
 
 yargs
-  .command<ECClientSettings>({
+  .command(<CommandModule<any, ECClientSettings>>{
     command: '*',
     builder: yargs => {
       return <any>yargs

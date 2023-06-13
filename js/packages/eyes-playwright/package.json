@@ -27,9 +27,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "playwright"
-  ],
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "files": [
@@ -37,33 +34,26 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-playwright'",
     "test": "yarn test:coverage",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "test:sanity": "echo 'create sanity suite'",
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "up:framework": "run --top-level add-silent playwright",
     "report": "bongo report --name 'playwright'",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_PLAYWRIGHT_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile playwright@$APPLITOOLS_PLAYWRIGHT_VERSION; echo \"$packagejson\" > package.json; fi",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='playwright' -f links='types test-utils eyes-sdk-core visual-grid-client eyes spec-driver-playwright utils driver snippets screenshoter'",
-    "gh:publish": "gh workflow run publish-playwright.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion --verifyPendingChanges",
-    "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'playwright'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'playwright'"
   },
   "dependencies": {
     "@applitools/eyes": "1.2.14",
     "@applitools/spec-driver-playwright": "1.3.13"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.21",
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/sdk-coverage-tests": "3.0.2",
-    "@applitools/test-utils": "1.5.17",
+    "@applitools/api-extractor": "workspace:^",
+    "@applitools/bongo": "workspace:^",
+    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
-    "playwright": "^1.22.2"
+    "playwright": "^1.34.3"
   },
   "peerDependencies": {
     "playwright": ">=1.0.0"

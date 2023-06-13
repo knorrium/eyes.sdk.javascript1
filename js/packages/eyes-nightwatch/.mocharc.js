@@ -12,7 +12,7 @@ const tags = [
   'edge',
   'safari',
 ]
-if (process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1') {
+if (Number(process.env.APPLITOOLS_FRAMEWORK_VERSION) <= 1) {
   tags.push('jsonwire')
 }
 const group = process.env.MOCHA_GROUP

@@ -26,9 +26,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "images"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -44,29 +41,22 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-images'",
     "test": "yarn test:coverage",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:sanity": "echo 'create sanity suite'",
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}",
     "report": "bongo report --name 'js_images' --group 'images'",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='images' -f links='types test-utils core-base core eyes utils'",
-    "gh:publish": "gh workflow run publish-images.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'js_images'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_images'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.2.11"
+    "@applitools/eyes": "1.2.14"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "^1.2.21",
-    "@applitools/bongo": "^3.0.4",
-    "@applitools/sdk-coverage-tests": "^3.0.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/api-extractor": "workspace:^",
+    "@applitools/bongo": "workspace:^",
+    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55"
   },
   "engines": {

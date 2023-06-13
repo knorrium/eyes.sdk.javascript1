@@ -15,12 +15,12 @@ export function makeTunnelClient({
   const logger = makeLogger({logger: defaultLogger, format: {label: 'tunnel-client'}})
   const getTunnelService = utils.general.cachify(async () => {
     if (settings.serviceUrl) {
-      return {serviceUrl: settings.serviceUrl, close: async () => undefined}
+      return {serviceUrl: settings.serviceUrl, close: () => Promise.resolve()}
     }
     const {port, cleanupFunction} = await startEgTunnelService({logger})
     return {
       url: `http://localhost:${port}`,
-      async close() {
+      async close(): Promise<void> {
         await cleanupFunction()
         getTunnelService.clearCache()
       },

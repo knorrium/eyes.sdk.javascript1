@@ -1,0 +1,28 @@
+name: Setup
+
+inputs:
+  packages:
+    description: list of package names (aliases) with optional variations
+    type: string
+  tag:
+    description: list of release tags of the packages
+  ci:
+    description: wether variations should be generated from package configs
+    type: boolean
+    default: false
+  env:
+    description: list of environment variables to add to every job
+    type: string
+    required: false
+
+outputs:
+  builds:
+    description: array of builds
+  tests:
+    description: array of tests
+  releases:
+    description: array of releases
+
+runs:
+  using: node16
+  main: dist/index.js

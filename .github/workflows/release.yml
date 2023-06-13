@@ -1,0 +1,64 @@
+name: Release
+
+run-name: Release (${{github.event.release.name}})
+
+on:
+  release:
+    types: [published]
+
+env:
+  FORCE_COLOR: 3
+  NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      releases: ${{steps.setup.outputs.releases}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup
+        uses: ./.github/actions/setup
+        id: setup
+        with:
+          tag: ${{github.event.release.tag_name}}
+
+  js-release:
+    needs: [setup]
+    strategy:
+      fail-fast: false
+      matrix: 
+        include: ${{fromJSON(needs.setup.outputs.releases)}}
+    name: Release / ${{matrix.display-name}}
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version || 'lts/*'}}
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with: 
+          name: ${{join(matrix.builds)}}
+      - name: Publish to NPM
+        if: ${{matrix.registry-url != 'none'}}
+        uses: ./.github/actions/js/publish
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+        env:
+          NPM_REGISTRY_URL: ${{matrix.registry-url}}
+      - name: Update GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{github.event.release.tag_name}}
+          prerelease: false
+          files: ${{join(matrix.artifacts)}}

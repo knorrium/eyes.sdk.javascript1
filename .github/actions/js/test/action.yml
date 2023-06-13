@@ -1,0 +1,93 @@
+name: JS Test
+description: Test JS package
+inputs:
+  working-directory:
+    description: the path to the directory from repository root
+    type: string
+    required: true
+  framework-version:
+    description: version of the framework
+    type: string
+  test-type:
+    description: type of the testing (unit, it, e2e, coverage)
+    type: string
+  build-type:
+    description: type of the build script
+    type: string
+  setup-type:
+    description: type of the setup script
+    type: string
+  grep:
+    description: grep pattern to filter tests
+    type: string
+  parallel:
+    description: number of parallel processes to run tests
+    type: number
+  report:
+    description: report level
+    type: string
+    default: sandbox
+  shell:
+    description: shell to use
+    type: string
+    default: bash
+
+runs:
+  using: composite
+  steps:
+    - name: Test
+      shell: ${{inputs.shell}}
+      working-directory: ${{inputs.working-directory}}
+      run: |
+        echo "::group::Install global tools"
+        if [ -f "/etc/alpine-release" ]; then apk add --no-cache curl jq; fi
+        echo "::endgroup::"
+
+        echo "::group::Installing dependencies"
+        yarn workspaces focus $(jq -r .name ./package.json) root
+        # yarn install --no-immutable
+        if [ ! -z "${{inputs.framework-version}}" ]
+        then
+          export APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}}
+          export APPLITOOLS_FRAMEWORK_MAJOR_VERSION=${{inputs.framework-version}}
+          if [ "$(jq -r '.scripts["up:framework"]' ./package.json)" != "null" ]; then yarn run up:framework; fi
+        fi
+        echo "::endgroup::"
+
+        if [ "${{inputs.setup-type}}" != "none" ]
+        then
+          echo "::group::Setting up test environment"
+          if [ ! -z "${{inputs.setup-type}}" ]; then yarn setup:${{inputs.setup-type}}; elif [ "$(jq -r .scripts.setup ./package.json)" != "null" ]; then yarn setup; fi
+          echo "::endgroup::"
+        fi
+
+        if [ -e .env ]
+        then
+          echo "::group::Setting environment variables"
+          set -o allexport
+          source .env
+          set +o allexport
+          echo "::endgroup::"
+        fi
+
+        if [ "${{inputs.build-type}}" != "none" ]
+        then
+          echo "::group::Building package"
+          yarn workspaces foreach --topological-dev --recursive --parallel --from $(jq -r .name ./package.json) run build
+          yarn run build:${{inputs.build-type}}
+          echo "::endgroup::"
+        fi
+
+        echo "::group::Running tests"
+        if [ ! -z "${{inputs.grep}}" ]; then export MOCHA_GREP=${{inputs.grep}}; fi
+        if [ ! -z "${{inputs.parallel}}" ]; then export MOCHA_GREP=${{inputs.parallel}}; fi
+
+        if [ ! -z "${{inputs.test-type}}" ]; then yarn test:${{inputs.test-type}}; elif [ "$(jq -r .scripts.test ./package.json)" != "null" ]; then yarn test; fi
+        echo "::endgroup::"
+
+        if [ "$(jq -r .scripts.report ./package.json)" != "null" ]
+        then
+          echo "::group::Sending reports"
+          if [ "${{inputs.report}}" = "sandbox" ]; then yarn report --sandbox; else yarn report; fi
+          echo "::endgroup::"
+        fi

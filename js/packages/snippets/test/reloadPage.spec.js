@@ -6,7 +6,7 @@ describe('reloadPage', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -17,7 +17,8 @@ describe('reloadPage', () => {
       await page.goto(url)
       await page.setViewportSize({width: 400, height: 600})
       await page.evaluate(reloadPage)
-      const isElementChanged = await page.evaluate(function() {
+      await page.waitForNavigation()
+      const isElementChanged = await page.evaluate(() => {
         return !!document.querySelector('#target').style.backgroundColor
       })
       assert.ok(isElementChanged)
@@ -28,7 +29,7 @@ describe('reloadPage', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -39,7 +40,7 @@ describe('reloadPage', () => {
         await driver.url(url)
         await driver.setWindowSize(300, 500)
         await driver.execute(reloadPage)
-        const isElementChanged = await driver.execute(function() {
+        const isElementChanged = await driver.execute(function () {
           return !!document.querySelector('#target').style.backgroundColor
         })
         assert.ok(isElementChanged)

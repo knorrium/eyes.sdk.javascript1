@@ -1,3 +1,5 @@
+/* eslint "no-console": "off" */
+
 const chalk = require('chalk')
 
 module.exports = function progress({total} = {}) {

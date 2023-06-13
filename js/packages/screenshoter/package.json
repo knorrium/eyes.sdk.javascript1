@@ -25,9 +25,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "screenshoter"
-  ],
   "exports": {
     ".": {
       "default": "./index.js"
@@ -41,30 +38,22 @@
     "index.js"
   ],
   "scripts": {
-    "lint": "eslint . --ext .js",
+    "lint": "run --top-level eslint . --ext .js",
     "test": "yarn test:it && yarn test:e2e",
-    "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha ./test/unit/*.spec.js",
-    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha ./test/it/*.spec.js",
+    "test:unit": "MOCHA_GROUP=unit run --top-level mocha ./test/unit/*.spec.js",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha ./test/it/*.spec.js",
     "test:e2e": "yarn test:e2e:web && yarn test:e2e:android && yarn test:e2e:ios",
-    "test:e2e:web": "MOCHA_GROUP=web node ../../node_modules/.bin/mocha ./test/e2e/web/*.spec.js -r @applitools/test-utils/mocha-hooks/docker",
-    "test:e2e:android": "APPLITOOLS_TEST_REMOTE=sauce MOCHA_GROUP=android node ../../node_modules/.bin/mocha ./test/e2e/android*/*.spec.js --parallel --jobs ${MOCHA_JOBS:-3}",
-    "test:e2e:ios": "APPLITOOLS_TEST_REMOTE=sauce MOCHA_GROUP=ios node ../../node_modules/.bin/mocha ./test/e2e/ios*/*.spec.js --parallel --jobs ${MOCHA_JOBS:-4}",
-    "test:sanity": "yarn test:unit && yarn test:it && yarn test:e2e:web",
+    "test:e2e:web": "MOCHA_GROUP=web run --top-level mocha ./test/e2e/web/*.spec.js -r @applitools/test-utils/mocha-hooks/docker",
+    "test:e2e:android": "APPLITOOLS_TEST_REMOTE=sauce MOCHA_GROUP=android run --top-level mocha ./test/e2e/android*/*.spec.js --parallel --jobs ${MOCHA_JOBS:-3}",
+    "test:e2e:ios": "APPLITOOLS_TEST_REMOTE=sauce MOCHA_GROUP=ios run --top-level mocha ./test/e2e/ios*/*.spec.js --parallel --jobs ${MOCHA_JOBS:-4}",
     "setup": "yarn setup:web",
-    "setup:web": "yarn docker:setup",
+    "setup:web": "run --top-level browsers:setup",
     "setup:android": "echo \"setup:android - do nothing\"",
     "setup:ios": "echo \"setup:ios - do nothing\"",
     "android:setup": "node ./scripts/android-emulator.js",
     "android:shutdown": "adb -s emulator-5555 emu kill || true && adb -s emulator-5557 emu kill || true",
-    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
-    "docker:teardown": "docker-compose down",
     "ios:setup": "node ./scripts/ios-simulator.js",
-    "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &",
-    "deps": "bongo deps",
-    "gh:publish": "gh workflow run publish-screenshoter.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &"
   },
   "dependencies": {
     "@applitools/image": "1.0.34",
@@ -75,19 +64,13 @@
     "png-async": "0.9.4"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
     "@applitools/driver": "^1.12.1",
     "@applitools/spec-driver-webdriverio": "^1.5.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/test-utils": "workspace:^",
     "appium": "^1.22.3",
-    "chromedriver": "^101.0.0",
-    "eslint": "^8.16.0",
-    "eslint-plugin-mocha-no-only": "^1.1.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "chromedriver": "^114.0.1",
     "pixelmatch": "^5.3.0",
-    "prettier": "2.6.2",
-    "webdriverio": "^7.19.7"
+    "webdriverio": "^7.25.0"
   },
   "engines": {
     "node": ">=12.13.0"

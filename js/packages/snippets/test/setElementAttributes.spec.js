@@ -7,7 +7,7 @@ describe('setElementAttributes', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -27,7 +27,7 @@ describe('setElementAttributes', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -38,7 +38,7 @@ describe('setElementAttributes', () => {
         await driver.url(url)
         const element = await driver.$('#static')
         await driver.execute(setElementAttributes, [element, {'data-attr': 'some value'}])
-        const actualAttr = await driver.execute(function(element) {
+        const actualAttr = await driver.execute(function (element) {
           return element.getAttribute('data-attr')
         }, element)
         assert.deepStrictEqual(actualAttr, 'some value')

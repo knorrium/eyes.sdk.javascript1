@@ -1,0 +1,19 @@
+{
+  "name": "@applitools/action-setup",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "ncc build ./main.ts --out dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "ini": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/ini": "^1.3.31",
+    "@types/node": "16",
+    "@vercel/ncc": "^0.36.1",
+    "typescript": "^4.9.5"
+  },
+  "packageManager": "yarn@1.22.19"
+}

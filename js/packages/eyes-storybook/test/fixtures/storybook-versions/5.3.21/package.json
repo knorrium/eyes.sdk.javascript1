@@ -7,7 +7,7 @@
     "build-storybook": "build-storybook",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "storybook": "STORYBOOK_VERSION=5.3.21 start-storybook -p 9010",
+    "storybook": "APPLITOOLS_FRAMEWORK_VERSION=5.3.21 start-storybook -p 9010",
     "test": "npx eyes-storybook"
   },
   "dependencies": {

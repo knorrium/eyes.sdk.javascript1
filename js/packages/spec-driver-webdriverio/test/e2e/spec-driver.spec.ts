@@ -18,7 +18,7 @@ describe('spec driver', async () => {
 
   describe('headless desktop (@puppeteer)', async () => {
     before(function () {
-      if (Number(process.env.APPLITOOLS_WEBDRIVERIO_MAJOR_VERSION) < 7) this.skip()
+      if (Number(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION) < 7) this.skip()
     })
 
     before(async () => {

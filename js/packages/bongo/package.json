@@ -8,9 +8,7 @@
     "lib": "./src",
     "test": "./test"
   },
-  "bin": {
-    "bongo": "./src/cli/index.js"
-  },
+  "bin": "./src/cli/index.js",
   "description": "Release Kit for Applitools SDKs",
   "author": "Applitools team <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
@@ -20,19 +18,10 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git",
     "directory": "js/packages/bongo"
   },
-  "aliases": [
-    "bongo"
-  ],
   "scripts": {
     "bongo": "src/cli/index.js",
-    "lint": "eslint . --ext .js",
-    "test": "mocha test/**/*.spec.js",
-    "test:sanity": "yarn test",
-    "deps": "yarn bongo deps",
-    "prepublish:setup": "echo 'no setup'",
-    "preversion": "yarn bongo preversion",
-    "version": "yarn bongo version",
-    "postversion": "yarn bongo postversion"
+    "lint": "run --top-level eslint . --ext .js",
+    "test": "run --top-level mocha test/**/*.spec.js"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -47,22 +36,10 @@
     "micromatch": "4.0.2",
     "node-fetch": "2.6.1",
     "xml-js": "1.6.11",
-    "yargs": "15.0.2"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^7.9.0",
-    "eslint-plugin-mocha-no-only": "^1.1.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.3.7",
-    "mocha": "^6.2.2",
-    "nock": "^13.3.0",
-    "prettier": "^2.1.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
+    "nock": "^13.3.0"
   }
 }

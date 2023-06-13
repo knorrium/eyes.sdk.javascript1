@@ -59,7 +59,6 @@ function setupEyes({
       typeof saveLogs === 'string' ? saveLogs : `./logs/${new Date().toISOString()}.log`,
     )
     eyes.setLogHandler({type: 'file', filename: logsPath})
-    console.log('here')
   }
 
   return eyes

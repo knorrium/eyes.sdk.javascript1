@@ -31,9 +31,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "selenium"
-  ],
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "files": [
@@ -41,37 +38,28 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-selenium'",
     "test": "yarn test:coverage",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "test:sanity": "echo 'create sanity suite'",
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "setup": "run --top-level browsers:setup",
+    "up:framework": "run --top-level add-silent selenium-webdriver",
     "report": "bongo report --name 'js_selenium_4'",
-    "setup": "yarn docker:setup",
-    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
-    "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_SELENIUM_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile selenium-webdriver@$APPLITOOLS_SELENIUM_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='selenium selenium@3' -f links='types test-utils eyes-sdk-core visual-grid-client eyes spec-driver-selenium utils driver snippets screenshoter'",
-    "gh:publish": "gh workflow run publish-selenium.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion --verifyPendingChanges",
-    "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'js_selenium_4'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_selenium_4'"
   },
   "dependencies": {
     "@applitools/eyes": "1.2.14",
     "@applitools/spec-driver-selenium": "1.5.47"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.21",
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/sdk-coverage-tests": "3.0.2",
-    "@applitools/test-utils": "1.5.17",
+    "@applitools/api-extractor": "workspace:^",
+    "@applitools/bongo": "workspace:^",
+    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
     "@types/selenium-webdriver": "^4.1.1",
-    "chromedriver": "112.0.0",
+    "chromedriver": "^114.0.1",
     "selenium-webdriver": "4.4.0"
   },
   "peerDependencies": {

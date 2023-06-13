@@ -15,9 +15,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "core"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -44,30 +41,23 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
+    "lint": "run --top-level eslint '**/*.ts'",
     "build": "yarn build:dist",
-    "build:dist": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
+    "build:dist": "run --top-level tsc --project ./tsconfig.build.json",
     "build:x64": "yarn build:dist && yarn build:bin:x64",
     "build:arm64": "yarn build:dist && yarn build:bin:arm64",
     "build:bin:x64": "pkg . --target node14-linux-x64,node14-alpine-x64,node14-macos-x64,node14-win-x64",
     "build:bin:arm64": "pkg . --target node14-linux-arm64 --output ./bin/core-linux-arm64",
     "build:bin:zip": "zip -j ./bin/core.zip $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "build:bin:tgz": "tar -czf ./bin/core.tar.gz $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "test:bin": "MOCHA_GROUP=bin node ../../node_modules/mocha/bin/mocha './test/bin/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:e2e": "MOCHA_GROUP=e2e node ../../node_modules/mocha/bin/mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/**/*.spec.ts'",
-    "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha './test/unit/**/*.spec.ts'",
-    "test:sanity": "yarn test:unit",
+    "test": "run --top-level mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "test:bin": "MOCHA_GROUP=bin run --top-level mocha './test/bin/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
+    "test:e2e": "MOCHA_GROUP=e2e run --top-level mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/**/*.spec.ts'",
+    "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'",
+    "setup": "run --top-level browsers:setup",
     "report": "bongo report --name 'core' --group 'core'",
-    "setup": "yarn docker:setup",
-    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
-    "docker:teardown": "docker-compose down",
-    "deps": "bongo deps",
-    "preversion": "bongo preversion --verify-pending-changes --skip-deps",
-    "version": "bongo version --with-pending-changes",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'core'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'core'"
   },
   "pkg": {
     "scripts": "./dist/cli/cli.js",
@@ -98,24 +88,24 @@
     "node-fetch": "2.6.7",
     "webdriver": "7.30.0",
     "ws": "8.12.0",
-    "yargs": "17.6.2"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/sdk-coverage-tests": "^3.0.2",
+    "@applitools/bongo": "workspace:^",
+    "@applitools/sdk-coverage-tests": "workspace:^",
     "@applitools/spec-driver-puppeteer": "^1.1.64",
     "@applitools/spec-driver-selenium": "^1.5.47",
     "@applitools/spec-driver-webdriverio": "^1.5.2",
-    "@applitools/test-server": "^1.2.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/test-server": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
     "@types/selenium-webdriver": "^4.1.2",
     "@types/yargs": "^17.0.22",
-    "chromedriver": "^106.0.0",
+    "chromedriver": "^114.0.1",
     "nock": "^13.2.8",
     "pkg": "^5.8.0",
     "png-async": "^0.9.4",
-    "puppeteer": "^19.7.0",
+    "puppeteer": "^19.11.1",
     "selenium-webdriver": "4.4",
     "webdriverio": "^7.25.0"
   },

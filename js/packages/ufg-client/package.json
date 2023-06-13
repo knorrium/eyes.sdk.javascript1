@@ -15,10 +15,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "ufg-client",
-    "ufg"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -30,38 +26,33 @@
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "browser": {
-    "@applitools/jsdom": false
+    "jsdom": false
   },
   "files": [
     "dist",
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/**/*.spec.ts'",
-    "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha './test/unit/**/*.spec.ts'",
-    "test:sanity": "yarn test:unit && yarn test:it",
-    "deps": "bongo deps",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tsc --project ./tsconfig.build.json",
+    "test": "run --top-level mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/**/*.spec.ts'",
+    "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/jsdom": "1.0.4",
     "@applitools/logger": "2.0.2",
     "@applitools/req": "1.3.0",
     "@applitools/utils": "1.3.37",
     "abort-controller": "3.0.0",
     "css-tree": "2.3.1",
+    "jsdom": "19.0.0",
     "throat": "6.0.1"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/test-server": "^1.2.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/test-server": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/css-tree": "^2.3.1",
+    "@types/jsdom": "^21.1.1",
     "@types/node": "^12.20.55",
     "nock": "^13.2.8"
   },

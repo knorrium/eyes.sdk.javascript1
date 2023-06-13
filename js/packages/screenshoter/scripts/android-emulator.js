@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const fs = require('fs')
 const utils = require('@applitools/utils')
 

@@ -25,9 +25,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "testcafe"
-  ],
   "main": "./dist/index-legacy.js",
   "types": "./types/index-legacy.d.ts",
   "typesVersions": {
@@ -63,11 +60,10 @@
     "run:testcafe:9": "./node_modules/testcafe-9/bin/testcafe-with-v8-flag-filter.js",
     "run:testcafe:8": "./node_modules/testcafe-8/bin/testcafe-with-v8-flag-filter.js",
     "run:testcafe:7": "./node_modules/testcafe-7/bin/testcafe-with-v8-flag-filter.js",
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts' '**/*.js'",
-    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
+    "lint": "eslint '**/*.ts' '**/*.js'",
+    "build": "tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-testcafe'",
     "test": "yarn test:it && yarn test:coverage",
-    "test:sanity": "yarn test:it",
     "test:it": "testcafe chrome:headless test/it && yarn test:it:firefox:headless",
     "test:it:chrome": "testcafe chrome test/it/spec-driver.spec.js",
     "test:it:firefox": "testcafe firefox test/it/spec-driver.spec.js",
@@ -83,15 +79,9 @@
     "perf:full": "yarn perf && yarn perf -c 5",
     "perf:lite": "testcafe chrome:headless test/perf/perf-lite.spec.js",
     "perf:lite:full": "yarn perf:lite && yarn perf:lite -c 5",
+    "up:framework": "run --top-level add-silent testcafe",
     "report": "bongo report --name 'testcafe'",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_TESTCAFE_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile testcafe@$APPLITOOLS_TESTCAFE_VERSION; echo \"$packagejson\" > package.json; fi",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='testcafe' -f links='eyes-sdk-core eyes-api types test-utils utils driver snippets screenshoter visual-grid-client'",
-    "gh:publish": "gh workflow run publish-testcafe.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion --verifyPendingChanges",
-    "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'testcafe'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'testcafe'"
   },
   "dependencies": {
     "@applitools/core": "1.4.6",

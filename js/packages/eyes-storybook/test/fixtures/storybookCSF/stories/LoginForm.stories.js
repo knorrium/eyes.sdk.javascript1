@@ -9,7 +9,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 const clickSubmitDelay = 1000;
-const sbVersion = process.env.STORYBOOK_VERSION || 'latest';
+const sbVersion = process.env.APPLITOOLS_FRAMEWORK_VERSION || 'latest';
 const isInteractionsCompetiable = sbVersion === 'latest' || sbVersion === 'next' || (parseFloat(sbVersion) >= 6.4);
 const exports = {
   title: 'Examples/Login',

@@ -7,7 +7,7 @@ describe('blurElement', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -41,7 +41,7 @@ describe('blurElement', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -52,12 +52,12 @@ describe('blurElement', () => {
         await driver.url(url)
         const element = await driver.$('#focusable')
         await element.click()
-        const isFocused = await driver.execute(function(element) {
+        const isFocused = await driver.execute(function (element) {
           return element === document.activeElement
         }, element)
         assert.ok(isFocused)
         await driver.execute(blurElement, [element])
-        const isBlurred = await driver.execute(function(element) {
+        const isBlurred = await driver.execute(function (element) {
           return element !== document.activeElement
         }, element)
         assert.ok(isBlurred)
@@ -67,12 +67,12 @@ describe('blurElement', () => {
         await driver.url(url)
         const element = await driver.$('#focusable')
         await element.click()
-        const isFocused = await driver.execute(function(element) {
+        const isFocused = await driver.execute(function (element) {
           return element === document.activeElement
         }, element)
         assert.ok(isFocused)
         await driver.execute(blurElement)
-        const isBlurred = await driver.execute(function(element) {
+        const isBlurred = await driver.execute(function (element) {
           return element !== document.activeElement
         }, element)
         assert.ok(isBlurred)

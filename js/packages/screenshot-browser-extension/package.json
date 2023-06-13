@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/screenshot-browser-extension",
+  "name": "@applitools/centra",
   "version": "1.0.1",
   "repository": {
     "type": "git",
@@ -11,9 +11,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "centra"
-  ],
   "scripts": {
     "lint": "eslint '**/*.js'",
     "build": "yarn build:dist && yarn build:zip",

@@ -20,7 +20,7 @@ describe('coded regions', () => {
   let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {
-    ;[driver, destroyDriver] = await spec.build({browser: 'chrome', selenium: require('selenium-webdriver')})
+    ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
   })
 
   after(async () => {

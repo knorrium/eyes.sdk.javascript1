@@ -272,7 +272,7 @@ export default function transformer(
     const sourceFile = symbol.declarations[0].getSourceFile()
     const fileName = sourceFile.fileName
     const dirName = fileName.includes('/node_modules/')
-      ? sourceFile.fileName.replace(/\/node_modules\/.*$/, '')
+      ? sourceFile.fileName.replace(/\/node_modules\/(?!.*\/node_modules\/)(.*)$/, '')
       : program.getCurrentDirectory()
     const moduleName = config.allowModules?.find(moduleName => {
       if (parentSymbol.getName() === `"${moduleName}"`) return true

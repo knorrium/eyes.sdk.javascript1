@@ -4,9 +4,6 @@
   "description": "for testing purposes only",
   "version": "0.1.0",
   "version_name": "0.1.0",
-  "icons": {
-    "70": "assets/icon.png"
-  },
   "permissions": [
     "scripting",
     "tabs",

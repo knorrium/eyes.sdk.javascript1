@@ -7,7 +7,7 @@ describe('getElementInnerOffset', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -40,7 +40,7 @@ describe('getElementInnerOffset', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -50,7 +50,7 @@ describe('getElementInnerOffset', () => {
       it('specific element', async () => {
         await driver.url(url)
         const element = await driver.$('#scrollable')
-        await driver.execute(function(element) {
+        await driver.execute(function (element) {
           element.style.transform = 'translate(-10px, -11px)'
           element.scrollLeft = 10
           element.scrollTop = 11
@@ -61,7 +61,7 @@ describe('getElementInnerOffset', () => {
 
       it('default element', async () => {
         await driver.url(url)
-        await driver.execute(function() {
+        await driver.execute(function () {
           document.documentElement.style.transform = 'translate(-10px, -11px)'
           document.documentElement.scrollLeft = 10
           document.documentElement.scrollTop = 11

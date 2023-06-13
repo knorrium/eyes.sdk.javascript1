@@ -35,7 +35,7 @@ export function makeReqProxy(config: ReqProxyConfig) {
         }
         if (options.body && !utils.types.isFunction(options.body, 'pipe')) {
           options.headers['content-length'] = Buffer.byteLength(
-            utils.types.isArray(options.body) || utils.types.isPlainObject(options.body)
+            utils.types.isArray(options.body) || utils.types.isPlainObject(options.body) || options.body === null
               ? JSON.stringify(options.body)
               : options.body,
           ).toString()

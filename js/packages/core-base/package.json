@@ -15,9 +15,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "core-base"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -37,17 +34,12 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:e2e": "MOCHA_GROUP=e2e node ../../node_modules/.bin/mocha './test/e2e/*.spec.ts'",
-    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/*.spec.ts'",
-    "test:unit": "MOCHA_GROUP=unit node ../../node_modules/.bin/mocha './test/unit/*.spec.ts'",
-    "test:sanity": "yarn test:unit && yarn test:it",
-    "deps": "bongo deps",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tsc --project ./tsconfig.build.json",
+    "test": "run --top-level mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
+    "test:e2e": "MOCHA_GROUP=e2e run --top-level mocha './test/e2e/*.spec.ts'",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/*.spec.ts'",
+    "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/*.spec.ts'"
   },
   "dependencies": {
     "@applitools/image": "1.0.34",
@@ -58,9 +50,8 @@
     "throat": "6.0.2"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/test-server": "^1.2.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/test-server": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
     "nock": "^13.2.8"
   },

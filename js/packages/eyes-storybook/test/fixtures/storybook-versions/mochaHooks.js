@@ -6,10 +6,10 @@ const path = require('path');
 
 exports.mochaHooks = {
   beforeAll: async () => {
-    if (!process.env.STORYBOOK_VERSION) {
-      process.env.STORYBOOK_VERSION = 'latest';
+    if (!process.env.APPLITOOLS_FRAMEWORK_VERSION) {
+      process.env.APPLITOOLS_FRAMEWORK_VERSION = 'latest';
     }
-    const storybookVersion = String(process.env.STORYBOOK_VERSION);
+    const storybookVersion = String(process.env.APPLITOOLS_FRAMEWORK_VERSION);
     const versionDir = path.resolve(__dirname, `./${storybookVersion}`);
     fs.readdirSync(versionDir).map(fileName => {
       const filePath = path.join(versionDir, fileName);
@@ -25,7 +25,7 @@ exports.mochaHooks = {
     });
   },
   afterAll: async () => {
-    delete process.env.STORYBOOK_VERSION;
+    delete process.env.APPLITOOLS_FRAMEWORK_VERSION;
     delete process.env.INIT_CWD;
   }
 };

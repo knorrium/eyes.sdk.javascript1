@@ -7,7 +7,7 @@ const {makeImage} = require('@applitools/image')
 const takeScreenshot = require('../../../index')
 
 describe.skip('external tests', () => {
-  const logger = {log: () => {}, warn: () => {}, error: () => {}, verbose: () => {}}
+  const logger = {log: () => undefined, warn: () => undefined, error: () => undefined, verbose: () => undefined}
   let browser, destroyBrowser
 
   afterEach(async () => {

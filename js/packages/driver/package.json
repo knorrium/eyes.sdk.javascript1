@@ -24,9 +24,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "driver"
-  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -71,14 +68,9 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
-    "test:sanity": "yarn test",
-    "deps": "bongo deps",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tsc --project ./tsconfig.build.json",
+    "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
     "@applitools/logger": "2.0.2",
@@ -87,7 +79,6 @@
     "semver": "7.3.7"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
     "@types/node": "^12.20.55"
   },
   "engines": {

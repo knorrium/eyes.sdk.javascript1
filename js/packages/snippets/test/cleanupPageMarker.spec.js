@@ -7,7 +7,7 @@ describe('cleanupPageMarker', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -33,7 +33,7 @@ describe('cleanupPageMarker', () => {
   describe('ios safari', () => {
     let driver
 
-    before(async function() {
+    before(async function () {
       driver = await global.getDriver('ios safari')
       if (!driver) {
         this.skip()

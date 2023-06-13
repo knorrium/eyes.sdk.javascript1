@@ -1,0 +1,35 @@
+name: JS Publish
+description: Publish JS package
+inputs:
+  working-directory:
+    description: the path to the directory from repository root
+    type: string
+    required: true
+  shell:
+    description: shell to use
+    type: string
+    default: bash
+
+runs:
+  using: composite
+  steps:
+    - name: Publish
+      shell: ${{inputs.shell}}
+      working-directory: ${{inputs.working-directory}}
+      run: |
+        echo "::group::Install global tools"
+        if [ -f "/etc/alpine-release" ]; then apk add --no-cache curl jq; fi
+        echo "::endgroup::"
+
+        echo "::group::Publish to NPM"
+        yarn npm publish
+        echo "::endgroup::"
+
+        if [ "$(jq -r .scripts.notify ./package.json)" != "null" ]
+        then
+          echo "::group::Send notification"
+          # yarn notify
+          echo "::endgroup::"
+        fi
+
+

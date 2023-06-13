@@ -5,7 +5,7 @@ const drivers = new Map()
 
 exports.mochaHooks = {
   async beforeAll() {
-    global.getDriver = async function(name) {
+    global.getDriver = async function (name) {
       let {driver} = drivers.get(name) || {}
       if (!driver) {
         if (name === 'chrome') {

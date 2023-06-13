@@ -19,7 +19,7 @@ describe('getContextInfo', () => {
       return Promise.all(properties)
     }
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -66,7 +66,7 @@ describe('getContextInfo', () => {
 
       async function isEqualElements(element1, element2) {
         return driver.execute(
-          function(element1, element2) {
+          function (element1, element2) {
             return element1 === element2
           },
           element1,
@@ -74,7 +74,7 @@ describe('getContextInfo', () => {
         )
       }
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()

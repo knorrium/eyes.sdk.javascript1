@@ -135,7 +135,7 @@ export async function findElement(
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
     parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
     element = await spec.findElement(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
-  } else if (!(Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2)) {
+  } else if (!(Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2)) {
     try {
       element = await originalDriver.findElement(selector as any)
     } catch {
@@ -154,7 +154,7 @@ export async function findElements(
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
     parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
     elements = await spec.findElements(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
-  } else if (!(Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2)) {
+  } else if (!(Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2)) {
     try {
       elements = await originalDriver.findElements(selector as any)
     } catch {
@@ -180,7 +180,7 @@ export async function build(env: any): Promise<[NWDriver, () => Promise<void>]> 
     args = [],
     headless,
     logLevel = 'silent',
-  } = parseEnv({...env, legacy: env.legacy ?? process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION === '1'})
+  } = parseEnv({...env, legacy: env.legacy ?? process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION === '1'})
   const options: any = {
     capabilities: {browserName: browser, ...capabilities},
     webdriver: {
@@ -195,6 +195,7 @@ export async function build(env: any): Promise<[NWDriver, () => Promise<void>]> 
       start_process: false,
     },
     output: logLevel !== 'silent',
+    config: null,
     useAsync: true,
   }
   if (configurable) {
@@ -214,7 +215,7 @@ export async function build(env: any): Promise<[NWDriver, () => Promise<void>]> 
   if (options.capabilities.browserName === '') options.capabilities.browserName = null
   if (options.capabilities.browserName !== 'firefox') options.selenium = options.webdriver
 
-  if (Number(process.env.APPLITOOLS_NIGHTWATCH_MAJOR_VERSION) < 2) {
+  if (Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2) {
     options.desiredCapabilities = options.capabilities
     const client = Nightwatch.client(options)
     client.isES6AsyncTestcase = true

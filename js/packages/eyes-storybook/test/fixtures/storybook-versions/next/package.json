@@ -7,7 +7,7 @@
     "build-storybook": "sb build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "storybook": "STORYBOOK_VERSION=next sb dev -p 9010",
+    "storybook": "APPLITOOLS_FRAMEWORK_VERSION=next sb dev -p 9010",
     "test": "npx eyes-storybook"
   },
   "dependencies": {

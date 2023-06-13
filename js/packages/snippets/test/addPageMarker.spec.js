@@ -7,7 +7,7 @@ describe('addPageMarker', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -33,7 +33,7 @@ describe('addPageMarker', () => {
 
     it('add page marker on translated page', async () => {
       await page.goto(url)
-      await page.evaluate(function() {
+      await page.evaluate(function () {
         document.documentElement.style.transform = 'translate(-1000px, -1000px)'
         document.documentElement.style.webkitTransform = 'translate(-1000px, -1000px)'
       })
@@ -55,7 +55,7 @@ describe('addPageMarker', () => {
   describe('ios safari', () => {
     let driver
 
-    before(async function() {
+    before(async function () {
       driver = await global.getDriver('ios safari')
       if (!driver) {
         this.skip()
@@ -75,7 +75,7 @@ describe('addPageMarker', () => {
       })
       const element = await driver.$('[data-applitools-marker]')
       assert.ok(element.elementId)
-      const {x, y} = await driver.execute(function(element) {
+      const {x, y} = await driver.execute(function (element) {
         return element.getBoundingClientRect()
       }, element)
       assert.deepStrictEqual({x, y}, {x: 0, y: 0})
@@ -83,7 +83,7 @@ describe('addPageMarker', () => {
 
     it('add page marker on translated page', async () => {
       await driver.url(url)
-      await driver.execute(function() {
+      await driver.execute(function () {
         document.documentElement.style.transform = 'translate(-1000px, -1000px)'
         document.documentElement.style.webkitTransform = 'translate(-1000px, -1000px)'
       })
@@ -97,7 +97,7 @@ describe('addPageMarker', () => {
       })
       const element = await driver.$('[data-applitools-marker]')
       assert.ok(element.elementId)
-      const {x, y} = await driver.execute(function(element) {
+      const {x, y} = await driver.execute(function (element) {
         return element.getBoundingClientRect()
       }, element)
       assert.deepStrictEqual({x, y}, {x: 0, y: 0})

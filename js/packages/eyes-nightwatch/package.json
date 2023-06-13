@@ -30,9 +30,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "nightwatch"
-  ],
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "files": [
@@ -41,48 +38,36 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts' '**/*.js'",
-    "build": "node ../../node_modules/.bin/tspc --project ./tsconfig.build.json",
+    "lint": "run --top-level eslint '**/*.ts' '**/*.js'",
+    "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-nightwatch'",
     "test": "yarn test:it && yarn test:e2e && yarn test:coverage",
-    "test:it": "MOCHA_GROUP=it node ../../node_modules/.bin/mocha './test/it/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker",
-    "test:e2e": "yarn test:e2e:nightwatch && yarn test:e2e:cucumber",
-    "test:e2e:cucumber": "cucumber-js test/e2e/cucumber/features/*.feature --require test/e2e/cucumber/cucumber.config.js --require test/e2e/cucumber/step_definitions",
-    "test:e2e:nightwatch": "nightwatch --config test/e2e/nightwatch.conf.js --eyes-config applitools.config.js test/e2e/*.spec.js",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker",
+    "test:e2e": "nightwatch --config test/e2e/nightwatch.conf.js --eyes-config applitools.config.js test/e2e/*.spec.js",
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "setup": "run --top-level browsers:setup",
+    "up:framework": "run --top-level add-silent nightwatch",
     "report": "bongo report --name 'nightwatch'",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage node ../../node_modules/.bin/mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "test:sanity": "yarn test:it",
-    "setup": "yarn docker:setup",
-    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
-    "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_NIGHTWATCH_MAJOR_VERSION ]; then packagejson=`cat package.json`; yarn upgrade --no-lockfile nightwatch@$APPLITOOLS_NIGHTWATCH_MAJOR_VERSION; echo \"$packagejson\" > package.json; fi",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='nightwatch' -f links='eyes-sdk-core eyes types test-utils utils driver snippets screenshoter visual-grid-client'",
-    "gh:publish": "gh workflow run publish-nightwatch.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion --verifyPendingChanges",
-    "version": "bongo version --withPendingChanges",
-    "postversion": "bongo postversion",
-    "postpublish": "bongo send-release-notification --name 'nightwatch'"
+    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'nightwatch'"
   },
   "dependencies": {
-    "@applitools/driver": "1.12.0",
-    "@applitools/eyes": "1.2.11",
-    "@applitools/spec-driver-webdriver": "1.0.32",
+    "@applitools/driver": "1.12.1",
+    "@applitools/eyes": "1.2.14",
+    "@applitools/spec-driver-webdriver": "1.0.33",
     "@applitools/utils": "1.3.37",
     "webdriver": "7.27.0"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.21",
-    "@applitools/bongo": "^3.0.4",
-    "@applitools/sdk-coverage-tests": "3.0.2",
-    "@applitools/test-utils": "1.5.17",
+    "@applitools/api-extractor": "workspace:^",
+    "@applitools/bongo": "workspace:^",
+    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/nightwatch": "^2.3.16",
     "@types/node": "^12.20.55",
-    "chromedriver": "^110.0.0",
+    "chromedriver": "^114.0.1",
     "cucumber": "6.0.7",
     "geckodriver": "^3.0.1",
-    "nightwatch": "^2.5.4",
-    "nightwatch-api": "^3.0.2"
+    "nightwatch": "^2.6.21"
   },
   "peerDependencies": {
     "nightwatch": ">=1.3.4"

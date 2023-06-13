@@ -28,10 +28,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "spec-webdriverio",
-    "spec-wdio"
-  ],
   "main": "./dist/index.js",
   "types": "./types/index.d.ts",
   "exports": {
@@ -87,33 +83,23 @@
     "types"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tspc --project tsconfig.build.v$([ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ] && echo ${APPLITOOLS_WEBDRIVERIO_VERSION%%.*} || echo 8).json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker --exit",
-    "test:sanity": "yarn test",
-    "setup": "yarn docker:setup",
-    "docker:setup": "node ../../scripts/generate-docker-compose-config.js && docker-compose up -d",
-    "docker:teardown": "docker-compose down",
-    "upgrade:framework": "if [ ! -z $APPLITOOLS_WEBDRIVERIO_VERSION ]; then packagejson=`cat package.json`; NODE_VERSION=${NODE_VERSION:-$(node -v)} yarn upgrade --no-lockfile webdriverio@$APPLITOOLS_WEBDRIVERIO_VERSION @types/node@${NODE_VERSION%%.*}; echo \"$packagejson\" > package.json; fi",
-    "deps": "bongo deps",
-    "gh:test": "gh workflow run test.yml --ref $(git rev-parse --abbrev-ref HEAD) -f packages='spec-webdriverio' -f links='types utils test-utils'",
-    "gh:publish": "gh workflow run publish-spec-webdriverio.yml --ref $(git rev-parse --abbrev-ref HEAD)",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tspc --project tsconfig.build.v$([ ! -z $APPLITOOLS_FRAMEWORK_VERSION ] && echo $APPLITOOLS_FRAMEWORK_VERSION | cut -f1 -d'.' || echo 8).json",
+    "test": "run --top-level mocha './test/**/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker --exit",
+    "setup": "run --top-level browsers:setup",
+    "up:framework": "run --top-level add-silent webdriverio"
   },
   "dependencies": {
     "@applitools/driver": "1.12.1",
     "@applitools/utils": "1.3.37"
   },
   "devDependencies": {
-    "@applitools/api-extractor": "1.2.21",
-    "@applitools/bongo": "^4.0.0",
-    "@applitools/test-utils": "1.5.17",
+    "@applitools/api-extractor": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^16.18.14",
-    "chromedriver": "^101.0.0",
+    "chromedriver": "^114.0.1",
     "nock": "^13.2.9",
-    "webdriverio": "^8.5.6"
+    "webdriverio": "^8.10.7"
   },
   "peerDependencies": {
     "webdriverio": ">=5.0.0"

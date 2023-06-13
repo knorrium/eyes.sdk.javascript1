@@ -1,0 +1,149 @@
+name: CI
+
+run-name: CI (${{github.event.pull_request.title}})
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches: [master]
+
+concurrency:
+  group: ci-${{github.ref}}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 3
+  DISPLAY: ':99'
+  NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
+  APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
+  SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+  SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+  BROWSERSTACK_USERNAME: applitools
+  BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
+  AZURE_STORAGE_CONNECTION_STRING: ${{secrets.AZURE_STORAGE_CONNECTION_STRING}}
+
+jobs:
+  setup:
+    name: Setup
+    if: ${{github.actor != 'dependabot[bot]' && !github.event.pull_request.draft}}
+    runs-on: ubuntu-latest
+    outputs:
+      builds: ${{steps.setup.outputs.builds}}
+      tests: ${{steps.setup.outputs.tests}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          fetch-depth: 0
+      - name: Setup
+        uses: ./.github/actions/setup
+        id: setup
+        with:
+          ci: true
+  
+  js-build:
+    needs: [setup]
+    strategy:
+      fail-fast: false
+      matrix: 
+        include: ${{fromJSON(needs.setup.outputs.builds)}}
+    name: Build / ${{matrix.display-name}}
+    timeout-minutes: 20
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version || 'lts/*'}}
+      - name: Yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ./js/.yarn/cache
+          key: yarn-cache-${{hashFiles('./js/yarn.lock', './js/.yarnrc.yml')}}
+          restore-keys: yarn-cache-
+      - name: Build
+        uses: ./.github/actions/js/build
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          build-type: ${{matrix.build-type}}
+      - name: Save build artifacts
+        if: ${{matrix.key && matrix.artifacts}}
+        uses: ./.github/actions/storage/save
+        with: 
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+
+  js-test:
+    needs: [setup, js-build]
+    strategy:
+      fail-fast: false
+      matrix: 
+        include: ${{fromJSON(needs.setup.outputs.tests)}}
+    name: Test / ${{matrix.display-name}}
+    timeout-minutes: 60
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version || 'lts/*'}}
+      - name: Yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ./js/.yarn/cache
+          key: yarn-cache-${{hashFiles('./js/yarn.lock', '.yarnrc.yml')}}
+          restore-keys: yarn-cache-
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+      - name: Run tests
+        uses: ./.github/actions/js/test
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          framework-version: ${{matrix.framework-version}}
+          test-type: ${{matrix.test-type}}
+          build-type: ${{matrix.build-type}}
+          setup-type: ${{matrix.setup-type}}
+          parallel: ${{matrix.parallel}}
+      - name: Save testing artifacts
+        if: ${{always() && matrix.key && matrix.artifacts}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+          retention-days: 2
+          if-no-files-found: ignore
+
+  report:
+    needs: [setup, js-test]
+    if: always() && !cancelled()
+    name: Report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Report
+        id: report
+        uses: ./.github/actions/report
+        with:
+          artifact: ${{join(fromJSON(needs.setup.outputs.tests).*.key)}}
+          path: |
+            ./report*.json

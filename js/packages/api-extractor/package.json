@@ -22,26 +22,16 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "ts-transform-api"
-  ],
   "main": "./dist/transformer.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts'",
-    "test:sanity": "yarn test",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion",
-    "deps": "bongo deps"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tsc --project ./tsconfig.build.json",
+    "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@applitools/bongo": "^3.0.3",
     "@types/node": "12"
   },
   "engines": {

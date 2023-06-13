@@ -42,7 +42,7 @@ export default {
       tty: require.resolve('tty-browserify'),
       vm: false,
       async_hooks: false,
-      canvas: require.resolve('canvas-browserify'),
+      canvas: false,
       tls: require.resolve('tls-browserify'),
       net: false,
       '@applitools/execution-grid-client': false,

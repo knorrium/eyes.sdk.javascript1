@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import * as spec from '@applitools/spec-driver-browser-extension'
+import * as spec from '../../../../dist'
 
 globalThis.browser = browser
 globalThis.spec = spec

@@ -16,10 +16,6 @@
     "name": "Applitools Team",
     "email": "team@applitools.com"
   },
-  "aliases": [
-    "nml-client",
-    "nml"
-  ],
   "files": [
     "dist",
     "types"
@@ -35,14 +31,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "lint": "node ../../node_modules/.bin/eslint '**/*.ts'",
-    "build": "node ../../node_modules/.bin/tsc --project ./tsconfig.build.json",
-    "test": "node ../../node_modules/.bin/mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "test:sanity": "yarn test",
-    "deps": "bongo deps",
-    "preversion": "bongo preversion",
-    "version": "bongo version",
-    "postversion": "bongo postversion"
+    "lint": "run --top-level eslint '**/*.ts'",
+    "build": "run --top-level tsc --project ./tsconfig.build.json",
+    "test": "run --top-level mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
   "dependencies": {
     "@applitools/logger": "2.0.2",
@@ -50,14 +41,13 @@
     "@applitools/utils": "1.3.37"
   },
   "devDependencies": {
-    "@applitools/bongo": "^4.0.0",
     "@applitools/spec-driver-webdriverio": "^1.5.2",
-    "@applitools/test-server": "^1.2.2",
-    "@applitools/test-utils": "^1.5.17",
+    "@applitools/test-server": "workspace:^",
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
-    "chromedriver": "^109.0.0",
+    "chromedriver": "^114.0.1",
     "nock": "^13.2.9",
-    "webdriverio": "^8.3.2"
+    "webdriverio": "^7.25.0"
   },
   "engines": {
     "node": ">=12.13.0"

@@ -1,0 +1,23 @@
+name: Release Please
+
+inputs:
+  token:
+    description: 'GitHub token for creating and grooming release PRs, defaults to using secrets.GITHUB_TOKEN'
+    required: false
+    default: ${{github.token}}
+  branch:
+    description: 'branch to open pull release PR against (detected by default)'
+    required: false
+    default: ''
+  config-file:
+    description: 'where can the config file be found in the project?'
+    required: false
+    default: ''
+  manifest-file:
+    description: 'where can the manifest file be found in the project?'
+    required: false
+    default: ''
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

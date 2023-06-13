@@ -7,7 +7,7 @@ describe('setElementStyleProperties', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -28,7 +28,7 @@ describe('setElementStyleProperties', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -40,7 +40,7 @@ describe('setElementStyleProperties', () => {
         const element = await driver.$('#scrollable')
         const {overflow} = await driver.execute(setElementStyleProperties, [element, {overflow: 'hidden'}])
         assert.deepStrictEqual(overflow, {value: '', important: false})
-        const actualOverflow = await driver.execute(function(element) {
+        const actualOverflow = await driver.execute(function (element) {
           return element.style.overflow
         }, element)
         assert.deepStrictEqual(actualOverflow, 'hidden')

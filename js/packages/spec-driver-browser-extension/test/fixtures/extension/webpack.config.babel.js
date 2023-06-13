@@ -26,15 +26,8 @@ export default {
     },
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {from: './manifest.json', to: './'},
-        {from: './assets', to: './assets'},
-      ],
-    }),
+    new CopyWebpackPlugin({patterns: [{from: './manifest.json', to: './'}]}),
     new webpack.ProvidePlugin({
-      Buffer: [require.resolve('buffer'), 'Buffer'],
-      process: [require.resolve('process/browser')],
       setImmediate: [require.resolve('core-js/features/set-immediate')],
     }),
   ],

@@ -7,7 +7,7 @@ describe('focusElement', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -29,7 +29,7 @@ describe('focusElement', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -39,12 +39,12 @@ describe('focusElement', () => {
       it('focus element', async () => {
         await driver.url(url)
         const element = await driver.$('#focusable')
-        const isBlurred = await driver.execute(function(element) {
+        const isBlurred = await driver.execute(function (element) {
           return element !== document.activeElement
         }, element)
         assert.ok(isBlurred)
         await driver.execute(focusElement, [element])
-        const isFocused = await driver.execute(function(element) {
+        const isFocused = await driver.execute(function (element) {
           return element === document.activeElement
         }, element)
         assert.ok(isFocused)

@@ -7,10 +7,6 @@
     "directory": "js/packages/eyes-cypress"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "aliases": [
-    "cypress",
-    "cy"
-  ],
   "main": "./index.js",
   "types": "./types/index.d.ts",
   "bin": {
@@ -27,14 +23,14 @@
   ],
   "scripts": {
     "lint": "eslint \"**/*.{js,ts}\"",
-    "build": "node ../../node_modules/.bin/tspc",
+    "build": "tspc",
     "generate:tests": "coverage-tests generate",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:ts && yarn test:components && yarn test:coverage",
     "test:sanity": "yarn test:unit && yarn test:it && yarn test:ts",
     "test:unit": "mocha --no-timeouts 'test/unit/**/*.test.js'",
     "test:it": "yarn build && mocha --no-timeouts 'test/it/**/*.test.js'",
     "test:ts": "yarn test:ts:compile && yarn test:ts:run",
-    "test:ts:compile": "node ../../node_modules/.bin/tsc --project test/e2e/ts/cypress",
+    "test:ts:compile": "tsc --project test/e2e/ts/cypress",
     "test:ts:run:legacy": "yarn cypress9 run --config-file ./test/e2e/ts/cypress-ts-legacy.json",
     "cypress8": "./node_modules/cypress8/bin/cypress",
     "test:ts:run:8": "yarn cypress8 run --project ./test/e2e/ts --config-file ./cypress-8.config.ts",
@@ -62,11 +58,6 @@
     "preversion": "yarn build && bongo preversion --skip-deps --verifyPendingChanges --skipVerifyInstalledVersions",
     "version": "bongo version --withPendingChanges",
     "postversion": "bongo postversion"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn bongo lint"
-    }
   },
   "dependencies": {
     "@applitools/core": "3.2.1",
@@ -102,7 +93,6 @@
     "cypress9": "npm:cypress@^9.0.0",
     "eslint": "8.10.0",
     "eslint-plugin-mocha-no-only": "1.1.1",
-    "husky": "4.3.8",
     "lodash.omit": "4.5.0",
     "mocha": "8.0.1",
     "morgan": "1.9.1",

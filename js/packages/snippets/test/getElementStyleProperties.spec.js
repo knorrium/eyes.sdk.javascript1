@@ -7,7 +7,7 @@ describe('getElementStyleProperties', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -27,7 +27,7 @@ describe('getElementStyleProperties', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -37,7 +37,7 @@ describe('getElementStyleProperties', () => {
       it('return element style properties', async () => {
         await driver.url(url)
         const element = await driver.$('#static')
-        await driver.execute(function(element) {
+        await driver.execute(function (element) {
           element.style.backgroundColor = 'red'
         }, element)
         const styles = await driver.execute(getElementStyleProperties, [element, ['background-color']])

@@ -65,7 +65,7 @@ describe('spec driver', async () => {
       await untransformSelector({input: () => Promise.resolve(), expected: null})
     })
     it('untransformSelector(relative-by)', async function () {
-      if (Number(process.env.APPLITOOLS_SELENIUM_MAJOR_VERSION) < 4) this.skip()
+      if (Number(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION) < 4) this.skip()
       await untransformSelector({input: locateWith(By.css('div')).near(By.css('button')), expected: null})
     })
     it('untransformSelector(string)', async () => {

@@ -39,10 +39,7 @@ module.exports = {
       // JSON Wire Protocol (JWP)
       desiredCapabilities: {
         browserName: 'chrome',
-        'goog:chromeOptions': {
-          args: ['--headless'],
-          w3c: false,
-        },
+        'goog:chromeOptions': {args: ['--headless']},
       },
 
       webdriver: {

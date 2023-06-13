@@ -227,7 +227,13 @@ const browserNames = ['chrome', 'firefox']
  * installed in the SDK, then this function will error.
  */
 export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
-  const puppeteer = require('puppeteer')
+  let frameworkPath
+  try {
+    frameworkPath = require.resolve('puppeteer', {paths: [`${process.cwd()}/node_modules`]})
+  } catch {
+    frameworkPath = 'puppeteer'
+  }
+  const puppeteer = require(frameworkPath)
   const parseEnv = require('@applitools/test-utils/src/parse-env')
   const {browser, attach, proxy, args = [], headless} = parseEnv(env, 'cdp')
   if (!browserNames.includes(browser)) throw new Error(`Browser "${browser}" is not supported.`)

@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import {makeRefer} from '@applitools/spec-driver-browser-extension'
+import {makeRefer} from '../../../../dist'
 import {makeMessenger} from './messenger'
 
 window.refer = makeRefer({

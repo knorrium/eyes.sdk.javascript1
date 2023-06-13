@@ -1,0 +1,17 @@
+{
+  "name": "@applitools/action-release-please",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "build": "NODE_OPTIONS=--openssl-legacy-provider ncc build ./main.ts --out dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "release-please": "^15.10.4"
+  },
+  "devDependencies": {
+    "@types/node": "16",
+    "@vercel/ncc": "^0.27.0",
+    "typescript": "^5.0.4"
+  }
+}

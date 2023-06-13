@@ -7,7 +7,7 @@ describe('translateTo', () => {
   describe('chrome', () => {
     let page
 
-    before(async function() {
+    before(async function () {
       page = await global.getDriver('chrome')
       if (!page) {
         this.skip()
@@ -60,7 +60,7 @@ describe('translateTo', () => {
     describe(name, () => {
       let driver
 
-      before(async function() {
+      before(async function () {
         driver = await global.getDriver(name)
         if (!driver) {
           this.skip()
@@ -71,7 +71,7 @@ describe('translateTo', () => {
         await driver.url(url)
         const element = await driver.$('#scrollable')
         await driver.execute(translateTo, [element, {x: 10, y: 11}])
-        const transforms = await driver.execute(function(element) {
+        const transforms = await driver.execute(function (element) {
           return {
             transform: element.style.transform,
             webkitTransform: element.style.webkitTransform,
@@ -83,7 +83,7 @@ describe('translateTo', () => {
       it('default element', async () => {
         await driver.url(url)
         await driver.execute(translateTo, [undefined, {x: 10, y: 11}])
-        const transforms = await driver.execute(function() {
+        const transforms = await driver.execute(function () {
           return {
             transform: document.documentElement.style.transform,
             webkitTransform: document.documentElement.style.webkitTransform,

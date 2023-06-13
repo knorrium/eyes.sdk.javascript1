@@ -1,0 +1,11 @@
+name: Restore artifacts
+
+inputs:
+  name:
+    description: composite artifact name(s)
+    type: string
+    required: true
+
+runs:
+  using: node16
+  main: dist/index.js

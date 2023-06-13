@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 const assert = require('assert')
 const webdriverio = require('webdriverio')
 const pixelmatch = require('pixelmatch')

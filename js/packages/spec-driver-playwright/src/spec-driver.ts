@@ -190,7 +190,13 @@ const browserNames: Record<string, string> = {
  * installed in the SDK, then this function will error.
  */
 export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
-  const playwright = require('playwright')
+  let frameworkPath
+  try {
+    frameworkPath = require.resolve('playwright', {paths: [`${process.cwd()}/node_modules`]})
+  } catch {
+    frameworkPath = 'playwright'
+  }
+  const playwright = require(frameworkPath)
   const parseEnv = require('@applitools/test-utils/src/parse-env')
   const {browser, device, url, attach, proxy, args = [], headless, extension} = parseEnv(env, 'cdp')
   const launcher = playwright[browserNames[browser] || browser]

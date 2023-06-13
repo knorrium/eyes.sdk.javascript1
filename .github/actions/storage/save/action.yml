@@ -1,0 +1,15 @@
+name: Store artifact
+
+inputs:
+  name:
+    description: artifact name
+    type: string
+    required: true
+  path:
+    description: a file, directory or wildcard pattern that describes what to store
+    type: string
+    required: true
+
+runs:
+  using: node16
+  main: dist/index.js

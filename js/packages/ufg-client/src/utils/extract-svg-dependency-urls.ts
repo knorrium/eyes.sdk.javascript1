@@ -1,5 +1,4 @@
-// @ts-expect-error
-import {JSDOM} from '@applitools/jsdom'
+import {JSDOM} from 'jsdom'
 import {extractCssDependencyUrls} from './extract-css-dependency-urls'
 import * as utils from '@applitools/utils'
 

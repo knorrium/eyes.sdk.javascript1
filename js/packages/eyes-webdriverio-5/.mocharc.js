@@ -20,9 +20,9 @@ const tags = {
   ]),
   cdp: new Set(['image', 'chrome', 'emulator', 'all-cookies', 'cached-selectors'])
 }
-const protocol = process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL in tags ? process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL : 'wd'
+const protocol = process.env.APPLITOOLS_FRAMEWORK_PROTOCOL in tags ? process.env.APPLITOOLS_FRAMEWORK_PROTOCOL : 'wd'
 // in wdio version 6 and below there was automatically populated moz argument that blows modern gecodriver
-if (Number(process.env.APPLITOOLS_WEBDRIVERIO_VERSION) <= 6) {
+if (Number(process.env.APPLITOOLS_FRAMEWORK_VERSION) <= 6) {
   tags[protocol].delete('firefox')
 }
 const group = process.env.MOCHA_GROUP
