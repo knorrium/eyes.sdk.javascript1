@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.17.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-playwright-v1.17.1...js/eyes-playwright@1.17.2) (2023-06-13)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/eyes bumped from 1.2.14 to 1.2.15
+    * @applitools/spec-driver-playwright bumped from 1.3.13 to 1.3.14
+
 ## 1.17.1 - 2023/5/31
 
 ### Features

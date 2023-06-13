@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.57](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base-v1.1.56...js/core-base@1.1.57) (2023-06-13)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/image bumped from 1.0.34 to 1.0.35
+    * @applitools/logger bumped from 2.0.2 to 2.0.3
+    * @applitools/req bumped from 1.3.0 to 1.3.1
+    * @applitools/utils bumped from 1.3.37 to 1.4.0
+
 ## [1.1.56](https://github.com/applitools/eyes.sdk.javascript1/compare/core-base-v1.1.55...core-base@1.1.56) (2023-06-09)
 
 

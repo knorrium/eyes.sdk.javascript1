@@ -1,6 +1,6 @@
 {
   "name": "@applitools/req",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Applitools fetch-based request library",
   "keywords": [
     "applitools",
@@ -54,7 +54,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/utils": "1.3.37",
+    "@applitools/utils": "1.4.0",
     "abort-controller": "3.0.0",
     "http-proxy-agent": "5.0.0",
     "https-proxy-agent": "5.0.1",

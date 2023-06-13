@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-browser-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "playwright",
     "chrome devtools protocol",
@@ -39,12 +39,12 @@
     "setup": "run --top-level xvfb:setup"
   },
   "dependencies": {
-    "@applitools/utils": "1.3.37",
+    "@applitools/utils": "1.4.0",
     "webextension-polyfill": "0.10.0"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
-    "@applitools/spec-driver-playwright": "^1.3.13",
+    "@applitools/spec-driver-playwright": "^1.3.14",
     "@applitools/test-utils": "workspace:^",
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-puppeteer",
-  "version": "1.17.1",
+  "version": "1.17.2",
   "description": "Applitools Eyes SDK for Puppeteer",
   "keywords": [
     "eyes-puppeteer",
@@ -44,8 +44,8 @@
     "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'puppeteer'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.2.14",
-    "@applitools/spec-driver-puppeteer": "1.1.64"
+    "@applitools/eyes": "1.2.15",
+    "@applitools/spec-driver-puppeteer": "1.1.65"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

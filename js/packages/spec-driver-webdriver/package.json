@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriver",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "keywords": [
     "webdriver",
     "chrome devtools protocol",
@@ -48,8 +48,8 @@
     "setup": "run --top-level browsers:setup"
   },
   "dependencies": {
-    "@applitools/driver": "1.12.1",
-    "@applitools/utils": "1.3.37",
+    "@applitools/driver": "1.12.2",
+    "@applitools/utils": "1.4.0",
     "http-proxy-agent": "5.0.0",
     "https-proxy-agent": "5.0.1"
   },

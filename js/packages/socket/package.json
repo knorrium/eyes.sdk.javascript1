@@ -1,6 +1,6 @@
 {
   "name": "@applitools/socket",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Applitools implementation for bidi-communication protocol",
   "keywords": [
     "applitools",
@@ -42,8 +42,8 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/logger": "2.0.2",
-    "@applitools/utils": "1.3.37"
+    "@applitools/logger": "2.0.3",
+    "@applitools/utils": "1.4.0"
   },
   "devDependencies": {
     "@types/node": "^12.20.55"

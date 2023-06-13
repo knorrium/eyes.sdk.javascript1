@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+## [3.2.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-v3.2.1...js/core@3.2.2) (2023-06-13)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/core-base bumped from 1.1.56 to 1.1.57
+    * @applitools/driver bumped from 1.12.1 to 1.12.2
+    * @applitools/ec-client bumped from 1.2.32 to 1.2.33
+    * @applitools/logger bumped from 2.0.2 to 2.0.3
+    * @applitools/nml-client bumped from 1.3.55 to 1.3.56
+    * @applitools/req bumped from 1.3.0 to 1.3.1
+    * @applitools/screenshoter bumped from 3.7.46 to 3.7.47
+    * @applitools/socket bumped from 1.1.1 to 1.1.2
+    * @applitools/spec-driver-webdriver bumped from 1.0.33 to 1.0.34
+    * @applitools/ufg-client bumped from 1.2.18 to 1.2.19
+    * @applitools/utils bumped from 1.3.37 to 1.4.0
+  * devDependencies
+    * @applitools/spec-driver-puppeteer bumped from ^1.1.64 to ^1.1.65
+    * @applitools/spec-driver-selenium bumped from ^1.5.47 to ^1.5.48
+    * @applitools/spec-driver-webdriverio bumped from ^1.5.2 to ^1.5.3
+
 ## 3.2.1 - 2023/5/31
 
 ### Features
