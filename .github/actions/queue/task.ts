@@ -6,9 +6,12 @@ export async function makeTask(options: {name: string, branch?: string, maxParal
   options.branch ||= 'internal/action-queue'
   options.maxParallel = Math.max(1, options.maxParallel || 1)
 
+  await exec(`git config --global user.email "action-queue@applitools.com" && git config --global user.name "queue-bot"`)
   await exec(`git checkout -B ${options.branch}`)
-  await exec(`git push --set-upstream origin ${options.branch}`)
+  await exec(`git branch --set-upstream origin/${options.branch} ${options.branch}`)
   await exec(`git fetch`)
+  await exec(`git pull`)
+  await exec(`git push`)
 
   let anchor: string | undefined
 

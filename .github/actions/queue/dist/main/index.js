@@ -4057,8 +4057,10 @@ async function makeTask(options) {
     options.branch ||= 'internal/action-queue';
     options.maxParallel = Math.max(1, options.maxParallel || 1);
     await (0,exec.exec)(`git checkout -B ${options.branch}`);
-    await (0,exec.exec)(`git push --set-upstream origin ${options.branch}`);
+    await (0,exec.exec)(`git branch --set-upstream origin/${options.branch} ${options.branch}`);
     await (0,exec.exec)(`git fetch`);
+    await (0,exec.exec)(`git pull`);
+    await (0,exec.exec)(`git push`);
     let anchor;
     return { start, stop, wait };
     async function start() {
