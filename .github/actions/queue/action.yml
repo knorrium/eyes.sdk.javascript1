@@ -1,0 +1,15 @@
+name: Queue
+
+inputs:
+  name:
+    description: name of the queue
+    type: string
+  max-parallel:
+    description: max number of parallel jobs to run for the queue
+    type: number
+
+runs:
+  using: node16
+  main: dist/main/index.js
+  post-if: success()
+  post: dist/post/index.js

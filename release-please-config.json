@@ -383,11 +383,11 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"framework-version": 5, "node-version": 14, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 6, "node-version": 14, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 7, "node-version": 16, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "node-version": 18, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "node-version": 20, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"}
+        {"framework-version": 5, "node-version": 14, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 6, "node-version": 14, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 7, "node-version": 16, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 8, "node-version": 18, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 8, "node-version": 20, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
@@ -400,10 +400,10 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"framework-version": 4.4, "node-version": 14, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 16, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 18, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 20, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"framework-version": 4.4, "node-version": 14, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 16, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 18, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 20, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
@@ -416,10 +416,10 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "concurrency": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "queue": "webdriver-tests", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}

@@ -89,7 +89,6 @@ jobs:
       matrix: 
         include: ${{fromJSON(needs.setup.outputs.tests)}}
     name: Test / ${{matrix.display-name}}
-    concurrency: ${{matrix.concurrency || format('{0}-{1}', github.job, strategy.job-index)}}
     timeout-minutes: 60
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     container: ${{matrix.container}}
@@ -114,6 +113,12 @@ jobs:
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
+      - name: Queue
+        if: ${{matrix.queue}}
+        uses: ./.github/actions/queue
+        with:
+          name: ${{matrix.queue}}
+          max-parallel: 5
       - name: Run tests
         uses: ./.github/actions/js/test
         with:
@@ -135,7 +140,7 @@ jobs:
 
   report:
     needs: [setup, js-test]
-    if: always() && !cancelled()
+    if: success() || failure()
     name: Report
     runs-on: ubuntu-latest
     steps:
