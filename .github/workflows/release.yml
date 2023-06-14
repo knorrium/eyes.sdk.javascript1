@@ -34,7 +34,6 @@ jobs:
       matrix: 
         include: ${{fromJSON(needs.setup.outputs.releases)}}
     name: Release / ${{matrix.display-name}}
-    concurrency: js-release
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     env: ${{matrix.env}}
     steps:
@@ -49,6 +48,10 @@ jobs:
         uses: ./.github/actions/storage/restore
         with: 
           name: ${{join(matrix.builds)}}
+      - name: Queue
+        uses: ./.github/actions/queue
+        with:
+          name: js-release
       - name: Publish to NPM
         if: ${{matrix.registry-url != 'none'}}
         uses: ./.github/actions/js/publish

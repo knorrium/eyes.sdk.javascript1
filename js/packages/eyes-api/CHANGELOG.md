@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.16](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.2.15...js/eyes@1.2.16) (2023-06-14)
+
+
+### Bug Fixes
+
+* **js/eyes:** new feature ([f8b5c23](https://github.com/applitools/eyes.sdk.javascript1/commit/f8b5c23e245e8c08f2595b1f7fea94d971a7b577))
+
 ## [1.2.15](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-v1.2.14...js/eyes@1.2.15) (2023-06-13)
 
 

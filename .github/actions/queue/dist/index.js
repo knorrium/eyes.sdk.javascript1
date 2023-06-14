@@ -1,7 +1,7 @@
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
-/***/ 351:
+/***/ 241:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -133,7 +133,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getIDToken = exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
-const command_1 = __nccwpck_require__(351);
+const command_1 = __nccwpck_require__(241);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(278);
 const os = __importStar(__nccwpck_require__(37));
@@ -1134,7 +1134,7 @@ const os = __importStar(__nccwpck_require__(37));
 const events = __importStar(__nccwpck_require__(361));
 const child = __importStar(__nccwpck_require__(81));
 const path = __importStar(__nccwpck_require__(17));
-const io = __importStar(__nccwpck_require__(436));
+const io = __importStar(__nccwpck_require__(351));
 const ioUtil = __importStar(__nccwpck_require__(962));
 const timers_1 = __nccwpck_require__(512);
 /* eslint-disable @typescript-eslint/unbound-method */
@@ -2689,7 +2689,7 @@ exports.getCmdPath = getCmdPath;
 
 /***/ }),
 
-/***/ 436:
+/***/ 351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -4044,38 +4044,43 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(186);
 ;// CONCATENATED MODULE: external "timers/promises"
 const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("timers/promises");
+// EXTERNAL MODULE: external "crypto"
+var external_crypto_ = __nccwpck_require__(113);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(514);
 ;// CONCATENATED MODULE: ./task.ts
 
 
-async function makeTask(options) {
-    options.branch ||= 'internal/action-queue';
-    options.maxParallel = Math.max(1, options.maxParallel || 1);
-    await (0,exec.exec)(`git checkout -B ${options.branch}`);
-    await (0,exec.exec)(`git branch --set-upstream origin/${options.branch} ${options.branch}`);
-    await (0,exec.exec)(`git fetch`);
-    await (0,exec.exec)(`git pull`);
-    await (0,exec.exec)(`git push`);
+
+function makeTask(options) {
+    const cwd = options.cwd;
+    const token = options.token;
+    const queue = options.name;
+    const branch = options.branch || 'internal/action-queue';
+    const maxParallel = Math.max(1, options.maxParallel || 1);
+    const id = options.id || (0,external_crypto_.randomUUID)();
     let anchor;
-    return { start, stop, wait };
+    return { id, init, start, stop, wait };
+    async function init() {
+        await (0,exec.exec)(`git clone https://oauth2:${token}@github.com/${process.env.GITHUB_REPOSITORY}.git ${cwd} --branch ${branch} --single-branch --no-tags --depth 1`);
+        await (0,exec.exec)(`git fetch --shallow-since="3 hours ago"`, [], { cwd });
+        await (0,exec.exec)(`git config user.email "action-queue@applitools.com"`, [], { cwd });
+        await (0,exec.exec)(`git config user.name "queue-bot"`, [], { cwd });
+    }
     async function start() {
-        const { stdout } = await (0,exec.getExecOutput)(`git commit -m "queue: ${options.name} start" --allow-empty --no-verify`);
-        await (0,exec.exec)(`git push`);
-        // format "[<branch-name> <hash>] queue: <queue> start"
-        const match = stdout.trim().match(/^\[[\w\-\/]+ (?<hash>\w{9})\] .+$/);
-        anchor = match.groups.hash;
+        await (0,exec.exec)(`git commit -m "queue: ${queue} start ${id}" --allow-empty --no-verify`, [], { cwd });
+        await sync();
+        const { stdout } = await (0,exec.getExecOutput)(`git log --format="tformat:%h" -n 1`, [], { cwd });
+        anchor = stdout.trim();
     }
     async function stop() {
-        await (0,exec.exec)(`git commit -m "queue: ${options.name} stop" --allow-empty --no-verify`);
-        await (0,exec.exec)(`git push`);
+        await (0,exec.exec)(`git commit -m "queue: ${queue} stop ${id}" --allow-empty --no-verify`, [], { cwd });
+        await sync();
     }
     async function wait() {
-        const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}.. --reverse --format="tformat:%s" --grep="^queue: ${options.name}" --since="3 hours ago"`);
+        const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}^ --reverse --format="tformat:%s" --grep="^queue: ${queue}" --since="3 hours ago"`, [], { cwd });
         let count = stdout.trim().split('\n').reduce((count, log) => {
             if (log.includes('start'))
                 return count + 1;
@@ -4083,9 +4088,10 @@ async function makeTask(options) {
                 return count - 1;
             return count;
         }, 0);
-        while (count >= options.maxParallel) {
+        while (count >= maxParallel) {
             await (0,promises_namespaceObject.setTimeout)(10000);
-            const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}.. --reverse --format="tformat:%h" --grep="^queue: ${options.name} stop"`);
+            await (0,exec.exec)(`git pull --rebase`, [], { cwd });
+            const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}.. --reverse --format="tformat:%h" --grep="^queue: ${queue} stop"`, [], { cwd });
             if (stdout) {
                 const hashes = stdout.trim().split('\n');
                 count -= hashes.length;
@@ -4093,24 +4099,52 @@ async function makeTask(options) {
             }
         }
     }
+    async function sync() {
+        while (true) {
+            try {
+                await (0,exec.exec)(`git pull --rebase`, [], { cwd });
+                await (0,exec.exec)(`git push`, [], { cwd });
+                break;
+            }
+            catch {
+                continue;
+            }
+        }
+    }
 }
 
-;// CONCATENATED MODULE: ./main.ts
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(37);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(17);
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(186);
+;// CONCATENATED MODULE: ./index.ts
 
 
-main()
+
+
+run()
     .catch(err => {
     core.debug(err);
     core.setFailed(err.message);
 });
-async function main() {
-    const name = core.getInput('name');
+async function run() {
+    const cwd = external_path_.join(external_os_.tmpdir(), 'queue-repo');
+    const name = core.getInput('name', { required: true });
+    const token = core.getInput('token', { required: true });
     const maxParallel = Number.parseInt(core.getInput('max-parallel'));
-    if (!name)
-        return core.info('Queue name is not specified');
-    const task = await makeTask({ name, maxParallel });
-    await task.start();
-    await task.wait();
+    const id = core.getState('task-id');
+    const task = makeTask({ id, name, cwd, token, maxParallel });
+    if (!id) {
+        await task.init();
+        await task.start();
+        core.saveState('task-id', task.id);
+        await task.wait();
+    }
+    else {
+        await task.stop();
+    }
 }
 
 })();

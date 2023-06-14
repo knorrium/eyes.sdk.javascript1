@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.15.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch-v1.15.0...js/eyes-nightwatch@1.15.1) (2023-06-14)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/eyes bumped from 1.2.14 to 1.2.16
+
 ## 1.15.0 - 2023/4/19
 
 ### Features
