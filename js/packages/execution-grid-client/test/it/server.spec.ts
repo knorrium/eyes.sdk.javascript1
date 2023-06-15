@@ -348,4 +348,24 @@ describe('server', () => {
     const noResult: any[] = await driver.executeScript('applitools:metadata')
     assert.deepStrictEqual(noResult, [])
   })
+
+  it('returns content-type for custom script', async () => {
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
+
+    const sessionId = 'session-guid'
+    nock('https://exec-wus.applitools.com')
+      .persist()
+      .post('/session')
+      .reply(200, {value: {capabilities: {}, sessionId}})
+
+    const driver = await new Builder().forBrowser('chrome').usingServer(proxy.url).build()
+    const session = await driver.getSession()
+    const response = await req(`${proxy.url}/session/${session.getId()}/execute/sync`, {
+      method: 'post',
+      body: {script: 'applitools:metadata', args: []},
+    })
+
+    assert.strictEqual(response.status, 200)
+    assert.strictEqual(response.headers.get('content-type'), 'application/json')
+  })
 })

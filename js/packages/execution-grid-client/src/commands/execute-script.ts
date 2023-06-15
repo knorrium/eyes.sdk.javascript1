@@ -68,7 +68,7 @@ export function makeExecuteScript({req, core}: Options) {
           },
           logger,
         })
-        response.writeHead(200).end(JSON.stringify({value: null}))
+        response.writeHead(200, {'content-type': 'application/json'}).end(JSON.stringify({value: null}))
         return
       } else if (requestBody.script === 'applitools:endTest') {
         if (session.tests?.current) {
@@ -80,19 +80,21 @@ export function makeExecuteScript({req, core}: Options) {
           session.tests.ended.push(session.tests.current)
           session.tests.current = undefined
         }
-        response.writeHead(200).end(JSON.stringify({value: null}))
+        response.writeHead(200, {'content-type': 'application/json'}).end(JSON.stringify({value: null}))
         return
       } else if (requestBody.script === 'applitools:getResults') {
         if (session.tests?.ended) {
           const results = await Promise.all(session.tests.ended.map(test => test.getResults({logger})))
-          response.writeHead(200).end(JSON.stringify({value: results.flat()}))
+          response.writeHead(200, {'content-type': 'application/json'}).end(JSON.stringify({value: results.flat()}))
         } else {
-          response.writeHead(200).end(JSON.stringify({value: []}))
+          response.writeHead(200, {'content-type': 'application/json'}).end(JSON.stringify({value: []}))
         }
         return
       } else if (requestBody.script === 'applitools:metadata') {
         logger.log('Session metadata requested, returning', session.metadata)
-        response.writeHead(200).end(JSON.stringify({value: session.metadata ?? []}))
+        response
+          .writeHead(200, {'content-type': 'application/json'})
+          .end(JSON.stringify({value: session.metadata ?? []}))
         session.metadata = []
         return
       }

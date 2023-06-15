@@ -72,7 +72,7 @@
     "@types/selenium-webdriver": "^4.0.19",
     "@types/yargs": "^17.0.19",
     "nock": "^13.2.4",
-    "selenium-webdriver": "^4.1.2"
+    "selenium-webdriver": "^4.10.0"
   },
   "engines": {
     "node": ">=12.13.0"
