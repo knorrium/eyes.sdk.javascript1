@@ -9,7 +9,6 @@
     "sourceMap": false,
     "stripInternal": false,
     "removeComments": false,
-    "skipLibCheck": true, // TODO remove once wdio fixes their types issue
     "plugins": [{
       "transform": "@applitools/api-extractor",
       "afterDeclarations": true,
