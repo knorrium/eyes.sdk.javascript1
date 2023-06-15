@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## [3.2.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.2.2...js/core@3.2.3) (2023-06-15)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/core-base bumped from 1.1.57 to 1.1.58
+    * @applitools/ec-client bumped from 1.2.33 to 1.2.34
+    * @applitools/nml-client bumped from 1.3.56 to 1.3.57
+    * @applitools/req bumped from 1.3.1 to 1.3.2
+    * @applitools/socket bumped from 1.1.2 to 1.1.3
+    * @applitools/ufg-client bumped from 1.2.19 to 1.2.20
+
 ## [3.2.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-v3.2.1...js/core@3.2.2) (2023-06-13)
 
 

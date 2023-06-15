@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.66.2",
+  "version": "4.66.3",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -49,7 +49,7 @@
     "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_selenium_4'"
   },
   "dependencies": {
-    "@applitools/eyes": "1.2.14",
+    "@applitools/eyes": "1.2.17",
     "@applitools/spec-driver-selenium": "1.5.47"
   },
   "devDependencies": {

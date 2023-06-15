@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.23.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.2...js/eyes-images@4.23.3) (2023-06-15)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/eyes bumped from 1.2.16 to 1.2.17
+
 ## [4.23.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.1...js/eyes-images@4.23.2) (2023-06-14)
 
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.66.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-selenium-v4.66.2...js/eyes-selenium@4.66.3) (2023-06-15)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/eyes bumped from 1.2.14 to 1.2.17
+
 ## 4.66.2 - 2023/5/31
 
 ### Features

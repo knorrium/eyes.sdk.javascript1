@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.57](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.3.56...js/nml-client@1.3.57) (2023-06-15)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/req bumped from 1.3.1 to 1.3.2
+
 ## [1.3.56](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client-v1.3.55...js/nml-client@1.3.56) (2023-06-13)
 
 

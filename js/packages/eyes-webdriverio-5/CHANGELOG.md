@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.44.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.3...js/eyes-webdriverio@5.44.4) (2023-06-15)
+
+
+### Dependencies
+
+* update some dependencies
+* The following workspace dependencies were updated
+  * dependencies
+    * @applitools/eyes bumped from 1.2.16 to 1.2.17
+
 ## [5.44.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio-v5.44.2...js/eyes-webdriverio@5.44.3) (2023-06-14)
 
 
