@@ -17,7 +17,7 @@
   "js/packages/tunnel-client": "0.0.4",
   "js/packages/ufg-client": "1.2.20",
   "js/packages/execution-grid-client": "1.2.34",
-  "js/packages/core-base": "1.1.58",
+  "js/packages/core-base": "1.1.57",
   "js/packages/core": "3.2.3",
   "js/packages/eyes-api": "1.2.17",
   "js/packages/eyes-images": "4.23.3",
