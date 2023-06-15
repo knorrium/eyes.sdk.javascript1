@@ -4064,8 +4064,13 @@ function makeTask(options) {
     let anchor;
     return { id, init, start, stop, wait };
     async function init() {
-        await (0,exec.exec)(`git clone https://oauth2:${token}@github.com/${process.env.GITHUB_REPOSITORY}.git ${cwd} --branch ${branch} --single-branch --no-tags --depth 1`);
-        await (0,exec.exec)(`git fetch --shallow-since="3 hours ago"`, [], { cwd });
+        const cloneCommand = `git clone https://oauth2:${token}@github.com/${process.env.GITHUB_REPOSITORY}.git ${cwd} --branch ${branch} --single-branch --no-tags`;
+        try {
+            await (0,exec.exec)(`${cloneCommand} --shallow-since="3 hours ago"`);
+        }
+        catch {
+            await (0,exec.exec)(`${cloneCommand} --depth=1`);
+        }
         await (0,exec.exec)(`git config user.email "action-queue@applitools.com"`, [], { cwd });
         await (0,exec.exec)(`git config user.name "queue-bot"`, [], { cwd });
     }

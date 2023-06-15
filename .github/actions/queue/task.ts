@@ -15,8 +15,12 @@ export function makeTask(options: {id?: string, name: string, cwd: string, token
   return {id, init, start, stop, wait}
 
   async function init() {
-    await exec(`git clone https://oauth2:${token}@github.com/${process.env.GITHUB_REPOSITORY}.git ${cwd} --branch ${branch} --single-branch --no-tags --depth 1`)
-    await exec(`git fetch --shallow-since="3 hours ago"`, [], {cwd})
+    const cloneCommand = `git clone https://oauth2:${token}@github.com/${process.env.GITHUB_REPOSITORY}.git ${cwd} --branch ${branch} --single-branch --no-tags`
+    try {
+      await exec(`${cloneCommand} --shallow-since="3 hours ago"`)
+    } catch {
+      await exec(`${cloneCommand} --depth=1`)
+    }
     await exec(`git config user.email "action-queue@applitools.com"`, [], {cwd})
     await exec(`git config user.name "queue-bot"`, [], {cwd})
   }
