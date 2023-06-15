@@ -24,13 +24,13 @@ export function makeReq<TOptions extends Options = Options, TBaseOptions extends
 export async function req(input: string | URL | Request, ...requestOptions: Options[]): Promise<Response> {
   const options = mergeOptions({}, ...requestOptions)
 
-  if (options?.hooks) options.hooks = utils.types.isArray(options.hooks) ? options.hooks : [options.hooks]
-  if (options?.retry) options.retry = utils.types.isArray(options.retry) ? options.retry : [options.retry]
-  if (options?.headers)
+  if (options.hooks) options.hooks = utils.types.isArray(options.hooks) ? options.hooks : [options.hooks]
+  if (options.retry) options.retry = utils.types.isArray(options.retry) ? options.retry : [options.retry]
+  if (options.headers)
     options.headers = Object.fromEntries(Object.entries(options.headers).filter(([_, value]) => value))
 
   const controller = new AbortController()
-  const timeout = options?.timeout ? setTimeout(() => controller.abort(), options.timeout) : null
+  const timeout = options.timeout ? setTimeout(() => controller.abort(), options.timeout) : null
 
   try {
     return await req(input, options)
@@ -39,26 +39,30 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
   }
 
   async function req(input: string | URL | Request, options: Options): Promise<Response> {
-    const fetch = options?.fetch ?? globalFetch
+    const fetch = options.fetch ?? globalFetch
 
-    if (options?.signal) options.signal.onabort = () => controller.abort()
+    if (options.signal) options.signal.onabort = () => controller.abort()
 
-    const url = new URL(String((input as Request).url ?? input), options?.baseUrl)
-    if (options?.query) {
+    const url = new URL(String((input as Request).url ?? input), options.baseUrl)
+    if (options.query) {
       Object.entries(options.query).forEach(([key, value]) => {
         if (!utils.types.isNull(value)) url.searchParams.set(key, String(value))
       })
     }
+
+    const extraHeaders = {} as Record<string, string>
+    if (utils.types.isPlainObject(options.body) || utils.types.isArray(options.body) || options.body === null) {
+      options.body = JSON.stringify(options.body)
+      extraHeaders['content-type'] = 'application/json'
+    }
     let request = new Request(url, {
-      method: options?.method ?? (input as Request).method,
+      method: options.method ?? (input as Request).method,
       headers: {
+        ...extraHeaders,
         ...Object.fromEntries((input as Request).headers?.entries() ?? []),
-        ...Object.fromEntries(new Headers(options?.headers as Record<string, string>).entries()),
+        ...Object.fromEntries(new Headers(options.headers as Record<string, string>).entries()),
       },
-      body:
-        utils.types.isPlainObject(options?.body) || utils.types.isArray(options?.body) || options?.body === null
-          ? JSON.stringify(options?.body)
-          : options?.body ?? (input as Request).body,
+      body: options.body ?? (input as Request).body,
       highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
       agent: makeProxyAgent(options.proxy),
       signal: controller.signal,
@@ -69,7 +73,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       let response = await fetch(request)
 
       // if the request has to be retried due to status code
-      const retry = await (options?.retry as Retry[])?.reduce(async (prev, retry) => {
+      const retry = await (options.retry as Retry[])?.reduce(async (prev, retry) => {
         const result = await prev
         return (
           result ??
@@ -99,7 +103,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       return response
     } catch (error: any) {
       // if the request has to be retried due to network error
-      const retry = await (options?.retry as Retry[])?.reduce((prev, retry) => {
+      const retry = await (options.retry as Retry[])?.reduce((prev, retry) => {
         return prev.then(async result => {
           return result ??
             ((retry.codes?.includes(error.code) || (await retry.validate?.({error}))) &&
@@ -125,7 +129,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       error = await afterError({request, error, options})
       throw error
     } finally {
-      if (options?.signal) options.signal.onabort = null
+      if (options.signal) options.signal.onabort = null
     }
   }
 }

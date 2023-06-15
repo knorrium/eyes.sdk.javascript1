@@ -20,7 +20,7 @@ describe('generator', () => {
       .post(`/tunnel-agents/${settings.agentId}/init`)
       .matchHeader('x-secret', settings.secret)
       .reply((_url, body) => {
-        assert.deepEqual(JSON.parse(body as string), {instance_info: settings.envInfo})
+        assert.deepEqual(body, {instance_info: settings.envInfo})
         return [200, {instance_id: 'instance-id'}]
       })
 
@@ -29,7 +29,7 @@ describe('generator', () => {
       .post(`/tunnel-agents/${settings.agentId}/agentpoll`)
       .matchHeader('x-secret', settings.secret)
       .reply((_url, body) => {
-        assert.deepEqual(JSON.parse(body as string), {
+        assert.deepEqual(body, {
           instance_id: 'instance-id',
           pending_tasks: [],
           completed_tasks: [],
@@ -51,6 +51,7 @@ describe('generator', () => {
   it('performs tasks', async () => {
     const settings = {
       pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 0,
       agentId: 'agent-id',
       secret: 'SeCrEt',
     }
@@ -96,7 +97,7 @@ describe('generator', () => {
             },
           ]
         } else if (state === 2) {
-          assert.deepEqual(JSON.parse(body as string), {
+          assert.deepEqual(body, {
             instance_id: 'instance-id',
             pending_tasks: [{id: 'task-id-1'}, {id: 'task-id-2'}, {id: 'task-id-3'}, {id: 'task-id-4'}],
             completed_tasks: [],
@@ -104,7 +105,7 @@ describe('generator', () => {
           })
           return [200, {tasks: []}]
         } else if (state === 3) {
-          assert.deepEqual(JSON.parse(body as string), {
+          assert.deepEqual(body, {
             instance_id: 'instance-id',
             pending_tasks: [],
             completed_tasks: [
@@ -189,7 +190,12 @@ describe('generator', () => {
   })
 
   it('sends events', async () => {
-    const settings = {pollingServerUrl: 'https://tunnel.server', agentId: 'agent-id', secret: 'SeCrEt'}
+    const settings = {
+      pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 0,
+      agentId: 'agent-id',
+      secret: 'SeCrEt',
+    }
     nock(settings.pollingServerUrl)
       .persist()
       .post(`/tunnel-agents/${settings.agentId}/init`)
@@ -204,7 +210,7 @@ describe('generator', () => {
       .reply((_url, body) => {
         state += 1
         if (state === 2) {
-          assert.deepEqual(JSON.parse(body as string), {
+          assert.deepEqual(body, {
             instance_id: 'instance-id',
             metrics: {
               metrics: 'blabla',
@@ -243,7 +249,12 @@ describe('generator', () => {
   })
 
   it('waits between polls', async () => {
-    const settings = {pollingServerUrl: 'https://tunnel.server', agentId: 'agent-id', secret: 'SeCrEt'}
+    const settings = {
+      pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 0,
+      agentId: 'agent-id',
+      secret: 'SeCrEt',
+    }
     nock(settings.pollingServerUrl)
       .persist()
       .post(`/tunnel-agents/${settings.agentId}/init`)
@@ -276,9 +287,76 @@ describe('generator', () => {
     assert.deepEqual(result3, {done: false, value: []})
   })
 
+  it('waits between polls default amount of time', async () => {
+    const settings = {
+      pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 1_000,
+      agentId: 'agent-id',
+      secret: 'SeCrEt',
+    }
+    nock(settings.pollingServerUrl)
+      .persist()
+      .post(`/tunnel-agents/${settings.agentId}/init`)
+      .matchHeader('x-secret', settings.secret)
+      .reply(200, {instance_id: 'instance-id'})
+
+    let prevRequestTimestamp = 0
+    nock(settings.pollingServerUrl)
+      .persist()
+      .post(`/tunnel-agents/${settings.agentId}/agentpoll`)
+      .matchHeader('x-secret', settings.secret)
+      .reply(() => {
+        const currentRequestTimestamp = Date.now()
+        if (currentRequestTimestamp - prevRequestTimestamp < 1_000) {
+          return [200, {abort: true, abort_reason: 'wrong delay'}]
+        }
+        prevRequestTimestamp = currentRequestTimestamp
+        return [200, {tasks: []}]
+      })
+
+    const generator = makeGenerator({settings, logger: makeLogger()})
+
+    const result1 = await generator.next([])
+    assert.deepEqual(result1, {done: false, value: []})
+    const result2 = await generator.next([])
+    assert.deepEqual(result2, {done: false, value: []})
+    const result3 = await generator.next([])
+    assert.deepEqual(result3, {done: false, value: []})
+  })
+
+  it('handles unexpected server responses', async () => {
+    const settings = {
+      pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 0,
+      agentId: 'agent-id',
+      secret: 'SeCrEt',
+    }
+    nock(settings.pollingServerUrl)
+      .persist()
+      .post(`/tunnel-agents/${settings.agentId}/init`)
+      .matchHeader('x-secret', settings.secret)
+      .reply(200, {instance_id: 'instance-id'})
+
+    nock(settings.pollingServerUrl)
+      .persist()
+      .post(`/tunnel-agents/${settings.agentId}/agentpoll`)
+      .matchHeader('x-secret', settings.secret)
+      .reply(200, 'bla bla bla')
+
+    const generator = makeGenerator({settings, logger: makeLogger()})
+
+    const result1 = await generator.next([])
+    assert.deepEqual(result1, {done: false, value: []})
+    const result2 = await generator.next([])
+    assert.deepEqual(result2, {done: false, value: []})
+    const result3 = await generator.next([])
+    assert.deepEqual(result3, {done: false, value: []})
+  })
+
   it('throws error after timeout', async () => {
     const settings = {
       pollingServerUrl: 'https://tunnel.server',
+      pollingTimeout: 0,
       agentId: 'agent-id',
       secret: 'SeCrEt',
       timeout: 1000,

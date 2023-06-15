@@ -1,19 +1,24 @@
 import type {TunnelClientWorkerSettings} from './types'
 import {type Logger} from '@applitools/logger'
-import {makeReq} from '@applitools/req'
+import {makeReq, type Hooks} from '@applitools/req'
 import * as utils from '@applitools/utils'
 
 export async function* makeGenerator({
   settings,
+  logger,
 }: {
   settings: TunnelClientWorkerSettings
   logger: Logger
 }): AsyncGenerator<Record<string, any>[], Record<string, any>[], Record<string, any>[]> {
+  settings.pollingTimeout ??= 10_000
+
   const req = makeReq({
     baseUrl: settings.pollingServerUrl,
     retry: {
+      timeout: 10_000,
       validate: ({response, error}) => response?.status !== 200 && !utils.types.instanceOf(error, 'AbortError'),
     },
+    hooks: [handleLogs({logger})],
     timeout: settings.timeout ?? 5 * 60_000,
   })
 
@@ -59,12 +64,15 @@ export async function* makeGenerator({
         agent_status: 'OK',
       },
     })
-    const result: any = await response.json()
-
-    if (result.abort) {
-      return [{name: 'TunnelClient.close', payload: {reason: result.abort_reason}}]
-    } else {
-      const incomingRequestMessages = result.tasks.flatMap((task: any) => {
+    let incomingRequestMessages = [] as any
+    let pollingTimeout = settings.pollingTimeout
+    try {
+      const result: any = await response.json()
+      if (result.abort) {
+        return [{name: 'TunnelClient.close', payload: {reason: result.abort_reason}}]
+      }
+      if (result.polling_interval_sec) pollingTimeout = result.polling_interval_sec * 1000
+      incomingRequestMessages = result.tasks.flatMap((task: any) => {
         if (task.type === 'CREATE_TUNNEL') {
           return {
             name: 'TunnelClient.create',
@@ -99,19 +107,65 @@ export async function* makeGenerator({
           return []
         }
       })
-      pendingRequestMessages = pendingRequestMessages.concat(incomingRequestMessages)
-      outgoingResponseMessages = []
-      const outgoingMessages = yield incomingRequestMessages
-      outgoingMessages.forEach(message => {
-        if (message.name === 'TunnelClient.list') tunnelsEventMessage = message
-        else if (message.name === 'TunnelClient.metrics') metricsEventMessage = message
-        else outgoingResponseMessages.push(message)
-      })
-      pendingRequestMessages = pendingRequestMessages.filter(
-        pendingMessage => !outgoingResponseMessages.some(outgoingMessage => outgoingMessage.key === pendingMessage.key),
-      )
+    } catch (error) {
+      logger.error(error)
+      incomingRequestMessages = []
     }
+    pendingRequestMessages = pendingRequestMessages.concat(incomingRequestMessages)
+    outgoingResponseMessages = []
+    const outgoingMessages = yield incomingRequestMessages
+    outgoingMessages.forEach(message => {
+      if (message.name === 'TunnelClient.list') tunnelsEventMessage = message
+      else if (message.name === 'TunnelClient.metrics') metricsEventMessage = message
+      else outgoingResponseMessages.push(message)
+    })
+    pendingRequestMessages = pendingRequestMessages.filter(
+      pendingMessage => !outgoingResponseMessages.some(outgoingMessage => outgoingMessage.key === pendingMessage.key),
+    )
 
-    await utils.general.sleep(result.polling_interval_sec * 1000)
+    await utils.general.sleep(pollingTimeout)
+  }
+}
+
+function handleLogs({logger}: {logger?: Logger} = {}): Hooks {
+  const guid = utils.general.guid()
+  let counter = 0
+
+  return {
+    beforeRequest({request, options}) {
+      let requestId = request.headers.get('x-applitools-eyes-client-request-id')
+      if (!requestId) {
+        requestId = `${counter++}--${guid}`
+        request.headers.set('x-applitools-eyes-client-request-id', requestId)
+      }
+      logger?.log(
+        `Request [${requestId}] will be sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
+      )
+    },
+    beforeRetry({request, attempt, error, response, options}) {
+      const requestId = request.headers.get('x-applitools-eyes-client-request-id')!
+      logger?.log(
+        `Request [${requestId}] that was sent to the address "[${request.method}]${request.url}" with body`,
+        options?.body,
+        `is going to retried due to ${error ? 'an error' : 'a response with status'}`,
+        error ?? `${response!.statusText}(${response!.status})`,
+      )
+      request.headers.set('x-applitools-eyes-client-request-id', `${requestId.split('#', 1)[0]}#${attempt + 1}`)
+    },
+    async afterResponse({request, response}) {
+      const requestId = request.headers.get('x-applitools-eyes-client-request-id')
+      logger?.log(
+        `Request [${requestId}] that was sent to the address "[${request.method}]${request.url}" respond with ${response.statusText}(${response.status})`,
+        !response.ok ? `and body ${JSON.stringify(await response.clone().text())}` : '',
+      )
+    },
+    afterError({request, error}) {
+      const requestId = request.headers.get('x-applitools-eyes-client-request-id')
+      logger?.error(
+        `Request [${requestId}] that was sent to the address "[${request.method}]${request.url}" failed with error`,
+        error,
+      )
+    },
   }
 }

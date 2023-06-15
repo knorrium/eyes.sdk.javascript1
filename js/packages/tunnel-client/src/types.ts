@@ -6,6 +6,7 @@ export interface TunnelClientWorkerSettings extends TunnelClientSettings {
   pollingServerUrl: string
   secret: string
   agentId: string
+  pollingTimeout?: number
   timeout?: number
   envInfo?: Record<string, any>
 }

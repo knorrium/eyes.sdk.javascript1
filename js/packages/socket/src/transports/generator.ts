@@ -58,8 +58,9 @@ export function makeTransport(): Transport<AsyncGenerator<Data[], Data[], Data[]
     handler.readyListener?.()
     while (running) {
       try {
-        const result = await generator.next(handler.queue)
-        handler.queue = []
+        const outgoing = [...handler.queue]
+        const result = await generator.next(outgoing)
+        handler.queue = handler.queue.filter(data => !outgoing.includes(data))
         result.value.forEach(value => handler.messageListener?.(value))
         if (result.done) {
           running = false
