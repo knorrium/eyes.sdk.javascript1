@@ -7,6 +7,7 @@ import {type Version} from 'release-please/build/src/version'
 import {type Release} from 'release-please/build/src/release'
 import {type Commit, type ConventionalCommit} from 'release-please/build/src/commit'
 import {type WorkspacePlugin, type WorkspacePluginOptions, type DependencyGraph} from 'release-please/build/src/plugins/workspace'
+import {Changelog} from 'release-please/build/src/updaters/changelog'
 import {ManifestPlugin} from 'release-please/build/src/plugin'
 import {buildPlugin} from 'release-please/build/src/factories/plugin-factory'
 
@@ -79,6 +80,13 @@ export class RichWorkspace extends ManifestPlugin {
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequest)
+
+    updatedCandidateReleasePullRequests.forEach((candidate) => {
+      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
+      if (changelogUpdate) {
+        console.log((changelogUpdate.updater as Changelog).changelogEntry)
+      }
+    })
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
