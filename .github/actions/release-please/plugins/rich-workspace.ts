@@ -124,34 +124,37 @@ export class RichWorkspace extends ManifestPlugin {
     return workspacePlugin
   }
 
-  protected patchChangelogs(candidateReleasePullRequest: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
-    for (const candidate of candidateReleasePullRequest) {
+  protected patchChangelogs(candidateReleasePullRequests: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
+    for (const candidate of candidateReleasePullRequests) {
+      console.log('CONFIG', candidate.config)
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
       if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-      console.log(candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
+      console.log('\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
     }
 
-    return candidateReleasePullRequest
+    return candidateReleasePullRequests
 
     function patchChangelogUpdate(update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
-        const sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
+        update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
           if (section.startsWith('### Dependencies\n\n')) {
             update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
             const dependencies = update.bumps.flatMap(bump => {
-              const bumpedCandidate = candidateReleasePullRequest.find(candidate => candidate.config.packageName === bump.packageName)
+              const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
+              console.log(bump)
+              const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.config.packageName === bump.packageName)
+              console.log(!!bumpedCandidate)
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
-              if (!bumpedChangelogUpdate) return []
+              if (!bumpedChangelogUpdate) return header
               const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
-              return `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n` +
-                patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace('\n', '\n  ')}`)
+              return `${header}${patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace('\n', '\n  ')}`)}`
             })
             return `### Dependencies\n\n${dependencies.join('\n')}`
           }
           return section
         })
-        update.updater.changelogEntry = `${header}${sections.join('')}`
+        update.updater.changelogEntry = `${header}${update.sections.join('')}`
       }
       return update as PatchedChangelogUpdate
     }
