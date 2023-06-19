@@ -6,6 +6,7 @@ import {type BaseStrategy} from 'release-please/build/src/strategies/base'
 import {type Version} from 'release-please/build/src/version'
 import {type Release} from 'release-please/build/src/release'
 import {type Commit, type ConventionalCommit} from 'release-please/build/src/commit'
+import {type Update} from 'release-please/build/src/update'
 import {type WorkspacePlugin, type WorkspacePluginOptions, type DependencyGraph} from 'release-please/build/src/plugins/workspace'
 import {Changelog} from 'release-please/build/src/updaters/changelog'
 import {ManifestPlugin} from 'release-please/build/src/plugin'
@@ -83,9 +84,7 @@ export class RichWorkspace extends ManifestPlugin {
 
     updatedCandidateReleasePullRequests.forEach((candidate) => {
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
-      if (changelogUpdate) {
-        console.log((changelogUpdate.updater as Changelog).changelogEntry)
-      }
+      if (changelogUpdate) this.patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
     })
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
@@ -125,5 +124,19 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     return workspacePlugin
+  }
+
+  protected patchChangelogUpdate(update: Update & {updater: Changelog}) {
+    const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
+    const sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
+      if (section.startsWith('### Dependencies\n\n')) {
+        const bumps = [...section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm)]
+        return `### Dependencies\n\n${bumps.map(bump => {
+          return `${bump[0]}\n  - ${JSON.stringify(bump.groups)}`
+        })}`
+      }
+      return section
+    })
+    update.updater.changelogEntry = `${header}${sections.join('')}`
   }
 }
