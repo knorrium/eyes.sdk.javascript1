@@ -137,7 +137,7 @@ export class RichWorkspace extends ManifestPlugin {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
         update.updater.changelogEntry = header!
-        for (const [section] of update.updater.changelogEntry.matchAll(/^###[^#]+/gm)) {
+        const sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
           if (section.startsWith('### Dependencies\n\n')) {
             update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
             const dependencies = update.bumps.flatMap(bump => {
@@ -148,11 +148,11 @@ export class RichWorkspace extends ManifestPlugin {
               return `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n` +
                 patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace('\n', '\n  ')}`)
             })
-            update.updater.changelogEntry += `### Dependencies\n\n${dependencies.join('\n')}`
+            return `### Dependencies\n\n${dependencies.join('\n')}`
           }
-          
-          update.updater.changelogEntry += section
-        }
+          return section
+        })
+        update.updater.changelogEntry = `${header}${sections.join('')}`
       }
       return update as PatchedChangelogUpdate
     }
