@@ -12,6 +12,8 @@ import {Changelog} from 'release-please/build/src/updaters/changelog'
 import {ManifestPlugin} from 'release-please/build/src/plugin'
 import {buildPlugin} from 'release-please/build/src/factories/plugin-factory'
 
+type PatchedChangelogUpdate = Update & {updater: Changelog, sections: string[], bumps?: Record<string, any>[]}
+
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
   manifestPath: string;
   workspace: 'node' | 'maven'
@@ -87,10 +89,7 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequest)
 
-    await Promise.all(updatedCandidateReleasePullRequests.map((candidate) => {
-      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
-      if (changelogUpdate) this.patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-    }))
+    this.patchChangelogs(updatedCandidateReleasePullRequests)
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
@@ -125,21 +124,37 @@ export class RichWorkspace extends ManifestPlugin {
     return workspacePlugin
   }
 
-  protected async patchChangelogUpdate(update: Update & {updater: Changelog}) {
-    const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
-    const sections = await Promise.all(Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), async ([section]) => {
-      if (section.startsWith('### Dependencies\n\n')) {
-        const bumps = await Promise.all(Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), async bump => {
-          const packageStrategy = this.strategiesByPackageName[bump.groups!.packageName] as any
-          const file = await this.github.getFileContentsOnBranch(packageStrategy.addPath(packageStrategy.changelogPath), this.targetBranch)
-          console.log(file)
-          return `${bump[0]}\n  - ${JSON.stringify(bump.groups)}`
-        }))
-        return `### Dependencies\n\n${bumps.join('\n')}`
+  protected patchChangelogs(candidateReleasePullRequest: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
+    for (const candidate of candidateReleasePullRequest) {
+      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
+      if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
+      console.log(candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
+    }
+
+    return candidateReleasePullRequest
+
+    function patchChangelogUpdate(update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate {
+      if (!update.sections) {
+        const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
+        update.updater.changelogEntry = header!
+        for (const [section] of update.updater.changelogEntry.matchAll(/^###[^#]+/gm)) {
+          if (section.startsWith('### Dependencies\n\n')) {
+            update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
+            const dependencies = update.bumps.flatMap(bump => {
+              const bumpedCandidate = candidateReleasePullRequest.find(candidate => candidate.config.packageName === bump.packageName)
+              const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
+              if (!bumpedChangelogUpdate) return []
+              const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
+              return `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n` +
+                patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace('\n', '\n  ')}`)
+            })
+            update.updater.changelogEntry += `### Dependencies\n\n${dependencies.join('\n')}`
+          }
+          
+          update.updater.changelogEntry += section
+        }
       }
-      return section
-    }))
-    console.log(sections)
-    update.updater.changelogEntry = `${header}${sections.join('')}`
+      return update as PatchedChangelogUpdate
+    }
   }
 }
