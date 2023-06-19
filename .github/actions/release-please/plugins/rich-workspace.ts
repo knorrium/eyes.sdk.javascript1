@@ -152,9 +152,11 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     for (const candidate of candidateReleasePullRequests) {
-      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
-      if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-      console.log('---\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
+      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog) as Update & {updater: Changelog} | undefined
+      if (changelogUpdate) {
+        patchChangelogUpdate(changelogUpdate)
+        candidate.pullRequest.body.releaseData[0].notes = changelogUpdate.updater.changelogEntry
+      }
     }
 
     return candidateReleasePullRequests
