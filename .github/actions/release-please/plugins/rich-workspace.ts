@@ -87,6 +87,10 @@ export class RichWorkspace extends ManifestPlugin {
       if (changelogUpdate) this.patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
     })
 
+    updatedCandidateReleasePullRequests.forEach(c => {
+      console.log(c.pullRequest.updates)
+    })
+
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
     })
@@ -131,10 +135,10 @@ export class RichWorkspace extends ManifestPlugin {
     const sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
       console.log(section, section.startsWith('### Dependencies\n\n'))
       if (section.startsWith('### Dependencies\n\n')) {
-        const bumps = [...section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm)]
-        return `### Dependencies\n\n${bumps.map(bump => {
+        const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), bump => {
           return `${bump[0]}\n  - ${JSON.stringify(bump.groups)}`
-        })}`
+        })
+        return `### Dependencies\n\n${bumps.join('\n')}`
       }
       return section
     })
