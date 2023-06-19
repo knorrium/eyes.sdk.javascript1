@@ -131,7 +131,7 @@ export class RichWorkspace extends ManifestPlugin {
         update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
           if (section.startsWith('### Dependencies\n\n')) {
             update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
-            const dependencies = update.bumps.flatMap(bump => {
+            const dependencies = update.bumps.map(bump => {
               const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
               const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
@@ -139,7 +139,7 @@ export class RichWorkspace extends ManifestPlugin {
               const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
               return `${header}${patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace(/(\n+)/g, '$1  ')}`).join('')}`
             })
-            return `### Dependencies\n\n${dependencies.join('\n')}`
+            return `### Dependencies\n\n${dependencies.join('')}`
           }
           return section
         })
@@ -151,7 +151,7 @@ export class RichWorkspace extends ManifestPlugin {
     for (const candidate of candidateReleasePullRequests) {
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
       if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-      console.log('\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
+      console.log('---\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
     }
 
     return candidateReleasePullRequests
