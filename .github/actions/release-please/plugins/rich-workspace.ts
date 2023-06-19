@@ -137,9 +137,12 @@ export class RichWorkspace extends ManifestPlugin {
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
               if (!bumpedChangelogUpdate) return header
               const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
-              return `${header}${patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace(/(\n+)/g, '$1  ')}`).join('')}`
+              return `${header}${patchedBumpedChangelogUpdate.sections.flatMap(section => {
+                if (section.startsWith('### Dependencies\n\n')) return []
+                return `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`
+              }).join('')}`
             })
-            return `### Dependencies\n\n${dependencies.join('')}`
+            return `### Dependencies\n\n${dependencies.join('\n')}`
           }
           return section
         })
