@@ -2,6 +2,7 @@ import nock from 'nock'
 import assert from 'assert'
 import {makeLogger} from '@applitools/logger'
 import {makeTunnelManager} from '../../src/tunnels/manager'
+import * as utils from '@applitools/utils'
 
 describe('tunnel-manager', () => {
   afterEach(async () => {
@@ -68,6 +69,41 @@ describe('tunnel-manager', () => {
 
     assert.rejects(manager.create({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'}), (err: Error) =>
       err.message.includes('UNAUTHORIZED'),
+    )
+  })
+
+  it('queue create new tunnel requests if they need retry', async () => {
+    const manager = await makeTunnelManager({settings: {serverUrl: 'http://eg-tunnel'}, logger: makeLogger()})
+
+    let runningCount = 0
+    let requestingCount = 0
+    let isOverload = false
+    nock('http://eg-tunnel')
+      .persist()
+      .post('/tunnels')
+      .reply(async () => {
+        try {
+          requestingCount += 1
+          if (runningCount < 2) {
+            runningCount += 1
+            if (runningCount >= 2) {
+              utils.general.sleep(2_000)?.then(() => (isOverload = true))
+            }
+            utils.general.sleep(10_000)?.then(() => ((runningCount -= 1), (isOverload = false)))
+            return [201, JSON.stringify('tunnel-id')]
+          }
+
+          await utils.general.sleep(1)
+          return [500, {message: requestingCount > 1 && isOverload ? 'TOO_MANY_REQUESTS' : 'NO_AVAILABLE_TUNNEL_PROXY'}]
+        } finally {
+          requestingCount -= 1
+        }
+      })
+
+    await Promise.all(
+      Array.from({length: 5}).map(async (_, _index) => {
+        await manager.create({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+      }),
     )
   })
 
