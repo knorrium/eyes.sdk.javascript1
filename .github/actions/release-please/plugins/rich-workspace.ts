@@ -133,13 +133,11 @@ export class RichWorkspace extends ManifestPlugin {
             update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
             const dependencies = update.bumps.flatMap(bump => {
               const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
-              console.log(bump)
               const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
-              console.log(!!bumpedCandidate)
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
               if (!bumpedChangelogUpdate) return header
               const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
-              return `${header}${patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace('\n', '\n  ')}`)}`
+              return `${header}${patchedBumpedChangelogUpdate.sections.map(section => `  #${section.replace(/(\n+)/g, '$1  ')}`).join('')}`
             })
             return `### Dependencies\n\n${dependencies.join('\n')}`
           }
