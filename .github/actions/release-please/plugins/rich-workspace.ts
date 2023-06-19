@@ -21,6 +21,7 @@ export class RichWorkspace extends ManifestPlugin {
   private index = -1
   protected plugin: WorkspacePlugin<unknown>
   protected strategiesByPath: Record<string, Strategy> = {}
+  protected strategiesByPackageName: Record<string, Strategy> = {}
   protected commitsByPath: Record<string, ConventionalCommit[]> = {}
   protected releasesByPath: Record<string, Release> = {}
   protected releasePullRequestsByPath: Record<string, ReleasePullRequest | undefined> = {}
@@ -42,12 +43,16 @@ export class RichWorkspace extends ManifestPlugin {
     this.plugin = this.patchWorkspacePlugin(workspacePlugin)
   }
 
-  preconfigure(
+  async preconfigure(
     strategiesByPath: Record<string, Strategy>,
     commitsByPath: Record<string, Commit[]>,
     releasesByPath: Record<string, Release>
   ): Promise<Record<string, Strategy>> {
     this.strategiesByPath = strategiesByPath
+    this.strategiesByPackageName = await Object.values(strategiesByPath).reduce(async (promise, strategy) => {
+      const packageName = await (strategy as BaseStrategy).getPackageName()
+      return promise.then(strategiesByPackageName => Object.assign(strategiesByPackageName, packageName ? {[packageName]: strategy} : {}))
+    }, Promise.resolve({} as Record<string, Strategy>))
     this.releasesByPath = releasesByPath
     return this.plugin.preconfigure(strategiesByPath, commitsByPath, releasesByPath)
   }
@@ -82,14 +87,10 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequest)
 
-    updatedCandidateReleasePullRequests.forEach((candidate) => {
+    await Promise.all(updatedCandidateReleasePullRequests.map((candidate) => {
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
       if (changelogUpdate) this.patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-    })
-
-    updatedCandidateReleasePullRequests.forEach(c => {
-      console.log(c.pullRequest.updates)
-    })
+    }))
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
@@ -101,13 +102,7 @@ export class RichWorkspace extends ManifestPlugin {
     ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
       const graph = await originalBuildGraph(pkgs)
       for (const packageName of graph.keys()) {
-        let packageStrategy: BaseStrategy | undefined
-        for (const strategy of Object.values(this.strategiesByPath) as BaseStrategy[]) {
-          if (await strategy.getPackageName() === packageName) {
-            packageStrategy = strategy
-            break
-          }
-        }
+        let packageStrategy = this.strategiesByPackageName[packageName] as BaseStrategy | undefined
         if (packageStrategy?.extraLabels.includes('skip-release')) {
           graph.delete(packageName)
         }
@@ -130,18 +125,20 @@ export class RichWorkspace extends ManifestPlugin {
     return workspacePlugin
   }
 
-  protected patchChangelogUpdate(update: Update & {updater: Changelog}) {
+  protected async patchChangelogUpdate(update: Update & {updater: Changelog}) {
     const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
-    const sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
-      console.log(section, section.startsWith('### Dependencies\n\n'))
+    const sections = await Promise.all(Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), async ([section]) => {
       if (section.startsWith('### Dependencies\n\n')) {
-        const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), bump => {
+        const bumps = await Promise.all(Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), async bump => {
+          const packageStrategy = this.strategiesByPackageName[bump.groups!.packageName] as any
+          const file = this.github.getFileContentsOnBranch(packageStrategy.addPath(packageStrategy.changelogPath), this.targetBranch)
+          console.log(file)
           return `${bump[0]}\n  - ${JSON.stringify(bump.groups)}`
-        })
+        }))
         return `### Dependencies\n\n${bumps.join('\n')}`
       }
       return section
-    })
+    }))
     console.log(sections)
     update.updater.changelogEntry = `${header}${sections.join('')}`
   }
