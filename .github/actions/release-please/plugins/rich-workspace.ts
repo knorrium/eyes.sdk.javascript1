@@ -23,10 +23,10 @@ export class RichWorkspace extends ManifestPlugin {
   private index = -1
   protected plugin: WorkspacePlugin<unknown>
   protected strategiesByPath: Record<string, Strategy> = {}
-  protected strategiesByPackageName: Record<string, Strategy> = {}
   protected commitsByPath: Record<string, ConventionalCommit[]> = {}
   protected releasesByPath: Record<string, Release> = {}
   protected releasePullRequestsByPath: Record<string, ReleasePullRequest | undefined> = {}
+  protected pathsByPackagesName: Record<string, string> = {}
 
   constructor(
     github: GitHub,
@@ -50,12 +50,12 @@ export class RichWorkspace extends ManifestPlugin {
     commitsByPath: Record<string, Commit[]>,
     releasesByPath: Record<string, Release>
   ): Promise<Record<string, Strategy>> {
-    this.strategiesByPath = strategiesByPath
-    this.strategiesByPackageName = await Object.values(strategiesByPath).reduce(async (promise, strategy) => {
-      const packageName = await (strategy as BaseStrategy).getPackageName()
-      return promise.then(strategiesByPackageName => Object.assign(strategiesByPackageName, packageName ? {[packageName]: strategy} : {}))
-    }, Promise.resolve({} as Record<string, Strategy>))
+    this.strategiesByPath = strategiesByPath as Record<string, BaseStrategy>
     this.releasesByPath = releasesByPath
+    this.pathsByPackagesName = await Object.entries(this.strategiesByPath).reduce(async (promise, [path, strategy]) => {
+      const packageName = await (strategy as BaseStrategy).getPackageName()
+      return promise.then(pathsByPackagesName => Object.assign(pathsByPackagesName, packageName ? {[packageName]: path} : {}))
+    }, Promise.resolve({} as Record<string, string>))
     return this.plugin.preconfigure(strategiesByPath, commitsByPath, releasesByPath)
   }
 
@@ -101,7 +101,7 @@ export class RichWorkspace extends ManifestPlugin {
     ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
       const graph = await originalBuildGraph(pkgs)
       for (const packageName of graph.keys()) {
-        let packageStrategy = this.strategiesByPackageName[packageName] as BaseStrategy | undefined
+        let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
         if (packageStrategy?.extraLabels.includes('skip-release')) {
           graph.delete(packageName)
         }
@@ -125,16 +125,7 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected patchChangelogs(candidateReleasePullRequests: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
-    for (const candidate of candidateReleasePullRequests) {
-      console.log('CONFIG', candidate.config)
-      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
-      if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
-      console.log('\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
-    }
-
-    return candidateReleasePullRequests
-
-    function patchChangelogUpdate(update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate {
+    const patchChangelogUpdate = (update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate => {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
         update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
@@ -143,7 +134,7 @@ export class RichWorkspace extends ManifestPlugin {
             const dependencies = update.bumps.flatMap(bump => {
               const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
               console.log(bump)
-              const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.config.packageName === bump.packageName)
+              const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
               console.log(!!bumpedCandidate)
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
               if (!bumpedChangelogUpdate) return header
@@ -158,5 +149,13 @@ export class RichWorkspace extends ManifestPlugin {
       }
       return update as PatchedChangelogUpdate
     }
+
+    for (const candidate of candidateReleasePullRequests) {
+      const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog)
+      if (changelogUpdate) patchChangelogUpdate(changelogUpdate as Update & {updater: Changelog})
+      console.log('\n\n\n\n', candidate.path, (changelogUpdate as Update & {updater: Changelog} | undefined)?.updater.changelogEntry)
+    }
+
+    return candidateReleasePullRequests
   }
 }
