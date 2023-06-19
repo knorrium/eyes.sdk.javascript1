@@ -131,7 +131,7 @@ export class RichWorkspace extends ManifestPlugin {
       if (section.startsWith('### Dependencies\n\n')) {
         const bumps = await Promise.all(Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), async bump => {
           const packageStrategy = this.strategiesByPackageName[bump.groups!.packageName] as any
-          const file = this.github.getFileContentsOnBranch(packageStrategy.addPath(packageStrategy.changelogPath), this.targetBranch)
+          const file = await this.github.getFileContentsOnBranch(packageStrategy.addPath(packageStrategy.changelogPath), this.targetBranch)
           console.log(file)
           return `${bump[0]}\n  - ${JSON.stringify(bump.groups)}`
         }))
