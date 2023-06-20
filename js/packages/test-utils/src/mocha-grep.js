@@ -14,7 +14,7 @@ function mochaGrep({grep = process.env.MOCHA_GREP, tags, mode = 'within'} = {}) 
 
   let regexp = grep ? `.*?${grep}.*?` : `.*?`
   if (tags) {
-    if (mode === 'within') regexp += `(\\((${tags.map(tag => `@${tag}`).join('|')})+\\s?)+\\))?[^()]*?`
+    if (mode === 'within') regexp += `(\\(((${tags.map(tag => `@${tag}`).join('|')})\\s?)+\\))?[^()]*?`
     else if (mode === 'only') regexp += `\\(${tags.map(tag => `(?=.*@${tag})`)}.*?\\)[^()]*?`
     else if (mode === 'omit') regexp += `(\\((?!${tags.map(tag => `@${tag}`).join('|')}).*?\\))?[^()]*?`
   }
