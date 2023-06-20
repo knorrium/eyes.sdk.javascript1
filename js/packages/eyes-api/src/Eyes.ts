@@ -385,14 +385,28 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
   }
 
   async locate<TLocator extends string>(
+    target: Core.ImageTarget,
     settings: VisualLocatorSettings<TLocator>,
+  ): Promise<Record<TLocator, Region[]>>
+  async locate<TLocator extends string>(settings: VisualLocatorSettings<TLocator>): Promise<Record<TLocator, Region[]>>
+  async locate<TLocator extends string>(
+    targetOrSettings: Core.ImageTarget | VisualLocatorSettings<TLocator>,
+    settings?: VisualLocatorSettings<TLocator>,
   ): Promise<Record<TLocator, Region[]>> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
+    let target: Core.ImageTarget | TSpec['driver']
+    if (utils.types.has(targetOrSettings, 'locatorNames')) {
+      settings = targetOrSettings
+      target = this._driver
+    } else {
+      target = targetOrSettings
+    }
+
     const config = this._config.toJSON()
 
-    const results = await this._core.locate({target: this._driver, settings: {...this._state, ...settings}, config})
+    const results = await this._core.locate({target, settings: {...this._state, ...settings}, config})
     return Object.entries<Region[]>(results).reduce((results, [key, regions]) => {
       results[key as TLocator] = regions.map(region => new RegionData(region))
       return results
