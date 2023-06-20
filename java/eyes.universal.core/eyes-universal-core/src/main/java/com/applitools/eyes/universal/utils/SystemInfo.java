@@ -1,19 +1,37 @@
 package com.applitools.eyes.universal.utils;
 
-import java.io.IOException;
-import java.util.Properties;
+import com.applitools.eyes.EyesException;
+import com.applitools.utils.GeneralUtils;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class SystemInfo {
+    private static final String ALPINE_PATH = "/etc/alpine-release";
 
-    private static final Properties properties = new Properties();
+    public static String getCurrentBinary() {
+        String osVersion = GeneralUtils.getPropertyString("os.name").toLowerCase();
+        String osArchitecture = GeneralUtils.getPropertyString("os.arch").toLowerCase();
 
-    static {
-        try {
-            properties.load(SystemInfo.class.getClassLoader().getResourceAsStream("core.binaries"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        String suffix;
+
+        if (osVersion.contains("windows")) {
+            suffix = "win.exe";
+        } else if (osVersion.contains("mac")) {
+            suffix = "macos";
+        } else if (osVersion.contains("linux")) {
+            suffix = "linux";
+            if (Files.exists(Paths.get(ALPINE_PATH))) {
+                suffix = "alpine";
+            } else if (osArchitecture.contains("arm64") || osArchitecture.contains("aarch64")) {
+                suffix = "linux-arm64";
+            }
+        } else {
+            throw new EyesException(String.format("Operating system is not supported. Version: %s, Architecture: %s",
+                    osVersion,
+                    osArchitecture));
         }
-    }
 
-    public static final String CURRENT_CORE_BINARY = properties.getProperty("applitools_core_binaries");
+        return String.format("core-%s", suffix);
+    }
 }

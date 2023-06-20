@@ -1,3 +1,9 @@
+## [5.56.0] - 2023-06-20
+### Features
+- 
+### Bug fixes
+- Fixed an issue where a Gradle project did not dynamically detect core modules.
+
 ## [5.55.0] - 2023-06-13
 ### Features
 - Dynamically use modules to scale down the final core jar size.

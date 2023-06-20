@@ -74,7 +74,7 @@ public class UniversalSdkNativeLoader {
       Path directoryPath =
           userSetPath == null ? Paths.get(GeneralUtils.getPropertyString(TEMP_FOLDER_PATH)) : Paths.get(userSetPath);
 
-      String serverFilename = SystemInfo.CURRENT_CORE_BINARY;
+      String serverFilename = SystemInfo.getCurrentBinary();
 
       Path serverTargetPath;
       try (InputStream serverBinaryAsStream = getFileFromResourceAsStream(serverFilename)) {

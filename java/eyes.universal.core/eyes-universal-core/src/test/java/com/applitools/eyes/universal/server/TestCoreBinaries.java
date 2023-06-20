@@ -14,7 +14,7 @@ public class TestCoreBinaries {
         UniversalSdkNativeLoader.start();
         Integer port = UniversalSdkNativeLoader.getPort();
         Assert.assertNotNull(port);
-        Assert.assertEquals(SystemInfo.CURRENT_CORE_BINARY, "core-macos");
+        Assert.assertEquals(SystemInfo.getCurrentBinary(), "core-macos");
     }
 
     @Test
@@ -22,7 +22,7 @@ public class TestCoreBinaries {
         UniversalSdkNativeLoader.start();
         Integer port = UniversalSdkNativeLoader.getPort();
         Assert.assertNotNull(port);
-        Assert.assertEquals(SystemInfo.CURRENT_CORE_BINARY, "core-win.exe");
+        Assert.assertEquals(SystemInfo.getCurrentBinary(), "core-win.exe");
     }
 
     @Test
@@ -30,7 +30,7 @@ public class TestCoreBinaries {
         UniversalSdkNativeLoader.start();
         Integer port = UniversalSdkNativeLoader.getPort();
         Assert.assertNotNull(port);
-        Assert.assertEquals(SystemInfo.CURRENT_CORE_BINARY, "core-linux");
+        Assert.assertEquals(SystemInfo.getCurrentBinary(), "core-linux");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class TestCoreBinaries {
         UniversalSdkNativeLoader.start();
         Integer port = UniversalSdkNativeLoader.getPort();
         Assert.assertNotNull(port);
-        Assert.assertEquals(SystemInfo.CURRENT_CORE_BINARY, "core-alpine");
+        Assert.assertEquals(SystemInfo.getCurrentBinary(), "core-alpine");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class TestCoreBinaries {
         UniversalSdkNativeLoader.start();
         Integer port = UniversalSdkNativeLoader.getPort();
         Assert.assertNotNull(port);
-        Assert.assertEquals(SystemInfo.CURRENT_CORE_BINARY, "core-linux-arm64");
+        Assert.assertEquals(SystemInfo.getCurrentBinary(), "core-linux-arm64");
     }
 
 }
