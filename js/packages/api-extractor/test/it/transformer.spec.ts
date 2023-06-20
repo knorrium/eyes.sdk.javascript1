@@ -91,6 +91,25 @@ describe('transformer', () => {
     assert.equal(output, load('synthetic-overloads.d.ts'))
   })
 
+  it('prevents union reduction', () => {
+    const output = compile({
+      options: {strict: true},
+      config: {rootFile: 'index.ts'},
+      input: {
+        'index.ts': `
+        export type U = \`\${1 | 2 | 3}\`
+
+        export function f(arg?: U): void {}
+        export interface I {
+          u?: U
+          y?: '1' | '2' | '3'
+        }
+        `,
+      },
+    })
+    assert.equal(output, load('union-reduction.d.ts'))
+  })
+
   describe('works with default export', () => {
     it('class', () => {
       const output = compile({

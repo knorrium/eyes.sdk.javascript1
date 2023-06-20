@@ -44,6 +44,7 @@ export default function transformer(
   const exports = {
     names: new Map<string, {name: string; type: ts.Type; symbol: ts.Symbol}>(), // by names
     types: new Map<ts.Type, {name: string; type: ts.Type; symbol: ts.Symbol}>(), // by types
+    unions: new Map<ts.UnionType, {name: string; type: ts.UnionType; symbol: ts.Symbol}>(), // by union types
     symbols: new Map<ts.Symbol, {name: string; type: ts.Type; symbol: ts.Symbol}>(), // by symbols
   }
   // collection of symbols that should be replaced with some other type from entry point imports
@@ -74,6 +75,7 @@ export default function transformer(
         if (name !== 'default' && name !== 'export=') {
           exports.symbols.set(symbol, exported)
           exports.types.set(type, exported)
+          if (type.isUnion()) exports.unions.set(type, {name, type, symbol})
         }
 
         // some descendant types could replace their ancestors, if ancestor could not be referenced (e.g. base class is shadowed by its derivative class)
@@ -535,7 +537,19 @@ export default function transformer(
         typeNodes.push(createTypeNode({type: checker.getBaseTypeOfLiteralType(type.types[index]), node}))
         index += 1
       } else {
-        typeNodes.push(createTypeNode({type: type.types[index], node}))
+        // if some of the items of the union overlap with all items of one of the exported unions use reference to the exported union instead
+        const reducedUnion = Array.from(exports.unions.values()).find(exportedUnion => {
+          return (
+            exportedUnion.symbol.declarations.every(declaration => declaration !== node) &&
+            exportedUnion.type.types.every((exportedType, offset) => exportedType === type.types[index + offset])
+          )
+        })
+        if (reducedUnion) {
+          index += reducedUnion.type.types.length
+          typeNodes.push(ts.factory.createTypeReferenceNode(reducedUnion.name))
+        } else {
+          typeNodes.push(createTypeNode({type: type.types[index], node}))
+        }
       }
     }
     return ts.factory.createUnionTypeNode(typeNodes)

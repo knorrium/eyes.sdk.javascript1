@@ -17,6 +17,7 @@ export function compile({
   options.rootDir = path.resolve('.')
   options.declarationDir = path.resolve('.')
   options.declaration = true
+  options.types = ['node']
 
   input = Object.fromEntries(Object.entries(input).map(([fileName, code]) => [path.resolve(fileName), code]))
 
