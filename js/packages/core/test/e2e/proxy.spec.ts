@@ -149,7 +149,7 @@ describe('proxy', () => {
     })
   })
 
-  describe('native with proxy', () => {
+  describe('native with proxy (@sauce)', () => {
     before(async () => {
       restoreNetwork = restrictNetwork(options => {
         return (

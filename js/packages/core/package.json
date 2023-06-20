@@ -51,6 +51,8 @@
     "build:bin:zip": "zip -j ./bin/core.zip $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "build:bin:tgz": "tar -czf ./bin/core.tar.gz $(find ./bin -type f -not -name '*.zip' -not -name '*.tar.gz' | xargs)",
     "test": "run --top-level mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "test:local": "MOCHA_GROUP=local MOCHA_EXCLUDE_TAGS=sauce run --top-level mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15}",
+    "test:sauce": "MOCHA_GROUP=sauce MOCHA_INCLUDE_TAGS=sauce run --top-level mocha './test/**/*.spec.ts' --exclude './test/bin/**' --parallel --jobs ${MOCHA_JOBS:-15}",
     "test:bin": "MOCHA_GROUP=bin run --top-level mocha './test/bin/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}",
     "test:e2e": "MOCHA_GROUP=e2e run --top-level mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/**/*.spec.ts'",

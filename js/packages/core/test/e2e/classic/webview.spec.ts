@@ -13,7 +13,7 @@ async function switchToWebview(driver: spec.Driver, attempt = 1): Promise<void> 
   await spec.switchWorld(driver, worlds[1])
 }
 
-describe('webview', () => {
+describe('webview (@sauce)', () => {
   let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {

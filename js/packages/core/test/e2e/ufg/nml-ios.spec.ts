@@ -2,7 +2,7 @@ import {makeCore} from '../../../src/ufg/core'
 import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
-describe('nml - ios', () => {
+describe('nml - ios (@sauce)', () => {
   let driver: spec.Driver, destroyDriver: () => Promise<void>
 
   before(async () => {

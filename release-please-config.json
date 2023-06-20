@@ -330,15 +330,16 @@
         {"runner": "linuxarm", "build-type": "arm64", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"runner": "linux", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linux"},
-        {"runner": "linuxarm", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true}, "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linuxarm"},
-        {"runner": "linux", "container": "node:lts-alpine", "shell": "ash -eo pipefail {0}", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/alpine"},
-        {"runner": "windows", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/windows"},
-        {"runner": "macos", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/macos"}
+        {"node-version": 14, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-version}}/node-{{node-version}}"},
+        {"node-version": 16, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-version}}/node-{{node-version}}"},
+        {"node-version": 18, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-version}}/node-{{node-version}}"},
+        {"node-version": 20, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-version}}/node-{{node-version}}"},
+        {"test-type": "sauce", "queue": "sauce", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-version}}"},
+        {"runner": "linux", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linux"},
+        {"runner": "linuxarm", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linuxarm"},
+        {"runner": "linux", "container": "node:lts-alpine", "shell": "ash -eo pipefail {0}", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/alpine"},
+        {"runner": "windows", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/windows"},
+        {"runner": "macos", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/macos"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org", "artifacts": ["./bin/*"]}

@@ -108,7 +108,7 @@ describe('locate web emulator', () => {
   })
 })
 
-describe('locate ios', () => {
+describe('locate ios (@sauce)', () => {
   let driver: spec.Driver,
     destroyDriver: () => Promise<void>,
     core: Core<SpecType<spec.Driver, spec.Driver, spec.Element, spec.Selector>, 'classic' | 'ufg'>
@@ -163,7 +163,7 @@ describe('locate ios', () => {
   })
 })
 
-describe('locate android', () => {
+describe('locate android (@sauce)', () => {
   let driver: spec.Driver,
     destroyDriver: () => Promise<void>,
     core: Core<SpecType<spec.Driver, spec.Driver, spec.Element, spec.Selector>, 'classic' | 'ufg'>
