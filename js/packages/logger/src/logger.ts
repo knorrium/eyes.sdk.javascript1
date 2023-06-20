@@ -72,7 +72,12 @@ export function makeLogger({logger: baseLogger, ...options}: LoggerOptions & {ex
     extend(optionsOrLogger, extraOptions) {
       const extendOptions = [options]
       if (utils.types.has(optionsOrLogger, 'isLogger')) {
-        if (optionsOrLogger !== logger) extendOptions.push(optionsOrLogger.options)
+        if (optionsOrLogger !== logger)
+          extendOptions.push({
+            console: optionsOrLogger.options.console,
+            level: optionsOrLogger.options.level,
+            format: optionsOrLogger.options.format,
+          })
         if (extraOptions)
           extendOptions.push({console: extraOptions.console, level: extraOptions.level, format: extraOptions})
       } else if (optionsOrLogger) {
