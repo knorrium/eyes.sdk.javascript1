@@ -1,33 +1,25 @@
-function mochaGrep(options = {}) {
-  if (!options.grep && process.env.MOCHA_GREP) options.grep = process.env.MOCHA_GREP
-
-  if (!options.tags && process.env.MOCHA_TAGS) {
-    options.tags = process.env.MOCHA_TAGS.split(/[,\s]\s*/)
-  } else {
-    options.tags = options.tags || {}
-    if (!options.tags.include && process.env.MOCHA_INCLUDE_TAGS) {
-      options.tags.include = process.env.MOCHA_INCLUDE_TAGS.split(/[,\s]\s*/)
-    }
-    if (!options.tags.exclude && process.env.MOCHA_EXCLUDE_TAGS) {
-      options.tags.exclude = process.env.MOCHA_EXCLUDE_TAGS.split(/[,\s]\s*/)
+function mochaGrep({grep = process.env.MOCHA_GREP, tags, mode = 'within'} = {}) {
+  if (!tags) {
+    if (process.env.MOCHA_TAGS) tags = process.env.MOCHA_TAGS.split(/[,\s]\s*/)
+    else if (process.env.MOCHA_ONLY_TAGS) {
+      tags = process.env.MOCHA_ONLY_TAGS.split(/[,\s]\s*/)
+      mode = 'only'
+    } else if (process.env.MOCHA_OMIT_TAGS) {
+      tags = process.env.MOCHA_OMIT_TAGS.split(/[,\s]\s*/)
+      mode = 'omit'
     }
   }
 
-  return {
-    test(test) {
-      if (options.grep && !new RegExp(options.grep, 'i').test(test)) return false
-      if (options.tags) {
-        const match = test.match(/(?<=\()(?:@[^()\s@]+ ?)+(?=\))/)
-        const tags = match ? match[0].split(' ').map(tag => tag.slice(1)) : []
-        if (Array.isArray(options.tags) && !tags.every(tag => options.tags.includes(tag))) return false
-        else {
-          if (options.tags.include && options.tags.include.some(tag => !tags.includes(tag))) return false
-          if (options.tags.exclude && options.tags.exclude.some(tag => tags.includes(tag))) return false
-        }
-      }
-      return true
-    },
+  if (!grep && !tags) return undefined
+
+  let regexp = grep ? `.*?${grep}.*?` : `.*?`
+  if (tags) {
+    if (mode === 'within') regexp += `(\\((${tags.map(tag => `@${tag}`).join('|')})+\\s?)+\\))?[^()]*?`
+    else if (mode === 'only') regexp += `\\(${tags.map(tag => `(?=.*@${tag})`)}.*?\\)[^()]*?`
+    else if (mode === 'omit') regexp += `(\\((?!${tags.map(tag => `@${tag}`).join('|')}).*?\\))?[^()]*?`
   }
+
+  return new RegExp(`^${regexp}$`, 'i')
 }
 
 module.exports = mochaGrep
