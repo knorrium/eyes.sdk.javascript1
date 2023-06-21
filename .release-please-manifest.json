@@ -27,5 +27,6 @@
   "js/packages/eyes-playwright": "1.17.4",
   "js/packages/eyes-puppeteer": "1.17.4",
   "js/packages/eyes-browser-extension": "0.3.3",
-  "js/packages/eyes-storybook": "3.34.2"
+  "js/packages/eyes-storybook": "3.34.2",
+  "js/packages/eyes-cypress": "3.33.1"
 }
