@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 function mochaGrep({grep = process.env.MOCHA_GREP, tags = {}} = {}) {
   if (!tags.allowed && process.env.MOCHA_ALLOW_TAGS) {
     tags.allow = process.env.MOCHA_ALLOW_TAGS.split(/[,\s]\s*/)
@@ -22,12 +23,15 @@ function mochaGrep({grep = process.env.MOCHA_GREP, tags = {}} = {}) {
       ? `^(?:[^()]*?\\(${tags.only.map(tag => `(?=.*@${tag})`)}(?:(?:${tags.allow.map(tag => `@${tag}`).join('|')})\\s*)+\\)){1,4}$`
       : `^(?:[^()]*?(?:\\((?:(?:${tags.allow.map(tag => `@${tag}`).join('|')})\\s*)+\\))?){1,4}$`
     /* eslint-enable prettier/prettier */
+    console.log(regexp)
     return new RegExp(regexp, 'i')
   } else if (tags.only) {
     const regexp = `^(?:[^()]*?\\(${tags.only.map(tag => `(?=.*@${tag})`)}.*\\)[^()]*?){1,4}$`
+    console.log(regexp)
     return new RegExp(regexp, 'i')
   } else if (tags.omit) {
     const regexp = `^(?:[^()]*?(?:\\(${tags.omit.map(tag => `(?!.*@${tag})`)}.*\\))?){1,4}$`
+    console.log(regexp)
     return new RegExp(regexp, 'i')
   }
 }

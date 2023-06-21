@@ -389,7 +389,7 @@
         {"framework-version": 7, "node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
         {"framework-version": 8, "node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
         {"framework-version": 8, "node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "test-type": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
+        {"framework-version": 8, "test-type": "sauce", "parallel": 1, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
