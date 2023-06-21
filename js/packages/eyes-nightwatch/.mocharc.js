@@ -22,5 +22,5 @@ module.exports = {
   require: ['ts-node/register'],
   reporter: 'mocha-multi',
   reporterOptions: [`spec=-,json=./logs/report${group ? `-${group}` : ''}.json,xunit=coverage-test-report.xml`],
-  grep: group !== 'it' ? mochaGrep({tags}) : undefined,
+  grep: group !== 'it' ? mochaGrep({tags: {allow: tags}}) : undefined,
 }
