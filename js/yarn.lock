@@ -27,7 +27,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/bongo@workspace:packages/bongo"
   dependencies:
-    "@applitools/utils": 1.3.37
+    "@applitools/utils": "workspace:^"
     "@azure/storage-blob": 12.2.0-preview.1
     chai: ^4.2.0
     chalk: 3.0.0
@@ -727,7 +727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/logger@2.0.3, @applitools/logger@workspace:packages/logger":
+"@applitools/logger@2.0.3, @applitools/logger@workspace:^, @applitools/logger@workspace:packages/logger":
   version: 0.0.0-use.local
   resolution: "@applitools/logger@workspace:packages/logger"
   dependencies:
@@ -1197,8 +1197,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/test-server@workspace:packages/test-server"
   dependencies:
-    "@applitools/logger": 2.0.2
-    "@applitools/utils": 1.3.37
+    "@applitools/logger": "workspace:^"
+    "@applitools/utils": "workspace:^"
     "@types/node-forge": ^1.3.2
     body-parser: 1.20.0
     cookie-parser: 1.4.5
@@ -1300,7 +1300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/utils@1.4.0, @applitools/utils@workspace:packages/utils":
+"@applitools/utils@1.4.0, @applitools/utils@workspace:^, @applitools/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@applitools/utils@workspace:packages/utils"
   dependencies:

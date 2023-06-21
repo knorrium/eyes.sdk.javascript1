@@ -222,12 +222,14 @@ yargs
     ['send-release-notification'],
     'Send a notification that an sdk has been released',
     {
+      reportId: {type: 'string', description: 'report id'},
       recipient: {alias: 'r', type: 'string'},
       name: {alias: 'n', type: 'string', description: 'the sdk name'},
       releaseVersion: {alias: 'rv', type: 'string', description: 'the sdk version name'},
     },
     async args =>
       await sendReleaseNotification({
+        reportId: args.reportId,
         name: args.name,
         version: args.releaseVersion,
         targetFolder: args.cwd,

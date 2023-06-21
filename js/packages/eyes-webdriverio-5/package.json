@@ -86,7 +86,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project tsconfig.build.v$([ ! -z $APPLITOOLS_FRAMEWORK_VERSION ] && echo $APPLITOOLS_FRAMEWORK_VERSION | cut -f1 -d'.' || echo 8).json",
-    "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes.webdriverio.javascript5'",
+    "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes.webdriverio.javascript5' --meta-path './logs'",
     "test": "run test:service && run test:coverage",
     "test:local": "run test:service && MOCHA_OMIT_TAGS=sauce run test:coverage",
     "test:sauce": "MOCHA_ONLY_TAGS=sauce run test:coverage",
@@ -94,7 +94,7 @@
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
     "up:framework": "run --top-level add-silent webdriverio",
-    "report": "bongo report --name 'js_wdio_5'",
+    "report": "bongo report --name 'js_wdio_5' --result-path './logs' --meta-path './logs'",
     "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_wdio_5'"
   },
   "dependencies": {

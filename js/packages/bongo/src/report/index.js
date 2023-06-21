@@ -5,9 +5,10 @@ const {sendTestReport, sendReleaseNotification, sendToStorage} = require('./send
 const {createReport} = require('./create')
 const {getLatestReleaseEntries} = require('../changelog')
 
-function makeSendReleaseNotification({name, version, changeLog, testCoverageGap}, recipient) {
+function makeSendReleaseNotification({reportId, name, version, changeLog, testCoverageGap}, recipient) {
   return async () => {
     const payload = {
+      id: reportId,
       sdk: name,
       version,
       changeLog,
@@ -91,11 +92,12 @@ async function createAndSendTestReport({name, group, reportId, metaPath, resultP
 
 module.exports = {
   sendTestReport: createAndSendTestReport,
-  sendReleaseNotification: async ({name, version, targetFolder, recipient}) => {
+  sendReleaseNotification: async ({reportId, name, version, targetFolder, recipient}) => {
     if (!version) ({version} = require(path.resolve(targetFolder, 'package.json')))
 
     const send = makeSendReleaseNotification(
       {
+        reportId,
         name,
         version,
         changeLog: getLatestReleaseEntries({targetFolder}).join('\n'),

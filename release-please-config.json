@@ -236,7 +236,7 @@
       "tests": [
         {"test-type": "it", "artifacts": ["./logs/**/*"], "key": "{{component}}/it"},
         {"test-type": "e2e:web", "setup-type": "web", "parallel": 15, "artifacts": ["./logs/**/*"], "key": "{{component}}/e2e-web"},
-        {"test-type": "e2e:android", "setup-type": "android", "parallel": 3, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/e2e-android"},
+        {"test-type": "e2e:android", "setup-type": "android", "parallel": 4, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/e2e-android"},
         {"test-type": "e2e:ios", "setup-type": "ios", "parallel": 4, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/e2e-ios"}
       ],
       "releases": [
@@ -250,10 +250,10 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
@@ -334,7 +334,7 @@
         {"node-version": 16, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"node-version": 18, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"node-version": 20, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"test-type": "sauce", "parallel": 1, "queue": "sauce", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
+        {"test-type": "sauce", "parallel": 2, "queue": "sauce", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
         {"runner": "linux", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linux"},
         {"runner": "linuxarm", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linuxarm"},
         {"runner": "linux", "container": "node:lts-alpine", "shell": "ash -eo pipefail {0}", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/alpine"},
@@ -389,7 +389,7 @@
         {"framework-version": 7, "node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
         {"framework-version": 8, "node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
         {"framework-version": 8, "node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "test-type": "sauce", "parallel": 1, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
+        {"framework-version": 8, "test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
@@ -406,7 +406,7 @@
         {"framework-version": 4.4, "node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"framework-version": 4.4, "node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"framework-version": 4.4, "node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "test-type": "sauce", "parallel": 1, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"}
+        {"framework-version": 4.4, "test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
@@ -423,7 +423,7 @@
         {"node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
         {"node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"test-type": "sauce", "parallel": 1, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"}
+        {"test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}

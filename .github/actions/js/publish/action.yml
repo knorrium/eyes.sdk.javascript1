@@ -28,7 +28,7 @@ runs:
         if [ "$(jq -r .scripts.notify ./package.json)" != "null" ]
         then
           echo "::group::Send notification"
-          # yarn notify
+          yarn notify --report-id=$(jq -r '"\(.name)@\(.version)' ./package.json)
           echo "::endgroup::"
         fi
 

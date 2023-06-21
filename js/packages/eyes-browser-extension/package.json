@@ -17,11 +17,11 @@
     "build": "yarn build:dist && yarn build:zip",
     "build:dist": "webpack",
     "build:zip": "mkdir ./bin && cd ./dist && zip -r ../bin/eyes-browser-extension.zip ./*",
-    "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-browser-extension'",
-    "test": "yarn test:coverage",
+    "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-browser-extension' --meta-path './logs'",
+     "test": "yarn test:coverage",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-browser-extension' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level xvfb:setup",
-    "report": "bongo report --name 'eyes-browser-extension'"
+    "report": "bongo report --name 'eyes-browser-extension' --result-path './logs' --meta-path './logs'"
   },
   "dependencies": {
     "@applitools/eyes-sdk-core": "13.11.14",

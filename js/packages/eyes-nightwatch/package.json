@@ -40,7 +40,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts' '**/*.js'",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
-    "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-nightwatch'",
+    "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-nightwatch' --meta-path './logs'",
     "test": "run test:it && run test:e2e && run test:coverage",
     "test:local": "run test:it && run test:e2e && MOCHA_OMIT_TAGS=sauce run test:coverage",
     "test:sauce": "MOCHA_ONLY_TAGS=sauce run test:coverage",
@@ -49,7 +49,7 @@
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
     "up:framework": "run --top-level add-silent nightwatch",
-    "report": "bongo report --name 'nightwatch'",
+    "report": "bongo report --name 'nightwatch' --result-path './logs' --meta-path './logs'",
     "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'nightwatch'"
   },
   "dependencies": {
