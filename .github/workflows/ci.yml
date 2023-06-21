@@ -118,7 +118,7 @@ jobs:
         uses: ./.github/actions/queue
         with:
           name: ${{matrix.queue}}
-          max-parallel: 5
+          max-parallel: 3
       - name: Run tests
         uses: ./.github/actions/js/test
         with:
