@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.1.58...js/core-base@1.2.0) (2023-06-21)
+
+
+### Features
+
+* **js/core-base:** new feature ([dd5705d](https://github.com/applitools/eyes.sdk.javascript1/commit/dd5705d5e99d34f9492e890a0b4af6c52d6b33e3))
+
+
+### Bug Fixes
+
+* rerelease ([2d46d0c](https://github.com/applitools/eyes.sdk.javascript1/commit/2d46d0c9ee14a72406e60350d4cce92991272afd))
+
+
+### Dependencies
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+
 ## [1.1.58](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.1.57...js/core-base@1.1.58) (2023-06-15)
 
 

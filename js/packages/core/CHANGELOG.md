@@ -2,6 +2,61 @@
 
 ## Unreleased
 
+## [3.2.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.2.3...js/core@3.2.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* fix coverage tests ([f5067d8](https://github.com/applitools/eyes.sdk.javascript1/commit/f5067d8693502c3f6c9dbdf8adafbe513d86a9ad))
+* fix tests ([0325ca0](https://github.com/applitools/eyes.sdk.javascript1/commit/0325ca07a57949714f04eb008d269fe0726486b6))
+
+
+### Dependencies
+
+* @applitools/core-base bumped from 1.1.58 to 1.2.0
+  #### Features
+
+  * **js/core-base:** new feature ([dd5705d](https://github.com/applitools/eyes.sdk.javascript1/commit/dd5705d5e99d34f9492e890a0b4af6c52d6b33e3))
+
+
+  #### Bug Fixes
+
+  * rerelease ([2d46d0c](https://github.com/applitools/eyes.sdk.javascript1/commit/2d46d0c9ee14a72406e60350d4cce92991272afd))
+
+
+
+* @applitools/driver bumped from 1.12.2 to 1.12.3
+
+* @applitools/ec-client bumped from 1.2.34 to 1.3.0
+  #### Features
+
+  * put in a queue create tunnel requests which cannot succeed due to a limit ([3309147](https://github.com/applitools/eyes.sdk.javascript1/commit/33091473f3fcbc4dd5fc853624bbe441ce11ce87))
+
+
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+* @applitools/nml-client bumped from 1.3.57 to 1.3.58
+
+* @applitools/screenshoter bumped from 3.7.47 to 3.8.0
+  #### Features
+
+  * **js/screenshoter:** new feature ([23b43a7](https://github.com/applitools/eyes.sdk.javascript1/commit/23b43a7a0634f6262f5cfa683acd58975bcaa949))
+  * **js/screenshoter:** new feature ([97c9a38](https://github.com/applitools/eyes.sdk.javascript1/commit/97c9a38ea03ce4065ea9e593f2eb9b2dc02d03b1))
+  * **js/screenshoter:** new feature ([a6886e2](https://github.com/applitools/eyes.sdk.javascript1/commit/a6886e2596e6162f0f38d84cf5e99f23906330fc))
+  * **js/screenshoter:** new feature ([5224a13](https://github.com/applitools/eyes.sdk.javascript1/commit/5224a132edf26d0fb023cfc2074e66b610b60c30))
+
+
+
+* @applitools/socket bumped from 1.1.3 to 1.1.4
+
+* @applitools/spec-driver-webdriver bumped from 1.0.34 to 1.0.35
+
+* @applitools/ufg-client bumped from 1.2.20 to 1.2.21
+
+
 ## [3.2.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.2.2...js/core@3.2.3) (2023-06-15)
 
 

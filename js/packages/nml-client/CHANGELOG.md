@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.58](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.3.57...js/nml-client@1.3.58) (2023-06-21)
+
+
+### Dependencies
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+
 ## [1.3.57](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.3.56...js/nml-client@1.3.57) (2023-06-15)
 
 

@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.66.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-selenium@4.66.3...js/eyes-selenium@4.66.4) (2023-06-21)
+
+
+### Bug Fixes
+
+* fix coverage tests ([f5067d8](https://github.com/applitools/eyes.sdk.javascript1/commit/f5067d8693502c3f6c9dbdf8adafbe513d86a9ad))
+
+
+### Dependencies
+
+* @applitools/eyes bumped from 1.2.17 to 1.3.0
+  #### Features
+
+  * added overload for locate method, to call it with custom target ([5d5914a](https://github.com/applitools/eyes.sdk.javascript1/commit/5d5914a5dae6822cde0086d6b9f4d6f9ac7cc4f2))
+
+
+
+* @applitools/spec-driver-selenium bumped from 1.5.47 to 1.5.49
+
+
 ## [4.66.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-selenium-v4.66.2...js/eyes-selenium@4.66.3) (2023-06-15)
 
 

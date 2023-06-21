@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.44.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.4...js/eyes-webdriverio@5.44.5) (2023-06-21)
+
+
+### Bug Fixes
+
+* fix coverage tests ([f5067d8](https://github.com/applitools/eyes.sdk.javascript1/commit/f5067d8693502c3f6c9dbdf8adafbe513d86a9ad))
+* fix coverage tests ([f5282cc](https://github.com/applitools/eyes.sdk.javascript1/commit/f5282cc59e11d42b2f51d581f4dd3038b4f3974b))
+* fixed service types ([46ea020](https://github.com/applitools/eyes.sdk.javascript1/commit/46ea020b84bd26d966c9d23776614a242295a6e8))
+
+
+### Dependencies
+
+* @applitools/eyes bumped from 1.2.17 to 1.3.0
+  #### Features
+
+  * added overload for locate method, to call it with custom target ([5d5914a](https://github.com/applitools/eyes.sdk.javascript1/commit/5d5914a5dae6822cde0086d6b9f4d6f9ac7cc4f2))
+
+
+
+* @applitools/spec-driver-webdriverio bumped from 1.5.2 to 1.5.4
+
+
 ## [5.44.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.3...js/eyes-webdriverio@5.44.4) (2023-06-15)
 
 

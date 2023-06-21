@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.0.4...js/tunnel-client@0.0.5) (2023-06-21)
+
+
+### Dependencies
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+* @applitools/socket bumped from 1.1.3 to 1.1.4
+
+
 ## [0.0.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.0.3...js/tunnel-client@0.0.4) (2023-06-15)
 
 

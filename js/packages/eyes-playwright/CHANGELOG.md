@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.17.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-playwright@1.17.4...js/eyes-playwright@1.17.5) (2023-06-21)
+
+
+### Dependencies
+
+* @applitools/eyes bumped from 1.2.17 to 1.3.0
+  #### Features
+
+  * added overload for locate method, to call it with custom target ([5d5914a](https://github.com/applitools/eyes.sdk.javascript1/commit/5d5914a5dae6822cde0086d6b9f4d6f9ac7cc4f2))
+
+
+
+* @applitools/spec-driver-playwright bumped from 1.3.14 to 1.3.15
+
+
 ## [1.17.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-playwright@1.17.3...js/eyes-playwright@1.17.4) (2023-06-15)
 
 

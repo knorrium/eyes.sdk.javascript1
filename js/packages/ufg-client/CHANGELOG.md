@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.21](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.2.20...js/ufg-client@1.2.21) (2023-06-21)
+
+
+### Dependencies
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+
 ## [1.2.20](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.2.19...js/ufg-client@1.2.20) (2023-06-15)
 
 

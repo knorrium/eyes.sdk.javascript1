@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.7.47...js/screenshoter@3.8.0) (2023-06-21)
+
+
+### Features
+
+* **js/screenshoter:** new feature ([23b43a7](https://github.com/applitools/eyes.sdk.javascript1/commit/23b43a7a0634f6262f5cfa683acd58975bcaa949))
+* **js/screenshoter:** new feature ([97c9a38](https://github.com/applitools/eyes.sdk.javascript1/commit/97c9a38ea03ce4065ea9e593f2eb9b2dc02d03b1))
+* **js/screenshoter:** new feature ([a6886e2](https://github.com/applitools/eyes.sdk.javascript1/commit/a6886e2596e6162f0f38d84cf5e99f23906330fc))
+* **js/screenshoter:** new feature ([5224a13](https://github.com/applitools/eyes.sdk.javascript1/commit/5224a132edf26d0fb023cfc2074e66b610b60c30))
+
+
+### Dependencies
+
+* @applitools/logger bumped from 2.0.3 to 2.0.4
+  #### Bug Fixes
+
+  * fixed issue when extended logger didn't preserve base's handler ([7c5e029](https://github.com/applitools/eyes.sdk.javascript1/commit/7c5e0299522f792aad72b7b3827df31a1ab2d68f))
+
 ## [3.7.47](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter-v3.7.46...js/screenshoter@3.7.47) (2023-06-13)
 
 

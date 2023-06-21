@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.15.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.15.2...js/eyes-nightwatch@1.15.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* fix coverage tests ([f5067d8](https://github.com/applitools/eyes.sdk.javascript1/commit/f5067d8693502c3f6c9dbdf8adafbe513d86a9ad))
+* fix coverage tests ([f5282cc](https://github.com/applitools/eyes.sdk.javascript1/commit/f5282cc59e11d42b2f51d581f4dd3038b4f3974b))
+
+
+### Dependencies
+
+* @applitools/driver bumped from 1.12.1 to 1.12.3
+
+* @applitools/eyes bumped from 1.2.17 to 1.3.0
+  #### Features
+
+  * added overload for locate method, to call it with custom target ([5d5914a](https://github.com/applitools/eyes.sdk.javascript1/commit/5d5914a5dae6822cde0086d6b9f4d6f9ac7cc4f2))
+
+
+
+* @applitools/spec-driver-webdriver bumped from 1.0.33 to 1.0.35
+
+
 ## [1.15.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.15.1...js/eyes-nightwatch@1.15.2) (2023-06-15)
 
 
