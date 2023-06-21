@@ -490,6 +490,26 @@
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
       ]
+    },
+    "js/packages/eyes-cypress": {
+      "release-type": "node",
+      "component": "js/eyes-cypress",
+      "builds": [
+        {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+      ],
+      "tests": [
+        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"framework-version": 8, "node-version": 16, "test-type": "ts:run", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}"},
+        {"framework-version": 9, "test-type": "ts:run", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}"},
+        {"framework-version": 10, "test-type": "ts:run", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}"},
+        {"framework-version": 11, "test-type": "ts:run", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}"},
+        {"framework-version": 12, "test-type": "ts:run", "artifacts": ["./logs/**/*"], "key": "{{component}}/framework-{{framework-version}}"}
+      ],
+      "releases": [
+        {"registry-url": "https://registry.npmjs.org"}
+      ]
     }
   }
 }

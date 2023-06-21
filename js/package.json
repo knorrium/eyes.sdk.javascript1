@@ -46,6 +46,7 @@
     "packages/eyes-puppeteer",
     "packages/eyes-browser-extension",
     "packages/eyes-storybook",
+    "packages/eyes-cypress",
     "packages/bongo",
     "packages/sdk-coverage-tests",
     "packages/api-extractor",
@@ -70,7 +71,7 @@
     "mocha-multi": "^1.1.7",
     "prettier": "^2.8.3",
     "ts-node": "^10.9.1",
-    "ts-patch": "^3.0.0-rc3",
+    "ts-patch": "^3.0.0",
     "typescript": "^5.1.3",
     "yargs": "^17.7.2"
   },
