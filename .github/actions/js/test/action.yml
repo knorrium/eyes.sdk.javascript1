@@ -88,6 +88,6 @@ runs:
         if [ "$(jq -r .scripts.report ./package.json)" != "null" ]
         then
           echo "::group::Sending reports"
-          if [ "${{inputs.report}}" = "sandbox" ]; then yarn report --sandbox; else yarn report --report-id=$(jq -r '"\(.name)@\(.version)' ./package.json); fi
+          if [ "${{inputs.report}}" = "sandbox" ]; then yarn report --sandbox; else yarn report --report-id=$(jq -r '"\(.name)@\(.version)"' ./package.json); fi
           echo "::endgroup::"
         fi
