@@ -419,11 +419,10 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"}
+        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
         {"registry-url": "https://registry.npmjs.org"}
