@@ -36,7 +36,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
-    "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-playwright' --meta-path './logs",
+    "generate:tests": "coverage-tests generate https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js --name 'eyes-playwright' --meta-path './logs'",
     "test": "yarn test:coverage",
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "up:framework": "run --top-level add-silent playwright",
