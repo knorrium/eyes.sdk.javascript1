@@ -152,6 +152,7 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     for (const candidate of candidateReleasePullRequests) {
+      console.log(candidate)
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog) as Update & {updater: Changelog} | undefined
       if (changelogUpdate) {
         patchChangelogUpdate(changelogUpdate)
