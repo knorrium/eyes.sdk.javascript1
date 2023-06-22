@@ -90,11 +90,10 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequests)
 
-    console.log(updatedCandidateReleasePullRequests)
+    console.log(updatedCandidateReleasePullRequests[0])
     this.patchChangelogs(updatedCandidateReleasePullRequests)
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
-      console.log(candidatePullRequest)
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
     })
   }
@@ -106,7 +105,6 @@ export class RichWorkspace extends ManifestPlugin {
       for (const packageName of graph.keys()) {
         let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
         if (packageStrategy?.extraLabels.includes('skip-release')) {
-          console.log('DELETING PACKAGE')
           graph.delete(packageName)
         }
       }
