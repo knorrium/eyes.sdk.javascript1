@@ -65,7 +65,7 @@ export class RichWorkspace extends ManifestPlugin {
     return this.plugin.processCommits(commits)
   }
 
-  async run(candidateReleasePullRequests: CandidateReleasePullRequest[]) {
+  async run(candidates: CandidateReleasePullRequest[]) {
     const updateDepsCommit = {
       sha: '',
       message: 'deps: update some dependencies',
@@ -80,45 +80,43 @@ export class RichWorkspace extends ManifestPlugin {
     }
     this.releasePullRequestsByPath = await Object.entries(this.strategiesByPath).reduce(async (promise, [path, strategy]) => {
       const releasePullRequest = 
-        candidateReleasePullRequests.find(candidateReleasePullRequest => candidateReleasePullRequest.path === path)?.pullRequest ??
+        candidates.find(candidate => candidate.path === path)?.pullRequest ??
         await strategy.buildReleasePullRequest([...this.commitsByPath[path], updateDepsCommit], this.releasesByPath[path])
       return promise.then(releasePullRequestsByPath => {
         releasePullRequestsByPath[path] = releasePullRequest
         return releasePullRequestsByPath
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
-    const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequests)
+    const updatedCandidates = await this.plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
 
-    this.patchChangelogs(updatedCandidateReleasePullRequests)
+    this.patchChangelogs(updatedCandidates)
 
-    return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
-      return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
-    })
+    return updatedCandidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
 
   protected patchWorkspacePlugin(workspacePlugin: WorkspacePlugin<unknown>): WorkspacePlugin<unknown> {
-    const originalPackageNamesToUpdate = (workspacePlugin as any).packageNamesToUpdate.bind(workspacePlugin)
-    ;(workspacePlugin as any).packageNamesToUpdate = (
-      graph: DependencyGraph<unknown>,
-      candidatesByPackage: Record<string, CandidateReleasePullRequest>
-    ): string[] => {
-      return originalPackageNamesToUpdate(
-        graph,
-        Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => !candidate.pullRequest.labels.includes('skip-release'))),
-      )
-    }
+    // const originalPackageNamesToUpdate = (workspacePlugin as any).packageNamesToUpdate.bind(workspacePlugin)
+    // ;(workspacePlugin as any).packageNamesToUpdate = (
+    //   graph: DependencyGraph<unknown>,
+    //   candidatesByPackage: Record<string, CandidateReleasePullRequest>
+    // ): string[] => {
+    //   return originalPackageNamesToUpdate(
+    //     graph,
+    //     Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => !candidate.pullRequest.labels.includes('skip-release'))),
+    //   )
+    // }
 
-    const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
-    ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
-      const graph = await originalBuildGraph(pkgs)
-      for (const packageName of graph.keys()) {
-        let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
-        if (packageStrategy?.extraLabels.includes('skip-release')) {
-          graph.delete(packageName)
-        }
-      }
-      return graph
-    }
+    // const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
+    // ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
+    //   const graph = await originalBuildGraph(pkgs)
+    //   for (const packageName of graph.keys()) {
+    //     let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
+    //     if (packageStrategy?.extraLabels.includes('skip-release')) {
+    //       graph.delete(packageName)
+    //     }
+    //   }
+    //   return graph
+    // }
     
     const originalNewCandidate = (workspacePlugin as any).newCandidate.bind(workspacePlugin)
     const originalUpdateCandidate = (workspacePlugin as any).updateCandidate.bind(workspacePlugin)
