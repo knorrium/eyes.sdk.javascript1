@@ -66,7 +66,6 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   async run(candidateReleasePullRequests: CandidateReleasePullRequest[]) {
-    console.log(candidateReleasePullRequests[0])
     const updateDepsCommit = {
       sha: '',
       message: 'deps: update some dependencies',
@@ -90,7 +89,6 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequests)
 
-    console.log(updatedCandidateReleasePullRequests[0])
     this.patchChangelogs(updatedCandidateReleasePullRequests)
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
@@ -99,6 +97,17 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected patchWorkspacePlugin(workspacePlugin: WorkspacePlugin<unknown>): WorkspacePlugin<unknown> {
+    const originalPackageNamesToUpdate = (workspacePlugin as any).packageNamesToUpdate.bind(workspacePlugin)
+    ;(workspacePlugin as any).packageNamesToUpdate = (
+      graph: DependencyGraph<unknown>,
+      candidatesByPackage: Record<string, CandidateReleasePullRequest>
+    ): string[] => {
+      return originalPackageNamesToUpdate(
+        graph,
+        Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => candidate.pullRequest.labels.includes('skip-release'))),
+      )
+    }
+
     const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
     ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
       const graph = await originalBuildGraph(pkgs)
