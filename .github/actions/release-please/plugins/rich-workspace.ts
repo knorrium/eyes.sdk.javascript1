@@ -92,6 +92,7 @@ export class RichWorkspace extends ManifestPlugin {
     this.patchChangelogs(updatedCandidateReleasePullRequests)
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
+      console.log(candidatePullRequest)
       return !candidatePullRequest.pullRequest.labels.some(label => label === 'skip-release')
     })
   }
@@ -152,7 +153,6 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     for (const candidate of candidateReleasePullRequests) {
-      console.log(candidate)
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog) as Update & {updater: Changelog} | undefined
       if (changelogUpdate) {
         patchChangelogUpdate(changelogUpdate)
