@@ -66,7 +66,7 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   async run(candidateReleasePullRequests: CandidateReleasePullRequest[]) {
-    console.log(candidateReleasePullRequests)
+    console.log(candidateReleasePullRequests[0])
     const updateDepsCommit = {
       sha: '',
       message: 'deps: update some dependencies',
@@ -154,11 +154,9 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     for (const candidate of candidateReleasePullRequests) {
-      console.log(candidate)
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog) as Update & {updater: Changelog} | undefined
       if (changelogUpdate) {
         patchChangelogUpdate(changelogUpdate)
-        console.log(candidate)
         candidate.pullRequest.body.releaseData[0].notes = changelogUpdate.updater.changelogEntry
       }
     }
