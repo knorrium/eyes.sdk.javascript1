@@ -89,6 +89,7 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequest)
 
+    console.log(updatedCandidateReleasePullRequests)
     this.patchChangelogs(updatedCandidateReleasePullRequests)
 
     return updatedCandidateReleasePullRequests.filter(candidatePullRequest => {
@@ -153,9 +154,11 @@ export class RichWorkspace extends ManifestPlugin {
     }
 
     for (const candidate of candidateReleasePullRequests) {
+      console.log(candidate)
       const changelogUpdate = candidate.pullRequest.updates.find(update => update.updater instanceof Changelog) as Update & {updater: Changelog} | undefined
       if (changelogUpdate) {
         patchChangelogUpdate(changelogUpdate)
+        console.log(candidate)
         candidate.pullRequest.body.releaseData[0].notes = changelogUpdate.updater.changelogEntry
       }
     }
