@@ -2849,16 +2849,16 @@ async function main() {
     }
     let jobs = createJobs(input);
     core.debug(JSON.stringify(jobs, null, 2));
-    if (jobs.builds.length > 0) {
-        core.info(`Build jobs: "${Object.values(jobs.builds).map(job => job['display-name']).join(', ')}"`);
+    if (Object.values(jobs.builds).flat().length > 0) {
+        core.info(`Build jobs: "${Object.values(jobs.builds).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('builds', jobs.builds);
     }
-    if (jobs.tests.length > 0) {
-        core.info(`Test jobs: "${Object.values(jobs.tests).map(job => job['display-name']).join(', ')}"`);
+    if (Object.values(jobs.tests).flat().length > 0) {
+        core.info(`Test jobs: "${Object.values(jobs.tests).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('tests', jobs.tests);
     }
-    if (jobs.releases.length > 0) {
-        core.info(`Release jobs: "${Object.values(jobs.releases).map(job => job['display-name']).join(', ')}"`);
+    if (Object.values(jobs.releases).flat().length > 0) {
+        core.info(`Release jobs: "${Object.values(jobs.releases).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('releases', jobs.releases);
     }
     async function getPackages() {
@@ -2894,6 +2894,7 @@ async function main() {
                 core.warning(`Package name is unknown! Package configured as "${input}" will be ignored!`);
                 return jobs;
             }
+            const [type] = packageInfo.path.split('/', 1);
             const baseJob = {
                 name: packageInfo.component,
                 'display-name': packageInfo.component,
@@ -2906,32 +2907,36 @@ async function main() {
                 env: envs
             };
             if (ci) {
+                jobs.builds[type] ??= [];
+                jobs.tests[type] ??= [];
                 packageInfo.builds.forEach(extension => {
-                    jobs.builds.push(makeJob(baseJob, { type: 'build', extension }));
+                    jobs.builds[type].push(makeJob(baseJob, { type: 'build', extension }));
                 });
                 packageInfo.tests.forEach(extension => {
                     if (packageInfo.builds.length > 0)
                         extension['build-type'] ??= 'none';
-                    jobs.tests.push(makeJob(baseJob, { type: 'test', extension }));
+                    jobs.tests[type].push(makeJob(baseJob, { type: 'test', extension }));
                 });
             }
             if (release) {
+                jobs.builds[type] ??= [];
+                jobs.releases[type] ??= [];
                 packageInfo.builds.forEach(extension => {
-                    jobs.builds.push(makeJob(baseJob, { type: 'build', extension }));
+                    jobs.builds[type].push(makeJob(baseJob, { type: 'build', extension }));
                 });
                 packageInfo.releases.forEach(extension => {
-                    jobs.releases.push(makeJob(baseJob, { type: 'release', extension }));
+                    jobs.releases[type].push(makeJob(baseJob, { type: 'release', extension }));
                 });
             }
             if (!release && (!ci || packageInfo.tests.length === 0)) {
-                jobs.tests.push(makeJob(baseJob, { type: 'test' }));
+                jobs.tests[type] ??= [];
+                jobs.tests[type].push(makeJob(baseJob, { type: 'test' }));
             }
             return jobs;
-        }, { builds: [], tests: [], releases: [] });
+        }, { builds: {}, tests: {}, releases: {} });
         if (ci || release) {
-            const targetJobs = ci ? jobs.tests : jobs.releases;
-            targetJobs.forEach(job => {
-                const defaultBuilds = jobs.builds.reduce((builds, buildJob) => {
+            Object.values(ci ? jobs.tests : jobs.releases).flat().forEach(job => {
+                const defaultBuilds = Object.values(jobs.builds).flat().reduce((builds, buildJob) => {
                     if (buildJob.name === job.name && buildJob.artifacts && buildJob.key) {
                         builds[buildJob.key] = buildJob.artifacts;
                     }

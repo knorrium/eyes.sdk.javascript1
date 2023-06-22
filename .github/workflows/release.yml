@@ -29,10 +29,11 @@ jobs:
 
   js-release:
     needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.releases).js}}
     strategy:
       fail-fast: false
       matrix: 
-        include: ${{fromJSON(needs.setup.outputs.releases)}}
+        include: ${{fromJSON(needs.setup.outputs.releases).js}}
     name: Release / ${{matrix.display-name}}
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     env: ${{matrix.env}}

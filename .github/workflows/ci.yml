@@ -45,10 +45,11 @@ jobs:
   
   js-build:
     needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.builds).js}}
     strategy:
       fail-fast: false
       matrix: 
-        include: ${{fromJSON(needs.setup.outputs.builds)}}
+        include: ${{fromJSON(needs.setup.outputs.builds).js}}
     name: Build / ${{matrix.display-name}}
     timeout-minutes: 20
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
@@ -84,10 +85,11 @@ jobs:
 
   js-test:
     needs: [setup, js-build]
+    if: ${{fromJSON(needs.setup.outputs.tests).js}}
     strategy:
       fail-fast: false
       matrix: 
-        include: ${{fromJSON(needs.setup.outputs.tests)}}
+        include: ${{fromJSON(needs.setup.outputs.tests).js}}
     name: Test / ${{matrix.display-name}}
     timeout-minutes: 60
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
@@ -150,6 +152,6 @@ jobs:
         id: report
         uses: ./.github/actions/report
         with:
-          artifact: ${{join(fromJSON(needs.setup.outputs.tests).*.key)}}
+          artifact: ${{join(fromJSON(needs.setup.outputs.tests).*.*.key)}}
           path: |
             ./report*.json
