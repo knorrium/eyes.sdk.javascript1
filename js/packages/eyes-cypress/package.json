@@ -52,7 +52,7 @@
     "cypress:run:new": "cd test/play && yarn && npx cypress run --spec=../fixtures/testApp/cypress/integration-play/play.js",
     "cypress:play": "cd test/fixtures/testApp && cypress run --config integrationFolder=cypress/integration-play,pluginsFile=cypress/plugins/index-play.js,supportFile=cypress/support/index-run.js --spec=cypress/integration-play/play.js",
     "render": "run(){ npx cypress run --config integrationFolder=test/fixtures/testApp/cypress/render,pluginsFile=test/fixtures/testApp/cypress/plugins/index-render.js,supportFile=test/fixtures/testApp/cypress/support/index-run.js --env url=$1; }; run",
-    "setup": "run --top-level xfvb:setup"
+    "setup": "run --top-level xvfb:setup"
   },
   "dependencies": {
     "@applitools/core": "3.2.3",
