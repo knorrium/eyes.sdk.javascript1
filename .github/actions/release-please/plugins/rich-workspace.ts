@@ -65,7 +65,8 @@ export class RichWorkspace extends ManifestPlugin {
     return this.plugin.processCommits(commits)
   }
 
-  async run(candidateReleasePullRequest: CandidateReleasePullRequest[]) {
+  async run(candidateReleasePullRequests: CandidateReleasePullRequest[]) {
+    console.log(candidateReleasePullRequests)
     const updateDepsCommit = {
       sha: '',
       message: 'deps: update some dependencies',
@@ -80,14 +81,14 @@ export class RichWorkspace extends ManifestPlugin {
     }
     this.releasePullRequestsByPath = await Object.entries(this.strategiesByPath).reduce(async (promise, [path, strategy]) => {
       const releasePullRequest = 
-        candidateReleasePullRequest.find(candidateReleasePullRequest => candidateReleasePullRequest.path === path)?.pullRequest ??
+        candidateReleasePullRequests.find(candidateReleasePullRequest => candidateReleasePullRequest.path === path)?.pullRequest ??
         await strategy.buildReleasePullRequest([...this.commitsByPath[path], updateDepsCommit], this.releasesByPath[path])
       return promise.then(releasePullRequestsByPath => {
         releasePullRequestsByPath[path] = releasePullRequest
         return releasePullRequestsByPath
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
-    const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequest)
+    const updatedCandidateReleasePullRequests = await this.plugin.run(candidateReleasePullRequests)
 
     console.log(updatedCandidateReleasePullRequests)
     this.patchChangelogs(updatedCandidateReleasePullRequests)
@@ -105,6 +106,7 @@ export class RichWorkspace extends ManifestPlugin {
       for (const packageName of graph.keys()) {
         let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
         if (packageStrategy?.extraLabels.includes('skip-release')) {
+          console.log('DELETING PACKAGE')
           graph.delete(packageName)
         }
       }
