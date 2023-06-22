@@ -104,7 +104,7 @@ export class RichWorkspace extends ManifestPlugin {
     ): string[] => {
       return originalPackageNamesToUpdate(
         graph,
-        Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => candidate.pullRequest.labels.includes('skip-release'))),
+        Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => !candidate.pullRequest.labels.includes('skip-release'))),
       )
     }
 
