@@ -92,11 +92,11 @@ jobs:
           setup-type: ${{matrix.setup-type}}
           parallel: ${{matrix.parallel}}
       - name: Save testing artifacts
-        if: always()
+        if: ${{always() && matrix.key && matrix.artifacts}}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{matrix.save.artifact.key}}
-          path: ${{join(matrix.save.artifact.path)}}
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
           retention-days: 2
           if-no-files-found: ignore
 
