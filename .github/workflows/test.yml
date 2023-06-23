@@ -94,11 +94,11 @@ jobs:
           parallel: ${{matrix.parallel}}
           grep: ${{inputs.grep}}
       - name: Save testing artifacts
-        if: ${{always() && matrix.key && matrix.artifacts}}
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{matrix.key}}
-          path: ${{join(matrix.artifacts)}}
+          name: ${{matrix.name}}
+          path: ./logs
           retention-days: 2
           if-no-files-found: ignore
 
