@@ -74,7 +74,7 @@ runs:
         then
           echo "::group::Building package"
           yarn workspaces foreach --topological-dev --recursive --parallel --from $(jq -r .name ./package.json) run build
-          if [ ! -z "${{inputs.build-type}}" ]; then yarn run build:${{inputs.build-type}}; elif [ "$(jq -r .scripts.build ./package.json)" != "null" ]; then yarn run build; fi
+          if [ ! -z "${{inputs.build-type}}" ]; then yarn run build:${{inputs.build-type}}; fi
           echo "::endgroup::"
         fi
 
