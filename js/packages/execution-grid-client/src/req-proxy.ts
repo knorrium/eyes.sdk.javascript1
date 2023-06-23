@@ -24,16 +24,18 @@ export function makeReqProxy(config: ReqProxyConfig) {
     retry: config.retry,
     hooks: {
       afterOptionsMerged({options}) {
-        options.method ??= options.io.request.method
+        options.method ??= options.io.request.method ?? 'GET'
         options.headers = {
           ...options.io.request.headers,
           ...options.headers,
           host: options.baseUrl && new URL(options.baseUrl).host,
         }
-        if (!['GET', 'HEAD'].includes(options.method?.toUpperCase() ?? 'GET')) {
+        if (['POST', 'PUT', 'PATCH'].includes(options.method.toUpperCase())) {
           options.body ??= utils.streams.persist(options.io.request)
         }
-        if (options.body && !utils.types.isFunction(options.body, 'pipe')) {
+        if (options.body === undefined) {
+          delete options.headers['content-type']
+        } else if (!utils.types.isFunction(options.body, 'pipe')) {
           options.headers['content-length'] = Buffer.byteLength(
             utils.types.isArray(options.body) || utils.types.isPlainObject(options.body) || options.body === null
               ? JSON.stringify(options.body)
