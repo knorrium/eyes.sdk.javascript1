@@ -55,6 +55,7 @@ jobs:
         id: setup
         with:
           packages: ${{inputs.packages}}
+          env: ${{inputs.env}}
 
   js-test:
     needs: [setup]
@@ -87,10 +88,11 @@ jobs:
           working-directory: ${{matrix.working-directory}}
           shell: ${{matrix.shell || 'bash'}}
           framework-version: ${{matrix.framework-version}}
-          test-type: ${{matrix.test-type}}
-          build-type: ${{matrix.build-type}}
-          setup-type: ${{matrix.setup-type}}
+          test-type: ${{matrix.test-type || inputs.test-type}}
+          build-type: ${{matrix.build-type || inputs.build-type}}
+          setup-type: ${{matrix.setup-type || inputs.setup-type}}
           parallel: ${{matrix.parallel}}
+          grep: ${{inputs.grep}}
       - name: Save testing artifacts
         if: ${{always() && matrix.key && matrix.artifacts}}
         uses: actions/upload-artifact@v3
