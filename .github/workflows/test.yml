@@ -102,7 +102,7 @@ jobs:
 
   report:
     needs: [setup, js-test]
-    if: always() && !cancelled()
+    if: (success() || failure()) && fromJSON(needs.setup.outputs.tests).*
     name: Report
     runs-on: ubuntu-latest
     steps:

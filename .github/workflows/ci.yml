@@ -142,7 +142,7 @@ jobs:
 
   report:
     needs: [setup, js-test]
-    if: success() || failure()
+    if: (success() || failure()) && fromJSON(needs.setup.outputs.tests).*
     name: Report
     runs-on: ubuntu-latest
     steps:
