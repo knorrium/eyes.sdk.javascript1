@@ -59,7 +59,7 @@
     "@applitools/req": "1.3.2",
     "@applitools/socket": "1.1.4",
     "@applitools/spec-driver-webdriver": "1.0.35",
-    "@applitools/tunnel-client": "workspace:^",
+    "@applitools/tunnel-client": "0.0.5",
     "@applitools/utils": "1.4.0",
     "abort-controller": "3.0.0",
     "webdriver": "7",
