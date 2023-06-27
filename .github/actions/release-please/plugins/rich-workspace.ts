@@ -137,7 +137,7 @@ export class RichWorkspace extends ManifestPlugin {
     const patchChangelogUpdate = (update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate => {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
-        update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###[^#]+/gm), ([section]) => {
+        update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###.+?(?=###|$)/gsm), ([section]) => {
           if (section.startsWith('### Dependencies\n\n')) {
             update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
             const dependencies = update.bumps.map(bump => {
