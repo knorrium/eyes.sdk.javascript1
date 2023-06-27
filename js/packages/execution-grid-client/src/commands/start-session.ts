@@ -1,12 +1,11 @@
 import type {ECSession, ECCapabilitiesOptions, ECClientSettings} from '../types'
 import {type IncomingMessage, type ServerResponse} from 'http'
-import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {type ReqProxy} from '../req-proxy'
 import {type TunnelManager} from '../tunnels/manager'
-import {makeQueue, type Queue} from '../utils/queue'
 //@ts-ignore
 import {prepareEnvironment} from '@applitools/execution-grid-tunnel'
+import {AbortController, type AbortSignal} from 'abort-controller'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -22,7 +21,7 @@ const RETRY_BACKOFF = [
 ]
 
 export function makeStartSession({settings, req, tunnels}: Options) {
-  const queues = new Map<string, Queue>()
+  const queues = new Map<string, utils.queues.CorkableQueue<ECSession, AbortController>>()
 
   return async function createSession({
     request,
@@ -87,7 +86,9 @@ export function makeStartSession({settings, req, tunnels}: Options) {
     const queueKey = JSON.stringify(session.credentials)
     let queue = queues.get(queueKey)!
     if (!queue) {
-      queue = makeQueue({logger: logger.extend({tags: [`queue-${queueKey}`]})})
+      queue = utils.queues.makeCorkableQueue<ECSession, AbortController>({
+        makeAbortController: () => new AbortController(),
+      })
       queues.set(queueKey, queue)
     }
 

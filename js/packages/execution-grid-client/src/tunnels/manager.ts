@@ -1,43 +1,13 @@
-import {type AbortSignal} from 'abort-controller'
+import type {TunnelManagerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
-import {makeReq} from '@applitools/req'
-import {makeQueue, type Queue} from '../utils/queue'
-//@ts-ignore
-import {startEgTunnelService} from '@applitools/execution-grid-tunnel'
+import {makeTunnelClient, type Tunnel, type TunnelCredentials} from '@applitools/tunnel-client'
 import * as utils from '@applitools/utils'
 
 export interface TunnelManager {
-  create(credentials: TunnelCredentials): Promise<Tunnel>
-  destroy(tunnel: Tunnel): Promise<void>
-
   acquire(credentials: TunnelCredentials): Promise<Tunnel[]>
   release(tunnels: Tunnel[]): Promise<void>
+  close(): Promise<void>
 }
-
-export interface Tunnel {
-  tunnelId: string
-  credentials: TunnelCredentials
-}
-
-export interface TunnelCredentials {
-  eyesServerUrl: string
-  apiKey: string
-}
-
-export type TunnelManagerSettings = {
-  serverUrl?: string
-  groupSize?: number
-  pool?: {
-    maxInuse?: number
-    timeout?: {idle?: number; expiration?: number}
-  }
-}
-
-const RETRY_BACKOFF = [
-  ...Array(5).fill(2000), // 5 tries with delay 2s (total 10s)
-  ...Array(4).fill(5000), // 4 tries with delay 5s (total 20s)
-  10000, // all next tries with delay 10s
-]
 
 export async function makeTunnelManager({
   settings,
@@ -46,34 +16,18 @@ export async function makeTunnelManager({
   settings?: TunnelManagerSettings
   logger: Logger
 }): Promise<TunnelManager & {close(): Promise<void>}> {
-  let server: {port: number; close: () => Promise<void>} | undefined
-  const getTunnelServiceUrl = utils.general.cachify(async () => {
-    const {port, cleanupFunction} = await startEgTunnelService({logger})
-    server = {
-      port,
-      async close() {
-        await cleanupFunction()
-        server = undefined
-        getTunnelServiceUrl.clearCache()
-      },
-    }
-    return `http://localhost:${port}`
-  })
-
-  const req = makeReq({})
-
-  const queues = new Map<string, Queue>()
+  const client = makeTunnelClient({settings, logger})
   const pools = new Map<string, Pool<Tunnel[], TunnelCredentials>>()
 
-  return {create, destroy, acquire, release, close: async () => server?.close()}
+  return {acquire, release, close: client.close}
 
   async function acquire(credentials: TunnelCredentials): Promise<Tunnel[]> {
     const key = JSON.stringify(credentials)
     let pool = pools.get(key)!
     if (!pool) {
       pool = makePool({
-        create: () => Promise.all(Array.from({length: settings?.groupSize ?? 1}, () => create(credentials))),
-        destroy: tunnels => Promise.all(tunnels.map(destroy)).then(() => undefined),
+        create: () => Promise.all(Array.from({length: settings?.groupSize ?? 1}, () => client.create(credentials))),
+        destroy: tunnels => Promise.all(tunnels.map(client.destroy)).then(() => undefined),
         ...settings?.pool,
       })
       pools.set(key, pool)
@@ -87,76 +41,6 @@ export async function makeTunnelManager({
     const pool = pools.get(key)!
     if (!pool) return
     await pool.release(tunnels)
-  }
-
-  async function create(credentials: TunnelCredentials): Promise<Tunnel> {
-    if (!settings?.serverUrl) {
-      settings ??= {}
-      settings.serverUrl = await getTunnelServiceUrl()
-    }
-
-    const queueKey = JSON.stringify(credentials)
-    let queue = queues.get(queueKey)!
-    if (!queue) {
-      queue = makeQueue({logger: logger.extend({tags: [`queue-${queueKey}`]})})
-      queues.set(queueKey, queue)
-    }
-
-    return queue.run(task)
-
-    async function task(signal: AbortSignal, attempt = 1): Promise<Tunnel | typeof queue.pause> {
-      if (signal.aborted) return queue.pause
-
-      const response = await req('/tunnels', {
-        method: 'POST',
-        baseUrl: settings!.serverUrl,
-        headers: {
-          'x-eyes-api-key': credentials.apiKey,
-          'x-eyes-server-url': credentials.eyesServerUrl,
-        },
-        // TODO uncomment when we can throw different abort reasons for task cancelation and timeout abortion
-        // signal,
-      })
-
-      const body: any = await response.json().catch(() => null)
-
-      if (['CONCURRENCY_LIMIT_REACHED', 'NO_AVAILABLE_TUNNEL_PROXY'].includes(body?.message)) {
-        queue.cork()
-        // after query is corked the task might be aborted
-        if (signal.aborted) return queue.pause
-        await utils.general.sleep(RETRY_BACKOFF[Math.min(attempt, RETRY_BACKOFF.length - 1)])
-        return task(signal, attempt + 1)
-      } else {
-        queue.uncork()
-        if (response.status === 201) return {tunnelId: body, credentials}
-        logger.error(
-          `Failed to create tunnel with status ${response.status} and code ${body?.message ?? 'UNKNOWN_ERROR'}`,
-        )
-        throw new Error(`Failed to create tunnel with code ${body?.message ?? 'UNKNOWN_ERROR'}`)
-      }
-    }
-  }
-
-  async function destroy(tunnel: Tunnel): Promise<void> {
-    if (!settings?.serverUrl) {
-      settings ??= {}
-      settings.serverUrl = await getTunnelServiceUrl()
-    }
-
-    const response = await req(`/tunnels/${tunnel.tunnelId}`, {
-      method: 'DELETE',
-      baseUrl: settings!.serverUrl,
-      headers: {
-        'x-eyes-api-key': tunnel.credentials.apiKey,
-        'x-eyes-server-url': tunnel.credentials.eyesServerUrl,
-      },
-    })
-
-    const body: any = await response.json().catch(() => null)
-    if (response.status === 200) return
-
-    logger.error(`Failed to delete tunnel with status ${response.status} and code ${body?.message ?? 'UNKNOWN_ERROR'}`)
-    throw new Error(`Failed to delete tunnel with code ${body?.message ?? 'UNKNOWN_ERROR'}`)
   }
 }
 

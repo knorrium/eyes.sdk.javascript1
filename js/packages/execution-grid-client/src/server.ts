@@ -35,7 +35,7 @@ export async function makeServer({
     },
   })
   const core = makeCore({agentId: `js/ec-client/${require('../package.json').version}`})
-  const tunnels = settings.tunnel?.serverUrl
+  const tunnels = settings.tunnel?.serviceUrl
     ? await makeTunnelManager({settings: settings.tunnel, logger: serverLogger})
     : await makeTunnelManagerClient({settings: settings.tunnel})
   const sessions = new Map<string, ECSession>()

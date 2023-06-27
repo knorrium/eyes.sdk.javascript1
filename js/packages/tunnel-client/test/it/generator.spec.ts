@@ -1,7 +1,7 @@
 import {makeGenerator} from '../../src/generator'
 import {makeLogger} from '@applitools/logger'
 import nock from 'nock'
-import assert from 'assert/strict'
+import assert from 'assert'
 
 describe('generator', () => {
   afterEach(() => {
@@ -20,7 +20,7 @@ describe('generator', () => {
       .post(`/tunnel-agents/${settings.agentId}/init`)
       .matchHeader('x-secret', settings.secret)
       .reply((_url, body) => {
-        assert.deepEqual(body, {instance_info: settings.envInfo})
+        assert.deepStrictEqual(body, {instance_info: settings.envInfo})
         return [200, {instance_id: 'instance-id'}]
       })
 
@@ -29,7 +29,7 @@ describe('generator', () => {
       .post(`/tunnel-agents/${settings.agentId}/agentpoll`)
       .matchHeader('x-secret', settings.secret)
       .reply((_url, body) => {
-        assert.deepEqual(body, {
+        assert.deepStrictEqual(body, {
           instance_id: 'instance-id',
           pending_tasks: [],
           completed_tasks: [],
@@ -42,7 +42,7 @@ describe('generator', () => {
 
     const events = await generator.next([])
 
-    assert.deepEqual(events, {
+    assert.deepStrictEqual(events, {
       value: [{name: 'TunnelClient.close', payload: {reason: 'reason'}}],
       done: true,
     })
@@ -97,7 +97,7 @@ describe('generator', () => {
             },
           ]
         } else if (state === 2) {
-          assert.deepEqual(body, {
+          assert.deepStrictEqual(body, {
             instance_id: 'instance-id',
             pending_tasks: [{id: 'task-id-1'}, {id: 'task-id-2'}, {id: 'task-id-3'}, {id: 'task-id-4'}],
             completed_tasks: [],
@@ -105,7 +105,7 @@ describe('generator', () => {
           })
           return [200, {tasks: []}]
         } else if (state === 3) {
-          assert.deepEqual(body, {
+          assert.deepStrictEqual(body, {
             instance_id: 'instance-id',
             pending_tasks: [],
             completed_tasks: [
@@ -127,7 +127,7 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     const result1 = await generator.next([])
-    assert.deepEqual(result1, {
+    assert.deepStrictEqual(result1, {
       value: [
         {
           key: 'task-id-1',
@@ -154,7 +154,7 @@ describe('generator', () => {
     })
 
     const result2 = await generator.next([])
-    assert.deepEqual(result2, {
+    assert.deepStrictEqual(result2, {
       value: [],
       done: false,
     })
@@ -183,7 +183,7 @@ describe('generator', () => {
         payload: {result: Buffer.from('content')},
       },
     ])
-    assert.deepEqual(result3, {
+    assert.deepStrictEqual(result3, {
       value: [],
       done: false,
     })
@@ -210,7 +210,7 @@ describe('generator', () => {
       .reply((_url, body) => {
         state += 1
         if (state === 2) {
-          assert.deepEqual(body, {
+          assert.deepStrictEqual(body, {
             instance_id: 'instance-id',
             metrics: {
               metrics: 'blabla',
@@ -227,7 +227,7 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     const result1 = await generator.next([])
-    assert.deepEqual(result1, {
+    assert.deepStrictEqual(result1, {
       value: [],
       done: false,
     })
@@ -242,7 +242,7 @@ describe('generator', () => {
         payload: [{tunnelId: 'tunnel-id-1'}, {tunnelId: 'tunnel-id-2'}, {tunnelId: 'tunnel-id-3'}],
       },
     ])
-    assert.deepEqual(result2, {
+    assert.deepStrictEqual(result2, {
       value: [],
       done: false,
     })
@@ -280,11 +280,11 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     const result1 = await generator.next([])
-    assert.deepEqual(result1, {done: false, value: []})
+    assert.deepStrictEqual(result1, {done: false, value: []})
     const result2 = await generator.next([])
-    assert.deepEqual(result2, {done: false, value: []})
+    assert.deepStrictEqual(result2, {done: false, value: []})
     const result3 = await generator.next([])
-    assert.deepEqual(result3, {done: false, value: []})
+    assert.deepStrictEqual(result3, {done: false, value: []})
   })
 
   it('waits between polls default amount of time', async () => {
@@ -317,11 +317,11 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     const result1 = await generator.next([])
-    assert.deepEqual(result1, {done: false, value: []})
+    assert.deepStrictEqual(result1, {done: false, value: []})
     const result2 = await generator.next([])
-    assert.deepEqual(result2, {done: false, value: []})
+    assert.deepStrictEqual(result2, {done: false, value: []})
     const result3 = await generator.next([])
-    assert.deepEqual(result3, {done: false, value: []})
+    assert.deepStrictEqual(result3, {done: false, value: []})
   })
 
   it('handles unexpected server responses', async () => {
@@ -346,11 +346,11 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     const result1 = await generator.next([])
-    assert.deepEqual(result1, {done: false, value: []})
+    assert.deepStrictEqual(result1, {done: false, value: []})
     const result2 = await generator.next([])
-    assert.deepEqual(result2, {done: false, value: []})
+    assert.deepStrictEqual(result2, {done: false, value: []})
     const result3 = await generator.next([])
-    assert.deepEqual(result3, {done: false, value: []})
+    assert.deepStrictEqual(result3, {done: false, value: []})
   })
 
   it('throws error after timeout', async () => {

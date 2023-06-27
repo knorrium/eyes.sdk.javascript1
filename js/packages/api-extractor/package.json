@@ -32,7 +32,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "devDependencies": {
-    "@types/node": "12"
+    "@types/node": "^12.20.55"
   },
   "engines": {
     "node": ">=12.13.0"

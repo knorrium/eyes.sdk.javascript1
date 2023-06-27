@@ -16,12 +16,12 @@ export async function makeECClient({
   settings.serverUrl ??= utils.general.getEnvValue('EG_SERVER_URL') ?? 'https://exec-wus.applitools.com'
   settings.proxy ??= utils.general.getEnvValue('PROXY_URL') ? {url: utils.general.getEnvValue('PROXY_URL')} : undefined
   settings.tunnel ??= {}
-  settings.tunnel.serverUrl ??= utils.general.getEnvValue('EG_TUNNEL_URL')
+  settings.tunnel.serviceUrl ??= utils.general.getEnvValue('EG_TUNNEL_URL')
   settings.tunnel.groupSize ??= utils.general.getEnvValue('TUNNEL_GROUP_SIZE', 'number') ?? 2
   settings.tunnel.pool ??= {}
   settings.tunnel.pool.maxInuse ??= utils.general.getEnvValue('TUNNEL_POOL_MAX_INUSE', 'number') ?? 4
   settings.tunnel.pool.timeout ??= {}
-  settings.tunnel.pool.timeout.idle ??= utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_IDLE', 'number') ?? 10 * 60_000
+  settings.tunnel.pool.timeout.idle ??= utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_IDLE', 'number') ?? 20 * 60_000
   settings.tunnel.pool.timeout.expiration ??=
     utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_EXPIRATION', 'number') ?? 30_000
 

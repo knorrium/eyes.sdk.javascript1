@@ -26,7 +26,6 @@ runs:
 
         echo "::group::Installing dependencies"
         yarn workspaces focus $(jq -r .name ./package.json) root
-        # yarn install --no-immutable
         echo "::endgroup::"
 
         if [ -e .env ]

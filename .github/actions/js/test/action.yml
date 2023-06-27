@@ -45,7 +45,6 @@ runs:
 
         echo "::group::Installing dependencies"
         yarn workspaces focus $(jq -r .name ./package.json) root
-        # yarn install --no-immutable
         if [ ! -z "${{inputs.framework-version}}" ]
         then
           export APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}}
@@ -81,7 +80,6 @@ runs:
         echo "::group::Running tests"
         if [ ! -z "${{inputs.grep}}" ]; then export MOCHA_GREP=${{inputs.grep}}; fi
         if [ ! -z "${{inputs.parallel}}" ]; then export MOCHA_JOBS=${{inputs.parallel}}; fi
-
         if [ ! -z "${{inputs.test-type}}" ]; then yarn test:${{inputs.test-type}}; elif [ "$(jq -r .scripts.test ./package.json)" != "null" ]; then yarn test; fi
         echo "::endgroup::"
 

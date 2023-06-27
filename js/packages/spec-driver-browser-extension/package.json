@@ -50,7 +50,7 @@
     "@babel/preset-env": "^7.22.5",
     "@babel/register": "^7.22.5",
     "@types/mocha": "^9.0.0",
-    "@types/node": "12",
+    "@types/node": "^12.20.55",
     "@types/webextension-polyfill": "^0.9.1",
     "babel-loader": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",

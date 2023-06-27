@@ -1,10 +1,9 @@
-import * as path from 'path'
-import * as assert from 'assert'
 import {getConfig} from '../../src/config'
+import assert from 'assert'
+import * as path from 'path'
 
 describe('config', () => {
   const originalEnv = process.env
-  const originalCwd = process.cwd()
   const configDir = path.resolve(process.cwd(), './test/fixtures/config')
 
   beforeEach(() => {
@@ -12,34 +11,29 @@ describe('config', () => {
   })
 
   afterEach(() => {
-    process.chdir(originalCwd)
     process.env = originalEnv
   })
 
   it('loads config from default file', () => {
-    process.chdir(configDir)
-    const config = getConfig()
+    const config = getConfig({baseDir: configDir})
     const expectedConfig = {name: 'applitools.config.js', it: 'works'}
     assert.deepStrictEqual(config, expectedConfig)
   })
 
   it('loads config with file in json format', () => {
-    process.chdir(path.join(configDir, 'json-project'))
-    const config = getConfig()
+    const config = getConfig({baseDir: path.join(configDir, 'json-project')})
     const expectedConfig = {name: 'eyes.json', it: 'works'}
     assert.deepStrictEqual(config, expectedConfig)
   })
 
   it('loads config with file in cjs format', () => {
-    process.chdir(path.join(configDir, 'cjs-project'))
-    const config = getConfig()
+    const config = getConfig({baseDir: path.join(configDir, 'cjs-project')})
     const expectedConfig = {name: 'applitools.config.cjs', it: 'works'}
     assert.deepStrictEqual(config, expectedConfig)
   })
 
   it('loads config file from parent dir', () => {
-    process.chdir(path.join(configDir, 'empty-project', 'empty-subproject'))
-    const config = getConfig()
+    const config = getConfig({baseDir: path.join(configDir, 'empty-project', 'empty-subproject')})
     const expectedConfig = {name: 'applitools.config.js', it: 'works'}
     assert.deepStrictEqual(config, expectedConfig)
   })

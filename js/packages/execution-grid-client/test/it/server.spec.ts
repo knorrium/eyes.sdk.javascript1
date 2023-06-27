@@ -3,10 +3,10 @@ import {Builder} from 'selenium-webdriver'
 import {Command} from 'selenium-webdriver/lib/command'
 import {makeLogger} from '@applitools/logger'
 import {makeServer} from '../../src/server'
-import * as utils from '@applitools/utils'
 import req from '@applitools/req'
 import nock from 'nock'
 import assert from 'assert'
+import * as utils from '@applitools/utils'
 
 describe('server', () => {
   let proxy: any
@@ -137,7 +137,7 @@ describe('server', () => {
 
   it('creates new tunnel when session is successfully created', async () => {
     proxy = await makeServer({
-      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serviceUrl: 'http://eg-tunnel'}},
       logger: makeLogger(),
     })
 
@@ -165,7 +165,7 @@ describe('server', () => {
 
   it('fails if new tunnel was not created', async () => {
     proxy = await makeServer({
-      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serverUrl: 'http://eg-tunnel'}},
+      settings: {serverUrl: 'https://exec-wus.applitools.com', tunnel: {serviceUrl: 'http://eg-tunnel'}},
       logger: makeLogger(),
     })
 
@@ -188,7 +188,7 @@ describe('server', () => {
     proxy = await makeServer({
       settings: {
         serverUrl: 'https://exec-wus.applitools.com',
-        tunnel: {serverUrl: 'http://eg-tunnel', pool: {timeout: {idle: 0}}},
+        tunnel: {serviceUrl: 'http://eg-tunnel', pool: {timeout: {idle: 0}}},
       },
       logger: makeLogger(),
     })

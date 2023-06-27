@@ -22,6 +22,7 @@ main()
   })
 
 async function main() {
+  const sha = await getSha()
   const packages = await getPackages()
   const envs = core.getInput('env').split(/[;\s]+/).reduce((envs, env) => {
     const [key, value] = env.split('=')
@@ -84,6 +85,11 @@ async function main() {
       return packages
     }, Promise.resolve({} as Record<string, Package>))
     return packages
+  }
+
+  function getSha(): string { 
+    const sha = execSync(`git --no-pager log --format=%H -n 1`, {encoding: 'utf8'})
+    return sha.trim()
   }
 
   function createJobs(input: string): {builds: Record<string, Job[]>, tests: Record<string, Job[]>, releases: Record<string, Job[]>} {
@@ -193,7 +199,7 @@ async function main() {
       function populateString(string: string, options?: {filenamify: boolean}): string {
         let result = string
           .replace(/\{\{([^}]+)\}\}/g, (_, name) => {
-            if (name === 'hash') return process.env.GITHUB_SHA ?? 'unknown'
+            if (name === 'hash') return sha
             else if (name === 'component') return job.name
             else return job[name as keyof Job] as string
           })

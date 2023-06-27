@@ -2826,6 +2826,7 @@ main()
     core.setFailed(err.message);
 });
 async function main() {
+    const sha = await getSha();
     const packages = await getPackages();
     const envs = core.getInput('env').split(/[;\s]+/).reduce((envs, env) => {
         const [key, value] = env.split('=');
@@ -2884,6 +2885,10 @@ async function main() {
             return packages;
         }, Promise.resolve({}));
         return packages;
+    }
+    function getSha() {
+        const sha = (0,external_node_child_process_namespaceObject.execSync)(`git --no-pager log --format=%H -n 1`, { encoding: 'utf8' });
+        return sha.trim();
     }
     function createJobs(input) {
         const jobs = input.split(/[\s,]+(?=(?:[^()]*\([^())]*\))*[^()]*$)/).reduce((jobs, input) => {
@@ -2979,7 +2984,7 @@ async function main() {
                 let result = string
                     .replace(/\{\{([^}]+)\}\}/g, (_, name) => {
                     if (name === 'hash')
-                        return process.env.GITHUB_SHA ?? 'unknown';
+                        return sha;
                     else if (name === 'component')
                         return job.name;
                     else

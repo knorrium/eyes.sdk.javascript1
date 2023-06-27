@@ -1,7 +1,7 @@
 import {makeTunnelClientWorker} from '../../src/worker'
 import {makeLogger} from '@applitools/logger'
 import nock from 'nock'
-import assert from 'assert/strict'
+import assert from 'assert'
 import * as utils from '@applitools/utils'
 
 describe('worker', () => {
@@ -47,7 +47,7 @@ describe('worker', () => {
               },
             ]
           } else if (state < 10 && (body as any).pending_tasks.length > 0) {
-            assert.deepEqual(body, {
+            assert.deepStrictEqual(body, {
               instance_id: 'instance-id',
               pending_tasks: [{id: 'task-1'}],
               completed_tasks: [],
@@ -55,7 +55,7 @@ describe('worker', () => {
             })
             return [200, {tasks: []}]
           } else {
-            assert.deepEqual(JSON.parse(JSON.stringify(body).replace(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/, 'guid')), {
+            assert.deepStrictEqual(JSON.parse(JSON.stringify(body).replace(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/, 'guid')), {
               instance_id: 'instance-id',
               pending_tasks: [],
               completed_tasks: [{id: 'task-1', status: 'SUCCESS', response: {tunnelId: 'guid'}}],
@@ -71,7 +71,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('TunnelClient.close', async reason => {
-      assert.deepEqual(reason, {reason: 'passed'})
+      assert.deepStrictEqual(reason, {reason: 'passed'})
     })
   })
 
@@ -118,7 +118,7 @@ describe('worker', () => {
               {tasks: [{id: 'task-1', type: 'GET_RESOURCE', resource_url: 'https://site.with.sitemap/sitemap.xml'}]},
             ]
           } else if (state === 2) {
-            assert.deepEqual(body, {
+            assert.deepStrictEqual(body, {
               instance_id: 'instance-id',
               pending_tasks: [{id: 'task-1'}],
               completed_tasks: [],
@@ -126,7 +126,7 @@ describe('worker', () => {
             })
             return [200, {tasks: []}]
           } else if (state === 3) {
-            assert.deepEqual(body, {
+            assert.deepStrictEqual(body, {
               instance_id: 'instance-id',
               pending_tasks: [],
               completed_tasks: [
@@ -150,7 +150,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('TunnelClient.close', async reason => {
-      assert.deepEqual(reason, {reason: 'passed'})
+      assert.deepStrictEqual(reason, {reason: 'passed'})
     })
   })
 
@@ -173,7 +173,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('error', error => {
-      assert.equal(error.name, 'AbortError')
+      assert.strictEqual(error.name, 'AbortError')
     })
   })
 
@@ -207,7 +207,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('error', error => {
-      assert.equal(error.name, 'AbortError')
+      assert.strictEqual(error.name, 'AbortError')
     })
   })
 
@@ -241,7 +241,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('TunnelClient.close', payload => {
-      assert.deepEqual(payload, {reason: 'abort test'})
+      assert.deepStrictEqual(payload, {reason: 'abort test'})
     })
   })
 })

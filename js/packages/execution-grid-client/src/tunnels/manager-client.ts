@@ -1,4 +1,5 @@
-import {type TunnelManager, type TunnelManagerSettings} from './manager'
+import type {TunnelManagerSettings} from '../types'
+import {type TunnelManager} from './manager'
 import {makeTunnelManagerServerProcess, type TunnelManagerServer} from './manager-server'
 import {makeSocket} from '@applitools/socket'
 import {promises as fs} from 'fs'
@@ -31,10 +32,6 @@ export async function makeTunnelManagerClient({
   socket.once('ready', () => socket.target.unref())
 
   return {
-    create: (options: any) => {
-      return socket.request('Tunnel.create', options)
-    },
-    destroy: (options: any) => socket.request('Tunnel.destroy', options),
     acquire: (options: any) => socket.request('Tunnel.acquire', options),
     release: (options: any) => socket.request('Tunnel.release', options),
     close: () => server?.close(),

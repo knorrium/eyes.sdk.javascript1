@@ -5,19 +5,20 @@ import * as types from './types'
 import * as general from './general'
 
 export function getConfig({
+  baseDir = process.cwd(),
   paths = ['applitools.config.cjs', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
   params = [],
   traverse = {stopDir: os.homedir()},
   strict,
   logger,
 }: {
+  baseDir?: string
   paths?: string[]
   params?: string[]
   traverse?: false | {stopDir: string}
   strict?: boolean
   logger?: any
 } = {}): Record<string, any> {
-  let baseDir = process.cwd()
   const envPath = general.getEnvValue('CONFIG_PATH')
 
   if (envPath) {
