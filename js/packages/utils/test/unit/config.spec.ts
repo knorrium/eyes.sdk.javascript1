@@ -39,8 +39,7 @@ describe('config', () => {
   })
 
   it('loads config with file path set by options', () => {
-    process.chdir(configDir)
-    const config = getConfig({paths: ['custom.config.js']})
+    const config = getConfig({baseDir: configDir, paths: ['custom.config.js']})
     const expectedConfig = {name: 'custom.config.js', it: 'works'}
     assert.deepStrictEqual(config, expectedConfig)
   })

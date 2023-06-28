@@ -214,6 +214,7 @@ export class Driver<T extends SpecType> {
   async getCapabilities({force}: {force?: boolean} = {}): Promise<Capabilities | null> {
     if (this._driverInfo?.capabilities === undefined || force) {
       this._driverInfo ??= {}
+      await this._spec.getCapabilities?.(this.target)
       this._driverInfo.capabilities = (await this._spec.getCapabilities?.(this.target)) ?? null
       this._logger.log('Extracted driver capabilities', this._driverInfo.capabilities)
     }

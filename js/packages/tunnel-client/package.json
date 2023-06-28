@@ -43,7 +43,7 @@
   ],
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
-    "build": "run build:dist && echo 'tunnel-client'",
+    "build": "run build:dist",
     "build:dist": "run --top-level tsc --project ./tsconfig.build.json",
     "build:x64": "run build:dist && run build:bin:x64",
     "build:arm64": "run build:dist && run build:bin:arm64",
