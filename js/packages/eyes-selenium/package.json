@@ -47,9 +47,9 @@
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
     "up:framework": "run --top-level add-silent selenium-webdriver",
-    "report": "bongo report --name 'js_selenium_4' --result-path './logs' --meta-path './logs'",
-    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_selenium_4'"
+    "report": "bongo report --name 'js_selenium_4' --result-path './logs' --meta-path './logs'"
   },
+  "notificationName": "js_selenium_4",
   "dependencies": {
     "@applitools/eyes": "1.3.1",
     "@applitools/spec-driver-selenium": "1.5.50"

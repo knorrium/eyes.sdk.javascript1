@@ -44,16 +44,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/core-base@1.2.0, @applitools/core-base@workspace:packages/core-base":
+"@applitools/core-base@1.2.1, @applitools/core-base@workspace:packages/core-base":
   version: 0.0.0-use.local
   resolution: "@applitools/core-base@workspace:packages/core-base"
   dependencies:
-    "@applitools/image": 1.0.35
-    "@applitools/logger": 2.0.4
-    "@applitools/req": 1.3.2
+    "@applitools/image": 1.0.36
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.3.3
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     abort-controller: 3.0.0
     nock: ^13.2.8
@@ -101,31 +101,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/core@3.2.4, @applitools/core@workspace:packages/core":
+"@applitools/core@3.2.5, @applitools/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@applitools/core@workspace:packages/core"
   dependencies:
     "@applitools/bongo": "workspace:^"
-    "@applitools/core-base": 1.2.0
+    "@applitools/core-base": 1.2.1
     "@applitools/dom-capture": 11.2.2
     "@applitools/dom-snapshot": 4.7.9
-    "@applitools/driver": 1.12.3
-    "@applitools/ec-client": 1.3.0
-    "@applitools/logger": 2.0.4
-    "@applitools/nml-client": 1.3.58
-    "@applitools/req": 1.3.2
-    "@applitools/screenshoter": 3.8.0
+    "@applitools/driver": 1.12.4
+    "@applitools/ec-client": 1.4.0
+    "@applitools/logger": 2.0.5
+    "@applitools/nml-client": 1.3.59
+    "@applitools/req": 1.3.3
+    "@applitools/screenshoter": 3.8.1
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/snippets": 2.4.21
-    "@applitools/socket": 1.1.4
-    "@applitools/spec-driver-puppeteer": ^1.1.66
-    "@applitools/spec-driver-selenium": ^1.5.49
-    "@applitools/spec-driver-webdriver": 1.0.35
-    "@applitools/spec-driver-webdriverio": ^1.5.4
+    "@applitools/socket": 1.1.5
+    "@applitools/spec-driver-puppeteer": ^1.1.67
+    "@applitools/spec-driver-selenium": ^1.5.50
+    "@applitools/spec-driver-webdriver": 1.0.36
+    "@applitools/spec-driver-webdriverio": ^1.5.5
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/ufg-client": 1.2.21
-    "@applitools/utils": 1.4.0
+    "@applitools/ufg-client": 1.2.22
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/selenium-webdriver": ^4.1.2
     "@types/ws": 8.5.5
@@ -301,13 +301,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/driver@1.12.3, @applitools/driver@^1.12.3, @applitools/driver@workspace:packages/driver":
+"@applitools/driver@1.12.4, @applitools/driver@^1.12.4, @applitools/driver@workspace:packages/driver":
   version: 0.0.0-use.local
   resolution: "@applitools/driver@workspace:packages/driver"
   dependencies:
-    "@applitools/logger": 2.0.4
+    "@applitools/logger": 2.0.5
     "@applitools/snippets": 2.4.21
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     semver: 7.3.7
   languageName: unknown
@@ -361,21 +361,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/ec-client@1.3.0, @applitools/ec-client@workspace:packages/execution-grid-client":
+"@applitools/ec-client@1.4.0, @applitools/ec-client@workspace:packages/execution-grid-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ec-client@workspace:packages/execution-grid-client"
   dependencies:
-    "@applitools/core-base": 1.2.0
-    "@applitools/driver": 1.12.3
+    "@applitools/core-base": 1.2.1
+    "@applitools/driver": 1.12.4
     "@applitools/execution-grid-tunnel": ^2.1.2
-    "@applitools/logger": 2.0.4
-    "@applitools/req": 1.3.2
-    "@applitools/socket": 1.1.4
-    "@applitools/spec-driver-webdriver": 1.0.35
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.3.3
+    "@applitools/socket": 1.1.5
+    "@applitools/spec-driver-webdriver": 1.0.36
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/tunnel-client": 0.0.5
-    "@applitools/utils": 1.4.0
+    "@applitools/tunnel-client": 0.1.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/node-fetch": ^2.6.1
     "@types/selenium-webdriver": ^4.0.19
@@ -604,7 +604,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.3.0
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
@@ -617,12 +617,12 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/driver": 1.12.3
-    "@applitools/eyes": 1.3.0
+    "@applitools/driver": 1.12.4
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
-    "@applitools/spec-driver-webdriver": 1.0.35
+    "@applitools/spec-driver-webdriver": 1.0.36
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.3.37
+    "@applitools/utils": 1.5.0
     "@types/nightwatch": ^2.3.16
     "@types/node": ^12.20.55
     chromedriver: ^114.0.1
@@ -641,9 +641,9 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.3.0
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
-    "@applitools/spec-driver-playwright": 1.3.15
+    "@applitools/spec-driver-playwright": 1.3.16
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
     playwright: ^1.34.3
@@ -658,9 +658,9 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.3.0
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
-    "@applitools/spec-driver-puppeteer": 1.1.66
+    "@applitools/spec-driver-puppeteer": 1.1.67
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
     puppeteer: ^19.11.1
@@ -687,9 +687,9 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.3.0
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
-    "@applitools/spec-driver-selenium": 1.5.49
+    "@applitools/spec-driver-selenium": 1.5.50
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
     "@types/selenium-webdriver": ^4.1.1
@@ -763,9 +763,9 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.3.0
+    "@applitools/eyes": 1.3.1
     "@applitools/sdk-coverage-tests": "workspace:^"
-    "@applitools/spec-driver-webdriverio": 1.5.4
+    "@applitools/spec-driver-webdriverio": 1.5.5
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^16.18.14
     "@wdio/cli": ^8.3.9
@@ -782,14 +782,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes@1.3.0, @applitools/eyes@workspace:packages/eyes-api":
+"@applitools/eyes@1.3.1, @applitools/eyes@workspace:packages/eyes-api":
   version: 0.0.0-use.local
   resolution: "@applitools/eyes@workspace:packages/eyes-api"
   dependencies:
-    "@applitools/core": 3.2.4
-    "@applitools/logger": 2.0.4
-    "@applitools/req": ^1.3.2
-    "@applitools/utils": 1.4.0
+    "@applitools/core": 3.2.5
+    "@applitools/logger": 2.0.5
+    "@applitools/req": ^1.3.3
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
   languageName: unknown
   linkType: soft
@@ -812,11 +812,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/image@1.0.35, @applitools/image@workspace:packages/image":
+"@applitools/image@1.0.36, @applitools/image@workspace:packages/image":
   version: 0.0.0-use.local
   resolution: "@applitools/image@workspace:packages/image"
   dependencies:
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/pixelmatch": ^5.2.4
     bmpimagejs: 1.0.4
@@ -835,6 +835,18 @@ __metadata:
     jpeg-js: 0.4.4
     png-async: 0.9.4
   checksum: 5a2582c2d875deb7920b97e36212e47483bed1e8d03be6d76ad8fe1efddc3627a5795208294331de46c0961dd6d1a14fd20d04be5968f0da5f094f87d274575d
+  languageName: node
+  linkType: hard
+
+"@applitools/image@npm:1.0.35":
+  version: 1.0.35
+  resolution: "@applitools/image@npm:1.0.35"
+  dependencies:
+    "@applitools/utils": 1.4.0
+    bmpimagejs: 1.0.4
+    jpeg-js: 0.4.4
+    png-async: 0.9.4
+  checksum: 62f2a113a3488c7d98b057dc32681da49511a0074a4acfb56bb957515b7482328b87e3c0b934a41abdb50a927fb1d6375bcf6cfa2084d7772495955dc3fed07c
   languageName: node
   linkType: hard
 
@@ -884,11 +896,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/logger@2.0.4, @applitools/logger@workspace:^, @applitools/logger@workspace:packages/logger":
+"@applitools/logger@2.0.5, @applitools/logger@workspace:^, @applitools/logger@workspace:packages/logger":
   version: 0.0.0-use.local
   resolution: "@applitools/logger@workspace:packages/logger"
   dependencies:
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/debug": ^4.1.7
     "@types/node": ^12.20.55
     chalk: 4.1.2
@@ -959,16 +971,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/nml-client@1.3.58, @applitools/nml-client@workspace:packages/nml-client":
+"@applitools/nml-client@1.3.59, @applitools/nml-client@workspace:packages/nml-client":
   version: 0.0.0-use.local
   resolution: "@applitools/nml-client@workspace:packages/nml-client"
   dependencies:
-    "@applitools/logger": 2.0.4
-    "@applitools/req": 1.3.2
-    "@applitools/spec-driver-webdriverio": ^1.5.4
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.3.3
+    "@applitools/spec-driver-webdriverio": ^1.5.5
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     chromedriver: ^114.0.1
     nock: ^13.2.9
@@ -1009,12 +1021,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/req@1.3.2, @applitools/req@^1.3.2, @applitools/req@workspace:packages/req":
+"@applitools/req@1.3.3, @applitools/req@^1.3.3, @applitools/req@workspace:packages/req":
   version: 0.0.0-use.local
   resolution: "@applitools/req@workspace:packages/req"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     abort-controller: 3.0.0
     esbuild: ^0.17.18
@@ -1051,17 +1063,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/screenshoter@3.8.0, @applitools/screenshoter@workspace:packages/screenshoter":
+"@applitools/req@npm:1.3.2":
+  version: 1.3.2
+  resolution: "@applitools/req@npm:1.3.2"
+  dependencies:
+    "@applitools/utils": 1.4.0
+    abort-controller: 3.0.0
+    http-proxy-agent: 5.0.0
+    https-proxy-agent: 5.0.1
+    node-fetch: 3.3.1
+  checksum: 7b65feedaf0565bee17df7baf0464abee3738eefa8cc3032bc4a03e38494f29e2c475a660a70bfdc40573d3f496f317b2c5f7541cc6e79db49a6f34682c3e2f4
+  languageName: node
+  linkType: hard
+
+"@applitools/screenshoter@3.8.1, @applitools/screenshoter@workspace:packages/screenshoter":
   version: 0.0.0-use.local
   resolution: "@applitools/screenshoter@workspace:packages/screenshoter"
   dependencies:
-    "@applitools/driver": ^1.12.3
-    "@applitools/image": 1.0.35
-    "@applitools/logger": 2.0.4
+    "@applitools/driver": ^1.12.4
+    "@applitools/image": 1.0.36
+    "@applitools/logger": 2.0.5
     "@applitools/snippets": 2.4.21
-    "@applitools/spec-driver-webdriverio": ^1.5.4
+    "@applitools/spec-driver-webdriverio": ^1.5.5
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     appium: ^1.22.3
     chromedriver: ^114.0.1
     jpeg-js: 0.4.4
@@ -1185,12 +1210,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/socket@1.1.4, @applitools/socket@workspace:packages/socket":
+"@applitools/socket@1.1.5, @applitools/socket@workspace:packages/socket":
   version: 0.0.0-use.local
   resolution: "@applitools/socket@workspace:packages/socket"
   dependencies:
-    "@applitools/logger": 2.0.4
-    "@applitools/utils": 1.4.0
+    "@applitools/logger": 2.0.5
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
   languageName: unknown
   linkType: soft
@@ -1249,14 +1274,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/spec-driver-playwright@1.3.15, @applitools/spec-driver-playwright@^1.3.14, @applitools/spec-driver-playwright@^1.3.4, @applitools/spec-driver-playwright@workspace:packages/spec-driver-playwright":
+"@applitools/spec-driver-playwright@1.3.16, @applitools/spec-driver-playwright@^1.3.14, @applitools/spec-driver-playwright@^1.3.4, @applitools/spec-driver-playwright@workspace:packages/spec-driver-playwright":
   version: 0.0.0-use.local
   resolution: "@applitools/spec-driver-playwright@workspace:packages/spec-driver-playwright"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/driver": 1.12.3
+    "@applitools/driver": 1.12.4
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     playwright: ^1.34.3
   peerDependencies:
@@ -1264,14 +1289,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/spec-driver-puppeteer@1.1.66, @applitools/spec-driver-puppeteer@^1.1.66, @applitools/spec-driver-puppeteer@workspace:packages/spec-driver-puppeteer":
+"@applitools/spec-driver-puppeteer@1.1.67, @applitools/spec-driver-puppeteer@^1.1.67, @applitools/spec-driver-puppeteer@workspace:packages/spec-driver-puppeteer":
   version: 0.0.0-use.local
   resolution: "@applitools/spec-driver-puppeteer@workspace:packages/spec-driver-puppeteer"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/driver": 1.12.3
+    "@applitools/driver": 1.12.4
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     puppeteer: ^19.11.1
   peerDependencies:
@@ -1291,14 +1316,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/spec-driver-selenium@1.5.49, @applitools/spec-driver-selenium@^1.5.49, @applitools/spec-driver-selenium@workspace:packages/spec-driver-selenium":
+"@applitools/spec-driver-selenium@1.5.50, @applitools/spec-driver-selenium@^1.5.50, @applitools/spec-driver-selenium@workspace:packages/spec-driver-selenium":
   version: 0.0.0-use.local
   resolution: "@applitools/spec-driver-selenium@workspace:packages/spec-driver-selenium"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/driver": 1.12.3
+    "@applitools/driver": 1.12.4
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/selenium-webdriver": ^4.1.1
     nock: ^13.2.9
@@ -1308,15 +1333,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/spec-driver-webdriver@1.0.35, @applitools/spec-driver-webdriver@workspace:packages/spec-driver-webdriver":
+"@applitools/spec-driver-webdriver@1.0.36, @applitools/spec-driver-webdriver@workspace:packages/spec-driver-webdriver":
   version: 0.0.0-use.local
   resolution: "@applitools/spec-driver-webdriver@workspace:packages/spec-driver-webdriver"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/driver": 1.12.3
+    "@applitools/driver": 1.12.4
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     http-proxy-agent: 5.0.0
     https-proxy-agent: 5.0.1
@@ -1355,14 +1380,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/spec-driver-webdriverio@1.5.4, @applitools/spec-driver-webdriverio@^1.5.4, @applitools/spec-driver-webdriverio@workspace:packages/spec-driver-webdriverio":
+"@applitools/spec-driver-webdriverio@1.5.5, @applitools/spec-driver-webdriverio@^1.5.5, @applitools/spec-driver-webdriverio@workspace:packages/spec-driver-webdriverio":
   version: 0.0.0-use.local
   resolution: "@applitools/spec-driver-webdriverio@workspace:packages/spec-driver-webdriverio"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
-    "@applitools/driver": 1.12.3
+    "@applitools/driver": 1.12.4
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/node": ^16.18.14
     chromedriver: ^114.0.1
     nock: ^13.2.9
@@ -1431,15 +1456,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/tunnel-client@0.0.5, @applitools/tunnel-client@workspace:packages/tunnel-client":
+"@applitools/tunnel-client@0.1.0, @applitools/tunnel-client@workspace:packages/tunnel-client":
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:
     "@applitools/execution-grid-tunnel": ^2.1.2
-    "@applitools/logger": 2.0.4
-    "@applitools/req": 1.3.2
-    "@applitools/socket": 1.1.4
-    "@applitools/utils": 1.4.0
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.3.3
+    "@applitools/socket": 1.1.5
+    "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/yargs": ^17.0.24
     abort-controller: ^3.0.0
@@ -1451,15 +1476,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/ufg-client@1.2.21, @applitools/ufg-client@workspace:packages/ufg-client":
+"@applitools/ufg-client@1.2.22, @applitools/ufg-client@workspace:packages/ufg-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ufg-client@workspace:packages/ufg-client"
   dependencies:
-    "@applitools/logger": 2.0.4
-    "@applitools/req": 1.3.2
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.3.3
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/utils": 1.4.0
+    "@applitools/utils": 1.5.0
     "@types/css-tree": ^2.3.1
     "@types/jsdom": ^21.1.1
     "@types/node": ^12.20.55
@@ -1516,7 +1541,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/utils@1.4.0, @applitools/utils@workspace:^, @applitools/utils@workspace:packages/utils":
+"@applitools/utils@1.5.0, @applitools/utils@workspace:^, @applitools/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@applitools/utils@workspace:packages/utils"
   dependencies:
@@ -1556,6 +1581,13 @@ __metadata:
   version: 1.3.37
   resolution: "@applitools/utils@npm:1.3.37"
   checksum: 49e8bb0215623f55be9bbc31a8e8bcaca3389264fc046e483127202859a8925165d682915550645f3f9d90d7c648aee01c1a2dd21c5baa601db670fa1d574072
+  languageName: node
+  linkType: hard
+
+"@applitools/utils@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@applitools/utils@npm:1.4.0"
+  checksum: cd1fcfa287539eb3c3d9d735f0e8fb1b9ba924c86c5e462260702986ebcbf3dffb63946a6e8b782f484fe3c23c3b0e7e16c0b33e422b42f886a0bf853c699de5
   languageName: node
   linkType: hard
 

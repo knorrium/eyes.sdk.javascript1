@@ -58,9 +58,9 @@
     "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/**/*.spec.ts'",
     "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'",
     "setup": "run --top-level browsers:setup",
-    "report": "bongo report --name 'core' --group 'core' --result-path './logs'",
-    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'core'"
+    "report": "bongo report --name 'core' --group 'core' --result-path './logs'"
   },
+  "notificationName": "core",
   "pkg": {
     "scripts": "./dist/cli/cli.js",
     "outputPath": "./bin",

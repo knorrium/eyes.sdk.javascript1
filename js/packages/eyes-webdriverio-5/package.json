@@ -94,9 +94,9 @@
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
     "up:framework": "run --top-level add-silent webdriverio",
-    "report": "bongo report --name 'js_wdio_5' --result-path './logs' --meta-path './logs'",
-    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'js_wdio_5'"
+    "report": "bongo report --name 'js_wdio_5' --result-path './logs' --meta-path './logs'"
   },
+  "notificationName": "js_wdio_5",
   "dependencies": {
     "@applitools/eyes": "1.3.1",
     "@applitools/spec-driver-webdriverio": "1.5.5"

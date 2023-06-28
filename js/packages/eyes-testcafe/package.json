@@ -80,9 +80,9 @@
     "perf:lite": "testcafe chrome:headless test/perf/perf-lite.spec.js",
     "perf:lite:full": "yarn perf:lite && yarn perf:lite -c 5",
     "up:framework": "run --top-level add-silent testcafe",
-    "report": "bongo report --name 'testcafe' --result-path './logs' --meta-path './logs'",
-    "notify": "dlx --package @applitools/bongo bongo send-release-notification --name 'testcafe'"
+    "report": "bongo report --name 'testcafe' --result-path './logs' --meta-path './logs'"
   },
+  "notificationName": "testcafe",
   "dependencies": {
     "@applitools/core": "1.4.6",
     "@applitools/eyes-api": "1.13.1",
