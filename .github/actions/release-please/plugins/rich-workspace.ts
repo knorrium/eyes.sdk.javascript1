@@ -12,7 +12,13 @@ import {Changelog} from 'release-please/build/src/updaters/changelog'
 import {ManifestPlugin} from 'release-please/build/src/plugin'
 import {buildPlugin} from 'release-please/build/src/factories/plugin-factory'
 
-type PatchedChangelogUpdate = Update & {updater: Changelog, sections: string[], bumps?: Record<string, any>[]}
+type PatchedChangelogUpdate = Update & {
+  updater: Changelog,
+  sections: string[],
+  bumps?: Bump[]
+}
+
+type Bump = {packageName: string, from: string, to: string, sections: string[]}
 
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
   manifestPath: string;
@@ -138,20 +144,35 @@ export class RichWorkspace extends ManifestPlugin {
       if (!update.sections) {
         console.log('-------', update.updater.changelogEntry)
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
-        update.sections = Array.from(update.updater.changelogEntry.matchAll(/^###.+?(?=###|$)/gsm), ([section]) => {
+        update.sections = Array.from(update.updater.changelogEntry.matchAll(/###.+?(?=###|$)/gs), ([section]) => {
           console.log('++++', section)
           if (section.startsWith('### Dependencies\n\n')) {
-            update.bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups!)
-            const dependencies = update.bumps.map(bump => {
-              const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
+            const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups! as Omit<Bump, 'sections'>)
+            update.bumps = bumps.reduce((bumps, bump) => {
               const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
               const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
-              if (!bumpedChangelogUpdate) return header
-              const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
-              return `${header}${patchedBumpedChangelogUpdate.sections.flatMap(section => {
-                if (section.startsWith('### Dependencies\n\n')) return []
-                return `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`
-              }).join('')}`
+              if (bumpedChangelogUpdate) {
+                const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
+                bumps.push({...bump, sections: patchedBumpedChangelogUpdate.sections.filter(section => !section.startsWith('### Dependencies\n\n'))})
+                patchedBumpedChangelogUpdate.bumps?.forEach(bump => {
+                  const existedBumpIndex = bumps.findIndex(existedBump => existedBump.packageName === bump.packageName)
+                  if (existedBumpIndex === -1) bumps.push(bump)
+                  else {
+                    const bumpFrom = bump.from.split('.')
+                    const existedBumpFrom = bumps[existedBumpIndex].from.split('.')
+                    if (bumpFrom.some((version, index) => Number(version) < Number(existedBumpFrom[index]))) bumps[existedBumpIndex] = bump
+                  }
+                })
+
+              } else {
+                bumps.push({...bump, sections: []})
+              }
+              return bumps
+            }, [] as Bump[])
+            const dependencies = update.bumps.map(bump => {
+              const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
+              if (!bump.sections) return header
+              return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
             })
             return `### Dependencies\n\n${dependencies.join('\n')}`
           }
