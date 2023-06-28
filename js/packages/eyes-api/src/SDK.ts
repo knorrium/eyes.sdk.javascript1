@@ -21,6 +21,6 @@ function getCore<TSpec extends SpecType = SpecType>({makeCore = makeDefaultCore,
   TSpec,
   'classic' | 'ufg'
 > {
-  options.agentId ??= `js/eyes/${require('../package.json')}`
+  options.agentId ??= `js/eyes/${require('../package.json').version}`
   return makeCore(options)
 }
