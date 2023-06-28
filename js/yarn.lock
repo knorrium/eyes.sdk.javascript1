@@ -367,7 +367,7 @@ __metadata:
   dependencies:
     "@applitools/core-base": 1.2.0
     "@applitools/driver": 1.12.3
-    "@applitools/execution-grid-tunnel": 2.1.0
+    "@applitools/execution-grid-tunnel": ^2.1.2
     "@applitools/logger": 2.0.4
     "@applitools/req": 1.3.2
     "@applitools/socket": 1.1.4
@@ -489,6 +489,29 @@ __metadata:
   bin:
     run-execution-grid-tunnel: scripts/run-execution-grid-tunnel.js
   checksum: e0a8317cd3f9e50d979a0626c67a3179804868ffbc7cf772d374fb0c9e40faaadec7174067c76b90736551cd43ae8768b4f0e0e49ae9c885cd58f0a2710a332f
+  languageName: node
+  linkType: hard
+
+"@applitools/execution-grid-tunnel@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@applitools/execution-grid-tunnel@npm:2.1.2"
+  dependencies:
+    "@applitools/eg-frpc": 1.0.3
+    "@applitools/eg-socks5-proxy-server": ^0.5.4
+    "@applitools/logger": ^1.0.12
+    dotenv: ^16.0.0
+    encoding: ^0.1.13
+    fastify: ^3.24.1
+    fastify-plugin: ^3.0.1
+    find-process: ^1.4.7
+    ini: ^3.0.0
+    node-cleanup: ^2.1.2
+    node-fetch: ^2.6.7
+    p-retry: ^4.6.2
+    teen_process: ^1.16.0
+  bin:
+    run-execution-grid-tunnel: scripts/run-execution-grid-tunnel.js
+  checksum: 3679a593662daba0afdc1acaf2d970647bdb9e843a79ff163eefeb5f04745963d21719c5a8e2ece7c2d4068c7f0f500b9950602ba03d168969f92b84effba536
   languageName: node
   linkType: hard
 
@@ -1412,7 +1435,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:
-    "@applitools/execution-grid-tunnel": 2.1.0
+    "@applitools/execution-grid-tunnel": ^2.1.2
     "@applitools/logger": 2.0.4
     "@applitools/req": 1.3.2
     "@applitools/socket": 1.1.4
