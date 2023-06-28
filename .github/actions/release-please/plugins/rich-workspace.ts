@@ -142,10 +142,8 @@ export class RichWorkspace extends ManifestPlugin {
   protected patchChangelogs(candidateReleasePullRequests: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
     const patchChangelogUpdate = (update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate => {
       if (!update.sections) {
-        console.log('-------', update.updater.changelogEntry)
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
         update.sections = Array.from(update.updater.changelogEntry.matchAll(/###.+?(?=###|$)/gs), ([section]) => {
-          console.log('++++', section)
           if (section.startsWith('### Dependencies\n\n')) {
             const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups! as Omit<Bump, 'sections'>)
             update.bumps = bumps.reduce((bumps, bump) => {
@@ -155,15 +153,8 @@ export class RichWorkspace extends ManifestPlugin {
                 const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
                 bumps.push({...bump, sections: patchedBumpedChangelogUpdate.sections.filter(section => !section.startsWith('### Dependencies\n\n'))})
                 patchedBumpedChangelogUpdate.bumps?.forEach(bump => {
-                  const existedBumpIndex = bumps.findIndex(existedBump => existedBump.packageName === bump.packageName)
-                  if (existedBumpIndex === -1) bumps.push(bump)
-                  else {
-                    const bumpFrom = bump.from.split('.')
-                    const existedBumpFrom = bumps[existedBumpIndex].from.split('.')
-                    if (bumpFrom.some((version, index) => Number(version) < Number(existedBumpFrom[index]))) bumps[existedBumpIndex] = bump
-                  }
+                  if (!bumps.some(existedBump => existedBump.packageName === bump.packageName)) bumps.push(bump)
                 })
-
               } else {
                 bumps.push({...bump, sections: []})
               }
