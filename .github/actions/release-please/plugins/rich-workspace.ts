@@ -153,18 +153,20 @@ export class RichWorkspace extends ManifestPlugin {
                 const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
                 bumps.push({...bump, sections: patchedBumpedChangelogUpdate.sections.filter(section => !section.startsWith('### Dependencies\n\n'))})
                 patchedBumpedChangelogUpdate.bumps?.forEach(bump => {
-                  if (!bumps.some(existedBump => existedBump.packageName === bump.packageName)) bumps.push(bump)
+                  if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) bumps.push(bump)
                 })
               } else {
                 bumps.push({...bump, sections: []})
               }
               return bumps
             }, [] as Bump[])
-            const dependencies = update.bumps.map(bump => {
-              const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
-              if (!bump.sections) return header
-              return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
-            })
+            const dependencies = update.bumps
+              .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
+              .map(bump => {
+                const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
+                if (!bump.sections) return header
+                return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
+              })
             return `### Dependencies\n\n${dependencies.join('\n')}`
           }
           return section
