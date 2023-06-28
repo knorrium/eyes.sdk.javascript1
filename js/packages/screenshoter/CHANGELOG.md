@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.8.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.0...js/screenshoter@3.8.1) (2023-06-28)
+
+
+### Dependencies
+
+* @applitools/utils bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * handled abandoned tunnels ([#1669](https://github.com/applitools/eyes.sdk.javascript1/issues/1669)) ([e01a9f6](https://github.com/applitools/eyes.sdk.javascript1/commit/e01a9f6f7543fc5e6bd842acf6ee8de8cfb49998))
+* @applitools/image bumped from 1.0.35 to 1.0.36
+
+* @applitools/logger bumped from 2.0.4 to 2.0.5
+
+
 ## [3.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.7.47...js/screenshoter@3.8.0) (2023-06-21)
 
 

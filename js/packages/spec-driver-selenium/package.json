@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-selenium",
-  "version": "1.5.49",
+  "version": "1.5.50",
   "keywords": [
     "selenium",
     "selenium-webdriver",
@@ -45,8 +45,8 @@
     "up:framework": "run --top-level add-silent selenium-webdriver"
   },
   "dependencies": {
-    "@applitools/driver": "1.12.3",
-    "@applitools/utils": "1.4.0"
+    "@applitools/driver": "1.12.4",
+    "@applitools/utils": "1.5.0"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

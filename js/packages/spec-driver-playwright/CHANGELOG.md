@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.16](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.15...js/spec-driver-playwright@1.3.16) (2023-06-28)
+
+
+### Dependencies
+
+* @applitools/utils bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * handled abandoned tunnels ([#1669](https://github.com/applitools/eyes.sdk.javascript1/issues/1669)) ([e01a9f6](https://github.com/applitools/eyes.sdk.javascript1/commit/e01a9f6f7543fc5e6bd842acf6ee8de8cfb49998))
+* @applitools/driver bumped from 1.12.3 to 1.12.4
+
+* @applitools/logger bumped from 2.0.4 to 2.0.5
+
+
 ## [1.3.15](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.14...js/spec-driver-playwright@1.3.15) (2023-06-21)
 
 

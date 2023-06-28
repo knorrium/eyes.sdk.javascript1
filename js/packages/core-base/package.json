@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core-base",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -42,10 +42,10 @@
     "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/image": "1.0.35",
-    "@applitools/logger": "2.0.4",
-    "@applitools/req": "1.3.2",
-    "@applitools/utils": "1.4.0",
+    "@applitools/image": "1.0.36",
+    "@applitools/logger": "2.0.5",
+    "@applitools/req": "1.3.3",
+    "@applitools/utils": "1.5.0",
     "abort-controller": "3.0.0",
     "throat": "6.0.2"
   },

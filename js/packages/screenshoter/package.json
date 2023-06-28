@@ -1,6 +1,6 @@
 {
   "name": "@applitools/screenshoter",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Applitools universal screenshoter for web and native applications",
   "keywords": [
     "applitools",
@@ -56,16 +56,16 @@
     "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &"
   },
   "dependencies": {
-    "@applitools/image": "1.0.35",
-    "@applitools/logger": "2.0.4",
+    "@applitools/image": "1.0.36",
+    "@applitools/logger": "2.0.5",
     "@applitools/snippets": "2.4.21",
-    "@applitools/utils": "1.4.0",
+    "@applitools/utils": "1.5.0",
     "jpeg-js": "0.4.4",
     "png-async": "0.9.4"
   },
   "devDependencies": {
-    "@applitools/driver": "^1.12.3",
-    "@applitools/spec-driver-webdriverio": "^1.5.4",
+    "@applitools/driver": "^1.12.4",
+    "@applitools/spec-driver-webdriverio": "^1.5.5",
     "@applitools/test-utils": "workspace:^",
     "appium": "^1.22.3",
     "chromedriver": "^114.0.1",
