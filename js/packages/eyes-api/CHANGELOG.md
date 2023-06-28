@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.3.1...js/eyes@1.4.0) (2023-06-28)
+
+
+### Features
+
+* added a new mode for taking native app screenshots ([#1665](https://github.com/applitools/eyes.sdk.javascript1/issues/1665)) ([6237db7](https://github.com/applitools/eyes.sdk.javascript1/commit/6237db7a6212d6c84542f2a5bf9b120e758a7a4b))
+
+
+### Bug Fixes
+
+* fixed default agentId ([7e49fbe](https://github.com/applitools/eyes.sdk.javascript1/commit/7e49fbe69bebe63e8d8fa3c55b36b00a7c41f604))
+
+
+### Dependencies
+
+* @applitools/core bumped from 3.2.5 to 3.3.0
+  #### Features
+
+  * added a new mode for taking native app screenshots ([#1665](https://github.com/applitools/eyes.sdk.javascript1/issues/1665)) ([6237db7](https://github.com/applitools/eyes.sdk.javascript1/commit/6237db7a6212d6c84542f2a5bf9b120e758a7a4b))
+
+
+  #### Bug Fixes
+
+  * **js/core:** rerelease ([43c4e89](https://github.com/applitools/eyes.sdk.javascript1/commit/43c4e8987a53ecf6db883122c0f3acb7adcd3e14))
+
+
+
+* @applitools/nml-client bumped from 1.3.59 to 1.4.0
+  #### Features
+
+  * added a new mode for taking native app screenshots ([#1665](https://github.com/applitools/eyes.sdk.javascript1/issues/1665)) ([6237db7](https://github.com/applitools/eyes.sdk.javascript1/commit/6237db7a6212d6c84542f2a5bf9b120e758a7a4b))
+
 ## [1.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.3.0...js/eyes@1.3.1) (2023-06-28)
 
 
