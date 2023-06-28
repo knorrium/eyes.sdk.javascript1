@@ -37,8 +37,6 @@ export function makeCheckAndClose<TSpec extends SpecType, TDefaultType extends '
     logger = logger.extend(mainLogger, {tags: [`check-and-close-${type}-${utils.general.shortid()}`]})
 
     settings = {...config?.screenshot, ...config?.check, ...config?.close, ...settings}
-    settings.screenshotMode ??= process.env.NML_API_KEY ? 'applitools-lib' : 'default'
-
     const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
     const environment = await driver?.getEnvironment()
     const typedEyes = await eyes.getTypedEyes({

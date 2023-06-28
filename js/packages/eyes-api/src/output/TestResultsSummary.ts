@@ -5,21 +5,21 @@ export type TestResultsSummary = Iterable<TestResultContainer>
 
 export class TestResultsSummaryData implements Iterable<TestResultContainerData> {
   private _summary?: Core.TestResultSummary<'classic' | 'ufg'>
-  private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
+  private _deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
 
   /** @internal */
   constructor(options?: {
     summary?: Core.TestResultSummary<'classic' | 'ufg'>
-    core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
+    deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
   }) {
     this._summary = options?.summary
-    this._core = options?.core
+    this._deleteTest = options?.deleteTest
   }
 
   getAllResults(): TestResultContainerData[] {
     return (
       this._summary?.results.map(container => {
-        return new TestResultContainerData({container, core: this._core})
+        return new TestResultContainerData({container, deleteTest: this._deleteTest})
       }) ?? []
     )
   }
@@ -28,7 +28,7 @@ export class TestResultsSummaryData implements Iterable<TestResultContainerData>
     return (
       this._summary?.results
         .map(container => {
-          return new TestResultContainerData({container, core: this._core})
+          return new TestResultContainerData({container, deleteTest: this._deleteTest})
         })
         [Symbol.iterator]() ?? [][Symbol.iterator]()
     )

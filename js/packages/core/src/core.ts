@@ -5,7 +5,6 @@ import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore} from '@applitools/core-base'
 import {makeGetViewportSize} from './automation/get-viewport-size'
 import {makeSetViewportSize} from './automation/set-viewport-size'
-import {makeGetNMLClient} from './automation/get-nml-client'
 import {makeLocate} from './locate'
 import {makeLocateText} from './locate-text'
 import {makeExtractText} from './extract-text'
@@ -42,7 +41,6 @@ export function makeCore<TSpec extends SpecType>({
       base: base!,
       getViewportSize: spec && makeGetViewportSize({spec, logger}),
       setViewportSize: spec && makeSetViewportSize({spec, logger}),
-      getNMLClient: makeGetNMLClient({logger}),
       getECClient: makeGetECClient({logger}),
       makeManager: makeMakeManager({spec, concurrency, core, base: defaultBase, agentId, logger}),
       locate: makeLocate({spec, core, logger}),

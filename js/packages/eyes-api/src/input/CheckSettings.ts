@@ -68,8 +68,9 @@ export type CheckSettingsAutomation<TSpec extends Core.SpecType> = CheckSettings
   disableBrowserFetching?: boolean
   layoutBreakpoints?: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean}
   visualGridOptions?: {[key: string]: any}
-  useSystemScreenshot?: boolean
+  nmgOptions?: {[key: string]: any}
   hooks?: {beforeCaptureScreenshot: string}
+  renderId?: string
   timeout?: number
   waitBeforeCapture?: number
   lazyLoad?: boolean | LazyLoadOptions
@@ -566,8 +567,17 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
     return this.ufgOptions(options)
   }
 
-  useSystemScreenshot(useSystemScreenshot: boolean) {
-    this._settings.useSystemScreenshot = useSystemScreenshot
+  nmgOption(key: string, value: any) {
+    this._settings.nmgOptions = {...this._settings.nmgOptions, [key]: value}
+    return this
+  }
+  nmgOptions(options: {[key: string]: any}) {
+    this._settings.nmgOptions = options
+    return this
+  }
+
+  renderId(renderId: string): this {
+    this._settings.renderId = renderId
     return this
   }
 
@@ -633,7 +643,7 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
             : {breakpoints: this._settings.layoutBreakpoints ?? false}
           : undefined,
         ufgOptions: this._settings.visualGridOptions,
-        screenshotMode: this._settings.useSystemScreenshot ? 'default' : undefined,
+        nmgOptions: this._settings.nmgOptions,
         hooks: this._settings.hooks,
         pageId: this._settings.pageId,
         lazyLoad: this._settings.lazyLoad,

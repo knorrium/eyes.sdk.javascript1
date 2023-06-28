@@ -27,14 +27,6 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
       const socket = await socketPromise
       return socket.request('Core.setViewportSize', options)
     },
-    async getNMLClient(_options) {
-      // TODO
-      return null as never
-    },
-    async getECClient(options) {
-      const socket = await socketPromise
-      return socket.request('Core.makeECClient', options) as any
-    },
     async locate(options) {
       const socket = await socketPromise
       return socket.request('Core.locate', options)
@@ -60,6 +52,10 @@ export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'
       const socket = await socketPromise
       const managerRef = await socket.request('Core.makeManager', options)
       return makeManager({socket, core, managerRef})
+    },
+    async getECClient(options) {
+      const socket = await socketPromise
+      return socket.request('Core.makeECClient', options) as any
     },
     async closeBatch(options) {
       const socket = await socketPromise

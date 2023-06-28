@@ -37,8 +37,8 @@ export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic'
 
     settings = {...config?.screenshot, ...config?.check, ...settings}
     settings.fully ??= !settings.region && (!settings.frames || settings.frames.length === 0)
-    settings.screenshotMode ??= process.env.NML_API_KEY ? 'applitools-lib' : 'default'
     settings.waitBeforeCapture ??= 100
+    settings.stitchMode ??= 'Scroll'
     settings.hideScrollbars ??= true
     settings.hideCaret ??= true
     settings.overlap = {top: 10, bottom: 50, ...settings?.overlap}

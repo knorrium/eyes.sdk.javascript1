@@ -1,7 +1,7 @@
 import type {MaybeArray} from '@applitools/utils'
 import type * as BaseCore from '@applitools/core-base/types'
 import type * as AutomationCore from '../automation/types'
-import {type SpecType} from '@applitools/driver'
+import {type SpecType, type Driver} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
 import {
@@ -12,6 +12,7 @@ import {
   type AndroidSnapshot,
   type IOSSnapshot,
 } from '@applitools/ufg-client'
+import {type NMLClient, type NMLRequestsConfig} from '@applitools/nml-client'
 
 export * from '../automation/types'
 
@@ -21,6 +22,11 @@ export type Target<TSpec extends SpecType> = SnapshotTarget | AutomationCore.Tar
 export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec> {
   readonly type: 'ufg'
   getUFGClient(options?: {config: UFGRequestsConfig; concurrency?: number; logger?: Logger}): Promise<UFGClient>
+  getNMLClient(options: {
+    config: Omit<NMLRequestsConfig, 'brokerUrl'>
+    driver: Driver<TSpec>
+    logger?: Logger
+  }): Promise<NMLClient>
   openEyes(options: {
     target?: AutomationCore.DriverTarget<TSpec>
     settings: AutomationCore.OpenSettings
@@ -51,6 +57,7 @@ export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings
   disableBrowserFetching?: boolean
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
   ufgOptions?: Record<string, any>
+  nmgOptions?: Record<string, any>
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
 }
 

@@ -1,7 +1,7 @@
 import type {Region} from '@applitools/utils'
 import type {ScreenshotSettings} from '../../classic/types'
 import {type Logger} from '@applitools/logger'
-import {type Driver, type Element, type ElementReference, type Selector, type SpecType} from '@applitools/driver'
+import {type Driver, type Element, type ElementReference, type SpecType} from '@applitools/driver'
 import * as utils from '@applitools/utils'
 
 const {takeScreenshot: legacyTakeScreenshot} = require('@applitools/screenshoter')
@@ -12,7 +12,7 @@ export type Screenshot<TSpec extends SpecType> = {
   element: Element<TSpec>
   scrollingElement: Element<TSpec>
   restoreState(): Promise<void>
-  calculatedRegions: {selector?: Selector; regions: Region[]}[]
+  calculatedRegions: []
 }
 
 export async function takeScreenshot<TSpec extends SpecType>({

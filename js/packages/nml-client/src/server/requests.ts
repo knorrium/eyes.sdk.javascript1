@@ -38,15 +38,21 @@ export function makeNMLRequests({
         protocolVersion: '1.0',
         name: 'TAKE_SCREENSHOT',
         key: utils.general.guid(),
-        payload: settings,
+        payload: {
+          name: settings.name,
+          screenshotMode: settings.fully ? 'FULL_RESIZE' : 'VIEWPORT',
+          scrollRootElement: settings.scrollRootElement,
+          hideCaret: settings.hideCaret,
+          waitBeforeCapture: settings.waitBeforeCapture,
+          overlap: settings.overlap,
+          selectorsToFindRegionsFor: [] as any[],
+        },
       },
       logger,
     })
     const result: any = await response.json()
     brokerUrl = result.nextPath
-    return {
-      image: result.payload.result.screenshotUrl,
-    }
+    return result.payload
   }
 
   async function takeSnapshots<TSnapshot extends IOSSnapshot | AndroidSnapshot = IOSSnapshot | AndroidSnapshot>({

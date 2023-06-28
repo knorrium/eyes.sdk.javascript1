@@ -15,9 +15,7 @@ describe('requests', () => {
       .times(3)
       .reply((_url, body) => {
         const payload =
-          (body as any).name === 'TAKE_SNAPSHOT'
-            ? {result: {resourceMap: {metadata: {}}, metadata: {}}}
-            : {result: {screenshotUrl: ''}}
+          (body as any).name === 'TAKE_SNAPSHOT' ? {result: {resourceMap: {metadata: {}}, metadata: {}}} : {}
 
         nock('http://broker-url.com')
           .get(path => path === `/message-${count}-response`)
