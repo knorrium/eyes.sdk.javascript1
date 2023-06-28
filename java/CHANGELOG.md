@@ -1,3 +1,10 @@
+## [5.57.0] - 2023-06-28
+### Features
+- 
+### Bug fixes
+- handled abandoned tunnels in Execution Cloud.
+- Fixed an error when tunnels were in queue in Execution Cloud.
+
 ## [5.56.0] - 2023-06-20
 ### Features
 - 
