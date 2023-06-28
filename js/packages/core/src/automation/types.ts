@@ -2,6 +2,7 @@ import type {MaybeArray, Size, Region} from '@applitools/utils'
 import type * as BaseCore from '@applitools/core-base/types'
 import {type SpecType, type Driver, type ElementReference, type ContextReference} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
+import {type NMLClient, type NMLRequestsConfig} from '@applitools/nml-client'
 
 export type * from '@applitools/core-base/types'
 
@@ -12,6 +13,11 @@ export interface Core<TSpec extends SpecType> extends BaseCore.Core {
   readonly base: BaseCore.Core
   getViewportSize?(options: {target: DriverTarget<TSpec>; logger?: Logger}): Promise<Size>
   setViewportSize?(options: {target: DriverTarget<TSpec>; size: Size; logger?: Logger}): Promise<void>
+  getNMLClient(options: {
+    config: Omit<NMLRequestsConfig, 'brokerUrl'>
+    driver: Driver<TSpec>
+    logger?: Logger
+  }): Promise<NMLClient>
   openEyes(options: {
     target?: DriverTarget<TSpec>
     settings: BaseCore.OpenSettings
@@ -52,17 +58,18 @@ export interface Eyes<TSpec extends SpecType> extends BaseCore.Eyes {
 
 export interface ScreenshotSettings<TSpec extends SpecType>
   extends BaseCore.ImageSettings<Region | ElementReference<TSpec>> {
+  webview?: boolean | string
   frames?: (ContextReference<TSpec> | {frame: ContextReference<TSpec>; scrollRootElement?: ElementReference<TSpec>})[]
   fully?: boolean
   scrollRootElement?: ElementReference<TSpec>
   stitchMode?: 'Scroll' | 'CSS' | 'Resize'
+  screenshotMode?: 'default' | 'applitools-lib'
   hideScrollbars?: boolean
   hideCaret?: boolean
   overlap?: {top?: number; bottom?: number}
   waitBeforeCapture?: number
   waitBetweenStitches?: number
   lazyLoad?: boolean | {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}
-  webview?: boolean | string
 }
 
 export type LocateSettings<TLocator extends string, TSpec extends SpecType> = BaseCore.LocateSettings<

@@ -23,22 +23,22 @@ export type TestResultContainer = {
 
 export class TestResultContainerData implements Required<TestResultContainer> {
   private _container: Core.TestResultContainer<'classic' | 'ufg'>
-  private _deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
+  private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
 
   /** @internal */
   constructor(options: {
     container: Core.TestResultContainer<'classic' | 'ufg'>
-    deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
+    core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   }) {
     this._container = options.container
-    this._deleteTest = options.deleteTest
+    this._core = options.core
   }
 
   get testResults(): TestResults {
     return this._container.result!
   }
   getTestResults(): TestResultsData {
-    return this.testResults && new TestResultsData({result: this.testResults, deleteTest: this._deleteTest})
+    return this.testResults && new TestResultsData({result: this.testResults, core: this._core})
   }
 
   get exception(): Error {
