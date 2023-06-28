@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.1.0...js/tunnel-client@0.1.1) (2023-06-28)
+
+
+### Bug Fixes
+
+* bump `execution-grid-tunnel` to 2.1.6 in tunnel-client ([54f4824](https://github.com/applitools/eyes.sdk.javascript1/commit/54f48249c4d82936366fbd4df5f77a74ffc1b6b4))
+
 ## [0.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.0.5...js/tunnel-client@0.1.0) (2023-06-28)
 
 

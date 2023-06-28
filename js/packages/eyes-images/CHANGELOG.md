@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.23.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.6...js/eyes-images@4.23.7) (2023-06-28)
+
+
+### Dependencies
+
+* @applitools/ec-client bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * bump `execution-grid-tunnel` to 2.1.6 ([2840ddf](https://github.com/applitools/eyes.sdk.javascript1/commit/2840ddfc08518495d3a5ba58c33569c213a0eac3))
+
+
+
+* @applitools/tunnel-client bumped from 0.1.0 to 0.1.1
+  #### Bug Fixes
+
+  * bump `execution-grid-tunnel` to 2.1.6 in tunnel-client ([54f4824](https://github.com/applitools/eyes.sdk.javascript1/commit/54f48249c4d82936366fbd4df5f77a74ffc1b6b4))
+* @applitools/eyes bumped from 1.4.0 to 1.4.1
+
+* @applitools/core bumped from 3.3.0 to 3.3.1
+
+
 ## [4.23.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.5...js/eyes-images@4.23.6) (2023-06-28)
 
 

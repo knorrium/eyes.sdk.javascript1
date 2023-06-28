@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-puppeteer",
-  "version": "1.17.7",
+  "version": "1.17.8",
   "description": "Applitools Eyes SDK for Puppeteer",
   "keywords": [
     "eyes-puppeteer",
@@ -44,7 +44,7 @@
   },
   "notificationName": "puppeteer",
   "dependencies": {
-    "@applitools/eyes": "1.4.0",
+    "@applitools/eyes": "1.4.1",
     "@applitools/spec-driver-puppeteer": "1.1.67"
   },
   "devDependencies": {
