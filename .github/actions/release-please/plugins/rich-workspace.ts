@@ -147,16 +147,18 @@ export class RichWorkspace extends ManifestPlugin {
           if (section.startsWith('### Dependencies\n\n')) {
             const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups! as Omit<Bump, 'sections'>)
             update.bumps = bumps.reduce((bumps, bump) => {
-              const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
-              const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
-              if (bumpedChangelogUpdate) {
-                const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
-                bumps.push({...bump, sections: patchedBumpedChangelogUpdate.sections.filter(section => !section.startsWith('### Dependencies\n\n'))})
-                patchedBumpedChangelogUpdate.bumps?.forEach(bump => {
-                  if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) bumps.push(bump)
-                })
-              } else {
-                bumps.push({...bump, sections: []})
+              if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
+                const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
+                const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
+                if (bumpedChangelogUpdate) {
+                  const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
+                  bumps.push(
+                    {...bump, sections: patchedBumpedChangelogUpdate.sections.filter(section => !section.startsWith('### Dependencies\n\n'))},
+                    ...(patchedBumpedChangelogUpdate.bumps?.filter(bump => bumps.every(existedBump => bump.packageName !== existedBump.packageName)) ?? [])
+                  )
+                } else {
+                  bumps.push({...bump, sections: []})
+                }
               }
               return bumps
             }, [] as Bump[])
