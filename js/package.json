@@ -6,7 +6,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1"
   },
   "scripts": {
-    "lint:commit": "commitlint --extends @commitlint/config-conventional --edit",
+    "lint:commit": "commitlint --config ./commitlint.config.js --edit",
     "lint:changed": "FILES=$(git --no-pager diff --name-only --relative --diff-filter=d -- '*.ts' '*.js') && eslint $FILES",
     "lint:staged": "FILES=$(git --no-pager diff --name-only --relative --diff-filter=d --cached -- '*.ts' '*.js') && eslint $FILES",
     "add-silent": "node ./scripts/add-silent.js",
