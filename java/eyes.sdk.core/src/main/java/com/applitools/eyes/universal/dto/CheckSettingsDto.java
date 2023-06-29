@@ -31,6 +31,7 @@ public class CheckSettingsDto {
   private Boolean ignoreDisplacements;
   private NormalizationDto normalization;
   private DebugScreenshotHandlerDto debugImages;
+  private String screenshotMode; // "default" | "applitools-lib"
 
   // check
   private String name;
@@ -363,5 +364,13 @@ public class CheckSettingsDto {
   @JsonIgnore
   public String getType() {
     return type;
+  }
+
+  public String getScreenshotMode() {
+    return screenshotMode;
+  }
+
+  public void setScreenshotMode(String screenshotMode) {
+    this.screenshotMode = screenshotMode;
   }
 }

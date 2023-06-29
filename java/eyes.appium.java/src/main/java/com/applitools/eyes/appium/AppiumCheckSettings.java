@@ -37,6 +37,7 @@ public class AppiumCheckSettings extends CheckSettings {
     private Boolean isDefaultWebview;
     private String webview;
     private List<NMGOptions> nmgOptions = new ArrayList<>();
+    private Boolean useSystemScreenshot;
 
     protected AppiumCheckSettings() {
         super();
@@ -79,6 +80,7 @@ public class AppiumCheckSettings extends CheckSettings {
         clone.isDefaultWebview = this.isDefaultWebview;
         clone.webview = this.webview;
         clone.nmgOptions = this.nmgOptions;
+        clone.useSystemScreenshot = this.useSystemScreenshot;
         return clone;
     }
 
@@ -440,6 +442,22 @@ public class AppiumCheckSettings extends CheckSettings {
             clone.nmgOptions.addAll(Arrays.asList(options));
             clone.nmgOptions.remove(null);
         }
+        return clone;
+    }
+
+    public Boolean getScreenshotMode() {
+        return useSystemScreenshot;
+    }
+
+    public AppiumCheckSettings useSystemScreenshot() {
+        AppiumCheckSettings clone = this.clone();
+        clone.useSystemScreenshot = true;
+        return clone;
+    }
+
+    public AppiumCheckSettings useSystemScreenshot(Boolean useSystemScreenshot) {
+        AppiumCheckSettings clone = this.clone();
+        clone.useSystemScreenshot = useSystemScreenshot;
         return clone;
     }
 }

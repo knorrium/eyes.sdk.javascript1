@@ -61,9 +61,17 @@ public class AppiumCheckSettingsMapper {
         checkSettingsDto.setAutProxy(ProxyMapper.toAutProxyDto(config.getAutProxy()));
         checkSettingsDto.setHooks(appiumCheckSettings.getScriptHooks());
         checkSettingsDto.setDensityMetrics(appiumCheckSettings.getDensityMetrics());
-
+        checkSettingsDto.setScreenshotMode(toScreenshotMode(appiumCheckSettings.getScreenshotMode()));
         checkSettingsDto.setType(NMGOptionsMapper.toNMGOptionsMapperDtoList(appiumCheckSettings.getNMGOptions()) == null? null : ManagerType.CLASSIC.value);
 
         return checkSettingsDto;
+    }
+
+    private static String toScreenshotMode(Boolean screenshotMode) {
+        if (screenshotMode == null) {
+            return null;
+        }
+
+        return screenshotMode? "default" : "applitools-lib";
     }
 }

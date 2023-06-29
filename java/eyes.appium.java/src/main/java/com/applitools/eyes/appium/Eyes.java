@@ -29,18 +29,39 @@ public class Eyes implements IEyesBase {
     private com.applitools.eyes.selenium.Eyes originEyes;
 
     public static void setNMGCapabilities(DesiredCapabilities caps) {
-        setNMGCapabilities(caps, null, null, null);
+        /* backward compatibility */
+        setMobileCapabilities(caps, null, null, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey) {
-        setNMGCapabilities(caps, apiKey, null, null);
+        /* backward compatibility */
+        setMobileCapabilities(caps, apiKey, null, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey, String eyesServerUrl) {
-        setNMGCapabilities(caps, apiKey, eyesServerUrl, null);
+        /* backward compatibility */
+        setMobileCapabilities(caps, apiKey, eyesServerUrl, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey,
+                                          String eyesServerUrl, ProxySettings proxySettings) {
+        /* backward compatibility */
+        setMobileCapabilities(caps, apiKey, eyesServerUrl, proxySettings);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps) {
+        setMobileCapabilities(caps, null, null, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey) {
+        setMobileCapabilities(caps, apiKey, null, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey, String eyesServerUrl) {
+        setMobileCapabilities(caps, apiKey, eyesServerUrl, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey,
                                           String eyesServerUrl, ProxySettings proxySettings) {
 
         String iosCapsKey = "processArguments";

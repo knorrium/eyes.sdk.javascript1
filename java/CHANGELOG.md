@@ -1,3 +1,10 @@
+## [5.58.0] - 2023-06-29
+### Features
+- Added new API `setMobileCapabilities` for native Eyes.
+- Added new API `useSystemScreenshot` for native Eyes. 
+### Bug fixes
+-
+
 ## [5.57.0] - 2023-06-28
 ### Features
 - 
