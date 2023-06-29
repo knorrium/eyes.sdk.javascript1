@@ -47,8 +47,7 @@ runs:
           echo "::group::Sending notification"
           npx --package=@applitools/bongo bongo send-release-notification --name="${{inputs.name}}" --report-id="${"${{inputs.report-id}}":-$REPORT_ID}"
           echo "::endgroup::"
-        elfi
-        then
-          echo "Unknown command"
+        else
+          echo "::error::Unknown command '${{inputs.command}}'"
         fi
 
