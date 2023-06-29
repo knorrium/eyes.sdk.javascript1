@@ -39,7 +39,7 @@ describe('works with fetchConcurrency', () => {
     }
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
   })
@@ -52,7 +52,7 @@ describe('works with fetchConcurrency', () => {
     const config = {...applitoolsConfig, eyesFetchConcurrency: 5, failCypressOnDiff: false, universalDebug: true}
     fs.writeFileSync(`${targetTestAppPath}/applitools.config.js`, 'module.exports =' + JSON.stringify(config, 2, null))
     try {
-      const [_err, stdout] = await presult(runCypress('get-test-results-for-checkSettings.js', 'fetchConcurrency.js'))
+      const [_err, stdout] = await presult(runCypress('log-plugin.js', 'fetchConcurrency.js'))
       const fetchConcurrency = await getInfo(stdout)
       expect(fetchConcurrency).to.eq(5)
     } catch (ex) {

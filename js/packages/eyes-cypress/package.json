@@ -25,10 +25,10 @@
     "lint": "run --top-level eslint \"**/*.{js,ts}\"",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate",
-    "test": "yarn test:unit && yarn test:it && yarn test:e2e && yarn test:ts && yarn test:components && yarn test:coverage",
+    "test": "yarn test:unit && yarn test:it && yarn test:ts:compile && yarn test:e2e && yarn test:components && yarn test:coverage",
     "test:sanity": "yarn test:unit && yarn test:it && yarn test:ts",
     "test:unit": "run --top-level mocha --no-timeouts 'test/unit/**/*.test.js'",
-    "test:it": "yarn build && run --top-level mocha --no-timeouts 'test/it/**/*.test.js'",
+    "test:it": "run --top-level mocha --no-timeouts 'test/it/**/*.test.js'",
     "test:ts": "yarn test:ts:compile && yarn test:ts:run",
     "test:ts:compile": "run --top-level tsc --project test/e2e/ts/cypress",
     "test:ts:run:legacy": "yarn cypress9 run --config-file ./test/e2e/ts/cypress-ts-legacy.json",
@@ -43,7 +43,7 @@
     "cypress12": "../../node_modules/cypress12/bin/cypress",
     "test:ts:run:12": "yarn cypress12 run --project ./test/e2e/ts --config-file ./cypress-12.config.ts",
     "test:ts:run": "yarn cypress$APPLITOOLS_FRAMEWORK_VERSION run --project ./test/e2e/ts --config-file ./cypress-$APPLITOOLS_FRAMEWORK_VERSION.config.ts",
-    "test:coverage": "yarn generate:tests && cd test/coverage/generic && yarn && unset APPLITOOLS_API_KEY && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-cypress' APPLITOOLS_BATCH_ID=$(uuidgen) npx cypress run",
+    "test:coverage": "yarn generate:tests && cd test/coverage/generic && yarn && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-cypress' APPLITOOLS_BATCH_ID=$(uuidgen) npx cypress run",
     "test:e2e": "mkdir -p test/fixtures/testAppCopies && run --top-level mocha --no-timeouts 'test/e2e/**/*.test.js'",
     "test:components": "cd test/components && yarn && npx cypress run --component",
     "cypress": "cypress open --config-file test/fixtures/cypress-play.json",
@@ -55,7 +55,7 @@
     "setup": "run --top-level xvfb:setup"
   },
   "dependencies": {
-    "@applitools/core": "3.2.3",
+    "@applitools/core": "3.3.1",
     "@applitools/eyes": "1.2.17",
     "@applitools/functional-commons": "1.6.0",
     "@applitools/logger": "2.0.3",
@@ -87,6 +87,7 @@
     "cypress8": "npm:cypress@^8.7.0",
     "cypress9": "npm:cypress@^9.0.0",
     "lodash.omit": "4.5.0",
+    "mocha": "^10.2.0",
     "morgan": "1.9.1",
     "ncp": "2.0.0",
     "node-fetch": "2.6.0"

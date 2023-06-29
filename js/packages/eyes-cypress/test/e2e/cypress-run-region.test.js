@@ -14,7 +14,7 @@ describe('region', () => {
     }
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
   })

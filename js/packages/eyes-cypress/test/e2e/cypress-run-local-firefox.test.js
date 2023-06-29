@@ -16,10 +16,10 @@ describe.skip('hello world firefox', () => {
     try {
       await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
       process.chdir(targetTestAppPath)
-      await pexec(`npm install`, {
+      await pexec(`yarn`, {
         maxBuffer: 1000000,
       })
-      await pexec(`npm install cypress@9`)
+      await pexec(`yarn add cypress@9`)
     } catch (ex) {
       console.log(ex)
       throw ex

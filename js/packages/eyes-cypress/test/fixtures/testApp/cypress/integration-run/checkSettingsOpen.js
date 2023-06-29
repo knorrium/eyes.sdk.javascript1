@@ -23,7 +23,7 @@ describe('checkSettings in global config', () => {
   })
   after(() => {
     cy.eyesGetAllTestResults().then(summary => {
-      cy.task('log', `Summary results: ${JSON.stringify(summary)}`)
+      cy.task('logWithTokens', `Summary results: ${JSON.stringify(summary)}`)
     })
   })
 })

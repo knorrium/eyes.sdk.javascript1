@@ -34,7 +34,7 @@ describe('works for diffs with global hooks', () => {
       packageJson.devDependencies['cypress'] = '9.7.0'
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
       process.chdir(targetTestAppPath)
-      await pexec(`npm install`, {
+      await pexec(`yarn`, {
         maxBuffer: 1000000,
       })
     } catch (ex) {

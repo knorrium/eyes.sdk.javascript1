@@ -52,7 +52,7 @@ describe('works with checkSettings in config file', () => {
     }
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
   })
@@ -67,9 +67,7 @@ describe('works with checkSettings in config file', () => {
       `${targetTestAppPath}/applitools.config.js`,
     )
     try {
-      const [_err, stdout] = await presult(
-        runCypress('get-test-results-for-checkSettings.js', 'checkSettingsInGlobalConfig.js'),
-      )
+      const [_err, stdout] = await presult(runCypress('log-plugin.js', 'checkSettingsInGlobalConfig.js'))
 
       const info = await getInfo(stdout)
       checkProps(info)

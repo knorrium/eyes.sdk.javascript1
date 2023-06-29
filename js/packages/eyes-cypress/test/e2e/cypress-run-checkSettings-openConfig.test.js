@@ -52,7 +52,7 @@ describe('works with checkSettings in open', () => {
     }
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
   })
@@ -63,7 +63,7 @@ describe('works with checkSettings in open', () => {
 
   it('checkSettings works from open file', async () => {
     try {
-      const [_err, stdout] = await presult(runCypress('get-test-results-for-checkSettings.js', 'checkSettingsOpen.js'))
+      const [_err, stdout] = await presult(runCypress('log-plugin.js', 'checkSettingsOpen.js'))
       const info = await getInfo(stdout)
       checkProps(info)
     } catch (ex) {

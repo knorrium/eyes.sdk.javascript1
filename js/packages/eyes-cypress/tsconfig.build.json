@@ -9,15 +9,15 @@
     "sourceMap": false,
     "stripInternal": false,
     "removeComments": false,
-    // "plugins": [{
-    //   "transform": "@applitools/api-extractor",
-    //   "afterDeclarations": true,
-    //   "rootFile": "./expose.ts",
-    //   "allowGlobalNamespaces": ["Cypress", "JQuery", "NodeJS"],
-    //   "stripPrivate": true,
-    //   "stripProtected": true,
-    //   "stripInternal": true
-    // }]
+    "plugins": [{
+      "transform": "@applitools/api-extractor",
+      "afterDeclarations": true,
+      "rootFile": "./expose.ts",
+      "allowGlobalNamespaces": ["Cypress", "JQuery", "NodeJS"],
+      "stripPrivate": true,
+      "stripProtected": true,
+      "stripInternal": true,
+    }]
   },
   "exclude" : ["dist", "types", "test"]
 }

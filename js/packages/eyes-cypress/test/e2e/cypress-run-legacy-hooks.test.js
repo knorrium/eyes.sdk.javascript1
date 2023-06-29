@@ -14,7 +14,7 @@ describe('legacy hooks', () => {
     }
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
-    await pexec('npm install', {
+    await pexec('yarn', {
       maxBuffer: 1000000,
     })
   })
@@ -24,7 +24,7 @@ describe('legacy hooks', () => {
   })
 
   it('works with older versions without legacyHooks flag', async () => {
-    await pexec('npm install cypress@6.0.0', {
+    await pexec('yarn add cypress@6.0.0', {
       maxBuffer: 1000000,
     })
     try {
@@ -42,7 +42,7 @@ describe('legacy hooks', () => {
 
   it('works with newer versions without legacyHooks flag', async () => {
     try {
-      await pexec('npm install cypress@6.3.0', {
+      await pexec('yarn add cypress@6.3.0', {
         maxBuffer: 1000000,
       })
       await pexec(

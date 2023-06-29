@@ -29,8 +29,8 @@ describe('package and install', () => {
     await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
     process.chdir(targetTestAppPath)
 
-    await pexec(`npm install`)
-    await pexec(`npm install ${packageFilePath}`)
+    await pexec(`yarn`)
+    await pexec(`yarn ${packageFilePath}`)
   })
 
   after(async () => {

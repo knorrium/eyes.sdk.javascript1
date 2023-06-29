@@ -42,7 +42,7 @@ describe('tap file', () => {
 
   it(`supports creating '.tap' file from browser hooks`, async () => {
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
 
@@ -74,7 +74,7 @@ describe('tap file', () => {
     packageJson.devDependencies['cypress'] = latestCypressVersion
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
 

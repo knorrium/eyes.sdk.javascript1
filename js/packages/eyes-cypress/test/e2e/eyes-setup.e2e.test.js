@@ -77,7 +77,7 @@ describe('eyes-setup script', () => {
     packageJson.dependencies.cypress = cypressVersion
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
 
-    await pexec(`npm install`)
+    await pexec(`yarn`)
 
     const [err, result] = await presult(runSetupScript())
     expect(err).to.be.undefined
@@ -110,7 +110,7 @@ Setup done!
     packageJson.dependencies.cypress = cypressVersion
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
 
-    await pexec(`npm install`)
+    await pexec(`yarn`)
     unlinkSync(cypressConfigTSPath)
 
     const [err, result] = await presult(runSetupScript())
@@ -145,7 +145,7 @@ Setup done!
     packageJson.dependencies.cypress = cypressVersion
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
 
-    await pexec(`npm install`)
+    await pexec(`yarn`)
 
     unlinkSync(cypressConfigPath)
     unlinkSync(cypressConfigTSPath)
@@ -167,7 +167,7 @@ No configuration file found at ${targetTestAppPath}. This is usually caused by s
     packageJson.dependencies.cypress = cypressVersion
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
 
-    await pexec(`npm install`)
+    await pexec(`yarn`)
 
     unlinkSync(cypressJsonPath)
 
@@ -188,7 +188,7 @@ No configuration file found at ${cypressJsonPath}. This is usually caused by set
     packageJson.dependencies.cypress = cypressVersion
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
 
-    await pexec(`npm install`)
+    await pexec(`yarn`)
     unlinkSync(cypressJsonPath)
     unlinkSync(cypressConfigPath)
 

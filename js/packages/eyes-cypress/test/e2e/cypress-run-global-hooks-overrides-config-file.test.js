@@ -74,7 +74,7 @@ describe('global hooks override in cypress.config.js file', () => {
     packageJson.devDependencies['cypress'] = latestCypressVersion
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
     process.chdir(targetTestAppPath)
-    await pexec(`npm install`, {
+    await pexec(`yarn`, {
       maxBuffer: 1000000,
     })
   })

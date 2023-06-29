@@ -10,7 +10,7 @@ describe('spec-driver', () => {
   before(async () => {
     try {
       process.chdir(path.resolve(__dirname, '../browser/fixtures'))
-      await pexec(`npm install`, {
+      await pexec(`yarn`, {
         maxBuffer: 1000000,
       })
     } catch (ex) {

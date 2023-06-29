@@ -29,7 +29,7 @@ describe.skip('Retries', () => {
     try {
       await pexec(`cp -r ${sourceTestAppPath}/. ${targetTestAppPath}`)
       process.chdir(targetTestAppPath)
-      await pexec(`npm install`, {
+      await pexec(`yarn`, {
         maxBuffer: 1000000,
       })
     } catch (ex) {
@@ -43,7 +43,7 @@ describe.skip('Retries', () => {
   })
 
   it('remove duplicate tests on retry', async () => {
-    const [err, v] = await presult(runCypress('get-test-results.js', 'retries.js'))
+    const [err, v] = await presult(runCypress('log-plugin.js', 'retries.js'))
     console.log(v)
     expect(err).to.be.undefined
   })
