@@ -75,4 +75,4 @@ jobs:
           shell: ${{matrix.shell || 'bash'}}
           command: notification
           name: ${{matrix.notification.name}}
-          report-id: ${{matrix.name}}@${{matrix.version}}
+          report-id: ${{matrix.name}}@${{matrix.package-version}}

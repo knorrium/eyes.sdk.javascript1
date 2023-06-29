@@ -148,7 +148,7 @@ jobs:
           command: report
           name: ${{matrix.report.name}}
           group: ${{matrix.report.group}}
-          report-id: ${{matrix.name}}@${{matrix.version}}
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
           result-path: ./logs
           meta-path: ./logs
 
