@@ -40,12 +40,12 @@ runs:
         if [ "${{inputs.command}}" == "report" ]
         then
           echo "::group::Sending report"
-          npx --package=@applitools/bongo bongo report --name="${{inputs.name}}" --group="${{inputs.group}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
+          npx --package=@applitools/bongo -- bongo report --name="${{inputs.name}}" --group="${{inputs.group}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
           echo "::endgroup::"
         elif [ "${{inputs.command}}" == "notification" ]
         then
           echo "::group::Sending notification"
-          npx --package=@applitools/bongo bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"
+          npx --package=@applitools/bongo -- bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"
           echo "::endgroup::"
         else
           echo "::error::Unknown command '${{inputs.command}}'"
