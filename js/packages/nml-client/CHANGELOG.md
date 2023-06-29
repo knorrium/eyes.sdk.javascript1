@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.4.0...js/nml-client@1.5.0) (2023-06-29)
+
+
+### Features
+
+* added a new mode for taking native app screenshots ([#1682](https://github.com/applitools/eyes.sdk.javascript1/issues/1682)) ([0ab7d96](https://github.com/applitools/eyes.sdk.javascript1/commit/0ab7d96164c89ec65b87654fb271d4404bbf70e5))
+
 ## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.3.59...js/nml-client@1.4.0) (2023-06-28)
 
 

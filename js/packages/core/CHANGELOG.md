@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+## [3.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.3.1...js/core@3.4.0) (2023-06-29)
+
+
+### Features
+
+* added a new mode for taking native app screenshots ([#1682](https://github.com/applitools/eyes.sdk.javascript1/issues/1682)) ([0ab7d96](https://github.com/applitools/eyes.sdk.javascript1/commit/0ab7d96164c89ec65b87654fb271d4404bbf70e5))
+
+
+### Bug Fixes
+
+* apply default scrolling mode ([f35aba4](https://github.com/applitools/eyes.sdk.javascript1/commit/f35aba454a344c8f0cf787afa2120ce57d91e307))
+
+
+### Dependencies
+
+* @applitools/nml-client bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * added a new mode for taking native app screenshots ([#1682](https://github.com/applitools/eyes.sdk.javascript1/issues/1682)) ([0ab7d96](https://github.com/applitools/eyes.sdk.javascript1/commit/0ab7d96164c89ec65b87654fb271d4404bbf70e5))
+
 ## [3.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.3.0...js/core@3.3.1) (2023-06-28)
 
 
