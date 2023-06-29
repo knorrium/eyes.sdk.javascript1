@@ -67,3 +67,12 @@ jobs:
           tag_name: ${{github.event.release.tag_name}}
           prerelease: false
           files: ${{join(matrix.artifacts)}}
+      - name: Sending notification
+        if: ${{matrix.notification}}
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          command: notification
+          name: ${{matrix.notification.name}}
+          report-id: ${{matrix.name}}@${{matrix.version}}

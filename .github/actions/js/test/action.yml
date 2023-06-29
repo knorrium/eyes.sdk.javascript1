@@ -23,10 +23,6 @@ inputs:
   parallel:
     description: number of parallel processes to run tests
     type: number
-  report:
-    description: report level
-    type: string
-    default: sandbox
   shell:
     description: shell to use
     type: string
@@ -82,10 +78,3 @@ runs:
         if [ ! -z "${{inputs.parallel}}" ]; then export MOCHA_JOBS=${{inputs.parallel}}; fi
         if [ ! -z "${{inputs.test-type}}" ]; then yarn test:${{inputs.test-type}}; elif [ "$(jq -r .scripts.test ./package.json)" != "null" ]; then yarn test; fi
         echo "::endgroup::"
-
-        if [ "$(jq -r .scripts.report ./package.json)" != "null" ]
-        then
-          echo "::group::Sending reports"
-          if [ "${{inputs.report}}" = "sandbox" ]; then yarn report --sandbox; else yarn report --report-id=$(jq -r '"\(.name)@\(.version)"' ./package.json); fi
-          echo "::endgroup::"
-        fi

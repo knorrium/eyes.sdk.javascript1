@@ -57,10 +57,8 @@
     "test:e2e": "MOCHA_GROUP=e2e run --top-level mocha './test/e2e/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/**/*.spec.ts'",
     "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'",
-    "setup": "run --top-level browsers:setup",
-    "report": "bongo report --name 'core' --group 'core' --result-path './logs'"
+    "setup": "run --top-level browsers:setup"
   },
-  "notificationName": "core",
   "pkg": {
     "scripts": "./dist/cli/cli.js",
     "outputPath": "./bin",

@@ -48,10 +48,8 @@
     "test:e2e": "nightwatch --config test/e2e/nightwatch.conf.js --eyes-config applitools.config.js test/e2e/*.spec.js",
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
-    "up:framework": "run --top-level add-silent nightwatch",
-    "report": "bongo report --name 'nightwatch' --result-path './logs' --meta-path './logs'"
+    "up:framework": "run --top-level add-silent nightwatch"
   },
-  "notificationName": "nightwatch",
   "dependencies": {
     "@applitools/driver": "1.12.4",
     "@applitools/eyes": "1.4.1",

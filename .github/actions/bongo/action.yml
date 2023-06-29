@@ -1,0 +1,54 @@
+name: Bongo
+description: Bongo's quality server integration
+inputs:
+  working-directory:
+    description: the path to the directory from repository root
+    type: string
+    required: true
+  command:
+    description: command to execute (report or notification)
+    type: string
+    required: true
+  name:
+    description: name of the reported entity
+    type: string
+    required: true
+  group:
+    description: group of the reported entity
+    type: string
+  report-id:
+    description: id of the target report
+    type: string
+  result-path:
+    description: path to the test results directory
+    type: string
+  meta-path:
+    description: path to the test metadata directory
+    type: string
+  shell:
+    description: shell to use
+    type: string
+    default: bash
+
+runs:
+  using: composite
+  steps:
+    - name: Bongo
+      shell: ${{inputs.shell}}
+      working-directory: ${{inputs.working-directory}}
+      run: |
+        if [ "${{inputs.command}}" == "report" ]
+        then
+          echo "::group::Sending report"
+          npx --package=@applitools/bongo bongo report --name="${{inputs.name}}" --group="${{inputs.group}}" --report-id="${"${{inputs.report-id}}":-$REPORT_ID}" --result-path="${"${{inputs.result-path}}":-$RESULT_PATH}" --meta-path="${"${{inputs.meta-path}}":-$META_PATH}"
+          echo "::endgroup::"
+        elfi [ "${{inputs.command}}" == "notification" ]
+        then
+          echo "::group::Sending notification"
+          npx --package=@applitools/bongo bongo send-release-notification --name="${{inputs.name}}" --report-id="${"${{inputs.report-id}}":-$REPORT_ID}"
+          echo "::endgroup::"
+        elfi
+        then
+          echo "Unknown command"
+        fi
+

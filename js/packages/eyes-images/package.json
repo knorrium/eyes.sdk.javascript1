@@ -45,10 +45,8 @@
     "build": "run --top-level tspc --project ./tsconfig.build.json",
     "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-images' --meta-path './logs'",
     "test": "yarn test:coverage",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}",
-    "report": "bongo report --name 'js_images' --group 'images' --result-path './logs' --meta-path './logs'"
+    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
-  "notificationName": "js_images",
   "dependencies": {
     "@applitools/eyes": "1.4.1"
   },

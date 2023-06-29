@@ -330,19 +330,19 @@
         {"runner": "linuxarm", "build-type": "arm64", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 16, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 18, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"node-version": 20, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"test-type": "sauce", "parallel": 2, "queue": "sauce", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
-        {"runner": "linux", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linux"},
-        {"runner": "linuxarm", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/linuxarm"},
-        {"runner": "linux", "container": "node:lts-alpine", "shell": "ash -eo pipefail {0}", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/alpine"},
-        {"runner": "windows", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/windows"},
-        {"runner": "macos", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/macos"}
+        {"node-version": 14, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"node-version": 16, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"node-version": 18, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"node-version": 20, "test-type": "local", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"test-type": "sauce", "parallel": 2, "queue": "sauce", "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
+        {"runner": "linux", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/linux"},
+        {"runner": "linuxarm", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/linuxarm"},
+        {"runner": "linux", "container": "node:lts-alpine", "shell": "ash -eo pipefail {0}", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/alpine"},
+        {"runner": "windows", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/windows"},
+        {"runner": "macos", "test-type": "bin", "setup-type": "none", "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "report": {"name": "core", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/macos"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org", "artifacts": ["./bin/*"]}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "core"}, "artifacts": ["./bin/*"]}
       ]
     },
     "js/packages/eyes-api": {
@@ -368,13 +368,13 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "artifacts": ["./logs/**/*"], "report": {"name": "js_images", "group": "images"}, "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "artifacts": ["./logs/**/*"], "report": {"name": "js_images", "group": "images"}, "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "artifacts": ["./logs/**/*"], "report": {"name": "js_images", "group": "images"}, "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "artifacts": ["./logs/**/*"], "report": {"name": "js_images", "group": "images"}, "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "js_images"}}
       ]
     },
     "js/packages/eyes-webdriverio-5": {
@@ -384,15 +384,15 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"framework-version": 5, "node-version": 14, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 6, "node-version": 14, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 7, "node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
-        {"framework-version": 8, "test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
+        {"framework-version": 5, "node-version": 14, "test-type": "local", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 6, "node-version": 14, "test-type": "local", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 7, "node-version": 16, "test-type": "local", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 8, "node-version": 18, "test-type": "local", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 8, "node-version": 20, "test-type": "local", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"},
+        {"framework-version": 8, "test-type": "sauce", "parallel": 2, "queue": "sauce", "report": {"name": "js_wdio_5"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "js_wdio_5"}}
       ]
     },
     "js/packages/eyes-selenium": {
@@ -402,14 +402,14 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"framework-version": 4.4, "node-version": 14, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 16, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 18, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "node-version": 20, "test-type": "local", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
-        {"framework-version": 4.4, "test-type": "sauce", "parallel": 2, "queue": "sauce", "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"}
+        {"framework-version": 4.4, "node-version": 14, "test-type": "local", "report": {"name": "js_selenium_4"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 16, "test-type": "local", "report": {"name": "js_selenium_4"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 18, "test-type": "local", "report": {"name": "js_selenium_4"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "node-version": 20, "test-type": "local", "report": {"name": "js_selenium_4"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"},
+        {"framework-version": 4.4, "test-type": "sauce", "parallel": 2, "queue": "sauce", "report": {"name": "js_selenium_4"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "js_selenium_4"}}
       ]
     },
     "js/packages/eyes-nightwatch": {
@@ -419,13 +419,13 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "report": {"name": "nightwatch"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "report": {"name": "nightwatch"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "report": {"name": "nightwatch"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "report": {"name": "nightwatch"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "nightwatch"}}
       ]
     },
     "js/packages/eyes-playwright": {
@@ -435,13 +435,13 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "playwright"}}
       ]
     },
     "js/packages/eyes-puppeteer": {
@@ -451,13 +451,13 @@
         {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 14, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "playwright"}}
       ]
     },
     "js/packages/eyes-browser-extension": {

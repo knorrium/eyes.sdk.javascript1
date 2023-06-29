@@ -93,10 +93,8 @@
     "test:service": "MOCHA_GROUP=service run --top-level mocha './test/service/unit/*.spec.js' && wdio run ./test/service/wdio.conf.js && wdio run ./test/service/no-config/wdio.no-config.conf.js && wdio run ./test/service/vg/wdio.vg.conf.js",
     "test:coverage": "run generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
-    "up:framework": "run --top-level add-silent webdriverio",
-    "report": "bongo report --name 'js_wdio_5' --result-path './logs' --meta-path './logs'"
+    "up:framework": "run --top-level add-silent webdriverio"
   },
-  "notificationName": "js_wdio_5",
   "dependencies": {
     "@applitools/eyes": "1.4.1",
     "@applitools/spec-driver-webdriverio": "1.5.5"
