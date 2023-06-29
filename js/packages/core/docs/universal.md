@@ -469,6 +469,7 @@ The `locate` method historically was implemented under the `Eyes` namespace, whi
   "fully": true,
   "scrollRootElement": {"type": "css", "selector": "scrollable"},
   "stitchMode": "CSS",
+  "screenshotMode": "default",
   "hideScrollbars": true,
   "hideCaret": true,
   "overlap": {"top": 10, "bottom": 10},

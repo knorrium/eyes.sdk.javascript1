@@ -6,13 +6,11 @@ import {TestFailedError} from './errors/TestFailedError'
 import {RunnerOptions, RunnerOptionsFluent} from './input/RunnerOptions'
 import {TestResultsData} from './output/TestResults'
 import {TestResultsSummaryData} from './output/TestResultsSummary'
-import {Eyes} from './Eyes'
 import * as utils from '@applitools/utils'
 
 export abstract class EyesRunner {
   private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   private _manager?: Core.EyesManager<Core.SpecType, 'classic' | 'ufg'>
-  private _eyes: Eyes<Core.SpecType>[] = []
   abstract readonly type: 'classic' | 'ufg'
   /** @internal */
   protected readonly _managerSettings: Core.ManagerSettings = {}
@@ -31,9 +29,8 @@ export abstract class EyesRunner {
   }
 
   /** @internal */
-  attach<TSpec extends Core.SpecType = Core.SpecType>(eyes: Eyes<TSpec>, core: Core.Core<TSpec, 'classic' | 'ufg'>) {
+  attach<TSpec extends Core.SpecType = Core.SpecType>(core: Core.Core<TSpec, 'classic' | 'ufg'>) {
     this._core ??= core
-    this._eyes.push(eyes)
   }
 
   /** @internal */
@@ -49,23 +46,12 @@ export abstract class EyesRunner {
 
   async getAllTestResults(throwErr = true): Promise<TestResultsSummaryData> {
     if (!this._manager) return new TestResultsSummaryData()
-    const [eyes] = this._eyes
-    const deleteTest = (options: any) =>
-      this._core!.deleteTest({
-        ...options,
-        settings: {
-          ...options.settings,
-          serverUrl: eyes.configuration.serverUrl!,
-          apiKey: eyes.configuration.apiKey!,
-          proxy: eyes.configuration.proxy,
-        },
-      })
     try {
       const summary = await this._manager.getResults({settings: {throwErr, ...this._getResultsSettings}})
-      return new TestResultsSummaryData({summary, deleteTest})
+      return new TestResultsSummaryData({summary, core: this._core})
     } catch (err: any) {
       if (err.info?.result) {
-        const result = new TestResultsData({result: err.info.result, deleteTest})
+        const result = new TestResultsData({result: err.info.result, core: this._core})
         if (err.reason === 'test failed') {
           throw new TestFailedError(err.message, result)
         } else if (err.reason === 'test different') {

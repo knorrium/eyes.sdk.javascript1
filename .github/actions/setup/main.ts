@@ -212,7 +212,7 @@ async function main() {
   }
 
   function getChangedPackagesInput(): string {
-    const changedFiles = execSync(`git --no-pager diff --name-only origin/${process.env.GITHUB_BASE_REF || 'master'}`, {encoding: 'utf8'})
+    const changedFiles = execSync(`git --no-pager diff --name-only $(git merge-base --fork-point origin/${process.env.GITHUB_BASE_REF || 'master'})`, {encoding: 'utf8'})
     const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
       const changedPackage = Object.values(packages).find(changedPackage => {
         const changedPackagePath = path.resolve(process.cwd(), changedPackage.path) + '/'

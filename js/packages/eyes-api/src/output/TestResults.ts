@@ -47,16 +47,16 @@ export type TestResults = {
 }
 
 export class TestResultsData implements Required<TestResults> {
+  private _core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   private _result: Core.TestResult<'classic' | 'ufg'>
-  private _deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
 
   /** @internal */
   constructor(options: {
     result?: Partial<Core.TestResult<'classic' | 'ufg'>>
-    deleteTest?: Core.Core<Core.SpecType, 'classic' | 'ufg'>['deleteTest']
+    core?: Core.Core<Core.SpecType, 'classic' | 'ufg'>
   }) {
-    this._deleteTest = options.deleteTest
     this._result = options.result ?? ({} as any)
+    this._core = options.core
   }
 
   get id(): string {
@@ -402,8 +402,15 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   async delete(): Promise<void> {
-    return this._deleteTest?.({
-      settings: {serverUrl: '', apiKey: '', testId: this.id, batchId: this.batchId, secretToken: this.secretToken},
+    return this._core?.deleteTest({
+      settings: {
+        serverUrl: this._result.server.serverUrl,
+        apiKey: this._result.server.apiKey,
+        proxy: this._result.server.proxy,
+        testId: this._result.id!,
+        batchId: this._result.batchId,
+        secretToken: this._result.secretToken,
+      },
     })
   }
   /** @deprecated */

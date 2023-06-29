@@ -1,4 +1,5 @@
 import type {Core} from './types'
+import {type NMLClient} from '@applitools/nml-client'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore, type Core as BaseCore} from '@applitools/core-base'
@@ -7,11 +8,13 @@ import {makeSetViewportSize} from '../automation/set-viewport-size'
 import {makeLocate} from '../automation/locate'
 import {makeLocateText} from '../automation/locate-text'
 import {makeExtractText} from '../automation/extract-text'
+import {makeGetNMLClient} from '../automation/get-nml-client'
 import {makeOpenEyes} from './open-eyes'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
+  clients?: {nml?: NMLClient}
   base?: BaseCore
   agentId?: string
   cwd?: string
@@ -20,6 +23,7 @@ type Options<TSpec extends SpecType> = {
 
 export function makeCore<TSpec extends SpecType>({
   spec,
+  clients,
   base,
   agentId = 'core-classic',
   cwd = process.cwd(),
@@ -35,10 +39,11 @@ export function makeCore<TSpec extends SpecType>({
       base: base!,
       getViewportSize: spec && makeGetViewportSize({spec, logger}),
       setViewportSize: spec && makeSetViewportSize({spec, logger}),
+      getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
+      openEyes: makeOpenEyes({spec, core, logger}),
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
-      openEyes: makeOpenEyes({spec, core, logger}),
     }
   })
 }

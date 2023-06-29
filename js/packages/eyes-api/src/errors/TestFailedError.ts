@@ -13,6 +13,7 @@ export class TestFailedError extends EyesError {
     }
     super(message)
     this._result = results!
+    Object.defineProperty(this, '_result', {value: this._result, enumerable: false})
   }
 
   get testResults(): TestResults {
