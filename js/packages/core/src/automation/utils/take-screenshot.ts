@@ -37,7 +37,7 @@ export async function takeScreenshot<TSpec extends SpecType>({
     fully: settings.fully,
     hideScrollbars: settings.hideScrollbars,
     hideCaret: settings.hideCaret,
-    scrollingMode: settings.stitchMode?.toLowerCase(),
+    scrollingMode: settings.stitchMode?.toLowerCase() ?? 'scroll',
     overlap: settings.overlap,
     wait: settings.waitBeforeCapture,
     framed: environment.isNative,
