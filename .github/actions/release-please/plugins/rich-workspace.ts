@@ -76,18 +76,7 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   async run(candidates: CandidateReleasePullRequest[]) {
-    const updateDepsCommit = {
-      sha: '',
-      message: 'deps: update some dependencies',
-      files: [],
-      pullRequest: undefined,
-      type: 'deps',
-      scope: undefined,
-      bareMessage: 'update some dependencies',
-      notes: [],
-      references: [],
-      breaking: false
-    }
+    const updateDepsCommit = {sha: '', message: 'deps: update some dependencies', files: [], pullRequest: undefined, type: 'deps', scope: undefined, bareMessage: 'update some dependencies', notes: [], references: [], breaking: false}
     this.releasePullRequestsByPath = await Object.entries(this.strategiesByPath).reduce(async (promise, [path, strategy]) => {
       const releasePullRequest = 
         candidates.find(candidate => candidate.path === path)?.pullRequest ??
@@ -97,14 +86,15 @@ export class RichWorkspace extends ManifestPlugin {
         return releasePullRequestsByPath
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
-    console.log([this.releasePullRequestsByPath])
-    const filteredCandidates = candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
-    console.log('FILTERED CANDIDATES', [filteredCandidates])
-    const updatedCandidates = (await Promise.all(Object.values(this.plugins).map(plugin => plugin.run(filteredCandidates)))).flat()
-    console.log([updatedCandidates])
-    this.patchChangelogs(updatedCandidates)
+    candidates = candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    candidates = await Object.values(this.plugins).reduce(async (promise, plugin) => {
+      const updatedCandidates = await plugin.run(candidates.filter(candidate => (plugin as any).inScope(candidate)))
+      return promise.then(candidates => candidates.concat(updatedCandidates))
+    }, Promise.resolve([] as CandidateReleasePullRequest[]))
 
-    return updatedCandidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    this.patchChangelogs(candidates)
+
+    return candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
 
   protected patchWorkspacePlugin(workspacePlugin: WorkspacePlugin<unknown>): WorkspacePlugin<unknown> {
