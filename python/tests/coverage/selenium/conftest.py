@@ -16,7 +16,9 @@ batch_info = BatchInfo(
 
 @fixture
 def name_of_test(request):
-    return "Python {}".format(request.node.name)
+    return "Py{}.{}|Sel{} {}".format(
+        *sys.version_info[:2], selenium.__version__, request.node.name
+    )
 
 
 @fixture

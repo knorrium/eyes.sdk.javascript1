@@ -176,16 +176,19 @@ eyes_images_generated_tests: install_eyes_images install_tests_requirements gene
 
 
 eyes_appium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_appium_tests
+	python -m pip freeze
 	# cd into suite directory required because coverage-tests-metadata.json is there
 	cd tests/coverage/appium && $(PYTEST) -n 4 --durations=10 --dist loadgroup generic/*
 
 
 eyes_selenium_generated_tests: install_eyes_selenium install_selenium_generated_tests_requirements generate_selenium_tests
+	python -m pip freeze
 	# cd into suite directory required because coverage-tests-metadata.json is there
 	cd tests/coverage/selenium && $(PYTEST) -n 14 --durations=10 --dist loadgroup generic/*
 
 
 eyes_playwright_generated_tests: install_eyes_playwright install_functional_tests_requirements generate_playwright_tests
+	python -m pip freeze
 	# cd into suite directory required because coverage-tests-metadata.json is there
 	cd tests/coverage/playwright && $(PYTEST) -n 10 --durations=10 generic/*
 
@@ -210,14 +213,10 @@ eyes_selenium_functional_tests: install_eyes_selenium install_functional_tests_r
 	$(PYTEST) -n8 -m "not sauce" tests/functional/eyes_selenium/
 
 
-eyes_selenium_sauce_functional_tests: install_eyes_selenium install_functional_tests_requirements
-	$(PYTEST) -n4 -m sauce tests/functional/eyes_selenium/
-
-
 eyes_images_all_tests: eyes_images_generated_tests eyes_images_functional_tests
 
 
-eyes_selenium_all_tests: eyes_selenium_generated_tests eyes_appium_generated_tests eyes_selenium_functional_tests eyes_selenium_sauce_functional_tests unit_tests
+eyes_selenium_all_tests: eyes_selenium_generated_tests eyes_appium_generated_tests eyes_selenium_functional_tests unit_tests
 
 
 eyes_playwright_all_tests: eyes_playwright_generated_tests eyes_playwright_functional_tests

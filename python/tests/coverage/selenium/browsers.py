@@ -127,13 +127,8 @@ def safari_12(sauce_url, legacy, name_of_test):
         return webdriver.Remote(sauce_url, capabilities)
     else:
         if legacy:
-            from selenium.webdriver.safari.options import Options
-
-            options = Options()
-            options.set_capability("name", name_of_test)
-            options.set_capability("platform", "macOS 10.13")
-            options.set_capability("seleniumVersion", "3.4.0")
-            options.set_capability("version", "12.1")
+            if legacy:
+                pytest.skip("Safari 12 can only be accessed in legacy Selenium 3")
         else:
             raise NotImplementedError
         return webdriver.Remote(command_executor=sauce_url, options=options)

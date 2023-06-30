@@ -342,7 +342,10 @@ def test_user_test_id_is_in_test_results(local_chrome_driver):
 def test_ec_client_driver():
     eyes = Eyes()
     ec_url = Eyes.get_execution_cloud_url()
-    driver = webdriver.Remote(ec_url)
+    options = webdriver.ChromeOptions()
+    options.capabilities.pop("platform", None)  # selenium3 sets these caps by default
+    options.capabilities.pop("version", None)
+    driver = webdriver.Remote(ec_url, options=options)
     driver.get("https://applitools.github.io/demo/TestPages/SimpleTestPage")
     eyes.open(driver, "USDK Tests", "Execution cloud driver creation test")
     eyes.check_window()

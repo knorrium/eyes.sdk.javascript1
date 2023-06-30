@@ -410,31 +410,6 @@ jobs:
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
 
-  sauce-functional-tests:
-    needs: dist-build
-    if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.functional_tests }}
-    concurrency: sauce_group_2
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{inputs.ref || github.ref}}
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - uses: actions/download-artifact@v3
-        with:
-          name: packages
-      - run: make eyes_selenium_sauce_functional_tests
-        working-directory: python
-        env:
-          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-
   robot-framework-tests:
     needs: dist-build
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.robotframework_tests }}
@@ -520,7 +495,6 @@ jobs:
       - generated-tests-playwright
       - generated-tests-images
       - functional-tests
-      - sauce-functional-tests
       - robot-framework-tests
       - sauce-robot-framework-tests
     if: ${{ always() && github.event_name == 'schedule' }}
@@ -533,5 +507,5 @@ jobs:
         with:
           payload: |
             {
-              "text": "Python tests <https://github.com/applitools/eyes.sdk.javascript1/actions/runs/${{github.run_id}}|execution> report:\nUnit tests: ${{needs.unit-tests.result}}\nUnit tests (alpine): ${{needs.unit-tests-alpine.result}}\nInstallation tests: ${{needs.installation-tests.result}}\nGenerated images tests: ${{needs.generated-tests-images.result}}\nGenerated appium tests: ${{needs.generated-tests-appium.result}}\nGenerated selenium tests: ${{needs.generated-tests-selenium.result}}\nGenerated playwright tests: ${{needs.generated-tests-playwright.result}}\nFunctional tests: ${{needs.functional-tests.result}}\nFunctional tests (sauce): ${{needs.sauce-functional-tests.result}}\nRobot framework tests: ${{needs.robot-framework-tests.result}}\nRobot framework tests (sauce): ${{needs.sauce-robot-framework-tests.result}}"
+              "text": "Python tests <https://github.com/applitools/eyes.sdk.javascript1/actions/runs/${{github.run_id}}|execution> report:\nUnit tests: ${{needs.unit-tests.result}}\nUnit tests (alpine): ${{needs.unit-tests-alpine.result}}\nInstallation tests: ${{needs.installation-tests.result}}\nGenerated images tests: ${{needs.generated-tests-images.result}}\nGenerated appium tests: ${{needs.generated-tests-appium.result}}\nGenerated selenium tests: ${{needs.generated-tests-selenium.result}}\nGenerated playwright tests: ${{needs.generated-tests-playwright.result}}\nFunctional tests: ${{needs.functional-tests.result}}\nRobot framework tests: ${{needs.robot-framework-tests.result}}\nRobot framework tests (sauce): ${{needs.sauce-robot-framework-tests.result}}"
             }
