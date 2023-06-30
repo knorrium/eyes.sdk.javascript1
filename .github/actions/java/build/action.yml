@@ -1,0 +1,30 @@
+name: Java build
+description: Build Java SDK Packages
+
+inputs:
+  working-directory:
+    description: the path to the directory from repository root
+    type: string
+    required: false
+  profile:
+    description: the Maven profile (maven, snapshot, jfrog)
+    type: string
+    default: maven
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install gpg secret key
+      shell: bash
+      run: |
+        cat <(echo -e "${{ secrets.MAVEN_GPG_PRIVATE_KEY }}") | gpg --batch --import
+        gpg --list-secret-keys --keyid-format LONG
+        which gpg
+        gpg --version
+
+    - name: Package project
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        mvn clean install -P ${{inputs.profile}} -DskipTests

@@ -3,6 +3,7 @@ import {execSync} from 'node:child_process'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import * as core from '@actions/core'
+import * as xml from 'xml-js'
 
 enum Runner {
   linux = 'ubuntu-latest',
@@ -73,6 +74,23 @@ async function main() {
           packages[manifest.name] = {
             name: manifest.name,
             version: manifest.version,
+            component: packageConfig.component,
+            path: packagePath,
+            tests: packageConfig.tests ?? [],
+            builds: packageConfig.builds ?? [],
+            releases: packageConfig.releases ?? [],
+          }
+          return packages
+        })
+      }
+      if (packageConfig.component.startsWith('java/')) {
+        const packageManifestPath = path.resolve(packagePath, 'pom.xml')
+        const manifest = fs.readFileSync(packageManifestPath, 'utf-8')
+        const pomJson = xml.xml2js(manifest, { compact: true })
+        return packages.then(packages => {
+          packages[pomJson.project.name._text] = {
+            name: pomJson.project.name._text,
+            version: pomJson.project.version._text,
             component: packageConfig.component,
             path: packagePath,
             tests: packageConfig.tests ?? [],

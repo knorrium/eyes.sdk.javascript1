@@ -17,6 +17,7 @@ env:
   NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
   APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
   APPLITOOLS_API_KEY_READ: ${{secrets.APPLITOOLS_API_KEY_READ}}
+  APPLITOOLS_API_KEY_TEST_EYES: ${{secrets.APPLITOOLS_API_KEY_TEST_EYES}
   SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
   SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
   BROWSERSTACK_USERNAME: applitools
@@ -152,8 +153,105 @@ jobs:
           result-path: ./logs
           meta-path: ./logs
 
+  java-build:
+    needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.builds).java}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.builds.java)}}
+    name: Build / ${{matrix.display-name}}
+    timeout-minutes: 20
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          lfs: true
+      - name: Set up Java and Release Repository
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: ${{matrix.java-version || 11}}
+          server-id: ${{matrix.build-type}} # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }} # env variable for username in deploy
+          server-password: ${{ secrets.MAVEN_CENTRAL_TOKEN }} # env variable for token in deploy
+          gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}} # Value of the GPG private key to import
+          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }} # env variable for GPG private key passphrase
+      - name: Build
+        uses: ./.github/actions/java/build
+      - name: Save build artifacts
+        if: ${{matrix.key && matrix.artifacts}}
+        uses: ./.github/actions/storage/save
+        with:
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+
+  java-test:
+    needs: [setup, java-build]
+    if: ${{fromJSON(needs.setup.outputs.tests).java}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.tests).java}}
+    name: Build / ${{matrix.display-name}}
+    timeout-minutes: 45
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          lfs: true
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: ${{matrix.java-version || 11}}
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+      - name: Queue
+        if: ${{matrix.queue}}
+        uses: ./.github/actions/queue
+        with:
+          name: ${{matrix.queue}}
+          max-parallel: 5
+      - name: Run Tests
+        uses: ./.github/actions/java/tests/
+        with:
+          working-directory: ${{ matrix.working-directory }}
+          test-type: ${{ matrix.test-type }}
+      - name: Save testing artifacts
+        if: ${{always() && matrix.key && matrix.artifacts}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+          retention-days: 2
+          if-no-files-found: ignore
+      - name: Sending report
+        if: ${{matrix.report}}
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          command: report
+          name: ${{matrix.report.name}}
+          group: ${{matrix.report.group}}
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
+          result-path: ${{matrix.report.result-path || './reports'}}
+          meta-path: ${{matrix.report.meta-path || './reports'}}
+
   report:
-    needs: [setup, js-test]
+    needs: [setup, js-test, java-tests]
     if: (success() || failure()) && fromJSON(needs.setup.outputs.tests).*
     name: Report
     runs-on: ubuntu-latest

@@ -76,3 +76,51 @@ jobs:
           command: notification
           name: ${{matrix.notification.name}}
           report-id: ${{matrix.name}}@${{matrix.package-version}}
+
+  java-release:
+    needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.releases).java}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.releases).java}}
+    name: Release / ${{matrix.display-name}}
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Set up Java and Release Repository
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: ${{matrix.java-version || 11}}
+          server-id: ${{matrix.profile}} # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: ${{ secrets.MAVEN_CENTRAL_USERNAME }} # env variable for username in deploy
+          server-password: ${{ secrets.MAVEN_CENTRAL_TOKEN }} # env variable for token in deploy
+          gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}} # Value of the GPG private key to import
+          gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }} # env variable for GPG private key passphrase
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+      - name: Queue
+        uses: ./.github/actions/queue
+        with:
+          name: java-release
+      - name: Publish Java SDKs
+        if: ${{matrix.profile != 'none'}}
+        uses: ./.github/actions/java/publish
+        with:
+          working-directory: ${{matrix.working-directory}}
+          profile: ${{matrix.profile}}
+      - name: Sending notification
+        if: ${{matrix.notification}}
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          command: notification
+          name: ${{matrix.notification.name}}
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
