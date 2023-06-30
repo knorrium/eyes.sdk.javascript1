@@ -21,20 +21,6 @@ let manager,
   connectedToUniversal,
   openAndGlobalConfig
 
-const deleteTest = ({settings: {testId, batchId, secretToken}}) => {
-  const {serverUrl, proxy, apiKey} = Cypress.config('appliConfFile')
-  return socket.request('Core.deleteTest', {
-    settings: {
-      testId,
-      batchId,
-      secretToken,
-      serverUrl,
-      proxy,
-      apiKey,
-    },
-  })
-}
-
 async function getSummary() {
   if (_summary) return _summary
   await Promise.all(closePromiseArr)
@@ -68,7 +54,7 @@ Cypress.Commands.add('eyesGetAllTestResults', () => {
     }
 
     const summary = await getSummary()
-    return new TestResultsSummary({summary, deleteTest})
+    return new TestResultsSummary({summary, core: {deleteTest: options => socket.request('Core.deleteTest', options)}})
   })
 })
 
@@ -76,7 +62,7 @@ Cypress.Commands.add('eyesGetResults', (args = {}) => {
   Cypress.log({name: 'Eyes: getResults'})
   return cy.then({timeout: 86400000}, async () => {
     const result = await socket.request('Eyes.getResults', {eyes, settings: {throwErr: args.throwErr !== false}})
-    return new TestResultsData({result, deleteTest})
+    return new TestResultsData({result, core: {deleteTest: options => socket.request('Core.deleteTest', options)}})
   })
 })
 
