@@ -43,7 +43,6 @@ export class RichCommits extends ManifestPlugin {
         strategy.extraLabels.push('skip-release')
       }
     }
-    console.log('COMMITS', component, commits)
     return commits
   }
 
