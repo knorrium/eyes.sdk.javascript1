@@ -92,7 +92,7 @@ export class RichWorkspace extends ManifestPlugin {
       return promise.then(candidates => candidates.concat(updatedCandidates))
     }, Promise.resolve([] as CandidateReleasePullRequest[]))
 
-    this.patchChangelogs(candidates)
+    // this.patchChangelogs(candidates)
 
     return candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
