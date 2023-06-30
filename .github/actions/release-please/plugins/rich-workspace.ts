@@ -134,14 +134,18 @@ export class RichWorkspace extends ManifestPlugin {
     const originalNewCandidate = (workspacePlugin as any).newCandidate.bind(workspacePlugin)
     const originalUpdateCandidate = (workspacePlugin as any).updateCandidate.bind(workspacePlugin)
     ;(workspacePlugin as any).newCandidate = (pkg: any, updatedVersions: Map<string, Version>): CandidateReleasePullRequest => {
-      const {path} = originalNewCandidate(pkg, updatedVersions)
-      const candidateReleasePullRequest = {
-        path,
-        pullRequest: this.releasePullRequestsByPath[path]!,
-        config: this.repositoryConfig[path]
+      const originalCandidate = originalNewCandidate(pkg, updatedVersions)
+      if (this.releasePullRequestsByPath[originalCandidate.path]) {
+        const candidate = {
+          path: originalCandidate.path,
+          pullRequest: this.releasePullRequestsByPath[originalCandidate.path],
+          config: this.repositoryConfig[originalCandidate.path]
+        }
+        console.log('NEW CANDIDATE', originalCandidate.path, candidate)
+        return originalUpdateCandidate(candidate, pkg, updatedVersions)
+      } else {
+        return originalCandidate
       }
-      console.log('NEW CANDIDATE', path, candidateReleasePullRequest)
-      return originalUpdateCandidate(candidateReleasePullRequest, pkg, updatedVersions)
     }
 
     return workspacePlugin
