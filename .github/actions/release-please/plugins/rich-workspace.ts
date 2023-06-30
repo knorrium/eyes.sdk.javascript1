@@ -92,7 +92,7 @@ export class RichWorkspace extends ManifestPlugin {
       return promise.then(candidates => candidates.concat(updatedCandidates))
     }, Promise.resolve([] as CandidateReleasePullRequest[]))
 
-    // this.patchChangelogs(candidates)
+    this.patchChangelogs(candidates)
 
     return candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
@@ -148,7 +148,7 @@ export class RichWorkspace extends ManifestPlugin {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
         update.sections = Array.from(update.updater.changelogEntry.matchAll(/###.+?(?=###|$)/gs), ([section]) => {
           if (section.startsWith('### Dependencies\n\n')) {
-            const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped from (?<from>[\d\.]+) to (?<to>[\d\.]+)/gm), match => match.groups! as Omit<Bump, 'sections'>)
+            const bumps = Array.from(section.matchAll(/\* (?<packageName>\S+) bumped (?:from (?<from>[\d\.]+) )?to (?<to>[\d\.]+)/gm), match => match.groups! as Omit<Bump, 'sections'>)
             update.bumps = bumps.reduce((bumps, bump) => {
               if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
                 const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
@@ -168,7 +168,7 @@ export class RichWorkspace extends ManifestPlugin {
             const dependencies = update.bumps
               .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
               .map(bump => {
-                const header = `* ${bump.packageName} bumped from ${bump.from} to ${bump.to}\n`
+                const header = `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n`
                 if (!bump.sections) return header
                 return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
               })
