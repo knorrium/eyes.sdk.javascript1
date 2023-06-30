@@ -15,15 +15,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install gpg secret key
-      shell: bash
-      run: |
-        cat <(echo -e "$MAVEN_GPG_KEY") | gpg --batch --import
-        gpg --list-secret-keys --keyid-format LONG
-        which gpg
-        gpg --version
-
-    - name: Package project
+    - name: Clean Install (skip tests)
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |

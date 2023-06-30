@@ -171,6 +171,10 @@ jobs:
         with:
           ref: ${{github.event.pull_request.head.ref}}
           lfs: true
+      - name: Import GPG Private Key
+        run: |
+          cat <(echo -e "${{secrets.MAVEN_GPG_PRIVATE_KEY}}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
       - name: Set up Java and Release Repository
         uses: actions/setup-java@v3
         with:
@@ -186,8 +190,6 @@ jobs:
         with:
           working-directory: ${{matrix.working-directory}}
           profile: ${{matrix.build-type}}
-        env:
-          MAVEN_GPG_KEY: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
       - name: Save build artifacts
         if: ${{matrix.key && matrix.artifacts}}
         uses: ./.github/actions/storage/save
