@@ -131,7 +131,7 @@ export class RichWorkspace extends ManifestPlugin {
       const packageNames = originalPackageNamesToUpdate(graph, candidatesByPackage)
       const additionalPackageNames = Array.from(graph.keys()).filter(packageName => {
         const syntheticDependencies = this.syntheticDependencies[this.componentsByPath[this.pathsByPackagesName[packageName]]]
-        return syntheticDependencies.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
+        return syntheticDependencies?.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
       })
       return [packageNames, additionalPackageNames]
     }
