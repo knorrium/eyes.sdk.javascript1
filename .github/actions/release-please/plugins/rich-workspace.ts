@@ -66,6 +66,8 @@ export class RichWorkspace extends ManifestPlugin {
       return promise.then(pathsByPackagesName => Object.assign(pathsByPackagesName, packageName ? {[packageName]: path} : {}))
     }, Promise.resolve({} as Record<string, string>))
 
+    console.log('pathsByPackagesName', this.pathsByPackagesName)
+
     return this.strategiesByPath
   }
 
@@ -152,7 +154,9 @@ export class RichWorkspace extends ManifestPlugin {
             update.bumps = bumps.reduce((bumps, bump) => {
               if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
                 const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
+                console.log('bumpedCandidate', [[bumpedCandidate]])
                 const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
+                console.log('bumpedChangelogUpdate', [bumpedChangelogUpdate])
                 if (bumpedChangelogUpdate) {
                   const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
                   bumps.push(
@@ -169,6 +173,7 @@ export class RichWorkspace extends ManifestPlugin {
               .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
               .map(bump => {
                 const header = `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n`
+                console.log('BUMP', bump)
                 if (!bump.sections) return header
                 return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
               })
