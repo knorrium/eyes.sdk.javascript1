@@ -7,8 +7,7 @@
   "prerelease": true,
   "plugins": [
     "rich-commits",
-    {"type": "rich-workspace", "workspace": "node"},
-    {"type": "rich-workspace", "workspace": "maven"}
+    {"type": "rich-workspace", "workspaces": ["node", "maven"]}
   ],
   "changelog-sections": [
     {"type": "feat", "section": "Features"},

@@ -22,17 +22,18 @@ type Bump = {packageName: string, from: string, to: string, sections: string[]}
 
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
   manifestPath: string;
-  workspace: 'node' | 'maven'
+  workspaces: ('node' | 'maven' | 'python' | 'ruby')[]
 }
 
 export class RichWorkspace extends ManifestPlugin {
   private index = -1
-  protected plugin: WorkspacePlugin<unknown>
+  protected plugins: Record<string, WorkspacePlugin<unknown>>
   protected strategiesByPath: Record<string, Strategy> = {}
   protected commitsByPath: Record<string, ConventionalCommit[]> = {}
   protected releasesByPath: Record<string, Release> = {}
   protected releasePullRequestsByPath: Record<string, ReleasePullRequest | undefined> = {}
   protected pathsByPackagesName: Record<string, string> = {}
+  protected pathsByReleaseType: Record<string, string[]> = {}
 
   constructor(
     github: GitHub,
@@ -41,14 +42,16 @@ export class RichWorkspace extends ManifestPlugin {
     options: RichWorkspaceOptions
   ) {
     super(github, targetBranch, repositoryConfig, options.logger);
-    const workspacePlugin = buildPlugin({
-      ...options,
-      type: {type: `${options.workspace}-workspace`, merge: false},
-      github,
-      targetBranch,
-      repositoryConfig,
-    }) as WorkspacePlugin<unknown>
-    this.plugin = this.patchWorkspacePlugin(workspacePlugin)
+    this.plugins = options.workspaces.reduce((plugins, workspaceName) => {
+      plugins[workspaceName] = this.patchWorkspacePlugin(buildPlugin({
+        ...options,
+        type: {type: `${workspaceName}-workspace`, merge: false},
+        github,
+        targetBranch,
+        repositoryConfig,
+      }) as WorkspacePlugin<unknown>)
+      return plugins
+    }, {} as Record<string, WorkspacePlugin<unknown>>)
   }
 
   async preconfigure(
@@ -62,13 +65,14 @@ export class RichWorkspace extends ManifestPlugin {
       const packageName = await (strategy as BaseStrategy).getPackageName()
       return promise.then(pathsByPackagesName => Object.assign(pathsByPackagesName, packageName ? {[packageName]: path} : {}))
     }, Promise.resolve({} as Record<string, string>))
-    return this.plugin.preconfigure(strategiesByPath, commitsByPath, releasesByPath)
+
+    return this.strategiesByPath
   }
 
   processCommits(commits: ConventionalCommit[]): ConventionalCommit[] {
     this.index += 1
     this.commitsByPath[Object.keys(this.strategiesByPath)[this.index]] = commits
-    return this.plugin.processCommits(commits)
+    return commits
   }
 
   async run(candidates: CandidateReleasePullRequest[]) {
@@ -93,9 +97,10 @@ export class RichWorkspace extends ManifestPlugin {
         return releasePullRequestsByPath
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
-    console.log([[this.releasePullRequestsByPath]])
-    const updatedCandidates = await this.plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
-
+    console.log([this.releasePullRequestsByPath])
+    const filteredCandidates = candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    const updatedCandidates = (await Promise.all(Object.values(this.plugins).map(plugin => plugin.run(filteredCandidates)))).flat()
+    console.log([updatedCandidates])
     this.patchChangelogs(updatedCandidates)
 
     return updatedCandidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
