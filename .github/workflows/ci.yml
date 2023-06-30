@@ -251,7 +251,7 @@ jobs:
           meta-path: ${{matrix.report.meta-path || './reports'}}
 
   report:
-    needs: [setup, js-test, java-tests]
+    needs: [setup, js-test, java-test]
     if: (success() || failure()) && fromJSON(needs.setup.outputs.tests).*
     name: Report
     runs-on: ubuntu-latest
