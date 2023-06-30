@@ -116,7 +116,7 @@ export class RichWorkspace extends ManifestPlugin {
     const originalBuildAllPackages = (workspacePlugin as any).buildAllPackages.bind(workspacePlugin)
     ;(workspacePlugin as any).buildAllPackages = async (candidates: CandidateReleasePullRequest[]): Promise<DependencyGraph<any>> => {
       const result = await originalBuildAllPackages(candidates)
-      Object.entries(result.allPackages as unknown[]).forEach(pkg => {
+      ;(result.allPackages as unknown[]).forEach(pkg => {
         this.pathsByPackagesName[(workspacePlugin as any).packageNameFromPackage(pkg)] = (workspacePlugin as any).pathFromPackage(pkg)
       })
       return result
