@@ -85,8 +85,8 @@ async function main() {
       }
       if (packageConfig.component.startsWith('java/')) {
         const packageManifestPath = path.resolve(packagePath, 'pom.xml')
-        const manifest = fs.readFileSync(packageManifestPath, 'utf-8')
-        const pomJson = xml.xml2js(manifest, { compact: true })
+        const manifest = await fs.readFile(packageManifestPath, 'utf-8')
+        const pomJson = xml.xml2js(manifest, { compact: true }) as xml.ElementCompact
         return packages.then(packages => {
           packages[pomJson.project.name._text] = {
             name: pomJson.project.name._text,
