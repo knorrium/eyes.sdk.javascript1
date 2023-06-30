@@ -183,6 +183,9 @@ jobs:
           gpg-passphrase: ${{secrets.MAVEN_GPG_PASSPHRASE}} # env variable for GPG private key passphrase
       - name: Build
         uses: ./.github/actions/java/build
+        with:
+          working-directory: ${{matrix.working-directory}}
+          profile: ${{matrix.build-type}}
         env:
           MAVEN_GPG_KEY: ${{secrets.MAVEN_GPG_PRIVATE_KEY}}
       - name: Save build artifacts
@@ -229,8 +232,9 @@ jobs:
       - name: Run Tests
         uses: ./.github/actions/java/tests/
         with:
-          working-directory: ${{ matrix.working-directory }}
-          test-type: ${{ matrix.test-type }}
+          working-directory: ${{matrix.working-directory}}
+          test-type: ${{matrix.test-type}}
+          grep: ${{matrix.grep}}
       - name: Save testing artifacts
         if: ${{always() && matrix.key && matrix.artifacts}}
         uses: actions/upload-artifact@v3

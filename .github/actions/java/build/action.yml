@@ -5,7 +5,7 @@ inputs:
   working-directory:
     description: the path to the directory from repository root
     type: string
-    required: false
+    required: true
   profile:
     description: the Maven profile (maven, snapshot, jfrog)
     type: string
