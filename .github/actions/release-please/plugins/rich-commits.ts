@@ -50,9 +50,12 @@ export class RichCommits extends ManifestPlugin {
     // if empty commit has scope it should contain component in order to be attached to the path
     return commits.reduce((commits, commit) => {
       if (commit.scope) {
-        if (commit.scope.split(/,\s*/g).includes(component)) {
-          commits.push({...commit, scope: null})
-        }
+        const matches = commit.scope.split(/[,\s]+/g).some(scope => {
+          if (scope.startsWith('*')) return component.endsWith(scope.slice(1))
+          else if (scope.endsWith('*')) return component.startsWith(scope.slice(0, -1))
+          else component === scope
+        })
+        if (matches) commits.push({...commit, scope: null})
       } else {
         commits.push(commit)
       }

@@ -23,17 +23,20 @@ type Bump = {packageName: string, from: string, to: string, sections: string[]}
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
   manifestPath: string;
   workspaces: ('node' | 'maven' | 'python' | 'ruby')[]
+  'synthetic-dependencies': Record<string, string[]>
 }
 
 export class RichWorkspace extends ManifestPlugin {
   private index = -1
   protected plugins: Record<string, WorkspacePlugin<unknown>>
+  protected syntheticDependencies: Record<string, string[]>
   protected strategiesByPath: Record<string, Strategy> = {}
   protected commitsByPath: Record<string, ConventionalCommit[]> = {}
   protected releasesByPath: Record<string, Release> = {}
   protected releasePullRequestsByPath: Record<string, ReleasePullRequest | undefined> = {}
   protected pathsByPackagesName: Record<string, string> = {}
-  protected pathsByReleaseType: Record<string, string[]> = {}
+  protected componentsByPath: Record<string, string> = {}
+  protected candidates: CandidateReleasePullRequest[] = []
 
   constructor(
     github: GitHub,
@@ -52,6 +55,7 @@ export class RichWorkspace extends ManifestPlugin {
       }) as WorkspacePlugin<unknown>)
       return plugins
     }, {} as Record<string, WorkspacePlugin<unknown>>)
+    this.syntheticDependencies = options['synthetic-dependencies']
   }
 
   async preconfigure(
@@ -61,6 +65,10 @@ export class RichWorkspace extends ManifestPlugin {
   ): Promise<Record<string, Strategy>> {
     this.strategiesByPath = strategiesByPath as Record<string, BaseStrategy>
     this.releasesByPath = releasesByPath
+    this.componentsByPath = await Object.entries(strategiesByPath).reduce(async (promise, [path, strategy]) => {
+      const component = await strategy.getComponent()
+      return promise.then(componentsByPath => Object.assign(componentsByPath, {[path]: component}))
+    }, Promise.resolve({} as Record<string, string>))
     return this.strategiesByPath
   }
 
@@ -81,29 +89,17 @@ export class RichWorkspace extends ManifestPlugin {
         return releasePullRequestsByPath
       })
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
-    candidates = candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
-    candidates = await Object.values(this.plugins).reduce(async (promise, plugin) => {
-      const updatedCandidates = await plugin.run(candidates.filter(candidate => (plugin as any).inScope(candidate)))
-      return promise.then(candidates => candidates.concat(updatedCandidates))
-    }, Promise.resolve([] as CandidateReleasePullRequest[]))
+    this.candidates = await Object.values(this.plugins).reduce(async (promise, plugin) => {
+      this.candidates = await promise
+      return plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
+    }, Promise.resolve(candidates))
 
-    this.patchChangelogs(candidates)
+    this.patchChangelogs(this.candidates)
 
-    return candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    return this.candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
 
   protected patchWorkspacePlugin(workspacePlugin: WorkspacePlugin<unknown>): WorkspacePlugin<unknown> {
-    // const originalPackageNamesToUpdate = (workspacePlugin as any).packageNamesToUpdate.bind(workspacePlugin)
-    // ;(workspacePlugin as any).packageNamesToUpdate = (
-    //   graph: DependencyGraph<unknown>,
-    //   candidatesByPackage: Record<string, CandidateReleasePullRequest>
-    // ): string[] => {
-    //   return originalPackageNamesToUpdate(
-    //     graph,
-    //     Object.fromEntries(Object.entries(candidatesByPackage).filter(([, candidate]) => !candidate.pullRequest.labels.includes('skip-release'))),
-    //   )
-    // }
-
     // const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
     // ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
     //   const graph = await originalBuildGraph(pkgs)
@@ -116,6 +112,7 @@ export class RichWorkspace extends ManifestPlugin {
     //   return graph
     // }
 
+    // collect package names
     const originalBuildAllPackages = (workspacePlugin as any).buildAllPackages.bind(workspacePlugin)
     ;(workspacePlugin as any).buildAllPackages = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
       const result = await originalBuildAllPackages(pkgs)
@@ -124,7 +121,22 @@ export class RichWorkspace extends ManifestPlugin {
       })
       return result
     }
+
+    // follow the dependencies
+    const originalPackageNamesToUpdate = (workspacePlugin as any).packageNamesToUpdate.bind(workspacePlugin)
+    ;(workspacePlugin as any).packageNamesToUpdate = (
+      graph: DependencyGraph<unknown>,
+      candidatesByPackage: Record<string, CandidateReleasePullRequest>
+    ): string[] => {
+      const packageNames = originalPackageNamesToUpdate(graph, candidatesByPackage)
+      const additionalPackageNames = Array.from(graph.keys()).filter(packageName => {
+        const syntheticDependencies = this.syntheticDependencies[this.componentsByPath[this.pathsByPackagesName[packageName]]]
+        return syntheticDependencies.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
+      })
+      return [packageNames, additionalPackageNames]
+    }
     
+    // create a proper new candidate
     const originalNewCandidate = (workspacePlugin as any).newCandidate.bind(workspacePlugin)
     const originalUpdateCandidate = (workspacePlugin as any).updateCandidate.bind(workspacePlugin)
     ;(workspacePlugin as any).newCandidate = (pkg: any, updatedVersions: Map<string, Version>): CandidateReleasePullRequest => {
@@ -147,7 +159,6 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected patchChangelogs(candidateReleasePullRequests: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
-    console.log(this.pathsByPackagesName)
     const patchChangelogUpdate = (update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate => {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
@@ -157,9 +168,7 @@ export class RichWorkspace extends ManifestPlugin {
             update.bumps = bumps.reduce((bumps, bump) => {
               if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
                 const bumpedCandidate = candidateReleasePullRequests.find(candidate => candidate.path === this.pathsByPackagesName[bump.packageName])
-                console.log('bumpedCandidate', [[bumpedCandidate]])
                 const bumpedChangelogUpdate = bumpedCandidate?.pullRequest.updates.find(update => update.updater instanceof Changelog)
-                console.log('bumpedChangelogUpdate', [bumpedChangelogUpdate])
                 if (bumpedChangelogUpdate) {
                   const patchedBumpedChangelogUpdate = patchChangelogUpdate(bumpedChangelogUpdate as Update & {updater: Changelog})
                   bumps.push(

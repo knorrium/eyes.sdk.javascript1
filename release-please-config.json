@@ -7,7 +7,17 @@
   "prerelease": true,
   "plugins": [
     "rich-commits",
-    {"type": "rich-workspace", "workspaces": ["node", "maven"]}
+    {
+      "type": "rich-workspace",
+      "workspaces": ["node", "maven"],
+      "synthetic-dependencies": {
+        "java/eyes-universal-core-linux": ["js/eyes-cypress"],
+        "java/eyes-universal-core-arm": ["js/core"],
+        "java/eyes-universal-core-alpine": ["js/core"],
+        "java/eyes-universal-core-win": ["js/core"],
+        "java/eyes-universal-core-mac": ["js/core"]
+      }
+    }
   ],
   "changelog-sections": [
     {"type": "feat", "section": "Features"},
@@ -580,6 +590,48 @@
         {"profile": "maven"}
       ]
     },
+    "java/eyes.universal.core/eyes-universal-core-linux": {
+      "release-type": "maven",
+      "skip-snapshot": true,
+      "component": "java/eyes-universal-core-linux",
+      "builds": [
+        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+      ],
+      "tests": [
+        {"runner": "ubuntu-latest", "grep": "TestCoreBinaries#testLinuxBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
+      ],
+      "releases": [
+        {"profile": "maven"}
+      ]
+    },
+    "java/eyes.universal.core/eyes-universal-core-arm": {
+      "release-type": "maven",
+      "skip-snapshot": true,
+      "component": "java/eyes-universal-core-arm",
+      "builds": [
+        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+      ],
+      "tests": [
+        {"runner": "linuxarm", "grep": "TestCoreBinaries#testArm64Binaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
+      ],
+      "releases": [
+        {"profile": "maven"}
+      ]
+    },
+    "java/eyes.universal.core/eyes-universal-core-alpine": {
+      "release-type": "maven",
+      "skip-snapshot": true,
+      "component": "java/eyes-universal-core-alpine",
+      "builds": [
+        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+      ],
+      "tests": [
+        {"container": "alpine:latest", "grep": "TestCoreBinaries#testAlpineBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
+      ],
+      "releases": [
+        {"profile": "maven"}
+      ]
+    },
     "java/eyes.universal.core/eyes-universal-core-win": {
       "release-type": "maven",
       "skip-snapshot": true,
@@ -603,48 +655,6 @@
       ],
       "tests": [
         {"runner": "macos-latest", "grep": "TestCoreBinaries#testMacosBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
-      ],
-      "releases": [
-        {"profile": "maven"}
-      ]
-    },
-    "java/eyes.universal.core/eyes-universal-core-linux": {
-      "release-type": "maven",
-      "skip-snapshot": true,
-      "component": "java/eyes-universal-core-linux",
-      "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
-      ],
-      "tests": [
-        {"runner": "ubuntu-latest", "grep": "TestCoreBinaries#testLinuxBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
-      ],
-      "releases": [
-        {"profile": "maven"}
-      ]
-    },
-    "java/eyes.universal.core/eyes-universal-core-alpine": {
-      "release-type": "maven",
-      "skip-snapshot": true,
-      "component": "java/eyes-universal-core-alpine",
-      "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
-      ],
-      "tests": [
-        {"container": "alpine:latest", "grep": "TestCoreBinaries#testAlpineBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
-      ],
-      "releases": [
-        {"profile": "maven"}
-      ]
-    },
-    "java/eyes.universal.core/eyes-universal-core-arm": {
-      "release-type": "maven",
-      "skip-snapshot": true,
-      "component": "java/eyes-universal-core-arm",
-      "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
-      ],
-      "tests": [
-        {"runner": "linuxarm", "grep": "TestCoreBinaries#testArm64Binaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
       ],
       "releases": [
         {"profile": "maven"}
