@@ -140,6 +140,7 @@ export class RichWorkspace extends ManifestPlugin {
         pullRequest: this.releasePullRequestsByPath[path]!,
         config: this.repositoryConfig[path]
       }
+      console.log('NEW CANDIDATE', path, candidateReleasePullRequest)
       return originalUpdateCandidate(candidateReleasePullRequest, pkg, updatedVersions)
     }
 
