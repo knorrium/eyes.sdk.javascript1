@@ -26,7 +26,7 @@ registerPlugin(
 
 main()
   .catch(err => {
-    core.debug(err)
+    console.error(err)
     core.setFailed(err.message)
   })
 
