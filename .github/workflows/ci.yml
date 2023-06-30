@@ -181,15 +181,19 @@ jobs:
           distribution: "temurin"
           java-version: ${{matrix.java-version || 11}}
           server-id: ${{matrix.build-type}} # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: ${{secrets.MAVEN_CENTRAL_USERNAME}} # env variable for username in deploy
-          server-password: ${{secrets.MAVEN_CENTRAL_TOKEN}} # env variable for token in deploy
+          server-username: MAVEN_CENTRAL_USERNAME # env variable for username in deploy
+          server-password: MAVEN_CENTRAL_TOKEN # env variable for token in deploy
           gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}} # Value of the GPG private key to import
-          gpg-passphrase: ${{secrets.MAVEN_GPG_PASSPHRASE}} # env variable for GPG private key passphrase
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
       - name: Build
         uses: ./.github/actions/java/build
         with:
           working-directory: ${{matrix.working-directory}}
           profile: ${{matrix.build-type}}
+        env:
+          MAVEN_USERNAME: ${{secrets.MAVEN_CENTRAL_USERNAME}}
+          MAVEN_CENTRAL_TOKEN: ${{secrets.MAVEN_CENTRAL_TOKEN}}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE}}
       - name: Save build artifacts
         if: ${{matrix.key && matrix.artifacts}}
         uses: ./.github/actions/storage/save
