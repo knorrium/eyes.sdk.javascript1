@@ -99,6 +99,7 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     console.log([this.releasePullRequestsByPath])
     const filteredCandidates = candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    console.log('FILTERED CANDIDATES', [filteredCandidates])
     const updatedCandidates = (await Promise.all(Object.values(this.plugins).map(plugin => plugin.run(filteredCandidates)))).flat()
     console.log([updatedCandidates])
     this.patchChangelogs(updatedCandidates)
