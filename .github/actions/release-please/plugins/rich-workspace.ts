@@ -131,9 +131,10 @@ export class RichWorkspace extends ManifestPlugin {
           pullRequest: this.releasePullRequestsByPath[originalCandidate.path],
           config: this.repositoryConfig[originalCandidate.path]
         }
-        console.log('NEW CANDIDATE', originalCandidate.path, candidate)
         return originalUpdateCandidate(candidate, pkg, updatedVersions)
       } else {
+        // some plugins (e.g. maven) tries to update not listed dependencies, so we will have to skip them
+        originalCandidate.pullRequest.labels = ['skip-release']
         return originalCandidate
       }
     }

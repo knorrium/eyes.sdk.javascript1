@@ -5435,7 +5435,7 @@ async function main() {
                         return job[name];
                 });
                 if (options?.filenamify) {
-                    result = result.replace(/\//g, '-');
+                    result = result.replace(/[\/\s]+/g, '-');
                 }
                 return result;
             }

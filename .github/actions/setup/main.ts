@@ -222,7 +222,7 @@ async function main() {
             else return job[name as keyof Job] as string
           })
         if (options?.filenamify) {
-          result = result.replace(/\//g, '-')
+          result = result.replace(/[\/\s]+/g, '-')
         }
         return result
       }
