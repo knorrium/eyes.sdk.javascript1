@@ -61,13 +61,6 @@ export class RichWorkspace extends ManifestPlugin {
   ): Promise<Record<string, Strategy>> {
     this.strategiesByPath = strategiesByPath as Record<string, BaseStrategy>
     this.releasesByPath = releasesByPath
-    this.pathsByPackagesName = await Object.entries(this.strategiesByPath).reduce(async (promise, [path, strategy]) => {
-      const packageName = await (strategy as BaseStrategy).getPackageName()
-      return promise.then(pathsByPackagesName => Object.assign(pathsByPackagesName, packageName ? {[packageName]: path} : {}))
-    }, Promise.resolve({} as Record<string, string>))
-
-    console.log('pathsByPackagesName', this.pathsByPackagesName)
-
     return this.strategiesByPath
   }
 
@@ -122,6 +115,15 @@ export class RichWorkspace extends ManifestPlugin {
     //   }
     //   return graph
     // }
+
+    const originalBuildAllPackages = (workspacePlugin as any).buildAllPackages.bind(workspacePlugin)
+    ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
+      const result = await originalBuildAllPackages(pkgs)
+      Object.entries(result.candidatesByPackage as Record<string, CandidateReleasePullRequest>).forEach(([packageName, candidate]) => {
+        this.pathsByPackagesName[packageName] = candidate.path
+      })
+      return result
+    }
     
     const originalNewCandidate = (workspacePlugin as any).newCandidate.bind(workspacePlugin)
     const originalUpdateCandidate = (workspacePlugin as any).updateCandidate.bind(workspacePlugin)
@@ -145,6 +147,7 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected patchChangelogs(candidateReleasePullRequests: CandidateReleasePullRequest[]): CandidateReleasePullRequest[] {
+    console.log(this.pathsByPackagesName)
     const patchChangelogUpdate = (update: Omit<PatchedChangelogUpdate, 'sections'> & Partial<Pick<PatchedChangelogUpdate, 'sections'>>): PatchedChangelogUpdate => {
       if (!update.sections) {
         const [header] = update.updater.changelogEntry.match(/^##[^#]+/) ?? []
@@ -173,7 +176,6 @@ export class RichWorkspace extends ManifestPlugin {
               .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
               .map(bump => {
                 const header = `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n`
-                console.log('BUMP', bump)
                 if (!bump.sections) return header
                 return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
               })
