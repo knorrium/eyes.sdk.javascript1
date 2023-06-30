@@ -133,7 +133,7 @@ export class RichWorkspace extends ManifestPlugin {
         const syntheticDependencies = this.syntheticDependencies[this.componentsByPath[this.pathsByPackagesName[packageName]]]
         return syntheticDependencies?.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
       })
-      return [packageNames, additionalPackageNames]
+      return [...packageNames, ...additionalPackageNames]
     }
     
     // create a proper new candidate
