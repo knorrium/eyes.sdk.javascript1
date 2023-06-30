@@ -208,7 +208,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{fromJSON(needs.setup.outputs.tests).java}}
-    name: Build / ${{matrix.display-name}}
+    name: Test / ${{matrix.display-name}}
     timeout-minutes: 45
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     container: ${{matrix.container}}
@@ -249,18 +249,18 @@ jobs:
           path: ${{join(matrix.artifacts)}}
           retention-days: 2
           if-no-files-found: ignore
-      - name: Sending report
-        if: ${{matrix.report}}
-        uses: ./.github/actions/bongo
-        with:
-          working-directory: ${{matrix.working-directory}}
-          shell: ${{matrix.shell || 'bash'}}
-          command: report
-          name: ${{matrix.report.name}}
-          group: ${{matrix.report.group}}
-          report-id: ${{matrix.name}}@${{matrix.package-version}}
-          result-path: ${{matrix.report.result-path || './reports'}}
-          meta-path: ${{matrix.report.meta-path || './reports'}}
+#      - name: Sending report
+#        if: ${{matrix.report}}
+#        uses: ./.github/actions/bongo
+#        with:
+#          working-directory: ${{matrix.working-directory}}
+#          shell: ${{matrix.shell || 'bash'}}
+#          command: report
+#          name: ${{matrix.report.name}}
+#          group: ${{matrix.report.group}}
+#          report-id: ${{matrix.name}}@${{matrix.package-version}}
+#          result-path: ${{matrix.report.result-path || './reports'}}
+#          meta-path: ${{matrix.report.meta-path || './reports'}}
 
   report:
     needs: [setup, js-test, java-test]
