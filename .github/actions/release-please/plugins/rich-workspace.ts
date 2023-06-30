@@ -94,7 +94,7 @@ export class RichWorkspace extends ManifestPlugin {
       return plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
     }, Promise.resolve(candidates))
 
-    this.patchChangelogs(this.candidates)
+    // this.patchChangelogs(this.candidates)
 
     return this.candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
@@ -129,13 +129,10 @@ export class RichWorkspace extends ManifestPlugin {
       candidatesByPackage: Record<string, CandidateReleasePullRequest>
     ): string[] => {
       const packageNames = originalPackageNamesToUpdate(graph, candidatesByPackage)
-      console.log(this.componentsByPath, this.pathsByPackagesName)
       const additionalPackageNames = Array.from(graph.keys()).filter(packageName => {
         const syntheticDependencies = this.syntheticDependencies[this.componentsByPath[this.pathsByPackagesName[packageName]]]
-        console.log(packageName, syntheticDependencies)
         return syntheticDependencies?.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
       })
-      console.log('packageNames', [...packageNames, ...additionalPackageNames])
       return [...packageNames, ...additionalPackageNames]
     }
     
