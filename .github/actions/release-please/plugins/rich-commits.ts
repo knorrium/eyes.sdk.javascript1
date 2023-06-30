@@ -34,7 +34,10 @@ export class RichCommits extends ManifestPlugin {
     const component = this.componentsByPath[Object.keys(this.componentsByPath)[this.index]]
     const strategy = this.strategiesByPath[Object.keys(this.strategiesByPath)[this.index]] as BaseStrategy
     commits = this.addCommitNotes(commits)
+    console.log(component, 'before', [commits])
     commits = this.filterRedundantCommits(commits, component)
+
+    console.log(component, 'after', [commits])
 
     const skipReleaseCommit = commits.find(commit => commit.notes.some(note => note.title === 'SKIP RELEASE'))
     if (skipReleaseCommit) {
