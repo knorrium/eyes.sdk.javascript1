@@ -19,4 +19,4 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        mvn clean install -P ${{inputs.profile}} -DskipTests
+        mvn clean package -P ${{inputs.profile}} -DskipTests
