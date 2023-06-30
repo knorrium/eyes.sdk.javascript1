@@ -159,7 +159,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{fromJSON(needs.setup.outputs.builds.java)}}
+        include: ${{fromJSON(needs.setup.outputs.builds).java}}
     name: Build / ${{matrix.display-name}}
     timeout-minutes: 20
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
