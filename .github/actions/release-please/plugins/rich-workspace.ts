@@ -129,8 +129,10 @@ export class RichWorkspace extends ManifestPlugin {
       candidatesByPackage: Record<string, CandidateReleasePullRequest>
     ): string[] => {
       const packageNames = originalPackageNamesToUpdate(graph, candidatesByPackage)
+      console.log(graph)
       const additionalPackageNames = Array.from(graph.keys()).filter(packageName => {
         const syntheticDependencies = this.syntheticDependencies[this.componentsByPath[this.pathsByPackagesName[packageName]]]
+        console.log(packageName, syntheticDependencies)
         return syntheticDependencies?.some(dependencyComponent => this.candidates.some(candidate => candidate.config.component === dependencyComponent))
       })
       console.log('packageNames', [...packageNames, ...additionalPackageNames])
