@@ -83,7 +83,7 @@ def download(executable, version, dry_run):
         relative_bin_name = "applitools/core_universal/" + package_bin_name
         url_template = (
             "https://github.com/applitools/eyes.sdk.javascript1/releases/download/"
-            "%40applitools%2Fcore%40{version}/core-{exe}{ext}"
+            "js%2Fcore%40{version}/core-{exe}{ext}"
         )
         url = url_template.format(version=version, exe=executable, ext=ext)
         existing_md5 = b64_encoded_file_md5(relative_bin_name)
