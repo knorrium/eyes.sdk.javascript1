@@ -90,7 +90,7 @@ export class RichWorkspace extends ManifestPlugin {
     }, Promise.resolve({} as Record<string, ReleasePullRequest | undefined>))
     this.candidates = await Object.values(this.plugins).reduce(async (promise, plugin) => {
       this.candidates = await promise
-      return plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
+      return plugin.run(this.candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
     }, Promise.resolve(candidates))
 
     this.candidates.forEach(candidate => this.enrichChangelogEntry(candidate, candidates))
