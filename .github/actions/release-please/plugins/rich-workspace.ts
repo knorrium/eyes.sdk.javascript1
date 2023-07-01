@@ -132,6 +132,7 @@ export class RichWorkspace extends ManifestPlugin {
         })
       return `### Dependencies\n\n${dependencies.join('\n')}`
     })
+    richChangelogEntry.bumps ??= []
     const changelogEntry = `${richChangelogEntry.header}${richChangelogEntry.sections.join('')}`
     update.updater.changelogEntry = changelogEntry
     candidate.pullRequest.body.releaseData[0].notes = changelogEntry
