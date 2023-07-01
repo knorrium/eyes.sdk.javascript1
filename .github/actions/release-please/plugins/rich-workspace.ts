@@ -95,6 +95,8 @@ export class RichWorkspace extends ManifestPlugin {
 
     this.candidates.forEach(candidate => this.enrichChangelogEntry(candidate, candidates))
 
+    console.log([this.candidates])
+
     return this.candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
   }
 
