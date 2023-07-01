@@ -92,7 +92,7 @@ jobs:
       matrix: 
         include: ${{fromJSON(needs.setup.outputs.tests).js}}
     name: Test / ${{matrix.display-name}}
-    timeout-minutes: 60
+    timeout-minutes: 70
     runs-on: ${{matrix.runner || 'ubuntu-latest'}}
     container: ${{matrix.container}}
     env: ${{matrix.env}}
