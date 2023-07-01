@@ -4,6 +4,13 @@
 ### Bug fixes
 - Fixed an issue where a Gradle project did not dynamically detect core modules.
 
+## [5.58.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-linux-v5.58.0...java/eyes-universal-core-linux@5.58.1) (2023-07-01)
+
+
+### Dependencies
+
+* update some dependencies
+
 ## [5.55.0] - 2023-06-13
 ### Features
 - Dynamically use modules to scale down the final core jar size.
