@@ -81,7 +81,7 @@ export class RichWorkspace extends ManifestPlugin {
     const updatedCandidates = await this.plugins.reduce((promise, plugin) => promise.then(async candidates => {
       for (const [dependantComponent, dependencyComponents] of Object.entries(this.syntheticDependencies)) {
         const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]))
-        if (dependencyCandidates && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
+        if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
           const path = this.paths.byComponent[dependantComponent]
           const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
           candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path]})
@@ -162,17 +162,18 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected patchWorkspacePlugin(workspacePlugin: WorkspacePlugin<unknown>): WorkspacePlugin<unknown> {
-    // const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
-    // ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
-    //   const graph = await originalBuildGraph(pkgs)
-    //   for (const packageName of graph.keys()) {
-    //     let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
-    //     if (packageStrategy?.extraLabels.includes('skip-release')) {
-    //       graph.delete(packageName)
-    //     }
-    //   }
-    //   return graph
-    // }
+    const originalBuildGraph = (workspacePlugin as any).buildGraph.bind(workspacePlugin)
+    ;(workspacePlugin as any).buildGraph = async (pkgs: unknown[]): Promise<DependencyGraph<any>> => {
+      const graph = await originalBuildGraph(pkgs)
+      console.log(Array.from(graph.entries(), ([key, value]) => [key, value.deps]))
+      // for (const packageName of graph.keys()) {
+      //   let packageStrategy = this.strategiesByPath[this.pathsByPackagesName[packageName]] as BaseStrategy | undefined
+      //   if (packageStrategy?.extraLabels.includes('skip-release')) {
+      //     graph.delete(packageName)
+      //   }
+      // }
+      return graph
+    }
 
     // collect package names
     const originalBuildAllPackages = (workspacePlugin as any).buildAllPackages.bind(workspacePlugin)
@@ -212,6 +213,9 @@ export class RichWorkspace extends ManifestPlugin {
   }
 
   protected generateDepsCommits(candidates?: CandidateReleasePullRequest[]): ConventionalCommit[] {
+    if (candidates && candidates.length > 0) {
+      console.log(candidates.map(candidate => candidate.path), this.packageNames)
+    }
     return candidates  && candidates.length > 0
       ? candidates.map(candidate => ({sha: '', message: '', type: 'deps', scope: null, bareMessage: `${this.packageNames.byPath[candidate.path]} bumped to ${candidate.pullRequest.version!.toString()}`, breaking: false, notes: [], references: []}))
       : [{sha: '', message: '', type: 'deps', scope: null, bareMessage: 'update some dependencies', breaking: false, notes: [], references: []}]
