@@ -17,6 +17,8 @@ runs:
   steps:
     - name: Publish
       if: success()
+      working-directory: ${{inputs.working-directory}}
+      shell: bash
       run: |
         echo "Succesfully published Java SDKs"
 #        mvn --batch-mode -P ${{inputs.server}} deploy -DskipTests
