@@ -80,7 +80,7 @@ export class RichWorkspace extends ManifestPlugin {
   async run(candidates: CandidateReleasePullRequest[]) {
     const updatedCandidates = await this.plugins.reduce((promise, plugin) => promise.then(async candidates => {
       for (const [dependantComponent, dependencyComponents] of Object.entries(this.syntheticDependencies)) {
-        const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]))
+        const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
         if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
           const path = this.paths.byComponent[dependantComponent]
           const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
@@ -129,14 +129,13 @@ export class RichWorkspace extends ManifestPlugin {
       }, [] as RichChangelogEntry['bumps'])
       const dependencies = richChangelogEntry.bumps
         .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
-        .map(bump => {
-          const header = `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n`
-          if (!bump.sections) return header
-          return `${header}${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
-        })
+        .map(bump => 
+          `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
+        )
       return `### Dependencies\n\n${dependencies.join('\n')}`
     })
     richChangelogEntry.bumps ??= []
+    this.richChangelogEntriesByCandidate.set(candidate, richChangelogEntry)
     const changelogEntry = `${richChangelogEntry.header}${richChangelogEntry.sections.join('')}`
     update.updater.changelogEntry = changelogEntry
     candidate.pullRequest.body.releaseData[0].notes = changelogEntry
