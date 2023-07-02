@@ -1,0 +1,121 @@
+name: "DotNet - Tests"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+    paths:
+      - 'dotnet/**'
+
+env:
+  DRIVER_PATH: /usr/bin
+  APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+  APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
+  SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+  SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+  CORE_VERSION: "3.3.1"
+
+jobs:
+
+  dotnet-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - run: pwsh dotnet/run_crossplatform_tests.ps1
+
+  dotnet-tests-alpine:
+    runs-on: ubuntu-latest
+    container: "alpine:latest"
+    steps:
+      - uses: actions/checkout@v3
+      - run: apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
+      - run: apk add chromium chromium-chromedriver xvfb xvfb-run
+      - run: mkdir -p /usr/share/dotnet && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+      - name: Install dotnet and run Alpine tests
+        run: |
+          cd dotnet
+          chmod +x ./dotnet-install.sh
+          ./dotnet-install.sh -c 6.0 --install-dir /usr/share/dotnet
+          wget https://github.com/applitools/eyes.sdk.javascript1/releases/download/js%2Fcore%40$CORE_VERSION/core-alpine
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
+          mv core-alpine ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
+          dotnet test Tests/Eyes.Selenium.UnitTests/Eyes.Selenium.UnitTests.csproj
+    
+  dotnet-test-appium-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Selenium coverage tests
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          chmod +x ./genericTests_appium.sh && ./genericTests_appium.sh
+
+  dotnet-test-selenium3-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Selenium coverage tests
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          chmod +x ./genericTests_selenium3.sh && ./genericTests_selenium3.sh
+
+  dotnet-test-selenium4-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Selenium4 coverage tests
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          chmod +x ./genericTests_selenium4.sh && ./genericTests_selenium4.sh
+
+  dotnet-test-playwright-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Playwright coverage tests
+        shell: pwsh
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          ./genericTests_playwright.ps1
+            
