@@ -79,8 +79,10 @@ export class RichWorkspace extends ManifestPlugin {
 
   async run(candidates: CandidateReleasePullRequest[]) {
     const updatedCandidates = await this.plugins.reduce((promise, plugin) => promise.then(async candidates => {
+      console.log(this.packageNames)
       for (const [dependantComponent, dependencyComponents] of Object.entries(this.syntheticDependencies)) {
         const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
+        console.log(dependencyCandidates)
         if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
           const path = this.paths.byComponent[dependantComponent]
           const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
@@ -179,8 +181,8 @@ export class RichWorkspace extends ManifestPlugin {
     ;(workspacePlugin as any).buildAllPackages = async (candidates: CandidateReleasePullRequest[]): Promise<AllPackages<unknown>> => {
       const result: AllPackages<unknown> = await originalBuildAllPackages(candidates)
       result.allPackages.forEach(pkg => {
-        const path = (workspacePlugin as any).packageNameFromPackage(pkg)
-        const packageName = (workspacePlugin as any).pathFromPackage(pkg)
+        const path = (workspacePlugin as any).pathFromPackage(pkg)
+        const packageName = (workspacePlugin as any).packageNameFromPackage(pkg)
         const component = this.components.byPath[path]
         this.packageNames.byPath[path] = packageName
         this.packageNames.byComponent[component] = packageName
