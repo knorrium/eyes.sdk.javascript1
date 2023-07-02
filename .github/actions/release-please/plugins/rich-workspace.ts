@@ -114,6 +114,7 @@ export class RichWorkspace extends ManifestPlugin {
       richChangelogEntry.bumps = extractBumps(section).reduce((bumps, bump) => {
         if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
           const bumpedCandidate = candidates.find(candidate => candidate.path === this.paths.byPackageName[bump.packageName])
+          console.log(bumpedCandidate, bump.packageName, this.paths.byPackageName)
           if (bumpedCandidate) {
             const bumpedRichChangelogEntry = this.enrichChangelogEntry(bumpedCandidate, candidates)
             if (bumpedRichChangelogEntry) {
