@@ -126,6 +126,7 @@ module Applitools
     boolean_field :enable_cross_origin_rendering
     boolean_field :dont_use_cookies
     boolean_field :dont_close_batches
+    string_field :screenshot_mode
 
     methods_to_delegate.delete(:batch_info)
     methods_to_delegate.delete(:batch_info=)

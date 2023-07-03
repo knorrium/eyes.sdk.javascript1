@@ -4,11 +4,11 @@ module Applitools
   class UniversalEyesManagerConfig
 
     def self.classic
-      new(type: CLASSIC)
+      new(type: CLASSIC, runner_agent_id: "eyes.classic.ruby/#{Applitools::VERSION}")
     end
 
     def self.vg(concurrent_open_sessions=1)
-      new(type: VG, concurrency: concurrent_open_sessions, legacy: false)
+      new(type: VG, concurrency: concurrent_open_sessions, legacy: false, runner_agent_id: "eyes.visualgrid.ruby/#{Applitools::VERSION}")
     end
 
     # export type EyesManagerConfig<TType extends 'vg' | 'classic' = 'vg' | 'classic'> = {
@@ -16,7 +16,7 @@ module Applitools
     #   concurrency?: TType extends 'vg' ? number : never
     #   legacy?: TType extends 'vg' ? boolean : never
     # }
-    attr_reader :type, :concurrency, :legacy
+    attr_reader :type, :concurrency, :legacy, :runner_agent_id
 
     VG = 'ufg'.freeze
     CLASSIC = 'classic'.freeze
@@ -29,6 +29,7 @@ module Applitools
       self.type = options[:type].to_s
       self.concurrency = options[:concurrency]
       self.legacy = options[:legacy]
+      @runner_agent_id = options[:runner_agent_id]
     end
 
     # enum_field :type, Applitools::UniversalEyesManagerConfig.type_enum_values
@@ -52,8 +53,10 @@ module Applitools
     def to_hash
       result = {}
       result[:type] = type
-      result[:concurrency] = concurrency if concurrency
-      result[:legacy] = legacy if legacy
+      result[:settings] = {}
+      result[:settings][:concurrency] = concurrency if concurrency
+      result[:settings][:legacyConcurrency] = legacy if legacy
+      result[:settings][:agentId] = runner_agent_id
       result.compact
     end
 

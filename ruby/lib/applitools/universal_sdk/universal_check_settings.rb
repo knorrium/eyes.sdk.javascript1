@@ -95,6 +95,8 @@ module Applitools
                 # :locationInView,
                 # :fullViewSize
 
+    json_fields :screenshotMode
+
     def initialize(*args)
       options = Applitools::Utils.extract_options! args
       options.keys.select {|k| options[k] && respond_to?("#{k}=") }.each {|k| send("#{k}=", options[k]) }
@@ -119,6 +121,7 @@ module Applitools
 
       self.accessibility_settings = eyes.accessibility_validation
       self.disable_browser_fetching = eyes.dont_fetch_resources
+      self.screenshot_mode = eyes.screenshot_mode
 
       self.accessibility_regions = target.accessibility_regions
       self.content_regions = target.content_regions

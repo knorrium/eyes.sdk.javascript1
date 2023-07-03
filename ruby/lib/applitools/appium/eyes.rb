@@ -120,6 +120,41 @@ class Applitools::Appium::Eyes < Applitools::Selenium::SeleniumEyes
     check(options[:tag], target)
   end
 
+  def set_mobile_capabilities(nmg_caps, nml_api_key, eyes_server_url, proxy_settings)
+    new_caps = {}
+
+    if nml_api_key.nil? || nml_api_key.empty?
+      nml_api_key = ENV['APPLITOOLS_API_KEY']
+      if nml_api_key.nil? || nml_api_key.empty?
+        raise Applitools::EyesError.new('No API key was given, or is an empty string.')
+      end
+    end
+    new_caps[:NML_API_KEY] = nml_api_key
+
+    if eyes_server_url.nil? || eyes_server_url.empty?
+      eyes_server_url = ENV['APPLITOOLS_SERVER_URL']
+    end
+    new_caps[:NML_SERVER_URL] = eyes_server_url if eyes_server_url
+
+    if proxy_settings.nil? || proxy_settings.empty?
+      proxy_settings = ENV['APPLITOOLS_HTTP_PROXY']
+    end
+    new_caps[:NML_PROXY_URL] = proxy_settings if proxy_settings
+
+    nmg_caps[:optionalIntentArguments] = "--es APPLITOOLS '" + new_caps.to_json + "'"
+    nmg_caps[:processArguments] = {
+      args: [],
+      env: new_caps.merge(DYLD_INSERT_LIBRARIES: "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib")
+    }
+  end
+
+  alias set_nmg_capabilities set_mobile_capabilities
+
+  def use_system_screenshot(value = true)
+    self.screenshot_mode = !value ? 'applitools-lib' : 'default'
+    self
+  end
+
   private
 
   def viewport_screenshot

@@ -1,3 +1,21 @@
+## [4.6.3] - 2023-07-04
+### Updated
+- Update version of Universal SDK Core to 3.2.1
+### Added
+- Add api for mobile (set_nmg_capabilities, set_mobile_capabilities, use_system_screenshot)
+### Features
+- Drop support of legacy vhs extraction
+- Add an API to send logEvents
+- Add support for reloading the page when using layoutBreakpoints
+- Fixed issue with failed find element responses in EC
+- Fixed issue when on certain browser versions test didn't target a previously created baseline
+### Bug fixes
+- Increase timeout for rendering results polling
+- Fixed issue when logs are not show up
+- Add isProcess property when calling makeCoreServer
+- Fixed issue with Safari mobile screenshots
+- Fixed issue with default settings in extractText
+- Fixed issue with viewport information extraction when switched to webview
 ## [4.6.2] - 2023-05-10
 ### Added
 - Add remove_duplicate_tests option & set_remove_duplicate_tests method to eyes runner 

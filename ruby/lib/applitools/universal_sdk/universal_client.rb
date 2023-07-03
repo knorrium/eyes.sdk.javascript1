@@ -16,7 +16,7 @@ module Applitools::Connectivity
     extend Forwardable
     def_delegators 'Applitools::EyesLogger', :logger
 
-    CORE_MAKE_EC_CLIENT = 'Core.makeECClient'
+    CORE_GET_EC_CLIENT = 'Core.getECClient'
     SESSION_INIT = 'Core.makeCore'
 
     CORE_MAKE_MANAGER = 'Core.makeManager'
@@ -57,7 +57,7 @@ module Applitools::Connectivity
       # ECClientSettings
       #
       # {
-      #   "capabilities": { // default capabilities that will be used if user do not provide `applitools:` caps
+      #   "options": { // default options that will be used if user do not provide `applitools:` caps
       #     "serverUrl": "https://eyesapi.applitools.com/",
       #     "apiKey": "DFH$HJD%77333J355",
       #   },
@@ -71,17 +71,17 @@ module Applitools::Connectivity
       ec_client_capabilities[:serverUrl] = server_url unless server_url.nil?
       ec_client_capabilities[:apiKey] = api_key unless api_key.nil?
       ec_client_settings = {}
-      ec_client_settings[:capabilities] = ec_client_capabilities unless ec_client_capabilities.empty?
+      ec_client_settings[:options] = ec_client_capabilities unless ec_client_capabilities.empty?
       ec_client_settings[:proxy] = proxy unless proxy.nil?
       make_ec_client_request_payload = {settings: ec_client_settings}
-      # interface MakeECClientRequestPayload {
+      # interface GetECClientRequestPayload {
       #   settings?: ECClientSettings
       # }
       #
-      # interface MakeECClientResponsePayload {
+      # interface GetECClientResponsePayload {
       #   url: string
       # }
-      command_with_result(CORE_MAKE_EC_CLIENT, make_ec_client_request_payload)
+      command_with_result(CORE_GET_EC_CLIENT, make_ec_client_request_payload)
     end
 
     def make_manager(eyes_manager_config)
@@ -95,9 +95,13 @@ module Applitools::Connectivity
     def core_make_manager(eyes_manager_config)
       # interface MakeManagerRequestPayload {
       #   type: 'ufg' | 'classic'
-      #   concurrency?: number
-      #   legacyConcurrency?: number
-      #   agentId?: string
+      #   settings?: EyesManagerSettings
+      # }
+      # ### EyesManagerSettings
+      # {
+      #   "concurrency": 10,
+      #   "legacyConcurrency": 50,
+      #   "agentId": "js/eyes/1.0.0"
       # }
       #
       # type MakeManagerResponsePayload = Ref<EyesManager>
