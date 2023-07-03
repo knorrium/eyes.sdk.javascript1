@@ -268,15 +268,17 @@
       "release-type": "node",
       "component": "js/tunnel-client",
       "builds": [
-        {"artifacts": ["../*/dist", "../*/types"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"runner": "linux", "build-type": "x64", "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"},
+        {"runner": "linuxarm", "build-type": "arm64", "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"node-version": 16, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 18, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
-        {"node-version": 20, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
+        {"node-version": 14, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 16, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 18, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"},
+        {"node-version": 20, "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"], "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org"}
+        {"registry-url": "https://registry.npmjs.org", "jfrog-url": "https://applitools.jfrog.io", "env": {"JF_REPOSITORY": "tunnel-client"}, "artifacts": ["./bin/*"]}
       ]
     },
     "js/packages/ufg-client": {
@@ -475,7 +477,7 @@
         {"artifacts": ["./logs/**/*"], "key": "{{component}}"}
       ],
       "releases": [
-        {"registry-url": "none", "assets": ["./bin/*"]}
+        {"artifacts": ["./bin/*"]}
       ]
     },
     "js/packages/eyes-storybook": {
