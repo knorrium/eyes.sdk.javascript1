@@ -7,8 +7,19 @@ DOWNLOADER_PATH = File.expand_path('../../lib/applitools/universal_sdk/universal
 require DOWNLOADER_PATH
 
 desc "Download universal server binaries"
-task :default => [:get_server]
+task :default => [:prepare_server]
 
+# depricated
 file "get_server" do
   Applitools::UniversalServerDownloader.download(File.dirname(__FILE__))
+end
+
+# build
+file "get_server_compressed" do
+  Applitools::UniversalServerDownloader.tar_gz_download(File.dirname(__FILE__))
+end
+
+# install
+file "prepare_server" do
+  Applitools::UniversalServerDownloader.prepare_server(File.dirname(__FILE__))
 end

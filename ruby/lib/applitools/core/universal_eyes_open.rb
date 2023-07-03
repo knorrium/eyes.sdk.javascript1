@@ -61,7 +61,9 @@ module Applitools
       end
       # raise Applitools::EyesNotOpenException.new('Eyes not open!') if @eyes.nil?
       return if @universal_eyes.nil?
-      result = @universal_eyes.abort
+      @universal_eyes.abort
+      result = @universal_eyes.eyes_get_results
+      result = result[0] if result.is_a?(Array)
 
       if result.is_a? Hash
         logger.info "---Test aborted" if !result[:message] && !result[:stack]

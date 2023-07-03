@@ -58,7 +58,7 @@ module Applitools::Connectivity
       @port_pipe, port_w = IO.pipe
 
       @usdk_pid = spawn(
-        EXECUTABLE_FILEPATH, '--no-singleton', '--shutdown-mode', 'stdin',
+        EXECUTABLE_FILEPATH, 'universal', '--no-singleton', '--shutdown-mode', 'stdin',
         in: in_pipe, out: port_w, err: port_w,
         # close_others: true
       )

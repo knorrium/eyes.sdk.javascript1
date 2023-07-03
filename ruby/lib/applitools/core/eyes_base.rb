@@ -57,6 +57,17 @@ module Applitools
           raise Applitools::EyesError.new 'Failed to set viewport size!'
         end
       end
+
+      def get_execution_cloud_url(*args)
+        options = Applitools::Utils.extract_options!(args)
+        default_configs = Applitools::EyesBaseConfiguration::DEFAULT_CONFIG
+        server_url = options[:server_url] || default_configs[:server_url]
+        api_key = options[:api_key] || default_configs[:api_key]
+        proxy = options[:proxy]
+        @universal_client = Applitools::Connectivity::UniversalClient.new
+        core_ec_client = @universal_client.core_make_ec_client(server_url, api_key, proxy)
+        core_ec_client[:url]
+      end
     end
 
     attr_accessor :config
@@ -451,7 +462,8 @@ module Applitools
       # logger.info "Automatically save test? #{save}"
 
       # U-Notes : universal server returns Array ; keys as sym
-      universal_results = universal_eyes.close # Array even for one test
+      universal_eyes.close # nil
+      universal_results = universal_eyes.eyes_get_results # Array even for one test
       # require 'pry'
       # binding.pry
       key_transformed_results = Applitools::Utils.deep_stringify_keys(universal_results)

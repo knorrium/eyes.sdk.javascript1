@@ -27,6 +27,13 @@ module Applitools
         reset_floating
         self
       end
+
+      def webview(value = true)
+        options[:webview] = value.is_a?(String) ? value : !!value
+        # options[:stitch_content] = false if options[:stitch_content].nil?
+        self
+      end
+
     # class Target
     #   include Applitools::FluentInterface
     #   attr_accessor :region_to_check, :options, :ignored_regions, :floating_regions, :layout_regions, :content_regions, :strict_regions, :accessibility_regions

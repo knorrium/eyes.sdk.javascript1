@@ -18,6 +18,7 @@ module Applitools
     #     waitBeforeCapture?: number,
     #     lazyLoad?: boolean | LazyLoadOptions
     #   }
+    # webview?: boolean | string
     json_fields :name,
       :disableBrowserFetching,
       :layoutBreakpoints,
@@ -28,7 +29,8 @@ module Applitools
       :variationGroupId,
       :timeout,
       :waitBeforeCapture,
-      :lazyLoad
+      :lazyLoad,
+      :webview
 
     # export type MatchSettings<TRegion> = {
     #   exact?: {
@@ -161,6 +163,7 @@ module Applitools
       self.variation_group_id = target.options[:variation_group_id]
       self.wait_before_capture = target.options[:wait_before_capture]
       self.lazy_load = target.options[:lazy_load]
+      self.webview = target.options[:webview]
       self.page_id = target.options[:page_id]
 
       self.scroll_root_element = target.options[:scroll_root_element] || eyes.scroll_root_element

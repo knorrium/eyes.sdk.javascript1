@@ -19,6 +19,7 @@ module Applitools
     def old_style_results_array
       Applitools::Utils.deep_stringify_keys(results).map do |e|
         r = e['result'] ? e['result'] : {}
+        r['isAborted'] = true unless e['error'].nil? # fix for get_all_test_results
         Applitools::TestResults.new(r)
       end
     end

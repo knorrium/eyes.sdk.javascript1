@@ -4,6 +4,7 @@ module Applitools
   class EyesRunner
     attr_accessor :batches_server_connectors_map
     attr_accessor :universal_client, :universal_eyes_manager
+    attr_accessor :remove_duplicate_tests
 
     def initialize
       self.batches_server_connectors_map = {}
@@ -25,7 +26,11 @@ module Applitools
     end
 
     def close_all_eyes
-      get_universal_eyes_manager.close_all_eyes
+      get_universal_eyes_manager.close_all_eyes(remove_duplicate_tests)
+    end
+
+    def set_remove_duplicate_tests(value)
+      self.remove_duplicate_tests = !!value
     end
 
     # def close_batch(batch_id)

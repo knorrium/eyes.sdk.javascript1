@@ -44,7 +44,11 @@ module Applitools
       }
       driver_target = driver.universal_driver_config
       results = universal_eyes.locate(settings, driver_target)
-      Applitools::Utils.deep_stringify_keys(results)
+      old_style = {
+        applitools_title: results[:applitools_title].
+          map {|r| {left: r[:x], top: r[:y], width: r[:width], height: r[:height]} }
+      }
+      Applitools::Utils.deep_stringify_keys(old_style)
     end
 
   end

@@ -37,7 +37,7 @@ module Applitools
     def one_of?(param, param_name, klasses)
       return true if klasses.detect { |a| param.is_a? a }
       raise Applitools::EyesIllegalArgument.new "Expected #{param_name} to be" \
-        " instance of one of this classes: [#{klass}], but got #{param.class.name} instead"
+        " instance of one of this classes: [#{klasses}], but got #{param.class.name} instead"
     end
 
     def raise_argument_error(error)

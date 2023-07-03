@@ -142,6 +142,26 @@ DEVICES = {
         },
         options: {}.merge(SAUCE_CREDENTIALS)
     },
+    'iPhone 12' => {
+        type: 'sauce',
+        url: SAUCE_SERVER_URL,
+        capabilities: {
+            w3c: {
+                browser_name: '',
+                platform_name: 'iOS',
+                'appium:deviceName': 'iPhone 12 Pro Simulator',
+                'appium:platformVersion': '15.2',
+            },
+            legacy: {
+                browserName: '',
+                deviceName: 'iPhone 12 Pro Simulator',
+                platformName: 'iOS',
+                platformVersion: '15.2',
+                # deviceOrientation: 'portrait',
+            }
+        },
+        options: {}.merge(SAUCE_CREDENTIALS)
+    },
     'iPhone XS' => {
         type: 'sauce',
         url: SAUCE_SERVER_URL,

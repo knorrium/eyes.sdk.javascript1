@@ -78,12 +78,19 @@ RSpec.configure do |config|
         default_match_settings.accessibility_validation = Applitools::AccessibilitySettings.new(level, guideline)
         @eyes.default_match_settings = default_match_settings
       end
+      if args[:default_match_settings].key? 'enablePatterns'
+        @eyes.enable_patterns = args[:default_match_settings]['enablePatterns']
+      end
     end
     if args.key? :batch
       @eyes.batch = Applitools::BatchInfo.new(args[:batch])
     end
     @eyes.layout_breakpoints = args[:layout_breakpoints] if args.key? :layout_breakpoints
     # raise 'Layout_breakpoints arent implemented in the Ruby SDK (Or it is time to update the test)' if args.key? :layout_breakpoints
+    if args.key? :remove_duplicate_tests
+      @eyes.runner.set_remove_duplicate_tests(args[:remove_duplicate_tests])
+    end
+    @eyes.baseline_env_name = args[:baseline_env_name] if args.key? :baseline_env_name
   end
 
   def parse_browser_info(instance)
@@ -120,9 +127,8 @@ RSpec.configure do |config|
 
   def build_chrome(caps, url, execution_grid)
     if execution_grid
-      is_eg_url = ENV.key?('EXECUTION_GRID_URL')
-      raise 'No url for set for the execution grid, check environmental variable EXECUTION_GRID_URL' unless is_eg_url
-      build_remote(caps, ENV['EXECUTION_GRID_URL'])
+      execution_cloud_url = Applitools::EyesBase.get_execution_cloud_url
+      build_remote(caps, execution_cloud_url)
     elsif use_docker
       build_remote(caps, url)
     elsif LEGACY_SELENIUM

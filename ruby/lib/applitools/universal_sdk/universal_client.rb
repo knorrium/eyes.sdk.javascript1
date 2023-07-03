@@ -16,6 +16,7 @@ module Applitools::Connectivity
     extend Forwardable
     def_delegators 'Applitools::EyesLogger', :logger
 
+    CORE_MAKE_EC_CLIENT = 'Core.makeECClient'
     SESSION_INIT = 'Core.makeCore'
 
     CORE_MAKE_MANAGER = 'Core.makeManager'
@@ -25,14 +26,17 @@ module Applitools::Connectivity
     CORE_DELETE_TEST = 'Core.deleteTest'
 
     EYES_MANAGER_MAKE_EYES = 'EyesManager.openEyes'
-    EYES_MANAGER_CLOSE_ALL_EYES = 'EyesManager.closeManager'
+    EYES_MANAGER_CLOSE_ALL_EYES = 'EyesManager.getResults'
     EYES_CHECK = 'Eyes.check'
     EYES_CHECK_AND_CLOSE = 'Eyes.checkAndClose' # ...
     EYES_LOCATE = 'Core.locate'
-    EYES_EXTRACT_TEXT_REGIONS = 'Eyes.locateText'
-    EYES_EXTRACT_TEXT = 'Eyes.extractText'
+    EYES_EXTRACT_TEXT_REGIONS = 'Core.locateText'
+    EYES_EXTRACT_TEXT = 'Core.extractText'
     EYES_CLOSE = 'Eyes.close'
     EYES_ABORT = 'Eyes.abort'
+    EYES_GET_RESULTS = 'Eyes.getResults'
+
+    SERVER_LOG_EVENT_NAME = 'Logger.log'
 
     attr_accessor :commands_config
 
@@ -47,6 +51,37 @@ module Applitools::Connectivity
         check: {},
         close: {}
       }
+    end
+
+    def core_make_ec_client(server_url, api_key, proxy)
+      # ECClientSettings
+      #
+      # {
+      #   "capabilities": { // default capabilities that will be used if user do not provide `applitools:` caps
+      #     "serverUrl": "https://eyesapi.applitools.com/",
+      #     "apiKey": "DFH$HJD%77333J355",
+      #   },
+      #   "proxy": {
+      #     "url": "http://localhost:8080",
+      #     "username": "username",
+      #     "password": "Pa$$w0rD"
+      #   },
+      # }
+      ec_client_capabilities = {}
+      ec_client_capabilities[:serverUrl] = server_url unless server_url.nil?
+      ec_client_capabilities[:apiKey] = api_key unless api_key.nil?
+      ec_client_settings = {}
+      ec_client_settings[:capabilities] = ec_client_capabilities unless ec_client_capabilities.empty?
+      ec_client_settings[:proxy] = proxy unless proxy.nil?
+      make_ec_client_request_payload = {settings: ec_client_settings}
+      # interface MakeECClientRequestPayload {
+      #   settings?: ECClientSettings
+      # }
+      #
+      # interface MakeECClientResponsePayload {
+      #   url: string
+      # }
+      command_with_result(CORE_MAKE_EC_CLIENT, make_ec_client_request_payload)
     end
 
     def make_manager(eyes_manager_config)
@@ -133,19 +168,19 @@ module Applitools::Connectivity
       command_with_result(EYES_MANAGER_MAKE_EYES, {manager: manager, target: driver_config, settings: commands_config[:open], config: commands_config})
     end
 
-    def eyes_manager_close_all_eyes(manager)
-      # interface CloseManagerRequestPayload {
+    def eyes_manager_close_all_eyes(manager, remove_duplicate_tests)
+      # interface GetManagerResultsRequestPayload {
       #   manager: Ref<EyesManager>
       #   settings?: {throwErr?: boolean}
       # }
       #
-      # interface CloseManagerResponsePayload {
-      #   results: Array<{
+      # interface GetManagerResultsResponsePayload {
+      #   results: {
       #     error?: Error
       #     result?: TestResult
       #     renderer?: TType extends 'ufg' ? Renderer : never
       #     userTestId: string
-      #   }>
+      #   }[]
       #   passed: number
       #   unresolved: number
       #   failed: number
@@ -154,7 +189,19 @@ module Applitools::Connectivity
       #   missing: number
       #   matches: number
       # }
-      command_with_result(EYES_MANAGER_CLOSE_ALL_EYES, {manager: manager, config: commands_config})
+      settings = {throwErr: false, removeDuplicateTests: remove_duplicate_tests}
+      command_with_result(EYES_MANAGER_CLOSE_ALL_EYES, {manager: manager, settings: settings})
+    end
+
+    def eyes_get_results(eyes)
+      # interface GetEyesResultsPayload {
+      #   eyes: Ref<Eyes>
+      #   settings?: GetResultsSettings
+      # }
+      #
+      # type GetEyesResultsResponsePayload = TestResult[]
+      settings = {throwErr: false}
+      command_with_result(EYES_GET_RESULTS, {eyes: eyes, settings: settings})
     end
 
     def eyes_check(eyes, settings, image_target = {})
@@ -187,28 +234,26 @@ module Applitools::Connectivity
 
     def eyes_extract_text_regions(eyes, settings, driver_target)
       # interface LocateTextRequestPayload {
-      #   eyes: Ref<Eyes>
       #   target?: ImageTarget | DriverTarget
       #   settings?: LocateTextSettings
       #   config?: Config
       # }
       #
-      # type LocateTextResponcePayload = Record<string, Array<{text: string, x: number, y: number, width: number, hieght: number}>>
-      payload = {eyes: eyes, target: driver_target, settings: settings, config: commands_config}
+      # type LocateTextResponsePayload = Record<string, {text: string, x: number, y: number, width: number, height: number}[]>
+      payload = {target: driver_target, settings: settings, config: commands_config}
       payload.delete(:target) if driver_target.nil? || driver_target.empty?
       command_with_result(EYES_EXTRACT_TEXT_REGIONS, payload)
     end
 
     def eyes_extract_text(eyes, regions, driver_target)
       # interface ExtractTextRequestPayload {
-      #   eyes: Ref<Eyes>
       #   target?: ImageTarget | DriverTarget
       #   settings?: ExtractTextSettings | ExtractTextSettings[]
       #   config?: Config
       # }
       #
-      # type ExtractTextResponcePayload = string[]
-      payload = {eyes: eyes, target: driver_target, settings: regions, config: commands_config}
+      # type ExtractTextResponsePayload = string[]
+      payload = {target: driver_target, settings: regions, config: commands_config}
       payload.delete(:settings) if regions.empty?
       command_with_result(EYES_EXTRACT_TEXT, payload)
     end
@@ -220,19 +265,32 @@ module Applitools::Connectivity
       #   config?: Config
       # }
       #
-      # type CloseResponsePayload = TestResult[]
-      settings = {throwErr: false}
-
+      # type CloseResponsePayload = void
+      settings = commands_config[:close]
+      # CloseSettings
+      #
+      # {
+      #   "updateBaselineIfNew": true,
+      #   "updateBaselineIfDifferent": true
+      # }
       command_with_result(EYES_CLOSE, {eyes: eyes, settings: settings, config: commands_config})
     end
 
     def eyes_abort(eyes)
       # interface AbortPayload {
       #   eyes: Ref<Eyes>
+      #   settings?: CloseSettings
       # }
       #
-      # type AbortResponsePayload = TestResult[]
-      command_with_result(EYES_ABORT, {eyes: eyes})
+      # type AbortResponsePayload = void
+      settings = commands_config[:close]
+      # CloseSettings
+      #
+      # {
+      #   "updateBaselineIfNew": true,
+      #   "updateBaselineIfDifferent": true
+      # }
+      command_with_result(EYES_ABORT, {eyes: eyes, settings: settings})
     end
 
     def core_get_viewport_size(driver)
@@ -324,12 +382,17 @@ module Applitools::Connectivity
     end
 
     def session_init
+      init_agent_id = "eyes.ruby-sdk/#{Applitools::VERSION}".freeze
       make_core_payload = {
-        name: :rb,
-        version: Applitools::VERSION,
-        protocol: :webdriver,
-        cwd: Dir.pwd
+        agentId: init_agent_id,
+        cwd: Dir.pwd,
+        spec: :webdriver
       }
+      # interface MakeCorePayload {
+      #   agentId: string
+      #   cwd: string
+      #   spec: 'webdriver' | string[]
+      # }
       command(SESSION_INIT, make_core_payload)
       # no response
     end
@@ -364,7 +427,7 @@ module Applitools::Connectivity
       encoded_frame << web_socket_result
       decoded_frame = encoded_frame.next
       incoming_json = JSON.parse(decoded_frame.to_s)
-      if incoming_json['name'] === 'Server.log'
+      if incoming_json['name'] === SERVER_LOG_EVENT_NAME
         incoming_payload = incoming_json['payload']
         # incoming_payload['level']
         puts incoming_payload['message']
@@ -411,9 +474,9 @@ module Applitools::Connectivity
 
     def process_other_responses(other_responses)
       other_responses.each do |incoming_json|
-        if incoming_json['name'] === 'Server.log'
+        if incoming_json['name'] === SERVER_LOG_EVENT_NAME
           if ENV['APPLITOOLS_SHOW_UNIVERSAL_LOGS']
-            Applitools::EyesLogger.logger.debug "[Server.log] #{incoming_json['payload']['message']}"
+            Applitools::EyesLogger.logger.debug "[#{SERVER_LOG_EVENT_NAME}] #{incoming_json['payload']['message']}"
           end
         else
           Applitools::EyesLogger.logger.info "[Server.info] #{incoming_json}"

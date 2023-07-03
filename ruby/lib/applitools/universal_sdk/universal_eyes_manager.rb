@@ -11,6 +11,7 @@ module Applitools
     def initialize(manager, universal_client)
       @manager = manager
       @universal_client = universal_client
+      @opened_eyes = []
     end
 
     def open_eyes(driver_config_json, config)
@@ -31,11 +32,14 @@ module Applitools
 
       Applitools::EyesLogger.logger.debug "Eyes applitools-ref-id: #{@eyes[:"applitools-ref-id"]}"
       # U-Notes : !!! Eyes.new
-      Applitools::UniversalEyes.new(@eyes, @universal_client)
+      universal_eyes = Applitools::UniversalEyes.new(@eyes, @universal_client)
+      @opened_eyes.push(universal_eyes)
+      universal_eyes
     end
 
-    def close_all_eyes
-      @universal_client.eyes_manager_close_all_eyes(@manager)
+    def close_all_eyes(remove_duplicate_tests)
+      @opened_eyes.each {|universal_eye| universal_eye.close }
+      @universal_client.eyes_manager_close_all_eyes(@manager, remove_duplicate_tests)
     end
 
   end

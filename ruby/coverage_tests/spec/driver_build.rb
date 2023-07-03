@@ -20,6 +20,9 @@ def get_env(args = {})
   }
   env[:capabilities].merge!(args[:capabilities]) unless args[:capabilities].nil?
   preset = DEVICES[args[:device]].clone || BROWSERS[args[:browser]].clone
+  if args[:emulation] === 'Android 8.0' && args[:browser] === 'chrome'
+    preset = DEVICES["Android 8.0 Chrome Emulator"].clone
+  end
   raise 'There were no preset ready for the used env' if preset.nil?
   env[:url] = preset[:url] unless preset[:url].nil?
   set_orientation = !args[:orientation].nil?

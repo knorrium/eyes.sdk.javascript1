@@ -22,6 +22,7 @@ module Applitools
 
       attr_accessor :visual_grid_manager, :driver, :current_url, :current_config, :fetched_cache_map,
         :utils,
+        :enable_patterns,
         :config, :driver_lock, :test_uuid, :dont_get_title
       attr_accessor :test_list
 
@@ -324,6 +325,9 @@ module Applitools
         logger.info 'Ending server session...'
 
         universal_results = universal_eyes.close # Array even for one test
+        universal_results = universal_eyes.eyes_get_results # Array even for one test
+        # require 'pry'
+        # binding.pry
         raise Applitools::EyesError.new("Request failed: #{universal_results[:message]}") if server_error?(universal_results)
         key_transformed_results = Applitools::Utils.deep_stringify_keys(universal_results)
         results = key_transformed_results.map {|result| Applitools::TestResults.new(result) }

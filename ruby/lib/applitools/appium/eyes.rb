@@ -36,6 +36,8 @@ class Applitools::Appium::Eyes < Applitools::Selenium::SeleniumEyes
     self.tag_for_debug = name
     Applitools::ArgumentGuard.one_of? target, 'target', [Applitools::Selenium::Target, Applitools::Appium::Target]
 
+    # target.fully(false) if target.options[:stitch_content].nil?
+
     return universal_check(name, target)
     return check_native(name, target) if native_app?
     super

@@ -42,13 +42,19 @@ RSpec.shared_context 'selenium workaround' do
         end
       end
       example.run
-      if eyes.open?
-        if @actual_app_output_check.empty?
-          eyes.close_async
-        else
-          @eyes_test_result = eyes.close
-          @actual_app_output_check.each do |check|
-            check.perform
+      if eyes.respond_to? :close_async
+        eyes.close_async
+      elsif eyes.respond_to? :close
+        eyes.close
+      else
+        if eyes.open?
+          if @actual_app_output_check.empty?
+            eyes.close_async
+          else
+            @eyes_test_result = eyes.close
+            @actual_app_output_check.each do |check|
+              check.perform
+            end
           end
         end
       end

@@ -28,6 +28,10 @@ module Applitools
       @universal_client.eyes_abort(@eyes)
     end
 
+    def eyes_get_results
+      @universal_client.eyes_get_results(@eyes)
+    end
+
     def locate(settings, driver_target)
       @universal_client.eyes_locate(@eyes, settings, driver_target)
     end

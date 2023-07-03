@@ -17,14 +17,10 @@ if [ "$?" -ne 0 ]; then
     echo "${MESSAGE}"
 fi
 
-# start eg client and save process id
 # commented out if need eg client logs
 export APPLITOOLS_SHOW_LOGS=true
+export APPLITOOLS_DONT_CLOSE_BATCHES=true
 export MOZ_HEADLESS=1
-yarn universal:eg &
-EG_PID="$!"
-export EXECUTION_GRID_URL=http://localhost:8080
-echo $EXECUTION_GRID_URL
 
 yarn parallel:local
 if [ "$?" -ne 0 ]; then
@@ -32,10 +28,6 @@ if [ "$?" -ne 0 ]; then
     MESSAGE+=$'\n test run have failed'
     echo "${MESSAGE}"
 fi
-
-# Kill eg client by the process id
-echo $EG_PID
-kill $EG_PID
 
 yarn report:merge
 if [ "$?" -ne 0 ]; then
