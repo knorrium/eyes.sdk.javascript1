@@ -377,6 +377,7 @@ class CheckSettings(USDKSchema):
         Nested(AccessibilityRegionReference), dump_to="accessibilityRegions"
     )
     webview = Field()
+    screenshot_mode = String(dump_to="screenshotMode")
 
 
 class LocateSettings(USDKSchema):

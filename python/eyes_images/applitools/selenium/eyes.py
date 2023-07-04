@@ -41,7 +41,7 @@ class Eyes(WebEyes):
         return result["url"]
 
     @staticmethod
-    def set_nmg_capabilities(
+    def set_mobile_capabilities(
         caps,  # type: dict
         api_key=None,  # type: Optional[Text]
         eyes_server_url=None,  # type: Optional[Text]
@@ -84,6 +84,8 @@ class Eyes(WebEyes):
         caps["optionalIntentArguments"] = "--es APPLITOOLS '{}'".format(
             json.dumps(env_caps, sort_keys=True)
         )
+
+    set_nmg_capabilities = set_mobile_capabilities  # back-compatibility alias
 
     @property
     def is_cut_provider_explicitly_set(self):

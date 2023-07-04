@@ -258,6 +258,7 @@ def test_check_settings_marshal():
     check_settings.accessibility(
         Region(30, 31, 32, 33), AccessibilityRegionType.LargeText
     )
+    check_settings.use_system_screenshot()
 
     result, errors = serializer.dump(check_settings.values)
     assert errors == {}
@@ -327,6 +328,7 @@ def test_check_settings_marshal():
             "selector": "root scroll root selector",
             "type": "css selector",
         },
+        "screenshotMode": "default",
         "sendDom": True,
         "strictRegions": [{"region": {"elementId": "dummy id 1"}}],
         "ufgOptions": {"vo key": "vo value"},

@@ -1,3 +1,8 @@
+## [vNext]
+### Added
+- Eyes.set_mobile_capabilities method that updates appium capabilities with NML options [Trello 3253](https://trello.com/c/bFHk2pRR)
+- CheckSettings.use_system_screenshot method to switch between nml and system approaches [Trello 3253](https://trello.com/c/bFHk2pRR)
+
 ## [5.19.0] - 2023-05-24
 ### Added
 - Support of reloading the browser after resizing the page with layout_breakpoints [Trello 99](https://trello.com/c/3KZDat3M)

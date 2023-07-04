@@ -6,9 +6,9 @@ from applitools.selenium import Eyes
 LIBRARY_PATH = "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
 
 
-def test_nmg_capabilities_explicit():
+def test_mobile_capabilities_explicit():
     caps = {"capsKey": "capsValue"}
-    Eyes.set_nmg_capabilities(caps, "abc", "https://server", "http://proxy:1234")
+    Eyes.set_mobile_capabilities(caps, "abc", "https://server", "http://proxy:1234")
 
     assert caps == {
         "capsKey": "capsValue",
@@ -27,9 +27,9 @@ def test_nmg_capabilities_explicit():
     }
 
 
-def test_nmg_capabilities_explicit_proxy_settings():
+def test_mobile_capabilities_explicit_proxy_settings():
     caps = {"capsKey": "capsValue"}
-    Eyes.set_nmg_capabilities(caps, "abc", proxy_settings=ProxySettings("host", 81))
+    Eyes.set_mobile_capabilities(caps, "abc", proxy_settings=ProxySettings("host", 81))
 
     assert caps == {
         "capsKey": "capsValue",
@@ -46,11 +46,11 @@ def test_nmg_capabilities_explicit_proxy_settings():
     }
 
 
-def test_nmg_capabilities_explicit_api_key_only(monkeypatch):
+def test_mobile_capabilities_explicit_api_key_only(monkeypatch):
     monkeypatch.delenv("APPLITOOLS_SERVER_URL", False)
     monkeypatch.delenv("APPLITOOLS_HTTP_PROXY", False)
     caps = {"capsKey": "capsValue"}
-    Eyes.set_nmg_capabilities(caps, "abc")
+    Eyes.set_mobile_capabilities(caps, "abc")
 
     assert caps == {
         "capsKey": "capsValue",
@@ -62,12 +62,12 @@ def test_nmg_capabilities_explicit_api_key_only(monkeypatch):
     }
 
 
-def test_nmg_capabilities_from_env(monkeypatch):
+def test_mobile_capabilities_from_env(monkeypatch):
     monkeypatch.setenv("APPLITOOLS_API_KEY", "def")
     monkeypatch.setenv("APPLITOOLS_SERVER_URL", "https://otherserver")
     monkeypatch.setenv("APPLITOOLS_HTTP_PROXY", "http://secondproxy:2222")
     caps = {"capsKey": "capsValue"}
-    Eyes.set_nmg_capabilities(caps)
+    Eyes.set_mobile_capabilities(caps)
 
     assert caps == {
         "capsKey": "capsValue",
@@ -86,10 +86,10 @@ def test_nmg_capabilities_from_env(monkeypatch):
     }
 
 
-def test_nmg_capabilities_from_env_api_key_only(monkeypatch):
+def test_mobile_capabilities_from_env_api_key_only(monkeypatch):
     monkeypatch.setenv("APPLITOOLS_API_KEY", "def")
     caps = {"capsKey": "capsValue"}
-    Eyes.set_nmg_capabilities(caps)
+    Eyes.set_mobile_capabilities(caps)
 
     assert caps == {
         "capsKey": "capsValue",
@@ -101,8 +101,24 @@ def test_nmg_capabilities_from_env_api_key_only(monkeypatch):
     }
 
 
-def test_nmg_capabilities_no_api_key_raises_exception(monkeypatch):
+def test_mobile_capabilities_no_api_key_raises_exception(monkeypatch):
     monkeypatch.delenv("APPLITOOLS_API_KEY", False)
     caps = {"capsKey": "capsValue"}
     with pytest.raises(EyesError):
-        Eyes.set_nmg_capabilities(caps)
+        Eyes.set_mobile_capabilities(caps)
+
+
+def test_mobile_capabilities_compat_alias():
+    caps = {}
+    Eyes.set_nmg_capabilities(caps, "abc")
+
+    assert caps == {
+        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "abc"}\'',
+        "processArguments": {
+            "args": [],
+            "env": {
+                "DYLD_INSERT_LIBRARIES": LIBRARY_PATH,
+                "NML_API_KEY": "abc",
+            },
+        },
+    }

@@ -65,6 +65,7 @@ class WebCheckSettingsValues(CheckSettingsValues):
     )  # type: Union[bool, List[int], LayoutBreakpointsOptions, None]
     lazy_load = attr.ib(default=None)  # type: Optional[LazyLoadOptions]
     webview = attr.ib(default=None)  # type: Union[None, bool, Text]
+    screenshot_mode = attr.ib(default=None)  # type: Optional[Text]
 
     @property
     def size_mode(self):
@@ -647,6 +648,10 @@ class WebCheckSettings(CheckSettings):
 
     def webview(self, webview=True):
         self.values.webview = webview
+        return self
+
+    def use_system_screenshot(self, should_use=True):
+        self.values.screenshot_mode = "default" if should_use else "applitools-lib"
         return self
 
     @property
