@@ -65,12 +65,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version || 'lts/*'}}
-      # - name: Yarn cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ./js/.yarn/cache
-      #     key: yarn-cache-${{hashFiles('./js/yarn.lock', './js/.yarnrc.yml')}}
-      #     restore-keys: yarn-cache-
+      - name: Yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ./js/.yarn/cache
+          key: yarn-cache-${{hashFiles('./js/yarn.lock', './js/.yarnrc.yml')}}
+          restore-keys: yarn-cache-
       - name: Build
         uses: ./.github/actions/js/build
         with:
@@ -105,12 +105,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version || 'lts/*'}}
-      # - name: Yarn cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ./js/.yarn/cache
-      #     key: yarn-cache-${{hashFiles('./js/yarn.lock', '.yarnrc.yml')}}
-      #     restore-keys: yarn-cache-
+      - name: Yarn cache
+        uses: actions/cache@v3
+        with:
+          path: ./js/.yarn/cache
+          key: yarn-cache-${{hashFiles('./js/yarn.lock', '.yarnrc.yml')}}
+          restore-keys: yarn-cache-
       - name: Restore build artifacts
         if: ${{matrix.builds}}
         uses: ./.github/actions/storage/restore
