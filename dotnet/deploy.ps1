@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env pwsh
 echo "DEPLOY"
 # git remote set-url origin https://${GH_TOKEN}@github.com/${GITHUB_ACTION_REPOSITORY}
 # git add */*.csproj CHANGELOG.md
@@ -6,5 +6,9 @@ echo "DEPLOY"
 # git push origin HEAD:$RELEASE_BRANCH
 # while read p; do  echo $p; git tag $p; done <NEW_TAGS.txt
 # git push origin HEAD:$RELEASE_BRANCH --tags
-while read p; do  echo $p; dotnet pack $p.DotNet/$p.DotNet.csproj; done <UPDATED_PROJECTS.txt
-# dotnet nuget push PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${NUGET_API_KEY} --skip-duplicate
+
+foreach($p in Get-Content .\UPDATED_PROJECTS.txt) {
+    dotnet pack ./$p.DotNet/$p.DotNet.csproj
+}
+
+dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${env:NUGET_API_KEY} --skip-duplicate

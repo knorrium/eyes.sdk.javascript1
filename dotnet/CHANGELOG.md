@@ -1,6 +1,26 @@
-## [Eyes.Image.Core 3.3.1] - UPDATED
+## [Eyes.Image.Core 3.3.1] - 2023-07-02
 ### Updated
 - Server Core to 3.3.1
+
+## [Eyes.Images 3.28] - 2023-07-02
+### Updated
+- Match to latest Eyes.Image.Core
+
+## [Eyes.Selenium 3.56] - 2023-07-02
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium 5.52] - 2023-07-02
+### Updated
+- Match to latest Eyes.Selenium
+
+## [Eyes.Selenium4 3.56] - 2023-07-02
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Playwright 1.5] - 2023-07-02
+### Updated
+- Match to latest Eyes.Images
 
 ## [Eyes.Images 3.27] - 2023-06-27
 ### Fixes

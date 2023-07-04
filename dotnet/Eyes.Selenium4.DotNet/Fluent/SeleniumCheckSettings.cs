@@ -108,7 +108,7 @@ namespace Applitools.Selenium.Fluent
             return clone;
         }
         
-        public SeleniumCheckSettings Region(Applitools.Utils.Geometry.Region region)
+        public SeleniumCheckSettings Region(Region region)
         {
             SeleniumCheckSettings clone = Clone_();
             Rectangle rect = region.ToRectangle();
@@ -659,9 +659,9 @@ namespace Applitools.Selenium.Fluent
             return (SeleniumCheckSettings)base.Ignore(region, regions);
         }
 
-        public SeleniumCheckSettings Ignore(IEnumerable<Rectangle> regions)
+        public new SeleniumCheckSettings Ignore(IEnumerable<Rectangle> regions, Padding padding = null, string regionId = null)
         {
-            return (SeleniumCheckSettings)base.Ignore(regions);
+            return (SeleniumCheckSettings)base.Ignore(regions, padding, regionId);
         }
 
         public new SeleniumCheckSettings Content(Rectangle region, params Rectangle[] regions)
@@ -706,7 +706,7 @@ namespace Applitools.Selenium.Fluent
 
         public new SeleniumCheckSettings Floating(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset, int maxRightOffset)
         {
-            return (SeleniumCheckSettings)base.Floating(region.ToRectangle(), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
+            return (SeleniumCheckSettings)base.Floating(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
         }
 
         public new SeleniumCheckSettings Exact()

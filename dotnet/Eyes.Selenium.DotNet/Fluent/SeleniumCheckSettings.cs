@@ -661,7 +661,7 @@ namespace Applitools.Selenium.Fluent
         
         public new SeleniumCheckSettings Ignore(Region region, params Rectangle[] regions)
         {
-            return (SeleniumCheckSettings)base.Ignore(region.ToRectangle(), regions);
+            return (SeleniumCheckSettings)base.Ignore(region, regions);
         }
 
         public SeleniumCheckSettings Ignore(IEnumerable<Rectangle> regions)

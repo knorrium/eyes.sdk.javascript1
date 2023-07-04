@@ -285,7 +285,7 @@ namespace Applitools.Playwright.Fluent
             return clone;
         }
 
-        public PlaywrightCheckSettings Ignore(Region region, params Region[] regions)
+        public new PlaywrightCheckSettings Ignore(Region region, params Region[] regions)
         {
             PlaywrightCheckSettings clone = Clone_();
             clone.Ignore_(region);
@@ -763,7 +763,7 @@ namespace Applitools.Playwright.Fluent
         }
 
 
-        public PlaywrightCheckSettings Floating(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
+        public new PlaywrightCheckSettings Floating(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
             int maxRightOffset)
         {
             PlaywrightCheckSettings clone = Clone_();

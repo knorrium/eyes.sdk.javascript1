@@ -20,10 +20,11 @@ env:
   APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+  GITHUB_TOKEN: ${{ secrets.RUN_GITHUB_TOKEN }}
   CORE_VERSION: "3.3.1"
+  NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
-
   dotnet-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -37,12 +38,40 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
-      - name: Run Selenium coverage tests
+      - name: Download cores
         shell: pwsh
         run: |
           cd dotnet
-          ./download_cores.ps1
+          ./download_cores.ps1 -CORE_VERSION "${env:CORE_VERSION}" &&
           ./update_core_versions.ps1
-          ./update_versions.ps1
-          chmod +x ./deploy.sh && ./deploy.sh
-          chmod +x ./sendMail.sh && ./sendMail.sh
+      - name: Update versions
+        shell: bash
+        run: |
+          cd dotnet
+          python updateChangelogAndProjectFiles.py
+      - name: Create nugets
+        shell: pwsh
+        run: |
+          cd dotnet
+          foreach($p in Get-Content .\UPDATED_PROJECTS.txt) {
+            dotnet pack ./$p.DotNet/$p.DotNet.csproj
+          }
+      - name: Upload nugets
+        shell: pwsh
+        run: |
+          cd dotnet
+          dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${env:NUGET_API_KEY} --skip-duplicate
+      - name: Update SCM
+        shell: bash
+        run: |
+          cd dotnet
+          git config user.email "action-queue@applitools.com"
+          git config user.name "queue-bot" 
+          git remote set-url origin https://${GITHUB_TOKEN}@github.com/${GITHUB_ACTION_REPOSITORY}
+          git checkout -b "PR_RELEASE_$GITHUB_SHA"
+          git add */*.csproj CHANGELOG.md
+          git commit -m 'Updated CHANGELOG and bumped versions.'
+          git push origin HEAD:PR_RELEASE_$GITHUB_SHA
+          # while read p; do  echo $p; git tag $p; done <NEW_TAGS.txt
+          # git push origin HEAD:PR_RELEASE_$GITHUB_SHA --tags
+          hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -F NEW_TAGS.txt

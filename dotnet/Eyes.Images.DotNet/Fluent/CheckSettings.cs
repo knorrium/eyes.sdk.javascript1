@@ -305,6 +305,22 @@ namespace Applitools
                 $"{nameof(Floating)}(new {nameof(Rectangle)}({region.X},{region.Y},{region.Width},{region.Height}),{maxUpOffset},{maxDownOffset},{maxLeftOffset},{maxRightOffset})");
             return clone;
         }
+        
+        /// <summary>
+        /// Adds a floating region.
+        /// </summary>
+        /// <param name="region">The content rectangle.</param>
+        /// <param name="maxUpOffset">How much the content can move up.</param>
+        /// <param name="maxDownOffset">How much the content can move down.</param>
+        /// <param name="maxLeftOffset">How much the content can move to the left.</param>
+        /// <param name="maxRightOffset">How much the content can move to the right.</param>
+        /// <remarks>A floating region is a a region that can be placed within the boundaries of a bigger region.</remarks>
+        /// <returns>An updated clone of this settings object.</returns>
+        public ICheckSettings Floating(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
+            int maxRightOffset)
+        {
+            return Floating(region.ToRectangle(), maxUpOffset, maxDownOffset, maxLeftOffset ,maxRightOffset);
+        }
 
         #endregion
 
@@ -428,6 +444,19 @@ namespace Applitools
         public ICheckSettings Ignore(Rectangle region, params Rectangle[] regions)
         {
             var list = new List<Rectangle> { region };
+            list.AddRange(regions);
+            return Ignore(list);
+        }
+
+        /// <summary>
+        /// Adds one or more ignore regions.
+        /// </summary>
+        /// <param name="region">A region to ignore when validating the screenshot.</param>
+        /// <param name="regions">One or more regions to ignore when validating the screenshot.</param>
+        /// <returns>An updated clone of this settings object.</returns>
+        public ICheckSettings Ignore(Region region, params Rectangle[] regions)
+        {
+            var list = new List<Rectangle> { region.ToRectangle() };
             list.AddRange(regions);
             return Ignore(list);
         }
