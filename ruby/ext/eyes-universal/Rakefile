@@ -14,7 +14,7 @@ file "get_server" do
   Applitools::UniversalServerDownloader.download(File.dirname(__FILE__))
 end
 
-# build
+# depricated
 file "get_server_compressed" do
   Applitools::UniversalServerDownloader.tar_gz_download(File.dirname(__FILE__))
 end
@@ -22,4 +22,9 @@ end
 # install
 file "prepare_server" do
   Applitools::UniversalServerDownloader.prepare_server(File.dirname(__FILE__))
+end
+
+# build
+file "get_compress_all_binaries" do
+  Applitools::UniversalServerDownloader.get_compress_all_binaries(File.dirname(__FILE__))
 end

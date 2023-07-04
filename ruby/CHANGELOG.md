@@ -1,6 +1,6 @@
 ## [4.6.3] - 2023-07-04
 ### Updated
-- Update version of Universal SDK Core to 3.2.1
+- Update version of Universal SDK Core to 3.4.0
 ### Added
 - Add api for mobile (set_nmg_capabilities, set_mobile_capabilities, use_system_screenshot)
 ### Features
@@ -9,6 +9,7 @@
 - Add support for reloading the page when using layoutBreakpoints
 - Fixed issue with failed find element responses in EC
 - Fixed issue when on certain browser versions test didn't target a previously created baseline
+- added a new mode for taking native app screenshots
 ### Bug fixes
 - Increase timeout for rendering results polling
 - Fixed issue when logs are not show up
@@ -16,6 +17,7 @@
 - Fixed issue with Safari mobile screenshots
 - Fixed issue with default settings in extractText
 - Fixed issue with viewport information extraction when switched to webview
+- apply default scrolling mode
 ## [4.6.2] - 2023-05-10
 ### Added
 - Add remove_duplicate_tests option & set_remove_duplicate_tests method to eyes runner 

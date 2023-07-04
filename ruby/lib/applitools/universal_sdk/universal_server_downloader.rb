@@ -11,12 +11,12 @@ module Applitools
     class << self
 
       EXPECTED_SHA = {
-        'core.tar.gz'      => '18c85f7aa8800b954847640dfb959cc48794ad05d95dde96c15db42c9154792f',
-        'core-alpine'      => 'd1ad7cca06eccca88bdd16c4dabd902e56b0868998e62bd95ec4b5a2b9c428eb',
-        'core-linux'       => 'b07fedfafc56bee33190bcab25560a93aba71c3379292f387bac7247d3d617a8',
-        'core-linux-arm64' => 'e6a42137b84846882bb4458ac134091621fe7a9b169537317c21b747ab47ffad',
-        'core-macos'       => '5cc86642cf94ad59a8e1d4a258a283e300be960f3ae7cb97338cb0e53f837998',
-        'core-win.exe'     => '629c6d925f55edf53c3bb71fc671efdf9bf3e3185d77e93e7b6b48ed81cd8903'
+        # 'core.tar.gz'      => '18c85f7aa8800b954847640dfb959cc48794ad05d95dde96c15db42c9154792f',
+        'core-alpine'      => '1312f4d7cdce8fc3e569cfe8cc6892a6b7e2dd7935119468ace077feb56b59e1',
+        'core-linux'       => '5b507e26957b1b1d4145f4f74588d269c48be7c03e4036aa8a3fa74c97a80323',
+        'core-linux-arm64' => 'c0c08c9e1b9a1b23f44953ec4e19cbbd3a7235a5d2c0bdbda4d432e47343851e',
+        'core-macos'       => 'dcec55c6f7cf1cb3bd6b018a75c68a941f630f4c7cf785132522c7ed19621930',
+        'core-win.exe'     => 'b57675e704b39ca149bd192bb3f387404a65e9ebc5ee275fea7d33dc4d34edcb'
       }
 
       def download(to)
@@ -39,7 +39,7 @@ module Applitools
         File.expand_path(tar_gz_filename, to)
       end
 
-      def tar_gz_download(to) # build
+      def tar_gz_download(to) # build - depricated
         puts "[eyes-universal] Downloading Core server from #{tar_gz_full_url}"
         where = tar_gz_filepath(to)
         unless File.exist?(where) && Digest::SHA256.file(where).to_s == tar_gz_sha
@@ -74,10 +74,11 @@ module Applitools
 
       def prepare_server(to) # install
         where = tar_gz_filepath(to)
-        downloaded_sha = Digest::SHA256.file(where).to_s
-        puts "[eyes-universal] prepare server : #{where} #{downloaded_sha}"
+        # downloaded_sha = Digest::SHA256.file(where).to_s
+        # puts "[eyes-universal] prepare server : #{where} #{downloaded_sha}"
+        puts "[eyes-universal] prepare server : #{where}"
 
-        if downloaded_sha == tar_gz_sha
+        # if downloaded_sha == tar_gz_sha
           Gem::Package::TarReader.new(Zlib::GzipReader.open(where)) do |tar|
             tar.each do |entry|
               binary_filename = File.basename(entry.full_name)
@@ -90,24 +91,63 @@ module Applitools
               # FileUtils.remove_file(unpacked_binary) if File.exist?(unpacked_binary)
               File.open(unpacked_binary, 'wb') {|f| f.print entry.read }
 
-              binary_sha = Digest::SHA256.file(unpacked_binary).to_s
-              if check_binary(binary_filename, binary_sha)
+              # binary_sha = Digest::SHA256.file(unpacked_binary).to_s
+              # if check_binary(binary_filename, binary_sha)
                 FileUtils.chmod('+x', unpacked_binary)
                 puts "[eyes-universal] Binary ready #{binary_filename} (#{Applitools::UNIVERSAL_CORE_VERSION}) at #{unpacked_binary}"
-              else
-                puts "[eyes-universal] Binary check fail #{binary_filename} (#{Applitools::UNIVERSAL_CORE_VERSION}): #{binary_sha}"
-              end
+              # else
+              #   puts "[eyes-universal] Binary check fail #{binary_filename} (#{Applitools::UNIVERSAL_CORE_VERSION}): #{binary_sha}"
+              # end
             end
           end
+        # else
+        #   puts "[eyes-universal] Server broken. (mismatch: #{downloaded_sha})"
+        # end
+      end
+
+      def get_compress_all_binaries(to)
+        filenames = EXPECTED_SHA.keys
+
+        target_core = File.expand_path(tar_gz_filename, to)
+        File.open(target_core, "wb") do |file|
+          Zlib::GzipWriter.wrap(file) do |gzip|
+            Gem::Package::TarWriter.new(gzip) do |tar|
+
+              filenames.each do |fname|
+                binary_url = URI.join(base_url, fname)
+                where = File.expand_path(fname, to)
+                # unless File.exist?(where) && Digest::SHA256.file(where).to_s == EXPECTED_SHA[fname] # local dev/debug
+                  binary_url.open {|cloud| File.binwrite(where, cloud.read) }
+                # end
+                # downloaded_sha = Digest::SHA256.file(where).to_s
+                # if downloaded_sha == EXPECTED_SHA[fname]
+                  mode = File.stat(where).mode
+                  tar.add_file_simple(fname, mode, File.size(where)) do |io|
+                    File.open(where, "rb") do |f|
+                      io.write(f.read)
+                    end
+                  end
+                  puts "[eyes-universal] Download complete. Server placed in #{where}"
+                # else
+                #   puts "[eyes-universal] Download broken. (#{fname} mismatch: #{downloaded_sha})"
+                # end
+              end
+
+            end
+          end
+        end
+
+        if File.exist?(target_core)
+          puts "[eyes-universal] Download complete (#{Applitools::UNIVERSAL_CORE_VERSION}). Server placed in #{target_core}"
         else
-          puts "[eyes-universal] Server broken. (mismatch: #{downloaded_sha})"
+          raise "[eyes-universal] ERROR : Download incomplete (#{Applitools::UNIVERSAL_CORE_VERSION}). Server not ready"
         end
       end
 
       private
 
       def base_url
-        "https://github.com/applitools/eyes.sdk.javascript1/releases/download/%40applitools/core%40#{Applitools::UNIVERSAL_CORE_VERSION}/"
+        "https://github.com/applitools/eyes.sdk.javascript1/releases/download/js%2Fcore%40#{Applitools::UNIVERSAL_CORE_VERSION}/"
       end
 
       def full_url

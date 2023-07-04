@@ -24,6 +24,6 @@ Gem::Specification.new do |spec|
                         'lib/applitools/version.rb']
   spec.extensions = ["ext/eyes-universal/Rakefile"]
 
-  spec.add_dependency 'open-uri', '~> 0.1', '>= 0.1.0'
-  spec.add_dependency 'stringio'
+  spec.add_development_dependency 'open-uri', '~> 0.1', '>= 0.1.0'
+  spec.add_development_dependency 'stringio'
 end
