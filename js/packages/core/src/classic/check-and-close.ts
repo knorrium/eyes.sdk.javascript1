@@ -57,7 +57,12 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     let baseTarget: BaseTarget
     let baseSettings: BaseCheckSettings
     const {elementReferencesToCalculate, getBaseCheckSettings} = toBaseCheckSettings({settings})
-    if (environment.isWeb || !process.env.NML_API_KEY) {
+    if (
+      environment.isWeb ||
+      !environment.isApplitoolsLib ||
+      settings.webview ||
+      settings.screenshotMode === 'default'
+    ) {
       const screenshot = await takeScreenshot({
         driver,
         settings: {...settings, regionsToCalculate: elementReferencesToCalculate},

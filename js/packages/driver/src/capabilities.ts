@@ -1,5 +1,6 @@
 import type {Size} from '@applitools/utils'
 import type {Capabilities, Environment, Viewport} from './types'
+import * as utils from '@applitools/utils'
 
 export function extractCapabilitiesEnvironment(capabilities: Capabilities): Partial<Environment> {
   if (capabilities.capabilities) capabilities = capabilities.capabilities as Capabilities
@@ -23,7 +24,7 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
     isW3C: isW3C(capabilities),
     isMobile: isMobile(capabilities),
     isChrome: isChrome(capabilities),
-    isECClient: Boolean(capabilities['applitools:isECClient']),
+    isECClient: !!capabilities['applitools:isECClient'],
   }
 
   if (environment?.isMobile) {
@@ -36,6 +37,13 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
     environment.isAndroid = isAndroid(capabilities)
     if (!environment.browserName) {
       environment.isNative = true
+      if (environment.isAndroid) {
+        environment.isApplitoolsLib = !!capabilities.optionalIntentArguments?.includes('NML_API_KEY')
+      } else if (environment.isIOS) {
+        environment.isApplitoolsLib = utils.types.isString(capabilities.processArguments)
+          ? capabilities.processArguments.includes('NML_API_KEY')
+          : !!capabilities.processArguments?.env?.NML_API_KEY
+      }
     } else if (
       environment.isIOS &&
       capabilities.CFBundleIdentifier &&

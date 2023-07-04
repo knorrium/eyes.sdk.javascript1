@@ -62,7 +62,12 @@ export function makeCheck<TSpec extends SpecType>({
     let results: CheckResult[]
     const {elementReferencesToCalculate, getBaseCheckSettings} = toBaseCheckSettings({settings})
     do {
-      if (environment.isWeb || settings.webview || settings.screenshotMode === 'default') {
+      if (
+        environment.isWeb ||
+        !environment.isApplitoolsLib ||
+        settings.webview ||
+        settings.screenshotMode === 'default'
+      ) {
         const screenshot = await takeScreenshot({
           driver,
           settings: {...settings, regionsToCalculate: elementReferencesToCalculate},

@@ -38,6 +38,7 @@ export type Environment = {
   isW3C?: boolean
   isEC?: boolean
   isECClient?: boolean
+  isApplitoolsLib?: boolean
 
   isWeb?: boolean
   isNative?: boolean
