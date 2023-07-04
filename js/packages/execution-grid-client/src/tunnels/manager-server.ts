@@ -55,25 +55,27 @@ export async function makeTunnelManagerServer({
 
   const sockets = new Set<Socket>()
   server.on('connection', client => {
-    const store = new Map<string, Tunnel[]>()
+    const store = [] as Tunnel[][]
     if (idle) idle = clearTimeout(idle)
     const socket = makeSocket(client, {transport: 'ipc', logger})
     sockets.add(socket)
     socket.on('close', async () => {
-      logger.log('Connection is closed, remaining tunnels are going to be released')
-      sockets.delete(socket)
-      await Promise.all(Array.from(store.values(), manager.release)).catch(logger.error)
+      logger.log('Connection is closed, remaining tunnels are going to be released', store)
+      await Promise.all(store.map(manager.release)).catch(logger.error)
       if (sockets.size === 0 && !serverClosed) idle = setTimeout(close, idleTimeout)
     })
 
     socket.command('Tunnel.acquire', async credentials => {
       const tunnels = await manager.acquire(credentials)
-      store.set(JSON.stringify(tunnels), tunnels)
+      store.push(tunnels)
       return tunnels
     })
-    socket.command('Tunnel.release', async tunnels => {
+    socket.command('Tunnel.release', async (tunnels: Tunnel[]) => {
       await manager.release(tunnels)
-      store.delete(JSON.stringify(tunnels))
+      const storeIndex = store.findIndex(storedTunnels =>
+        tunnels.every((tunnel, index) => tunnel.tunnelId === storedTunnels[index].tunnelId),
+      )
+      tunnels.splice(storeIndex, 1)
     })
   })
 
