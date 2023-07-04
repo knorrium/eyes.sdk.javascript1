@@ -100,6 +100,6 @@ export function makeExecuteScript({req, core}: Options) {
       }
     }
 
-    await req(request.url!, {body: requestBody, io: {request, response}, logger})
+    await req(request.url!, {baseUrl: session.serverUrl, body: requestBody, io: {request, response}, logger})
   }
 }

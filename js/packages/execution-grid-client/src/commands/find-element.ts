@@ -20,7 +20,11 @@ export function makeFindElement({req}: Options) {
     logger: Logger
   }): Promise<void> {
     logger.log('Inspecting element lookup request to collect self-healing metadata')
-    const proxyResponse = await req(request.url!, {io: {request, response, handle: false}, logger})
+    const proxyResponse = await req(request.url!, {
+      baseUrl: session.serverUrl,
+      io: {request, response, handle: false},
+      logger,
+    })
     const responseBody = Buffer.from(await proxyResponse.arrayBuffer())
     const parsed = JSON.parse(responseBody.toString('utf8'))
     if (parsed?.appliCustomData?.selfHealing?.successfulSelector) {

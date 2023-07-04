@@ -23,7 +23,7 @@ export function makeEndSession({req, tunnels}: Options) {
   }): Promise<void> {
     logger.log(`Request was intercepted with sessionId:`, session.sessionId)
 
-    await req(request.url as string, {io: {request, response}, logger})
+    await req(request.url!, {baseUrl: session.serverUrl, io: {request, response}, logger})
 
     if (session.tests?.current) {
       await session.tests.current.abort({settings: {testMetadata: session.metadata}, logger})

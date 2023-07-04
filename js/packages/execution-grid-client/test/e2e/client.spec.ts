@@ -33,6 +33,22 @@ describe('client', () => {
     )
   })
 
+  it('works in australia', async () => {
+    client = await makeECClient({settings: {options: {useSelfHealing: false}}})
+    driver = await new Builder()
+      .withCapabilities({browserName: 'chrome', 'applitools:region': 'australia'})
+      .usingServer(client.url)
+      .build()
+
+    await driver.get('https://mylocation.org')
+
+    const location = await driver.executeScript(
+      `return Array.from(document.querySelectorAll('td')).find(td => td.textContent === 'Country').nextElementSibling.textContent`,
+    )
+
+    assert.strictEqual(location, 'Australia')
+  })
+
   it('works with self healing', async () => {
     client = await makeECClient()
 

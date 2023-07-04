@@ -21,6 +21,7 @@ export interface ECClientSettings {
 export interface ECCapabilitiesOptions {
   eyesServerUrl?: string
   apiKey?: string
+  region?: 'us-west' | 'australia'
   sessionName?: string
   appName?: string
   testName?: string
@@ -35,8 +36,8 @@ export interface ECCapabilitiesOptions {
 
 export interface ECSession {
   serverUrl: string
-  sessionId: string
   proxy?: Proxy
+  sessionId: string
   credentials: {
     eyesServerUrl: string
     apiKey: string

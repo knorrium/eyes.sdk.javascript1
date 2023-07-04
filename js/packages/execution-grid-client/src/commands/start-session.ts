@@ -14,6 +14,11 @@ type Options = {
   tunnels?: TunnelManager
 }
 
+const SERVER_URLS = {
+  'us-west': 'https://exec-wus.applitools.com',
+  australia: 'https://exec-au.applitools.com',
+}
+
 const RETRY_BACKOFF = [
   ...Array(5).fill(2000), // 5 tries with delay 2s (total 10s)
   ...Array(4).fill(5000), // 4 tries with delay 5s (total 20s)
@@ -50,26 +55,33 @@ export function makeStartSession({settings, req, tunnels}: Options) {
       ...settings.options,
       ...capabilities?.['applitools:options'],
       ...(capabilities &&
-        Object.fromEntries<ECCapabilitiesOptions>(
+        Object.fromEntries(
           Object.entries(capabilities).map(([key, value]) => [key.replace(/^applitools:/, ''), value]),
         )),
-    }
+    } as ECCapabilitiesOptions
+
     const session = {
+      serverUrl: settings.serverUrl,
+      proxy: settings.proxy,
       credentials: {eyesServerUrl: options.eyesServerUrl, apiKey: options.apiKey},
       options,
     } as ECSession
+
+    if (options.region) {
+      if (SERVER_URLS[options.region]) session.serverUrl = SERVER_URLS[options.region]
+      else throw new Error(`Failed to create session in unknown region ${options.region}`)
+    }
+
     if (options.tunnel && tunnels) {
       // TODO should be removed once tunnel spawning issue is solved
       await prepareEnvironment()
       session.tunnels = await tunnels.acquire(session.credentials)
-      session.tunnels.forEach((tunnel, index) => {
-        options[`x-tunnel-id-${index}`] = tunnel.tunnelId
-      })
     }
 
-    const applitoolsCapabilities = Object.fromEntries(
-      Object.entries(options).map(([key, value]) => [`applitools:${key}`, value]),
-    )
+    const applitoolsCapabilities = Object.fromEntries([
+      ...Object.entries(options).map(([key, value]) => [`applitools:${key}`, value]),
+      ...(session.tunnels?.map((tunnel, index) => [`applitools:x-tunnel-id-${index}`, tunnel.tunnelId]) ?? []),
+    ])
 
     if (!utils.types.isEmpty(requestBody.desiredCapabilities)) {
       requestBody.desiredCapabilities = {...requestBody.desiredCapabilities, ...applitoolsCapabilities}
@@ -100,7 +112,8 @@ export function makeStartSession({settings, req, tunnels}: Options) {
       // do not start the task if it is already aborted
       if (signal.aborted) return queue.pause
 
-      const proxyResponse = await req(request.url as string, {
+      const proxyResponse = await req(request.url!, {
+        baseUrl: session.serverUrl,
         body: requestBody,
         io: {request, response, handle: false},
         // TODO uncomment when we can throw different abort reasons for task cancelation and timeout abortion
@@ -130,9 +143,7 @@ export function makeStartSession({settings, req, tunnels}: Options) {
           if (proxyResponse.headers.has('content-length')) {
             proxyResponse.headers.set('content-length', Buffer.byteLength(JSON.stringify(responseBody)).toString())
           }
-          session.serverUrl = settings.serverUrl
           session.sessionId = responseBody.value.sessionId
-          session.proxy = settings.proxy
           session.capabilities = responseBody.value.capabilities
         }
         response

@@ -4,7 +4,7 @@ import {makeReq, type Req, type Proxy, type Retry, type Options} from '@applitoo
 import * as utils from '@applitools/utils'
 
 export type ReqProxyConfig = {
-  targetUrl: string
+  targetUrl?: string
   proxy?: Proxy
   retry?: Retry | Retry[]
   logger?: Logger

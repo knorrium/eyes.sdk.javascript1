@@ -32,6 +32,37 @@ describe('server', () => {
     await driver.quit()
   })
 
+  it('proxies webdriver requests to regional server', async () => {
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
+
+    nock('https://exec-wus.applitools.com').persist().post('/session').reply(403, {value: null})
+
+    nock('https://exec-au.applitools.com')
+      .persist()
+      .post('/session')
+      .reply(200, {value: {capabilities: {}, sessionId: 'session-guid'}})
+    nock('https://exec-au.applitools.com').persist().delete('/session/session-guid').reply(200, {value: null})
+
+    const driver = await new Builder()
+      .withCapabilities({browserName: 'chrome', 'applitools:region': 'australia'})
+      .usingServer(proxy.url)
+      .build()
+    const capabilities = await driver.getCapabilities()
+    assert.strictEqual(capabilities.get('applitools:isECClient'), true)
+    await driver.quit()
+  })
+
+  it('fails if provided unknown region region', async () => {
+    proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
+    await assert.rejects(
+      new Builder()
+        .withCapabilities({browserName: 'chrome', 'applitools:region': 'europe'})
+        .usingServer(proxy.url)
+        .build(),
+      (err: Error) => err.message === 'Failed to create session in unknown region europe',
+    )
+  })
+
   it('performs retries on concurrency and availability errors', async () => {
     proxy = await makeServer({settings: {serverUrl: 'https://exec-wus.applitools.com'}, logger: makeLogger()})
 
@@ -178,7 +209,7 @@ describe('server', () => {
 
     nock('http://eg-tunnel').persist().post('/tunnels').reply(401, {message: 'UNAUTHORIZED'})
 
-    assert.rejects(
+    await assert.rejects(
       new Builder().withCapabilities({browserName: 'chrome', 'applitools:tunnel': true}).usingServer(proxy.url).build(),
       (err: Error) => err.message.includes('UNAUTHORIZED'),
     )

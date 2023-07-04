@@ -1,13 +1,14 @@
 import {type IncomingMessage, type ServerResponse} from 'http'
 
-type Router = {
-  get: (pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void) => void
-  post: (pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void) => void
-  put: (pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void) => void
-  delete: (pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void) => void
-  any: (callback: () => Promise<void> | void) => void
-  catch: (callback: (options: {error: any}) => Promise<void> | void) => void
-  finally: (callback: () => Promise<void> | void) => void
+interface Router {
+  get(pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void): void
+  post(pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void): void
+  put(pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void): void
+  delete(pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void): void
+  any(pattern: string | RegExp, callback: (options: {match: RegExpMatchArray}) => Promise<void> | void): void
+  fallback(callback: () => Promise<void> | void): void
+  catch(callback: (options: {error: any}) => Promise<void> | void): void
+  finally(callback: () => Promise<void> | void): void
 }
 
 export function makeCallback(
@@ -15,7 +16,7 @@ export function makeCallback(
 ) {
   return async function callback(request: IncomingMessage, response: ServerResponse) {
     const routes = [] as {
-      method: string
+      method?: string
       pattern: string | RegExp
       callback: (options: {match: RegExpMatchArray}) => Promise<void> | void
     }[]
@@ -28,7 +29,8 @@ export function makeCallback(
       post: (pattern, callback) => routes.push({method: 'POST', pattern, callback}),
       put: (pattern, callback) => routes.push({method: 'PUT', pattern, callback}),
       delete: (pattern, callback) => routes.push({method: 'DELETE', pattern, callback}),
-      any: callback => fallbacks.push({callback}),
+      any: (pattern, callback) => routes.push({pattern, callback}),
+      fallback: callback => fallbacks.push({callback}),
       catch: callback => catches.push({callback}),
       finally: callback => finals.push({callback}),
     }
@@ -37,7 +39,7 @@ export function makeCallback(
 
     try {
       for (const {method, pattern, callback} of routes) {
-        if (request.method === method && request.url) {
+        if ((!method || request.method === method) && request.url) {
           const regexp =
             pattern instanceof RegExp
               ? pattern
