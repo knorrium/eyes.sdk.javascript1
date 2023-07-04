@@ -34,4 +34,5 @@ module.exports = {
   // concurrency: 100,
   // browser: [{width: 1000, height: 600, name: 'edge'}],
   // tapFilePath: './',
+  // useDnsCache: true,
 };

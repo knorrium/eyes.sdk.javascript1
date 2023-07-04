@@ -40,6 +40,10 @@ export interface Options {
    */
   proxy?: Proxy | ((url: URL) => Proxy | undefined)
   /**
+   * Whether to apply dns caching for the request
+   */
+  useDnsCache?: boolean
+  /**
    * Connection timeout in ms
    * @example 7000
    */

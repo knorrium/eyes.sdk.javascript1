@@ -174,6 +174,7 @@ export function makeCoreRequests({
           accessToken,
           agentId: test.account.server.agentId,
           proxy: test.account.server.proxy,
+          useDnsCache: settings.useDnsCache,
         }
       } else {
         test.account = await accountPromise
@@ -427,6 +428,7 @@ export function makeCoreRequests({
         accessToken,
         agentId: account.server.agentId,
         proxy: account.server.proxy,
+        useDnsCache: settings.useDnsCache,
       }
       return account
     })

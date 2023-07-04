@@ -12,6 +12,7 @@ export interface ECClient {
 export interface ECClientSettings {
   serverUrl: string
   proxy?: Proxy
+  useDnsCache?: boolean
   options?: ECCapabilitiesOptions
   port?: number
   /** @internal */

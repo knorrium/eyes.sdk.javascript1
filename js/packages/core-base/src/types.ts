@@ -112,6 +112,7 @@ export interface ServerSettings {
   apiKey: string
   agentId?: string
   proxy?: Proxy
+  useDnsCache?: boolean
 }
 
 export interface UFGServerSettings {
@@ -121,6 +122,7 @@ export interface UFGServerSettings {
   accessToken: string
   agentId?: string
   proxy?: Proxy
+  useDnsCache?: boolean
 }
 
 type CustomProperty = {name: string; value: string}

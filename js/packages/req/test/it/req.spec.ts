@@ -165,7 +165,7 @@ describe('req', () => {
 
     await assert.rejects(
       () => req('https://eyesapi.applitools.com/api/hello', {timeout: 1000}),
-      error => error.constructor.name === 'AbortError',
+      (error: Error) => error.constructor.name === 'AbortError',
     )
   })
 
@@ -178,7 +178,7 @@ describe('req', () => {
           retry: {validate: ({response}) => response?.status === 500},
           timeout: 1000,
         }),
-      error => error.constructor.name === 'AbortError',
+      (error: Error) => error.constructor.name === 'AbortError',
     )
   })
 

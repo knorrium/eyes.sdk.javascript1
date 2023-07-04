@@ -31,6 +31,7 @@ describe('open-eyes', () => {
         uploadUrl: 'uploadUrl',
         stitchingServiceUrl: 'stitchingService',
         accessToken: 'token',
+        useDnsCache: true,
       },
       server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
       rcaEnable: true,
@@ -58,6 +59,7 @@ describe('open-eyes', () => {
           id: 'batchId',
         },
         userTestId: 'testId',
+        useDnsCache: true,
       },
     })
     const expected = {

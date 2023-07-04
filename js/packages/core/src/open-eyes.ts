@@ -60,6 +60,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     settings.baselineBranchName ??= utils.general.getEnvValue('BASELINE_BRANCH')
     settings.ignoreBaseline ??= false
     settings.compareWithParentBranch ??= false
+    settings.useDnsCache ??= utils.general.getEnvValue('USE_DNS_CACHE', 'boolean')
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
@@ -70,6 +71,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
         apiKey: settings.apiKey,
         proxy: settings.proxy,
         agentId: settings.agentId,
+        useDnsCache: settings.useDnsCache,
         level: 'Notice',
         event: {
           type: 'runnerStarted',

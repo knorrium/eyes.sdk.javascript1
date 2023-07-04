@@ -18,6 +18,7 @@ export async function makeECClient({
     utils.general.getEnvValue('EG_SERVER_URL') ??
     'https://exec-wus.applitools.com'
   settings.proxy ??= utils.general.getEnvValue('PROXY_URL') ? {url: utils.general.getEnvValue('PROXY_URL')} : undefined
+  settings.useDnsCache ??= utils.general.getEnvValue('USE_DNS_CACHE', 'boolean')
   settings.tunnel ??= {}
   settings.tunnel.serviceUrl ??= utils.general.getEnvValue('EG_TUNNEL_URL')
   settings.tunnel.groupSize ??= utils.general.getEnvValue('TUNNEL_GROUP_SIZE', 'number') ?? 2

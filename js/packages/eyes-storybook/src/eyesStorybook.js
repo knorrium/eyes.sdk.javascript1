@@ -47,7 +47,14 @@ async function eyesStorybook({
     : Number(process.env.APPLITOOLS_CONCURRENT_TABS);
   logger.log(`Running with ${CONCURRENT_TABS} concurrent tabs`);
 
-  const {storybookUrl, readStoriesTimeout, reloadPagePerStory, proxy, testConcurrency} = config;
+  const {
+    storybookUrl,
+    readStoriesTimeout,
+    reloadPagePerStory,
+    proxy,
+    testConcurrency,
+    useDnsCache,
+  } = config;
 
   let iframeUrl;
   try {
@@ -78,6 +85,7 @@ async function eyesStorybook({
     serverUrl: config.serverUrl,
     apiKey: config.apiKey,
     agentId,
+    useDnsCache,
   };
   const [error, account] = await presult(core.getAccountInfo({settings, logger}));
 
@@ -96,6 +104,7 @@ async function eyesStorybook({
       ...account,
       proxy,
       concurrency: testConcurrency,
+      useDnsCache,
     },
     logger,
   });

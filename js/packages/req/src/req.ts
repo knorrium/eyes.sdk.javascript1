@@ -2,7 +2,7 @@ import type {Awaitable} from '@applitools/utils'
 import type {Options, Hooks, Retry} from './types.js'
 import {AbortController} from 'abort-controller'
 import {stop, type Stop} from './stop.js'
-import {makeProxyAgent} from './proxy-agent.js'
+import {makeAgent} from './agent.js'
 import globalFetch, {Request, Headers, Response} from 'node-fetch'
 import * as utils from '@applitools/utils'
 
@@ -55,6 +55,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       options.body = JSON.stringify(options.body)
       extraHeaders['content-type'] = 'application/json'
     }
+
     let request = new Request(url, {
       method: options.method ?? (input as Request).method,
       headers: {
@@ -64,7 +65,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       },
       body: options.body ?? (input as Request).body,
       highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
-      agent: makeProxyAgent(options.proxy),
+      agent: makeAgent({proxy: options.proxy, useDnsCache: options.useDnsCache}),
       signal: controller.signal,
     })
 

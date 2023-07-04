@@ -9,6 +9,7 @@ export type ReqEyesConfig = {
   agentId?: string
   connectionTimeout?: number
   removeSession?: boolean
+  useDnsCache?: boolean
 }
 
 export type ReqEyesOptions = Options & {
@@ -30,6 +31,7 @@ export function makeReqEyes({config, fetch, logger}: {config: ReqEyesConfig; fet
       'User-Agent': config.agentId,
     },
     proxy: config.proxy,
+    useDnsCache: config.useDnsCache,
     timeout: config.connectionTimeout ?? 300000 /* 5min */,
     retry: [
       // retry on network issues

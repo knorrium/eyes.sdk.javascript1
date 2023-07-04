@@ -8,6 +8,7 @@ export type ReqProxyConfig = {
   proxy?: Proxy
   retry?: Retry | Retry[]
   logger?: Logger
+  useDnsCache?: boolean
 }
 
 export type ReqProxyOptions = Options & {
@@ -21,6 +22,7 @@ export function makeReqProxy(config: ReqProxyConfig) {
   return makeReq<ReqProxyOptions>({
     baseUrl: config.targetUrl,
     proxy: config.proxy,
+    useDnsCache: config.useDnsCache,
     retry: config.retry,
     hooks: {
       afterOptionsMerged({options}) {

@@ -32,6 +32,7 @@ export async function makeServer({
       limit: 10,
       timeout: 5000,
     },
+    useDnsCache: settings.useDnsCache,
   })
   const core = makeCore({agentId: `js/ec-client/${require('../package.json').version}`})
   const tunnels = settings.tunnel?.serviceUrl
