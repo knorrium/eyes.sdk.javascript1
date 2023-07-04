@@ -40,7 +40,11 @@ export abstract class EyesRunner {
     logger?: Logger
     on?: (name: string, data?: Record<string, any>) => void
   }): Promise<Core.Eyes<TSpec, 'classic' | 'ufg'>> {
-    this._manager ??= await this._core!.makeManager({type: this.type, settings: this._managerSettings})
+    this._manager ??= await this._core!.makeManager({
+      type: this.type,
+      settings: this._managerSettings,
+      logger: options.logger,
+    })
     return await this._manager.openEyes(options)
   }
 
