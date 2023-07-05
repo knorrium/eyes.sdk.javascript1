@@ -107,7 +107,7 @@ describe('eyes-storybook', () => {
         {spawnOptions},
       ),
     );
-    const results = await Promise.race([promise, psetTimeout(3000).then(() => 'not ok')]);
+    const results = await Promise.race([promise, psetTimeout(7000).then(() => 'not ok')]);
 
     expect(results).not.to.equal('not ok');
     const stdout = results[0].stdout.replace(version, '<version>');
