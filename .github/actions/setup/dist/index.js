@@ -5292,12 +5292,13 @@ async function main() {
     async function getPackages() {
         const releaseConfigPath = external_node_path_namespaceObject.resolve(process.cwd(), './release-please-config.json');
         const releaseConfig = JSON.parse(await promises_namespaceObject.readFile(releaseConfigPath, { encoding: 'utf8' }));
-        const packages = await Object.entries(releaseConfig.packages).reduce(async (packages, [packagePath, packageConfig]) => {
+        const packages = await Object.entries(releaseConfig.packages).reduce(async (packages, [packagePath, packageConfig], index) => {
             if (packageConfig.component.startsWith('js/')) {
                 const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'package.json');
                 const manifest = JSON.parse(await promises_namespaceObject.readFile(packageManifestPath, { encoding: 'utf8' }));
                 return packages.then(packages => {
                     packages[manifest.name] = {
+                        index,
                         name: manifest.name,
                         version: manifest.version,
                         component: packageConfig.component,
@@ -5315,6 +5316,7 @@ async function main() {
                 const pomJson = lib.xml2js(manifest, { compact: true });
                 return packages.then(packages => {
                     packages[pomJson.project.name._text] = {
+                        index,
                         name: pomJson.project.name._text,
                         version: pomJson.project.version._text,
                         component: packageConfig.component,
@@ -5349,6 +5351,7 @@ async function main() {
                 'short-name': packageInfo.component.replace(/^.+?\//, ''),
                 'display-name': packageInfo.component,
                 'package-name': packageInfo.name,
+                'package-index': packageInfo.index,
                 'package-version': packageInfo.version,
                 'working-directory': packageInfo.path,
                 runner: Runner[runner],
@@ -5384,6 +5387,18 @@ async function main() {
             }
             return jobs;
         }, { builds: {}, tests: {}, releases: {} });
+        Object.values(jobs).forEach((jobsGroup) => {
+            Object.entries(jobsGroup).forEach(([type, jobs]) => {
+                jobsGroup[type] = jobs.sort((job1, job2) => {
+                    if (job1['package-index'] > job2['package-index'])
+                        return 1;
+                    else if (job1['package-index'] < job2['package-index'])
+                        return -1;
+                    else
+                        return 0;
+                });
+            });
+        });
         if (ci || release) {
             Object.values(ci ? jobs.tests : jobs.releases).flat().forEach(job => {
                 const defaultBuilds = Object.values(jobs.builds).flat().reduce((builds, buildJob) => {

@@ -66,12 +66,13 @@ async function main() {
   async function getPackages(): Promise<Record<string, Package>> {
     const releaseConfigPath = path.resolve(process.cwd(), './release-please-config.json')
     const releaseConfig = JSON.parse(await fs.readFile(releaseConfigPath, {encoding: 'utf8'}))
-    const packages = await Object.entries(releaseConfig.packages as Record<string, any>).reduce(async (packages, [packagePath, packageConfig]) => {
+    const packages = await Object.entries(releaseConfig.packages as Record<string, any>).reduce(async (packages, [packagePath, packageConfig], index) => {
       if (packageConfig.component.startsWith('js/')) {
         const packageManifestPath = path.resolve(packagePath, 'package.json')
         const manifest = JSON.parse(await fs.readFile(packageManifestPath, {encoding: 'utf8'}))
         return packages.then(packages => {
           packages[manifest.name] = {
+            index,
             name: manifest.name,
             version: manifest.version,
             component: packageConfig.component,
@@ -89,6 +90,7 @@ async function main() {
         const pomJson = xml.xml2js(manifest, { compact: true }) as xml.ElementCompact
         return packages.then(packages => {
           packages[pomJson.project.name._text] = {
+            index,
             name: pomJson.project.name._text,
             version: pomJson.project.version._text,
             component: packageConfig.component,
@@ -128,6 +130,7 @@ async function main() {
         'short-name': packageInfo.component.replace(/^.+?\//, ''),
         'display-name': packageInfo.component,
         'package-name': packageInfo.name,
+        'package-index': packageInfo.index,
         'package-version': packageInfo.version,
         'working-directory': packageInfo.path,
         runner: Runner[runner as keyof typeof Runner],
@@ -166,6 +169,16 @@ async function main() {
 
       return jobs
     }, {builds: {} as Record<string, Job[]>, tests: {} as Record<string, Job[]>, releases: {} as Record<string, Job[]>})
+    
+    Object.values(jobs).forEach((jobsGroup) => {
+      Object.entries(jobsGroup).forEach(([type, jobs]) => {
+        jobsGroup[type] = jobs.sort((job1, job2) => {
+          if (job1['package-index'] > job2['package-index']) return 1
+          else if (job1['package-index'] < job2['package-index']) return -1
+          else return 0
+        })
+      })
+    })
 
     if (ci || release) {
       Object.values(ci ? jobs.tests : jobs.releases).flat().forEach(job => {

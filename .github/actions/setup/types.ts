@@ -3,6 +3,7 @@ export interface Job {
   'short-name': string
   'display-name': string
   'package-name': string
+  'package-index': number,
   'package-version': string
   'working-directory': string
   runner?: string
@@ -23,6 +24,7 @@ export interface Job {
 }
 
 export interface Package {
+  index: number,
   name: string
   version: string
   component: string
