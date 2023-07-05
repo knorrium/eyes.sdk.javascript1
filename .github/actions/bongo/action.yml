@@ -47,7 +47,9 @@ runs:
         elif [ "${{inputs.command}}" == "notification" ]
         then
           echo "::group::Sending notification"
-          npx --package=@applitools/bongo -- bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"
+          echo 'running bongo'
+          npx --package=@applitools/bongo -- bongo --help
+          npx --package=@applitools/bongo --call 'bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"'
           echo "::endgroup::"
         else
           echo "::error::Unknown command '${{inputs.command}}'"
