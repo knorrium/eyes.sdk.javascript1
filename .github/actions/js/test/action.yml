@@ -43,7 +43,9 @@ runs:
         yarn workspaces focus $(jq -r .name ./package.json) root
         if [ ! -z "${{inputs.framework-version}}" ]
         then
+          export APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}}
           echo APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}} >> $GITHUB_ENV
+          export APPLITOOLS_FRAMEWORK_MAJOR_VERSION=${{inputs.framework-version}}
           echo APPLITOOLS_FRAMEWORK_MAJOR_VERSION=${{inputs.framework-version}} >> $GITHUB_ENV
           if [ "$(jq -r '.scripts["up:framework"]' ./package.json)" != "null" ]; then yarn run up:framework; fi
         fi
