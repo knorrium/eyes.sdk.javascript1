@@ -48,8 +48,8 @@ runs:
         then
           echo "::group::Sending notification"
           echo 'running bongo'
-          npx --package=@applitools/bongo@latest --yes --call 'bongo --help'
-          npx --package=@applitools/bongo --yes --call 'bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"'
+          npx --package=@applitools/bongo@latest --yes -- bongo --help
+          npx --package=@applitools/bongo@latest --yes --call 'bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"'
           echo "::endgroup::"
         else
           echo "::error::Unknown command '${{inputs.command}}'"
