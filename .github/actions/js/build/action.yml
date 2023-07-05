@@ -30,12 +30,7 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        if [ -e .env ]
-        then
-          set -o allexport
-          source .env
-          set +o allexport
-        fi
+        if [ -e .env ]; then cat .env >> $GITHUB_ENV; fi
     - name: Build package
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}

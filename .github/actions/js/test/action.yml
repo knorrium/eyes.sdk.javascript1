@@ -43,8 +43,8 @@ runs:
         yarn workspaces focus $(jq -r .name ./package.json) root
         if [ ! -z "${{inputs.framework-version}}" ]
         then
-          export APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}}
-          export APPLITOOLS_FRAMEWORK_MAJOR_VERSION=${{inputs.framework-version}}
+          APPLITOOLS_FRAMEWORK_VERSION=${{inputs.framework-version}} >> $GITHUB_ENV
+          APPLITOOLS_FRAMEWORK_MAJOR_VERSION=${{inputs.framework-version}} >> $GITHUB_ENV
           if [ "$(jq -r '.scripts["up:framework"]' ./package.json)" != "null" ]; then yarn run up:framework; fi
         fi
     - name: Setting up test environment
@@ -53,12 +53,7 @@ runs:
       shell: ${{inputs.shell}}
       run: |
         if [ ! -z "${{inputs.setup-type}}" ]; then yarn setup:${{inputs.setup-type}}; elif [ "$(jq -r .scripts.setup ./package.json)" != "null" ]; then yarn setup; fi
-        if [ -e .env ]
-        then
-          set -o allexport
-          source .env
-          set +o allexport
-        fi
+        if [ -e .env ]; then cat .env >> $GITHUB_ENV; fi
     - name: Build package
       if: ${{inputs.build-type != 'none'}}
       working-directory: ${{inputs.working-directory}}
