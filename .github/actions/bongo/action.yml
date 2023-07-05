@@ -37,6 +37,8 @@ runs:
       shell: ${{inputs.shell}}
       working-directory: ${{inputs.working-directory}}
       run: |
+        ls -la
+        npx -v
         if [ "${{inputs.command}}" == "report" ]
         then
           echo "::group::Sending report"

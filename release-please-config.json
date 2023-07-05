@@ -464,7 +464,7 @@
         {"node-version": 20, "report": {"name": "playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/node-{{node-version}}"}
       ],
       "releases": [
-        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "playwright"}}
+        {"registry-url": "https://registry.npmjs.org", "notification": {"name": "puppeteer"}}
       ]
     },
     "js/packages/eyes-browser-extension": {
