@@ -76,8 +76,8 @@ jobs:
       - name: Upload to JFrog
         if: ${{matrix.jfrog-url && matrix.artifacts}}
         run: |
-          jf rt upload --flat '${{join(matrix.artifacts)}}' 'tunnel-clinet/${{matrix.package-version}}/'
-          jf rt upload --flat '${{join(matrix.artifacts)}}' 'tunnel-clinet/latest/'
+          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.short-name}}/${{matrix.package-version}}/'
+          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.short-name}}/latest/'
       - name: Sending notification
         if: ${{matrix.notification}}
         uses: ./.github/actions/bongo

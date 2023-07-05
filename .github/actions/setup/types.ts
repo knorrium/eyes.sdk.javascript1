@@ -1,6 +1,6 @@
 export interface Job {
   name: string
-  description?: string
+  'short-name': string
   'display-name': string
   'package-name': string
   'package-version': string

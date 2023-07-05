@@ -5346,6 +5346,7 @@ async function main() {
             const [type] = packageInfo.path.split('/', 1);
             const baseJob = {
                 name: packageInfo.component,
+                'short-name': packageInfo.component.replace(/^.+?\//, ''),
                 'display-name': packageInfo.component,
                 'package-name': packageInfo.name,
                 'package-version': packageInfo.version,
