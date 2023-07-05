@@ -16,28 +16,30 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build
-      shell: ${{inputs.shell}}
+    - name: Install global tools
       working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
       run: |
-        echo "::group::Install global tools"
         if [ -f "/etc/alpine-release" ]; then apk add --no-cache curl jq; fi
-        echo "::endgroup::"
-
-        echo "::group::Installing dependencies"
+    - name: Install dependencies
+      working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
+      run: |
         yarn workspaces focus $(jq -r .name ./package.json) root
-        echo "::endgroup::"
-
+    - name: Setting up build environment
+      working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
+      run: |
         if [ -e .env ]
         then
-          echo "::group::Setting environment variables"
           set -o allexport
           source .env
           set +o allexport
-          echo "::endgroup::"
         fi
-
-        echo "::group::Building package"
+    - name: Build package
+      if: ${{inputs.build-type != 'none'}}
+      working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
+      run: |
         yarn workspaces foreach --topological-dev --recursive --parallel --from $(jq -r .name ./package.json) run build
         if [ ! -z "${{inputs.build-type}}" ]; then yarn run build:${{inputs.build-type}}; fi
-        echo "::endgroup::"

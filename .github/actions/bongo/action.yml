@@ -35,14 +35,14 @@ runs:
   steps:
     - name: Sending report
       if: ${{inputs.command == 'report'}}
-      shell: ${{inputs.shell}}
       working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
       run: |
         npx --package=@applitools/bongo@latest --yes -- bongo report --name="${{inputs.name}}" --group="${{inputs.group}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
     - name: Sending notification
       if: ${{inputs.command == 'notification'}}
-      shell: ${{inputs.shell}}
       working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
       run: |
         npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"
 

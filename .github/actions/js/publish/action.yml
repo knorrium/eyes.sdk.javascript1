@@ -14,13 +14,7 @@ runs:
   using: composite
   steps:
     - name: Publish
-      shell: ${{inputs.shell}}
       working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
       run: |
-        echo "::group::Install global tools"
-        if [ -f "/etc/alpine-release" ]; then apk add --no-cache curl jq; fi
-        echo "::endgroup::"
-
-        echo "::group::Publish to NPM"
         yarn npm publish
-        echo "::endgroup::"
