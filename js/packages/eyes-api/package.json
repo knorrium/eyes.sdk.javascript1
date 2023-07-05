@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "keywords": [
     "applitools",
     "eyes",
@@ -45,7 +45,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/core": "3.5.0",
+    "@applitools/core": "3.5.1",
     "@applitools/logger": "2.0.5",
     "@applitools/utils": "1.5.0"
   },

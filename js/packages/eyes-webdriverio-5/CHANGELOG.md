@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.44.11](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.10...js/eyes-webdriverio@5.44.11) (2023-07-05)
+
+
+### Dependencies
+
+* @applitools/tunnel-client bumped from 1.0.0 to 1.0.1
+  #### Bug Fixes
+
+  * re-release ([438a9aa](https://github.com/applitools/eyes.sdk.javascript1/commit/438a9aa6331ba76d6bdc7d94e8f27d7ae45730da))
+* @applitools/eyes bumped from 1.5.1 to 1.5.2
+
+* @applitools/core bumped from 3.5.0 to 3.5.1
+
+* @applitools/ec-client bumped from 1.6.0 to 1.6.1
+
+
 ## [5.44.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.9...js/eyes-webdriverio@5.44.10) (2023-07-05)
 
 

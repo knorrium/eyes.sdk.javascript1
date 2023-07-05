@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.0...js/tunnel-client@1.0.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* re-release ([438a9aa](https://github.com/applitools/eyes.sdk.javascript1/commit/438a9aa6331ba76d6bdc7d94e8f27d7ae45730da))
+
 ## [1.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.1.1...js/tunnel-client@1.0.0) (2023-07-05)
 
 

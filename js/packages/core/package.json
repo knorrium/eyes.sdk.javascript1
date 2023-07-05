@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -72,7 +72,7 @@
     "@applitools/dom-capture": "11.2.2",
     "@applitools/dom-snapshot": "4.7.9",
     "@applitools/driver": "1.13.0",
-    "@applitools/ec-client": "1.6.0",
+    "@applitools/ec-client": "1.6.1",
     "@applitools/logger": "2.0.5",
     "@applitools/nml-client": "1.5.1",
     "@applitools/req": "1.4.0",

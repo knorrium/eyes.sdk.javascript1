@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.6.0...js/ec-client@1.6.1) (2023-07-05)
+
+
+### Dependencies
+
+* @applitools/tunnel-client bumped from 1.0.0 to 1.0.1
+  #### Bug Fixes
+
+  * re-release ([438a9aa](https://github.com/applitools/eyes.sdk.javascript1/commit/438a9aa6331ba76d6bdc7d94e8f27d7ae45730da))
+
 ## [1.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.5.0...js/ec-client@1.6.0) (2023-07-05)
 
 
