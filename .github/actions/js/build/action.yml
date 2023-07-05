@@ -37,7 +37,6 @@ runs:
           set +o allexport
         fi
     - name: Build package
-      if: ${{inputs.build-type != 'none'}}
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |

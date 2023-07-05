@@ -67,7 +67,6 @@ runs:
         yarn workspaces foreach --topological-dev --recursive --parallel --from $(jq -r .name ./package.json) run build
         if [ ! -z "${{inputs.build-type}}" ]; then yarn run build:${{inputs.build-type}}; fi
     - name: Run tests
-      if: ${{inputs.build-type != 'none'}}
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
