@@ -99,7 +99,12 @@ export class RichWorkspace extends ManifestPlugin {
 
     updatedCandidates.forEach(candidate => this.enrichChangelogEntry(candidate, updatedCandidates))
 
-    return updatedCandidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+    const order = Object.keys(this.strategiesByPath)
+    console.log(order)
+
+    return updatedCandidates
+      .filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
+      .sort((candidate1, candidate2) => order.indexOf(candidate1.path) > order.indexOf(candidate2.path) ? 1 : -1)
   }
 
 
@@ -114,11 +119,9 @@ export class RichWorkspace extends ManifestPlugin {
       richChangelogEntry.bumps = extractBumps(section).reduce((bumps, bump) => {
         if (bumps.every(existedBump => bump.packageName !== existedBump.packageName)) {
           const bumpedCandidate = candidates.find(candidate => candidate.path === this.paths.byPackageName[bump.packageName])
-          console.log(bumpedCandidate, bump.packageName, this.paths.byPackageName)
           if (bumpedCandidate) {
             const bumpedRichChangelogEntry = this.enrichChangelogEntry(bumpedCandidate, candidates)
             if (bumpedRichChangelogEntry) {
-              console.log(bumps, bumpedRichChangelogEntry)
               return bumps.concat(
                 {...bump, sections: bumpedRichChangelogEntry.sections.filter(section => !isDependencySection(section))},
                 bumpedRichChangelogEntry.bumps.filter(bump => bumps.every(existedBump => bump.packageName !== existedBump.packageName)) ?? []
