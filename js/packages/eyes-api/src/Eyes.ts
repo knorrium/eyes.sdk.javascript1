@@ -340,7 +340,10 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     // TODO remove when major version of sdk should be released
     config.screenshot.fully ??= false
 
-    const [result] = await this._eyes!.check({target, settings, config})
+    const type =
+      this._runner.type === 'ufg' && settings?.nmgOptions?.nonNMGCheck === 'addToAllDevices' ? 'classic' : undefined
+
+    const [result] = await this._eyes!.check({type, target, settings, config})
 
     return new MatchResultData(result)
   }

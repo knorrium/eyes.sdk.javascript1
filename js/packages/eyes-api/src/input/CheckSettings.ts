@@ -68,6 +68,8 @@ export type CheckSettingsAutomation<TSpec extends Core.SpecType> = CheckSettings
   disableBrowserFetching?: boolean
   layoutBreakpoints?: boolean | number[] | {breakpoints: number[] | boolean; reload?: boolean}
   visualGridOptions?: {[key: string]: any}
+  /** @deprecated */
+  nmgOptions?: {[key: string]: any}
   useSystemScreenshot?: boolean
   hooks?: {beforeCaptureScreenshot: string}
   timeout?: number
@@ -558,6 +560,16 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
     return this
   }
   /** @deprecated */
+  nmgOption(key: string, value: any) {
+    this._settings.nmgOptions = {...this._settings.nmgOptions, [key]: value}
+    return this
+  }
+  /** @deprecated */
+  nmgOptions(options: {[key: string]: any}) {
+    this._settings.nmgOptions = options
+    return this
+  }
+  /** @deprecated */
   visualGridOption(key: string, value: any) {
     return this.ufgOption(key, value)
   }
@@ -633,6 +645,7 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
             : {breakpoints: this._settings.layoutBreakpoints ?? false}
           : undefined,
         ufgOptions: this._settings.visualGridOptions,
+        nmgOptions: this._settings.nmgOptions,
         screenshotMode: this._settings.useSystemScreenshot ? 'default' : undefined,
         hooks: this._settings.hooks,
         pageId: this._settings.pageId,
