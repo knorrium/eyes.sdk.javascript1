@@ -25,6 +25,10 @@
         "test/fixtures/waitBeforeCaptureLocal",
         "test/fixtures/nodiffs",
         "test/e2e/latest",
+        "test/e2e/next",
+        "test/e2e/6.3.12",
+        "test/e2e/5.3.21",
+        "test/e2e/5.0.0",
         "test/e2e/undefined"
     ],
     "env": {

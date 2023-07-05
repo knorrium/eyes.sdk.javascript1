@@ -1,4 +1,4 @@
-const {describe, it, _before, _after} = require('mocha');
+const {describe, it} = require('mocha');
 const path = require('path');
 const {testServerInProcess} = require('@applitools/test-server');
 const {delay: _psetTimeout, presult} = require('@applitools/functional-commons');
@@ -14,7 +14,7 @@ describe('eyes-storybook', () => {
     let closeServerA, closeServerB;
     const staticPath = path.join(
       process.cwd(),
-      'node_modules/@applitools/sdk-shared/coverage-tests/fixtures',
+      '../../node_modules/@applitools/sdk-shared/coverage-tests/fixtures',
     );
     try {
       closeServerA = (

@@ -106,8 +106,16 @@
     ""
   ],
   "navigation timeout stderr": [
+    "\u001b[1m\u001b[43m\u001b[30m",
+    "  Puppeteer old Headless deprecation warning:\u001b[0m\u001b[33m",
+    "    In the near feature `headless: true` will default to the new Headless mode",
+    "    for Chrome instead of the old Headless implementation. For more",
+    "    information, please see https://developer.chrome.com/articles/new-headless/.",
+    "    Consider opting in early by passing `headless: \"new\"` to `puppeteer.launch()`",
+    "    If you encounter any bugs, please report them to https://github.com/puppeteer/puppeteer/issues/new/choose.\u001b[0m",
+    "",
     "- Reading stories",
-    "\u001b[31m✖\u001b[39m Error when loading storybook. Navigation timeout of 10 ms exceeded",
+    "\u001b[31m✖\u001b[39m Error when loading storybook. Navigation timeout of 5 ms exceeded",
     ""
   ],
   "too slowly stdout": [

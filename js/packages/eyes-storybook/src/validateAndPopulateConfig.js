@@ -11,13 +11,9 @@ const {
 } = require('./errMessages');
 const startStorybookServer = require('./startStorybookServer');
 const {isIE} = require('./shouldRenderIE');
-const {resolve} = require('path');
-const {exec} = require('child_process');
-const {promisify: p} = require('util');
-const pexec = p(exec);
-// eslint-disable-next-line
-const semver = require('semver');
 const {makeLogger} = require('@applitools/logger');
+const findNpmModuleCommandPath = require('./findNpmModuleCommandPath');
+const {resolve} = require('path');
 
 async function validateAndPopulateConfig({config, packagePath = '', logger = makeLogger()}) {
   if (!config.apiKey) {
@@ -82,23 +78,30 @@ async function validateAndPopulateConfig({config, packagePath = '', logger = mak
 }
 
 async function determineStorybookVersion(packagePath) {
-  let storybookPath,
-    sbArg,
+  let sbArg,
+    storybookPath,
     isVersion7 = false;
+
   const storybookPathV6 = resolve(packagePath, 'node_modules/.bin/start-storybook');
   const storybookPathV7 = resolve(packagePath, 'node_modules/.bin/sb');
 
-  if (fs.existsSync(storybookPathV7)) {
-    const version = await pexec(`${storybookPathV7} --version`);
-    if (semver.satisfies(version.stdout, '<7.0.0')) {
-      storybookPath = storybookPathV6;
-    } else {
-      storybookPath = storybookPathV7;
-      sbArg = 'dev';
-      isVersion7 = true;
-    }
-  } else {
+  // first we look for the binaries in the local node_modules/.bin folder in case there are multiple versions of storybook installed
+  if (fs.existsSync(storybookPathV6)) {
     storybookPath = storybookPathV6;
+  } else if (fs.existsSync(storybookPathV7)) {
+    storybookPath = storybookPathV7;
+    isVersion7 = true;
+    sbArg = 'dev';
+  } else {
+    // the binary is not in the local node_modules/.bin folder, so we need to find it
+    storybookPath = await findNpmModuleCommandPath('start-storybook', packagePath);
+    if (!storybookPath) {
+      storybookPath = await findNpmModuleCommandPath('sb', packagePath);
+      isVersion7 = true;
+      sbArg = 'dev';
+    } else {
+      isVersion7 = false;
+    }
   }
 
   return {storybookPath, isVersion7, sbArg};

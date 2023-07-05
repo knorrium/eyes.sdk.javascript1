@@ -11,5 +11,4 @@ module.exports = {
     {queryParams: {global: 'theme:light;lang:en'}},
     {queryParams: {global: 'theme:light;lang:uk'}},
   ],
-  // puppeteerOptions: {headless: false, devtools: true},
 };

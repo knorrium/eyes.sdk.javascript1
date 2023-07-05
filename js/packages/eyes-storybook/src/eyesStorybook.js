@@ -64,6 +64,7 @@ async function eyesStorybook({
     throw new Error(`Storybook URL is not valid: ${storybookUrl}`);
   }
   const agentId = `eyes-storybook/${require('../package.json').version}`;
+  process.env.PUPPETEER_DISABLE_HEADLESS_WARNING = true;
   const browser = await puppeteer.launch(config.puppeteerOptions);
   logger.log('browser launched');
   const page = await browser.newPage();

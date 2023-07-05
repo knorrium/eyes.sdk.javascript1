@@ -15,7 +15,7 @@ class StorybookConnector extends EventEmitter {
     sbArg,
   }) {
     super();
-    this._storybookPath = `${storybookPath}${isWindows ? '.cmd' : ''}`;
+    this._storybookPath = storybookPath;
     this._storybookPort = storybookPort;
     this._storybookHost = storybookHost;
     this._storybookConfigDir = storybookConfigDir;

@@ -85,7 +85,10 @@ describe('eyes-storybook', () => {
   it('fails with proper message when failing to get stories because of undetermined version', async () => {
     const promise = presult(
       utils.process.sh(
-        `node ./bin/eyes-storybook -u http://localhost:7272 --read-stories-timeout=500`,
+        `node ./bin/eyes-storybook -u http://localhost:7272 --read-stories-timeout=500 -f ${path.resolve(
+          __dirname,
+          'happy-config/storybook.options.config.js',
+        )}`,
         {spawnOptions},
       ),
     );
@@ -100,7 +103,7 @@ describe('eyes-storybook', () => {
   it('fails with proper message when failing to get stories because of navigation timeout', async () => {
     const promise = presult(
       utils.process.sh(
-        `node ./bin/eyes-storybook --read-stories-timeout=10 -u http://localhost:9001`,
+        `node ./bin/eyes-storybook --read-stories-timeout=5 -u http://localhost:9001`,
         {spawnOptions},
       ),
     );
@@ -115,7 +118,10 @@ describe('eyes-storybook', () => {
   it('fails with proper message when failing to get stories because storybook is loading too slowly', async () => {
     const promise = presult(
       utils.process.sh(
-        `node ./bin/eyes-storybook --read-stories-timeout=1000 -u http://localhost:7272/storybook-loading.html`,
+        `node ./bin/eyes-storybook --read-stories-timeout=1000 -u http://localhost:7272/storybook-loading.html -f ${path.resolve(
+          __dirname,
+          'happy-config/storybook.options.config.js',
+        )}`,
         {spawnOptions},
       ),
     );

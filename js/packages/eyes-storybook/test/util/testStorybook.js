@@ -8,7 +8,7 @@ async function testStorybook({
   const isWindows = process.platform.startsWith('win');
   const storybookPath = resolve(
     __dirname,
-    `../../node_modules/.bin/start-storybook${isWindows ? '.cmd' : ''}`,
+    `../../../../node_modules/.bin/start-storybook${isWindows ? '.cmd' : ''}`,
   );
   const storybookConnector = new StorybookConnector({
     storybookPath,
