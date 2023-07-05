@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.12.4...js/driver@1.13.0) (2023-07-05)
+
+
+### Features
+
+* added auto applitools lib detection ([#1707](https://github.com/applitools/eyes.sdk.javascript1/issues/1707)) ([7d439b5](https://github.com/applitools/eyes.sdk.javascript1/commit/7d439b52af55f3b0596c9d35d6ba85c717448023))
+
 ## [1.12.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.12.3...js/driver@1.12.4) (2023-06-28)
 
 

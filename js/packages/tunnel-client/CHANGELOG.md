@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.1.1...js/tunnel-client@1.0.0) (2023-07-05)
+
+
+### Features
+
+* added binaries and made them available in jfrog ([92033fe](https://github.com/applitools/eyes.sdk.javascript1/commit/92033fed7edc58bbc4a4e37269068418fe3afc3d))
+* release as 1.0.0 ([93bf312](https://github.com/applitools/eyes.sdk.javascript1/commit/93bf31205b07d19bc2cb4f50b974c7bad0f49cea))
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.3.3 to 1.4.0
+  #### Features
+
+  * support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
 ## [0.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@0.1.0...js/tunnel-client@0.1.1) (2023-06-28)
 
 

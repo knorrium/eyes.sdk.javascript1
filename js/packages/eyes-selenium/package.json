@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.66.8",
+  "version": "4.66.9",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -49,8 +49,8 @@
     "up:framework": "run --top-level add-silent selenium-webdriver"
   },
   "dependencies": {
-    "@applitools/eyes": "1.5.0",
-    "@applitools/spec-driver-selenium": "1.5.50"
+    "@applitools/eyes": "1.5.1",
+    "@applitools/spec-driver-selenium": "1.5.51"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

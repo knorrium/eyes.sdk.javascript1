@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.5.0...js/ec-client@1.6.0) (2023-07-05)
+
+
+### Features
+
+* added support of regional execution cloud servers ([#1711](https://github.com/applitools/eyes.sdk.javascript1/issues/1711)) ([2e26c69](https://github.com/applitools/eyes.sdk.javascript1/commit/2e26c6944bb15f6121fb37c1dba95aba162c1f6a))
+* support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
+
+### Bug Fixes
+
+* fixed auto tunnel cleanup after unexpected end of the process ([3c1ad08](https://github.com/applitools/eyes.sdk.javascript1/commit/3c1ad0837d2d3560becc6d89370aa878becb3270))
+
+
+### Dependencies
+
+* @applitools/core-base bumped from 1.2.1 to 1.3.0
+  #### Features
+
+  * support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
+
+
+* @applitools/req bumped from 1.3.3 to 1.4.0
+  #### Features
+
+  * support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+* @applitools/driver bumped from 1.12.4 to 1.13.0
+  #### Features
+
+  * added auto applitools lib detection ([#1707](https://github.com/applitools/eyes.sdk.javascript1/issues/1707)) ([7d439b5](https://github.com/applitools/eyes.sdk.javascript1/commit/7d439b52af55f3b0596c9d35d6ba85c717448023))
+* @applitools/tunnel-client bumped from 0.1.1 to 1.0.0
+  #### Features
+
+  * added binaries and made them available in jfrog ([92033fe](https://github.com/applitools/eyes.sdk.javascript1/commit/92033fed7edc58bbc4a4e37269068418fe3afc3d))
+  * release as 1.0.0 ([93bf312](https://github.com/applitools/eyes.sdk.javascript1/commit/93bf31205b07d19bc2cb4f50b974c7bad0f49cea))
+
+
+
+* @applitools/spec-driver-webdriver bumped from 1.0.36 to 1.0.37
+
+
 ## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.4.0...js/ec-client@1.5.0) (2023-06-28)
 
 

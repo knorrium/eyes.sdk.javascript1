@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-puppeteer",
-  "version": "1.17.9",
+  "version": "1.17.10",
   "description": "Applitools Eyes SDK for Puppeteer",
   "keywords": [
     "eyes-puppeteer",
@@ -42,8 +42,8 @@
     "up:framework": "run --top-level add-silent puppeteer"
   },
   "dependencies": {
-    "@applitools/eyes": "1.5.0",
-    "@applitools/spec-driver-puppeteer": "1.1.67"
+    "@applitools/eyes": "1.5.1",
+    "@applitools/spec-driver-puppeteer": "1.1.68"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/tunnel-client",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -63,7 +63,7 @@
   "dependencies": {
     "@applitools/execution-grid-tunnel": "2.1.6",
     "@applitools/logger": "2.0.5",
-    "@applitools/req": "1.3.3",
+    "@applitools/req": "1.4.0",
     "@applitools/socket": "1.1.5",
     "@applitools/utils": "1.5.0",
     "abort-controller": "^3.0.0",

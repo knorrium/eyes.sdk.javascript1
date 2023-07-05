@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.68](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.67...js/spec-driver-puppeteer@1.1.68) (2023-07-05)
+
+
+### Dependencies
+
+* @applitools/driver bumped from 1.12.4 to 1.13.0
+  #### Features
+
+  * added auto applitools lib detection ([#1707](https://github.com/applitools/eyes.sdk.javascript1/issues/1707)) ([7d439b5](https://github.com/applitools/eyes.sdk.javascript1/commit/7d439b52af55f3b0596c9d35d6ba85c717448023))
+
 ## [1.1.67](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.66...js/spec-driver-puppeteer@1.1.67) (2023-06-28)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.2.22...js/ufg-client@1.3.0) (2023-07-05)
+
+
+### Features
+
+* support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.3.3 to 1.4.0
+  #### Features
+
+  * support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
 ## [1.2.22](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.2.21...js/ufg-client@1.2.22) (2023-06-28)
 
 

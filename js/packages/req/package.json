@@ -1,6 +1,6 @@
 {
   "name": "@applitools/req",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "Applitools fetch-based request library",
   "keywords": [
     "applitools",

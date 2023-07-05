@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension-v1.0.2...js/spec-driver-browser-extension@1.0.3) (2023-07-05)
+
+
+### Dependencies
+
+
+
 ## [1.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension-v1.0.0...js/spec-driver-browser-extension@1.0.1) (2023-06-13)
 
 

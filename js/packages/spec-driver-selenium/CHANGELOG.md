@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.51](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.50...js/spec-driver-selenium@1.5.51) (2023-07-05)
+
+
+### Dependencies
+
+* @applitools/driver bumped from 1.12.4 to 1.13.0
+  #### Features
+
+  * added auto applitools lib detection ([#1707](https://github.com/applitools/eyes.sdk.javascript1/issues/1707)) ([7d439b5](https://github.com/applitools/eyes.sdk.javascript1/commit/7d439b52af55f3b0596c9d35d6ba85c717448023))
+
 ## [1.5.50](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.49...js/spec-driver-selenium@1.5.50) (2023-06-28)
 
 

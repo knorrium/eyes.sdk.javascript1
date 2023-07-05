@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-playwright",
-  "version": "1.17.9",
+  "version": "1.17.10",
   "description": "Applitools Eyes SDK for Playwright",
   "keywords": [
     "eyes-playwright",
@@ -42,8 +42,8 @@
     "up:framework": "run --top-level add-silent playwright"
   },
   "dependencies": {
-    "@applitools/eyes": "1.5.0",
-    "@applitools/spec-driver-playwright": "1.3.16"
+    "@applitools/eyes": "1.5.1",
+    "@applitools/spec-driver-playwright": "1.3.17"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/req@1.3.3...js/req@1.4.0) (2023-07-05)
+
+
+### Features
+
+* support dns caching ([#1680](https://github.com/applitools/eyes.sdk.javascript1/issues/1680)) ([9bbff34](https://github.com/applitools/eyes.sdk.javascript1/commit/9bbff34f50c9d18758b55a6bcb45571ca1148180))
+
 ## [1.3.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/req@1.3.2...js/req@1.3.3) (2023-06-28)
 
 
