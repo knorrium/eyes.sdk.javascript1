@@ -60,7 +60,7 @@ export function makeCheck<TSpec extends SpecType>({
 
     const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
     const ufgClient = await eyes.core.getUFGClient({
-      config: {...eyes.test.ufgServer},
+      config: {...eyes.test.ufgServer, eyesServerUrl: eyes.test.server.serverUrl, eyesApiKey: eyes.test.server.apiKey},
       concurrency: uniqueRenderers.length || 5,
       logger,
     })

@@ -6,7 +6,9 @@ import {makeBookRenderer} from './book-renderer'
 import {makeRender} from './render'
 import {makeProcessResources} from './resources/process-resources'
 import {makeFetchResource} from './resources/fetch-resource'
+import {makeFetchResourceFromTunnel} from './resources/fetch-resource-from-tunnel'
 import {makeUploadResource} from './resources/upload-resource'
+import * as utils from '@applitools/utils'
 
 export const defaultResourceCache = new Map<string, any>()
 
@@ -22,7 +24,16 @@ export function makeUFGClient({
   logger = makeLogger({logger, format: {label: 'ufg-client'}})
 
   const requests = makeUFGRequests({config, logger})
-  const fetchResource = makeFetchResource({fetchConcurrency: config.fetchConcurrency, logger})
+  const fetchResource = utils.general.getEnvValue('FETCH_RESOURCE_FROM_TUNNEL', 'boolean')
+    ? makeFetchResourceFromTunnel({
+        fetchConcurrency: config.fetchConcurrency,
+        accessToken: config.accessToken,
+        eyesServerUrl: config.eyesServerUrl,
+        eyesApiKey: config.eyesApiKey,
+        tunnelIds: utils.general.getEnvValue('TUNNEL_IDS'),
+        logger,
+      })
+    : makeFetchResource({fetchConcurrency: config.fetchConcurrency, logger})
   const uploadResource = makeUploadResource({requests, logger})
   const processResources = makeProcessResources({fetchResource, uploadResource, cache, logger})
 

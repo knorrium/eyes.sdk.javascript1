@@ -96,6 +96,7 @@ __metadata:
     "@applitools/spec-driver-webdriverio": ^1.5.5
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
+    "@applitools/tunnel-client": "workspace:^"
     "@applitools/ufg-client": 1.2.22
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
@@ -1060,7 +1061,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/tunnel-client@0.1.1, @applitools/tunnel-client@workspace:packages/tunnel-client":
+"@applitools/tunnel-client@0.1.1, @applitools/tunnel-client@workspace:^, @applitools/tunnel-client@workspace:packages/tunnel-client":
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:

@@ -9,6 +9,8 @@ export type ReqUFGConfig = {
   useDnsCache?: boolean
   agentId?: string
   connectionTimeout?: number
+  eyesServerUrl?: string
+  eyesApiKey?: string
 }
 
 export type ReqUFGOptions = Options & {

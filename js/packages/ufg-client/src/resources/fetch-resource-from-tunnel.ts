@@ -16,6 +16,10 @@ type Options = {
   cache?: Map<string, Promise<ContentfulResource | FailedResource>>
   fetch?: Fetch
   logger: Logger
+  accessToken?: string
+  eyesServerUrl?: string
+  eyesApiKey?: string
+  tunnelIds?: string
 }
 
 export type FetchResourceSettings = {
@@ -32,7 +36,7 @@ export type FetchResource = (options: {
   logger?: Logger
 }) => Promise<ContentfulResource | FailedResource>
 
-export function makeFetchResource({
+export function makeFetchResourceFromTunnel({
   retryLimit = 5,
   streamingTimeout = 30 * 1000,
   fetchTimeout = 30 * 1000,
@@ -40,6 +44,10 @@ export function makeFetchResource({
   cache = new Map(),
   fetch,
   logger: mainLogger,
+  accessToken,
+  eyesServerUrl,
+  eyesApiKey,
+  tunnelIds,
 }: Options): FetchResource {
   const req = makeReq({
     retry: {
@@ -59,27 +67,30 @@ export function makeFetchResource({
     settings?: FetchResourceSettings
     logger?: Logger
   }): Promise<ContentfulResource | FailedResource> {
-    logger = logger.extend(mainLogger, {tags: [`fetch-resource-${utils.general.shortid()}`]})
+    logger = logger.extend(mainLogger, {tags: [`fetch-resource-from-tunnel-${utils.general.shortid()}`]})
     let runningRequest = cache.get(resource.id)
     if (runningRequest) return runningRequest
 
-    runningRequest = req(resource.url, {
+    runningRequest = req('https://exec-wus.applitools.com/handle-resource', {
+      method: 'POST',
       headers: {
-        Referer: settings.referer,
-        Cookie: settings.cookies && createCookieHeader({url: resource.url, cookies: settings.cookies}),
-        'User-Agent': (resource.renderer && createUserAgentHeader({renderer: resource.renderer})) ?? settings.userAgent,
-      },
-      proxy: resourceUrl => {
-        const {proxy, autProxy} = settings
-        if (autProxy) {
-          if (!autProxy.domains) return autProxy
-          const domainMatch = autProxy.domains.includes(resourceUrl.hostname)
-          if ((autProxy.mode === 'Allow' && domainMatch) || (autProxy.mode === 'Block' && !domainMatch)) return autProxy
-        }
-        return proxy
+        'x-eyes-api-key': eyesApiKey,
+        'x-eyes-server-url': eyesServerUrl,
+        'x-ufg-jwt-token': accessToken,
+        'x-tunnel-ids': tunnelIds,
       },
       hooks: [handleLogs({logger}), handleStreaming({timeout: streamingTimeout, logger})],
       timeout: fetchTimeout,
+      body: {
+        resourceUrl: resource.url,
+        requestHeaders: {
+          Cookie: settings.cookies && createCookieHeader({url: resource.url, cookies: settings.cookies}),
+          Referer: settings.referer,
+          'User-Agent':
+            (resource.renderer && createUserAgentHeader({renderer: resource.renderer})) ?? settings.userAgent,
+        },
+        requestTotalTimeout: 30_000,
+      },
     })
       .then(async response => {
         return response.ok
