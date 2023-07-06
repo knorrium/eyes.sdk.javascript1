@@ -165,7 +165,7 @@ export function makeCheck<TSpec extends SpecType>({
       safeSelector: selector as Selector,
     }))
 
-    const promises = uniqueRenderers.map(async (renderer, index) => {
+    const promises = uniqueRenderers.map(async ({properties, ...renderer}, index) => {
       const rendererLogger = logger.extend({tags: [`renderer-${utils.general.shortid()}`]})
 
       if (utils.types.has(renderer, 'name') && renderer.name === 'edge') {
@@ -196,7 +196,10 @@ export function makeCheck<TSpec extends SpecType>({
           logger: rendererLogger,
         })
 
-        const [baseEyes] = await eyes.getBaseEyes({settings: {renderer, type: snapshotType}, logger: rendererLogger})
+        const [baseEyes] = await eyes.getBaseEyes({
+          settings: {renderer, type: snapshotType, properties},
+          logger: rendererLogger,
+        })
 
         try {
           if (signal?.aborted) {

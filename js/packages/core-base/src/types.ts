@@ -125,7 +125,7 @@ export interface UFGServerSettings {
   useDnsCache?: boolean
 }
 
-type CustomProperty = {name: string; value: string}
+export type CustomProperty = {name: string; value: string}
 export type Batch = {
   id?: string
   name?: string

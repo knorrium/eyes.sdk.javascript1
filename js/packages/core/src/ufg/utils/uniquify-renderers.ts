@@ -1,13 +1,13 @@
 import {type Renderer} from '@applitools/ufg-client'
 
-export function uniquifyRenderers(renderers: Renderer[]): Renderer[] {
+export function uniquifyRenderers<TRenderer extends Renderer>(renderers: TRenderer[]): TRenderer[] {
   const duplications = new Map(renderers.map(renderer => [JSON.stringify(renderer), 0]))
   return renderers.reduce((uniqueRenderers, renderer) => {
     const key = JSON.stringify(renderer)
     let index = duplications.get(key)!
     if (index > 0) {
       if (!renderer.id) {
-        let uniqueRenderer: Renderer
+        let uniqueRenderer: TRenderer
         do {
           uniqueRenderer = {...renderer, id: `${index}`}
           index += 1
@@ -20,5 +20,5 @@ export function uniquifyRenderers(renderers: Renderer[]): Renderer[] {
     }
     duplications.set(key, index)
     return uniqueRenderers
-  }, [] as Renderer[])
+  }, [] as TRenderer[])
 }

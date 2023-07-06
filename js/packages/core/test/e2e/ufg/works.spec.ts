@@ -7,6 +7,8 @@ import {takeDomSnapshot} from '../../../src/ufg/utils/take-dom-snapshot'
 import * as spec from '@applitools/spec-driver-puppeteer'
 import assert from 'assert'
 
+const batch = {id: `${Date.now()}`}
+
 describe('works', () => {
   let page: spec.Driver, destroyPage: () => Promise<void>, server: any, baseUrl: string
 
@@ -33,6 +35,7 @@ describe('works', () => {
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
+        batch,
       },
     })
 
@@ -141,6 +144,7 @@ describe('works', () => {
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
+        batch,
       },
     })
 
@@ -181,6 +185,7 @@ describe('works', () => {
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
+        batch,
       },
     })
 
@@ -225,6 +230,7 @@ describe('works', () => {
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
+        batch,
       },
     })
 

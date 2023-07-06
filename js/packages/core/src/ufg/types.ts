@@ -11,12 +11,17 @@ import {
   type DomSnapshot,
   type AndroidSnapshot,
   type IOSSnapshot,
+  RendererSettings,
 } from '@applitools/ufg-client'
 
 export * from '../automation/types'
 
 export type SnapshotTarget = MaybeArray<DomSnapshot> | MaybeArray<AndroidSnapshot> | MaybeArray<IOSSnapshot>
 export type Target<TSpec extends SpecType> = SnapshotTarget | AutomationCore.Target<TSpec>
+
+export type GetBaseEyesSettings = RendererSettings & {
+  properties?: BaseCore.CustomProperty[]
+}
 
 export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec> {
   readonly type: 'ufg'
@@ -32,10 +37,7 @@ export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec>
 export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec> {
   readonly type: 'ufg'
   readonly core: Core<TSpec>
-  getBaseEyes(options?: {
-    settings?: {type: 'web' | 'native'; renderer: Renderer}
-    logger?: Logger
-  }): Promise<BaseCore.Eyes[]>
+  getBaseEyes(options?: {settings?: GetBaseEyesSettings; logger?: Logger}): Promise<BaseCore.Eyes[]>
   check(options?: {target?: Target<TSpec>; settings?: CheckSettings<TSpec>; logger?: Logger}): Promise<CheckResult[]>
   checkAndClose(options?: {
     target?: Target<TSpec>
@@ -46,7 +48,7 @@ export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec>
 }
 
 export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings<TSpec> & {
-  renderers?: Renderer[]
+  renderers?: (Renderer & {properties?: BaseCore.CustomProperty[]})[]
   hooks?: {beforeCaptureScreenshot: string}
   disableBrowserFetching?: boolean
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
