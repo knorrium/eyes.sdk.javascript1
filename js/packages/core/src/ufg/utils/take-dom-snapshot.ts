@@ -10,14 +10,16 @@ const {
   getPollResultForIE,
 } = require('@applitools/dom-snapshot')
 
-type RawDomSnapshot = {
+export type RawDomSnapshot = {
   url: string
   selector: string
   cdt: {attributes: {name: string; value: string}[]}[]
-  crossFrames: {selector: string; index: number}[]
+  crossFrames?: {selector: string; index: number}[]
   frames: RawDomSnapshot[]
   resourceUrls: string[]
-  blobs: {url: string; value: string}[]
+  blobs: {url: string; value?: string}[]
+  srcAttr: string | null
+  scriptVersion: string
 }
 
 export type DomSnapshotSettings = {
@@ -43,7 +45,7 @@ export async function takeDomSnapshot<TSpec extends SpecType>({
   const features = await driver.getFeatures()
   const cookies: Cookie[] = features.allCookies ? await driver.getCookies().catch(() => []) : []
 
-  const snapshot = deserializeDomSnapshot({snapshot: await takeContextDomSnapshot({context})})
+  const snapshot = transformRawDomSnapshot(await takeContextDomSnapshot({context}))
   snapshot.cookies = cookies
   return snapshot
 
@@ -118,17 +120,18 @@ export async function takeDomSnapshot<TSpec extends SpecType>({
   }
 }
 
-export function deserializeDomSnapshot({snapshot}: {snapshot: RawDomSnapshot}): DomSnapshot {
+function transformRawDomSnapshot(snapshot: RawDomSnapshot): DomSnapshot {
   const {blobs, selector: _, crossFrames: __, ...rest} = snapshot
-  const deserializedSnapshot = {
+  return {
     ...rest,
     resourceContents: blobs.reduce((resourceContents, blob) => {
-      if (blob.value === undefined) return {...resourceContents, [blob.url]: blob}
-      else return {...resourceContents, [blob.url]: {...blob, value: Buffer.from(blob.value, 'base64')}}
+      return {
+        ...resourceContents,
+        [blob.url]: blob,
+      }
     }, {}),
-    frames: snapshot.frames.map(frameSnapshot => deserializeDomSnapshot({snapshot: frameSnapshot})),
+    frames: snapshot.frames.map(frameSnapshot => transformRawDomSnapshot(frameSnapshot)),
   } as DomSnapshot
-  return deserializedSnapshot
 }
 
 export function extractCrossFrames({

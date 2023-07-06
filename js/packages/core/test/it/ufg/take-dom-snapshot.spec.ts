@@ -1,17 +1,19 @@
 import {makeDriver, type SpecType, type Driver} from '@applitools/driver'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {makeLogger} from '@applitools/logger'
-import {takeDomSnapshot} from '../../../src/ufg/utils/take-dom-snapshot'
+import {RawDomSnapshot, takeDomSnapshot} from '../../../src/ufg/utils/take-dom-snapshot'
 import assert from 'assert'
 
 const logger = makeLogger()
 
-function generateSnapshotResponse(overrides: any) {
+function generateSnapshotResponse(overrides: Partial<RawDomSnapshot>) {
   return JSON.stringify({status: 'SUCCESS', value: generateSnapshotObject(overrides)})
 }
 
-function generateSnapshotObject(overrides: any) {
+function generateSnapshotObject(overrides: Partial<RawDomSnapshot>): RawDomSnapshot {
   return {
+    url: 'url',
+    selector: 'selector',
     cdt: [],
     srcAttr: null,
     resourceUrls: [],
@@ -54,18 +56,21 @@ describe('take-dom-snapshot', () => {
   it('should take a dom snapshot', async () => {
     mock.mockScript('dom-snapshot', function () {
       return generateSnapshotResponse({
-        cdt: 'cdt',
-        resourceUrls: 'resourceUrls',
-        blobs: [],
+        cdt: [{attributes: [{name: 'cdt', value: 'cdt'}]}],
+        resourceUrls: ['resourceUrls'],
+        blobs: [{url: 'blob-1', value: 'abc'}],
         frames: [],
       })
     })
     const actualSnapshot = await takeDomSnapshot({context: driver.currentContext, logger})
     assert.deepStrictEqual(actualSnapshot, {
-      cdt: 'cdt',
+      url: 'url',
+      cdt: [{attributes: [{name: 'cdt', value: 'cdt'}]}],
       frames: [],
-      resourceContents: {},
-      resourceUrls: 'resourceUrls',
+      resourceContents: {
+        'blob-1': {url: 'blob-1', value: 'abc'},
+      },
+      resourceUrls: ['resourceUrls'],
       srcAttr: null,
       scriptVersion: 'mock value',
       cookies: [],
@@ -76,9 +81,12 @@ describe('take-dom-snapshot', () => {
     mock.mockElements([{selector: '[data-applitools-selector="123"]', frame: true}])
     mock.mockScript('dom-snapshot', function (this: any) {
       return this.name === '[data-applitools-selector="123"]'
-        ? generateSnapshotResponse({cdt: 'frame-cdt', url: 'http://cors.com/?applitools-iframe=known'})
+        ? generateSnapshotResponse({
+            cdt: [{attributes: [{name: 'cdt', value: 'frame-cdt'}]}],
+            url: 'http://cors.com/?applitools-iframe=known',
+          })
         : generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: [{name: 'cross-origin-iframe', value: true}]}],
+            cdt: [{attributes: [{name: 'cross-origin-iframe', value: 'true'}]}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
     })
@@ -86,9 +94,8 @@ describe('take-dom-snapshot', () => {
     assert.deepStrictEqual(snapshot, {
       cdt: [
         {
-          nodeName: 'IFRAME',
           attributes: [
-            {name: 'cross-origin-iframe', value: true},
+            {name: 'cross-origin-iframe', value: 'true'},
             {name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=known'},
           ],
         },
@@ -97,9 +104,10 @@ describe('take-dom-snapshot', () => {
       resourceUrls: [],
       scriptVersion: 'mock value',
       srcAttr: null,
+      url: 'url',
       frames: [
         {
-          cdt: 'frame-cdt',
+          cdt: [{attributes: [{name: 'cdt', value: 'frame-cdt'}]}],
           frames: [],
           url: 'http://cors.com/?applitools-iframe=known',
           resourceContents: {},
@@ -127,19 +135,19 @@ describe('take-dom-snapshot', () => {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
-            cdt: 'frame-cdt',
+            cdt: [{attributes: [{name: 'cdt', value: 'frame-cdt'}]}],
             url: 'http://cors.com/?applitools-iframe=known',
           })
         case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
-            cdt: 'another-frame-cdt',
+            cdt: [{attributes: [{name: 'cdt', value: 'another-frame-cdt'}]}],
             url: 'http://cors.com/?applitools-iframe=known',
           })
         default:
           return generateSnapshotResponse({
             cdt: [
-              {nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame-1', value: true}]},
-              {nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame-2', value: true}]},
+              {attributes: [{name: 'cross-origin-frame-1', value: 'true'}]},
+              {attributes: [{name: 'cross-origin-frame-2', value: 'true'}]},
             ],
             crossFrames: [
               {selector: '[data-applitools-selector="123"]', index: 0},
@@ -153,9 +161,8 @@ describe('take-dom-snapshot', () => {
     assert.deepStrictEqual(snapshot, {
       cdt: [
         {
-          nodeName: 'IFRAME',
           attributes: [
-            {name: 'cross-origin-frame-1', value: true},
+            {name: 'cross-origin-frame-1', value: 'true'},
             {
               name: 'data-applitools-src',
               value: 'http://cors.com/?applitools-iframe=known',
@@ -163,9 +170,8 @@ describe('take-dom-snapshot', () => {
           ],
         },
         {
-          nodeName: 'IFRAME',
           attributes: [
-            {name: 'cross-origin-frame-2', value: true},
+            {name: 'cross-origin-frame-2', value: 'true'},
             {
               name: 'data-applitools-src',
               value: 'http://cors.com/?applitools-iframe=known',
@@ -177,9 +183,10 @@ describe('take-dom-snapshot', () => {
       resourceUrls: [],
       scriptVersion: 'mock value',
       srcAttr: null,
+      url: 'url',
       frames: [
         {
-          cdt: 'frame-cdt',
+          cdt: [{attributes: [{name: 'cdt', value: 'frame-cdt'}]}],
           frames: [],
           url: 'http://cors.com/?applitools-iframe=known',
           resourceContents: {},
@@ -188,7 +195,7 @@ describe('take-dom-snapshot', () => {
           srcAttr: null,
         },
         {
-          cdt: 'another-frame-cdt',
+          cdt: [{attributes: [{name: 'cdt', value: 'another-frame-cdt'}]}],
           frames: [],
           url: 'http://cors.com/?applitools-iframe=known',
           resourceContents: {},
@@ -219,18 +226,18 @@ describe('take-dom-snapshot', () => {
       switch (this.name) {
         case '[data-applitools-selector="123"]':
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: [{name: 'nested-cross-origin-frame', value: true}]}],
+            cdt: [{attributes: [{name: 'nested-cross-origin-frame', value: 'true'}]}],
             url: 'http://cors.com/?applitools-iframe=known',
             crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
           })
         case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
-            cdt: 'nested frame',
+            cdt: [{attributes: [{name: 'cdt', value: 'nested-frame'}]}],
             url: 'http://cors-2.com/?applitools-iframe=known',
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame', value: true}]}],
+            cdt: [{attributes: [{name: 'cross-origin-frame', value: 'true'}]}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
       }
@@ -241,9 +248,8 @@ describe('take-dom-snapshot', () => {
     assert.deepStrictEqual(snapshot, {
       cdt: [
         {
-          nodeName: 'IFRAME',
           attributes: [
-            {name: 'cross-origin-frame', value: true},
+            {name: 'cross-origin-frame', value: 'true'},
             {
               name: 'data-applitools-src',
               value: 'http://cors.com/?applitools-iframe=known',
@@ -255,9 +261,8 @@ describe('take-dom-snapshot', () => {
         {
           cdt: [
             {
-              nodeName: 'IFRAME',
               attributes: [
-                {name: 'nested-cross-origin-frame', value: true},
+                {name: 'nested-cross-origin-frame', value: 'true'},
                 {
                   name: 'data-applitools-src',
                   value: 'http://cors-2.com/?applitools-iframe=known',
@@ -267,7 +272,7 @@ describe('take-dom-snapshot', () => {
           ],
           frames: [
             {
-              cdt: 'nested frame',
+              cdt: [{attributes: [{name: 'cdt', value: 'nested-frame'}]}],
               frames: [],
               url: 'http://cors-2.com/?applitools-iframe=known',
               resourceContents: {},
@@ -287,6 +292,7 @@ describe('take-dom-snapshot', () => {
       resourceUrls: [],
       scriptVersion: 'mock value',
       srcAttr: null,
+      url: 'url',
       cookies: [],
     })
   })
@@ -309,16 +315,16 @@ describe('take-dom-snapshot', () => {
       switch (this.name) {
         case '[data-applitools-selector="456"]':
           return generateSnapshotResponse({
-            cdt: 'nested frame',
+            cdt: [{attributes: [{name: 'cdt', value: 'nested-frame'}]}],
             url: 'http://cors.com/?applitools-iframe=known',
             selector: '[data-applitools-selector="456"]',
           })
         default:
           return generateSnapshotResponse({
-            cdt: 'top page',
+            cdt: [{attributes: [{name: 'cdt', value: 'top-page'}]}],
             frames: [
               generateSnapshotObject({
-                cdt: [{nodeName: 'IFRAME', attributes: [{name: 'cross-origin-frame', value: true}]}],
+                cdt: [{attributes: [{name: 'cross-origin-frame', value: 'true'}]}],
                 url: 'http://same-origin',
                 selector: '[data-applitools-selector="123"]',
                 crossFrames: [{selector: '[data-applitools-selector="456"]', index: 0}],
@@ -331,14 +337,13 @@ describe('take-dom-snapshot', () => {
     const snapshot = await takeDomSnapshot({context: driver.currentContext, logger})
 
     assert.deepStrictEqual(snapshot, {
-      cdt: 'top page',
+      cdt: [{attributes: [{name: 'cdt', value: 'top-page'}]}],
       frames: [
         {
           cdt: [
             {
-              nodeName: 'IFRAME',
               attributes: [
-                {name: 'cross-origin-frame', value: true},
+                {name: 'cross-origin-frame', value: 'true'},
                 {
                   name: 'data-applitools-src',
                   value: 'http://cors.com/?applitools-iframe=known',
@@ -348,7 +353,7 @@ describe('take-dom-snapshot', () => {
           ],
           frames: [
             {
-              cdt: 'nested frame',
+              cdt: [{attributes: [{name: 'cdt', value: 'nested-frame'}]}],
               url: 'http://cors.com/?applitools-iframe=known',
               frames: [],
               resourceContents: {},
@@ -364,6 +369,7 @@ describe('take-dom-snapshot', () => {
           url: 'http://same-origin',
         },
       ],
+      url: 'url',
       resourceContents: {},
       resourceUrls: [],
       scriptVersion: 'mock value',
@@ -382,8 +388,6 @@ describe('take-dom-snapshot', () => {
       return generateSnapshotResponse({
         cdt: [
           {
-            nodeType: 1,
-            nodeName: 'IFRAME',
             attributes: [
               {
                 name: 'src',
@@ -420,8 +424,6 @@ describe('take-dom-snapshot', () => {
           return generateSnapshotResponse({
             cdt: [
               {
-                nodeType: 1,
-                nodeName: 'IFRAME',
                 attributes: [
                   {
                     name: 'src',
@@ -435,7 +437,7 @@ describe('take-dom-snapshot', () => {
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [{attributes: []}],
             crossFrames: [{selector: '[data-applitools-selector="123"]', index: 0}],
           })
       }
@@ -446,8 +448,6 @@ describe('take-dom-snapshot', () => {
       {
         cdt: [
           {
-            nodeType: 1,
-            nodeName: 'IFRAME',
             attributes: [
               {
                 name: 'src',
@@ -479,12 +479,12 @@ describe('take-dom-snapshot', () => {
       switch (this.name) {
         case 'cors-frame':
           return generateSnapshotResponse({
-            cdt: 'cors frame',
+            cdt: [{attributes: [{name: 'cdt', value: 'cors frame'}]}],
             url: 'http://cors.com/?applitools-iframe=known',
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [{attributes: []}],
             crossFrames: [{selector: '[data-applitools-selector="1"]', index: 0}],
           })
       }
@@ -492,7 +492,6 @@ describe('take-dom-snapshot', () => {
     const {cdt} = await takeDomSnapshot({context: driver.currentContext, logger})
     assert.deepStrictEqual(cdt, [
       {
-        nodeName: 'IFRAME',
         attributes: [{name: 'data-applitools-src', value: 'http://cors.com/?applitools-iframe=known'}],
       },
     ])
@@ -512,12 +511,12 @@ describe('take-dom-snapshot', () => {
       switch (this.name) {
         case 'some-frame-with-data-url':
           return generateSnapshotResponse({
-            cdt: 'some frame with data url',
+            cdt: [{attributes: [{name: 'cdt', value: 'some frame with data url'}]}],
             url: 'data:text/html,bla bla bla?applitools-iframe=known',
           })
         default:
           return generateSnapshotResponse({
-            cdt: [{nodeName: 'IFRAME', attributes: []}],
+            cdt: [{attributes: []}],
             crossFrames: [{selector: '[data-applitools-selector="1"]', index: 0}],
           })
       }
@@ -526,7 +525,6 @@ describe('take-dom-snapshot', () => {
     assert.deepStrictEqual(snapshot, {
       cdt: [
         {
-          nodeName: 'IFRAME',
           attributes: [{name: 'data-applitools-src', value: 'http://data-url-frame/?applitools-iframe=known'}],
         },
       ],
@@ -534,9 +532,10 @@ describe('take-dom-snapshot', () => {
       resourceUrls: [],
       scriptVersion: 'mock value',
       srcAttr: null,
+      url: 'url',
       frames: [
         {
-          cdt: 'some frame with data url',
+          cdt: [{attributes: [{name: 'cdt', value: 'some frame with data url'}]}],
           resourceContents: {},
           resourceUrls: [],
           scriptVersion: 'mock value',

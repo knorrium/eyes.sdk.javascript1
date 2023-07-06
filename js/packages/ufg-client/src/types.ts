@@ -9,7 +9,7 @@ export type DomSnapshot = {
   cdt: any[]
   url: string
   resourceUrls: string[]
-  resourceContents: Record<string, {type: string; value: Buffer; dependencies?: string[]} | {errorStatusCode: number}>
+  resourceContents: Record<string, {type: string; value: string; dependencies?: string[]} | {errorStatusCode: number}>
   frames: DomSnapshot[]
   cookies?: Cookie[]
 }

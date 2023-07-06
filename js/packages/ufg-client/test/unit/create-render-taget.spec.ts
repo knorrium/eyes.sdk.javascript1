@@ -76,4 +76,38 @@ describe('create-render-target', () => {
     })
     assert.deepStrictEqual(target.snapshot, expectedDomResource.hash)
   })
+
+  it('handles serialized resources (that came directly from DomSnapshot)', async () => {
+    const processResources = makeProcessResources({
+      fetchResource: makeFetchResource({logger: makeLogger()}),
+      uploadResource: makeUploadResource({
+        requests: {
+          checkResources: async ({resources}) => Array(resources.length).fill(true),
+        } as UFGRequests,
+        logger: makeLogger(),
+      }),
+      logger: makeLogger(),
+    })
+    const createRenderTarget = makeCreateRenderTarget({processResources, logger: makeLogger()})
+
+    const snapshot = {
+      cdt: [],
+      resourceContents: {
+        'url-1': {
+          value: 'YWJj', //Buffer.from('abc').toString('base64'),
+          type: 'some/content',
+        },
+      },
+    }
+
+    const target = await createRenderTarget({snapshot})
+
+    assert.deepStrictEqual(target.resources, {
+      'url-1': {
+        hashFormat: 'sha256',
+        hash: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad', // crypto.createHash('sha256').update('abc').digest('hex')
+        contentType: 'some/content',
+      },
+    })
+  })
 })

@@ -52,30 +52,28 @@ export function makeCreateRenderTarget({processResources, logger: mainLogger}: O
   }): Promise<{mapping: ResourceMapping; promise: Promise<ResourceMapping>}> {
     const [snapshotResources, ...frameResources] = await Promise.all([
       processResources({
-        resources: {
-          ...(utils.types.has(snapshot, 'resourceUrls') ? snapshot.resourceUrls : []).reduce((resources, url) => {
-            return Object.assign(resources, {[url]: makeResource({url, renderer: settings?.renderer})})
-          }, {}),
-          ...Object.entries(utils.types.has(snapshot, 'resourceContents') ? snapshot.resourceContents : {}).reduce(
-            (resources, [url, resource]) => {
-              return Object.assign(resources, {
-                [url]: utils.types.has(resource, 'errorStatusCode')
-                  ? makeResource({id: url, errorStatusCode: resource.errorStatusCode})
-                  : makeResource({
-                      url,
-                      value: resource.value,
-                      contentType: resource.type,
-                      dependencies: resource.dependencies,
-                    }),
-              })
-            },
-            {},
-          ),
-        },
+        resources: Object.fromEntries([
+          ...((snapshot as DomSnapshot).resourceUrls ?? []).map(url => {
+            return [url, makeResource({url, renderer: settings?.renderer})]
+          }),
+          ...Object.entries((snapshot as DomSnapshot).resourceContents ?? {}).map(([url, resource]) => {
+            return [
+              url,
+              utils.types.has(resource, 'errorStatusCode')
+                ? makeResource({id: url, errorStatusCode: resource.errorStatusCode})
+                : makeResource({
+                    url,
+                    value: resource.value,
+                    contentType: resource.type,
+                    dependencies: resource.dependencies,
+                  }),
+            ]
+          }),
+        ]),
         settings: {referer: utils.types.has(snapshot, 'url') ? snapshot.url : undefined, ...settings},
         logger,
       }),
-      ...(utils.types.has(snapshot, 'frames') ? snapshot.frames ?? [] : []).map(frameSnapshot => {
+      ...((snapshot as DomSnapshot).frames ?? []).map(frameSnapshot => {
         return processSnapshotResources({snapshot: frameSnapshot, settings, logger})
       }),
     ])

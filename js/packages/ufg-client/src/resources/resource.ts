@@ -16,6 +16,14 @@ export type FailedResource = {
   hash: {errorStatusCode: number}
 }
 
+export type RawContenfulResource = {
+  id: string
+  url: string
+  value: string
+  contentType: string
+  dependencies?: string[]
+}
+
 export type ContentfulResource = {
   id: string
   url: string
@@ -38,6 +46,7 @@ export type HashedResource = {
 }
 
 export function makeResource(resource: Omit<FailedResource, 'hash'>): FailedResource
+export function makeResource(resource: Optional<RawContenfulResource, 'id' | 'url' | 'contentType'>): ContentfulResource
 export function makeResource(
   resource: Omit<Optional<ContentfulResource, 'id' | 'url' | 'contentType'>, 'hash'>,
 ): ContentfulResource
@@ -45,6 +54,7 @@ export function makeResource(resource: Omit<UrlResource, 'id'>): UrlResource
 export function makeResource(
   resource:
     | Omit<FailedResource, 'hash'>
+    | Optional<RawContenfulResource, 'id' | 'url' | 'contentType'>
     | Omit<Optional<ContentfulResource, 'id' | 'url' | 'contentType'>, 'hash'>
     | Omit<UrlResource, 'id'>,
 ): FailedResource | ContentfulResource | UrlResource {
@@ -59,12 +69,12 @@ export function makeResource(
     const contentfulResource = {
       id: resource.id ?? resource.url,
       url: resource.url,
-      value: resource.value || Buffer.alloc(0),
+      value: getResourceValue(resource.value),
       contentType: resource.contentType || 'application/x-applitools-unknown',
       dependencies: resource.dependencies,
     } as ContentfulResource
     if (!isDomOrVHS(resource as ContentfulResource) && resource.value?.length > UFG_MAX_RESOURCE_SIZE) {
-      contentfulResource.value = contentfulResource.value.slice(0, UFG_MAX_RESOURCE_SIZE - 100000)
+      contentfulResource.value = contentfulResource.value.subarray(0, UFG_MAX_RESOURCE_SIZE - 100000)
     }
     contentfulResource.hash = makeHashedResource(contentfulResource)
     return contentfulResource
@@ -106,4 +116,8 @@ function extractRendererName({renderer}: UrlResource) {
   if (!utils.types.has(renderer, 'name')) return
   const [browserName] = (renderer.name as string).split(/[-\d]/, 1)
   return browserName
+}
+
+function getResourceValue(value: Buffer | string | undefined): Buffer {
+  return value ? (utils.types.isString(value) ? Buffer.from(value, 'base64') : value) : Buffer.alloc(0)
 }
