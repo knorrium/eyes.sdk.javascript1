@@ -19,4 +19,5 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        mvn clean package -P ${{inputs.profile}} -DskipTests
+        chmod +x ./build.sh
+        ./build.sh ${{inputs.profile}}
