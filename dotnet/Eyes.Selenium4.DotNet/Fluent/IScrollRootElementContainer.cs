@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Applitools.Selenium;
+using OpenQA.Selenium;
 
 namespace Applitools
 {
@@ -13,5 +14,7 @@ namespace Applitools
         By GetTargetSelector();
 
         IWebElement GetTargetElement();
+
+        TargetPathLocator GetTargetLocator();
     }
 }

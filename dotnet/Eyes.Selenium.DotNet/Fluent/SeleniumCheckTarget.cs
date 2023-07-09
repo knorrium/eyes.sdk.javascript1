@@ -33,7 +33,12 @@ namespace Applitools.Selenium
         {
             return new SeleniumCheckSettings(by);
         }
-
+        
+        public static SeleniumCheckSettings Region(TargetPathLocator targetLocator)
+        {
+            return new SeleniumCheckSettings(targetLocator);
+        }
+        
         public static SeleniumCheckSettings Frame(By by)
         {
             SeleniumCheckSettings settings = new SeleniumCheckSettings();

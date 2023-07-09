@@ -44,11 +44,10 @@ namespace Applitools.Generated.Selenium.Tests
             Safari11,
             Safari12
         }
-        protected DriverOptions options_;
 
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
         protected void SetUpDriver(browserType browser = browserType.Chrome,
-            bool legacy = false, bool headless = false, bool executionGrid = false)
+            bool legacy = false, bool headless = false, bool executionGrid = false, string device = null)
         {
             switch (browser)
             {
@@ -89,7 +88,7 @@ namespace Applitools.Generated.Selenium.Tests
                     var browserOptionsEdge = new EdgeOptions();
                     browserOptionsEdge.PlatformName = "Windows 10";
                     browserOptionsEdge.BrowserVersion = "18.17763";
-                    browserOptionsEdge.AddAdditionalEdgeOption("sauce:options", sauceOptionsEdge);
+                    browserOptionsEdge.AddAdditionalOption("sauce:options", sauceOptionsEdge);
                     driver = new RemoteWebDriver(new Uri(SAUCE_SELENIUM_URL), browserOptionsEdge.ToCapabilities(), TimeSpan.FromMinutes(4));
                     break;
                 case browserType.Safari11:

@@ -796,26 +796,71 @@ namespace Applitools.Selenium
                 region = CreateCheckSettingsTargetRegion(checkSettingsInternal);
             }
 
-            if (region == null)
+            if (region == null && checkSettings is ITargetContainer seleniumCheckTarget)
             {
-                if (checkSettings is ITargetContainer seleniumCheckTarget)
+                var targetLocator = seleniumCheckTarget.GetTargetLocator();
+                if (targetLocator != null)
                 {
-                    region = CreateCheckSettingsRegionSelector(seleniumCheckTarget);
-                    if (region == null)
+                    return ToTargetPathLocatorDto_(targetLocator);
+                }
+
+                region = CreateCheckSettingsRegionSelector(seleniumCheckTarget);
+                if (region == null)
+                {
+                    var element = GetTargetElement(seleniumCheckTarget);
+                    if (element != null)
                     {
-                        var element = GetTargetElement(seleniumCheckTarget);
-                        if (element != null)
+                        region = new RegionElement
                         {
-                            region = new RegionElement
-                            {
-                                ElementId = element.GetElementId()
-                            };
-                        }
+                            ElementId = element.GetElementId()
+                        };
                     }
                 }
             }
 
             return region;
+        }
+
+        private static TargetPathLocatorDto ToTargetPathLocatorDto_(TargetPathLocator locator)
+        {
+            if (locator == null)
+            {
+                return null;
+            }
+
+            /*
+             * Algorithm:
+             * create the current element, and create a parent.
+             * Always put the current element as the shadow of the parent.
+             * If the parent doesn't actually exist, we'll drop it (this happens in the last iteration).
+             */
+            TargetPathLocatorDto currentDto;
+            TargetPathLocatorDto parentDto = new TargetPathLocatorDto();
+            TargetPathLocator parentLocator = locator;
+            do
+            {
+                locator = parentLocator;
+                parentLocator = locator.Parent;
+
+                currentDto = parentDto;
+                parentDto = new TargetPathLocatorDto();
+                parentDto.Shadow = currentDto;
+
+                IPathNodeValue value = locator.Value;
+                if (value is ElementSelector eSel)
+                {
+                    currentDto.Type = eSel.Type;
+                    currentDto.Selector = eSel.Selector;
+                    currentDto.Fallback = eSel.Fallback;
+                    currentDto.Child = eSel.Child;
+                }
+                else if (value is ElementReference eRef)
+                {
+                    currentDto.ElementId = eRef.Element.GetElementId();
+                }
+            } while (locator.Parent != null);
+
+            return currentDto;
         }
 
         private IWebElement GetTargetElement(ITargetContainer checkSettings)
@@ -873,11 +918,18 @@ namespace Applitools.Selenium
 
         private string GetServerUrl(ICommandExecutor commandExecutor)
         {
-            var instance = commandExecutor is DriverServiceCommandExecutor driverServiceCommandExecutor 
-                ? driverServiceCommandExecutor.HttpExecutor 
-                : commandExecutor;
+            Type cet = commandExecutor.GetType();
+            if (cet.FullName == "OpenQA.Selenium.Appium.Service.AppiumCommandExecutor")
+            {
+                return commandExecutor.GetPrivateFieldValue<Uri>("URL").AbsoluteUri;
+            }
+            
+            if (cet.FullName == "OpenQA.Selenium.Remote.DriverServiceCommandExecutor")
+            {
+                commandExecutor = ((DriverServiceCommandExecutor)commandExecutor).HttpExecutor;
+            }
 
-            return instance.GetPrivateFieldValue<Uri>(serverUrlFieldName_).AbsoluteUri;
+            return commandExecutor.GetPrivateFieldValue<Uri>(serverUrlFieldName_).AbsoluteUri;
         }
 
         private IDictionary<string, object> GetCapabilities(RemoteWebDriver webDriver)

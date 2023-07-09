@@ -69,8 +69,9 @@ namespace Applitools.Selenium
         {
             return GetExecutionCloudUrl(apiKey, serverUrl, proxySettings);
         }
-        
-        public static string GetExecutionCloudUrl(string apiKey = null, Uri serverUrl = null, ProxySettings proxySettings = null)
+
+        public static string GetExecutionCloudUrl(string apiKey = null, Uri serverUrl = null,
+            ProxySettings proxySettings = null)
         {
             var runner = new ClassicRunner();
             var request = new CoreMakeECClientRequest
@@ -473,7 +474,9 @@ namespace Applitools.Selenium
                 }
             };
 
-            var response = Runner.SendRequest<EyesExtractTextRegionsRequest, EyesExtractTextRegionsResponse>(extractTextRegionsRequest);
+            var response =
+                Runner.SendRequest<EyesExtractTextRegionsRequest, EyesExtractTextRegionsResponse>(
+                    extractTextRegionsRequest);
 
             return response.Payload.Result;
         }
@@ -482,7 +485,7 @@ namespace Applitools.Selenium
         {
             return Locate(locatorNames.ToList());
         }
-        
+
         public override IDictionary<string, IList<Region>> Locate(VisualLocatorSettings settings)
         {
             var remoteWebDriver = (WebDriver)driver_;
@@ -495,7 +498,7 @@ namespace Applitools.Selenium
                 Proxy = Config.Proxy
             }, settings);
         }
-        
+
         public IDictionary<string, IList<Region>> Locate(ICollection<string> locatorNames)
         {
             Logger.Log("Locate");
@@ -713,8 +716,9 @@ namespace Applitools.Selenium
             };
             return request;
         }
-        
-        protected override UniversalCheckSettings CreateUniversalCheckSettings(ICheckSettingsInternal checkSettingsInternal)
+
+        protected override UniversalCheckSettings CreateUniversalCheckSettings(
+            ICheckSettingsInternal checkSettingsInternal)
         {
             var settings = base.CreateUniversalCheckSettings(checkSettingsInternal);
             settings.Frames = GetFrames(checkSettingsInternal);
@@ -792,6 +796,12 @@ namespace Applitools.Selenium
 
             if (region == null && checkSettings is ISeleniumCheckTarget seleniumCheckTarget)
             {
+                var targetLocator = seleniumCheckTarget.GetTargetLocator();
+                if (targetLocator != null)
+                {
+                    return ToTargetPathLocatorDto_(targetLocator);
+                }
+
                 region = CreateCheckSettingsRegionSelector(seleniumCheckTarget);
                 if (region == null)
                 {
@@ -807,6 +817,48 @@ namespace Applitools.Selenium
             }
 
             return region;
+        }
+
+        private static TargetPathLocatorDto ToTargetPathLocatorDto_(TargetPathLocator locator)
+        {
+            if (locator == null)
+            {
+                return null;
+            }
+
+            /*
+             * Algorithm:
+             * create the current element, and create a parent.
+             * Always put the current element as the shadow of the parent.
+             * If the parent doesn't actually exist, we'll drop it (this happens in the last iteration).
+             */
+            TargetPathLocatorDto currentDto;
+            TargetPathLocatorDto parentDto = new TargetPathLocatorDto();
+            TargetPathLocator parentLocator = locator;
+            do
+            {
+                locator = parentLocator;
+                parentLocator = locator.Parent;
+
+                currentDto = parentDto;
+                parentDto = new TargetPathLocatorDto();
+                parentDto.Shadow = currentDto;
+
+                IPathNodeValue value = locator.Value;
+                if (value is ElementSelector eSel)
+                {
+                    currentDto.Type = eSel.Type;
+                    currentDto.Selector = eSel.Selector;
+                    currentDto.Fallback = eSel.Fallback;
+                    currentDto.Child = eSel.Child;
+                }
+                else if (value is ElementReference eRef)
+                {
+                    currentDto.ElementId = eRef.Element.GetElementId();
+                }
+            } while (locator.Parent != null);
+
+            return currentDto;
         }
 
         private IWebElement GetTargetElement(ISeleniumCheckTarget checkSettings)
@@ -858,11 +910,18 @@ namespace Applitools.Selenium
 
         private string GetServerUrl(ICommandExecutor commandExecutor)
         {
-            var instance = commandExecutor is DriverServiceCommandExecutor driverServiceCommandExecutor
-                ? driverServiceCommandExecutor.HttpExecutor
-                : commandExecutor;
+            Type cet = commandExecutor.GetType();
+            if (cet.FullName == "OpenQA.Selenium.Appium.Service.AppiumCommandExecutor")
+            {
+                return commandExecutor.GetPrivateFieldValue<Uri>("URL").AbsoluteUri;
+            }
 
-            return instance.GetPrivateFieldValue<Uri>(serverUrlFieldName_).AbsoluteUri;
+            if (cet.FullName == "OpenQA.Selenium.Remote.DriverServiceCommandExecutor")
+            {
+                commandExecutor = ((DriverServiceCommandExecutor)commandExecutor).HttpExecutor;
+            }
+
+            return commandExecutor.GetPrivateFieldValue<Uri>(serverUrlFieldName_).AbsoluteUri;
         }
 
         private IDictionary<string, object> GetCapabilities(WebDriver webDriver)

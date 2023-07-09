@@ -16,6 +16,7 @@ namespace Applitools.Selenium.Fluent
         private By scrollRootSelector_;
         private IWebElement scrollRootElement_;
         private VisualGridSelector vgTargetSelector_;
+        private TargetPathLocator targetLocator_;
         private bool? useCookies_;
 
         internal SeleniumCheckSettings()
@@ -27,6 +28,13 @@ namespace Applitools.Selenium.Fluent
             targetSelector_ = targetSelector;
             fluentCode_.Clear();
             fluentCode_.Append($"Target.Region({targetSelector})");
+        }
+        
+        internal SeleniumCheckSettings(TargetPathLocator targetLocator)
+        {
+            targetLocator_ = targetLocator;
+            fluentCode_.Clear();
+            fluentCode_.Append($"Target.Region({targetLocator})");
         }
 
         internal SeleniumCheckSettings(IWebElement targetElement)
@@ -44,6 +52,11 @@ namespace Applitools.Selenium.Fluent
         By ITargetContainer.GetTargetSelector()
         {
             return targetSelector_;
+        }
+        
+        TargetPathLocator ITargetContainer.GetTargetLocator()
+        {
+            return targetLocator_;
         }
 
         IWebElement ITargetContainer.GetTargetElement()
@@ -854,6 +867,7 @@ namespace Applitools.Selenium.Fluent
             clone.scrollRootElement_ = scrollRootElement_;
             clone.scrollRootSelector_ = scrollRootSelector_;
             clone.vgTargetSelector_ = vgTargetSelector_;
+            clone.targetLocator_ = targetLocator_;
             ((ISeleniumCheckTarget)clone).State = ((ISeleniumCheckTarget)this).State;
             clone.useCookies_ = useCookies_;
             return clone;

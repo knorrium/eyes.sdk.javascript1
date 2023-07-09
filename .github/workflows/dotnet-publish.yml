@@ -21,7 +21,7 @@ env:
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
   GITHUB_TOKEN: ${{ secrets.RUN_GITHUB_TOKEN }}
-  CORE_VERSION: "3.3.1"
+  CORE_VERSION: "3.5.1"
   NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
         run: |
           cd dotnet
-          ./download_cores.ps1 -CORE_VERSION "${env:CORE_VERSION}" &&
+          ./download_cores.ps1 &&
           ./update_core_versions.ps1
       - name: Update versions
         shell: bash
@@ -65,13 +65,15 @@ jobs:
         shell: bash
         run: |
           cd dotnet
-          git config user.email "action-queue@applitools.com"
-          git config user.name "queue-bot" 
-          git remote set-url origin https://${GITHUB_TOKEN}@github.com/${GITHUB_ACTION_REPOSITORY}
-          git checkout -b "PR_RELEASE_$GITHUB_SHA"
+          git config --local user.email "action-queue@applitools.com"
+          git config --local user.name "queue-bot"
+          git checkout -b PR_RELEASE_$GITHUB_SHA
           git add */*.csproj CHANGELOG.md
           git commit -m 'Updated CHANGELOG and bumped versions.'
           git push origin HEAD:PR_RELEASE_$GITHUB_SHA
           # while read p; do  echo $p; git tag $p; done <NEW_TAGS.txt
           # git push origin HEAD:PR_RELEASE_$GITHUB_SHA --tags
           hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -F NEW_TAGS.txt
+      - name: Send update notice
+        shell: bash
+        run: cd dotnet && chmod +x sendMail.sh && sendMail.sh

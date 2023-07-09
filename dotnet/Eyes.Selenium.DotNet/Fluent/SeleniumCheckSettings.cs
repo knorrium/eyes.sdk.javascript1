@@ -15,7 +15,8 @@ namespace Applitools.Selenium.Fluent
         private readonly List<FrameLocator> frameChain_ = new List<FrameLocator>();
         private By scrollRootSelector_;
         private IWebElement scrollRootElement_;
-        private VisualGridSelector vgTargetSelector_ = null;
+        private VisualGridSelector vgTargetSelector_;
+        private TargetPathLocator targetLocator_;
         private bool? useCookies_;
 
         internal SeleniumCheckSettings()
@@ -28,7 +29,14 @@ namespace Applitools.Selenium.Fluent
             fluentCode_.Clear();
             fluentCode_.Append($"Target.Region({targetSelector})");
         }
-
+        
+        internal SeleniumCheckSettings(TargetPathLocator targetLocator)
+        {
+            targetLocator_ = targetLocator;
+            fluentCode_.Clear();
+            fluentCode_.Append($"Target.Region({targetLocator})");
+        }
+        
         internal SeleniumCheckSettings(IWebElement targetElement)
         {
             targetElement_ = targetElement;
@@ -44,6 +52,11 @@ namespace Applitools.Selenium.Fluent
         By ITargetContainer.GetTargetSelector()
         {
             return targetSelector_;
+        }
+        
+        TargetPathLocator ITargetContainer.GetTargetLocator()
+        {
+            return targetLocator_;
         }
 
         IWebElement ITargetContainer.GetTargetElement()
@@ -162,7 +175,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more ignore regions.
         /// </summary>
-        /// <param name="selectors">An enumerbale of selectors representing regions to ignore when validating the screenshot.</param>
+        /// <param name="selectors">An enumerable of selectors representing regions to ignore when validating the screenshot.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -208,7 +221,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more ignore regions.
         /// </summary>
-        /// <param name="elements">An enumerbale of elements to ignore when validating the screenshot.</param>
+        /// <param name="elements">An enumerable of elements to ignore when validating the screenshot.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -254,7 +267,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more layout regions.
         /// </summary>
-        /// <param name="selectors">An enumerbale of selectors representing layout regions.</param>
+        /// <param name="selectors">An enumerable of selectors representing layout regions.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -300,7 +313,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more layout regions.
         /// </summary>
-        /// <param name="elements">An enumerbale of elements, each representing a layout region.</param>
+        /// <param name="elements">An enumerable of elements, each representing a layout region.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -346,7 +359,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more strict regions.
         /// </summary>
-        /// <param name="selectors">An enumerbale of selectors representing strict regions.</param>
+        /// <param name="selectors">An enumerable of selectors representing strict regions.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -392,7 +405,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more strict regions.
         /// </summary>
-        /// <param name="elements">An enumerbale of elements, each representing a strict region.</param>
+        /// <param name="elements">An enumerable of elements, each representing a strict region.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -438,7 +451,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more content regions.
         /// </summary>
-        /// <param name="selectors">An enumerbale of selectors representing content regions.</param>
+        /// <param name="selectors">An enumerable of selectors representing content regions.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -484,7 +497,7 @@ namespace Applitools.Selenium.Fluent
         /// <summary>
         /// Adds one or more content regions.
         /// </summary>
-        /// <param name="elements">An enumerbale of elements, each representing a content region.</param>
+        /// <param name="elements">An enumerable of elements, each representing a content region.</param>
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
@@ -845,13 +858,14 @@ namespace Applitools.Selenium.Fluent
         protected override CheckSettings Clone()
         {
             SeleniumCheckSettings clone = new SeleniumCheckSettings();
-            base.PopulateClone_(clone);
+            PopulateClone_(clone);
             clone.targetElement_ = targetElement_;
             clone.targetSelector_ = targetSelector_;
             clone.frameChain_.AddRange(frameChain_);
             clone.scrollRootElement_ = scrollRootElement_;
             clone.scrollRootSelector_ = scrollRootSelector_;
             clone.vgTargetSelector_ = vgTargetSelector_;
+            clone.targetLocator_ = targetLocator_;
             ((ISeleniumCheckTarget)clone).State = ((ISeleniumCheckTarget)this).State;
             clone.useCookies_ = useCookies_;
             return clone;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Applitools.Selenium;
 using Applitools.VisualGrid;
 using OpenQA.Selenium;
 
@@ -49,6 +50,11 @@ namespace Applitools.Appium
         IWebElement ITargetContainer.GetTargetElement()
         {
             return targetElement_;
+        }
+
+        TargetPathLocator ITargetContainer.GetTargetLocator()
+        {
+            return null;
         }
 
         public AppiumCheckSettings Webview(bool? isDefaultWebview = true)

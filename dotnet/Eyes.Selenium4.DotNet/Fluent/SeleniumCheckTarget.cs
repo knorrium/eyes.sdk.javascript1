@@ -1,8 +1,9 @@
-﻿namespace Applitools.Selenium
+﻿using System.Drawing;
+using OpenQA.Selenium;
+using Applitools.Selenium.Fluent;
+
+namespace Applitools.Selenium
 {
-    using System.Drawing;
-    using OpenQA.Selenium;
-    using Fluent;
 
     public static class Target
     {
@@ -29,6 +30,11 @@
         public static SeleniumCheckSettings Region(By by)
         {
             return new SeleniumCheckSettings(by);
+        }
+
+        public static SeleniumCheckSettings Region(TargetPathLocator targetLocator)
+        {
+            return new SeleniumCheckSettings(targetLocator);
         }
 
         public static SeleniumCheckSettings Frame(By by)
