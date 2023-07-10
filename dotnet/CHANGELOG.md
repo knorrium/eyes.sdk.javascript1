@@ -1,3 +1,23 @@
+## [Eyes.Images 3.31] - 2023-07-10
+### Fixed
+- Reference to Eyes.Image.Core
+
+## [Eyes.Selenium 3.60] - 2023-07-10
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium 5.56] - 2023-07-10
+### Updated
+- Match to latest Eyes.Selenium
+
+## [Eyes.Selenium4 3.60] - 2023-07-10
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Playwright 1.8] - 2023-07-10
+### Updated
+- Match to latest Eyes.Images
+
 ## [Eyes.Images 3.30] - 2023-07-09
 ### Added
 - New emulated devices:
