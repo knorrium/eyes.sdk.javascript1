@@ -32,6 +32,13 @@ describe('image', () => {
     assert.strictEqual(image.height, 512)
   })
 
+  it('should provide access to gif image width/height before it parsed', async () => {
+    const buffer = fs.readFileSync('./test/fixtures/house.gif')
+    const image = makeImage(buffer)
+    assert.strictEqual(image.width, 612)
+    assert.strictEqual(image.height, 512)
+  })
+
   it('should encode jpeg image as png', async () => {
     const actual = await makeImage('./test/fixtures/house.jpeg').toPng()
     const expected = await makeImage('./test/fixtures/house.converted-jpeg.png').toPng()
@@ -41,6 +48,12 @@ describe('image', () => {
   it('should encode bmp image as png', async () => {
     const actual = await makeImage('./test/fixtures/house.bmp').toPng()
     const expected = await makeImage('./test/fixtures/house.converted-bmp.png').toPng()
+    assert.ok(Buffer.compare(actual, expected) === 0)
+  })
+
+  it('should encode gif image as png', async () => {
+    const actual = await makeImage('./test/fixtures/house.gif').toPng()
+    const expected = await makeImage('./test/fixtures/house.converted-gif.png').toPng()
     assert.ok(Buffer.compare(actual, expected) === 0)
   })
 

@@ -1,10 +1,11 @@
+import type {ImageRaw} from './types'
 import type {Location, Size, Region} from '@applitools/utils'
+import {isPngBuffer, extractPngSize, fromPngBuffer, toPng} from './formats/png'
+import {isJpegBuffer, extractJpegSize, fromJpegBuffer} from './formats/jpeg'
+import {isBmpBuffer, extractBmpSize, fromBmpBuffer} from './formats/bmp'
+import {isGifBuffer, extractGifSize, fromGifBuffer} from './formats/gif'
 import fs from 'fs'
-import stream from 'stream'
 import path from 'path'
-import * as png from 'png-async'
-import * as jpeg from 'jpeg-js'
-import * as bmp from 'bmpimagejs'
 import * as utils from '@applitools/utils'
 
 export interface Image {
@@ -29,12 +30,6 @@ export interface Image {
 }
 
 type ImageSource = string | Buffer | Image | (Size & {data?: Buffer}) | {auto: true}
-
-type ImageRaw = {
-  width: number
-  height: number
-  data: Buffer
-}
 
 type Transforms = {
   rotate: number
@@ -65,6 +60,9 @@ export function makeImage(data: ImageSource): Image {
     } else if (isBmpBuffer(data)) {
       image = fromBmpBuffer(data)
       size = extractBmpSize(data)
+    } else if (isGifBuffer(data)) {
+      image = fromGifBuffer(data)
+      size = extractGifSize(data)
     } else {
       throw new Error('Unable to create an image abstraction from buffer with unknown data')
     }
@@ -208,86 +206,8 @@ export function makeImage(data: ImageSource): Image {
   }
 }
 
-function isPngBuffer(buffer: Buffer): boolean {
-  return buffer.slice(12, 16).toString('ascii') === 'IHDR'
-}
-
-function isJpegBuffer(buffer: Buffer): boolean {
-  return ['JFIF', 'Exif'].includes(buffer.slice(6, 10).toString('ascii'))
-}
-
-function isBmpBuffer(buffer: Buffer): boolean {
-  return buffer.slice(0, 2).toString('ascii') === 'BM'
-}
-
-function extractPngSize(buffer: Buffer): Size {
-  return {width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20)}
-}
-
-function extractJpegSize(buffer: Buffer): Size {
-  // skip file signature
-  let offset = 4
-  while (buffer.length > offset) {
-    // extract length of the block
-    offset += buffer.readUInt16BE(offset)
-    // if next segment is SOF0 or SOF2 extract size
-    if (buffer[offset + 1] === 0xc0 || buffer[offset + 1] === 0xc2) {
-      return {width: buffer.readUInt16BE(offset + 7), height: buffer.readUInt16BE(offset + 5)}
-    } else {
-      // skip block signature
-      offset += 2
-    }
-  }
-  return {width: 0, height: 0}
-}
-
-function extractBmpSize(buffer: Buffer): Size {
-  return {width: buffer.readUInt32LE(18), height: buffer.readUInt32LE(22)}
-}
-
 function fromSize(size: Size): ImageRaw {
-  return new png.Image({width: size.width, height: size.height})
-}
-
-async function fromPngBuffer(buffer: Buffer): Promise<ImageRaw> {
-  return new Promise((resolve, reject) => {
-    const image = new png.Image()
-
-    image.parse(buffer, (err, image) => {
-      if (err) return reject(err)
-      resolve(image)
-    })
-  })
-}
-
-async function fromJpegBuffer(buffer: Buffer): Promise<ImageRaw> {
-  return jpeg.decode(buffer, {tolerantDecoding: true, formatAsRGBA: true})
-}
-
-async function fromBmpBuffer(buffer: Buffer): Promise<ImageRaw> {
-  const image = bmp.decode(buffer)
-  return {data: Buffer.from(image.pixels), width: image.width, height: image.height}
-}
-
-async function toPng(image: ImageRaw): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    let buffer = Buffer.alloc(0)
-
-    const writable = new stream.Writable({
-      write(chunk, _encoding, next) {
-        buffer = Buffer.concat([buffer, chunk])
-        next()
-      },
-    })
-
-    const wrapper = new png.Image({width: image.width, height: image.height})
-    wrapper.data = image.data
-    wrapper
-      .pack()
-      .pipe(writable)
-      .on('finish', () => resolve(buffer))
-      .on('error', (err: Error) => reject(err))
-  })
+  return {...size, data: Buffer.alloc(4 * size.width * size.height)}
 }
 
 async function toFile(image: ImageRaw, filepath: string): Promise<void> {
@@ -306,7 +226,7 @@ async function transform(imageOrSize: ImageRaw | Size, transforms: Transforms): 
     const size = transforms.added
       ? {width: imageOrSize.width - transforms.added.width, height: imageOrSize.height - transforms.added.height}
       : imageOrSize
-    image = new png.Image(size)
+    image = fromSize(size)
   }
 
   image = await transforms.modifiers.reduce(async (image, modifier) => {
@@ -365,7 +285,7 @@ async function extract(image: ImageRaw, region: Region): Promise<ImageRaw> {
     throw new Error(`Cannot extract empty region (${srcX};${srcY})${dstWidth}x${dstHeight} from image`)
   }
 
-  const extracted = new png.Image(dstSize)
+  const extracted = fromSize(dstSize)
 
   if (srcX === 0 && dstWidth === image.width) {
     const srcOffset = srcY * image.width * 4
@@ -385,7 +305,7 @@ async function extract(image: ImageRaw, region: Region): Promise<ImageRaw> {
 async function rotate(image: ImageRaw, degrees: number): Promise<ImageRaw> {
   degrees = (360 + degrees) % 360
 
-  const dstImage = new png.Image({width: image.width, height: image.height})
+  const dstImage = fromSize({width: image.width, height: image.height})
 
   if (degrees === 90) {
     dstImage.width = image.height
@@ -460,7 +380,7 @@ async function frame(topImage: ImageRaw, bottomImage: ImageRaw, srcImage: ImageR
     return topImage
   }
 
-  const dstImage = new png.Image({
+  const dstImage = fromSize({
     width: topImage.width + Math.max(srcImage.width - region.width, 0),
     height: topImage.height + Math.max(srcImage.height - region.height, 0),
   })

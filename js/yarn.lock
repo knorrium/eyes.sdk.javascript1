@@ -703,9 +703,11 @@ __metadata:
   dependencies:
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
+    "@types/omggif": ^1.0.3
     "@types/pixelmatch": ^5.2.4
     bmpimagejs: 1.0.4
     jpeg-js: 0.4.4
+    omggif: 1.0.10
     pixelmatch: ^5.3.0
     png-async: 0.9.4
   languageName: unknown
@@ -1191,6 +1193,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/ufg-client@workspace:packages/ufg-client"
   dependencies:
+    "@applitools/image": 1.0.36
     "@applitools/logger": 2.0.5
     "@applitools/req": 1.4.0
     "@applitools/test-server": "workspace:^"
@@ -6485,6 +6488,13 @@ __metadata:
   version: 4.1.4
   resolution: "@types/npmlog@npm:4.1.4"
   checksum: 740f7431ccfc0e127aa8d162fe05c6ce8aa71290be020d179b2824806d19bd2c706c7e0c9a3c9963cefcdf2ceacb1dec6988c394c3694451387759dafe0aa927
+  languageName: node
+  linkType: hard
+
+"@types/omggif@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@types/omggif@npm:1.0.3"
+  checksum: 205543da4370e5e836b6dd9f84a710ad9db2bc708cdb9edc921f204a307051324f51ea5b7497c5c77fd2eecb028111cddf4e149cf29d1727235489a78ad57248
   languageName: node
   linkType: hard
 
@@ -21659,7 +21669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"omggif@npm:^1.0.10, omggif@npm:^1.0.9":
+"omggif@npm:1.0.10, omggif@npm:^1.0.10, omggif@npm:^1.0.9":
   version: 1.0.10
   resolution: "omggif@npm:1.0.10"
   checksum: 15102e46b6fa0fba32d7e948f702623cdc3cdcdfd64b2d33c6e29a61f366ffd0f250da55d66f5217dce5b93ba9c67763fa998652791a5c7f2201a3bde2c4db45

@@ -40,6 +40,7 @@
     "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'"
   },
   "dependencies": {
+    "@applitools/image": "1.0.36",
     "@applitools/logger": "2.0.5",
     "@applitools/req": "1.4.0",
     "@applitools/utils": "1.5.0",
