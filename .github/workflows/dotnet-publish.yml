@@ -76,4 +76,6 @@ jobs:
           hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -F NEW_TAGS.txt
       - name: Send update notice
         shell: bash
-        run: cd dotnet && chmod +x sendMail.sh && sendMail.sh
+        run: |
+          cd dotnet
+          chmod +x ./sendMail.sh && ./sendMail.sh
