@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 
-$version = $CORE_VERSION
+$version = ${env:CORE_VERSION}
 echo "Updating Eyes.Image.Core to version $version"
 $path = $PWD.Path+"/Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj"
 $xml = [xml](Get-Content $path)

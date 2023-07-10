@@ -5,7 +5,6 @@ VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65FEE257-99C5-4D2B-A6DF-8726ADEFCE25}"
 	ProjectSection(SolutionItems) = preProject
-		.travis.yml = .travis.yml
 		applitools_nuget_icon.png = applitools_nuget_icon.png
 		buildProjects.sh = buildProjects.sh
 		CHANGELOG.md = CHANGELOG.md
@@ -20,12 +19,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		sendMail.sh = sendMail.sh
 		testCoverageGap.txt = testCoverageGap.txt
 		updateChangelogAndProjectFiles.py = updateChangelogAndProjectFiles.py
-		.github\workflows\dotnet-tests.yml = .github\workflows\dotnet-tests.yml
+		..\.github\workflows\dotnet-tests.yml = ..\.github\workflows\dotnet-tests.yml
+		..\.github\workflows\dotnet-publish.yml = ..\.github\workflows\dotnet-publish.yml
 		genericTests_selenium4.sh = genericTests_selenium4.sh
 		initChromeDriver.sh = initChromeDriver.sh
 		initGeckoDriver.sh = initGeckoDriver.sh
 		genericTests_playwright.ps1 = genericTests_playwright.ps1
 		genericTests_appium.sh = genericTests_appium.sh
+		update_core_versions.ps1 = update_core_versions.ps1
+		update_versions.ps1 = update_versions.ps1
+		download_core_linux.sh = download_core_linux.sh
+		download_cores.ps1 = download_cores.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eyes.Selenium.DotNet", "Eyes.Selenium.DotNet\Eyes.Selenium.DotNet.csproj", "{BE107353-600D-4658-8675-F8BFE2DF0A84}"
