@@ -219,7 +219,9 @@ async function main() {
         .join(', ')
       job['display-name'] = `${job['display-name'] ?? job.name} ${description ? `(${description})` : ''}`.trim()
 
-      job.artifacts &&= job.artifacts.map(artifactPath => path.resolve(job['working-directory'], artifactPath))
+      job.artifacts &&= job.artifacts.map(artifactPath => {
+        return path.isAbsolute(artifactPath) ? artifactPath : path.join(job['working-directory'], artifactPath)
+      })
       job.key &&= populateString(job.key, {filenamify: type === 'test'})
 
       if (type === 'test' || type === 'release') {
