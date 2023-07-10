@@ -74,8 +74,8 @@ export function makeStartSession({settings, req, tunnels}: Options) {
 
     if (options.tunnel && tunnels) {
       // TODO should be removed once tunnel spawning issue is solved
-      await prepareEnvironment()
-      session.tunnels = await tunnels.acquire(session.credentials)
+      await prepareEnvironment({egTunnelManagerUrl: session.serverUrl})
+      session.tunnels = await tunnels.acquire({...session.credentials, tunnelServerUrl: session.serverUrl})
     }
 
     const applitoolsCapabilities = Object.fromEntries([

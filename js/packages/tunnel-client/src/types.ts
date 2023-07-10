@@ -1,4 +1,5 @@
 export interface TunnelClientSettings {
+  tunnelServerUrl?: string
   serviceUrl?: string
 }
 
@@ -21,6 +22,7 @@ export interface TunnelClient {
 
 export interface TunnelCredentials {
   eyesServerUrl: string
+  tunnelServerUrl?: string
   apiKey: string
 }
 

@@ -61,7 +61,7 @@
     "compress": "GZip"
   },
   "dependencies": {
-    "@applitools/execution-grid-tunnel": "2.1.6",
+    "@applitools/execution-grid-tunnel": "2.1.7",
     "@applitools/logger": "2.0.5",
     "@applitools/req": "1.4.0",
     "@applitools/socket": "1.1.5",

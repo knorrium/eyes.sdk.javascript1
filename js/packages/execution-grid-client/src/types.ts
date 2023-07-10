@@ -39,10 +39,7 @@ export interface ECSession {
   serverUrl: string
   proxy?: Proxy
   sessionId: string
-  credentials: {
-    eyesServerUrl: string
-    apiKey: string
-  }
+  credentials: {eyesServerUrl: string; apiKey: string}
   capabilities: Record<string, any>
   options: ECCapabilitiesOptions
   tunnels?: Tunnel[]

@@ -20,11 +20,18 @@ export function makeTunnelClient({
   logger?: Logger
 }): TunnelClient {
   const logger = makeLogger({logger: defaultLogger, format: {label: 'tunnel-client'}})
-  const getTunnelService = utils.general.cachify(async () => {
+
+  const tunnelServerUrl =
+    settings?.tunnelServerUrl ??
+    utils.general.getEnvValue('EXECUTION_CLOUD_URL') ??
+    utils.general.getEnvValue('EG_SERVER_URL') ??
+    'https://exec-wus.applitools.com'
+
+  const getTunnelService = utils.general.cachify(async (tunnelServerUrl: string) => {
     if (settings?.serviceUrl) {
       return {url: settings.serviceUrl, close: () => Promise.resolve()}
     }
-    const {port, cleanupFunction} = await startEgTunnelService({logger})
+    const {port, cleanupFunction} = await startEgTunnelService({egTunnelManagerUrl: tunnelServerUrl, logger})
     return {
       url: `http://localhost:${port}`,
       async close(): Promise<void> {
@@ -40,7 +47,7 @@ export function makeTunnelClient({
   return {list, create, destroy, replace, close}
 
   async function list(): Promise<Tunnel[]> {
-    const service = await getTunnelService()
+    const service = await getTunnelService(tunnelServerUrl)
 
     const response = await req('/tunnels', {
       method: 'GET',
@@ -55,7 +62,7 @@ export function makeTunnelClient({
   }
 
   async function create(credentials: TunnelCredentials): Promise<Tunnel> {
-    const service = await getTunnelService()
+    const service = await getTunnelService(credentials.tunnelServerUrl ?? tunnelServerUrl)
 
     const queueKey = `${credentials.apiKey}$${credentials.eyesServerUrl}`
     let queue = queues.get(queueKey)!
@@ -109,7 +116,7 @@ export function makeTunnelClient({
   }
 
   async function destroy(tunnel: Tunnel, options?: {reason?: string}): Promise<void> {
-    const service = await getTunnelService()
+    const service = await getTunnelService(tunnel.credentials.tunnelServerUrl ?? tunnelServerUrl)
 
     const response = await req(`/tunnels/${tunnel.tunnelId}`, {
       method: 'DELETE',
@@ -136,7 +143,7 @@ export function makeTunnelClient({
       const tunnels = await list()
       logger.log(tunnels)
       await Promise.all(tunnels.map(tunnel => destroy(tunnel, {reason: 'client-closed'})))
-      const service = await getTunnelService()
+      const service = await getTunnelService(tunnelServerUrl)
       await service.close()
     } catch (error) {
       logger.error(`Failed to close tunnel client due to an error`, error)
