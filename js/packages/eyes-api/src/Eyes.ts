@@ -315,7 +315,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     if (this._config.isDisabled) return null as never
     if (!this.isOpen) throw new EyesError('Eyes not open')
 
-    let serialized: {target?: Image; settings: any}
+    let serialized
     if (utils.types.isString(checkSettingsOrTargetOrName)) {
       serialized = this._driver
         ? new CheckSettingsAutomationFluent(checkSettings as CheckSettingsAutomationFluent<TSpec>, this._spec)
@@ -340,8 +340,14 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     // TODO remove when major version of sdk should be released
     config.screenshot.fully ??= false
 
-    const type =
-      this._runner.type === 'ufg' && settings?.nmgOptions?.nonNMGCheck === 'addToAllDevices' ? 'classic' : undefined
+    let type
+    if (
+      this._runner.type === 'ufg' &&
+      (settings as CheckSettingsAutomation<TSpec>)?.nmgOptions?.nonNMGCheck === 'addToAllDevices'
+    ) {
+      type = 'classic' as const
+      settings.screenshotMode = 'default'
+    }
 
     const [result] = await this._eyes!.check({type, target, settings, config})
 
