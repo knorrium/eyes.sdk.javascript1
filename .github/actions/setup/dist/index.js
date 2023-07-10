@@ -5434,7 +5434,7 @@ async function main() {
                 .flatMap(([key, value]) => value ? `${key}: ${value}` : [])
                 .join(', ');
             job['display-name'] = `${job['display-name'] ?? job.name} ${description ? `(${description})` : ''}`.trim();
-            job.artifacts &&= job.artifacts.map(artifactPath => external_node_path_namespaceObject.join(job['working-directory'], artifactPath));
+            job.artifacts &&= job.artifacts.map(artifactPath => external_node_path_namespaceObject.resolve(job['working-directory'], artifactPath));
             job.key &&= populateString(job.key, { filenamify: type === 'test' });
             if (type === 'test' || type === 'release') {
                 job.builds &&= job.builds.map(key => populateString(key));
