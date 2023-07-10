@@ -1,6 +1,9 @@
 name: Ruby
 
 on:
+  push:
+    tags:
+      - '@applitools/ruby/eyes_selenium*'
   pull_request:
     paths:
       - 'ruby/**'
@@ -46,6 +49,7 @@ permissions:
 
 jobs:
   dist-build:
+    if: ${{github.actor != 'dependabot[bot]' && !github.event.pull_request.draft}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -316,6 +320,7 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch') || inputs.generic-tests }}
     runs-on: ubuntu-latest
     env:
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
       APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
       SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
@@ -361,6 +366,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag' && startsWith(github.ref_name, '@applitools/ruby/eyes_selenium')
     env:
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       ALLOWED_RUBY_RELEASE_COMMITERS: ${{ secrets.ALLOWED_RUBY_RELEASE_COMMITERS }}
       TEST_REPORT_SANDBOX: False
 
