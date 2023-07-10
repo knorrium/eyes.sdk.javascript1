@@ -1,5 +1,73 @@
 # Changelog
 
+## [1.17.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.17.11...js/eyes-puppeteer@1.17.12) (2023-07-10)
+
+
+### Dependencies
+
+* @applitools/eyes bumped from 1.5.2 to 1.6.0
+  #### Features
+
+  * added new chrome emulation devices - `Galaxy S21`, `Galaxy S21 Ultra`, and `Galaxy S22 Ultra` ([0dac7f7](https://github.com/applitools/eyes.sdk.javascript1/commit/0dac7f7941558a4e9416f70a104b96d125d38fc7))
+
+
+  #### Bug Fixes
+
+  * adjusted behavior of `nmgOptions` property around different screenshot mods ([2709afa](https://github.com/applitools/eyes.sdk.javascript1/commit/2709afa51c98f89d506d901b04454d9f37bacd87))
+
+
+
+* @applitools/core bumped from 3.5.1 to 3.6.0
+  #### Features
+
+  * ability to skip deserialize dom snapshot ([#1703](https://github.com/applitools/eyes.sdk.javascript1/issues/1703)) ([a461af4](https://github.com/applitools/eyes.sdk.javascript1/commit/a461af4fb72b7cba1ae15a5d20376fd02e7d9003))
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+  * support custom property per renderer ([#1715](https://github.com/applitools/eyes.sdk.javascript1/issues/1715)) ([8cf6b1f](https://github.com/applitools/eyes.sdk.javascript1/commit/8cf6b1fb0563b2485ca18eebc2efd236c2287db8))
+
+
+
+* @applitools/core-base bumped from 1.3.0 to 1.4.0
+  #### Features
+
+  * support custom property per renderer ([#1715](https://github.com/applitools/eyes.sdk.javascript1/issues/1715)) ([8cf6b1f](https://github.com/applitools/eyes.sdk.javascript1/commit/8cf6b1fb0563b2485ca18eebc2efd236c2287db8))
+
+
+
+* @applitools/image bumped from 1.0.36 to 1.1.0
+  #### Features
+
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+* @applitools/ec-client bumped from 1.6.1 to 1.6.2
+  #### Bug Fixes
+
+  * fixed issue that caused creation of unnecessary tunnels ([b38fe37](https://github.com/applitools/eyes.sdk.javascript1/commit/b38fe3754f97c5f312ceffd74406255654466ab7))
+  * start tunnels with proper regional server ([2a34ed8](https://github.com/applitools/eyes.sdk.javascript1/commit/2a34ed8cd72dc9ac54957348cbe8ba9e67032340))
+
+
+
+* @applitools/tunnel-client bumped from 1.0.1 to 1.0.2
+  #### Bug Fixes
+
+  * start tunnels with proper regional server ([2a34ed8](https://github.com/applitools/eyes.sdk.javascript1/commit/2a34ed8cd72dc9ac54957348cbe8ba9e67032340))
+* @applitools/ufg-client bumped from 1.3.0 to 1.4.0
+  #### Features
+
+  * ability to skip deserialize dom snapshot ([#1703](https://github.com/applitools/eyes.sdk.javascript1/issues/1703)) ([a461af4](https://github.com/applitools/eyes.sdk.javascript1/commit/a461af4fb72b7cba1ae15a5d20376fd02e7d9003))
+  * add support for resource fetching through eg tunnel ([3daa4da](https://github.com/applitools/eyes.sdk.javascript1/commit/3daa4da975cbe23ffb33bb3e9f5f76732ead1075))
+  * added new chrome emulation devices - `Galaxy S21`, `Galaxy S21 Ultra`, and `Galaxy S22 Ultra` ([0dac7f7](https://github.com/applitools/eyes.sdk.javascript1/commit/0dac7f7941558a4e9416f70a104b96d125d38fc7))
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+
+
+  #### Bug Fixes
+
+  * add support for resource fetching through eg tunnel ([a0b98e3](https://github.com/applitools/eyes.sdk.javascript1/commit/a0b98e364cf95bf6bed84c1afe3376384d781717))
+  * add support for resource fetching through eg tunnel ([3daa4da](https://github.com/applitools/eyes.sdk.javascript1/commit/3daa4da975cbe23ffb33bb3e9f5f76732ead1075))
+
+
+
+* @applitools/screenshoter bumped from 3.8.2 to 3.8.3
+
+
 ## [1.17.11](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.17.10...js/eyes-puppeteer@1.17.11) (2023-07-05)
 
 

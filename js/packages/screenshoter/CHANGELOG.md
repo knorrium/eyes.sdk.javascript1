@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.8.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.2...js/screenshoter@3.8.3) (2023-07-10)
+
+
+### Dependencies
+
+* @applitools/image bumped from 1.0.36 to 1.1.0
+  #### Features
+
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+
 ## [3.8.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.1...js/screenshoter@3.8.2) (2023-07-05)
 
 

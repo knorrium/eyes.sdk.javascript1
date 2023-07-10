@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-images",
-  "version": "4.23.10",
+  "version": "4.23.11",
   "description": "The simplest implementation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",
@@ -48,7 +48,7 @@
     "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
   "dependencies": {
-    "@applitools/eyes": "1.5.2"
+    "@applitools/eyes": "1.6.0"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

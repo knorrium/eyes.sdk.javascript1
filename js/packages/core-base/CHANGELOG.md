@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.3.0...js/core-base@1.4.0) (2023-07-10)
+
+
+### Features
+
+* support custom property per renderer ([#1715](https://github.com/applitools/eyes.sdk.javascript1/issues/1715)) ([8cf6b1f](https://github.com/applitools/eyes.sdk.javascript1/commit/8cf6b1fb0563b2485ca18eebc2efd236c2287db8))
+
+
+### Dependencies
+
+* @applitools/image bumped from 1.0.36 to 1.1.0
+  #### Features
+
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+
 ## [1.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.2.1...js/core-base@1.3.0) (2023-07-05)
 
 

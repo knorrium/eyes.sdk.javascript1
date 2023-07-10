@@ -1,6 +1,6 @@
 {
   "name": "@applitools/screenshoter",
-  "version": "3.8.2",
+  "version": "3.8.3",
   "description": "Applitools universal screenshoter for web and native applications",
   "keywords": [
     "applitools",
@@ -56,7 +56,7 @@
     "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &"
   },
   "dependencies": {
-    "@applitools/image": "1.0.36",
+    "@applitools/image": "1.1.0",
     "@applitools/logger": "2.0.5",
     "@applitools/snippets": "2.4.21",
     "@applitools/utils": "1.5.0",

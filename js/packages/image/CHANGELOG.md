@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.0.36...js/image@1.1.0) (2023-07-10)
+
+
+### Features
+
+* prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+
 ## [1.0.36](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.0.35...js/image@1.0.36) (2023-06-28)
 
 

@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.6.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.6.1...js/ec-client@1.6.2) (2023-07-10)
+
+
+### Bug Fixes
+
+* fixed issue that caused creation of unnecessary tunnels ([b38fe37](https://github.com/applitools/eyes.sdk.javascript1/commit/b38fe3754f97c5f312ceffd74406255654466ab7))
+* start tunnels with proper regional server ([2a34ed8](https://github.com/applitools/eyes.sdk.javascript1/commit/2a34ed8cd72dc9ac54957348cbe8ba9e67032340))
+
+
+### Dependencies
+
+* @applitools/core-base bumped from 1.3.0 to 1.4.0
+  #### Features
+
+  * support custom property per renderer ([#1715](https://github.com/applitools/eyes.sdk.javascript1/issues/1715)) ([8cf6b1f](https://github.com/applitools/eyes.sdk.javascript1/commit/8cf6b1fb0563b2485ca18eebc2efd236c2287db8))
+
+
+
+* @applitools/image bumped from 1.0.36 to 1.1.0
+  #### Features
+
+  * prevent animated gif images from playing in ufg ([#1721](https://github.com/applitools/eyes.sdk.javascript1/issues/1721)) ([30f39cc](https://github.com/applitools/eyes.sdk.javascript1/commit/30f39cc8ef2cdfa1d85bd7a0037b818db1b52e1b))
+* @applitools/tunnel-client bumped from 1.0.1 to 1.0.2
+  #### Bug Fixes
+
+  * start tunnels with proper regional server ([2a34ed8](https://github.com/applitools/eyes.sdk.javascript1/commit/2a34ed8cd72dc9ac54957348cbe8ba9e67032340))
+
 ## [1.6.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.6.0...js/ec-client@1.6.1) (2023-07-05)
 
 

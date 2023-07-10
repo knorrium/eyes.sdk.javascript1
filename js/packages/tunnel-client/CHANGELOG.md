@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.1...js/tunnel-client@1.0.2) (2023-07-10)
+
+
+### Bug Fixes
+
+* start tunnels with proper regional server ([2a34ed8](https://github.com/applitools/eyes.sdk.javascript1/commit/2a34ed8cd72dc9ac54957348cbe8ba9e67032340))
+
 ## [1.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.0...js/tunnel-client@1.0.1) (2023-07-05)
 
 
