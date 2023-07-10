@@ -21,7 +21,7 @@ async function runCypress(pluginsFile, testFile = 'getAllTestResults.js') {
 }
 
 // skip this test for now as it's flaky on CI
-describe.skip('Retries', () => {
+describe('Retries', () => {
   before(async () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true})
