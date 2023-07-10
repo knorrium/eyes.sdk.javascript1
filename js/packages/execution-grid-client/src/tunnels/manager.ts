@@ -61,6 +61,11 @@ interface PoolItem<TResource> {
   timers?: {idle?: NodeJS.Timeout; expiration?: NodeJS.Timeout}
 }
 
+interface PendingItem<TResource> {
+  resource: Promise<TResource>
+  waiting: number
+}
+
 interface PoolOptions<TResource, TResourceOptions> {
   create(options: TResourceOptions): Promise<TResource>
   destroy(resource: TResource): Promise<void>
@@ -72,6 +77,7 @@ function makePool<TResource, TResourceOptions = never>(
   options: PoolOptions<TResource, TResourceOptions>,
 ): Pool<TResource, TResourceOptions> {
   const pool = new Map<string, PoolItem<TResource>>()
+  const pending = new Set<PendingItem<TResource>>()
 
   return {
     acquire,
@@ -85,10 +91,30 @@ function makePool<TResource, TResourceOptions = never>(
   async function acquire(resourceOptions: TResourceOptions): Promise<TResource> {
     let resource = await get()!
     if (!resource) {
-      resource = await options.create(resourceOptions)
+      resource = await create(resourceOptions)
       await add(resource)
     }
     await use(resource)
+    return resource
+  }
+
+  async function create(resourceOptions: TResourceOptions): Promise<TResource> {
+    const availableItem = [...pending].reduce((availableItem, item) => {
+      return (!options.maxInuse || item.waiting < options.maxInuse) &&
+        (!availableItem || availableItem.waiting > item.waiting)
+        ? item
+        : availableItem
+    }, null as PendingItem<TResource> | null)
+
+    if (availableItem) {
+      availableItem.waiting += 1
+      return availableItem.resource
+    }
+
+    const resource = options.create(resourceOptions)
+    const item = {resource, waiting: 1} as PendingItem<TResource>
+    resource.finally(() => pending.delete(item))
+    pending.add(item)
     return resource
   }
 
@@ -107,15 +133,14 @@ function makePool<TResource, TResourceOptions = never>(
   }
 
   async function get(): Promise<TResource | null> {
-    const freeItem = Array.from(pool.values()).reduce(
-      (freeItem, item) =>
-        !item.destroyed &&
+    const freeItem = [...pool.values()].reduce((freeItem, item) => {
+      return !item.destroyed &&
         (!options.maxInuse || item.inuse < options.maxInuse) &&
         (!freeItem || freeItem.inuse > item.inuse)
-          ? item
-          : freeItem,
-      null as PoolItem<TResource> | null,
-    )
+        ? item
+        : freeItem
+    }, null as PoolItem<TResource> | null)
+
     return freeItem?.resource ?? null
   }
 
