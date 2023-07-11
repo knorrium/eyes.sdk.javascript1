@@ -2,30 +2,11 @@
 
 const yargs = require('yargs')
 const chalk = require('chalk')
-const path = require('path')
-const released = require('../released')
 const {sendTestReport} = require('../qa/send-report')
 const {sendReleaseNotification} = require('../qa/send-notification')
 
-const pendingChangesFilePath = path.join(process.cwd(), '..', '..', '..', 'pending-changes.yaml')
-
 yargs
   .config({cwd: process.cwd()})
-  .command(
-    ['released', 'release'],
-    'Show which SDK versions contain a given package version or commit',
-    {
-      filterBySDK: {type: 'boolean', default: true},
-      packageName: {alias: 'p', type: 'string'},
-      sha: {type: 'string'},
-      version: {alias: 'v', type: 'number'},
-      versionsBack: {alias: 'n', type: 'number', default: 1},
-      pendingChangesFilePath: {type: 'string', default: pendingChangesFilePath},
-    },
-    async args => {
-      await released({args})
-    },
-  )
   .command({
     command: ['send-release-notification'],
     description: 'Send a notification that an sdk has been released',
