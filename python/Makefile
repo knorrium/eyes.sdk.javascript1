@@ -226,4 +226,4 @@ eyes_robotframework_all_tests: eyes_robotframework_functional_tests eyes_robotfr
 
 
 node_modules:
-	npm install '@applitools/bongo' '@applitools/sdk-coverage-tests'
+	npm install '@applitools/bongo@4.0.0' '@applitools/sdk-coverage-tests' 'prettier'

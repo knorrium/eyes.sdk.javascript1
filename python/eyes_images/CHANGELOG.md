@@ -2,6 +2,7 @@
 ### Added
 - Eyes.set_mobile_capabilities method that updates appium capabilities with NML options [Trello 3253](https://trello.com/c/bFHk2pRR)
 - CheckSettings.use_system_screenshot method to switch between nml and system approaches [Trello 3253](https://trello.com/c/bFHk2pRR)
+- Galaxy S21, Galaxy S21 Ultra, Huawei Mate 50 Pro and Galaxy S22 Ultra1 to the enum of supported emulators
 
 ## [5.19.0] - 2023-05-24
 ### Added
