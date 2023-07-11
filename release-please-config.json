@@ -523,7 +523,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-sdk-core-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"report": {"name": "java"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -537,7 +537,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-common-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "releases": [
         {"profile": "maven"}
@@ -548,7 +548,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-connectivity-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "releases": [
         {"profile": "maven"}
@@ -559,7 +559,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-selenium-common-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "releases": [
         {"profile": "maven"}
@@ -570,7 +570,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-ufg-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "releases": [
         {"profile": "maven"}
@@ -581,7 +581,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "releases": [
         {"profile": "maven"}
@@ -592,7 +592,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core-linux",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"runner": "ubuntu-latest", "grep": "TestCoreBinaries#testLinuxBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -606,7 +606,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core-arm",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"runner": "linuxarm", "grep": "TestCoreBinaries#testArm64Binaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -620,7 +620,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core-alpine",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"container": "alpine:latest", "grep": "TestCoreBinaries#testAlpineBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -634,7 +634,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core-win",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"runner": "windows-latest", "grep": "TestCoreBinaries#testWindowsBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -648,7 +648,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-universal-core-mac",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"runner": "macos-latest", "grep": "TestCoreBinaries#testMacosBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -662,7 +662,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-images-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"report": {"name": "java"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
@@ -676,7 +676,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-selenium-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"test-type": "unit it e2e", "report": {"name": "java"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
@@ -691,7 +691,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-appium-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"test-type": "unit it e2e", "report": {"name": "java"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"},
@@ -706,7 +706,7 @@
       "skip-snapshot": true,
       "component": "java/eyes-playwright-java5",
       "builds": [
-        {"build-type": "maven", "artifacts": ["./target"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+        {"build-type": "maven", "artifacts": ["./target", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
         {"test-type": "unit it e2e",  "report": {"name": "java_playwright"}, "artifacts": ["./logs/**/*"], "key": "{{component}}/{{test-type}}"},
