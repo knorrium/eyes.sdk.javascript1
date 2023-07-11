@@ -45,10 +45,10 @@ jobs:
         with:
           node-version: ${{matrix.node-version || 'lts/*'}}
       - name: Setup JFrog
-        if: ${{matrix.jfrog-url}}
+        if: ${{matrix.jfrog}}
         uses: jfrog/setup-jfrog-cli@v3
         env:
-          JF_URL: ${{matrix.jfrog-url}}
+          JF_URL: ${{matrix.jfrog.url}}
           JF_ACCESS_TOKEN: ${{secrets.JF_ACCESS_TOKEN}}
       - name: Restore build artifacts
         if: ${{matrix.builds}}
@@ -60,13 +60,13 @@ jobs:
         with:
           name: js-release
       - name: Publish to NPM
-        if: ${{matrix.registry-url}}
+        if: ${{matrix.npm}}
         uses: ./.github/actions/js/publish
         with:
           working-directory: ${{matrix.working-directory}}
           shell: ${{matrix.shell || 'bash'}}
         env:
-          NPM_REGISTRY_URL: ${{matrix.registry-url}}
+          NPM_REGISTRY_URL: ${{matrix.npm.registry-url}}
       - name: Update GitHub release
         uses: softprops/action-gh-release@v1
         with:
@@ -74,10 +74,10 @@ jobs:
           prerelease: false
           files: ${{join(matrix.artifacts)}}
       - name: Upload to JFrog
-        if: ${{matrix.jfrog-url && matrix.artifacts}}
+        if: ${{matrix.jfrog && matrix.artifacts}}
         run: |
-          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.short-name}}/${{matrix.package-version}}/'
-          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.short-name}}/latest/'
+          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.jfrog.repository}}/${{matrix.package-version}}/'
+          jf rt upload --flat '${{join(matrix.artifacts)}}' '${{matrix.jfrog.repository}}/latest/'
       - name: Sending notification
         if: ${{matrix.notification}}
         uses: ./.github/actions/bongo

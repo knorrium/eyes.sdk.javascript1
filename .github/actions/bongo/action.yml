@@ -16,6 +16,9 @@ inputs:
   group:
     description: group of the reported entity
     type: string
+  params:
+    description: additional parameters will be added to every reported test
+    type: string
   report-id:
     description: id of the target report
     type: string
@@ -38,11 +41,11 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/bongo@latest --yes -- bongo report --name="${{inputs.name}}" --group="${{inputs.group}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
+        npx --package=@applitools/bongo@latest --yes -- bongo report --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --group="${{inputs.group}}" --params="${{inputs.params}}" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
     - name: Sending notification
       if: ${{inputs.command == 'notification'}}
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --name="${{inputs.name}}" --report-id="${{inputs.report-id || '$REPORT_ID'}}"
+        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}"
 

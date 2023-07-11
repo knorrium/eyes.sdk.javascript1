@@ -147,11 +147,12 @@ jobs:
           working-directory: ${{matrix.working-directory}}
           shell: ${{matrix.shell || 'bash'}}
           command: report
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
           name: ${{matrix.report.name}}
           group: ${{matrix.report.group}}
-          report-id: ${{matrix.name}}@${{matrix.package-version}}
-          result-path: ./logs
-          meta-path: ./logs
+          params: ${{matrix.report.params}}
+          result-path: ${{matrix.report.result-path}}
+          meta-path: ${{matrix.report.meta-path}}
 
   java-build:
     needs: [setup]
