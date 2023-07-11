@@ -23,20 +23,16 @@ async function createTestMetaData(tests, {metaDir = '', pascalizeTests = true} =
     const data = {
       isGeneric: true,
       name: test.group,
+      variant: test.variant,
       skip: test.skip,
       skipEmit: test.skipEmit,
-      api: test.api,
-    }
-    if (test.config) {
-      if (test.config.stitchMode) data.executionMode = test.config.stitchMode.toLowerCase()
-      else if (test.vg) data.executionMode = 'visualgrid'
     }
     meta[pascalizeTests ? test.key : test.name] = data
     return meta
   }, {})
 
-  const filePath = path.resolve(targetDirectory, 'coverage-tests-metadata.json')
-  fs.writeFileSync(filePath, JSON.stringify(meta, null, '\t'))
+  const filePath = path.resolve(targetDirectory, 'meta.json')
+  fs.writeFileSync(filePath, JSON.stringify(meta, null, 2))
 }
 
 exports.createTestFiles = createTestFiles

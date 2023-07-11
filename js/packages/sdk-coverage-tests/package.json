@@ -1,29 +1,25 @@
 {
   "name": "@applitools/sdk-coverage-tests",
-  "version": "3.0.2",
-  "engines": {
-    "node": ">=12.12.0"
-  },
+  "version": "3.1.0",
   "description": "Coverage Tests for Applitools SDKs",
   "author": "Applitools <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
   "license": "SEE LICENSE IN LICENSE",
-  "directories": {
-    "lib": "./src",
-    "test": "./test"
-  },
-  "types": "./src/coverage-tests/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git",
     "directory": "js/packages/sdk-coverage-tests"
   },
-  "scripts": {
-    "lint": "eslint . --ext .js",
-    "test": "mocha 'test/**/*.spec.js'"
-  },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "bin": {
+    "coverage-tests": "./src/cli.js"
+  },
+  "types": "./src/coverage-tests/index.d.ts",
+  "scripts": {
+    "lint": "run --top-level eslint '**/*.js'",
+    "test": "run --top-level mocha 'test/**/*.spec.js'"
   },
   "dependencies": {
     "@babel/core": "7.12.10",
@@ -34,10 +30,10 @@
     "sync-fetch": "0.3.0",
     "yargs": "^17.7.2"
   },
-  "devDependencies": {
-    "@applitools/bongo": "workspace:^"
+  "engines": {
+    "node": ">=12.12.0"
   },
-  "bin": {
-    "coverage-tests": "./src/cli.js"
+  "publishConfig": {
+    "access": "public"
   }
 }

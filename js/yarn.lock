@@ -933,7 +933,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-coverage-tests@workspace:packages/sdk-coverage-tests"
   dependencies:
-    "@applitools/bongo": "workspace:^"
     "@babel/core": 7.12.10
     chalk: 4.1.1
     handlebars: 4.7.7

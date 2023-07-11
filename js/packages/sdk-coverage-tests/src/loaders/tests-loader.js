@@ -86,6 +86,7 @@ async function testsLoader({tests: testsPath, overrides, fixtures, ignoreSkip, i
       Object.entries(variants).forEach(([variantName, variant]) => {
         variant.key = variant.key || test.key + toPascalCase(variantName)
         variant.name = variantName ? test.name + ' ' + variantName : test.name
+        variant.variant = variantName
         tests.push(mergeObjects(test, variant))
       })
     } else {
