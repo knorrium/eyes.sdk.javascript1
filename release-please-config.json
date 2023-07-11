@@ -902,7 +902,7 @@
           "test-type": "sauce",
           "parallel": 2,
           "queue": "sauce",
-          "report": {"name": "js_wdio_5", "params": {"framework": 8}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"},
+          "report": {"name": "js_wdio_5", "params": {"framework": 8}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
       "releases": [{
