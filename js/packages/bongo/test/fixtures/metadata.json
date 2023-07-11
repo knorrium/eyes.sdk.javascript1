@@ -1,0 +1,27 @@
+{
+  "TestCheckWindow": {
+    "isGeneric": true,
+    "variation": "css",
+    "name": "test check window with css"
+  },
+  "TestCheckWindow_VG": {
+    "isGeneric": true,
+    "variation": "vg",
+    "name": "test check window with vg",
+    "skip": true
+  },
+  "TestCheckWindow_Scroll": {
+    "isGeneric": true,
+    "name": "test check window with scroll",
+    "skip": true
+  },
+  "TestThatWasNotEmitted": {
+    "isGeneric": true,
+    "name": "test that was not emitted",
+    "skipEmit": true
+  },
+  "TestThatWasEmittedButNotExecuted": {
+    "isGeneric": true,
+    "name": "test that was emitted but not executed"
+  }
+}

@@ -28,13 +28,8 @@ __metadata:
   resolution: "@applitools/bongo@workspace:packages/bongo"
   dependencies:
     "@applitools/utils": "workspace:^"
-    "@azure/storage-blob": 12.2.0-preview.1
-    chai: ^4.2.0
     chalk: 3.0.0
-    compare-versions: 4.1.3
     js-yaml: 4.1.0
-    lodash.pickby: 4.6.0
-    micromatch: 4.0.2
     nock: ^13.3.0
     node-fetch: 2.6.1
     xml-js: 1.6.11
@@ -44,11 +39,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/core-base@1.3.0, @applitools/core-base@workspace:packages/core-base":
+"@applitools/core-base@1.4.0, @applitools/core-base@workspace:packages/core-base":
   version: 0.0.0-use.local
   resolution: "@applitools/core-base@workspace:packages/core-base"
   dependencies:
-    "@applitools/image": 1.0.36
+    "@applitools/image": 1.1.0
     "@applitools/logger": 2.0.5
     "@applitools/req": 1.4.0
     "@applitools/test-server": "workspace:^"
@@ -73,20 +68,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/core@3.5.1, @applitools/core@workspace:packages/core":
+"@applitools/core-base@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@applitools/core-base@npm:1.3.0"
+  dependencies:
+    "@applitools/image": 1.0.36
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.4.0
+    "@applitools/utils": 1.5.0
+    abort-controller: 3.0.0
+    throat: 6.0.2
+  checksum: 67a77059b0699c92010c5d3311804832695d5f2f3043f4945bf8390babe62586cf2f0de51fcafc258084f12e9dc98033a33d896c870f6af618f59c3f151c6449
+  languageName: node
+  linkType: hard
+
+"@applitools/core@3.6.0, @applitools/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@applitools/core@workspace:packages/core"
   dependencies:
     "@applitools/bongo": "workspace:^"
-    "@applitools/core-base": 1.3.0
+    "@applitools/core-base": 1.4.0
     "@applitools/dom-capture": 11.2.2
     "@applitools/dom-snapshot": 4.7.9
     "@applitools/driver": 1.13.0
-    "@applitools/ec-client": 1.6.1
+    "@applitools/ec-client": 1.6.2
     "@applitools/logger": 2.0.5
     "@applitools/nml-client": 1.5.1
     "@applitools/req": 1.4.0
-    "@applitools/screenshoter": 3.8.2
+    "@applitools/screenshoter": 3.8.3
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/snippets": 2.4.21
     "@applitools/socket": 1.1.5
@@ -97,7 +106,7 @@ __metadata:
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@applitools/tunnel-client": "workspace:^"
-    "@applitools/ufg-client": 1.3.0
+    "@applitools/ufg-client": 1.4.0
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/selenium-webdriver": ^4.1.2
@@ -266,11 +275,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/ec-client@1.6.1, @applitools/ec-client@workspace:packages/execution-grid-client":
+"@applitools/ec-client@1.6.2, @applitools/ec-client@workspace:packages/execution-grid-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ec-client@workspace:packages/execution-grid-client"
   dependencies:
-    "@applitools/core-base": 1.3.0
+    "@applitools/core-base": 1.4.0
     "@applitools/driver": 1.13.0
     "@applitools/execution-grid-tunnel": 2.1.7
     "@applitools/logger": 2.0.5
@@ -279,7 +288,7 @@ __metadata:
     "@applitools/spec-driver-webdriver": 1.0.37
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/tunnel-client": 1.0.1
+    "@applitools/tunnel-client": 1.0.2
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/node-fetch": ^2.6.1
@@ -489,7 +498,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
@@ -503,7 +512,7 @@ __metadata:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
     "@applitools/driver": 1.13.0
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-webdriver": 1.0.37
     "@applitools/test-utils": "workspace:^"
@@ -526,7 +535,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-playwright": 1.3.17
     "@applitools/test-utils": "workspace:^"
@@ -543,7 +552,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-puppeteer": 1.1.68
     "@applitools/test-utils": "workspace:^"
@@ -572,7 +581,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-selenium": 1.5.51
     "@applitools/test-utils": "workspace:^"
@@ -648,7 +657,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.5.2
+    "@applitools/eyes": 1.6.0
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-webdriverio": 1.5.6
     "@applitools/test-utils": "workspace:^"
@@ -667,11 +676,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes@1.5.2, @applitools/eyes@workspace:packages/eyes-api":
+"@applitools/eyes@1.6.0, @applitools/eyes@workspace:packages/eyes-api":
   version: 0.0.0-use.local
   resolution: "@applitools/eyes@workspace:packages/eyes-api"
   dependencies:
-    "@applitools/core": 3.5.1
+    "@applitools/core": 3.6.0
     "@applitools/logger": 2.0.5
     "@applitools/req": ^1.4.0
     "@applitools/utils": 1.5.0
@@ -697,7 +706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/image@1.0.36, @applitools/image@workspace:packages/image":
+"@applitools/image@1.1.0, @applitools/image@workspace:packages/image":
   version: 0.0.0-use.local
   resolution: "@applitools/image@workspace:packages/image"
   dependencies:
@@ -712,6 +721,18 @@ __metadata:
     png-async: 0.9.4
   languageName: unknown
   linkType: soft
+
+"@applitools/image@npm:1.0.36":
+  version: 1.0.36
+  resolution: "@applitools/image@npm:1.0.36"
+  dependencies:
+    "@applitools/utils": 1.5.0
+    bmpimagejs: 1.0.4
+    jpeg-js: 0.4.4
+    png-async: 0.9.4
+  checksum: 88919a0c4110a23216431d87b6330ae1c7eed99df90da1632583877c1fabdf63bada5277241d8f5c65c86b66dad3a0a3d9a5dcd0f7648e17a76c6ce3df56fb34
+  languageName: node
+  linkType: hard
 
 "@applitools/image@npm:1.0.4":
   version: 1.0.4
@@ -860,12 +881,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/screenshoter@3.8.2, @applitools/screenshoter@workspace:packages/screenshoter":
+"@applitools/screenshoter@3.8.3, @applitools/screenshoter@workspace:packages/screenshoter":
   version: 0.0.0-use.local
   resolution: "@applitools/screenshoter@workspace:packages/screenshoter"
   dependencies:
     "@applitools/driver": ^1.13.0
-    "@applitools/image": 1.0.36
+    "@applitools/image": 1.1.0
     "@applitools/logger": 2.0.5
     "@applitools/snippets": 2.4.21
     "@applitools/spec-driver-webdriverio": ^1.5.6
@@ -891,6 +912,20 @@ __metadata:
     jpeg-js: 0.4.4
     png-async: 0.9.4
   checksum: 846c0c5d6ef7c5cbdb9677ebd0fe3a8e75cbc3e2cde2f10db7612cc3f7ea02ee69b2c313914a64198368ea3654942efd052fd3e7965e78c0418f59e191ae889d
+  languageName: node
+  linkType: hard
+
+"@applitools/screenshoter@npm:3.8.2":
+  version: 3.8.2
+  resolution: "@applitools/screenshoter@npm:3.8.2"
+  dependencies:
+    "@applitools/image": 1.0.36
+    "@applitools/logger": 2.0.5
+    "@applitools/snippets": 2.4.21
+    "@applitools/utils": 1.5.0
+    jpeg-js: 0.4.4
+    png-async: 0.9.4
+  checksum: 61d0a3083ab767089b50bb3d5bafb6d9fa9d7e671b63b28efd588f1d74fe66f0756cb0e62aa69a00023edec529fbb4ae3c78fda51441ebbcc8ae7451f01b667b
   languageName: node
   linkType: hard
 
@@ -1152,7 +1187,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/tunnel-client@1.0.1, @applitools/tunnel-client@workspace:^, @applitools/tunnel-client@workspace:packages/tunnel-client":
+"@applitools/tunnel-client@1.0.2, @applitools/tunnel-client@workspace:^, @applitools/tunnel-client@workspace:packages/tunnel-client":
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:
@@ -1189,11 +1224,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/ufg-client@1.3.0, @applitools/ufg-client@workspace:packages/ufg-client":
+"@applitools/ufg-client@1.4.0, @applitools/ufg-client@workspace:packages/ufg-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ufg-client@workspace:packages/ufg-client"
   dependencies:
-    "@applitools/image": 1.0.36
+    "@applitools/image": 1.1.0
     "@applitools/logger": 2.0.5
     "@applitools/req": 1.4.0
     "@applitools/test-server": "workspace:^"
@@ -1222,6 +1257,21 @@ __metadata:
     postcss-value-parser: 4.2.0
     throat: 6.0.1
   checksum: ba5dd0c508f908a712f030fd5a1cda6b77430fab04a6287663d9e19de6b935c0a422681dba5be376aebe43846f4191e40c0fd1ce703863becc552ca5e6f031e9
+  languageName: node
+  linkType: hard
+
+"@applitools/ufg-client@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@applitools/ufg-client@npm:1.3.0"
+  dependencies:
+    "@applitools/logger": 2.0.5
+    "@applitools/req": 1.4.0
+    "@applitools/utils": 1.5.0
+    abort-controller: 3.0.0
+    css-tree: 2.3.1
+    jsdom: 19.0.0
+    throat: 6.0.1
+  checksum: d84f95cdc89cf8a1c172adfd1c69c79dd888b3f78cbb0ee1cdec39899c75f16741b76271db62dfaff898e7ba45b088c4a976148922397388ab57353d49cdbe97
   languageName: node
   linkType: hard
 
@@ -1272,125 +1322,6 @@ __metadata:
   version: 1.4.0
   resolution: "@applitools/utils@npm:1.4.0"
   checksum: cd1fcfa287539eb3c3d9d735f0e8fb1b9ba924c86c5e462260702986ebcbf3dffb63946a6e8b782f484fe3c23c3b0e7e16c0b33e422b42f886a0bf853c699de5
-  languageName: node
-  linkType: hard
-
-"@azure/abort-controller@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "@azure/abort-controller@npm:1.1.0"
-  dependencies:
-    tslib: ^2.2.0
-  checksum: 0f45e504d4aea799486867179afe7589255f6c111951279958e9d0aa5faebb2c96b8f88e3e3c958ce07b02bcba0b0cddb1bbec94705f573a48ecdb93eec1a92a
-  languageName: node
-  linkType: hard
-
-"@azure/core-asynciterator-polyfill@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "@azure/core-asynciterator-polyfill@npm:1.0.2"
-  checksum: ccdad3bcf3f670e0b4f52e421cd1566368dce36ea4b3cb18a9b554c14ea0c1436868cb55e774b2377307dcb222e4eb3777b48e97249157c612e9c24654a56d16
-  languageName: node
-  linkType: hard
-
-"@azure/core-auth@npm:^1.3.0":
-  version: 1.4.0
-  resolution: "@azure/core-auth@npm:1.4.0"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    tslib: ^2.2.0
-  checksum: 1c76c296fe911ad39fc780b033c25a92c41c5a15f011b816d42c13584f627a4dd153dfb4334900ec93eb5b006e14bdda37e8412a7697c5a9636a0abaccffad39
-  languageName: node
-  linkType: hard
-
-"@azure/core-http@npm:^1.1.1, @azure/core-http@npm:^1.2.0":
-  version: 1.2.6
-  resolution: "@azure/core-http@npm:1.2.6"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-asynciterator-polyfill": ^1.0.0
-    "@azure/core-auth": ^1.3.0
-    "@azure/core-tracing": 1.0.0-preview.11
-    "@azure/logger": ^1.0.0
-    "@types/node-fetch": ^2.5.0
-    "@types/tunnel": ^0.0.1
-    form-data: ^3.0.0
-    node-fetch: ^2.6.0
-    process: ^0.11.10
-    tough-cookie: ^4.0.0
-    tslib: ^2.2.0
-    tunnel: ^0.0.6
-    uuid: ^8.3.0
-    xml2js: ^0.4.19
-  checksum: bcb3a473918e80c314729e59f502d85431f233b87138935717cf07182f0d9f417728351a23290a61cc288c0f67c63ed871e531d4c6dc696e6cfd89e5c980e9f2
-  languageName: node
-  linkType: hard
-
-"@azure/core-lro@npm:^1.0.2":
-  version: 1.0.5
-  resolution: "@azure/core-lro@npm:1.0.5"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-http": ^1.2.0
-    "@azure/core-tracing": 1.0.0-preview.11
-    events: ^3.0.0
-    tslib: ^2.0.0
-  checksum: 4732295b53937a43a5682fe2806ff2f5b4f72a32f2edc066003dd07395b2f8d8578048aa71ced1106cb5eed6b45d717e3800e4a1e4df0119a077c53343afebc9
-  languageName: node
-  linkType: hard
-
-"@azure/core-paging@npm:^1.1.1":
-  version: 1.5.0
-  resolution: "@azure/core-paging@npm:1.5.0"
-  dependencies:
-    tslib: ^2.2.0
-  checksum: 156230f0fdf757a0353a2aac6d012d385ed88f8ab5bccf00eee27d8d75843e681674b2d10ed43309669f9cb93bf8d9d000232896593b6fcf399fa391442a59c5
-  languageName: node
-  linkType: hard
-
-"@azure/core-tracing@npm:1.0.0-preview.11":
-  version: 1.0.0-preview.11
-  resolution: "@azure/core-tracing@npm:1.0.0-preview.11"
-  dependencies:
-    "@opencensus/web-types": 0.0.7
-    "@opentelemetry/api": 1.0.0-rc.0
-    tslib: ^2.0.0
-  checksum: 1ef439040275a690d1933b82f95daa02fb7e657c2b148323dabf9fcbd90abf1657a386bad6511374c85d494ab370c7ee5b9621a8237614880615a4b9391d78a1
-  languageName: node
-  linkType: hard
-
-"@azure/core-tracing@npm:1.0.0-preview.8":
-  version: 1.0.0-preview.8
-  resolution: "@azure/core-tracing@npm:1.0.0-preview.8"
-  dependencies:
-    "@opencensus/web-types": 0.0.7
-    "@opentelemetry/api": ^0.6.1
-    tslib: ^1.10.0
-  checksum: 0bc77ed0056f417133467bf1b7f456e9896614af58e389a8727ca37dd5448becef2fbe3a3edd7df2b0073fe211e44219a3b522b18f67f3feade587c936146923
-  languageName: node
-  linkType: hard
-
-"@azure/logger@npm:^1.0.0":
-  version: 1.0.4
-  resolution: "@azure/logger@npm:1.0.4"
-  dependencies:
-    tslib: ^2.2.0
-  checksum: 2c243d4c667bbc5cd3e60d4473d0f1169fcef2498a02138398af15547fe1b2870197bcb4c487327451488e4d71dee05244771d51328f03611e193b99fb9aa9af
-  languageName: node
-  linkType: hard
-
-"@azure/storage-blob@npm:12.2.0-preview.1":
-  version: 12.2.0-preview.1
-  resolution: "@azure/storage-blob@npm:12.2.0-preview.1"
-  dependencies:
-    "@azure/abort-controller": ^1.0.0
-    "@azure/core-http": ^1.1.1
-    "@azure/core-lro": ^1.0.2
-    "@azure/core-paging": ^1.1.1
-    "@azure/core-tracing": 1.0.0-preview.8
-    "@azure/logger": ^1.0.0
-    "@opentelemetry/api": ^0.6.1
-    events: ^3.0.0
-    tslib: ^2.0.0
-  checksum: d62bd43c3b539d3e023b24621253a26b7f53f2e9354af574f0b692698cee1c62042e0c133e5e9247afb8fe66d8e896f173388a423e4f7caf6e444e2d6bec2288
   languageName: node
   linkType: hard
 
@@ -4802,36 +4733,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opencensus/web-types@npm:0.0.7":
-  version: 0.0.7
-  resolution: "@opencensus/web-types@npm:0.0.7"
-  checksum: 0cc8e04dd9e212b758bad075a2f69b55089b5f260ecef2d732ea733cb95575f392aed594725808631d5706663555a8f6760c383f2393228bfec69b6169ecbb74
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/api@npm:1.0.0-rc.0":
-  version: 1.0.0-rc.0
-  resolution: "@opentelemetry/api@npm:1.0.0-rc.0"
-  checksum: 9aa2df6b046f8f36e59e090bb19529ad11d1cf38ffb200f3a329b2e59a3255d7a60aafe38663b77919474e267d2d8722f73f38e5143f24d9c9b16c0e3736d252
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/api@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@opentelemetry/api@npm:0.6.1"
-  dependencies:
-    "@opentelemetry/context-base": ^0.6.1
-  checksum: 83bbcd45b890f35fa3cc842d70e56e52e90628e1cd72476d574c68d6ddadcf1ed920aff1f6cf96a7fe199e15fd1abdd70b6530e465abfb796193f99d242cb6fc
-  languageName: node
-  linkType: hard
-
-"@opentelemetry/context-base@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@opentelemetry/context-base@npm:0.6.1"
-  checksum: 91385c42a2207be648f3b8eeeef58db376372245ed348624074ca49977bcfdc556f3d54627a5094c2d7309898d1b3e6ed3e40bd033400138e457b9a61ecb57d7
-  languageName: node
-  linkType: hard
-
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -6416,7 +6317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:^2.5.0, @types/node-fetch@npm:^2.5.7, @types/node-fetch@npm:^2.6.1":
+"@types/node-fetch@npm:^2.5.7, @types/node-fetch@npm:^2.6.1":
   version: 2.6.4
   resolution: "@types/node-fetch@npm:2.6.4"
   dependencies:
@@ -6678,15 +6579,6 @@ __metadata:
   version: 1.3.2
   resolution: "@types/triple-beam@npm:1.3.2"
   checksum: dd7b4a563fb710abc992e5d59eac481bed9e303fada2e276e37b00be31c392e03300ee468e57761e616512872e77935f92472877d0704a19688d15a726cee17b
-  languageName: node
-  linkType: hard
-
-"@types/tunnel@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@types/tunnel@npm:0.0.1"
-  dependencies:
-    "@types/node": "*"
-  checksum: 3b002dea23497d6ada51128b08f7635a64ec31e79f1d9c054c1c95e9a05b39ea454cc7de65a6d9b84bbea278eabb270d0ac0661278c06a0b943938eac4dbe6ae
   languageName: node
   linkType: hard
 
@@ -10744,7 +10636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"braces@npm:^3.0.1, braces@npm:^3.0.2, braces@npm:~3.0.2":
+"braces@npm:^3.0.2, braces@npm:~3.0.2":
   version: 3.0.2
   resolution: "braces@npm:3.0.2"
   dependencies:
@@ -12022,13 +11914,6 @@ __metadata:
     array-ify: ^1.0.0
     dot-prop: ^5.1.0
   checksum: fb71d70632baa1e93283cf9d80f30ac97f003aabee026e0b4426c9716678079ef5fea7519b84d012cbed938c476493866a38a79760564a9e21ae9433e40e6f0d
-  languageName: node
-  linkType: hard
-
-"compare-versions@npm:4.1.3":
-  version: 4.1.3
-  resolution: "compare-versions@npm:4.1.3"
-  checksum: 54460756ab2d62f8a9d672db249b248fec7ca41c3e8ed242925e2f2257793ad3e83cecb2cdfd60b46a3aabc962a3a4cbf37a4b928c8f30517822d2bde937a3d1
   languageName: node
   linkType: hard
 
@@ -19714,7 +19599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.pickby@npm:4.6.0, lodash.pickby@npm:^4.6.0":
+"lodash.pickby@npm:^4.6.0":
   version: 4.6.0
   resolution: "lodash.pickby@npm:4.6.0"
   checksum: a554d898c15bcd3218e4005b95b5146210bd862010c7d242d17106ee36aed9b9209a858ce974136ab1faadd86a82297761c206fda7f1886278bac827145c5536
@@ -20297,16 +20182,6 @@ __metadata:
   version: 0.1.1
   resolution: "microevent.ts@npm:0.1.1"
   checksum: 7874fcdb3f0dfa4e996d3ea63b3b9882874ae7d22be28d51ae20da24c712e9e28e5011d988095c27dd2b32e37c0ad7425342a71b89adb8e808ec7194fadf4a7a
-  languageName: node
-  linkType: hard
-
-"micromatch@npm:4.0.2":
-  version: 4.0.2
-  resolution: "micromatch@npm:4.0.2"
-  dependencies:
-    braces: ^3.0.1
-    picomatch: ^2.0.5
-  checksum: 39590a96d9ffad21f0afac044d0a5af4f33715a16fdd82c53a01c8f5ff6f70832a31b53e52972dac3deff8bf9f0bed0207d1c34e54ab3306a5e4c4efd5f7d249
   languageName: node
   linkType: hard
 
@@ -22484,7 +22359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^2.0.4, picomatch@npm:^2.0.5, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2, picomatch@npm:^2.2.3, picomatch@npm:^2.3.0, picomatch@npm:^2.3.1":
+"picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2, picomatch@npm:^2.2.3, picomatch@npm:^2.3.0, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 050c865ce81119c4822c45d3c84f1ced46f93a0126febae20737bd05ca20589c564d6e9226977df859ed5e03dc73f02584a2b0faad36e896936238238b0446cf
@@ -27062,14 +26937,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.10.0, tslib@npm:^1.8.1, tslib@npm:^1.9.0, tslib@npm:^1.9.3":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.0, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.2.0":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.1.0":
   version: 2.6.0
   resolution: "tslib@npm:2.6.0"
   checksum: c01066038f950016a18106ddeca4649b4d76caa76ec5a31e2a26e10586a59fceb4ee45e96719bf6c715648e7c14085a81fee5c62f7e9ebee68e77a5396e5538f
@@ -27107,13 +26982,6 @@ __metadata:
   dependencies:
     safe-buffer: ^5.0.1
   checksum: 05f6510358f8afc62a057b8b692f05d70c1782b70db86d6a1e0d5e28a32389e52fa6e7707b6c5ecccacc031462e4bc35af85ecfe4bbc341767917b7cf6965711
-  languageName: node
-  linkType: hard
-
-"tunnel@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "tunnel@npm:0.0.6"
-  checksum: c362948df9ad34b649b5585e54ce2838fa583aa3037091aaed66793c65b423a264e5229f0d7e9a95513a795ac2bd4cb72cda7e89a74313f182c1e9ae0b0994fa
   languageName: node
   linkType: hard
 
@@ -27790,7 +27658,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:8.3.2, uuid@npm:^8.0.0, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
+"uuid@npm:8.3.2, uuid@npm:^8.0.0, uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
@@ -28916,7 +28784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml2js@npm:^0.4.17, xml2js@npm:^0.4.19, xml2js@npm:^0.4.5":
+"xml2js@npm:^0.4.17, xml2js@npm:^0.4.5":
   version: 0.4.23
   resolution: "xml2js@npm:0.4.23"
   dependencies:
