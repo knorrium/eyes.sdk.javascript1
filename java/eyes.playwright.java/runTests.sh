@@ -17,12 +17,10 @@ if [[ ! "$TEST_TYPE" == *"coverage"* ]]; then
   mvn test -e -X
 fi
 
-
 if [[ "$TEST_TYPE" == *"coverage"* || "$TEST_TYPE" == *"all"* ]]; then
   # Run coverage tests
   echo "Running coverage tests!"
 
-  cd ../coverage-tests;
   chmod +x ./generic_tests.sh;
-  ./generic_tests.sh false "playwright";
+  ./generic_tests.sh;
 fi

@@ -1,0 +1,23 @@
+{
+  "name": "@applitools/coverage-tests",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "index.js",
+  "description": "Coverage Tests for Applitools SDKs",
+  "author": "Applitools <team@applitools.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/sdk.coverage.tests.git"
+  },
+  "scripts": {
+    "generate": "coverage-tests generate ./configuration --pascalizeTests --strict",
+    "generate:local": "coverage-tests generate ./configuration/local.js --pascalizeTests --strict"
+  },
+  "dependencies": {
+    "@applitools/sdk-coverage-tests": "2.7.12"
+  }
+}

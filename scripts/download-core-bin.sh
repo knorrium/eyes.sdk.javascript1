@@ -4,11 +4,14 @@ while [ $# -gt 0 ]
 do
   case $1 in
   -p|--platform) 
-    platform="$2" ;;
+    platform="$2"
+    shift 2 ;;
   -t|--tag)
-    tag="$2" ;;
+    tag="$2"
+    shift 2 ;;
   -D|--dir)
     dir="$2"
+    shift 2 ;;
   (--) 
     shift; break;;
   (-*)
@@ -16,7 +19,6 @@ do
   (*)
     break;;
   esac
-  shift
 done
 
 if [[ -z "$tag" ]]
