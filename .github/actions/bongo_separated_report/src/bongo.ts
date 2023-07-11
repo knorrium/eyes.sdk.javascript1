@@ -5,7 +5,7 @@ export function bongo({ dir, sdk, id, sandbox }) {
   const pathToInputFiles = relative(process.cwd(), dir);
   const options = { stdio: "inherit" };
   // @ts-ignore
-  execSync(`npm install -g @applitools/bongo`, options);
+  execSync(`npm install -g @applitools/bongo@4.0.0`, options);
   // @ts-ignore
   execSync(`ls`, options);
   // @ts-ignore
