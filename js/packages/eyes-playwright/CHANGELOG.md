@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-playwright@1.17.12...js/eyes-playwright@1.17.13) (2023-07-11)
+
+
+### Bug Fixes
+
+* some fix ([0a52d6e](https://github.com/applitools/eyes.sdk.javascript1/commit/0a52d6e300faf58c96d9b9e0687f99b990d94de2))
+
 ## [1.17.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-playwright@1.17.11...js/eyes-playwright@1.17.12) (2023-07-10)
 
 

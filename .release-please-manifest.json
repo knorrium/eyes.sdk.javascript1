@@ -24,7 +24,7 @@
   "js/packages/eyes-webdriverio-5": "5.44.12",
   "js/packages/eyes-selenium": "4.66.11",
   "js/packages/eyes-nightwatch": "1.15.10",
-  "js/packages/eyes-playwright": "1.17.12",
+  "js/packages/eyes-playwright": "1.17.13",
   "js/packages/eyes-puppeteer": "1.17.12",
   "js/packages/eyes-browser-extension": "0.3.4",
   "js/packages/eyes-storybook": "3.36.1",
