@@ -623,7 +623,7 @@
         {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
       ],
       "tests": [
-        {"container": "alpine:latest", "grep": "TestCoreBinaries#testAlpineBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
+        {"container": "node:lts-alpine", "grep": "TestCoreBinaries#testAlpineBinaries", "report": {"name": "java", "group": "core"}, "artifacts": ["./logs/**/*"], "key": "{{component}}"}
       ],
       "releases": [
         {"profile": "maven"}

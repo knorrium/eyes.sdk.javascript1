@@ -23,7 +23,8 @@ fi
 
 if [[ "$TEST_TYPE" == *"coverage"* || "$TEST_TYPE" == *"all"* ]]; then
   # Run coverage tests
-  cd ../coverage-tests;
+  echo "Running coverage tests!"
+
   chmod +x ./generic_tests.sh;
-  ./generic_tests.sh false "selenium";
+  ./generic_tests.sh;
 fi

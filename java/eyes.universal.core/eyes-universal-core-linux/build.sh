@@ -18,6 +18,7 @@ done
 # update core binaries to latest
 chmod +x ../../../scripts/download-core-bin.sh
 ./../../../scripts/download-core-bin.sh --platform linux --dir "./src/main/resources"
+rm -f "./src/main/resources/core-linux-arm64"
 
 # build current module
 mvn clean install -P "$1" -DskipTests
