@@ -18,6 +18,7 @@
       <Link>Utils\MobileEmulation.common.cs</Link>
     </Compile>
     <Compile Remove="TestSetupGeneratedS4.cs" />
+    <Compile Remove="coverage\generic\CheckRegionByElementWithinShadowDomWithVg.cs" />
   </ItemGroup>
 
   <ItemGroup>

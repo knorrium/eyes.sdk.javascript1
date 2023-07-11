@@ -21,7 +21,7 @@ env:
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
   GITHUB_TOKEN: ${{ secrets.RUN_GITHUB_TOKEN }}
-  CORE_VERSION: "3.5.1"
+  CORE_VERSION: "3.6.0"
   NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
