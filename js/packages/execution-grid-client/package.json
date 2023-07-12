@@ -54,7 +54,6 @@
   "dependencies": {
     "@applitools/core-base": "1.4.0",
     "@applitools/driver": "1.13.0",
-    "@applitools/execution-grid-tunnel": "2.1.7",
     "@applitools/logger": "2.0.5",
     "@applitools/req": "1.4.0",
     "@applitools/socket": "1.1.5",

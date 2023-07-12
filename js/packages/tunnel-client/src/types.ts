@@ -1,3 +1,8 @@
+export interface PrepareTunnelEnvironmentSettings {
+  tunnelServerUrl?: string
+  cacheDir?: string
+}
+
 export interface TunnelClientSettings {
   tunnelServerUrl?: string
   serviceUrl?: string

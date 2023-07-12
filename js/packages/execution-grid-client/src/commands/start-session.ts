@@ -3,8 +3,7 @@ import {type IncomingMessage, type ServerResponse} from 'http'
 import {type Logger} from '@applitools/logger'
 import {type ReqProxy} from '../req-proxy'
 import {type TunnelManager} from '../tunnels/manager'
-//@ts-ignore
-import {prepareEnvironment} from '@applitools/execution-grid-tunnel'
+import {prepareTunnelEnvironment} from '@applitools/tunnel-client'
 import {AbortController, type AbortSignal} from 'abort-controller'
 import * as utils from '@applitools/utils'
 
@@ -74,7 +73,7 @@ export function makeStartSession({settings, req, tunnels}: Options) {
 
     if (options.tunnel && tunnels) {
       // TODO should be removed once tunnel spawning issue is solved
-      await prepareEnvironment({egTunnelManagerUrl: session.serverUrl})
+      await prepareTunnelEnvironment({settings: {tunnelServerUrl: session.serverUrl}, logger})
       session.tunnels = await tunnels.acquire({...session.credentials, tunnelServerUrl: session.serverUrl})
     }
 
