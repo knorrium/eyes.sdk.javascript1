@@ -90,6 +90,10 @@ const checkConfig = {
     type: 'string',
     describe: 'before capture screenshot hook',
   },
+  disableBrowserFetching: {
+    type: 'boolean',
+    describe: 'whether to fetch resources from nodejs',
+  },
 }
 
 const buildConfig = {
@@ -138,7 +142,7 @@ const eyesConfig = {
   sdk: {
     type: 'string',
     describe: 'path to sdk',
-    default: process.cwd(),
+    default: process.env.INIT_CWD || process.cwd(),
     alias: 's',
   },
   compare: {
@@ -477,7 +481,7 @@ function argsToEyesConfig(args) {
     vg: args.vg,
     apiKey: args.apiKey,
     serverUrl: args.serverUrl,
-    viewportSize: args.viewportSize || (!args.device ? {width: 1024, height: 768} : undefined),
+    viewportSize: args.viewportSize || (!args.device ? {width: 1024, height: 600} : undefined),
     browsersInfo: [...(args.renderBrowsers || []), ...(args.renderEmulations || []), ...(args.renderIosDevices || [])],
     proxy: args.proxy,
     accessibilityValidation: args.accessibilityValidation,
@@ -494,6 +498,7 @@ function argsToEyesConfig(args) {
         ? {id: args.batchId, name: args.batchName, notifyOnCompletion: args.notifyOnCompletion}
         : undefined,
     dontCloseBatches: false,
+    disableBrowserFetching: args.disableBrowserFetching,
     saveNewTests: true,
     saveLogs: args.saveLogs,
     saveDebugScreenshots: args.saveDebugScreenshots,
