@@ -140,6 +140,71 @@ namespace Applitools.Appium
             caps.AddAdditionalCapability(iosCapsKey, iosCapValue);
         }
 
+        public static void SetMobileCapabilities(AppiumOptions caps,
+            string apiKey = null,
+            string eyesServerUrl = null,
+            ProxySettings proxySettings = null)
+        {
+            var iosCapsKey = "processArguments";
+            var iosCapValue = "{\"args\": [], \"env\":"
+                              // ReSharper disable once StringLiteralTypo
+                              + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
+                              + ":"
+                              + "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS\",";
+
+            var iosCapValueSuffix = "}}";
+
+            var androidCapKey = "optionalIntentArguments";
+            var androidCapValue = "--es APPLITOOLS \'{";
+            var androidCapValueSuffix = "}\'";
+
+            // Take the API key from the environment if it's not explicitly given.
+            if (apiKey == null)
+            {
+                apiKey = Environment.GetEnvironmentVariable("APPLITOOLS_API_KEY");
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    throw new EyesException("No API key was given, or is an empty string.");
+                }
+            }
+
+            androidCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
+            iosCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
+
+            // Check for the server URL in the env variable. (might still be null and this is fine.
+            if (eyesServerUrl == null)
+            {
+                eyesServerUrl = Environment.GetEnvironmentVariable("APPLITOOLS_SERVER_URL");
+            }
+
+            if (!string.IsNullOrEmpty(eyesServerUrl))
+            {
+                androidCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
+                iosCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
+            }
+
+            if (proxySettings == null)
+            {
+                var proxyFromEnv = Environment.GetEnvironmentVariable("APPLITOOLS_HTTP_PROXY");
+                if (!string.IsNullOrEmpty(proxyFromEnv))
+                {
+                    proxySettings = new ProxySettings(proxyFromEnv);
+                }
+            }
+
+            if (proxySettings != null)
+            {
+                androidCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
+                iosCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
+            }
+
+            androidCapValue += androidCapValueSuffix;
+            iosCapValue += iosCapValueSuffix;
+
+            caps.AddAdditionalCapability(androidCapKey, androidCapValue);
+            caps.AddAdditionalCapability(iosCapsKey, iosCapValue);
+        }
+
         public RemoteWebDriver Open(RemoteWebDriver driver, string appName, string testName)
         {
             Logger.GetILogHandler().Open();

@@ -1,3 +1,7 @@
+## [Eyes.Appium 5.58] - 2023-07-12
+### Added
+- `SetMobileCapabilities` method.
+
 ## [Eyes.Image.Core 3.6.0] - 2023-07-11
 ### Updated
 - Server Core to 3.6.0
