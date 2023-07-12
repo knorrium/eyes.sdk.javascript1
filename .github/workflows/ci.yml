@@ -244,6 +244,7 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           lfs: true
       - name: Set up Java
+        if: ${{!matrix.container}}
         uses: actions/setup-java@v3
         with:
           distribution: "temurin"
