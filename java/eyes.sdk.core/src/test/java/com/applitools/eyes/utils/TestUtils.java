@@ -65,6 +65,9 @@ public class TestUtils {
     }
 
     public static SessionResults getSessionResults(String apiKey, TestResults results) throws java.io.IOException {
+        ArgumentGuard.notNull(apiKey, "apiKey");
+        ArgumentGuard.notNull(results.getApiUrls().getSession(), "sessionUrl");
+        ArgumentGuard.notNull(results.getSecretToken(), "secretToken");
         String apiSessionUrl = results.getApiUrls().getSession();
         URI apiSessionUri = UriBuilder.fromUri(apiSessionUrl)
                 .queryParam("format", "json")
