@@ -23,7 +23,7 @@ done
 
 if [[ -z "$tag" ]]
 then
-  tag=$(git --no-pager tag --list 'js/core@*' | tail -n 1)
+  tag=$(git ls-remote --tags origin 'js/core@*' | tail -n 1 | cut -f 2 | sed -e "s/^refs\/tags\///")
 fi
 echo "Downloading from release - '$tag'"
 
