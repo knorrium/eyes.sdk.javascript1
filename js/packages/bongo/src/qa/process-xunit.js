@@ -25,7 +25,7 @@ function processXunit(xunit, {metadata, params} = {}) {
       test_name: test.name || name,
       parameters: {
         ...params,
-        variation: test.variation,
+        variant: test.variant,
       },
       passed: isSkipped ? undefined : !test.failure,
       isGeneric: !!test.isGeneric,

@@ -1,12 +1,12 @@
 {
   "TestCheckWindow": {
     "isGeneric": true,
-    "variation": "css",
+    "variant": "css",
     "name": "test check window with css"
   },
   "TestCheckWindow_VG": {
     "isGeneric": true,
-    "variation": "vg",
+    "variant": "vg",
     "name": "test check window with vg",
     "skip": true
   },

@@ -20,14 +20,14 @@ describe('report', () => {
           results: [
             {
               test_name: 'test check window with vg',
-              parameters: {variation: 'vg'},
+              parameters: {variant: 'vg'},
               passed: false,
               isSkipped: false,
               isGeneric: true,
             },
             {
               test_name: 'test check window with css',
-              parameters: {variation: 'css'},
+              parameters: {variant: 'css'},
               passed: true,
               isSkipped: false,
               isGeneric: true,
@@ -72,14 +72,14 @@ describe('report', () => {
           results: [
             {
               test_name: 'test check window with vg',
-              parameters: {variation: 'vg'},
+              parameters: {variant: 'vg'},
               passed: false,
               isSkipped: false,
               isGeneric: true,
             },
             {
               test_name: 'test check window with css',
-              parameters: {variation: 'css'},
+              parameters: {variant: 'css'},
               passed: true,
               isSkipped: false,
               isGeneric: true,
@@ -123,14 +123,14 @@ describe('report', () => {
           results: [
             {
               test_name: 'test check window with vg',
-              parameters: {variation: 'vg'},
+              parameters: {variant: 'vg'},
               passed: true,
               isSkipped: false,
               isGeneric: true,
             },
             {
               test_name: 'test check window with css',
-              parameters: {variation: 'css'},
+              parameters: {variant: 'css'},
               passed: true,
               isSkipped: false,
               isGeneric: true,

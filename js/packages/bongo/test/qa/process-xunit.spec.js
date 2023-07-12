@@ -18,21 +18,21 @@ describe('process xunit', () => {
       [
         {
           test_name: 'Coverage Tests TestCheckWindow_VG',
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: false,
           isGeneric: false,
           isSkipped: false,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow',
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: true,
           isGeneric: false,
           isSkipped: false,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow_Scroll',
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: true,
           isGeneric: false,
           isSkipped: false,
@@ -48,21 +48,21 @@ describe('process xunit', () => {
         {
           isGeneric: false,
           isSkipped: false,
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: false,
           test_name: 'Coverage Tests TestCheckWindow_VG',
         },
         {
           isGeneric: false,
           isSkipped: false,
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: true,
           test_name: 'Coverage Tests TestCheckWindow',
         },
         {
           isGeneric: false,
           isSkipped: false,
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: true,
           test_name: 'Coverage Tests TestCheckWindow_Scroll',
         },
@@ -76,14 +76,14 @@ describe('process xunit', () => {
       [
         {
           test_name: 'Coverage Tests TestCheckWindow_VG',
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: false,
           isGeneric: false,
           isSkipped: false,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow',
-          parameters: {variation: undefined},
+          parameters: {variant: undefined},
           passed: true,
           isGeneric: false,
           isSkipped: false,
@@ -96,7 +96,7 @@ describe('process xunit', () => {
     assert.deepStrictEqual(processXunit(fs.readFileSync(path.resolve(fixtureDir, 'multiple-suites-single-test.xml'))), [
       {
         test_name: 'Coverage Tests TestCheckRegionWithIgnoreRegion_Fluent_Scroll',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -109,7 +109,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckWindow_Fluent (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-abe4123e-d970-44da-8c3c-220fb9b47640/screenshot.png)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -122,7 +122,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckPageWithHeader_Window_Fully_Scroll (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -130,7 +130,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckPageWithHeader_Window_Fully (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -138,7 +138,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckWindow_Fluent_Scroll (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-d78b8a0c-95d0-4820-a5f0-b86b464d22cd/screenshot.png)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -146,7 +146,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckWindow_Fluent (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-70dea208-3333-4f0a-b7e8-0b1fb3e40a43/screenshot.png)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: true,
         isGeneric: false,
         isSkipped: false,
@@ -159,7 +159,7 @@ describe('process xunit', () => {
       {
         test_name:
           'TestCheckWindow_Fluent (screenshots: /Users/tourdedave/_dev/applitools/eyes.sdk.javascript1/packages/eyes-testcafe/screenshots/.applitools-abe4123e-d970-44da-8c3c-220fb9b47640/screenshot.png)',
-        parameters: {variation: undefined},
+        parameters: {variant: undefined},
         passed: undefined,
         isGeneric: false,
         isSkipped: true,
