@@ -110,7 +110,7 @@ export function makeProcessResources({
         `resource retrieved from cache, with dependencies (${dependencies.length}): ${resource.url} with dependencies --> ${dependencies}`,
       )
       return cachedResource
-    } else if (/^https?:$/i.test(new URL(resource.url).protocol)) {
+    } else if (/^https?:/i.test(resource.url)) {
       try {
         const fetchedResource = await fetchResource({resource, settings, logger})
         if (utils.types.has(fetchedResource, 'value')) {

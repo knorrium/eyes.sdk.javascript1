@@ -12,7 +12,7 @@ import nock from 'nock'
 import assert from 'assert'
 
 describe('processResources', () => {
-  let server, baseUrl: string
+  let server: any, baseUrl: string
   const fetchResource = makeFetchResource({logger: makeLogger()})
   const uploadResource = makeUploadResource({
     requests: {
@@ -244,6 +244,20 @@ describe('processResources', () => {
       },
     })
     assert.deepStrictEqual(resources.mapping, {})
+  })
+
+  it("doesn't crash with invalid resource", async () => {
+    const processResources = makeProcessResources({fetchResource, uploadResource, logger: makeLogger()})
+
+    const invalidUrl = 'https://www.pages03.net%3Frev%3D8.4/WTS/event.jpeg'
+    const resources = await processResources({
+      resources: {
+        [invalidUrl]: makeResource({url: invalidUrl}),
+      },
+    })
+    assert.deepStrictEqual(resources.mapping, {
+      [invalidUrl]: makeResource({id: invalidUrl, errorStatusCode: 504}).hash,
+    })
   })
 
   it('handles empty resources', async () => {
