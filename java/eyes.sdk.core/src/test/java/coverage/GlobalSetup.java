@@ -2,6 +2,7 @@ package coverage;
 
 
 import com.applitools.eyes.BatchInfo;
+import com.applitools.utils.ArgumentGuard;
 import coverage.exceptions.MissingEnvVarException;
 import org.testng.annotations.BeforeSuite;
 
@@ -22,6 +23,7 @@ public class GlobalSetup {
         String id = System.getenv("APPLITOOLS_BATCH_ID");
         if (id != null) batch.setId(id);
         apiKey = System.getenv("APPLITOOLS_API_KEY");
+        ArgumentGuard.notNull(apiKey, "apiKey");
         readApiKey = System.getenv("APPLITOOLS_API_KEY_READ");
         EG_URL = System.getenv("EXECUTION_GRID_URL");
         String CI = System.getenv("CI");
