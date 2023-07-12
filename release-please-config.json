@@ -1264,6 +1264,17 @@
         {"profile": "maven"}
       ]
     },
+    "java/eyes.universal.core/eyes-universal-core-binaries": {
+      "release-type": "maven",
+      "skip-snapshot": true,
+      "component": "java/eyes-universal-core-binaries",
+      "builds": [
+        {"build-type": "maven", "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"], "key": "{{component}}/{{package-version}}/{{hash}}"}
+      ],
+      "releases": [
+        {"profile": "maven"}
+      ]
+    },
     "java/eyes.universal.core/eyes-universal-core-linux": {
       "release-type": "maven",
       "skip-snapshot": true,

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-universal-core</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.59.0</version>
+    <version>5.61.0</version>
     <name>eyes-universal-core</name>
     <url>http://www.applitools.com</url>
     <description>Eyes universal core for storing and lunching binary server</description>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-common-java5</artifactId>
-            <version>5.59.0</version>
+            <version>5.61.0</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -261,27 +261,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.applitools</groupId>
-                    <artifactId>eyes-universal-core-mac</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.applitools</groupId>
-                    <artifactId>eyes-universal-core-win</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.applitools</groupId>
-                    <artifactId>eyes-universal-core-linux</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.applitools</groupId>
-                    <artifactId>eyes-universal-core-alpine</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.applitools</groupId>
-                    <artifactId>eyes-universal-core-arm</artifactId>
+                    <artifactId>eyes-universal-core-binaries</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

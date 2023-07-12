@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-universal-core-alpine</artifactId>
-    <version>5.59.0</version>
+    <version>5.61.0</version>
     <groupId>com.applitools</groupId>
     <name>eyes-universal-core-alpine</name>
     <url>http://www.applitools.com</url>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-universal-core</artifactId>
-            <version>5.59.0</version>
+            <version>5.61.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

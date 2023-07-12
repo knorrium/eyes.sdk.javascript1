@@ -21,6 +21,7 @@ done
 mvn clean install -P "$1" -DskipTests
 
 POST_BUILDS=(
+  "../eyes-universal-core-binaries"
   "../eyes-universal-core-alpine"
   "../eyes-universal-core-arm"
   "../eyes-universal-core-linux"

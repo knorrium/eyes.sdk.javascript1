@@ -1,16 +1,43 @@
+## [5.61.0] - 2023-07-12
+### Features
+- add an active by default profile with all core binaries.
+### Bug fixes
+-
+
+## [5.60.0] - 2023-07-11
+### Features
+- ability to skip deserialize dom snapshot.
+- prevent animated gif images from playing in ufg.
+- support custom property per renderer.
+- added new chrome emulation devices - `Galaxy S21`, `Galaxy S21 Ultra`, and `Galaxy S22 Ultra`.
+### Bug fixes
+-
+
+## [5.59.0] - 2023-07-04
+### Features
+- added a new mode for taking native app screenshots
+### Bug fixes
+-
+
+## [5.58.0] - 2023-06-29
+### Features
+- Added new API `setMobileCapabilities` for native Eyes.
+- Added new API `useSystemScreenshot` for native Eyes.
+### Bug fixes
+-
+
+## [5.57.0] - 2023-06-28
+### Features
+- 
+### Bug fixes
+- handled abandoned tunnels in Execution Cloud.
+- Fixed an error when tunnels were in queue in Execution Cloud.
+
 ## [5.56.0] - 2023-06-20
 ### Features
 - 
 ### Bug fixes
 - Fixed an issue where a Gradle project did not dynamically detect core modules.
-
-## [5.58.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-sdk-core-java5-v5.58.0...java/eyes-sdk-core-java5@5.58.1) (2023-07-01)
-
-
-### Bug Fixes
-
-* some fix ([4bc965c](https://github.com/applitools/eyes.sdk.javascript1/commit/4bc965c884232b018a13518ef97e49dd47f63ded))
-* some fix 21 ([a795293](https://github.com/applitools/eyes.sdk.javascript1/commit/a795293424e782f2eae65f31dfe167bc94eff01a))
 
 ## [5.55.0] - 2023-06-13
 ### Features

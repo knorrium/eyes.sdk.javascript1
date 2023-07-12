@@ -1,3 +1,38 @@
+## [5.61.0] - 2023-07-12
+### Features
+- add an active by default profile with all core binaries.
+### Bug fixes
+-
+
+## [5.60.0] - 2023-07-11
+### Features
+- ability to skip deserialize dom snapshot.
+- prevent animated gif images from playing in ufg.
+- support custom property per renderer.
+- added new chrome emulation devices - `Galaxy S21`, `Galaxy S21 Ultra`, and `Galaxy S22 Ultra`.
+### Bug fixes
+-
+
+## [5.59.0] - 2023-07-04
+### Features
+- added a new mode for taking native app screenshots
+### Bug fixes
+-
+
+## [5.58.0] - 2023-06-29
+### Features
+- Added new API `setMobileCapabilities` for native Eyes.
+- Added new API `useSystemScreenshot` for native Eyes.
+### Bug fixes
+-
+
+## [5.57.0] - 2023-06-28
+### Features
+- 
+### Bug fixes
+- handled abandoned tunnels in Execution Cloud.
+- Fixed an error when tunnels were in queue in Execution Cloud.
+
 ## [5.56.0] - 2023-06-20
 ### Features
 - 

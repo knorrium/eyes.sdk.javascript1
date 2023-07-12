@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-ufg-java5</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.59.0</version>
+    <version>5.61.0</version>
     <name>eyes-ufg-java5</name>
     <url>http://www.applitools.com</url>
     <description>UFG module of Applitools Java SDKs</description>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-common-java5</artifactId>
-            <version>5.59.0</version>
+            <version>5.61.0</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
