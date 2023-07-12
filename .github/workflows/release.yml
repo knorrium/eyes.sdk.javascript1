@@ -85,8 +85,9 @@ jobs:
           working-directory: ${{matrix.working-directory}}
           shell: ${{matrix.shell || 'bash'}}
           command: notification
-          name: ${{matrix.notification.name}}
           report-id: ${{matrix.name}}@${{matrix.package-version}}
+          name: ${{matrix.notification.name}}
+          release-version: ${{matrix.package-version}}
 
   java-release:
     needs: [setup]

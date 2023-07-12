@@ -16,6 +16,9 @@ inputs:
   group:
     description: group of the reported entity
     type: string
+  release-version:
+    description: released version of the notification entity
+    type: string
   params:
     description: additional parameters will be added to every reported test
     type: string
@@ -47,5 +50,5 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}"
+        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --release-version="${{inputs.release-version}}"
 
