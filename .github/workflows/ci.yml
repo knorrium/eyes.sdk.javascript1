@@ -167,6 +167,13 @@ jobs:
     container: ${{matrix.container}}
     env: ${{matrix.env}}
     steps:
+      - name: Install global tools
+        run: |
+          if [ -f "/etc/alpine-release" ]; then
+            apk update
+            apk add --no-cache git git-lfs maven openjdk11 libstdc++;
+            echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
+          fi
       - name: Check-out repository
         uses: actions/checkout@v3
         with:
@@ -222,6 +229,13 @@ jobs:
     container: ${{matrix.container}}
     env: ${{matrix.env}}
     steps:
+      - name: Install global tools
+        run: |
+          if [ -f "/etc/alpine-release" ]; then
+            apk update
+            apk add --no-cache git git-lfs maven openjdk11 libstdc++;
+            echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
+          fi
       - name: Check-out repository
         uses: actions/checkout@v3
         with:
