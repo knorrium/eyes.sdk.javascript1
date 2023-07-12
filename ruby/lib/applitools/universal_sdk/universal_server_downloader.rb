@@ -12,11 +12,11 @@ module Applitools
 
       EXPECTED_SHA = {
         # 'core.tar.gz'      => '18c85f7aa8800b954847640dfb959cc48794ad05d95dde96c15db42c9154792f',
-        'core-alpine'      => '1312f4d7cdce8fc3e569cfe8cc6892a6b7e2dd7935119468ace077feb56b59e1',
-        'core-linux'       => '5b507e26957b1b1d4145f4f74588d269c48be7c03e4036aa8a3fa74c97a80323',
-        'core-linux-arm64' => 'c0c08c9e1b9a1b23f44953ec4e19cbbd3a7235a5d2c0bdbda4d432e47343851e',
-        'core-macos'       => 'dcec55c6f7cf1cb3bd6b018a75c68a941f630f4c7cf785132522c7ed19621930',
-        'core-win.exe'     => 'b57675e704b39ca149bd192bb3f387404a65e9ebc5ee275fea7d33dc4d34edcb'
+        'core-alpine'      => 'ddb73106b9162b067cc3c6eeb45549db46cd27cc1dce10049e0462ca53a05997',
+        'core-linux'       => '4bb76583b380cc300979bdd7ecc5e17cc6b954187c1e18619fdd5bb102b31d0a',
+        'core-linux-arm64' => 'de8e502ac25edfeced882b7fbde44eb825e9708fa186c0338d3943fe4c03f693',
+        'core-macos'       => 'a4d0a1c19a93e12e1e4d0b67944110614b08889108aae77c31749d287c9023d7',
+        'core-win.exe'     => 'd883e3ac51e6510ebb1ba22491bd51313bb2c44456b3ae404a461603cb42e4eb'
       }
 
       def download(to)

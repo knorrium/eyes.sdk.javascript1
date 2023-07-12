@@ -38,7 +38,7 @@ module Applitools
     end
 
     def close_all_eyes(remove_duplicate_tests)
-      @opened_eyes.each {|universal_eye| universal_eye.close }
+      @opened_eyes.each {|universal_eye| universal_eye.closed_or_aborted = true }
       @universal_client.eyes_manager_close_all_eyes(@manager, remove_duplicate_tests)
     end
 

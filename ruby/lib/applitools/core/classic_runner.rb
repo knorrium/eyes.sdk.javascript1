@@ -31,9 +31,7 @@ module Applitools
       end
       # return all_test_results unless all_test_results.empty?
       all_universal_results = close_all_eyes
-      test_result_summary = Applitools::TestResultSummary.new(all_universal_results).old_style_results_array
-      return [] if test_result_summary.reject { |tr| tr.aborted? }.empty?
-      test_result_summary
+      Applitools::TestResultSummary.new(all_universal_results)
     end
 
     def rendering_info(connector)

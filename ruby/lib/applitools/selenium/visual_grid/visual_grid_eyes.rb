@@ -317,7 +317,8 @@ module Applitools
       end
 
       def close_async
-        test_list.each(&:close)
+        # test_list.each(&:close)
+        close(false)
       end
 
       def close(throw_exception = true)
@@ -329,8 +330,7 @@ module Applitools
         # require 'pry'
         # binding.pry
         raise Applitools::EyesError.new("Request failed: #{universal_results[:message]}") if server_error?(universal_results)
-        key_transformed_results = Applitools::Utils.deep_stringify_keys(universal_results)
-        results = key_transformed_results.map {|result| Applitools::TestResults.new(result) }
+        results = universal_results.map {|result| Applitools::TestResults.new(result) }
         # results = results.first if results.size == 1
         # session_results_url = results.url
         all_results = results.compact
@@ -361,7 +361,8 @@ module Applitools
           end
         end
 
-        failed_results.empty? ? all_results.first : failed_results.first
+        # failed_results.empty? ? all_results.first : failed_results.first
+        all_results.first
       end
 
       def abort_async

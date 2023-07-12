@@ -19,8 +19,10 @@ RSpec.describe 'Render Fail' do
     )
     driver.get('http://applitools.com')
     eyes.check('step 1', Applitools::Selenium::Target.window.before_render_screenshot_hook('fail me!'))
-    eyes.close_async
+    # eyes.close_async
     results = runner.get_all_test_results(false)
-    expect(results.empty?).to be_truthy
+    expect(results.length).to eq(1)
+    expect(results[0].errors).to be_a(Hash)
+    expect(results[0].aborted?).to be_truthy
   end
 end

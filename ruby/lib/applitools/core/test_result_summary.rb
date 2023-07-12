@@ -2,11 +2,14 @@
 
 module Applitools
   class TestResultSummary
+    extend Forwardable
     attr_accessor :results, :passed, :unresolved, :failed, :exceptions, :mismatches, :missing, :matches
     attr_accessor :original_test_results
+    def_delegators :results, :[], :length
+
     def initialize(all_test_results)
       @original_test_results = all_test_results
-      @results = all_test_results[:results]
+      @results = all_test_results[:results].map {|r| Applitools::TestResults.new(r) }
       @passed = all_test_results[:passed]
       @unresolved = all_test_results[:unresolved]
       @failed = all_test_results[:failed]
@@ -16,12 +19,9 @@ module Applitools
       @matches = all_test_results[:matches]
     end
 
-    def old_style_results_array
-      Applitools::Utils.deep_stringify_keys(results).map do |e|
-        r = e['result'] ? e['result'] : {}
-        r['isAborted'] = true unless e['error'].nil? # fix for get_all_test_results
-        Applitools::TestResults.new(r)
-      end
+    def to_a
+      @results
     end
+
   end
 end

@@ -207,7 +207,9 @@ module Applitools
 
     # layoutBreakpoints?: boolean | number[]
     def layout_breakpoints=(value)
-      config_hash[:layout_breakpoints] = (value.is_a?(Array) && value.all? {|v| v.is_a?(Numeric)}) ? value : !!value
+      config_hash[:layout_breakpoints] = value if value === true || value === false
+      config_hash[:layout_breakpoints] = value if value.is_a?(Array) && value.all? {|v| v.is_a?(Numeric)}
+      config_hash[:layout_breakpoints] = value if value.is_a?(Hash)
     end
     def layout_breakpoints
       config_hash[:layout_breakpoints]

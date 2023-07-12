@@ -61,6 +61,7 @@ module Applitools
       end
       # raise Applitools::EyesNotOpenException.new('Eyes not open!') if @eyes.nil?
       return if @universal_eyes.nil?
+      closed_or_aborted = @universal_eyes.closed_or_aborted
       @universal_eyes.abort
       result = @universal_eyes.eyes_get_results
       result = result[0] if result.is_a?(Array)
@@ -72,6 +73,8 @@ module Applitools
         # require('pry')
         # binding.pry
       end
+      return nil if closed_or_aborted
+      Applitools::Utils.deep_stringify_keys(result)
     end
 
     private

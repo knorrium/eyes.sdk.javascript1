@@ -1,8 +1,8 @@
 # frozen_string_literal: false
 
 module Applitools
-  VERSION = '4.6.3'.freeze
-  IMAGES_VERSION = '4.2.3'.freeze
-  UNIVERSAL_VERSION = '3.3.3'.freeze
-  UNIVERSAL_CORE_VERSION = '3.4.0'.freeze
+  VERSION = '5.0.0'.freeze
+  IMAGES_VERSION = '5.0.0'.freeze
+  UNIVERSAL_VERSION = '3.6.0'.freeze
+  UNIVERSAL_CORE_VERSION = '3.6.0'.freeze
 end

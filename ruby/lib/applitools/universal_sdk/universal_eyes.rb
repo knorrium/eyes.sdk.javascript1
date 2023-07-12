@@ -6,9 +6,12 @@ module Applitools
     extend Forwardable
     def_delegators 'Applitools::EyesLogger', :logger
 
+    attr_accessor :closed_or_aborted
+
     def initialize(eyes, universal_client)
       @eyes = eyes
       @universal_client = universal_client
+      @closed_or_aborted = false
     end
 
     def check(settings, image_target = {})
@@ -21,10 +24,12 @@ module Applitools
     end
 
     def close
+      @closed_or_aborted = true
       @universal_client.eyes_close(@eyes)
     end
 
     def abort
+      @closed_or_aborted = true
       @universal_client.eyes_abort(@eyes)
     end
 

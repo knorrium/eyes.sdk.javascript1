@@ -42,7 +42,7 @@ RSpec.configure do |config|
     begin
       response = @report_connection.post(Applitools::TestUtils::SDK_TEST_REPORT_ENDPOINT) do |req|
         req.body = @test_results_to_be_reported.json
-        puts req.body #if ENV['APPLITOOLS_DEBUG_TEST_REPORTING']
+        puts req.body if ENV['APPLITOOLS_DEBUG_TEST_REPORTING']
       end
       puts "Reported test results with status #{response.status}"
     rescue StandardError => e

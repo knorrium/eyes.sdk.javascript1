@@ -213,10 +213,10 @@ module Applitools
       end
 
 
-      if running_session.nil?
-        logger.info 'Closed'
-        return false
-      end
+      # if running_session.nil?
+      #   logger.info 'Closed'
+      #   return false
+      # end
 
       logger.info 'Aborting server session...'
       universal_sdk_abort

@@ -17,9 +17,12 @@ module Applitools
       end
     end
     attr_accessor :is_new, :url, :screenshot
-    attr_reader :status, :steps, :matches, :mismatches, :missing, :original_results
+    attr_reader :status, :steps, :matches, :mismatches, :missing, :original_results, :browser_info, :renderer
 
-    def initialize(results = {})
+    def initialize(init_results = {})
+      @renderer = Applitools::Utils.deep_stringify_keys(Applitools::Utils.underscore_hash_keys(init_results[:renderer]))
+      @browser_info = JSON.parse(@renderer.to_json, object_class: OpenStruct)
+      results = Applitools::Utils.deep_stringify_keys(init_results[:result] ? init_results[:result] : init_results)
       @original_results = results
       @steps = results.fetch('steps', 0)
       @matches = results.fetch('matches', 0)
@@ -28,6 +31,10 @@ module Applitools
       @status = results.fetch('status', 0)
       @is_new = results.fetch('isNew', nil)
       @url = results.fetch('url', nil)
+    end
+
+    def test_results
+      self
     end
 
     def passed?
@@ -51,7 +58,7 @@ module Applitools
     end
 
     def aborted?
-      original_results['isAborted']
+      original_results['isAborted'] || !errors.nil?
     end
 
     def api_session_url
@@ -64,6 +71,10 @@ module Applitools
 
     def name
       original_results['name']
+    end
+
+    def errors
+      original_results['error']
     end
 
     def session_accessibility_status
