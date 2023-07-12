@@ -1,3 +1,7 @@
+## [Eyes.Appium 5.59] - 2023-07-12
+### Fixed
+- `SetMobileCapabilities` method.
+
 ## [Eyes.Appium 5.58] - 2023-07-12
 ### Added
 - `SetMobileCapabilities` method.

@@ -168,8 +168,8 @@ namespace Applitools.Appium
                 }
             }
 
-            androidCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
-            iosCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
+            androidCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\",";
+            iosCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\",";
 
             // Check for the server URL in the env variable. (might still be null and this is fine.
             if (eyesServerUrl == null)
@@ -179,8 +179,8 @@ namespace Applitools.Appium
 
             if (!string.IsNullOrEmpty(eyesServerUrl))
             {
-                androidCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
-                iosCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
+                androidCapValue += "\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\",";
+                iosCapValue += "\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\",";
             }
 
             if (proxySettings == null)
@@ -194,8 +194,8 @@ namespace Applitools.Appium
 
             if (proxySettings != null)
             {
-                androidCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
-                iosCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
+                androidCapValue += "\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\",";
+                iosCapValue += "\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\",";
             }
 
             androidCapValue += androidCapValueSuffix;
