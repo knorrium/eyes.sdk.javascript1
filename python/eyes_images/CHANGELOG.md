@@ -1,4 +1,4 @@
-## [vNext]
+## [5.20.0] - 2023-07-13
 ### Added
 - Eyes.set_mobile_capabilities method that updates appium capabilities with NML options [Trello 3253](https://trello.com/c/bFHk2pRR)
 - CheckSettings.use_system_screenshot method to switch between nml and system approaches [Trello 3253](https://trello.com/c/bFHk2pRR)
