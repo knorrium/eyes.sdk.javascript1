@@ -6,11 +6,6 @@
     </listeners>
 
     <test name="coverage-test-report" parallel="methods" thread-count="8">
-        <groups>
-            <run>
-                <exclude name="native"/>
-            </run>
-        </groups>
         <packages>
             <package name="coverage.generic.*"/>
         </packages>
