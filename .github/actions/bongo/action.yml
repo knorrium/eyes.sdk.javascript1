@@ -44,7 +44,8 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/bongo@latest --yes -- bongo report --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --group="${{inputs.group}}" --params='${{inputs.params}}' --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
+        PARAMS=$(echo '${{inputs.params}}' |  tr '\n' ' ')
+        npx --package=@applitools/bongo@latest --yes -- bongo report --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --group="${{inputs.group}}" --params="$PARAMS" --result-path="${{inputs.result-path || '$RESULT_PATH'}}" --meta-path="${{inputs.meta-path || '$META_PATH'}}"
     - name: Sending notification
       if: ${{inputs.command == 'notification'}}
       working-directory: ${{inputs.working-directory}}
