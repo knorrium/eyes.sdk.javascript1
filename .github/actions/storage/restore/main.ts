@@ -30,9 +30,10 @@ async function main(): Promise<(string | undefined)[]> {
   }))
 
   async function restore(options: {paths: string[], name: string, fallbacks: string[], wait?: boolean}): Promise<string | undefined> {
+    console.log(options)
     const key = await restoreCache(options.paths, options.name, options.fallbacks, {}, true)
     if (key) {
-      core.info(`cache was successfully restored with ${key}`)
+      core.info(`cache was successfully restored with ${options.name}`)
       return key
     } else if (wait) {
       core.info(`waiting for cache with key ${key} to appear`)

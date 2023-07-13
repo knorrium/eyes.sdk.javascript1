@@ -57950,9 +57950,10 @@ async function main() {
         return restore({ paths: paths.split(';'), name, fallbacks, wait });
     }));
     async function restore(options) {
+        console.log(options);
         const key = await (0,cache.restoreCache)(options.paths, options.name, options.fallbacks, {}, true);
         if (key) {
-            core.info(`cache was successfully restored with ${key}`);
+            core.info(`cache was successfully restored with ${options.name}`);
             return key;
         }
         else if (wait) {
