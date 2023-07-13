@@ -81,14 +81,14 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     config?: Configuration,
   ): TCapabilities {
     const envs: Record<string, string> = {
-      NML_SERVER_URL: config?.serverUrl ?? utils.general.getEnvValue('SERVER_URL'),
-      NML_API_KEY: config?.apiKey ?? utils.general.getEnvValue('API_KEY'),
+      APPLITOOLS_SERVER_URL: config?.serverUrl ?? utils.general.getEnvValue('SERVER_URL'),
+      APPLITOOLS_API_KEY: config?.apiKey ?? utils.general.getEnvValue('API_KEY'),
     }
     if (config?.proxy) {
       const url = new URL(config.proxy.url)
       if (config.proxy.username) url.username = config.proxy.username
       if (config.proxy.password) url.password = config.proxy.password
-      envs.NML_PROXY_URL = url.toString()
+      envs.APPLITOOLS_PROXY_URL = url.toString()
     }
     return Object.assign(capabilities, {
       'appium:optionalIntentArguments': `--es APPLITOOLS '${JSON.stringify(envs)}'`,
@@ -96,7 +96,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
         args: [],
         env: {
           DYLD_INSERT_LIBRARIES:
-            '@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib',
+            '@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS:@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS',
           ...envs,
         },
       }),

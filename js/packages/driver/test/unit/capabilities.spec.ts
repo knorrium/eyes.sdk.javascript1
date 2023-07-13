@@ -1937,10 +1937,10 @@ describe('capabilities', () => {
         platformVersion: '11.0',
         appPackage: 'com.ichi2.anki',
         appActivity: '.IntentHandler',
-        optionalIntentArguments: `--es APPLITOOLS '{"NML_API_KEY":"some_api_key","NML_SERVER_URL":"https://eyesapi.applitools.com"}'`,
+        optionalIntentArguments: `--es APPLITOOLS '{"APPLITOOLS_API_KEY":"some_api_key","APPLITOOLS_SERVER_URL":"https://eyesapi.applitools.com"}'`,
         udid: 'emulator-5554',
         processArguments:
-          '{"args": [], "env":{"DYLD_INSERT_LIBRARIES":"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib","NML_API_KEY":"some_api_key","NML_SERVER_URL":"https://eyesapi.applitools.com"}}',
+          '{"args": [], "env":{"DYLD_INSERT_LIBRARIES":"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib","APPLITOOLS_API_KEY":"some_api_key","APPLITOOLS_SERVER_URL":"https://eyesapi.applitools.com"}}',
         sauceLabsNetworkCaptureEnabled: true,
       },
       hasMetadata: true,
@@ -1951,11 +1951,11 @@ describe('capabilities', () => {
       platformVersion: '11',
       webStorageEnabled: false,
       appActivity: '.IntentHandler',
-      optionalIntentArguments: `--es APPLITOOLS '{"NML_API_KEY":"some_api_key","NML_SERVER_URL":"https://eyesapi.applitools.com"}'`,
+      optionalIntentArguments: `--es APPLITOOLS '{"APPLITOOLS_API_KEY":"some_api_key","APPLITOOLS_SERVER_URL":"https://eyesapi.applitools.com"}'`,
       udid: 'emulator-5554',
       statBarHeight: 66,
       processArguments:
-        '{"args": [], "env":{"DYLD_INSERT_LIBRARIES":"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib","NML_API_KEY":"some_api_key","NML_SERVER_URL":"https://eyesapi.applitools.com"}}',
+        '{"args": [], "env":{"DYLD_INSERT_LIBRARIES":"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib","APPLITOOLS_API_KEY":"some_api_key","APPLITOOLS_SERVER_URL":"https://eyesapi.applitools.com"}}',
       sauceLabsNetworkCaptureEnabled: true,
     }
 
@@ -2017,7 +2017,7 @@ describe('capabilities', () => {
         env: {
           DYLD_INSERT_LIBRARIES:
             '@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib',
-          NML_API_KEY: 'some_api_key',
+          APPLITOOLS_API_KEY: 'some_api_key',
         },
       },
     }

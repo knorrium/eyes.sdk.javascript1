@@ -7,11 +7,11 @@ describe('native android (@sauce)', () => {
   before(async () => {
     ;[driver, destroyDriver] = await spec.build({
       device: 'Pixel 4 XL',
-      app: 'https://applitools.jfrog.io/artifactory/Examples/simpleapp-28JUN2023.apk',
+      app: 'https://applitools.jfrog.io/artifactory/Examples/simpleapp_13_06_2023.apk',
       capabilities: {
         'appium:appPackage': 'com.applitools.simpleapp',
         'appium:appActivity': 'com.applitools.simpleapp.SDKBrokerTester',
-        'appium:optionalIntentArguments': `--es APPLITOOLS '{"NML_API_KEY": "${process.env.APPLITOOLS_API_KEY}", "NML_SERVER_URL": "https://eyesapi.applitools.com"}'`,
+        'appium:optionalIntentArguments': `--es APPLITOOLS '{"APPLITOOLS_API_KEY": "${process.env.APPLITOOLS_API_KEY}"}'`,
         'appium:newCommandTimeout': 300,
         'appium:idleTimeout': 300,
       },

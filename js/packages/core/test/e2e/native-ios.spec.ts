@@ -9,8 +9,9 @@ describe('native ios (@sauce)', () => {
       //url: 'http://0.0.0.0:4723/wd/hub',
       device: 'iPhone 13',
       app: 'https://applitools.jfrog.io/artifactory/ufg-mobile/UFGTestApp.app.zip',
-      injectUFGLib: true,
-      withNML: true,
+      capabilities: {
+        'appium:processArguments': {args: [], env: {APPLITOOLS_API_KEY: process.env.APPLITOOLS_API_KEY}},
+      },
     })
   })
 

@@ -38,11 +38,11 @@ export function extractCapabilitiesEnvironment(capabilities: Capabilities): Part
     if (!environment.browserName) {
       environment.isNative = true
       if (environment.isAndroid) {
-        environment.isApplitoolsLib = !!capabilities.optionalIntentArguments?.includes('NML_API_KEY')
+        environment.isApplitoolsLib = !!capabilities.optionalIntentArguments?.includes('APPLITOOLS_API_KEY')
       } else if (environment.isIOS) {
         environment.isApplitoolsLib = utils.types.isString(capabilities.processArguments)
-          ? capabilities.processArguments.includes('NML_API_KEY')
-          : !!capabilities.processArguments?.env?.NML_API_KEY
+          ? capabilities.processArguments.includes('APPLITOOLS_API_KEY')
+          : !!capabilities.processArguments?.env?.APPLITOOLS_API_KEY
       }
     } else if (
       environment.isIOS &&
