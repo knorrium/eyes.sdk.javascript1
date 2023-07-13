@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-appium-java5</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.61.0</version>
+    <version>5.62.0</version>
     <name>eyes-appium-java5</name>
     <url>http://www.applitools.com</url>
     <description>Applitools Eyes SDK for Appium Java WebDriver</description>
@@ -38,26 +38,26 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-selenium-java5</artifactId>
-            <version>5.61.0</version>
+            <version>5.62.0</version>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-selenium-java5</artifactId>
-            <version>5.61.0</version>
+            <version>5.62.0</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-sdk-core-java5</artifactId>
-            <version>5.61.0</version>
+            <version>5.62.0</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-connectivity-java5</artifactId>
-            <version>5.61.0</version>
+            <version>5.62.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

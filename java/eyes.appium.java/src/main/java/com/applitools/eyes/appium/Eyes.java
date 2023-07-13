@@ -30,40 +30,22 @@ public class Eyes implements IEyesBase {
 
     public static void setNMGCapabilities(DesiredCapabilities caps) {
         /* backward compatibility */
-        setMobileCapabilities(caps, null, null, null);
+        setNMGCapabilities(caps, null, null, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey) {
         /* backward compatibility */
-        setMobileCapabilities(caps, apiKey, null, null);
+        setNMGCapabilities(caps, apiKey, null, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey, String eyesServerUrl) {
         /* backward compatibility */
-        setMobileCapabilities(caps, apiKey, eyesServerUrl, null);
+        setNMGCapabilities(caps, apiKey, eyesServerUrl, null);
     }
 
     public static void setNMGCapabilities(DesiredCapabilities caps, String apiKey,
                                           String eyesServerUrl, ProxySettings proxySettings) {
         /* backward compatibility */
-        setMobileCapabilities(caps, apiKey, eyesServerUrl, proxySettings);
-    }
-
-    public static void setMobileCapabilities(DesiredCapabilities caps) {
-        setMobileCapabilities(caps, null, null, null);
-    }
-
-    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey) {
-        setMobileCapabilities(caps, apiKey, null, null);
-    }
-
-    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey, String eyesServerUrl) {
-        setMobileCapabilities(caps, apiKey, eyesServerUrl, null);
-    }
-
-    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey,
-                                          String eyesServerUrl, ProxySettings proxySettings) {
-
         String iosCapsKey = "processArguments";
         String iosCapValue = "{\"args\": [], \"env\":"
                 + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
@@ -109,6 +91,75 @@ public class Eyes implements IEyesBase {
         if (proxySettings != null) {
             androidCapValue += ",\"NML_PROXY_URL\":\"" + proxySettings + "\"";
             iosCapValue += ",\"NML_PROXY_URL\":\"" + proxySettings + "\"";
+        }
+
+        androidCapValue += androidCapValueSuffix;
+        iosCapValue += iosCapValueSuffix;
+
+        caps.setCapability(androidCapKey, androidCapValue);
+        caps.setCapability(iosCapsKey, iosCapValue);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps) {
+        setMobileCapabilities(caps, null, null, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey) {
+        setMobileCapabilities(caps, apiKey, null, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey, String eyesServerUrl) {
+        setMobileCapabilities(caps, apiKey, eyesServerUrl, null);
+    }
+
+    public static void setMobileCapabilities(DesiredCapabilities caps, String apiKey,
+                                          String eyesServerUrl, ProxySettings proxySettings) {
+
+        String iosCapsKey = "processArguments";
+        String iosCapValue = "{\"args\": [], \"env\":"
+                + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
+                + ":"
+                + "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS\"";
+
+        String iosCapValueSuffix = "}}";
+
+        String androidCapKey = "optionalIntentArguments";
+        String androidCapValue = "--es APPLITOOLS \'{";
+        String androidCapValueSuffix = "}\'";
+
+        // Take the API key from the environment if it's not explicitly given.
+        if (apiKey == null) {
+            apiKey = GeneralUtils.getEnvString(("APPLITOOLS_API_KEY"));
+            if (apiKey == null || apiKey.equalsIgnoreCase("")) {
+                throw new EyesException("No API key was given, or is an empty string.");
+            }
+        }
+
+        androidCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\"";
+        iosCapValue += ",\"APPLITOOLS_API_KEY\":\"" + apiKey + "\"";
+
+        // Check for the server URL in the env variable. Defaults to Applitools public cloud.
+        if (eyesServerUrl == null) {
+            String envVar = GeneralUtils.getEnvString(("APPLITOOLS_SERVER_URL"));
+            eyesServerUrl = envVar != null? envVar : IEyesBase.APPLITOOLS_PUBLIC_CLOUD_URL;
+
+        }
+
+        if (eyesServerUrl != null && !eyesServerUrl.equalsIgnoreCase("")) {
+            androidCapValue += ",\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\"";
+            iosCapValue += ",\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\"";
+        }
+
+        if (proxySettings == null) {
+            String proxyFromEnv = GeneralUtils.getEnvString("APPLITOOLS_HTTP_PROXY");
+            if (proxyFromEnv != null && !proxyFromEnv.equalsIgnoreCase("")) {
+                proxySettings = new ProxySettings(proxyFromEnv);
+            }
+        }
+
+        if (proxySettings != null) {
+            androidCapValue += ",\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\"";
+            iosCapValue += ",\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\"";
         }
 
         androidCapValue += androidCapValueSuffix;
