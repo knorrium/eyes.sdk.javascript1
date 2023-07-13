@@ -57937,7 +57937,7 @@ main()
     core.debug(`successfully restored caches ${results}`);
 })
     .catch(err => {
-    core.debug(err);
+    core.error(err);
     core.setFailed(err.message);
 });
 async function main() {
