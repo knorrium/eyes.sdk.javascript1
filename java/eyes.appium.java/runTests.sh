@@ -3,6 +3,10 @@
 # Abort on Error
 set -e;
 
+# to not fail tests due to missing env var
+export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver";
+export FIREFOX_DRIVER_PATH="/usr/local/bin/geckodriver";
+
 echo "Testing with type: $TEST_TYPE"
 if [[ ! "$TEST_TYPE" == *"coverage"* ]]; then
   # Run the default suite file
