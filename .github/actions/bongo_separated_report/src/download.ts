@@ -3,7 +3,7 @@ import { create } from "@actions/artifact";
 import fs from "fs";
 import path from "path";
 export const XML_NAME = "coverage-test-report.xml";
-export const META_NAME = "coverage-tests-metadata.json";
+export const META_NAME = "meta.json";
 export async function download({ artifactList }) {
   const resultXMLJSObject = {
     _declaration: {
