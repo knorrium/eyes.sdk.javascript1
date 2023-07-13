@@ -791,8 +791,7 @@
       "component": "js/eyes",
       "builds": [{
         "key": "{{component}}/{{environment}}",
-        "artifacts": ["../*/dist", "../*/types"],
-        "builds": ["js/core/x64/{{environment}}"]
+        "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
         {

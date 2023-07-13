@@ -12,7 +12,7 @@ const processReport = {
 
 async function sendTestReport({reportId, name, group, params, metaPath, resultPath, resultFormat, sandbox = false}) {
   if (!resultPath) resultPath = './coverage-test-report.xml'
-  if (!metaPath) resultPath = './coverage-tests-metadata.json'
+  if (!metaPath) metaPath = './coverage-tests-metadata.json'
   if (!resultFormat) {
     resultFormat = resultPath.endsWith('.xml') ? 'xunit' : 'mocha'
   }
