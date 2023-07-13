@@ -8,9 +8,11 @@ inputs:
   latest:
     description: restore latest artifact
     type: boolean
+    default: false
   wait:
     description: wait for the artifact to appear
     type: boolean
+    default: false
 
 runs:
   using: node16
