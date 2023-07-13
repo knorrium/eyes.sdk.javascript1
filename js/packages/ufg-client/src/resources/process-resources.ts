@@ -87,8 +87,12 @@ export function makeProcessResources({
   }): Promise<KnownResource> {
     if (utils.types.has(resource, 'value')) {
       if (/image\/gif/.test(resource.contentType)) {
-        logger.log('Freezing gif image resource')
-        resource = makeResource({...resource, value: await freezeGif(resource.value)})
+        try {
+          logger.log(`Freezing gif image resource with id ${resource.id}`)
+          resource = makeResource({...resource, value: await freezeGif(resource.value)})
+        } catch (error) {
+          logger.warn(`Failed to freeze gif image resource with id ${resource.id} due to an error`, error)
+        }
       }
     }
     return persistResource({resource, logger})
