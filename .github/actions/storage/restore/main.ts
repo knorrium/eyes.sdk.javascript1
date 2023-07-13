@@ -19,10 +19,11 @@ main()
   })
 
 async function main(): Promise<(string | undefined)[]> {
-  const names = core.getMultilineInput('name', {required: true}).flatMap(path => path.split(/[\s\n,]+/))
+  const names = core.getMultilineInput('name', {required: true}).flatMap(name => name ? name.split(/[\s\n,]+/) : [])
   const latest = core.getBooleanInput('latest')
   const wait = core.getBooleanInput('wait')
   return Promise.all(names.map(async compositeName => {
+    console.log('compositeName', compositeName)
     const [name, paths] = compositeName.split('$')
     const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : []
 
