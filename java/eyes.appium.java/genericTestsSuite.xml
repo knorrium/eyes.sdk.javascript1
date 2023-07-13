@@ -1,16 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="java_coverage_tests" verbose="1" parallel="classes" thread-count="2">
+<suite name="java_coverage_tests" verbose="1" parallel="classes" thread-count="8">
     <listeners>
         <listener class-name="org.testng.reporters.JUnitXMLReporter" />
     </listeners>
 
     <test name="coverage-test-report" parallel="methods">
-        <groups>
-            <run>
-                <include name="native"/>
-            </run>
-        </groups>
         <packages>
             <package name="coverage.generic.*"/>
         </packages>
