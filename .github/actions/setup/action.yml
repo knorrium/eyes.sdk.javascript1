@@ -1,19 +1,18 @@
 name: Setup
 
 inputs:
+  type:
+    description: setup for environment (test, ci-dev, ci-prod, release)
+    type: string
   packages:
     description: list of package names (aliases) with optional variations
     type: string
   tag:
     description: list of release tags of the packages
-  ci:
-    description: wether variations should be generated from package configs
-    type: boolean
-    default: false
+    type: string
   env:
     description: list of environment variables to add to every job
     type: string
-    required: false
 
 outputs:
   builds:

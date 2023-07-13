@@ -5,6 +5,12 @@ inputs:
     description: composite artifact name(s)
     type: string
     required: true
+  latest:
+    description: restore latest artifact
+    type: boolean
+  wait:
+    description: wait for the artifact to appear
+    type: boolean
 
 runs:
   using: node16

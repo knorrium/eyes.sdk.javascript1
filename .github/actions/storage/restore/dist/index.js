@@ -57916,11 +57916,14 @@ var __webpack_exports__ = {};
 const external_node_fs_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs");
 ;// CONCATENATED MODULE: external "node:child_process"
 const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
+;// CONCATENATED MODULE: external "node:timers/promises"
+const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:timers/promises");
 // EXTERNAL MODULE: ./node_modules/@actions/cache/lib/cache.js
 var cache = __nccwpck_require__(7799);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 ;// CONCATENATED MODULE: ./main.ts
+
 
 
 
@@ -57939,10 +57942,25 @@ main()
 });
 async function main() {
     const names = core.getMultilineInput('name', { required: true }).flatMap(path => path.split(/[\s\n,]+/));
-    return Promise.all(names.map(compositeName => {
+    const latest = core.getBooleanInput('latest');
+    const wait = core.getBooleanInput('wait');
+    return Promise.all(names.map(async (compositeName) => {
         const [name, paths] = compositeName.split('$');
-        return (0,cache.restoreCache)(paths.split(';'), name, [name.split('/').slice(0, -1).join('/') + '/'], {}, true);
+        const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
+        return restore({ paths: paths.split(';'), name, fallbacks, wait });
     }));
+    async function restore(options) {
+        const key = await (0,cache.restoreCache)(options.paths, options.name, options.fallbacks, {}, true);
+        if (key) {
+            core.info(`cache was successfully restored with ${key}`);
+            return key;
+        }
+        else if (wait) {
+            core.info(`waiting for cache with key ${key} to appear`);
+            await (0,promises_namespaceObject.setTimeout)(20000);
+            return restore(options);
+        }
+    }
 }
 
 })();

@@ -25,6 +25,7 @@ jobs:
         uses: ./.github/actions/setup
         id: setup
         with:
+          type: release
           tag: ${{github.event.release.tag_name}}
 
   js-release:
@@ -55,6 +56,7 @@ jobs:
         uses: ./.github/actions/storage/restore
         with: 
           name: ${{join(matrix.builds)}}
+          latest: true
       - name: Queue
         uses: ./.github/actions/queue
         with:

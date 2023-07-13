@@ -33,7 +33,7 @@
       "release-type": "node",
       "component": "js/utils",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -66,7 +66,7 @@
       "release-type": "node",
       "component": "js/logger",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -99,7 +99,7 @@
       "release-type": "node",
       "component": "js/socket",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -132,7 +132,7 @@
       "release-type": "node",
       "component": "js/req",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -165,7 +165,7 @@
       "release-type": "node",
       "component": "js/image",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -198,7 +198,7 @@
       "release-type": "node",
       "component": "js/snippets",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [{
@@ -213,7 +213,7 @@
       "release-type": "node",
       "component": "js/spec-driver-webdriver",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -246,7 +246,7 @@
       "release-type": "node",
       "component": "js/spec-driver-webdriverio",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -289,7 +289,7 @@
       "release-type": "node",
       "component": "js/spec-driver-selenium",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -326,7 +326,7 @@
       "release-type": "node",
       "component": "js/spec-driver-playwright",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -359,7 +359,7 @@
       "release-type": "node",
       "component": "js/spec-driver-puppeteer",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -392,7 +392,7 @@
       "release-type": "node",
       "component": "js/spec-driver-browser-extension",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [{
@@ -407,7 +407,7 @@
       "release-type": "node",
       "component": "js/driver",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -440,7 +440,7 @@
       "release-type": "node",
       "component": "js/screenshoter",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -481,7 +481,7 @@
       "release-type": "node",
       "component": "js/nml-client",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -522,33 +522,43 @@
       "release-type": "node",
       "component": "js/tunnel-client",
       "builds": [
-        {"runner": "linux", "build-type": "x64", "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"},
-        {"runner": "linuxarm", "build-type": "arm64", "artifacts": ["../*/dist", "../*/types", "./bin"], "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}"}
+        {
+          "key": "{{component}}/{{build-type}}/{{environment}}",
+          "artifacts": ["../*/dist", "../*/types", "./bin"],
+          "runner": "linux",
+          "build-type": "x64"
+        },
+        {
+          "key": "{{component}}/{{build-type}}/{{environment}}",
+          "artifacts": ["../*/dist", "../*/types", "./bin"],
+          "runner": "linuxarm",
+          "build-type": "arm64"
+        }
       ],
       "tests": [
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"]
+          "builds": ["{{component}}/x64/{{environment}}"]
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"]
+          "builds": ["{{component}}/x64/{{environment}}"]
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"]
+          "builds": ["{{component}}/x64/{{environment}}"]
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"]
+          "builds": ["{{component}}/x64/{{environment}}"]
         }
       ],
       "releases": [{
@@ -561,7 +571,7 @@
       "release-type": "node",
       "component": "js/ufg-client",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -594,7 +604,7 @@
       "release-type": "node",
       "component": "js/ec-client",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -627,7 +637,7 @@
       "release-type": "node",
       "component": "js/core-base",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -661,14 +671,14 @@
       "component": "js/core",
       "builds": [
         {
-          "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}",
+          "key": "{{component}}/{{build-type}}/{{environment}}",
           "artifacts": ["../*/dist", "../*/types", "./bin"],
           "runner": "linux",
           "build-type": "x64",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}
         },
         {
-          "key": "{{component}}/{{build-type}}/{{package-version}}/{{hash}}",
+          "key": "{{component}}/{{build-type}}/{{environment}}",
           "artifacts": ["../*/dist", "../*/types", "./bin"],
           "runner": "linuxarm",
           "build-type": "arm64",
@@ -681,7 +691,7 @@
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
           "test-type": "local",
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"node": 14}, "result-path": "./logs/report.xml"}
         },
         {
@@ -689,7 +699,7 @@
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
           "test-type": "local",
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"node": 16}, "result-path": "./logs/report.xml"}
         },
         {
@@ -697,7 +707,7 @@
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
           "test-type": "local",
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"node": 18}, "result-path": "./logs/report.xml"}
         },
         {
@@ -705,7 +715,7 @@
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
           "test-type": "local",
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"node": 20}, "result-path": "./logs/report.xml"}
         },
         {
@@ -714,7 +724,7 @@
           "test-type": "sauce",
           "parallel": 2,
           "queue": "sauce",
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "result-path": "./logs/report.xml"}
         },
         {
@@ -724,7 +734,7 @@
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"platform": "linux"}, "result-path": "./logs/report.xml"}
         },
         {
@@ -734,7 +744,7 @@
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},
-          "builds": ["{{component}}/arm64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/arm64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"platform": "linuxarm"}, "result-path": "./logs/report.xml"}
         },
         {
@@ -746,7 +756,7 @@
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"platform": "alpine"}, "result-path": "./logs/report.xml"}
         },
         {
@@ -756,7 +766,7 @@
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"platform": "windows"}, "result-path": "./logs/report.xml"}
         },
         {
@@ -766,7 +776,7 @@
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},
-          "builds": ["{{component}}/x64/{{package-version}}/{{hash}}"],
+          "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "params": {"platform": "macos"}, "result-path": "./logs/report.xml"}
         }
       ],
@@ -780,8 +790,9 @@
       "release-type": "node",
       "component": "js/eyes",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
-        "artifacts": ["../*/dist", "../*/types"]
+        "key": "{{component}}/{{environment}}",
+        "artifacts": ["../*/dist", "../*/types"],
+        "builds": ["js/core/x64/{{environment}}"]
       }],
       "tests": [
         {
@@ -813,7 +824,7 @@
       "release-type": "node",
       "component": "js/eyes-images",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -852,7 +863,7 @@
       "component": "js/eyes-webdriverio",
       "builds": [{
         "artifacts": ["../*/dist", "../*/types"],
-        "key": "{{component}}/{{package-version}}/{{hash}}"
+        "key": "{{component}}/{{environment}}"
       }],
       "tests": [
         {
@@ -915,7 +926,7 @@
       "component": "js/eyes-selenium",
       "builds": [{
         "artifacts": ["../*/dist", "../*/types"],
-        "key": "{{component}}/{{package-version}}/{{hash}}"
+        "key": "{{component}}/{{environment}}"
       }],
       "tests": [
         {
@@ -969,7 +980,7 @@
       "release-type": "node",
       "component": "js/eyes-nightwatch",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -1007,7 +1018,7 @@
       "release-type": "node",
       "component": "js/eyes-playwright",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -1045,7 +1056,7 @@
       "release-type": "node",
       "component": "js/eyes-puppeteer",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -1083,7 +1094,7 @@
       "release-type": "node",
       "component": "js/eyes-browser-extension",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types", "./bin"]
       }],
       "tests": [{
@@ -1098,7 +1109,7 @@
       "release-type": "node",
       "component": "js/eyes-storybook",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [
@@ -1140,7 +1151,7 @@
       "release-type": "node",
       "component": "js/eyes-cypress",
       "builds": [{
-        "key": "{{component}}/{{package-version}}/{{hash}}",
+        "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types"]
       }],
       "tests": [

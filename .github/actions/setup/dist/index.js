@@ -5259,15 +5259,17 @@ async function main() {
         const [key, value] = env.split('=');
         return { ...envs, [key]: value };
     }, {});
-    const ci = core.getBooleanInput('ci');
-    const tags = core.getMultilineInput('tag').flatMap(tag => tag.split(/[\s\n,]+/));
-    const release = tags.length > 0;
+    const type = core.getInput('type');
+    const ci = type.startsWith('ci');
+    const release = type === 'release';
+    const environment = ['ci-prod', 'release'].includes(type) ? 'prod' : 'dev';
     let input;
     if (ci) {
         input = getChangedPackagesInput();
         core.notice(`Changed packages: "${input}"`);
     }
     else if (release) {
+        const tags = core.getMultilineInput('tag').flatMap(tag => tag.split(/[\s\n,]+/));
         input = getPackagesInputFromTags(tags);
         core.notice(`Release packages: "${input}"`);
     }
@@ -5437,24 +5439,22 @@ async function main() {
             job.artifacts &&= job.artifacts.map(artifactPath => {
                 return external_node_path_namespaceObject.isAbsolute(artifactPath) ? artifactPath : external_node_path_namespaceObject.join(job['working-directory'], artifactPath);
             });
-            job.key &&= populateString(job.key, { filenamify: type === 'test' });
-            if (type === 'test' || type === 'release') {
-                job.builds &&= job.builds.map(key => populateString(key));
-            }
+            job.key &&= populateString(job.key, { filename: type === 'test', sha: type === 'build' });
+            job.builds &&= job.builds.map(key => populateString(key, { sha: true }));
             return job;
             function populateString(string, options) {
-                let result = string
-                    .replace(/\{\{([^}]+)\}\}/g, (_, name) => {
-                    if (name === 'hash')
-                        return sha;
+                let result = string.replace(/\{\{([^}]+)\}\}/g, (_, name) => {
+                    if (name === 'environment')
+                        return environment;
                     else if (name === 'component')
                         return job.name;
                     else
                         return job[name];
                 });
-                if (options?.filenamify) {
+                if (options?.filename)
                     result = result.replace(/[\/\s]+/g, '-');
-                }
+                if (options?.sha)
+                    result += `#${sha}`;
                 return result;
             }
         }

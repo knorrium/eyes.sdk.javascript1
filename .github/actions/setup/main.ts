@@ -30,15 +30,18 @@ async function main() {
     return {...envs, [key]: value}
   }, {})
 
-  const ci = core.getBooleanInput('ci')
-  const tags = core.getMultilineInput('tag').flatMap(tag => tag.split(/[\s\n,]+/))
-  const release = tags.length > 0
+
+  const type = core.getInput('type')
+  const ci = type.startsWith('ci')
+  const release = type === 'release'
+  const environment = ['ci-prod', 'release'].includes(type) ? 'prod' : 'dev'
 
   let input: string
   if (ci) {
     input = getChangedPackagesInput()
     core.notice(`Changed packages: "${input}"`)
   } else if (release) {
+    const tags = core.getMultilineInput('tag').flatMap(tag => tag.split(/[\s\n,]+/))
     input = getPackagesInputFromTags(tags)
     core.notice(`Release packages: "${input}"`)
   } else {
@@ -222,24 +225,20 @@ async function main() {
       job.artifacts &&= job.artifacts.map(artifactPath => {
         return path.isAbsolute(artifactPath) ? artifactPath : path.join(job['working-directory'], artifactPath)
       })
-      job.key &&= populateString(job.key, {filenamify: type === 'test'})
 
-      if (type === 'test' || type === 'release') {
-        job.builds &&= job.builds.map(key => populateString(key))
-      }
+      job.key &&= populateString(job.key, {filename: type === 'test', sha: type === 'build'})
+      job.builds &&= job.builds.map(key => populateString(key, {sha: true}))
 
       return job
 
-      function populateString(string: string, options?: {filenamify: boolean}): string {
-        let result = string
-          .replace(/\{\{([^}]+)\}\}/g, (_, name) => {
-            if (name === 'hash') return sha
-            else if (name === 'component') return job.name
-            else return job[name as keyof Job] as string
-          })
-        if (options?.filenamify) {
-          result = result.replace(/[\/\s]+/g, '-')
-        }
+      function populateString(string: string, options?: {filename?: boolean, sha?: boolean}): string {
+        let result = string.replace(/\{\{([^}]+)\}\}/g, (_, name) => {
+          if (name === 'environment') return environment
+          else if (name === 'component') return job.name
+          else return job[name as keyof Job] as string
+        })
+        if (options?.filename) result = result.replace(/[\/\s]+/g, '-')
+        if (options?.sha) result += `#${sha}`
         return result
       }
     }

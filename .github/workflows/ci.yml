@@ -42,7 +42,7 @@ jobs:
         uses: ./.github/actions/setup
         id: setup
         with:
-          ci: true
+          type: ${{startsWith(github.event.pull_request.head.ref, 'release-please') && 'ci-prod' || 'ci-dev'}}
   
   js-build:
     needs: [setup]
@@ -71,6 +71,12 @@ jobs:
           path: ./js/.yarn/cache
           key: yarn-cache-${{hashFiles('./js/yarn.lock', './js/.yarnrc.yml')}}
           restore-keys: yarn-cache-
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+          wait: true
       - name: Build
         uses: ./.github/actions/js/build
         with:

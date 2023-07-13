@@ -54,6 +54,7 @@ jobs:
         uses: ./.github/actions/setup
         id: setup
         with:
+          type: test
           packages: ${{inputs.packages}}
           env: ${{inputs.env}}
 
