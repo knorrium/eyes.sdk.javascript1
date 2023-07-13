@@ -15,9 +15,15 @@ for build_path in "${BUILDS[@]}"; do
   cd - || exit
 done
 
-# update core binaries to latest
-chmod +x ../../../scripts/download-core-bin.sh
-./../../../scripts/download-core-bin.sh --platform linux-arm64 --dir "./src/main/resources"
+if [ -z "$(ls -A ../../../js/packages/core/bin)" ]; then
+  # update core binaries to latest
+  chmod +x ../../../scripts/download-core-bin.sh
+  ./../../../scripts/download-core-bin.sh --platform linux-arm64 --dir "./src/main/resources"
+else
+  echo "Found js/core binaries"
+  ls
+  cp ./core-linux-arm64 ./src/main/resources
+fi
 
 # build current module
 mvn clean install -P "$1" -DskipTests

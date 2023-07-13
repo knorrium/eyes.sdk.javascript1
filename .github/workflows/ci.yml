@@ -206,6 +206,12 @@ jobs:
           path: ~/.m2/repository
           key: maven-cache-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-cache-
+      - name: Restore build artifacts
+        if: ${{matrix.builds}}
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+          wait: true
       - name: Build
         uses: ./.github/actions/java/build
         with:
