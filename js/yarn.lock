@@ -384,9 +384,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/execution-grid-tunnel@npm:2.1.7":
-  version: 2.1.7
-  resolution: "@applitools/execution-grid-tunnel@npm:2.1.7"
+"@applitools/execution-grid-tunnel@npm:2.1.8":
+  version: 2.1.8
+  resolution: "@applitools/execution-grid-tunnel@npm:2.1.8"
   dependencies:
     "@applitools/eg-frpc": 1.0.5
     "@applitools/eg-socks5-proxy-server": ^0.5.4
@@ -403,7 +403,7 @@ __metadata:
     teen_process: ^1.16.0
   bin:
     run-execution-grid-tunnel: scripts/run-execution-grid-tunnel.js
-  checksum: c2714ed8d47f82e21a77f0d734d43389fd7f3735e087e04102edfec78be2a7160e495f15fee7068c7599bc883269f4fc39bcdae3e3b6ebc94d1a0392e27a1c03
+  checksum: 0d29db74928b9634219a9cb00149ba84b6210f2dd7c57ac458eb9cc2014f86a7fdd1b63e4397f56a37fe712653eaa1f7ae9015165072682394de7f893729915a
   languageName: node
   linkType: hard
 
@@ -1189,7 +1189,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:
-    "@applitools/execution-grid-tunnel": 2.1.7
+    "@applitools/execution-grid-tunnel": 2.1.8
     "@applitools/logger": 2.0.5
     "@applitools/req": 1.4.0
     "@applitools/socket": 1.1.5
