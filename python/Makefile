@@ -94,7 +94,7 @@ uninstall:
 
 
 publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	echo cd eyes_images && npx bongo send-release-notification --verbose --name python --releaseVersion "${SDK_VERSION}"
+	cd eyes_images && npx bongo send-release-notification --verbose --name python --releaseVersion "${SDK_VERSION}"
 	twine upload --verbose eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
 
 
