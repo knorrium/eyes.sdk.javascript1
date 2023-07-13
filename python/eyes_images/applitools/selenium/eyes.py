@@ -53,6 +53,51 @@ class Eyes(WebEyes):
             if not api_key:
                 raise EyesError("No API key was given, or is an empty string.")
         env_caps = {
+            "APPLITOOLS_API_KEY": api_key,
+        }
+
+        if not eyes_server_url:
+            eyes_server_url = get_env_with_prefix("APPLITOOLS_SERVER_URL")
+        if eyes_server_url:
+            env_caps["APPLITOOLS_SERVER_URL"] = eyes_server_url
+
+        if not proxy_settings:
+            proxy_settings = ProxySettings.from_env()
+        elif isinstance(proxy_settings, string_types):
+            proxy_settings = ProxySettings(proxy_settings)
+        if proxy_settings:
+            env_caps["APPLITOOLS_PROXY_URL"] = proxy_settings.url
+
+        # for iOS
+        ios_env_caps = {
+            "DYLD_INSERT_LIBRARIES": (
+                "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS"
+                ":@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
+            )
+        }
+        ios_env_caps.update(env_caps)
+        caps["processArguments"] = {
+            "args": [],
+            "env": ios_env_caps,
+        }
+        # for Android
+        caps["optionalIntentArguments"] = "--es APPLITOOLS '{}'".format(
+            json.dumps(env_caps, sort_keys=True)
+        )
+
+    @staticmethod
+    def set_nmg_capabilities(
+        caps,  # type: dict
+        api_key=None,  # type: Optional[Text]
+        eyes_server_url=None,  # type: Optional[Text]
+        proxy_settings=None,  # type: Optional[Union[Text, ProxySettings]]
+    ):
+        # type: (...) -> None
+        if not api_key:
+            api_key = get_env_with_prefix("APPLITOOLS_API_KEY")
+            if not api_key:
+                raise EyesError("No API key was given, or is an empty string.")
+        env_caps = {
             "NML_API_KEY": api_key,
         }
 
@@ -84,8 +129,6 @@ class Eyes(WebEyes):
         caps["optionalIntentArguments"] = "--es APPLITOOLS '{}'".format(
             json.dumps(env_caps, sort_keys=True)
         )
-
-    set_nmg_capabilities = set_mobile_capabilities  # back-compatibility alias
 
     @property
     def is_cut_provider_explicitly_set(self):

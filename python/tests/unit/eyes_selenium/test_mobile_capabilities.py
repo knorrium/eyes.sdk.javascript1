@@ -3,7 +3,12 @@ import pytest
 from applitools.common import EyesError, ProxySettings
 from applitools.selenium import Eyes
 
-LIBRARY_PATH = "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
+LIBRARY_PATH = (
+    "@executable_path/Frameworks/Applitools_iOS.xcframework/"
+    "ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS:"
+    "@executable_path/Frameworks/Applitools_iOS.xcframework/"
+    "ios-arm64/Applitools_iOS.framework/Applitools_iOS"
+)
 
 
 def test_mobile_capabilities_explicit():
@@ -12,16 +17,16 @@ def test_mobile_capabilities_explicit():
 
     assert caps == {
         "capsKey": "capsValue",
-        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "abc", '
-        '"NML_PROXY_URL": "http://proxy:1234", '
-        '"NML_SERVER_URL": "https://server"}\'',
+        "optionalIntentArguments": '--es APPLITOOLS \'{"APPLITOOLS_API_KEY": "abc", '
+        '"APPLITOOLS_PROXY_URL": "http://proxy:1234", '
+        '"APPLITOOLS_SERVER_URL": "https://server"}\'',
         "processArguments": {
             "args": [],
             "env": {
                 "DYLD_INSERT_LIBRARIES": LIBRARY_PATH,
-                "NML_API_KEY": "abc",
-                "NML_PROXY_URL": "http://proxy:1234",
-                "NML_SERVER_URL": "https://server",
+                "APPLITOOLS_API_KEY": "abc",
+                "APPLITOOLS_PROXY_URL": "http://proxy:1234",
+                "APPLITOOLS_SERVER_URL": "https://server",
             },
         },
     }
@@ -33,14 +38,14 @@ def test_mobile_capabilities_explicit_proxy_settings():
 
     assert caps == {
         "capsKey": "capsValue",
-        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "abc", '
-        '"NML_PROXY_URL": "http://host:81"}\'',
+        "optionalIntentArguments": '--es APPLITOOLS \'{"APPLITOOLS_API_KEY": "abc", '
+        '"APPLITOOLS_PROXY_URL": "http://host:81"}\'',
         "processArguments": {
             "args": [],
             "env": {
                 "DYLD_INSERT_LIBRARIES": LIBRARY_PATH,
-                "NML_API_KEY": "abc",
-                "NML_PROXY_URL": "http://host:81",
+                "APPLITOOLS_API_KEY": "abc",
+                "APPLITOOLS_PROXY_URL": "http://host:81",
             },
         },
     }
@@ -54,10 +59,10 @@ def test_mobile_capabilities_explicit_api_key_only(monkeypatch):
 
     assert caps == {
         "capsKey": "capsValue",
-        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "abc"}\'',
+        "optionalIntentArguments": '--es APPLITOOLS \'{"APPLITOOLS_API_KEY": "abc"}\'',
         "processArguments": {
             "args": [],
-            "env": {"DYLD_INSERT_LIBRARIES": LIBRARY_PATH, "NML_API_KEY": "abc"},
+            "env": {"DYLD_INSERT_LIBRARIES": LIBRARY_PATH, "APPLITOOLS_API_KEY": "abc"},
         },
     }
 
@@ -71,16 +76,16 @@ def test_mobile_capabilities_from_env(monkeypatch):
 
     assert caps == {
         "capsKey": "capsValue",
-        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "def", '
-        '"NML_PROXY_URL": "http://secondproxy:2222", '
-        '"NML_SERVER_URL": "https://otherserver"}\'',
+        "optionalIntentArguments": '--es APPLITOOLS \'{"APPLITOOLS_API_KEY": "def", '
+        '"APPLITOOLS_PROXY_URL": "http://secondproxy:2222", '
+        '"APPLITOOLS_SERVER_URL": "https://otherserver"}\'',
         "processArguments": {
             "args": [],
             "env": {
                 "DYLD_INSERT_LIBRARIES": LIBRARY_PATH,
-                "NML_API_KEY": "def",
-                "NML_PROXY_URL": "http://secondproxy:2222",
-                "NML_SERVER_URL": "https://otherserver",
+                "APPLITOOLS_API_KEY": "def",
+                "APPLITOOLS_PROXY_URL": "http://secondproxy:2222",
+                "APPLITOOLS_SERVER_URL": "https://otherserver",
             },
         },
     }
@@ -93,10 +98,10 @@ def test_mobile_capabilities_from_env_api_key_only(monkeypatch):
 
     assert caps == {
         "capsKey": "capsValue",
-        "optionalIntentArguments": '--es APPLITOOLS \'{"NML_API_KEY": "def"}\'',
+        "optionalIntentArguments": '--es APPLITOOLS \'{"APPLITOOLS_API_KEY": "def"}\'',
         "processArguments": {
             "args": [],
-            "env": {"DYLD_INSERT_LIBRARIES": LIBRARY_PATH, "NML_API_KEY": "def"},
+            "env": {"DYLD_INSERT_LIBRARIES": LIBRARY_PATH, "APPLITOOLS_API_KEY": "def"},
         },
     }
 
@@ -117,7 +122,12 @@ def test_mobile_capabilities_compat_alias():
         "processArguments": {
             "args": [],
             "env": {
-                "DYLD_INSERT_LIBRARIES": LIBRARY_PATH,
+                "DYLD_INSERT_LIBRARIES": (
+                    "@executable_path/Frameworks/UFG_lib.xcframework/"
+                    "ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib:"
+                    "@executable_path/Frameworks/UFG_lib.xcframework/"
+                    "ios-arm64/UFG_lib.framework/UFG_lib"
+                ),
                 "NML_API_KEY": "abc",
             },
         },
