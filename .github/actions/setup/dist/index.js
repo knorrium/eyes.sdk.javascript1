@@ -5401,18 +5401,26 @@ async function main() {
                 });
             });
         });
+        const builds = Object.values(jobs.builds).flat().reduce((builds, buildJob) => {
+            if (buildJob.artifacts && buildJob.key) {
+                builds[buildJob.key] = { name: buildJob.name, artifacts: buildJob.artifacts };
+            }
+            return builds;
+        }, {});
         if (ci || release) {
             Object.values(ci ? jobs.tests : jobs.releases).flat().forEach(job => {
-                const defaultBuilds = Object.values(jobs.builds).flat().reduce((builds, buildJob) => {
-                    if (buildJob.name === job.name && buildJob.artifacts && buildJob.key) {
-                        builds[buildJob.key] = buildJob.artifacts;
-                    }
-                    return builds;
-                }, {});
-                const builds = job.builds
-                    ? Object.fromEntries(Object.entries(defaultBuilds).filter(([key]) => job.builds.includes(key)))
-                    : defaultBuilds;
-                job.builds = Object.entries(builds).map(([key, artifacts]) => `${key}$${artifacts.join(';')}`);
+                const jobBuilds = job.builds
+                    ? Object.fromEntries(Object.entries(builds).filter(([key]) => job.builds.includes(key)))
+                    : Object.fromEntries(Object.entries(builds).filter(([, { name }]) => job.name === name));
+                job.builds = Object.entries(jobBuilds).map(([key, { artifacts }]) => `${key}$${artifacts.join(';')}`);
+            });
+        }
+        if (ci) {
+            Object.values(jobs.builds).flat().forEach(job => {
+                if (job.builds) {
+                    const jobBuilds = Object.fromEntries(Object.entries(builds).filter(([key]) => job.builds.includes(key)));
+                    job.builds = Object.entries(jobBuilds).map(([key, { artifacts }]) => `${key}$${artifacts.join(';')}`);
+                }
             });
         }
         return jobs;
