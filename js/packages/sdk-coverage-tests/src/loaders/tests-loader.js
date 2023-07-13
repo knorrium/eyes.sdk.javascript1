@@ -26,7 +26,8 @@ function loadOverrides(overrides) {
 
 async function loadTests(path, framework) {
   const code = transformTests(loadFile(path).toString())
-  runCode(code, framework.api)
+  var filename = path.substring(path.lastIndexOf('/') + 1)
+  runCode(code, framework.api, filename)
   return framework.context
 }
 

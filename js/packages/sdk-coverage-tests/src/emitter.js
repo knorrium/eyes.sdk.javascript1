@@ -145,7 +145,10 @@ function useEmitter() {
       },
     }
 
-    return new Proxy(function () {}, {
+    const base = function () {
+      return undefined
+    }
+    return new Proxy(base, {
       get(_target, prop, proxy) {
         if (prop in ref) return Reflect.get(ref, prop, proxy)
         const currentType = ref.type()

@@ -16,7 +16,7 @@ describe('cli-util', () => {
       assert.deepStrictEqual(getTestIndexesFromErrors([{}]), undefined)
     })
     it('should get test indexes for passed tests', () => {
-      const tests = {a: () => {}, b: () => {}, c: () => {}, d: () => {}}
+      const tests = {a: () => void 0, b: () => void 0, c: () => void 0, d: () => void 0}
       const errors = [{testIndex: 1}, {testIndex: 3}]
       assert.deepStrictEqual(getPassedTestIndexes({tests, errors}), [0, 2])
     })
