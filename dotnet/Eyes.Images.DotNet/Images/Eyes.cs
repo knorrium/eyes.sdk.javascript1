@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Applitools.Fluent;
 using Applitools.Commands;
@@ -192,7 +190,40 @@ namespace Applitools.Images
             ArgumentGuard.NotNull(image, nameof(image));
             return Check(Target.Image(image).Region(region));
         }
-
+        
+        /// <summary>
+        /// Perform visual validation for the current image.
+        /// </summary>
+        /// <param name="image">The image to perform visual validation for.</param>
+        /// <param name="region">The region to validate within the image.</param>
+        public AppImage CheckRegion(Bitmap image, Region region)
+        {
+            ArgumentGuard.NotNull(image, nameof(image));
+            return Check(Target.Image(image).Region(region));
+        }
+        
+        /// <summary>
+        /// Perform visual validation for the current image.
+        /// </summary>
+        /// <param name="path">The path to the image file to perform visual validation for.</param>
+        /// <param name="region">The region to validate within the image.</param>
+        public AppImage CheckRegionInFile(string path, Rectangle region)
+        {
+            ArgumentGuard.NotNull(path, nameof(path));
+            return Check(Target.File(path).Region(region));
+        }
+        
+        /// <summary>
+        /// Perform visual validation for the current image.
+        /// </summary>
+        /// <param name="path">The path to the image file to perform visual validation for.</param>
+        /// <param name="region">The region to validate within the image.</param>
+        public AppImage CheckRegionInFile(string path, Region region)
+        {
+            ArgumentGuard.NotNull(path, nameof(path));
+            return Check(Target.File(path).Region(region));
+        }
+        
         public AppImage Check(ICheckSettings checkSettings)
         {
             if (IsDisabled)

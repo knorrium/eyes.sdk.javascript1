@@ -24,6 +24,11 @@ namespace Applitools.Images
 
         public static ImagesCheckSettings Image(string path)
         {
+            return File(path);
+        }
+
+        public static ImagesCheckSettings File(string path)
+        {
             Bitmap image = new Bitmap(path);
             return new ImagesCheckSettings(image);
         }

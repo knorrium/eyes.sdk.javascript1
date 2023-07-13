@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Applitools.Utils;
+using Region = Applitools.Utils.Geometry.Region;
 
 namespace Applitools.Images
 {
@@ -31,6 +32,13 @@ namespace Applitools.Images
 
         Uri IImagesCheckTarget.ImageUri => imageUri_;
 
+        public ImagesCheckSettings Region(Region region)
+        {
+            ImagesCheckSettings clone = Clone_();
+            clone.UpdateTargetRegion(region.Rectangle);
+            return clone;
+        }
+        
         public ImagesCheckSettings Region(Rectangle region)
         {
             ImagesCheckSettings clone = Clone_();
@@ -61,7 +69,7 @@ namespace Applitools.Images
         protected override CheckSettings Clone()
         {
             ImagesCheckSettings clone = new ImagesCheckSettings();
-            base.PopulateClone_(clone);
+            PopulateClone_(clone);
             clone.image_ = this.image_;
             clone.imageUri_ = this.imageUri_;
             clone.base64_ = this.base64_;

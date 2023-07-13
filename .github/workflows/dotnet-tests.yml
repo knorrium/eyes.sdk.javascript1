@@ -53,7 +53,23 @@ jobs:
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
           mv core-alpine ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
           dotnet test Tests/Eyes.Selenium.UnitTests/Eyes.Selenium.UnitTests.csproj
-    
+
+  dotnet-test-images-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Images coverage tests
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          chmod +x ./genericTests_images.sh && ./genericTests_images.sh
+          
   dotnet-test-appium-generated:
     runs-on: ubuntu-latest
     steps:
