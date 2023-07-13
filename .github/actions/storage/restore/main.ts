@@ -30,15 +30,16 @@ async function main(): Promise<(string | undefined)[]> {
   }))
 
   async function restore(options: {paths: string[], name: string, fallbacks: string[], wait?: boolean}): Promise<string | undefined> {
-    console.log(options)
-    const key = await restoreCache(options.paths, options.name, options.fallbacks, {}, true)
-    if (key) {
+    // NOTE: restoreCache mutates paths argument, that makes it impossible to reuse
+    const paths = [...options.paths]
+    const restoredName = await restoreCache(options.paths, options.name, options.fallbacks, {}, true)
+    if (restoredName) {
       core.info(`cache was successfully restored with ${options.name}`)
-      return key
+      return restoredName
     } else if (wait) {
-      core.info(`waiting for cache with key ${key} to appear`)
+      core.info(`waiting for cache with name ${options.name} to appear`)
       await setTimeout(20_000)
-      return restore(options)
+      return restore({...options, paths})
     }
   }
 }
