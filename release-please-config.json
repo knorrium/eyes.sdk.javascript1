@@ -1216,7 +1216,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1247,7 +1251,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1267,7 +1275,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1287,7 +1299,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1307,7 +1323,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1327,7 +1347,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1348,7 +1372,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "releases": [
@@ -1369,7 +1397,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1404,7 +1436,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1439,7 +1475,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1474,7 +1514,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1509,7 +1553,11 @@
             "./src/main/resources",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1543,7 +1591,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1577,7 +1629,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1624,7 +1680,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
@@ -1671,7 +1731,11 @@
             "./target",
             "/home/runner/.m2/repository"
           ],
-          "key": "{{component}}/{{environment}}"
+          "key": "{{component}}/{{environment}}",
+          "builds": [
+            "js/core/x64/{{environemnt}}",
+            "js/core/x64/{{environemnt}}"
+          ]
         }
       ],
       "tests": [
