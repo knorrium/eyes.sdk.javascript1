@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.6.2...js/ec-client@1.7.0) (2023-07-13)
+
+
+### Features
+
+* added internal function to prepare environment before running tunnels ([3d19ec3](https://github.com/applitools/eyes.sdk.javascript1/commit/3d19ec3b274702ffdf26b766b7351ec1f4b66a6d))
+
+
+### Dependencies
+
+* @applitools/driver bumped from 1.13.0 to 1.13.1
+  #### Bug Fixes
+
+  * replaced NML prefixed appium env vars with APPLITOOLS prefixed ([8905b90](https://github.com/applitools/eyes.sdk.javascript1/commit/8905b90e7c4ec6e310f6e52c03bbcc7acf1ff2ab))
+* @applitools/tunnel-client bumped from 1.0.2 to 1.1.0
+  #### Features
+
+  * added internal function to prepare environment before running tunnels ([3d19ec3](https://github.com/applitools/eyes.sdk.javascript1/commit/3d19ec3b274702ffdf26b766b7351ec1f4b66a6d))
+
+
+  #### Bug Fixes
+
+  * prevent tunnel binaries from overriding itself ([5609a36](https://github.com/applitools/eyes.sdk.javascript1/commit/5609a36c93622c9b8eeb4b4ab25f95907df8baa4))
+
+
+
+* @applitools/spec-driver-webdriver bumped from 1.0.37 to 1.0.38
+
+* @applitools/execution-grid-tunnel bumped to 2.1.8
+
+
 ## [1.6.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.6.1...js/ec-client@1.6.2) (2023-07-10)
 
 

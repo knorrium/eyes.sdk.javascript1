@@ -1,6 +1,6 @@
 {
   "name": "@applitools/nml-client",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Client to integrate the SDKs to the Native Mobile Library (NML)",
   "homepage": "https://applitools.com",
   "bugs": {
@@ -41,7 +41,7 @@
     "@applitools/utils": "1.5.0"
   },
   "devDependencies": {
-    "@applitools/spec-driver-webdriverio": "^1.5.6",
+    "@applitools/spec-driver-webdriverio": "^1.5.7",
     "@applitools/test-server": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",

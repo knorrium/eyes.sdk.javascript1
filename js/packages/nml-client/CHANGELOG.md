@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.1...js/nml-client@1.5.2) (2023-07-13)
+
+
+### Bug Fixes
+
+* replaced NML prefixed appium env vars with APPLITOOLS prefixed ([8905b90](https://github.com/applitools/eyes.sdk.javascript1/commit/8905b90e7c4ec6e310f6e52c03bbcc7acf1ff2ab))
+
+
+### Dependencies
+
+
+
 ## [1.5.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.0...js/nml-client@1.5.1) (2023-07-05)
 
 

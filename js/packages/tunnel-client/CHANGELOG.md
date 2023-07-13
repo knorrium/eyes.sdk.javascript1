@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.2...js/tunnel-client@1.1.0) (2023-07-13)
+
+
+### Features
+
+* added internal function to prepare environment before running tunnels ([3d19ec3](https://github.com/applitools/eyes.sdk.javascript1/commit/3d19ec3b274702ffdf26b766b7351ec1f4b66a6d))
+
+
+### Bug Fixes
+
+* prevent tunnel binaries from overriding itself ([5609a36](https://github.com/applitools/eyes.sdk.javascript1/commit/5609a36c93622c9b8eeb4b4ab25f95907df8baa4))
+
+
+### Dependencies
+
+* @applitools/execution-grid-tunnel bumped to 2.1.8
+
+
 ## [1.0.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.1...js/tunnel-client@1.0.2) (2023-07-10)
 
 

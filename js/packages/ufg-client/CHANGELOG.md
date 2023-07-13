@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.4.0...js/ufg-client@1.4.1) (2023-07-13)
+
+
+### Bug Fixes
+
+* fixed an issue when an inability to freeze a gif image caused sdk crush ([dca9ead](https://github.com/applitools/eyes.sdk.javascript1/commit/dca9eadd2bab39d1fc20b99d997879075691f0ee))
+* fixed issue when sdk crushed due to invalid resource url in ufg mode ([8b44958](https://github.com/applitools/eyes.sdk.javascript1/commit/8b449580a930753dd2735befdcdb4c46e184b2a9))
+
 ## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.3.0...js/ufg-client@1.4.0) (2023-07-10)
 
 

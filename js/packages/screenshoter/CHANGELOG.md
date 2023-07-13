@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.3...js/screenshoter@3.8.4) (2023-07-13)
+
+
+### Dependencies
+
+
+
 ## [3.8.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.2...js/screenshoter@3.8.3) (2023-07-10)
 
 
