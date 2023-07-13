@@ -2,8 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 from typing import TYPE_CHECKING
 
-from ..common.object_registry import ObjectRegistry, RefId
-from ..common.optional_deps import PlaywrightLocator
+from playwright.sync_api import Locator
+
+from applitools.common.object_registry import ObjectRegistry, RefId
 
 if TYPE_CHECKING:
     from typing import Text
@@ -23,7 +24,7 @@ class PlaywrightSpecDriverObjectRegistry(ObjectRegistry):
 
     def marshal_element(self, element):
         # USDK needs to differentiate Locators, to call findElements to resolve them
-        obj_type = "selector" if isinstance(element, PlaywrightLocator) else "element"
+        obj_type = "selector" if isinstance(element, Locator) else "element"
         return {"applitools-ref-id": self._obj2id(element), "type": obj_type}
 
     def demarshal_element(self, obj):

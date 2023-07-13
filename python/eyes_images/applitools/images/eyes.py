@@ -12,18 +12,17 @@ from applitools.common.schema import (
 )
 from applitools.common.selenium import Configuration
 from applitools.common.target import ImageTarget
-from applitools.images.extract_text import OCRRegion, TextRegionSettings
-from applitools.images.fluent import Image, ImagesCheckSettings, Target
 
+from .extract_text import OCRRegion, TextRegionSettings
+from .fluent import Image, ImagesCheckSettings, Target
 from .runner import ClassicRunner
 
 if TYPE_CHECKING:
     from typing import List, Optional, Text
 
     from applitools.common import TestResults
+    from applitools.common.extract_text import PATTERN_TEXT_REGIONS
     from applitools.common.utils.custom_types import ViewPort
-
-    from ..common.extract_text import PATTERN_TEXT_REGIONS
 
 
 class Eyes(EyesBase):

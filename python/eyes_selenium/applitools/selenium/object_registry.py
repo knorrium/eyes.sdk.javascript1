@@ -2,10 +2,11 @@ from __future__ import absolute_import, division, print_function
 
 from typing import TYPE_CHECKING
 
-from ..common.object_registry import ObjectRegistry
+from applitools.common.object_registry import ObjectRegistry
 
 if TYPE_CHECKING:
-    from ..common.optional_deps import WebDriver, WebElement
+    from selenium.webdriver.remote.webdriver import WebDriver
+    from selenium.webdriver.remote.webelement import WebElement
 
 
 class SeleniumWebdriverObjectRegistry(ObjectRegistry):

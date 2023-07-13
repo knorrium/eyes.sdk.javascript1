@@ -19,9 +19,8 @@ def chrome(eyes_runner_class):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     if isinstance(eyes_runner_class, VisualGridRunner):
-        if LEGACY_SELENIUM:
-            options.capabilities.pop("platform")
-            options.capabilities.pop("version")
+        options.capabilities.pop("platform", None)
+        options.capabilities.pop("version", None)
         from applitools.selenium import Eyes
 
         url = Eyes.get_execution_cloud_url()
@@ -127,11 +126,9 @@ def safari_12(sauce_url, legacy, name_of_test):
         return webdriver.Remote(sauce_url, capabilities)
     else:
         if legacy:
-            if legacy:
-                pytest.skip("Safari 12 can only be accessed in legacy Selenium 3")
+            pytest.skip("Safari 12 can only be accessed in legacy Selenium 3")
         else:
             raise NotImplementedError
-        return webdriver.Remote(command_executor=sauce_url, options=options)
 
 
 @pytest.fixture

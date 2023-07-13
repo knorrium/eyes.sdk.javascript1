@@ -147,12 +147,12 @@ class TestResults(object):
 
     def delete(self):
         # type: () -> None
-        from .__version__ import __version__
+        from .. import common
         from .command_executor import CommandExecutor
         from .runner import EyesRunner
 
         cmd = CommandExecutor.get_instance(
-            EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, __version__
+            EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, common.__version__
         )
         cmd.core_delete_test(self)
 

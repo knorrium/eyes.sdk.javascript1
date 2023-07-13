@@ -1,4 +1,9 @@
+import os
+import sys
+
 import pytest
+
+no_playwright = sys.version_info < (3, 7) or os.path.exists("/etc/alpine-release")
 
 
 def test_core_internal_imports():
@@ -109,6 +114,7 @@ def test_selenium_internal_imports():
     )
 
 
+@pytest.mark.skipif(no_playwright, reason="Test requires playwright support")
 def test_playwright_internal_imports():
     from applitools.playwright.eyes import Eyes
     from applitools.playwright.runner import ClassicRunner, VisualGridRunner

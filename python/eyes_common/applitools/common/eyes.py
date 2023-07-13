@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional, Text, Tuple, Union, overload
 
 from six import string_types
 
+from .. import common
 from ..common.command_executor import CommandExecutor
 from ..common.schema import (
     demarshal_locate_result,
@@ -11,7 +12,6 @@ from ..common.schema import (
     demarshal_test_results,
 )
 from . import EyesError, FailureReports, RectangleSize, TestFailedError, deprecated
-from .__version__ import __version__
 from .config import Configuration
 from .fluent.check_settings import CheckSettings
 from .fluent.web_target import WebTarget
@@ -76,7 +76,7 @@ class EyesBase(object):
         Must return version of SDK. (e.g. selenium, visualgrid) in next format:
             "eyes.{package}.python/{lib_version}"
         """
-        return "{}/{}".format(self._runner.BASE_AGENT_ID, __version__)
+        return "{}/{}".format(self._runner.BASE_AGENT_ID, common.__version__)
 
     @property
     def full_agent_id(self):
@@ -322,7 +322,9 @@ class WebEyes(EyesBase):
     def get_viewport_size(cls, driver):
         # type: (Union[WebDriver, Page]) -> RectangleSize
         cmd = CommandExecutor.get_instance(
-            cls._DefaultRunner.Protocol, cls._DefaultRunner.BASE_AGENT_ID, __version__
+            cls._DefaultRunner.Protocol,
+            cls._DefaultRunner.BASE_AGENT_ID,
+            common.__version__,
         )
         result = cmd.core_get_viewport_size(driver)
         return RectangleSize.from_(result)
@@ -331,7 +333,9 @@ class WebEyes(EyesBase):
     def set_viewport_size(cls, driver, viewport_size):
         # type: (Union[WebDriver, Page], ViewPort) -> None
         cmd = CommandExecutor.get_instance(
-            cls._DefaultRunner.Protocol, cls._DefaultRunner.BASE_AGENT_ID, __version__
+            cls._DefaultRunner.Protocol,
+            cls._DefaultRunner.BASE_AGENT_ID,
+            common.__version__,
         )
         cmd.core_set_viewport_size(driver, viewport_size)
 

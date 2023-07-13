@@ -1,9 +1,9 @@
 import pytest
 from mock import ANY, MagicMock, call, patch
 
+from applitools.common import __version__
 from applitools.common.command_executor import ManagerType
 from applitools.selenium import ClassicRunner, RunnerOptions, VisualGridRunner
-from applitools.selenium.__version__ import __version__
 from applitools.selenium.protocol import SeleniumWebDriver
 
 

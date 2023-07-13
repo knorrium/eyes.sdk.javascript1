@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from typing import TYPE_CHECKING
 
-from .__version__ import __version__
+from .. import common
 from .command_executor import CommandExecutor, ManagerType
 from .config import DEFAULT_ALL_TEST_RESULTS_TIMEOUT
 from .connection import TimeoutError
@@ -48,7 +48,7 @@ class EyesRunner(object):
         self._connection_configuration = None
         self._remove_duplicate_tests = remove_duplicate_tests
         self._commands = CommandExecutor.get_instance(
-            self.Protocol, self.BASE_AGENT_ID, __version__
+            self.Protocol, self.BASE_AGENT_ID, common.__version__
         )
         if is_legacy:
             self._ref = self._commands.core_make_manager(
@@ -65,7 +65,9 @@ class EyesRunner(object):
 
     @classmethod
     def get_server_info(cls):
-        cmd = CommandExecutor.get_instance(cls.Protocol, cls.BASE_AGENT_ID, __version__)
+        cmd = CommandExecutor.get_instance(
+            cls.Protocol, cls.BASE_AGENT_ID, common.__version__
+        )
         result = cmd.server_get_info()
         return demarshal_server_info(result)
 

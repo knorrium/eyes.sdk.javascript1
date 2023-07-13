@@ -3,7 +3,7 @@ import os
 import mock
 import pytest
 
-from applitools.selenium import __version__
+from applitools.common import __version__
 
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def pytest_generate_tests(metafunc):
 
 def test_base_agent_id(eyes):
     _, version = eyes.base_agent_id.split("/")
-    assert version == __version__.__version__
+    assert version == __version__
 
 
 def test_is_disabled_True(eyes):

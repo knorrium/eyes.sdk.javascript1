@@ -4,7 +4,10 @@ from typing import List, Optional, Text, Union
 
 import attr
 
+from .. import common
 from . import ProxySettings
+from .command_executor import CommandExecutor
+from .runner import EyesRunner
 from .utils import argument_guard
 from .utils.general_utils import get_env_with_prefix
 
@@ -34,12 +37,8 @@ class _EnabledBatchClose(object):
         return self
 
     def close(self):
-        from .__version__ import __version__
-        from .command_executor import CommandExecutor
-        from .runner import EyesRunner
-
         cmd = CommandExecutor.get_instance(
-            EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, __version__
+            EyesRunner.Protocol, EyesRunner.BASE_AGENT_ID, common.__version__
         )
         cmd.core_close_batch(self)
 

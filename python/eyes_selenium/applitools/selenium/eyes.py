@@ -14,11 +14,15 @@ from typing import TYPE_CHECKING
 
 from six import string_types
 
-from ..common import EyesError, ProxySettings, __version__
-from ..common.command_executor import CommandExecutor
-from ..common.ec_client_settings import ECClientCapabilitiesOptions, ECClientSettings
-from ..common.selenium.config import Configuration
-from ..common.utils.general_utils import get_env_with_prefix
+from applitools import common
+from applitools.common import EyesError, ProxySettings
+from applitools.common.command_executor import CommandExecutor
+from applitools.common.ec_client_settings import (
+    ECClientCapabilitiesOptions,
+    ECClientSettings,
+)
+from applitools.common.selenium.config import Configuration
+from applitools.common.utils.general_utils import get_env_with_prefix
 
 if TYPE_CHECKING:
     from typing import Optional, Text, Union
@@ -33,7 +37,9 @@ class Eyes(WebEyes):
     def get_execution_cloud_url(cls, api_key=None, server_url=None, proxy=None):
         # type: (Text, Text, ProxySettings) -> Text
         cmd = CommandExecutor.get_instance(
-            cls._DefaultRunner.Protocol, cls._DefaultRunner.BASE_AGENT_ID, __version__
+            cls._DefaultRunner.Protocol,
+            cls._DefaultRunner.BASE_AGENT_ID,
+            common.__version__,
         )
         result = cmd.core_make_ec_client(
             ECClientSettings(ECClientCapabilitiesOptions(api_key, server_url), proxy)

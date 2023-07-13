@@ -1,12 +1,15 @@
 import os.path
 import re
+import sys
 from subprocess import call
 from subprocess import check_output as run
 
 import pytest
 
+from applitools.common import __version__ as common_version
 from applitools.core_universal import __version__ as core_universal_version
-from applitools.images.__version__ import __version__ as eyes_images_version
+from applitools.images import __version__ as eyes_images_version
+from applitools.selenium import __version__ as eyes_selenium_version
 from EyesLibrary.__version__ import __version__ as eyes_robotframework_version
 
 here = os.path.dirname(__file__)
@@ -46,7 +49,15 @@ def core_universal_installed(venv):
 
 
 @pytest.fixture
-def eyes_images_installed(venv, core_universal_installed):
+def eyes_common_installed(venv, core_universal_installed):
+    file_name = "eyes_common-{}-py2.py3-none-any.whl".format(common_version)
+    eyes_common = os.path.join(root_dir, "eyes_common", "dist", file_name)
+    pip = [venv.python, "-m", "pip", "install"]
+    run(pip + [eyes_common], env=env)
+
+
+@pytest.fixture
+def eyes_images_installed(venv, eyes_common_installed):
     file_name = "eyes_images-{}-py2.py3-none-any.whl".format(eyes_images_version)
     eyes_images = os.path.join(root_dir, "eyes_images", "dist", file_name)
     pip = [venv.python, "-m", "pip", "install"]
@@ -54,9 +65,17 @@ def eyes_images_installed(venv, core_universal_installed):
 
 
 @pytest.fixture
-def eyes_selenium_installed(venv, eyes_images_installed):
-    file_name = "eyes_selenium-{}-py2.py3-none-any.whl".format(eyes_images_version)
+def eyes_selenium_installed(venv, eyes_common_installed):
+    file_name = "eyes_selenium-{}-py2.py3-none-any.whl".format(eyes_selenium_version)
     eyes_selenium = os.path.join(root_dir, "eyes_selenium", "dist", file_name)
+    pip = [venv.python, "-m", "pip", "install"]
+    run(pip + [eyes_selenium], env=env)
+
+
+@pytest.fixture
+def eyes_playwright_installed(venv, eyes_common_installed):
+    file_name = "eyes_playwright-{}-py3-none-any.whl".format(eyes_selenium_version)
+    eyes_selenium = os.path.join(root_dir, "eyes_playwright", "dist", file_name)
     pip = [venv.python, "-m", "pip", "install"]
     run(pip + [eyes_selenium], env=env)
 
@@ -100,7 +119,7 @@ def test_eyes_images_has_license(venv, eyes_images_installed):
 
 
 def test_setup_eyes_selenium(venv, eyes_selenium_installed):
-    assert str(venv.get_version("eyes-selenium")) == eyes_images_version
+    assert str(venv.get_version("eyes-selenium")) == eyes_selenium_version
     run([venv.python, "-c", "from applitools.selenium import *"], env=env)
 
     all_packages = _get_venv_packages(venv)
@@ -110,6 +129,14 @@ def test_setup_eyes_selenium(venv, eyes_selenium_installed):
 
 def test_eyes_selenium_has_license(venv, eyes_selenium_installed):
     license = _get_venv_package_license(venv, "eyes-selenium")
+    assert "SDK LICENSE AGREEMENT" in license
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 7), reason="Playwright is not supported here"
+)
+def test_eyes_playwright_has_license(venv, eyes_playwright_installed):
+    license = _get_venv_package_license(venv, "eyes-playwright")
     assert "SDK LICENSE AGREEMENT" in license
 
 

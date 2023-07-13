@@ -6,9 +6,9 @@ import sys
 import traceback
 from typing import TYPE_CHECKING
 
-from applitools.common.command_context import CommandContext
+from playwright.sync_api import Locator
 
-from ..common.optional_deps import PlaywrightLocator
+from applitools.common.command_context import CommandContext
 
 camel_to_snake = re.compile(r"([A-Z]+)")
 if TYPE_CHECKING:
@@ -141,7 +141,7 @@ class PlaywrightSpecDriverCommandContext(CommandContext):
         if isinstance(arg, dict):
             if "applitools-ref-id" in arg:
                 node = self.object_registry.demarshal_element(arg)
-                if isinstance(node, PlaywrightLocator):
+                if isinstance(node, Locator):
                     return node.element_handle()
                 else:
                     return node

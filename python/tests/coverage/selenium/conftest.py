@@ -34,7 +34,10 @@ def driver_builder(chrome):
 @fixture
 def driver(driver_builder):
     yield driver_builder
-    driver_builder.quit()
+    try:
+        driver_builder.quit()
+    except WebDriverException:
+        pass
 
 
 @fixture

@@ -5,6 +5,7 @@ PYTEST=python -m pytest $(PYTEST_FLAGS)
 
 install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_images_tests generate_selenium_tests generate_appium_tests generate_playwright_tests
 	python -m pip install --upgrade --editable core_universal
+	python -m pip install --upgrade --editable eyes_common
 	python -m pip install --upgrade --editable eyes_images
 	python -m pip install --upgrade --editable eyes_selenium
 	python -m pip install --upgrade --editable eyes_robotframework
@@ -31,17 +32,24 @@ install_core_universal: core_universal/dist
 	python -m pip install --no-index --find-links=file:core_universal/dist/ core_universal
 
 
-install_eyes_images: eyes_images/dist install_core_universal
+install_eyes_common: eyes_common/dist install_core_universal
+	python -m pip install eyes_common/dist/*
+
+
+install_eyes_images: eyes_images/dist install_eyes_common
 	python -m pip install eyes_images/dist/*
 
 
-install_eyes_playwright: eyes_playwright/dist install_eyes_images
+install_eyes_playwright: eyes_playwright/dist install_eyes_common
+ifeq ($(shell python -c 'import sys,os; print(sys.version_info<(3,7) or os.path.exists("/etc/alpine-release"))'),True)
+	@echo Playwright is not available in `python --version`
+else
 	python -m pip install 'playwright<1.34'
 	python -m pip install eyes_playwright/dist/*
 	python -m playwright install
+endif
 
-install_eyes_selenium: eyes_selenium/dist install_eyes_images
-	pip install 'urllib3<2.0.2'  # urllib3 2.0.2 breaks appium 2.9.0, remove this line when appium is fixed
+install_eyes_selenium: eyes_selenium/dist install_eyes_common
 	python -m pip install eyes_selenium/dist/*
 
 
@@ -58,7 +66,7 @@ install_unit_tests_requirements: install_tests_requirements
 
 
 install_functional_tests_requirements: install_tests_requirements node_modules
-	python -m pip install 'pillow' "webdriver-manager==3.7.0; python_version>='3'"
+	python -m pip install 'pillow' "webdriver-manager==3.7.0; python_version>='3'" "futures<4; python_version<'3.0'"
 
 
 install_installation_tests_requirements: install_tests_requirements node_modules
@@ -90,16 +98,49 @@ generate_playwright_tests: node_modules
 
 
 uninstall:
-	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes_playwright eyes-images core-universal
+	python -m pip uninstall -y eyes-robotframework eyes-selenium eyes_playwright eyes-images eyes-common core-universal
+
+
+publish_core_universal: core_universal/dist install_publish_requirements
+	twine upload --verbose core_universal/dist/*
+
+
+publish_testing_core_universal: core_universal/dist install_publish_requirements
+	twine upload --verbose --repository testpypi core_universal/dist/*
+
+
+publish_eyes_common: eyes_common/dist install_publish_requirements
+	twine upload --verbose eyes_common/dist/*
+
+
+publish_testing_eyes_common: eyes_common/dist install_publish_requirements
+	twine upload --verbose --repository testpypi  eyes_common/dist/*
+
+
+publish_eyes_images: eyes_images/dist install_publish_requirements
+	twine upload --verbose eyes_images/dist/*
+
+
+publish_testing_eyes_images: eyes_images/dist install_publish_requirements
+	twine upload --verbose --repository testpypi  eyes_images/dist/*
 
 
 publish_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	cd eyes_images && npx bongo send-release-notification --verbose --name python --releaseVersion "${SDK_VERSION}"
-	twine upload --verbose eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
+	cd eyes_selenium && npx bongo send-release-notification --verbose --name python --releaseVersion "${SDK_VERSION}"
+	twine upload --verbose eyes_selenium/dist/*
 
 
 publish_testing_eyes_selenium: eyes_images/dist eyes_playwright/dist eyes_selenium/dist install_publish_requirements
-	twine upload --verbose --repository testpypi eyes_images/dist/* eyes_playwright/dist/* eyes_selenium/dist/*
+	twine upload --verbose --repository testpypi eyes_selenium/dist/*
+
+
+publish_eyes_playwright: eyes_playwright/dist install_publish_requirements
+	cd eyes_playwright && npx bongo send-release-notification --verbose --name python_playwright --releaseVersion "${SDK_VERSION}"
+	twine upload --verbose eyes_playwright/dist/*
+
+
+publish_testing_eyes_playwright: eyes_playwright/dist install_publish_requirements
+	twine upload --verbose --repository testpypi  eyes_playwright/dist/*
 
 
 publish_eyes_robotframework: eyes_robotframework/dist install_publish_requirements
@@ -111,15 +152,7 @@ publish_testing_eyes_robotframework: eyes_robotframework/dist install_publish_re
 	twine upload --verbose --repository testpypi eyes_robotframework/dist/*
 
 
-publish_core_universal: core_universal/dist install_publish_requirements
-	twine upload --verbose core_universal/dist/*
-
-
-publish_testing_core_universal: core_universal/dist install_publish_requirements
-	twine upload --verbose --repository testpypi core_universal/dist/*
-
-
-dist: core_universal/dist eyes_images/dist eyes_playwright/dist eyes_selenium/dist eyes_robotframework/dist
+dist: core_universal/dist eyes_common/dist eyes_images/dist eyes_playwright/dist eyes_selenium/dist eyes_robotframework/dist
 
 
 core_universal/dist:
@@ -127,6 +160,11 @@ core_universal/dist:
 	set -e; cd core_universal; \
 	for PLAT in macosx_10_7_x86_64 macosx_11_0_arm64 manylinux1_x86_64 manylinux2014_aarch64 musllinux_1_2_x86_64 win_amd64; \
 	do python setup.py bdist_wheel --usdk-build-dir=${USDK_BUILD_DIR} --plat-name=$$PLAT; rm -rf build; done
+
+
+eyes_common/dist:
+	python -m pip install --upgrade wheel
+	cd eyes_common && python setup.py bdist_wheel
 
 
 eyes_images/dist:
@@ -150,7 +188,7 @@ eyes_robotframework/dist:
 
 
 clean:
-	for PACK in core_universal eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
+	for PACK in core_universal eyes_common eyes_images eyes_playwright eyes_selenium eyes_robotframework; \
 	do rm -rf $$PACK/dist $$PACK/build $$PACK/$$PACK.egg-info; done
 	rm -rf node_modules
 
@@ -159,14 +197,14 @@ gen_robot_docs:
 	python -m robot.libdoc --format html EyesLibrary docs/eyes_robotframework/keywords.html
 
 
-unit_tests: install_eyes_robotframework install_unit_tests_requirements
+unit_tests: install_eyes_images install_eyes_playwright install_eyes_robotframework install_unit_tests_requirements
 	$(PYTEST) -n6 tests/unit
 
 
 eyes_selenium_unit_tests: unit_tests
 
 
-eyes_selenium_installation_tests: install_eyes_robotframework install_installation_tests_requirements
+eyes_selenium_installation_tests: install_eyes_images install_eyes_robotframework install_installation_tests_requirements
 	$(PYTEST) tests/test_installation.py
 
 
