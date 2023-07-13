@@ -9,6 +9,17 @@ on:
       - ready_for_review
     paths:
       - 'dotnet/**'
+  workflow_call:
+    inputs:
+      ref:
+        description: branch to test
+        required: false
+        type: string
+      core_version:
+        description: core version
+        required: false
+        type: string
+        default: "3.6.0"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -16,7 +27,7 @@ env:
   APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-  CORE_VERSION: "3.6.0"
+  CORE_VERSION: ${{ inputs.core_version || '3.6.0' }}
 
 jobs:
 
@@ -28,6 +39,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -41,6 +54,8 @@ jobs:
     container: "alpine:latest"
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - run: apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
       - run: apk add chromium chromium-chromedriver xvfb xvfb-run
       - run: mkdir -p /usr/share/dotnet && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
@@ -58,6 +73,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -74,13 +91,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
-      - name: Run Selenium coverage tests
+      - name: Run Appium coverage tests
         run: |
           cd dotnet
           chmod +x ./download_core_linux.sh && ./download_core_linux.sh
@@ -90,13 +109,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
-      - name: Run Selenium coverage tests
+      - name: Run Selenium 3 coverage tests
         run: |
           cd dotnet
           chmod +x ./download_core_linux.sh && ./download_core_linux.sh
@@ -106,13 +127,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
-      - name: Run Selenium4 coverage tests
+      - name: Run Selenium 4 coverage tests
         run: |
           cd dotnet
           chmod +x ./download_core_linux.sh && ./download_core_linux.sh
@@ -122,6 +145,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3
         with:
           node-version: 16
