@@ -31,7 +31,12 @@ runs:
       shell: ${{inputs.shell}}
       run: |
         if [ -e .env ]; then cat .env >> $GITHUB_ENV; fi
-    - name: Build package
+    - name: Lint
+      working-directory: ${{inputs.working-directory}}
+      shell: ${{inputs.shell}}
+      run: |
+        if [  "$(jq -r .scripts.lint ./package.json)" != "null"  ]; then yarn run lint; fi
+    - name: Build
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
