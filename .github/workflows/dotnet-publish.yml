@@ -12,7 +12,12 @@ on:
         description: Core version
         type: string
         required: true
-        default: "3.6.0"
+        default: "3.6.1"
+      core_nuget_version:
+        description: Core NuGet version
+        type: string
+        required: false
+        default: "3.6.1"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -22,6 +27,7 @@ env:
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
   GITHUB_TOKEN: ${{ secrets.RUN_GITHUB_TOKEN }}
   CORE_VERSION: ${{ inputs.core_version }}
+  CORE_NUGET_VERSION: ${{ inputs.core_nuget_version }}
   NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
@@ -36,17 +42,11 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Download cores
+      - name: Update versions
         shell: pwsh
         run: |
           cd dotnet
-          ./download_cores.ps1 &&
           ./update_core_versions.ps1
-      - name: Update versions
-        id: update_versions
-        shell: bash
-        run: |
-          cd dotnet
           python updateChangelogAndProjectFiles.py
       - name: Update SCM
         id: create_release_branch
@@ -71,6 +71,11 @@ jobs:
         with:
           name: UPDATED_PROJECTS.txt
           path: dotnet/UPDATED_PROJECTS.txt
+      - name: Store SEND_MAIL.json
+        uses: actions/upload-artifact@master
+        with:
+          name: SEND_MAIL.json
+          path: dotnet/SEND_MAIL.json
 
   test:
     if: ${{ inputs.run_tests }}
@@ -101,9 +106,19 @@ jobs:
         with:
           name: UPDATED_PROJECTS.txt
           path: dotnet
+      - name: Restore SEND_MAIL.json
+        uses: actions/download-artifact@master
+        with:
+          name: SEND_MAIL.json
+          path: dotnet
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
+      - name: Download cores
+        shell: pwsh
+        run: |
+          cd dotnet
+          ./download_cores.ps1
       - name: Create nugets
         shell: pwsh
         run: |

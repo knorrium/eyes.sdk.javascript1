@@ -1,3 +1,7 @@
+## [Eyes.Image.Core 3.6.1.1] - 2023-07-14
+### Updated
+- Server Core to 3.6.1
+
 ## [Eyes.Image.Core 3.6.1] - 2023-07-13
 ### Updated
 - Server Core to 3.6.1
