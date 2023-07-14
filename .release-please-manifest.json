@@ -29,11 +29,7 @@
   "js/packages/eyes-browser-extension": "0.3.4",
   "js/packages/eyes-storybook": "3.36.1",
   "js/packages/eyes-cypress": "3.34.2",
-  "java/eyes.sdk.core": "5.62.0",
-  "java/eyes.common.java": "5.62.0",
-  "java/eyes.connectivity.java": "5.62.0",
-  "java/eyes.selenium.common": "5.62.0",
-  "java/eyes.ufg.java": "5.62.0",
+
   "java/eyes.universal.core/eyes-universal-core": "5.62.0",
   "java/eyes.universal.core/eyes-universal-core-binaries": "5.62.0",
   "java/eyes.universal.core/eyes-universal-core-win": "5.62.0",
@@ -41,8 +37,13 @@
   "java/eyes.universal.core/eyes-universal-core-linux": "5.62.0",
   "java/eyes.universal.core/eyes-universal-core-alpine": "5.62.0",
   "java/eyes.universal.core/eyes-universal-core-arm": "5.62.0",
+  "java/eyes.sdk.core": "5.62.0",
+  "java/eyes.connectivity.java": "5.62.0",
+  "java/eyes.ufg.java": "5.62.0",
+  "java/eyes.common.java": "5.62.0",
+  "java/eyes.selenium.common": "5.62.0",
+  "java/eyes.images.java": "5.62.0",
   "java/eyes.selenium.java": "5.62.0",
   "java/eyes.appium.java": "5.62.0",
-  "java/eyes.images.java": "5.62.0",
   "java/eyes.playwright.java": "5.62.0"
 }
