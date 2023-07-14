@@ -122,11 +122,11 @@ jobs:
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
-      - name: Queue
-        if: ${{matrix.queue}}
-        uses: ./.github/actions/queue
+      - name: semaphore
+        if: ${{matrix.semaphore}}
+        uses: ./.github/actions/semaphore
         with:
-          name: ${{matrix.queue}}
+          name: ${{matrix.semaphore}}
           max-parallel: 3
       - name: Run tests
         uses: ./.github/actions/js/test
@@ -272,11 +272,11 @@ jobs:
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
-      - name: Queue
-        if: ${{matrix.queue}}
-        uses: ./.github/actions/queue
+      - name: Semaphore
+        if: ${{matrix.semaphore}}
+        uses: ./.github/actions/semaphore
         with:
-          name: ${{matrix.queue}}
+          name: ${{matrix.semaphore}}
           max-parallel: 5
       - name: Run Tests
         uses: ./.github/actions/java/tests/

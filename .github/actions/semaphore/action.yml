@@ -1,11 +1,11 @@
-name: Queue
+name: Semaphore
 
 inputs:
   name:
-    description: name of the queue
+    description: name of the semaphore
     type: string
   max-parallel:
-    description: max number of parallel jobs to run for the queue
+    description: maximum bandwidth of the semaphore
     type: number
   token:
     description: github access token

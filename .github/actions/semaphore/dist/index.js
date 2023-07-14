@@ -4057,8 +4057,8 @@ var exec = __nccwpck_require__(514);
 function makeTask(options) {
     const cwd = options.cwd;
     const token = options.token;
-    const queue = options.name;
-    const branch = options.branch || 'internal/action-queue';
+    const name = options.name;
+    const branch = options.branch || 'internal/action-semaphore';
     const maxParallel = Math.max(1, options.maxParallel || 1);
     const id = options.id || (0,external_crypto_.randomUUID)();
     let anchor;
@@ -4071,21 +4071,21 @@ function makeTask(options) {
         catch {
             await (0,exec.exec)(`${cloneCommand} --depth=1`);
         }
-        await (0,exec.exec)(`git config user.email "action-queue@applitools.com"`, [], { cwd });
-        await (0,exec.exec)(`git config user.name "queue-bot"`, [], { cwd });
+        await (0,exec.exec)(`git config user.email "action-semaphore@applitools.com"`, [], { cwd });
+        await (0,exec.exec)(`git config user.name "semaphore-bot"`, [], { cwd });
     }
     async function start() {
-        await (0,exec.exec)(`git commit -m "queue: ${queue} start ${id}" --allow-empty --no-verify`, [], { cwd });
+        await (0,exec.exec)(`git commit -m "semaphore: ${name} start ${id}" --allow-empty --no-verify`, [], { cwd });
         await sync();
         const { stdout } = await (0,exec.getExecOutput)(`git log --format="tformat:%h" -n 1`, [], { cwd });
         anchor = stdout.trim();
     }
     async function stop() {
-        await (0,exec.exec)(`git commit -m "queue: ${queue} stop ${id}" --allow-empty --no-verify`, [], { cwd });
+        await (0,exec.exec)(`git commit -m "semaphore: ${name} stop ${id}" --allow-empty --no-verify`, [], { cwd });
         await sync();
     }
     async function wait() {
-        const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}^ --reverse --format="tformat:%s" --grep="^queue: ${queue}" --since="3 hours ago"`, [], { cwd });
+        const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}^ --reverse --format="tformat:%s" --grep="^semaphore: ${name}" --since="3 hours ago"`, [], { cwd });
         let count = stdout.trim().split('\n').reduce((count, log) => {
             if (log.includes('start'))
                 return count + 1;
@@ -4096,7 +4096,7 @@ function makeTask(options) {
         while (count >= maxParallel) {
             await (0,promises_namespaceObject.setTimeout)(10000);
             await (0,exec.exec)(`git pull --rebase`, [], { cwd });
-            const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}.. --reverse --format="tformat:%h" --grep="^queue: ${queue} stop"`, [], { cwd });
+            const { stdout } = await (0,exec.getExecOutput)(`git log ${anchor}.. --reverse --format="tformat:%h" --grep="^semaphore: ${name} stop"`, [], { cwd });
             if (stdout) {
                 const hashes = stdout.trim().split('\n');
                 count -= hashes.length;
@@ -4135,7 +4135,7 @@ run()
     core.setFailed(err.message);
 });
 async function run() {
-    const cwd = external_path_.join(external_os_.tmpdir(), 'queue-repo');
+    const cwd = external_path_.join(external_os_.tmpdir(), 'semaphore-repo');
     const name = core.getInput('name', { required: true });
     const token = core.getInput('token', { required: true });
     const maxParallel = Number.parseInt(core.getInput('max-parallel'));

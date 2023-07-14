@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/action-queue",
+  "name": "@applitools/action-semaphore",
   "version": "1.0.0",
   "type": "module",
   "scripts": {

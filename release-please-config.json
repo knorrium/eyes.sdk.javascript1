@@ -462,7 +462,7 @@
           "test-type": "e2e:android",
           "setup-type": "android",
           "parallel": 4,
-          "queue": "sauce"
+          "semaphore": "sauce"
         },
         {
           "key": "{{component}}/e2e-ios",
@@ -470,7 +470,7 @@
           "test-type": "e2e:ios",
           "setup-type": "ios",
           "parallel": 4,
-          "queue": "sauce"
+          "semaphore": "sauce"
         }
       ],
       "releases": [{
@@ -490,28 +490,28 @@
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
           "parallel": 2,
-          "queue": "sauce"
+          "semaphore": "sauce"
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
           "parallel": 2,
-          "queue": "sauce"
+          "semaphore": "sauce"
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
           "parallel": 2,
-          "queue": "sauce"
+          "semaphore": "sauce"
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
           "parallel": 2,
-          "queue": "sauce"
+          "semaphore": "sauce"
         }
       ],
       "releases": [{
@@ -723,7 +723,7 @@
           "artifacts": ["./logs/**/*"],
           "test-type": "sauce",
           "parallel": 2,
-          "queue": "sauce",
+          "semaphore": "sauce",
           "builds": ["{{component}}/x64/{{environment}}"],
           "report": {"name": "core", "group": "core", "result-path": "./logs/report.xml"}
         },
@@ -911,7 +911,7 @@
           "framework-version": 8,
           "test-type": "sauce",
           "parallel": 2,
-          "queue": "sauce",
+          "semaphore": "sauce",
           "report": {"name": "js_wdio_5", "params": {"framework": 8}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
@@ -966,7 +966,7 @@
           "framework-version": 4.4,
           "test-type": "sauce",
           "parallel": 2,
-          "queue": "sauce",
+          "semaphore": "sauce",
           "report": {"name": "js_selenium_4", "params": {"framework": 4}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],

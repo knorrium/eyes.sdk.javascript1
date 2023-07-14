@@ -10,7 +10,7 @@ run()
   })
 
 async function run() {
-  const cwd = path.join(os.tmpdir(), 'queue-repo')
+  const cwd = path.join(os.tmpdir(), 'semaphore-repo')
   const name = core.getInput('name', {required: true})
   const token = core.getInput('token', {required: true})
   const maxParallel = Number.parseInt(core.getInput('max-parallel'))
