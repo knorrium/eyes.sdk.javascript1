@@ -1227,7 +1227,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "releases": [{
@@ -1241,7 +1241,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [{
@@ -1262,7 +1262,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [{
@@ -1283,7 +1283,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [{
@@ -1305,7 +1305,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [{
@@ -1326,7 +1326,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "/home/runner/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["java/eyes-universal-core/{{environment}}" ,"js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [{
