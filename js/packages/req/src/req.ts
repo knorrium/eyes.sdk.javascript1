@@ -5,6 +5,7 @@ import {stop, type Stop} from './stop.js'
 import {makeAgent} from './agent.js'
 import globalFetch, {Request, Headers, Response} from 'node-fetch'
 import * as utils from '@applitools/utils'
+import {AbortReasons, RequestTimeoutError, ConnectionTimeoutError} from './req-errors.js'
 
 export type Req<TOptions extends Options = Options> = (
   input: string | URL | Request,
@@ -23,22 +24,43 @@ export function makeReq<TOptions extends Options = Options, TBaseOptions extends
 
 export async function req(input: string | URL | Request, ...requestOptions: Options[]): Promise<Response> {
   const options = mergeOptions({}, ...requestOptions)
+  let abortReason: string | null
 
   if (options.hooks) options.hooks = utils.types.isArray(options.hooks) ? options.hooks : [options.hooks]
   if (options.retry) options.retry = utils.types.isArray(options.retry) ? options.retry : [options.retry]
   if (options.headers)
     options.headers = Object.fromEntries(Object.entries(options.headers).filter(([_, value]) => value))
 
-  const controller = new AbortController()
-  const timeout = options.timeout ? setTimeout(() => controller.abort(), options.timeout) : null
+  const connectionTimeoutController = new AbortController()
+  const connectionTimeoutTimer = options.connectionTimeout
+    ? setTimeout(() => {
+        abortReason = AbortReasons.connectionTimeout
+        connectionTimeoutController.abort()
+      }, options.connectionTimeout)
+    : null
 
   try {
     return await req(input, options)
   } finally {
-    if (timeout) clearTimeout(timeout)
+    if (connectionTimeoutTimer) clearTimeout(connectionTimeoutTimer)
   }
 
   async function req(input: string | URL | Request, options: Options): Promise<Response> {
+    const isRequestRetryEnabled =
+      options?.requestTimeout &&
+      (options?.retry as Retry[]).some((retry: Retry) => retry?.codes?.includes(AbortReasons.requestTimeout))
+    let controller: AbortController, requestTimeoutTimer
+    if (isRequestRetryEnabled) {
+      controller = new AbortController()
+      requestTimeoutTimer = setTimeout(() => {
+        if (abortReason !== AbortReasons.connectionTimeout) abortReason = AbortReasons.requestTimeout
+        controller.abort()
+      }, options.requestTimeout)
+    } else {
+      controller = connectionTimeoutController
+      requestTimeoutTimer = null
+    }
+
     const fetch = options.fetch ?? globalFetch
 
     if (options.signal) options.signal.onabort = () => controller.abort()
@@ -103,6 +125,14 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       response = await afterResponse({request, response, options})
       return response
     } catch (error: any) {
+      switch (abortReason) {
+        case AbortReasons.requestTimeout:
+          error = new RequestTimeoutError()
+          break
+        case AbortReasons.connectionTimeout:
+          error = new ConnectionTimeoutError()
+          break
+      }
       // if the request has to be retried due to network error
       const retry = await (options.retry as Retry[])?.reduce((prev, retry) => {
         return prev.then(async result => {
@@ -131,6 +161,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       throw error
     } finally {
       if (options.signal) options.signal.onabort = null
+      if (requestTimeoutTimer) clearTimeout(requestTimeoutTimer)
     }
   }
 }

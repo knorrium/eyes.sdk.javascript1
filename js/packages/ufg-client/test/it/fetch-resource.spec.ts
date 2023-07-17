@@ -31,7 +31,7 @@ describe('fetch-resource', () => {
       fetchResource({
         resource: makeResource({url: `http://localhost:${server.port}/page/smurfs.jpg`}),
       }),
-      err => err.constructor.name === 'AbortError',
+      err => err.constructor.name === 'ConnectionTimeoutError',
     )
   })
 })

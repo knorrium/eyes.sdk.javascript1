@@ -100,7 +100,7 @@ export async function takeDomCapture<TSpec extends SpecType>({
     logger.log(`Request to download css will be sent to the address "[GET]${url}"`)
     try {
       const response = await req(url, {
-        timeout: settings?.fetchTimeout ?? 60_000,
+        connectionTimeout: settings?.fetchTimeout ?? 60_000,
         retry: {
           limit: 1,
           validate: ({response, error}) => !!error || !response!.ok,

@@ -32,7 +32,7 @@ export function makeReqUFG({config, logger}: {config: ReqUFGConfig; logger: Logg
     },
     proxy: config.proxy,
     useDnsCache: config.useDnsCache,
-    timeout: config.connectionTimeout ?? 300000 /* 5min */,
+    connectionTimeout: config.connectionTimeout ?? 300000 /* 5min */,
     retry: {
       limit: 5,
       timeout: 200,

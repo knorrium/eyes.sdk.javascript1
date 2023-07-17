@@ -32,7 +32,7 @@ export function makeReqEyes({config, fetch, logger}: {config: ReqEyesConfig; fet
     },
     proxy: config.proxy,
     useDnsCache: config.useDnsCache,
-    timeout: config.connectionTimeout ?? 300000 /* 5min */,
+    connectionTimeout: config.connectionTimeout ?? 300000 /* 5min */,
     retry: [
       // retry on network issues
       {

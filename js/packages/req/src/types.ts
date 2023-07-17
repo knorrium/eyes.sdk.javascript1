@@ -44,10 +44,15 @@ export interface Options {
    */
   useDnsCache?: boolean
   /**
-   * Connection timeout in ms
-   * @example 7000
+   * Total timeout to wait across all requests before aborting the connection (in ms)
+   * @example 90000
    */
-  timeout?: number
+  connectionTimeout?: number
+  /**
+   * Timeout to wait on a single request before aborting and retrying it (in ms)
+   * @example 30000
+   */
+  requestTimeout?: number
   /**
    * Retry settings for the request. If specified as an array the retries are applied in the order
    * @see Retry

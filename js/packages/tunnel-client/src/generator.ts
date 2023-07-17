@@ -19,7 +19,7 @@ export async function* makeGenerator({
       validate: ({response, error}) => response?.status !== 200 && !utils.types.instanceOf(error, 'AbortError'),
     },
     hooks: [handleLogs({logger})],
-    timeout: settings.timeout ?? 5 * 60_000,
+    connectionTimeout: settings.timeout ?? 5 * 60_000,
   })
 
   const response = await req(`/tunnel-agents/${settings.agentId}/init`, {

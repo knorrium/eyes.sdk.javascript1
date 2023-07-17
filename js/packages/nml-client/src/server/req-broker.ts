@@ -27,7 +27,7 @@ export function makeReqBroker({config, logger}: {config: ReqBrokerConfig; logger
       'User-Agent': config.agentId,
     },
     proxy: config.proxy,
-    timeout: 300000 /* 5min */,
+    connectionTimeout: 300000 /* 5min */,
     retry: {
       limit: 5,
       timeout: 200,

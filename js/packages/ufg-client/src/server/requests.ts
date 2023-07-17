@@ -180,7 +180,8 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
       method: 'POST',
       body: renders.map(render => render.renderId),
       expected: 200,
-      timeout: 60000,
+      connectionTimeout: 90000,
+      requestTimeout: 30000,
       hooks: {
         afterOptionsMerged({options}) {
           options.retry = [
@@ -188,7 +189,7 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
               limit: 3,
               timeout: 500,
               statuses: [404, 500, 502, 504],
-              codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN'],
+              codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN', 'STUCK_REQUEST'],
             },
           ]
         },

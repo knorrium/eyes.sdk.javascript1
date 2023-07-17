@@ -80,7 +80,7 @@ export function makeFetchResourceFromTunnel({
         'x-tunnel-ids': tunnelIds,
       },
       hooks: [handleLogs({logger}), handleStreaming({timeout: streamingTimeout, logger})],
-      timeout: fetchTimeout,
+      connectionTimeout: fetchTimeout,
       body: {
         resourceUrl: resource.url,
         requestHeaders: {

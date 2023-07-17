@@ -79,7 +79,7 @@ export function makeFetchResource({
         return proxy
       },
       hooks: [handleLogs({logger}), handleStreaming({timeout: streamingTimeout, logger})],
-      timeout: fetchTimeout,
+      connectionTimeout: fetchTimeout,
     })
       .then(async response => {
         return response.ok
