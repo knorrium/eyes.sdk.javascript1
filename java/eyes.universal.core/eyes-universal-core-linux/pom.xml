@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-universal-core-linux</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.62.0</version>
+    <version>5.63.0</version>
     <name>eyes-universal-core-linux</name>
     <url>http://www.applitools.com</url>
     <description>Eyes universal core for storing and lunching binary server</description>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-universal-core</artifactId>
-            <version>5.62.0</version>
+            <version>5.63.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

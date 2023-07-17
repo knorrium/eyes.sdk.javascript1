@@ -1,3 +1,15 @@
+## [5.63.0] - 2023-07-13
+### Features
+- 
+### Bug fixes
+- Replace NML prefixed Appium env vars with APPLITOOLS prefix.
+
+## [5.62.0] - 2023-07-13
+### Features
+- Update capabilities keys in `setMobileCapabilities`.
+### Bug fixes
+-
+
 ## [5.61.0] - 2023-07-12
 ### Features
 - add an active by default profile with all core binaries.
