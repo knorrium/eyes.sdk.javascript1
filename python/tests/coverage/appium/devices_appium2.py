@@ -4,6 +4,7 @@ import pytest
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
 from appium.webdriver import Remote
+from selenium.common.exceptions import WebDriverException
 
 from . import sauce
 
@@ -71,4 +72,10 @@ def appium(options, sauce_url, app="", browser_name=""):
         options.set_capability("browserName", browser_name)
 
     selenium_url = os.getenv("SELENIUM_SERVER_URL", sauce_url)
-    return Remote(command_executor=selenium_url, options=options)
+    for attempt in range(3):  # try to work around random sauce server errors
+        try:
+            return Remote(command_executor=selenium_url, options=options)
+        except WebDriverException as e:
+            print("Failed to start appium driver:", e)
+            if "Unexpected server error" not in e.msg or attempt == 2:
+                raise

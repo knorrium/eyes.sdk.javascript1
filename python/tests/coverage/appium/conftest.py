@@ -63,7 +63,7 @@ def legacy():
 @fixture
 def name_of_test(request):
     return "Py{}.{}|App{} {}".format(
-        *sys.version_info[:2], appium_version, request.node.name
+        *sys.version_info[:2], appium_version, request.node.name[5:]
     )
 
 
