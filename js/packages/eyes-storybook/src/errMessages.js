@@ -34,7 +34,8 @@ ${chalk.green(
 `;
 
 function refineErrorMessage({prefix, error}) {
-  return `${prefix} ${error.message.replace('Evaluation failed: ', '')}`;
+  const message = error && error.message ? error.message : error;
+  return `${prefix} ${message.replace('Evaluation failed: ', '')}`;
 }
 
 function deprecationWarning({deprecatedThing, newThing, isDead}) {
