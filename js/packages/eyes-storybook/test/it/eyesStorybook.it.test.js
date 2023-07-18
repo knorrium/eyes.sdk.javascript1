@@ -29,7 +29,7 @@ describe('eyesStorybook', () => {
   });
 
   let serverUrl, closeEyesServer;
-  beforeEach(async function() {});
+  beforeEach(async function () {});
   afterEach(async () => {
     await closeEyesServer();
   });
@@ -99,16 +99,8 @@ describe('eyesStorybook', () => {
       globalConfig.floatingRegions,
       globalConfig.accessibilityRegions,
     ].map(([{selector}]) => {
-      const {
-        x,
-        y,
-        width,
-        height,
-        maxDownOffset,
-        maxUpOffset,
-        maxLeftOffset,
-        maxRightOffset,
-      } = JSON.parse(selector);
+      const {x, y, width, height, maxDownOffset, maxUpOffset, maxLeftOffset, maxRightOffset} =
+        JSON.parse(selector);
       const res = {
         left: x,
         top: y,

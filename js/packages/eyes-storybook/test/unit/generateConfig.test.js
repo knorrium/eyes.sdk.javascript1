@@ -14,7 +14,7 @@ const sideEffectConfig = {
   fully: true,
 };
 
-describe('generateConfig', function() {
+describe('generateConfig', function () {
   let env;
   beforeEach(() => {
     env = process.env;

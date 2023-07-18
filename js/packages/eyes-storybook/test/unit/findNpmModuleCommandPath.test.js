@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const findNpmModuleCommandPath = require('../../src/findNpmModuleCommandPath');
 
-describe('findNpmModuleCommandPath', function() {
+describe('findNpmModuleCommandPath', function () {
   const binaryName = 'start-storybook';
   const isWindows = process.platform.startsWith('win');
   const relativeBinPath = path.join('node_modules', '.bin', binaryName + (isWindows ? '.cmd' : ''));

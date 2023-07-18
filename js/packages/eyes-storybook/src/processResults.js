@@ -79,10 +79,10 @@ function processResults({
       `\nA total of ${unresolved.length} difference${pluralize(unresolved, [
         's were',
         ' was',
-      ])} found and ${errors.length} stor${pluralize(errors, [
-        'ies',
-        'y',
-      ])} failed for ${pluralize(errors, ['', 'an '])}unexpected error${pluralize(errors)}.`,
+      ])} found and ${errors.length} stor${pluralize(errors, ['ies', 'y'])} failed for ${pluralize(
+        errors,
+        ['', 'an '],
+      )}unexpected error${pluralize(errors)}.`,
     );
   } else if (warnForUnsavedNewTests) {
     const countText =

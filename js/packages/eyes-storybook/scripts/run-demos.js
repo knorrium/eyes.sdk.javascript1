@@ -29,7 +29,7 @@ function runDemo({name, href}) {
   });
 }
 
-(async function() {
+(async function () {
   const demos = require('./demos.json');
 
   for (const demo of demos) {

@@ -58,7 +58,8 @@ function getRequests(lines) {
   const reTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/;
   const reStart = /\(\)\: ServerConnector\.(.+) \[(.+)\] will now call to/;
   const reEndSuccess = /\(\)\: ServerConnector\.(.+) \[(.+)\] - result OK/;
-  const reEndFail = /\(\)\: ServerConnector\.(.+) \[(.+)\] - (.+) failed on https\:\/\/[^\s]+\: (.+) (with params):?/;
+  const reEndFail =
+    /\(\)\: ServerConnector\.(.+) \[(.+)\] - (.+) failed on https\:\/\/[^\s]+\: (.+) (with params):?/;
   let lastTime;
   lines.forEach(line => {
     const timeMatch = line.match(reTime);

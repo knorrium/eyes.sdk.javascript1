@@ -43,10 +43,9 @@
     "extends": ["plugin:node/recommended"],
     "plugins": [
         "prettier",
-        "mocha-no-only",
+        "no-only-tests",
         "node"
     ],
-    "parser": "babel-eslint",
     "rules": {
         "prettier/prettier": [
             "error",
@@ -68,7 +67,10 @@
         "no-unused-vars": ["warn", {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}],
         "constructor-super": "warn",
         "valid-typeof": "warn",
-        "mocha-no-only/mocha-no-only": "error",
-        "node/exports-style": ["error", "module.exports"]
+        "no-only-tests/no-only-tests": ["error", {"fix": true}],
+        "node/exports-style": ["error", "module.exports"],
+        "node/no-extraneous-require": ["error", {
+          "allowModules": ["mocha"]
+        }]
     }
 }

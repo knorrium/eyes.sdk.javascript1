@@ -18,7 +18,7 @@ const {presult} = require('@applitools/functional-commons');
 const chalk = require('chalk');
 const {performance, timeItAsync} = makeTiming();
 
-(async function() {
+(async function () {
   try {
     const argv = yargs
       .usage('Usage: $0 [options]')

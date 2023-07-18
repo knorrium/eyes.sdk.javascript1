@@ -142,8 +142,7 @@ describe('getStories', () => {
             parameters: {
               ...parameters,
               fileName: './test/fixtures/appWithStorybook/index.js-7',
-              __id:
-                'button-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
+              __id: 'button-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
             },
           },
           {
@@ -176,8 +175,7 @@ describe('getStories', () => {
             parameters: {
               ...parameters,
               fileName: './test/fixtures/appWithStorybook/index.js-9',
-              __id:
-                'wow-one-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
+              __id: 'wow-one-with-space-yes-indeed-nested-with-space-yes-nested-again-yes-a--c-yes-a-b',
             },
           },
           {
@@ -218,32 +216,26 @@ describe('getStories', () => {
             },
           },
           {
-            name:
-              'this story should not be checked visually by eyes-storybook because of local parameter',
-            id:
-              'skipped-tests--this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-local-parameter',
+            name: 'this story should not be checked visually by eyes-storybook because of local parameter',
+            id: 'skipped-tests--this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-local-parameter',
             kind: 'skipped tests',
             hasPlayFunction: false,
             parameters: {
               ...parameters,
               fileName: './test/fixtures/appWithStorybook/index.js-12',
-              __id:
-                'skipped-tests--this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-local-parameter',
+              __id: 'skipped-tests--this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-local-parameter',
               eyes: {include: false},
             },
           },
           {
-            name:
-              '[SKIP] this story should not be checked visually by eyes-storybook because of global config',
-            id:
-              'skipped-tests--skip-this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-global-config',
+            name: '[SKIP] this story should not be checked visually by eyes-storybook because of global config',
+            id: 'skipped-tests--skip-this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-global-config',
             kind: 'skipped tests',
             hasPlayFunction: false,
             parameters: {
               ...parameters,
               fileName: './test/fixtures/appWithStorybook/index.js-12',
-              __id:
-                'skipped-tests--skip-this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-global-config',
+              __id: 'skipped-tests--skip-this-story-should-not-be-checked-visually-by-eyes-storybook-because-of-global-config',
             },
           },
           {

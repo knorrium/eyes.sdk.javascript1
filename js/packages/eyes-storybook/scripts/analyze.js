@@ -52,14 +52,8 @@ function analyze(logStr) {
 
 if (require.main === module) {
   const s = fs.readFileSync(process.argv[2]).toString();
-  const {
-    avgConcurrentRenders,
-    maxConcurrentRenders,
-    avgStoryTime,
-    maxStoryTime,
-    totalTime,
-    mem,
-  } = analyze(s);
+  const {avgConcurrentRenders, maxConcurrentRenders, avgStoryTime, maxStoryTime, totalTime, mem} =
+    analyze(s);
 
   console.log(`
 memory                     : \n  ${mem.join('\n  ')}

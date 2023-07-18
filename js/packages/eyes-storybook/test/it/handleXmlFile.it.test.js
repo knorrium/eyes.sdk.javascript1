@@ -89,8 +89,7 @@ describe('handleXmlFile', () => {
                   hasCurrentImage: true,
                   hasCheckpointImage: true,
                   appUrls: {
-                    step:
-                      'https://eyes.applitools.com/app/test-results/00000251721186055133/00000251721186054963/steps/1?accountId=UAujt6tHnEKUivQXIz7G6A~~',
+                    step: 'https://eyes.applitools.com/app/test-results/00000251721186055133/00000251721186054963/steps/1?accountId=UAujt6tHnEKUivQXIz7G6A~~',
                     stepEditor:
                       'https://eyes.applitools.com/app/test-results/00000251721186055133/00000251721186054963/steps/1/edit?accountId=UAujt6tHnEKUivQXIz7G6A~~',
                   },

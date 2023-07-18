@@ -27,7 +27,7 @@ describe('executeRenders', () => {
     };
     await executeRenders({
       timeItAsync: (_a, cb) => cb(),
-      renderStories: async function(stories) {
+      renderStories: async function (stories) {
         renderStoriesCalls.push(stories);
         return stories;
       },
@@ -76,7 +76,7 @@ describe('executeRenders', () => {
     const result = await executeRenders({
       timeItAsync: (_a, cb) => cb(),
       setTransitioningIntoIE: () => {},
-      renderStories: async function(stories) {
+      renderStories: async function (stories) {
         renderStoriesCalls.push(stories);
         return stories;
       },
@@ -130,7 +130,7 @@ describe('executeRenders', () => {
       executeRenders({
         setTransitioningIntoIE: () => {},
         timeItAsync: (_a, cb) => cb(),
-        renderStories: async function(stories, _config) {
+        renderStories: async function (stories, _config) {
           if (counter === 0) {
             counter++;
             throw new Error('omg! something went wrong');
