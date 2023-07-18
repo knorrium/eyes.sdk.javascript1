@@ -304,12 +304,10 @@ describe('getStories', () => {
     await page.goto('http://localhost:7272');
 
     const result = await Promise.race([
-      page.evaluate(getStories, {timeout: 100}).catch(err => err.message),
+      page.evaluate(getStories, {timeout: 100}).catch(err => err),
       psetTimeout(200).then(() => 'not ok'),
     ]);
 
-    expect(result).to.equal(
-      'Evaluation failed: could not determine storybook version in order to extract stories',
-    );
+    expect(result).to.equal('could not determine storybook version in order to extract stories');
   });
 });
