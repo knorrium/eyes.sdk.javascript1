@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Universal Core Tests" parallel="classes" verbose="1">
+
+    <test name="Unit">
+        <classes>
+            <class name="com.applitools.eyes.universal.server.TestCoreBinaries"/>
+        </classes>
+    </test>
+</suite>

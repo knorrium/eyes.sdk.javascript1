@@ -40,12 +40,6 @@
             <version>7.7.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.applitools</groupId>
-            <artifactId>eyes-universal-core</artifactId>
-            <version>5.63.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
