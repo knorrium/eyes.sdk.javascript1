@@ -12,12 +12,12 @@ on:
         description: Core version
         type: string
         required: true
-        default: "3.6.1"
+        default: "3.6.2"
       core_nuget_version:
         description: Core NuGet version
         type: string
         required: false
-        default: "3.6.1.1"
+        default: "3.6.2"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -71,6 +71,7 @@ jobs:
       ref: ${{needs.update_cores.outputs.release_branch}}
       cross_platform: false
       generic: true
+      core_version: ${{ inputs.core_version }}
 
   create_nugets:
     runs-on: ubuntu-latest
@@ -83,6 +84,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{needs.update_cores.outputs.release_branch}}
+      - uses: actions/download-artifact@v3
+        with:
+          name: PublishingFiles
+          path: dotnet
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
