@@ -39,13 +39,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/core-base@1.4.0, @applitools/core-base@workspace:packages/core-base":
+"@applitools/core-base@1.4.1, @applitools/core-base@workspace:packages/core-base":
   version: 0.0.0-use.local
   resolution: "@applitools/core-base@workspace:packages/core-base"
   dependencies:
     "@applitools/image": 1.1.0
     "@applitools/logger": 2.0.5
-    "@applitools/req": 1.4.0
+    "@applitools/req": 1.5.0
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@applitools/utils": 1.5.0
@@ -82,19 +82,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/core@3.6.1, @applitools/core@workspace:^, @applitools/core@workspace:packages/core":
+"@applitools/core@3.6.2, @applitools/core@workspace:^, @applitools/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@applitools/core@workspace:packages/core"
   dependencies:
     "@applitools/bongo": "workspace:^"
-    "@applitools/core-base": 1.4.0
+    "@applitools/core-base": 1.4.1
     "@applitools/dom-capture": 11.2.2
     "@applitools/dom-snapshot": 4.7.9
     "@applitools/driver": 1.13.1
-    "@applitools/ec-client": 1.7.0
+    "@applitools/ec-client": 1.7.1
     "@applitools/logger": 2.0.5
-    "@applitools/nml-client": 1.5.2
-    "@applitools/req": 1.4.0
+    "@applitools/nml-client": 1.5.3
+    "@applitools/req": 1.5.0
     "@applitools/screenshoter": 3.8.4
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/snippets": 2.4.21
@@ -106,7 +106,7 @@ __metadata:
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@applitools/tunnel-client": "workspace:^"
-    "@applitools/ufg-client": 1.4.1
+    "@applitools/ufg-client": 1.5.0
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/selenium-webdriver": ^4.1.2
@@ -287,19 +287,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/ec-client@1.7.0, @applitools/ec-client@workspace:packages/execution-grid-client":
+"@applitools/ec-client@1.7.1, @applitools/ec-client@workspace:packages/execution-grid-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ec-client@workspace:packages/execution-grid-client"
   dependencies:
-    "@applitools/core-base": 1.4.0
+    "@applitools/core-base": 1.4.1
     "@applitools/driver": 1.13.1
     "@applitools/logger": 2.0.5
-    "@applitools/req": 1.4.0
+    "@applitools/req": 1.5.0
     "@applitools/socket": 1.1.5
     "@applitools/spec-driver-webdriver": 1.0.38
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
-    "@applitools/tunnel-client": 1.1.0
+    "@applitools/tunnel-client": 1.1.1
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
     "@types/node-fetch": ^2.6.1
@@ -509,7 +509,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@types/node": ^12.20.55
@@ -523,7 +523,7 @@ __metadata:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
     "@applitools/driver": 1.13.1
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-webdriver": 1.0.38
     "@applitools/test-utils": "workspace:^"
@@ -546,7 +546,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-playwright": 1.3.18
     "@applitools/test-utils": "workspace:^"
@@ -563,7 +563,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-puppeteer": 1.1.69
     "@applitools/test-utils": "workspace:^"
@@ -592,7 +592,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-selenium": 1.5.52
     "@applitools/test-utils": "workspace:^"
@@ -658,7 +658,7 @@ __metadata:
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"
-    "@applitools/eyes": 1.6.1
+    "@applitools/eyes": 1.6.2
     "@applitools/sdk-coverage-tests": "workspace:^"
     "@applitools/spec-driver-webdriverio": 1.5.7
     "@applitools/test-utils": "workspace:^"
@@ -677,13 +677,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes@1.6.1, @applitools/eyes@workspace:packages/eyes-api":
+"@applitools/eyes@1.6.2, @applitools/eyes@workspace:packages/eyes-api":
   version: 0.0.0-use.local
   resolution: "@applitools/eyes@workspace:packages/eyes-api"
   dependencies:
-    "@applitools/core": 3.6.1
+    "@applitools/core": 3.6.2
     "@applitools/logger": 2.0.5
-    "@applitools/req": ^1.4.0
+    "@applitools/req": ^1.5.0
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
   languageName: unknown
@@ -823,12 +823,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/nml-client@1.5.2, @applitools/nml-client@workspace:packages/nml-client":
+"@applitools/nml-client@1.5.3, @applitools/nml-client@workspace:packages/nml-client":
   version: 0.0.0-use.local
   resolution: "@applitools/nml-client@workspace:packages/nml-client"
   dependencies:
     "@applitools/logger": 2.0.5
-    "@applitools/req": 1.4.0
+    "@applitools/req": 1.5.0
     "@applitools/spec-driver-webdriverio": ^1.5.7
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
@@ -862,7 +862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/req@1.4.0, @applitools/req@^1.4.0, @applitools/req@workspace:packages/req":
+"@applitools/req@1.5.0, @applitools/req@^1.5.0, @applitools/req@workspace:packages/req":
   version: 0.0.0-use.local
   resolution: "@applitools/req@workspace:packages/req"
   dependencies:
@@ -890,6 +890,19 @@ __metadata:
     node-fetch: 2.6.7
     proxy-agent: 5.0.0
   checksum: 1b22d1c456115e01edb1a137b893aeb74a45c81e5ff780f35a793d2854347d31aadc74dec45a17424f2ad437836f39bc3c4eb087f340f51ce430a11d41d045fb
+  languageName: node
+  linkType: hard
+
+"@applitools/req@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@applitools/req@npm:1.4.0"
+  dependencies:
+    "@applitools/utils": 1.5.0
+    abort-controller: 3.0.0
+    http-proxy-agent: 5.0.0
+    https-proxy-agent: 5.0.1
+    node-fetch: 3.3.1
+  checksum: 3c4634f84dd2e65757d05ae06867aa46bd4a5d7047f9345730971cd07ab776e7db5c5e106197845a436c53c0a31ce645730d7e4966d5f0f5df0a9764ddd8e8c3
   languageName: node
   linkType: hard
 
@@ -1212,13 +1225,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/tunnel-client@1.1.0, @applitools/tunnel-client@workspace:^, @applitools/tunnel-client@workspace:packages/tunnel-client":
+"@applitools/tunnel-client@1.1.1, @applitools/tunnel-client@workspace:^, @applitools/tunnel-client@workspace:packages/tunnel-client":
   version: 0.0.0-use.local
   resolution: "@applitools/tunnel-client@workspace:packages/tunnel-client"
   dependencies:
     "@applitools/execution-grid-tunnel": 2.1.8
     "@applitools/logger": 2.0.5
-    "@applitools/req": 1.4.0
+    "@applitools/req": 1.5.0
     "@applitools/socket": 1.1.5
     "@applitools/utils": 1.5.0
     "@types/node": ^12.20.55
@@ -1249,13 +1262,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/ufg-client@1.4.1, @applitools/ufg-client@workspace:^, @applitools/ufg-client@workspace:packages/ufg-client":
+"@applitools/ufg-client@1.5.0, @applitools/ufg-client@workspace:^, @applitools/ufg-client@workspace:packages/ufg-client":
   version: 0.0.0-use.local
   resolution: "@applitools/ufg-client@workspace:packages/ufg-client"
   dependencies:
     "@applitools/image": 1.1.0
     "@applitools/logger": 2.0.5
-    "@applitools/req": 1.4.0
+    "@applitools/req": 1.5.0
     "@applitools/test-server": "workspace:^"
     "@applitools/test-utils": "workspace:^"
     "@applitools/utils": 1.5.0

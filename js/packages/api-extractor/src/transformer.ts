@@ -545,7 +545,7 @@ export default function transformer(
           )
         })
         if (reducedUnion) {
-          index += reducedUnion.type.types.length
+          index += reducedUnion.type.types.length - 1
           typeNodes.push(ts.factory.createTypeReferenceNode(reducedUnion.name))
         } else {
           typeNodes.push(createTypeNode({type: type.types[index], node}))

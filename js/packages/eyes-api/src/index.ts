@@ -1,20 +1,4 @@
 // #region ENUM
-export {
-  AccessibilityGuidelinesVersion as AccessibilityGuidelinesVersionPlain,
-  AccessibilityGuidelinesVersionEnum as AccessibilityGuidelinesVersion,
-} from './enums/AccessibilityGuidelinesVersion'
-export {
-  AccessibilityLevel as AccessibilityLevelPlain,
-  AccessibilityLevelEnum as AccessibilityLevel,
-} from './enums/AccessibilityLevel'
-export {
-  AccessibilityRegionType as AccessibilityRegionTypePlain,
-  AccessibilityRegionTypeEnum as AccessibilityRegionType,
-} from './enums/AccessibilityRegionType'
-export {
-  AccessibilityStatus as AccessibilityStatusPlain,
-  AccessibilityStatusEnum as AccessibilityStatus,
-} from './enums/AccessibilityStatus'
 export {BrowserType as BrowserTypePlain, BrowserTypeEnum as BrowserType} from './enums/BrowserType'
 export {
   CorsIframeHandle as CorsIframeHandlePlain,
@@ -40,6 +24,22 @@ export {
   TestResultsStatus as TestResultsStatusPlain,
   TestResultsStatusEnum as TestResultsStatus,
 } from './enums/TestResultsStatus'
+export {
+  AccessibilityGuidelinesVersion as AccessibilityGuidelinesVersionPlain,
+  AccessibilityGuidelinesVersionEnum as AccessibilityGuidelinesVersion,
+} from './enums/AccessibilityGuidelinesVersion'
+export {
+  AccessibilityLevel as AccessibilityLevelPlain,
+  AccessibilityLevelEnum as AccessibilityLevel,
+} from './enums/AccessibilityLevel'
+export {
+  AccessibilityRegionType as AccessibilityRegionTypePlain,
+  AccessibilityRegionTypeEnum as AccessibilityRegionType,
+} from './enums/AccessibilityRegionType'
+export {
+  AccessibilityStatus as AccessibilityStatusPlain,
+  AccessibilityStatusEnum as AccessibilityStatus,
+} from './enums/AccessibilityStatus'
 // #endregion
 
 // #region ERROR
