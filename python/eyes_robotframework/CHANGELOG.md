@@ -1,4 +1,4 @@
-## [vNext]
+## [5.12.1] - 2023-07-18
 ### Fixed
 - Avoid pyyaml versions broken by recent cython major release
 
