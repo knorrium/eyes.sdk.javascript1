@@ -1,6 +1,26 @@
-## [Eyes.Images vNext]
+## [Eyes.Image.Core 3.6.2] - 2023-07-18
+### Updated
+- Server Core to 3.6.2
+
+## [Eyes.Images 3.35] - 2023-07-18
 ### Updated
 - Match `DeviceName` enum to devices supported by Server Core.
+
+## [Eyes.Selenium 3.64] - 2023-07-18
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium 5.62] - 2023-07-18
+### Updated
+- Match to latest Eyes.Selenium
+
+## [Eyes.Selenium4 3.64] - 2023-07-18
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Playwright 1.12] - 2023-07-18
+### Updated
+- Match to latest Eyes.Images
 
 ## [Eyes.Image.Core 3.6.1.1] - 2023-07-14
 ### Updated
