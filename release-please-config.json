@@ -1246,7 +1246,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "runner": "linux",
         "grep": "TestCoreBinaries#testLinuxBinaries",
         "report": {"name": "java", "group": "core"}
@@ -1267,7 +1267,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "runner": "linuxarm",
         "grep": "TestCoreBinaries#testArm64Binaries",
         "report": {"name": "java", "group": "core"}
@@ -1288,7 +1288,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "runner": "linux",
         "container": "node:lts-alpine",
         "grep": "TestCoreBinaries#testAlpineBinaries",
@@ -1310,7 +1310,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "runner": "windows",
         "grep": "TestCoreBinaries#testWindowsBinaries",
         "report": {"name": "java", "group": "core"}
@@ -1331,7 +1331,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "runner": "macos",
         "grep": "TestCoreBinaries#testMacosBinaries",
         "report": {"name": "java", "group": "core"}
@@ -1344,36 +1344,20 @@
       "release-type": "maven",
       "skip-snapshot": true,
       "component": "java/eyes-sdk-core-java5",
-      "builds": [
-        {
+      "builds": [{
           "build-type": "maven",
-          "artifacts": [
-            "./target",
-            "/home/runner/.m2/repository"
-          ],
+          "artifacts": ["./target", "/home/runner/.m2/repository"],
           "key": "{{component}}/{{environment}}",
-          "builds": [
-            "js/core/x64/{{environemnt}}",
-            "js/core/x64/{{environemnt}}"
-          ]
-        }
-      ],
-      "tests": [
-        {
-          "report": {
-            "name": "java"
-          },
-          "artifacts": [
-            "./logs/**/*"
-          ],
+          "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"]
+      }],
+      "tests": [{
+          "report": {"name": "java"},
+          "artifacts": ["./reports/**/*"],
           "key": "{{component}}"
-        }
-      ],
-      "releases": [
-        {
+        }],
+      "releases": [{
           "profile": "maven"
-        }
-      ]
+      }]
     },
     "java/eyes.connectivity.java": {
       "release-type": "maven",
@@ -1443,7 +1427,7 @@
       }],
       "tests": [{
         "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
+        "artifacts": ["./reports/**/*"],
         "report": {"name": "java"}
       }],
       "releases": [{
@@ -1464,13 +1448,13 @@
       "tests": [
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
           "report": {"name": "java"}
         },
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
           "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
         }
@@ -1493,13 +1477,13 @@
       "tests": [
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
           "report": {"name": "java"}
         },
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
           "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
         }
@@ -1522,13 +1506,13 @@
       "tests": [
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
           "report": {"name": "java_playwright"}
         },
         {
           "key": "{{component}}/{{test-type}}",
-          "artifacts": ["./logs/**/*"],
+          "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
           "report": {"name": "java_playwright", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
         }
