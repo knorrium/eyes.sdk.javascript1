@@ -3,6 +3,8 @@
 # Abort on Error
 set -e;
 
+export APPLITOOLS_LOG_DIR="./reports/logs/";
+
 # Setup web drivers
 echo "Chromedriver setup"
 chmod +x ./../initChromeDriver.sh;
