@@ -1,5 +1,6 @@
 {
     "root": true,
+    "extends": ["../../.eslintrc"],
     "ignorePatterns":[
         "test/fixtures/appWithStorybook",
         "test/fixtures/heavyStorybook",
@@ -31,21 +32,6 @@
         "test/e2e/5.0.0",
         "test/e2e/undefined"
     ],
-    "env": {
-        "commonjs": true,
-        "es6": true,
-        "node": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 2020,
-        "sourceType": "module"
-    },
-    "extends": ["plugin:node/recommended"],
-    "plugins": [
-        "prettier",
-        "no-only-tests",
-        "node"
-    ],
     "rules": {
         "prettier/prettier": [
             "error",
@@ -59,18 +45,7 @@
                 "jsxBracketSameLine": true
             }
         ],
-        "no-process-exit": "off",
-        "no-const-assign": "warn",
-        "no-this-before-super": "warn",
-        "no-undef": "warn",
-        "no-unreachable": "warn",
-        "no-unused-vars": ["warn", {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}],
-        "constructor-super": "warn",
-        "valid-typeof": "warn",
-        "no-only-tests/no-only-tests": ["error", {"fix": true}],
-        "node/exports-style": ["error", "module.exports"],
-        "node/no-extraneous-require": ["error", {
-          "allowModules": ["mocha"]
-        }]
+        "@typescript-eslint/no-empty-function": "off",
+        "no-console": "off"
     }
 }

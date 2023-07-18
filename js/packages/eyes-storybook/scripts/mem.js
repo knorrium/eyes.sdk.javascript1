@@ -51,7 +51,7 @@ async function readLargeFileManyTimes(
   }
 }
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function fillArrayWithLargeStrings(
   {length = 20, size = 1024 * 1024 * 100} = {length: 20, size: 1024 * 1024 * 100},
 ) {
