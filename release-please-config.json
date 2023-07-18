@@ -1063,25 +1063,25 @@
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
-          "report": {"name": "playwright", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "puppeteer", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
-          "report": {"name": "playwright", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "puppeteer", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
-          "report": {"name": "playwright", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "puppeteer", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
-          "report": {"name": "playwright", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "puppeteer", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
       "releases": [{
