@@ -34,6 +34,7 @@ function makeInitPage({iframeUrl, config, browser, logger, getTransitiongIntoIE,
     }
 
     page.on('close', async () => {
+      if (pagePool.isClosed) return;
       if (!getTransitiongIntoIE() && pagePool.isInPool(pageId)) {
         logger.log(
           `Puppeteer page closed [page ${pageId}] while still in page pool, creating a new one instead`,

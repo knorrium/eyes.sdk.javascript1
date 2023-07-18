@@ -161,19 +161,12 @@ async function eyesStorybook({
   try {
     const stories = await getStoriesWithSpinner();
 
-    if (CONCURRENT_TABS <= 3) {
-      await Promise.all(
-        new Array(CONCURRENT_TABS).fill().map(async () => {
-          const {pageId} = await pagePool.createPage();
-          pagePool.addToPool(pageId);
-        }),
-      );
-    } else {
-      for (const _x of new Array(CONCURRENT_TABS).fill()) {
+    await Promise.all(
+      Array.from({length: CONCURRENT_TABS}, async () => {
         const {pageId} = await pagePool.createPage();
         pagePool.addToPool(pageId);
-      }
-    }
+      }),
+    );
 
     const filteredStories = filterStories({stories, config});
     const storiesIncludingVariations = addVariationStories({
@@ -258,6 +251,7 @@ async function eyesStorybook({
   } finally {
     logger.log('total time: ', performance['renderStories']);
     logger.log('perf results', performance);
+    pagePool.isClosed = true;
     await browser.close();
     clearTimeout(memoryTimeout);
   }

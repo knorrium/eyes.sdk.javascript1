@@ -37,6 +37,7 @@ function createPagePool({initPage, logger}) {
         await removeAndAddPage(pageId);
       }
     },
+    isClosed: false,
   };
 
   return pagePool;
