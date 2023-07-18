@@ -4,6 +4,13 @@
 
 
 
+## [3.37.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.1...js/eyes-storybook@3.37.2) (2023-07-18)
+
+
+### Performance Improvements
+
+* additional runtime improvements ([8a33a83](https://github.com/applitools/eyes.sdk.javascript1/commit/8a33a83d4911bdd3bebff646c983d5a2de512763))
+
 ## [3.37.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.0...js/eyes-storybook@3.37.1) (2023-07-18)
 
 
