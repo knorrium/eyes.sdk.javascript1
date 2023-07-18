@@ -2,8 +2,8 @@ import assert from 'assert'
 import nock from 'nock'
 import {Request} from 'node-fetch'
 import {req} from '../../src/req.js'
+import {AbortCode} from '../../src/req-errors.js'
 import * as utils from '@applitools/utils'
-import {AbortReasons} from '../../src/req-errors.js'
 
 describe('req', () => {
   beforeEach(() => {
@@ -161,7 +161,36 @@ describe('req', () => {
     assert.deepStrictEqual(await response.json(), {hello: 'error'})
   })
 
-  it('aborts request on timeout', async () => {
+  it('retries on stuck request', async () => {
+    let index = 0
+    nock('https://eyesapi.applitools.com')
+      .get('/api/hello')
+      .reply(async () => {
+        index += 1
+        await new Promise(res => setTimeout(res, 2000))
+        return [200]
+      })
+      .persist()
+
+    const requestTimeout = 500
+    const connectionTimeout = 1100
+    const startedAt = Date.now()
+    await assert.rejects(
+      () =>
+        req('https://eyesapi.applitools.com/api/hello', {
+          retry: {codes: [AbortCode.requestTimeout]},
+          requestTimeout,
+          connectionTimeout,
+        }),
+      (error: Error) => error.constructor.name === 'ConnectionTimeoutError',
+    )
+    const duration = Date.now() - startedAt
+
+    assert.strictEqual(index, 3)
+    assert.ok(duration > connectionTimeout && duration < requestTimeout * index)
+  })
+
+  it('aborts request on connection timeout', async () => {
     nock('https://eyesapi.applitools.com').get('/api/hello').delay(1100).reply(200, {hello: 'world'})
 
     await assert.rejects(
@@ -170,7 +199,7 @@ describe('req', () => {
     )
   })
 
-  it('aborts retry request on timeout', async () => {
+  it('aborts retry request on connection timeout', async () => {
     nock('https://eyesapi.applitools.com').get('/api/hello').reply(500).persist()
 
     await assert.rejects(
@@ -181,53 +210,6 @@ describe('req', () => {
         }),
       (error: Error) => error.constructor.name === 'ConnectionTimeoutError',
     )
-  })
-
-  it('retry on stuck request', async () => {
-    let index = 0
-    nock('https://eyesapi.applitools.com')
-      .get('/api/hello')
-      .reply(async () => {
-        index += 1
-        await new Promise(res => setTimeout(res, 2000))
-        return [200]
-      })
-      .persist()
-
-    await assert.rejects(
-      () =>
-        req('https://eyesapi.applitools.com/api/hello', {
-          requestTimeout: 500,
-          connectionTimeout: 1000,
-          retry: {
-            codes: [AbortReasons.requestTimeout],
-          },
-        }),
-      (error: Error) => error.constructor.name === 'ConnectionTimeoutError',
-    )
-    assert.deepStrictEqual(index, 2)
-  })
-
-  it('ignores retry on stuck request when retry code not specified', async () => {
-    let index = 0
-    nock('https://eyesapi.applitools.com')
-      .get('/api/hello')
-      .reply(async () => {
-        index += 1
-        await new Promise(res => setTimeout(res, 2000))
-        return [200]
-      })
-      .persist()
-
-    await assert.rejects(
-      () =>
-        req('https://eyesapi.applitools.com/api/hello', {
-          requestTimeout: 500,
-          connectionTimeout: 1000,
-        }),
-      (error: Error) => error.constructor.name === 'ConnectionTimeoutError',
-    )
-    assert.deepStrictEqual(index, 1)
   })
 
   it('executes hooks', async () => {

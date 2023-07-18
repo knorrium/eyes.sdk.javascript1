@@ -1,10 +1,10 @@
-export enum AbortReasons {
+export enum AbortCode {
   requestTimeout = 'STUCK_REQUEST',
   connectionTimeout = 'MAX_TIMEOUT_REACHED',
 }
 
 export class RequestTimeoutError extends Error {
-  code = AbortReasons.requestTimeout
+  code = AbortCode.requestTimeout
   constructor() {
     super('Request timed out, likely because it was stuck.')
     this.name = 'RequestTimeoutError'
@@ -12,7 +12,7 @@ export class RequestTimeoutError extends Error {
 }
 
 export class ConnectionTimeoutError extends Error {
-  code = AbortReasons.connectionTimeout
+  code = AbortCode.connectionTimeout
   constructor() {
     super('The connection timed out.')
     this.name = 'ConnectionTimeoutError'
