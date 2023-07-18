@@ -122,7 +122,7 @@ jobs:
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
-      - name: semaphore
+      - name: Semaphore
         if: ${{matrix.semaphore}}
         uses: ./.github/actions/semaphore
         with:
