@@ -12062,31 +12062,6 @@ const external_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
 var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
-;// CONCATENATED MODULE: ./src/bongo.ts
-
-
-function bongo({ dir, sdk, id, sandbox }) {
-    const pathToInputFiles = (0,external_path_.relative)(process.cwd(), dir);
-    const options = { stdio: "inherit" };
-    // @ts-ignore
-    (0,external_child_process_namespaceObject.execSync)(`npm install -g @applitools/bongo@4.0.0`, options);
-    // @ts-ignore
-    (0,external_child_process_namespaceObject.execSync)(`ls`, options);
-    // @ts-ignore
-    (0,external_child_process_namespaceObject.execSync)(`cat coverage-test-report.xml`, options);
-    let command = `npx bongo report --verbose `;
-    command += `--reportId ${id} `;
-    if (pathToInputFiles) {
-        command += `--resultPath ${pathToInputFiles} `;
-        command += `--metaPath ${pathToInputFiles} `;
-    }
-    command += `--name ${sdk} `;
-    if (sandbox)
-        command += `--sandbox`;
-    // @ts-ignore
-    (0,external_child_process_namespaceObject.execSync)(command, options);
-}
-
 // EXTERNAL MODULE: ./node_modules/xml-js/lib/index.js
 var lib = __nccwpck_require__(694);
 // EXTERNAL MODULE: ./node_modules/@actions/artifact/lib/artifact-client.js
@@ -12150,6 +12125,30 @@ async function download({ artifactList }) {
         }),
         meta: JSON.stringify(combinedMetaObject, null, 2),
     };
+}
+
+;// CONCATENATED MODULE: ./src/bongo.ts
+
+
+
+function bongo({ dir, sdk, id, sandbox }) {
+    const pathToInputFiles = (0,external_path_.relative)(process.cwd(), dir);
+    const options = { stdio: "inherit" };
+    // @ts-ignore
+    (0,external_child_process_namespaceObject.execSync)(`npm install -g @applitools/bongo`, options);
+    // @ts-ignore
+    (0,external_child_process_namespaceObject.execSync)(`ls`, options);
+    // @ts-ignore
+    (0,external_child_process_namespaceObject.execSync)(`cat coverage-test-report.xml`, options);
+    let command = `npx bongo report --verbose `;
+    command += `--reportId ${id} `;
+    command += `--resultPath ${(0,external_path_.resolve)(pathToInputFiles, XML_NAME)} `;
+    command += `--metaPath ${(0,external_path_.resolve)(pathToInputFiles, META_NAME)} `;
+    command += `--name ${sdk} `;
+    if (sandbox)
+        command += `--sandbox`;
+    // @ts-ignore
+    (0,external_child_process_namespaceObject.execSync)(command, options);
 }
 
 ;// CONCATENATED MODULE: ./main.ts

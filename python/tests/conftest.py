@@ -28,7 +28,7 @@ def pytest_sessionfinish(session, exitstatus):
         from selenium import __version__ as selenium_version
     except ImportError:
         selenium_version = "4"
-    is_generic = path.exists("coverage-tests-metadata.json")
+    is_generic = path.exists("meta.json")
     if is_generic:
         remove_test_name_prefix("coverage-test-report.xml")
     if environ.get("BONGO_REPORT_TESTS", "false").lower() not in ("false", "0"):
