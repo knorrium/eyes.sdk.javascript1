@@ -4,7 +4,7 @@ run-name: Release (${{github.event.release.name}})
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 env:
   FORCE_COLOR: 3
