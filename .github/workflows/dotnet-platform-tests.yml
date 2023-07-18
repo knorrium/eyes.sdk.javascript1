@@ -1,0 +1,74 @@
+name: "DotNet - Platforms Tests"
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: branch to test
+        required: false
+        type: string
+      core_version:
+        description: core version
+        required: false
+        type: string
+        default: "3.6.0"
+
+env:
+  DRIVER_PATH: /usr/bin
+  APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+  APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
+  SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+  SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+  CORE_VERSION: ${{ inputs.core_version || '3.6.0' }}
+
+jobs:
+
+  dotnet-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - uses: actions/download-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
+      - shell: pwsh
+        run: |
+          cd dotnet
+          dotnet nuget add source "$PWD/PackagesOutput" -n local
+          ./run_crossplatform_tests.ps1
+
+  dotnet-tests-alpine:
+    runs-on: ubuntu-latest
+    container: "alpine:latest"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+      - run: apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
+      - run: apk add chromium chromium-chromedriver xvfb xvfb-run
+      - run: mkdir -p /usr/share/dotnet && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+      - uses: actions/download-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
+      - name: Install dotnet and run Alpine tests
+        run: |
+          cd dotnet
+          chmod +x ./dotnet-install.sh
+          ./dotnet-install.sh -c 6.0 --install-dir /usr/share/dotnet
+          chmod +x ./install_pwsh.sh
+          ./install_pwsh.sh
+          dotnet nuget add source "$PWD/PackagesOutput" -n local
+          pwsh run_crossplatform_tests.ps1

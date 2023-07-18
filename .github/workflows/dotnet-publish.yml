@@ -7,7 +7,7 @@ on:
         description: Run tests
         type: boolean
         required: false
-        default: true
+        default: false
       core_version:
         description: Core version
         type: string
@@ -17,7 +17,7 @@ on:
         description: Core NuGet version
         type: string
         required: false
-        default: "3.6.1"
+        default: "3.6.1.1"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -48,34 +48,19 @@ jobs:
           cd dotnet
           ./update_core_versions.ps1
           python updateChangelogAndProjectFiles.py
-      - name: Update SCM
-        id: create_release_branch
+      - name: Set release branch
         shell: bash
         run: |
-          cd dotnet
           RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
-          git config --local user.email "action-queue@applitools.com"
-          git config --local user.name "queue-bot"
-          git checkout -b $RELEASE_BRANCH
-          git add */*.csproj CHANGELOG.md
-          git commit -m 'Updated CHANGELOG and bumped versions.'
-          git push origin HEAD:$RELEASE_BRANCH
           echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
-      - name: Store NEW_TAGS.txt
-        uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v3
         with:
-          name: NEW_TAGS.txt
-          path: dotnet/NEW_TAGS.txt
-      - name: Store UPDATED_PROJECTS.txt
-        uses: actions/upload-artifact@master
-        with:
-          name: UPDATED_PROJECTS.txt
-          path: dotnet/UPDATED_PROJECTS.txt
-      - name: Store SEND_MAIL.json
-        uses: actions/upload-artifact@master
-        with:
-          name: SEND_MAIL.json
-          path: dotnet/SEND_MAIL.json
+          name: PublishingFiles
+          path: |
+            dotnet/*.txt
+            dotnet/*.json
+            dotnet/CHANGELOG.md
+            dotnet/Eyes.*/Eyes.*.csproj
 
   test:
     if: ${{ inputs.run_tests }}
@@ -84,8 +69,10 @@ jobs:
     secrets: inherit
     with:
       ref: ${{needs.update_cores.outputs.release_branch}}
+      cross_platform: false
+      generic: true
 
-  release:
+  create_nugets:
     runs-on: ubuntu-latest
     needs: [update_cores, test]
     if: |
@@ -96,21 +83,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{needs.update_cores.outputs.release_branch}}
-      - name: Restore NEW_TAGS.txt
-        uses: actions/download-artifact@master
-        with:
-          name: NEW_TAGS.txt
-          path: dotnet
-      - name: Restore UPDATED_PROJECTS.txt
-        uses: actions/download-artifact@master
-        with:
-          name: UPDATED_PROJECTS.txt
-          path: dotnet
-      - name: Restore SEND_MAIL.json
-        uses: actions/download-artifact@master
-        with:
-          name: SEND_MAIL.json
-          path: dotnet
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
@@ -123,9 +95,61 @@ jobs:
         shell: pwsh
         run: |
           cd dotnet
-          foreach($p in Get-Content .\UPDATED_PROJECTS.txt) {
-            dotnet pack ./$p.DotNet/$p.DotNet.csproj
-          }
+          dotnet pack ./Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj
+          dotnet pack ./Eyes.Images.DotNet/Eyes.Images.DotNet.csproj
+          dotnet pack ./Eyes.Appium.DotNet/Eyes.Appium.DotNet.csproj
+          dotnet pack ./Eyes.Playwright.DotNet/Eyes.Playwright.DotNet.csproj
+          dotnet pack ./Eyes.Selenium.DotNet/Eyes.Selenium.DotNet.csproj
+          dotnet pack ./Eyes.Selenium4.DotNet/Eyes.Selenium4.DotNet.csproj
+      - name: Store Nugets
+        uses: actions/upload-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
+
+  test_nugets:
+    if: |
+      always() &&
+      (needs.create_nugets.result == 'success')
+    needs: [create_nugets]
+    uses: ./.github/workflows/dotnet-platform-tests.yml
+    secrets: inherit
+    with:
+      ref: ${{needs.update_cores.outputs.release_branch}}
+
+  release:
+    if: |
+      always() &&
+      (needs.test_nugets.result == 'success')
+    needs: [test_nugets]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{needs.update_cores.outputs.release_branch}}
+      - uses: actions/download-artifact@v3
+        with:
+          name: PublishingFiles
+          path: dotnet
+      - name: Update SCM
+        id: create_release_branch
+        shell: bash
+        run: |
+          cd dotnet
+          RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
+          git config --local user.email "action-queue@applitools.com"
+          git config --local user.name "queue-bot"
+          git checkout -b $RELEASE_BRANCH
+          git add */*.csproj CHANGELOG.md
+          git commit -m 'Updated CHANGELOG and bumped versions.'
+          git push origin HEAD:$RELEASE_BRANCH
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - uses: actions/download-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
       - name: Upload nugets
         shell: pwsh
         run: |

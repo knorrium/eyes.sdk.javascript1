@@ -1,19 +1,23 @@
 using System;
+using System.Threading;
 using Applitools;
 using NUnit.Framework;
 
 namespace Eyes.Images.E2ETests
 {
+    [Parallelizable(ParallelScope.Children)]
     public abstract class ImagesGenericTestsBase
     {
-        protected Applitools.Images.Eyes eyes;
+        private readonly ThreadLocal<Applitools.Images.Eyes> eyes_ = new();
         private static string TEST_SUITE_NAME = "Eyes Image SDK";
         protected static BatchInfo Batch = new BatchInfo(TEST_SUITE_NAME);
+
+        protected Applitools.Images.Eyes Eyes => eyes_.Value;
 
         [SetUp]
         public void Setup()
         {
-            eyes = new Applitools.Images.Eyes
+            eyes_.Value = new Applitools.Images.Eyes
             {
                 ApiKey = Environment.GetEnvironmentVariable("APPLITOOLS_API_KEY"), 
                 BranchName = "master_java",
@@ -25,14 +29,14 @@ namespace Eyes.Images.E2ETests
 
             if (Environment.GetEnvironmentVariable("APPLITOOLS_USE_PROXY") != null)
             {
-                eyes.Proxy = new ProxySettings("http://127.0.0.1", 8888);
+                eyes_.Value.Proxy = new ProxySettings("http://127.0.0.1", 8888);
             }
         }
 
         [TearDown]
         public void TearDown()
         {
-            eyes.AbortIfNotClosed();
+            eyes_.Value?.AbortIfNotClosed();
         }
 
         protected string GetApplicationName()

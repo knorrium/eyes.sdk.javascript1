@@ -1,127 +1,49 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using Applitools;
 using Applitools.Commands;
 using Applitools.Images;
 using Applitools.Tests.Utils;
+using Applitools.Utils;
 using Applitools.Utils.Geometry;
+using Applitools.VisualGrid;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Region = Applitools.Utils.Geometry.Region;
 
 namespace Eyes.Images.E2ETests
 {
+    [Parallelizable(ParallelScope.Children)]
     public class ImagesGenericTests : ImagesGenericTestsBase
     {
-        private static string IMAGE_URL_JPG = "https://applitools.github.io/demo/images/image_1.jpg";
-        private static string IMAGE_URL_JPEG = "https://applitools.github.io/demo/images/minions_jpeg.jpeg";
-        private static string IMAGE_URL_PNG = "https://applitools.github.io/upload/appium.png";
-        private static string IMAGE_URL_BMP = "https://applitools.github.io/demo/images/minions_bitmap.bmp";
         private static string EXTRACT_TEXT_IMAGE_PNG = "resources/extractText.png";
-
         private static string IMAGE_PATH_JPEG = "resources/minions_jpeg.jpeg";
-        private static string IMAGE_PATH_JPG = "";
-        private static string IMAGE_PATH_PNG = "resources/minions_png.png";
-        private static string IMAGE_PATH_BMP = "resources/minions_bitmap.bmp";
-
         private Bitmap TEST_IMAGE = new Bitmap(IMAGE_PATH_JPEG);
         private Bitmap EXTRACT_TEXT_IMAGE = new Bitmap(EXTRACT_TEXT_IMAGE_PNG);
-        
-        [Test]
-        public void BitMapFromPathTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_BMP);
-            eyes.Open("Applitools Eyes SDK", "TestBitMapFromPath", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(IMAGE_PATH_BMP));
-            eyes.Close();
-        }
-        
-        [Test]
-        public void BitMapFromBufferTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_BMP);
-            eyes.Open("Applitools Eyes SDK", "TestBitMapFromBuffer", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(image));
-            eyes.Close();
-        }
-        
-        [Test]
-        public void BitMapFromURLTest()
-        {
-            eyes.Open("Applitools Eyes SDK", "TestBitMapFromURL");
-            eyes.Check(Target.Url(IMAGE_URL_BMP));
-            eyes.Close();
-        }
-        
-        [Test]
-        public void JPEGFromPathTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_JPEG);
-            eyes.Open("Applitools Eyes SDK", "TestJPEGFromPath", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(IMAGE_PATH_JPEG));
-            eyes.Close();
-        }
-        
-        [Test]
-        public void JPEGFromBufferTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_JPEG);
-            eyes.Open("Applitools Eyes SDK", "TestJPEGFromBuffer", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(image));
-            eyes.Close();
-        }
-        
-        [Test]
-        public void JPEGFromURLTest()
-        {
-            eyes.Open("Applitools Eyes SDK", "TestJPEGFromURL");
-            eyes.Check(Target.Url(new Uri(IMAGE_URL_JPEG)));
-            eyes.Close();
-        }
-
-        [Test]
-        public void PNGFromPathTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_PNG);
-            eyes.Open("Applitools Eyes SDK", "TestPNGFromPath", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(IMAGE_PATH_PNG));
-            eyes.Close();
-        }
-
-        [Test]
-        public void PNGFromBufferTest()
-        {
-            var image = new Bitmap(IMAGE_PATH_PNG);
-            eyes.Open("Applitools Eyes SDK", "TestPNGFromBuffer", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(image));
-            eyes.Close();
-        }
-
-        [Test]
-        public void PNGFromURLTest()
-        {
-            eyes.Open("Applitools Eyes SDK", "TestPNGFromBuffer");
-            eyes.Check(Target.Url(IMAGE_URL_PNG));
-            eyes.Close();
-        }
-
 
         [Test]
         public void IgnoreRegionsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestIgnoreRegionFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).Ignore(new Rectangle(10, 20, 30, 40)));
-            eyes.Close();
+            Eyes.Open(GetApplicationName(), "TestIgnoreRegionFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).Ignore(new Rectangle(10, 20, 30, 40)));
+            Eyes.Close();
         }
 
         [Test]
         public void FloatingRegionsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestFloatingRegionFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).Floating(new Rectangle(10, 20, 30, 40), 5, 10, 20, 15));
+            Eyes.Open(GetApplicationName(), "TestFloatingRegionFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).Floating(new Rectangle(10, 20, 30, 40), 5, 10, 20, 15));
 
-            var result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            var result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             var floatingRegions = info.ActualAppOutput[0].ImageMatchSettings.Floating;
 
@@ -131,11 +53,12 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelExactFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestMatchLevelExactFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Exact));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelExactFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Exact));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Exact, matchLevel);
@@ -144,24 +67,26 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelContentFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Content));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Content));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Content, matchLevel);
         }
-        
+
         [Test]
         public void MatchLevelIgnoreColorsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.IgnoreColors));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.IgnoreColors));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.IgnoreColors, matchLevel);
@@ -170,11 +95,12 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelStrictFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestMatchLevelStrictFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Strict));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelStrictFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Strict));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Strict, matchLevel);
@@ -183,11 +109,12 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelLayoutFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestMatchLevelLayoutFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Layout));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelLayoutFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).MatchLevel(MatchLevel.Layout));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Layout2, matchLevel);
@@ -196,13 +123,14 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelExactNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetMatchLevel(MatchLevel.Exact));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetMatchLevel(MatchLevel.Exact));
 
-            eyes.Open(GetApplicationName(), "TestMatchLevelExactNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelExactNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Exact, matchLevel);
@@ -211,43 +139,46 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelContentNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetMatchLevel(MatchLevel.Content));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetMatchLevel(MatchLevel.Content));
 
-            eyes.Open(GetApplicationName(), "TestMatchLevelContentNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelContentNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Content, matchLevel);
         }
-        
+
         [Test]
         public void MatchLevelIgnoreColorsNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetMatchLevel(MatchLevel.IgnoreColors));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetMatchLevel(MatchLevel.IgnoreColors));
 
-            eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelIgnoreColorsNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.IgnoreColors, matchLevel);
         }
-        
+
         [Test]
         public void MatchLevelStrictNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetMatchLevel(MatchLevel.Strict));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetMatchLevel(MatchLevel.Strict));
 
-            eyes.Open(GetApplicationName(), "TestMatchLevelStrictNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelStrictNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Strict, matchLevel);
@@ -256,13 +187,14 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void MatchLevelLayoutNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetMatchLevel(MatchLevel.Layout));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetMatchLevel(MatchLevel.Layout));
 
-            eyes.Open(GetApplicationName(), "TestMatchLevelLayoutNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.Open(GetApplicationName(), "TestMatchLevelLayoutNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
             MatchLevel matchLevel = info.ActualAppOutput[0].ImageMatchSettings.MatchLevel;
 
             Assert.AreEqual(MatchLevel.Layout2, matchLevel);
@@ -283,11 +215,12 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void IgnoreDisplacementsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestIgnoreDisplacementsFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).IgnoreDisplacements());
+            Eyes.Open(GetApplicationName(), "TestIgnoreDisplacementsFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).IgnoreDisplacements());
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             Assert.IsTrue(info.ActualAppOutput[0].ImageMatchSettings.IgnoreDisplacements);
         }
@@ -295,12 +228,13 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void IgnoreDisplacementsNonFluentTest()
         {
-            eyes.SetConfiguration(eyes.GetConfiguration().SetIgnoreDisplacements(true));
-            eyes.Open(GetApplicationName(), "TestIgnoreDisplacementsNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.SetConfiguration(Eyes.GetConfiguration().SetIgnoreDisplacements(true));
+            Eyes.Open(GetApplicationName(), "TestIgnoreDisplacementsNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             Assert.IsTrue(info.ActualAppOutput[0].ImageMatchSettings.IgnoreDisplacements);
         }
@@ -308,16 +242,17 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void CodedRegionsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestCodedRegionsFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE)
+            Eyes.Open(GetApplicationName(), "TestCodedRegionsFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE)
                 .Ignore(new Rectangle(10, 20, 30, 40))
                 .Content(new Rectangle(10, 20, 30, 40))
                 .Strict(new Rectangle(10, 20, 30, 40))
                 .Layout(new Rectangle(10, 20, 30, 40))
             );
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             Region ignoreRegion = info.ActualAppOutput[0].ImageMatchSettings.Ignore[0];
             Region layoutRegion = info.ActualAppOutput[0].ImageMatchSettings.Layout[0];
@@ -333,11 +268,12 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void EnablePatternsFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestEnablePatternsFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE).EnablePatterns());
+            Eyes.Open(GetApplicationName(), "TestEnablePatternsFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE).EnablePatterns());
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             Assert.IsTrue(info.ActualAppOutput[0].ImageMatchSettings.EnablePatterns);
         }
@@ -345,14 +281,15 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void EnablePatternsNonFluentTest()
         {
-            var config = eyes.GetConfiguration();
+            var config = Eyes.GetConfiguration();
             config.EnablePatterns = true;
-            eyes.SetConfiguration(config);
-            eyes.Open(GetApplicationName(), "TestEnablePatternsNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.Check(Target.Image(TEST_IMAGE));
+            Eyes.SetConfiguration(config);
+            Eyes.Open(GetApplicationName(), "TestEnablePatternsNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
 
-            TestResults result = eyes.Close(false);
-            var info = TestUtils.GetSessionResults(eyes.ApiKey, result);
+            TestResults result = Eyes.Close(false);
+            var info = TestUtils.GetSessionResults(Eyes.ApiKey, result);
 
             Assert.IsTrue(info.ActualAppOutput[0].ImageMatchSettings.EnablePatterns);
         }
@@ -368,50 +305,69 @@ namespace Eyes.Images.E2ETests
         [Test]
         public void CheckRegionNonFluentTest()
         {
-            eyes.Open(GetApplicationName(), "TestCheckRegionNonFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-            eyes.CheckRegion(TEST_IMAGE, new Rectangle(50, 50, 50, 50));
-            eyes.Close();
+            Eyes.Open(GetApplicationName(), "TestCheckRegionNonFluent",
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.CheckRegion(TEST_IMAGE, new Rectangle(50, 50, 50, 50));
+            Eyes.Close();
         }
 
         [Test]
         public void ExtractTextTest()
         {
-	        var image = EXTRACT_TEXT_IMAGE;
-	        eyes.Open("Applitools Eyes SDK", "ExtractText", new RectangleSize(image.Width, image.Height));
-	        var result = eyes.ExtractText(new OcrRegion(image));
-	        Assert.AreEqual(1, result.Count);
-	        Assert.AreEqual("This is the navigation bar", result.ElementAt(0));
-	        eyes.Close();
+            var image = EXTRACT_TEXT_IMAGE;
+            Eyes.Open("Applitools Eyes SDK", "ExtractText", new RectangleSize(image.Width, image.Height));
+            var result = Eyes.ExtractText(new OcrRegion(image));
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual("This is the navigation bar", result.ElementAt(0));
+            Eyes.Close();
         }
 
         [Test]
         public void ExtractTextRegionsTest()
         {
-	        var image = EXTRACT_TEXT_IMAGE_PNG;
-	        eyes.Open("Applitools Eyes SDK", "ExtractTextRegions");
-	        var result = eyes.ExtractTextRegions(new TextRegionSettings(".+").SetImage(image));
-	        Assert.AreEqual(1, result.Count);
+            var image = EXTRACT_TEXT_IMAGE_PNG;
+            Eyes.Open("Applitools Eyes SDK", "ExtractTextRegions");
+            var result = Eyes.ExtractTextRegions(new TextRegionSettings(".+").SetImage(image));
+            Assert.AreEqual(1, result.Count);
             var regions = result.First().Value;
             Assert.AreEqual(1, regions.Count);
             var region = regions.First();
             Assert.AreEqual(new TextRegion(10, 11, 18, 214, "Thisisthenavigationbar"), region);
-	        eyes.Close();
+            Eyes.Close();
         }
 
         [Test]
         public void LocateTest()
         {
             var image = EXTRACT_TEXT_IMAGE;
-            eyes.Open("Eyes Images SDK", "Locate", new RectangleSize(image.Width, image.Height));
-            eyes.Check(Target.Image(image));
+            Eyes.Open("Eyes Images SDK", "Locate", new RectangleSize(image.Width, image.Height));
+            Eyes.Check(Target.Image(image));
 
-            var result = eyes.Locate(new VisualLocatorSettings().Name("the").Image(image));
+            var result = Eyes.Locate(new VisualLocatorSettings().Name("the").Image(image));
             var regions = result["the"];
             Assert.AreEqual(1, regions.Count);
             var region = regions.First();
-            
+
             Assert.AreEqual(new Region(69, 9, 31, 20), region);
-            eyes.Close();
+            Eyes.Close();
+        }
+
+        [Test]
+        public async Task EnsureDeviceNames()
+        {
+            using HttpClient client = new HttpClient();
+            string devicesJson =
+                await client.GetStringAsync("https://render-wus.applitools.com/emulated-devices-sizes");
+            var deviceNamesFromServer = JsonConvert.DeserializeObject<Dictionary<string, object>>(devicesJson)
+                .Select(kvp => kvp.Key);
+            var deviceNamesFromEnum = new List<string>();
+            foreach (var dev in Enum.GetValues(typeof(DeviceName)))
+            {
+                string devName = dev.GetAttribute<EnumMemberAttribute>().Value;
+                deviceNamesFromEnum.Add(devName);
+            }
+
+            CollectionAssert.AreEquivalent(deviceNamesFromServer, deviceNamesFromEnum);
         }
     }
 }

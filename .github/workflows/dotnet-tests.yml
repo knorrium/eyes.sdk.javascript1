@@ -20,6 +20,14 @@ on:
         required: false
         type: string
         default: "3.6.0"
+      generic:
+        type: boolean
+        required: false
+        default: true
+      cross_platform:
+        type: boolean
+        required: false
+        default: true
 
 env:
   DRIVER_PATH: /usr/bin
@@ -32,6 +40,7 @@ env:
 jobs:
 
   dotnet-tests:
+    if: ${{ github.event_name == 'pull_request' || inputs.cross_platform }}
     strategy:
       fail-fast: false
       matrix:
@@ -41,15 +50,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{inputs.ref || github.ref}}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
-      - run: pwsh dotnet/run_crossplatform_tests.ps1
+      - run: dotnet test dotnet/Tests/Eyes.Selenium.UnitTests/Eyes.Selenium.UnitTests.csproj
 
   dotnet-tests-alpine:
+    if: ${{ github.event_name == 'pull_request' || inputs.cross_platform }}
     runs-on: ubuntu-latest
     container: "alpine:latest"
     steps:
@@ -70,6 +77,7 @@ jobs:
           dotnet test Tests/Eyes.Selenium.UnitTests/Eyes.Selenium.UnitTests.csproj
 
   dotnet-test-images-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -88,6 +96,7 @@ jobs:
           chmod +x ./genericTests_images.sh && ./genericTests_images.sh
           
   dotnet-test-appium-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -106,6 +115,7 @@ jobs:
           chmod +x ./genericTests_appium.sh && ./genericTests_appium.sh
 
   dotnet-test-selenium3-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -124,6 +134,7 @@ jobs:
           chmod +x ./genericTests_selenium3.sh && ./genericTests_selenium3.sh
 
   dotnet-test-selenium4-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -142,6 +153,7 @@ jobs:
           chmod +x ./genericTests_selenium4.sh && ./genericTests_selenium4.sh
 
   dotnet-test-playwright-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

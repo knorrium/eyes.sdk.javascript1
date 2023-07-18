@@ -44,4 +44,14 @@ To learn more, visit https://applitools.com/ .</Description>
     <ProjectReference Include="..\Eyes.Image.Core.DotNet\Eyes.Image.Core.DotNet.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="pwsh Scripts/generateDeviceNames.ps1 https://render-wus.applitools.com/emulated-devices-sizes DeviceName" />
+    <Exec Command="pwsh Scripts/generateDeviceNames.ps1 https://render-wus.applitools.com/ios-devices-sizes IosDeviceName" />
+    <Exec Command="pwsh Scripts/generateDeviceNames.ps1 https://render-wus.applitools.com/android-devices-sizes AndroidDeviceName" />
+    <ItemGroup>
+      <Compile Include="**/*$(DefaultLanguageSourceExtension)"
+               Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+    </ItemGroup>
+  </Target>
+
 </Project>
