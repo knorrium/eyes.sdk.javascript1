@@ -55,10 +55,8 @@ describe('storybook-csf', () => {
             /See details at https\:\/\/.+.applitools.com\/app\/test-results\/.+/g,
             'See details at <some_url>',
           )
-          .replace(version, '<version>')
           .replace(/\d+(?:\.\d+)+/g, '<browser_version>');
 
-        console.log(output);
         await snap(output, `storybook with CSF and render error version ${version}`);
       });
     }
