@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-nightwatch",
-  "version": "1.15.11",
+  "version": "1.15.12",
   "description": "Applitools Eyes SDK for Nightwatch.js",
   "keywords": [
     "eyes-nightwatch",
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@applitools/driver": "1.13.1",
-    "@applitools/eyes": "1.6.1",
+    "@applitools/eyes": "1.6.2",
     "@applitools/spec-driver-webdriver": "1.0.38",
     "@applitools/utils": "1.5.0",
     "webdriver": "7.27.0"

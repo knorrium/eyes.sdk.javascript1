@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.23.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.12...js/eyes-images@4.23.13) (2023-07-18)
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+* @applitools/ufg-client bumped from 1.4.1 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
+
+
+* @applitools/eyes bumped from 1.6.1 to 1.6.2
+
+* @applitools/core bumped from 3.6.1 to 3.6.2
+
+* @applitools/core-base bumped from 1.4.0 to 1.4.1
+
+* @applitools/ec-client bumped from 1.7.0 to 1.7.1
+
+* @applitools/tunnel-client bumped from 1.1.0 to 1.1.1
+
+* @applitools/nml-client bumped from 1.5.2 to 1.5.3
+
+
 ## [4.23.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.11...js/eyes-images@4.23.12) (2023-07-13)
 
 

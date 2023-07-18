@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.4.1...js/ufg-client@1.5.0) (2023-07-18)
+
+
+### Features
+
+* support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
 ## [1.4.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.4.0...js/ufg-client@1.4.1) (2023-07-13)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core-base",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -44,7 +44,7 @@
   "dependencies": {
     "@applitools/image": "1.1.0",
     "@applitools/logger": "2.0.5",
-    "@applitools/req": "1.4.0",
+    "@applitools/req": "1.5.0",
     "@applitools/utils": "1.5.0",
     "abort-controller": "3.0.0",
     "throat": "6.0.2"

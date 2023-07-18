@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.2...js/nml-client@1.5.3) (2023-07-18)
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
 ## [1.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.1...js/nml-client@1.5.2) (2023-07-13)
 
 

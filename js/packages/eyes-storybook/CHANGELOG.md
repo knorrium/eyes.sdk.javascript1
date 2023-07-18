@@ -4,6 +4,43 @@
 
 
 
+## [3.37.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.36.0...js/eyes-storybook@3.37.0) (2023-07-18)
+
+
+### Features
+
+* support retries on stuck requests ([#1773](https://github.com/applitools/eyes.sdk.javascript1/issues/1773)) ([4db470e](https://github.com/applitools/eyes.sdk.javascript1/commit/4db470ee6829c13cfaf7e521ef91e20854266edd))
+
+
+### Bug Fixes
+
+* fix lint config and remove extranous deps ([aea605c](https://github.com/applitools/eyes.sdk.javascript1/commit/aea605c4a1d6cca37d84b464af369cdbff3c6234))
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+* @applitools/ufg-client bumped from 1.4.1 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
+
+
+* @applitools/core bumped to 3.6.2
+
+* @applitools/core-base bumped from 1.4.0 to 1.4.1
+
+* @applitools/ec-client bumped from 1.7.0 to 1.7.1
+
+* @applitools/tunnel-client bumped from 1.1.0 to 1.1.1
+
+* @applitools/nml-client bumped from 1.5.2 to 1.5.3
+
+
 ## [3.36.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook-v3.35.1...js/eyes-storybook@3.36.0) (2023-07-05)
 
 

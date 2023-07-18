@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.1.0...js/tunnel-client@1.1.1) (2023-07-18)
+
+
+### Dependencies
+
+* @applitools/req bumped from 1.4.0 to 1.5.0
+  #### Features
+
+  * support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
 ## [1.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.0.2...js/tunnel-client@1.1.0) (2023-07-13)
 
 

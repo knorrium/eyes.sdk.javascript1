@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/req@1.4.0...js/req@1.5.0) (2023-07-18)
+
+
+### Features
+
+* support retries on stuck requests ([be673bb](https://github.com/applitools/eyes.sdk.javascript1/commit/be673bb505c9b21d6aea37d86e88513e95e3cb02))
+
 ## [1.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/req@1.3.3...js/req@1.4.0) (2023-07-05)
 
 

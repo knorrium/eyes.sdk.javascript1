@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -68,19 +68,19 @@
     ]
   },
   "dependencies": {
-    "@applitools/core-base": "1.4.0",
+    "@applitools/core-base": "1.4.1",
     "@applitools/dom-capture": "11.2.2",
     "@applitools/dom-snapshot": "4.7.9",
     "@applitools/driver": "1.13.1",
-    "@applitools/ec-client": "1.7.0",
+    "@applitools/ec-client": "1.7.1",
     "@applitools/logger": "2.0.5",
-    "@applitools/nml-client": "1.5.2",
-    "@applitools/req": "1.4.0",
+    "@applitools/nml-client": "1.5.3",
+    "@applitools/req": "1.5.0",
     "@applitools/screenshoter": "3.8.4",
     "@applitools/snippets": "2.4.21",
     "@applitools/socket": "1.1.5",
     "@applitools/spec-driver-webdriver": "1.0.38",
-    "@applitools/ufg-client": "1.4.1",
+    "@applitools/ufg-client": "1.5.0",
     "@applitools/utils": "1.5.0",
     "@types/ws": "8.5.5",
     "abort-controller": "3.0.0",
