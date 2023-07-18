@@ -72,7 +72,7 @@ jobs:
           key: yarn-cache-${{hashFiles('./js/yarn.lock', './js/.yarnrc.yml')}}
           restore-keys: yarn-cache-
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
@@ -118,7 +118,7 @@ jobs:
           key: yarn-cache-${{hashFiles('./js/yarn.lock', '.yarnrc.yml')}}
           restore-keys: yarn-cache-
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
@@ -207,7 +207,7 @@ jobs:
           key: maven-cache-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-cache-
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
@@ -268,7 +268,7 @@ jobs:
           key: maven-cache-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-cache-
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}

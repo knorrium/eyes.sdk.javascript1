@@ -58,7 +58,7 @@ jobs:
           JF_URL: ${{matrix.jfrog.url}}
           JF_ACCESS_TOKEN: ${{secrets.JF_ACCESS_TOKEN}}
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with: 
           name: ${{join(matrix.builds)}}
@@ -127,7 +127,7 @@ jobs:
           gpg-private-key: ${{secrets.MAVEN_GPG_PRIVATE_KEY}} # Value of the GPG private key to import
           gpg-passphrase: MAVEN_GPG_PASSPHRASE # env variable for GPG private key passphrase
       - name: Restore build artifacts
-        if: ${{matrix.builds}}
+        if: ${{join(matrix.builds)}}
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
