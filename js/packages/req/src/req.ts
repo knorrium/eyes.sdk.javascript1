@@ -56,8 +56,12 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
         }, options.requestTimeout)
       : null
 
+    if (connectionController.signal.aborted) requestController.abort()
     connectionController.signal.onabort = () => requestController.abort()
-    if (options.signal) options.signal.onabort = () => requestController.abort()
+    if (options.signal) {
+      if (options.signal.aborted) requestController.abort()
+      options.signal.onabort = () => requestController.abort()
+    }
 
     const url = new URL(String((input as Request).url ?? input), options.baseUrl)
     if (options.query) {

@@ -3,6 +3,7 @@ import nock from 'nock'
 import {Request} from 'node-fetch'
 import {req} from '../../src/req.js'
 import {AbortCode} from '../../src/req-errors.js'
+import {AbortController} from 'abort-controller'
 import * as utils from '@applitools/utils'
 
 describe('req', () => {
@@ -209,6 +210,30 @@ describe('req', () => {
           connectionTimeout: 1000,
         }),
       (error: Error) => error.constructor.name === 'ConnectionTimeoutError',
+    )
+  })
+
+  it('aborts request if signal is already aborted', async () => {
+    nock('https://eyesapi.applitools.com').get('/api/hello').reply(500).persist()
+
+    const controller = new AbortController()
+    controller.abort()
+
+    await assert.rejects(
+      () => req('https://eyesapi.applitools.com/api/hello', {signal: controller.signal}),
+      (error: Error) => error.constructor.name === 'AbortError',
+    )
+  })
+
+  it('aborts request with timeout if signal is already aborted', async () => {
+    nock('https://eyesapi.applitools.com').get('/api/hello').reply(500).persist()
+
+    const controller = new AbortController()
+    controller.abort()
+
+    await assert.rejects(
+      () => req('https://eyesapi.applitools.com/api/hello', {signal: controller.signal, connectionTimeout: 1000}),
+      (error: Error) => error.constructor.name === 'AbortError',
     )
   })
 
