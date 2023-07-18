@@ -1229,6 +1229,7 @@
           "artifacts": ["./reports/**/*"],
           "runner": "macos",
           "grep": "TestCoreBinaries#testMacosBinaries",
+          "builds": ["{{component}}/{{environment}}"],
           "report": {"name": "java", "group": "core"}
         },
         {
@@ -1236,6 +1237,7 @@
           "artifacts": ["./reports/**/*"],
           "runner": "linux",
           "grep": "TestCoreBinaries#testLinuxBinaries",
+          "builds": ["{{component}}/{{environment}}"],
           "report": {"name": "java", "group": "core"}
         },
         {
@@ -1243,6 +1245,7 @@
           "artifacts": ["./reports/**/*"],
           "runner": "linuxarm",
           "grep": "TestCoreBinaries#testArm64Binaries",
+          "builds": ["{{component}}/{{environment}}"],
           "report": {"name": "java", "group": "core"}
         },
         {
@@ -1251,6 +1254,7 @@
           "runner": "linux",
           "container": "node:lts-alpine",
           "grep": "TestCoreBinaries#testAlpineBinaries",
+          "builds": ["{{component}}/{{environment}}"],
           "report": {"name": "java", "group": "core"}
         },
         {
@@ -1258,6 +1262,7 @@
           "artifacts": ["./reports/**/*"],
           "runner": "windows",
           "grep": "TestCoreBinaries#testWindowsBinaries",
+          "builds": ["{{component}}/{{environment}}"],
           "report": {"name": "java", "group": "core"}
         }
       ],
