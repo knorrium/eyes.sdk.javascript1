@@ -1385,7 +1385,7 @@
       "component": "java/eyes-ufg-java5",
       "builds": [{
         "key": "{{component}}/{{environment}}",
-        "artifacts": ["./target", "~/.m2/repositoryy"],
+        "artifacts": ["./target", "~/.m2/repository"],
         "build-type": "maven"
       }],
       "releases": [{
