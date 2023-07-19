@@ -178,7 +178,7 @@ jobs:
         run: |
           if [ -f "/etc/alpine-release" ]; then
             apk update
-            apk add --no-cache git git-lfs maven openjdk11 libstdc++ bash;
+            apk add --no-cache git git-lfs maven openjdk11 libstdc++ bash gnupg;
             echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
           fi
       - name: Check-out repository
@@ -188,7 +188,12 @@ jobs:
           lfs: true
       - name: Import GPG Private Key
         run: |
-          cat <(echo -e "${{secrets.MAVEN_GPG_PRIVATE_KEY}}") | gpg --batch --import
+          if [[ "${{matrix.runner}}" =~ "windows" ]]; then
+            echo ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} > private_key.txt
+            gpg --batch --import private_key.txt
+          else
+            cat <(echo -e "${{secrets.MAVEN_GPG_PRIVATE_KEY}}") | gpg --batch --import
+          fi
           gpg --list-secret-keys --keyid-format LONG
       - name: Set up Java and Release Repository
         uses: actions/setup-java@v3
