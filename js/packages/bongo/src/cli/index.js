@@ -56,7 +56,10 @@ yargs
         params: {
           type: 'string',
           description: 'json parameters',
-          coerce: params => (params ? JSON.parse(params) : undefined),
+          coerce: params => {
+            param = params.trim()
+            return params ? JSON.parse(params) : undefined
+          },
         },
         sandbox: {
           type: 'boolean',
