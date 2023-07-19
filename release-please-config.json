@@ -1216,49 +1216,6 @@
         "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
-      "tests": [
-        {
-          "key": "{{component}}-mac",
-          "artifacts": ["./reports/**/*"],
-          "runner": "macos",
-          "grep": "TestCoreBinaries#testMacosBinaries",
-          "builds": ["java/eyes-universal-core/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
-        },
-        {
-          "key": "{{component}}-linux",
-          "artifacts": ["./reports/**/*"],
-          "runner": "linux",
-          "grep": "TestCoreBinaries#testLinuxBinaries",
-          "builds": ["java/eyes-universal-core/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
-        },
-        {
-          "key": "{{component}}-arm",
-          "artifacts": ["./reports/**/*"],
-          "runner": "linuxarm",
-          "grep": "TestCoreBinaries#testArm64Binaries",
-          "builds": ["java/eyes-universal-core/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
-        },
-        {
-          "key": "{{component}}-alpine",
-          "artifacts": ["./reports/**/*"],
-          "runner": "linux",
-          "container": "node:lts-alpine",
-          "grep": "TestCoreBinaries#testAlpineBinaries",
-          "builds": ["java/eyes-universal-core/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
-        },
-        {
-          "key": "{{component}}-win",
-          "artifacts": ["./reports/**/*"],
-          "runner": "windows",
-          "grep": "TestCoreBinaries#testWindowsBinaries",
-          "builds": ["java/eyes-universal-core/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
-        }
-      ],
       "releases": [{
         "profile": "maven"
       }]
@@ -1284,8 +1241,17 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "runner": "linux",
+        "builds": ["js/core/x64/{{environment}}"],
         "build-type": "maven"
+      }],
+      "tests": [{
+        "key": "{{component}}/java-{{java-version}}",
+        "artifacts": ["./reports/**/*"],
+        "runner": "linux",
+        "grep": "TestCoreBinaries#testLinuxBinaries",
+        "builds": ["js/core/x64/{{environment}}"],
+        "report": {"name": "java", "group": "core"}
       }],
       "releases": [{
         "profile": "maven"
@@ -1298,8 +1264,17 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "runner": "linuxarm",
+        "builds": ["js/core/arm64/{{environment}}"],
         "build-type": "maven"
+      }],
+      "tests": [{
+        "key": "{{component}}/java-{{java-version}}",
+        "artifacts": ["./reports/**/*"],
+        "runner": "linuxarm",
+        "grep": "TestCoreBinaries#testArm64Binaries",
+        "builds": ["js/core/arm64/{{environment}}"],
+        "report": {"name": "java", "group": "core"}
       }],
       "releases": [{
         "profile": "maven"
@@ -1311,10 +1286,23 @@
       "component": "java/eyes-universal-core-alpine",
       "builds": [{
         "key": "{{component}}/{{environment}}",
+        "runner": "linux",
+        "container": "node:lts-alpine",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "builds": ["js/core/x64/{{environment}}"],
         "build-type": "maven"
       }],
+      "tests": [
+        {
+          "key": "{{component}}/java-{{java-version}}",
+          "artifacts": ["./reports/**/*"],
+          "runner": "linux",
+          "container": "node:lts-alpine",
+          "grep": "TestCoreBinaries#testAlpineBinaries",
+          "builds": ["js/core/x64/{{environment}}"],
+          "report": {"name": "java", "group": "core"}
+        }
+      ],
       "releases": [{
         "profile": "maven"
       }]
@@ -1326,8 +1314,17 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
+        "runner": "windows",
+        "builds": ["js/core/x64/{{environment}}"],
         "build-type": "maven"
+      }],
+      "tests": [{
+        "key": "{{component}}/java-{{java-version}}",
+        "artifacts": ["./reports/**/*"],
+        "runner": "windows",
+        "grep": "TestCoreBinaries#testWindowsBinaries",
+        "builds": ["js/core/x64/{{environment}}"],
+        "report": {"name": "java", "group": "core"}
       }],
       "releases": [{
         "profile": "maven"
@@ -1340,9 +1337,18 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
+        "runner": "macos",
         "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
+      "tests": [{
+          "key": "{{component}}/java-{{java-version}}",
+          "artifacts": ["./reports/**/*"],
+          "runner": "macos",
+          "grep": "TestCoreBinaries#testMacosBinaries",
+          "builds": ["js/core/x64/{{environment}}"],
+          "report": {"name": "java", "group": "core"}
+        }],
       "releases": [{
         "profile": "maven"
       }]
