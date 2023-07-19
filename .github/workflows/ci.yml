@@ -272,8 +272,8 @@ jobs:
           working-directory: ${{matrix.working-directory}}
           test-type: ${{matrix.test-type}}
           grep: ${{matrix.grep}}
-          GH_TOKEN: ${{github.token}}
         env:
+          GH_TOKEN: ${{github.token}}
           APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
       - name: Save testing artifacts
         if: ${{always() && matrix.key && matrix.artifacts}}
