@@ -1213,14 +1213,7 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "/home/runner/.m2/repository"],
-        "builds": [
-          "{{component}}-binaries/{{environment}}",
-          "{{component}}-mac/{{environment}}",
-          "{{component}}-win/{{environment}}",
-          "{{component}}-linux/{{environment}}",
-          "{{component}}-arm/{{environment}}",
-          "{{component}}-alpine/{{environment}}"
-        ],
+        "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
       "tests": [
