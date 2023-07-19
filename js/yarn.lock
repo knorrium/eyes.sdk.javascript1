@@ -27,7 +27,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/bongo@workspace:packages/bongo"
   dependencies:
-    "@applitools/utils": "workspace:^"
+    "@applitools/utils": "workspace:"
     chalk: 3.0.0
     js-yaml: 4.1.0
     nock: ^13.3.0
@@ -1313,7 +1313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@applitools/utils@1.5.0, @applitools/utils@workspace:^, @applitools/utils@workspace:packages/utils":
+"@applitools/utils@1.5.0, @applitools/utils@workspace:, @applitools/utils@workspace:^, @applitools/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@applitools/utils@workspace:packages/utils"
   dependencies:
