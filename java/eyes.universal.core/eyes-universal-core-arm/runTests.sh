@@ -7,10 +7,8 @@ export APPLITOOLS_LOG_DIR="./reports/logs/";
 
 
 # install github cli (gh)
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-sudo apt-add-repository https://cli.github.com/packages
 sudo apt update
-sudo apt install gh -y
+sudo apt install gh
 
 # build eyes-universal-core before test
 chmod +x ../eyes-universal-core/build.sh

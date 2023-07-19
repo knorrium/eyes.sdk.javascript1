@@ -18,7 +18,7 @@ done
 if [ -z "$(ls -A ../../../js/packages/core/bin)" ]; then
   # update core binaries to latest
   chmod +x ../../../scripts/download-core-bin.sh
-  ./../../../scripts/download-core-bin.sh --platform mac --dir "./src/main/resources"
+  ./../../../scripts/download-core-bin.sh --platform macos --dir "./src/main/resources"
 else
   echo "Found js/core binaries"
   ls
