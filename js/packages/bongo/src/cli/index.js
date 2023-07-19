@@ -57,7 +57,7 @@ yargs
           type: 'string',
           description: 'json parameters',
           coerce: params => {
-            param = params.trim()
+            params = params.trim()
             return params ? JSON.parse(params) : undefined
           },
         },
