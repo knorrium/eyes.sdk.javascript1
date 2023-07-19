@@ -5445,7 +5445,9 @@ async function main() {
                 .join(', ');
             job['display-name'] = `${job['display-name'] ?? job.name} ${description ? `(${description})` : ''}`.trim();
             job.artifacts &&= job.artifacts.map(artifactPath => {
-                return external_node_path_namespaceObject.isAbsolute(artifactPath) ? artifactPath : external_node_path_namespaceObject.join(job['working-directory'], artifactPath);
+                return (external_node_path_namespaceObject.isAbsolute(artifactPath) || artifactPath.startsWith('~'))
+                    ? artifactPath
+                    : external_node_path_namespaceObject.join(job['working-directory'], artifactPath);
             });
             job.key &&= populateString(job.key, { filename: type === 'test', sha: type === 'build' });
             job.builds &&= job.builds.map(key => populateString(key, { sha: true }));
