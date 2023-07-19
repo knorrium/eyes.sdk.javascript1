@@ -27,7 +27,7 @@ then
 fi
 echo "Downloading from release - '$tag'"
 
-if [ "$platform" == "current" ]
+if [[ "$platform" == "current" ]]
 then
   if [[ "$OSTYPE" == "linux-gnu"* ]]
   then
@@ -47,6 +47,12 @@ then
 fi
 echo "Downloading for platform - '${platform:-all}'"
 
+if [[ -z "$platform" ]]; then binary="core-*"
+elif [[ "$platform" == "win" ]]; then binary="core-win.exe"
+else binary="core-$platform"
+fi
+echo "Downloading binary - '$binary'"
+
 echo "Downloading in directory - '${dir:-.}'"
 
-gh release download $tag --clobber --pattern "core-$platform*" --dir "${dir:-.}"
+gh release download $tag --clobber --pattern "$binary" --dir "${dir:-.}"
