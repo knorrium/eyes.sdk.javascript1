@@ -241,7 +241,7 @@ jobs:
         run: |
           if [ -f "/etc/alpine-release" ]; then
             apk update
-            apk add --no-cache git git-lfs maven openjdk11 libstdc++ bash;
+            apk add --no-cache git git-lfs github-cli maven openjdk11 libstdc++ bash;
             echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
           fi
       - name: Check-out repository
@@ -272,6 +272,7 @@ jobs:
           working-directory: ${{matrix.working-directory}}
           test-type: ${{matrix.test-type}}
           grep: ${{matrix.grep}}
+          GH_TOKEN: ${{github.token}}
         env:
           APPLITOOLS_API_KEY: ${{secrets.APPLITOOLS_API_KEY}}
       - name: Save testing artifacts
