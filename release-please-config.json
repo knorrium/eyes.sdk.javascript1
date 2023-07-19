@@ -1286,8 +1286,6 @@
       "component": "java/eyes-universal-core-alpine",
       "builds": [{
         "key": "{{component}}/{{environment}}",
-        "runner": "linux",
-        "container": "node:lts-alpine",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
         "builds": ["js/core/x64/{{environment}}"],
         "build-type": "maven"
@@ -1314,7 +1312,6 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "runner": "windows",
         "builds": ["js/core/x64/{{environment}}"],
         "build-type": "maven"
       }],
