@@ -1463,7 +1463,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
+          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
@@ -1492,7 +1492,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
+          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
@@ -1521,7 +1521,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java_playwright", "result-path": "./target/surefire-reports/java_coverage_tests", "meta-path": "./"}
+          "report": {"name": "java_playwright", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{

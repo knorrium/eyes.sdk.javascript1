@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Images Tests" verbose="1">
+    <listeners>
+        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+    </listeners>
+
+    <test name="Test Eyes" parallel="classes">
+        <packages>
+            <package name="com.applitools.eyes.*"></package>
+        </packages>
+    </test>
+</suite>
