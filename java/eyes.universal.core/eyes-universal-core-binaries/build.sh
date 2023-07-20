@@ -22,11 +22,11 @@ if [ -z "$(ls -A ../../../js/packages/core/bin)" ]; then
 else
   echo "Found js/core binaries"
   ls
-  cp ./core-alpine ./src/main/resources
-  cp ./core-linux ./src/main/resources
-  cp ./core-linux-arm64 ./src/main/resources
-  cp ./core-macos ./src/main/resources
-  cp ./core-win.exe ./src/main/resources
+  cp ../../../js/packages/core/bin/core-alpine ./src/main/resources
+  cp ../../../js/packages/core/bin/core-linux ./src/main/resources
+  cp ../../../js/packages/core/bin/core-linux-arm64 ./src/main/resources
+  cp ../../../js/packages/core/bin/core-macos ./src/main/resources
+  cp ../../../js/packages/core/bin/core-win.exe ./src/main/resources
 fi
 
 # build current module
