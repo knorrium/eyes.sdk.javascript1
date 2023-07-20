@@ -19,8 +19,10 @@ for build_path in "${BUILDS[@]}"; do
   ./build.sh
   cd - || exit
 done
+
 # build current module
-mvn clean install -DskipTests
+chmod +x build.sh
+./build.sh
 
 echo "Checking grep pattern: $MAVEN_GREP"
 # Run the default suite file
