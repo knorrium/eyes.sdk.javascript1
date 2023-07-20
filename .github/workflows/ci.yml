@@ -252,7 +252,7 @@ jobs:
       - name: Set safe directory
         if: ${{matrix.container}}
         run: |
-          git config --system --add safe.directory *
+          git config --system --add safe.directory "*"
       - name: Set up Java
         if: ${{!matrix.container}}
         uses: actions/setup-java@v3
