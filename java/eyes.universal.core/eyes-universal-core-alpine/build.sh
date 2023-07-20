@@ -15,10 +15,8 @@ for build_path in "${BUILDS[@]}"; do
   cd - || exit
 done
 
-# debug
-pwd
-git rev-parse --show-toplevel
-gh auth status
+# set remote
+git remote add origin https://github.com/applitools/eyes.sdk.javascript1
 
 if [ -z "$(ls -A ../../../js/packages/core/bin)" ]; then
   # update core binaries to latest
