@@ -73,7 +73,10 @@ export function makeCheck<TSpec extends SpecType>({
     let scrollRootSelector: Selector | undefined
     let selectorsToCalculate: {originalSelector: Selector | null; safeSelector: Selector | null}[]
 
-    const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    const driver =
+      spec && isDriver(target, spec)
+        ? await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
+        : null
     if (driver) {
       const environment = await driver.getEnvironment()
       await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)

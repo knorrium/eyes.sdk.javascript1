@@ -42,7 +42,7 @@ export function makeCheck<TSpec extends SpecType>({
         )
       ).flat()
     }
-    const driver = await makeDriver({spec, driver: target, logger})
+    const driver = await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
     const environment = await driver.getEnvironment()
     await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
     if (settings.lazyLoad && environment.isWeb) {

@@ -67,7 +67,7 @@ describe('custom properties per renderer', () => {
         ],
       },
     ]
-
+    const bothResults = []
     const checkPromise = core
       .openEyes({
         target: driver,
@@ -79,6 +79,8 @@ describe('custom properties per renderer', () => {
         return eyes.getResults()
       })
 
+    bothResults.push(await checkPromise)
+
     const checkAndClosePromise = core
       .openEyes({
         target: driver,
@@ -89,7 +91,7 @@ describe('custom properties per renderer', () => {
         return eyes.getResults()
       })
 
-    const bothResults = await Promise.all([checkPromise, checkAndClosePromise])
+    bothResults.push(await checkAndClosePromise)
 
     for (const results of bothResults) {
       for (const [index, result] of results.entries()) {

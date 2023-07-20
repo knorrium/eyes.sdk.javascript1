@@ -200,7 +200,7 @@ describe('driver', () => {
     frameElements.push(frameElement)
     await mock.switchToFrame(frameElement)
     assert.strictEqual(driver.mainContext, driver.currentContext)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -217,7 +217,7 @@ describe('driver', () => {
     frameElements.push(frameElement2)
     await mock.switchToFrame(frameElement2)
     assert.strictEqual(driver.mainContext, driver.currentContext)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -234,7 +234,7 @@ describe('driver', () => {
     frameElements.push(frameElement0)
     await mock.switchToFrame(frameElement0)
     assert.strictEqual(driver.mainContext, driver.currentContext)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -251,7 +251,7 @@ describe('driver', () => {
     frameElements.push(frameElement11)
     await mock.switchToFrame(frameElement11)
     assert.strictEqual(driver.mainContext, driver.currentContext)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -271,7 +271,7 @@ describe('driver', () => {
     frameElements.push(frameElement22)
     await mock.switchToFrame(frameElement22)
     assert.strictEqual(driver.currentContext.path.length, 3)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -291,7 +291,7 @@ describe('driver', () => {
     frameElements.push(frameElement22)
     await driver.switchToChildContext(frameElement22)
     assert.strictEqual(driver.currentContext.path.length, 3)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {
@@ -311,7 +311,7 @@ describe('driver', () => {
     frameElements.push(frameElement22)
     await driver.switchToChildContext(frameElement22)
     assert.strictEqual(driver.currentContext.path.length, frameElements.length)
-    await driver.refresh()
+    await driver.refresh({reset: true})
     const contextPath = driver.currentContext.path
     assert.strictEqual(contextPath.length, frameElements.length)
     for (const frameIndex of frameElements.keys()) {

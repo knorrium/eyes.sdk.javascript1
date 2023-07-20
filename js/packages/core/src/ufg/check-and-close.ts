@@ -72,7 +72,10 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     let scrollRootSelector: Selector | undefined
     let selectorsToCalculate: {safeSelector: Selector | null; originalSelector: Selector | null}[]
 
-    const driver = spec && isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
+    const driver =
+      spec && isDriver(target, spec)
+        ? await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
+        : null
     if (driver) {
       const environment = await driver.getEnvironment()
       if (uniqueRenderers.length === 0) {

@@ -51,6 +51,8 @@ export class Driver<T extends SpecType> {
 
   protected readonly _spec: SpecDriver<T>
 
+  protected readonly _original = this
+
   constructor(options: DriverOptions<T>) {
     this._logger = makeLogger({logger: options.logger, format: {label: 'driver'}})
     this._customConfig = options.customConfig ?? {}
@@ -97,16 +99,18 @@ export class Driver<T extends SpecType> {
 
   async reloadPage(): Promise<this> {
     await this.mainContext.execute(snippets.reloadPage).catch(() => null)
-    return this.refresh()
+    return this.refresh({reset: false})
   }
 
-  async refresh(): Promise<this> {
-    this._driverInfo = undefined
-    this._environment = undefined
-    this._viewport = undefined
-    this._features = undefined
-    this._helper = undefined
-    this._state = {}
+  async refresh({reset}: {reset?: boolean} = {}): Promise<this> {
+    if (reset) {
+      this._driverInfo = undefined
+      this._environment = undefined
+      this._viewport = undefined
+      this._features = undefined
+      this._helper = undefined
+      this._state = {}
+    }
 
     const spec = this._spec
 
@@ -115,7 +119,7 @@ export class Driver<T extends SpecType> {
     try {
       contextInfo = await getContextInfo(currentContext)
     } catch (err) {
-      return this
+      return reset ? (resetReference(this) as this) : this
     }
 
     const path = []
@@ -133,7 +137,16 @@ export class Driver<T extends SpecType> {
     }
     this._currentContext = this._mainContext
     await this.switchToChildContext(...path)
-    return this
+    return reset ? (resetReference(this) as this) : this
+
+    function resetReference(driver: Driver<T>): Driver<T> {
+      return new Proxy(driver._original, {
+        get(driver, key, receiver) {
+          if (key === '_original') return driver
+          return Reflect.get(driver, key, receiver)
+        },
+      })
+    }
 
     function transformSelector(selector: Selector<T>) {
       return specUtils.transformSelector(spec, selector, {isWeb: true})
@@ -224,7 +237,12 @@ export class Driver<T extends SpecType> {
   async getUserAgent({force}: {force?: boolean} = {}): Promise<UserAgent | undefined> {
     if (this._driverInfo?.userAgent === undefined || force) {
       this._driverInfo ??= {}
-      this._driverInfo.userAgent ??= (await this.currentContext.executePoll(snippets.getUserAgent)) ?? null
+      this._driverInfo.userAgent ??=
+        (await this.currentContext.executePoll(snippets.getUserAgent, {
+          main: undefined,
+          poll: undefined,
+          pollTimeout: 100,
+        })) ?? null
       this._logger.log('Extracted user agent', this._driverInfo.userAgent)
     }
     return this._driverInfo.userAgent ?? undefined
@@ -561,7 +579,7 @@ export class Driver<T extends SpecType> {
     }
     try {
       await this._spec.switchWorld(this.target, name)
-      this.refresh()
+      this.refresh({reset: true})
     } catch (error: any) {
       this._logger.error('Unable to switch world due to the error', error)
       throw new Error(`Unable to switch world, the original error was: ${error.message}`)
@@ -884,9 +902,10 @@ export async function makeDriver<T extends SpecType>(options: {
   driver: Driver<T> | T['driver']
   spec?: SpecDriver<T>
   customConfig?: {useCeilForViewportSize?: boolean}
+  reset?: boolean
   logger?: Logger
 }): Promise<Driver<T>> {
   const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
   if (options.logger) driver.updateLogger(options.logger)
-  return driver.refresh()
+  return driver.refresh({reset: options.reset})
 }

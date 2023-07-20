@@ -45,7 +45,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
         await Promise.all(baseEyes.map(baseEyes => baseEyes.checkAndClose({target, settings: baseSettings, logger})))
       ).flat()
     }
-    const driver = await makeDriver({spec, driver: target, logger})
+    const driver = await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
     const environment = await driver.getEnvironment()
     if (settings.lazyLoad && environment.isWeb) {
       await waitForLazyLoad({
