@@ -129,6 +129,11 @@ yargs
           type: 'string',
           description: 'the package group',
         },
+        resultFormat: {
+          aliases: ['format'],
+          type: 'string',
+          description: 'format of the report file',
+        },
         resultPath: {
           type: 'string',
           description: 'path to the report file',

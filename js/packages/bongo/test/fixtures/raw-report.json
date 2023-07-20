@@ -1,0 +1,11 @@
+{
+  "group":"selenium",
+  "id":"0000-0000",
+  "sdk":"java",
+  "results":[
+    {"passed":true,"parameters":{},"test_name":"testDefaultPadding"},
+    {"passed":true,"parameters":{},"test_name":"testPaddingAllDirections"},
+    {"passed":true,"parameters":{},"test_name":"testPaddingWhenAssigned"}
+  ],
+  "sandbox":true
+}
