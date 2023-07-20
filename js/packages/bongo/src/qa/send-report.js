@@ -28,7 +28,7 @@ async function sendTestReport({reportId, name, group, params, metaPath, resultPa
 
   const report =
     resultFormat === 'raw'
-      ? JSON.parse(file)
+      ? {...JSON.parse(file), id: reportId}
       : {
           id: reportId,
           sdk: name,
