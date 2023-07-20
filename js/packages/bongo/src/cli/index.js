@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+const fs = require('fs')
 const yargs = require('yargs')
 const chalk = require('chalk')
+const msee = require('msee')
 const {sendTestReport} = require('../qa/send-report')
 const {sendReleaseNotification} = require('../qa/send-notification')
 const {extractSimplifiedChangelog} = require('../changelog/changelog')
@@ -18,34 +20,75 @@ yargs
           type: 'string',
           description: 'release tag of the package',
         },
+        file: {
+          type: 'string',
+          descriptions: 'file to save changelog',
+          coerce: file => (file === '' ? true : file),
+        },
       }),
-    async handler({tag, repo = 'https://github.com/applitools/eyes.sdk.javascript1'}) {
-      const inquirer = await import('inquirer')
-      if (!tag) {
-        const releases = await getReleases({
-          repo: 'https://github.com/applitools/eyes.sdk.javascript1',
-          limit: 100,
-        })
-        const answers = await inquirer.default.prompt([
-          {
-            name: 'package',
-            message: 'Package:',
-            type: 'list',
-            pageSize: 10,
-            choices: Object.keys(releases),
-          },
-          {
-            name: 'tag',
-            message: 'Version:',
-            type: 'list',
-            pageSize: 10,
-            choices: ({package}) => releases[package].map(({version, tag}) => ({name: version, value: tag})),
-          },
-        ])
-        tag = answers.tag
+    async handler({tag, repo = 'https://github.com/applitools/eyes.sdk.javascript1', file}) {
+      const {default: inquirer} = await import('inquirer')
+      const {default: DatePrompt} = await import('inquirer-date-prompt')
+
+      inquirer.registerPrompt('date', DatePrompt)
+      const interactive = !tag
+
+      while (true) {
+        if (interactive) {
+          const formatter = Intl.DateTimeFormat('en', {dateStyle: 'long'})
+
+          const answers = await inquirer.prompt([
+            {
+              name: 'versions',
+              message: 'Package:',
+              type: 'list',
+              pageSize: 10,
+              choices: async () => {
+                const releases = await getReleases({
+                  repo: 'https://github.com/applitools/eyes.sdk.javascript1',
+                  limit: 100,
+                })
+                return Object.entries(releases).map(([name, release]) => ({
+                  name: `${name} ${chalk.grey(`(latest ${formatter.format(release[0].createdAt)})`)}`,
+                  value: release,
+                }))
+              },
+            },
+            {
+              name: 'tag',
+              message: 'Version:',
+              type: 'list',
+              pageSize: 10,
+              choices: ({versions}) => {
+                return versions.map(({version, tag, createdAt}) => ({
+                  name: `${version} ${chalk.grey(`(${formatter.format(createdAt)})`)}`,
+                  value: tag,
+                }))
+              },
+            },
+          ])
+          tag = answers.tag
+        }
+
+        const changelog = await extractSimplifiedChangelog({tag, repo})
+        if (file) {
+          if (file === true) file = `./${tag.replace('/', '-')}.md`
+          fs.writeFileSync(file, changelog)
+          console.log(chalk.green('✓'), chalk.bold('Changelog saved to the file:'), chalk.cyan(file))
+        } else {
+          console.log(msee.parse(changelog))
+        }
+
+        if (interactive) {
+          const {restart} = await inquirer.prompt({
+            name: 'restart',
+            message: 'Do you want to continue?',
+            type: 'confirm',
+            default: false,
+          })
+          if (!restart) return
+        }
       }
-      const changelog = await extractSimplifiedChangelog({tag, repo})
-      console.log(changelog)
     },
   })
   .command({

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/bongo",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "Release Kit for Applitools SDKs",
   "author": "Applitools team <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
@@ -25,7 +25,9 @@
     "@applitools/utils": "workspace:",
     "chalk": "3.0.0",
     "inquirer": "^9.2.8",
+    "inquirer-date-prompt": "^3.0.0",
     "js-yaml": "4.1.0",
+    "msee": "^0.3.5",
     "node-fetch": "2.6.1",
     "xml-js": "1.6.11",
     "yargs": "^17.7.2"
