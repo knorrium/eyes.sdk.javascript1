@@ -24,6 +24,7 @@ if [ -z "$(ls -A ../../../js/packages/core/bin)" ]; then
 else
   echo "Found js/core binaries"
   ls
+  mkdir -p src/main/resources
   cp ../../../js/packages/core/bin/core-linux ./src/main/resources
 fi
 
