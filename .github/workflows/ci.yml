@@ -249,6 +249,10 @@ jobs:
         with:
           ref: ${{github.event.pull_request.head.ref}}
           lfs: true
+      - name: Set safe directory
+        if: ${{matrix.container}}
+        run: |
+          git config --system --add safe.directory *
       - name: Set up Java
         if: ${{!matrix.container}}
         uses: actions/setup-java@v3
