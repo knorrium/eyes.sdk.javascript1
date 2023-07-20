@@ -1361,7 +1361,7 @@
           "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"]
       }],
       "tests": [{
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/"},
+          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"},
           "artifacts": ["./reports/**/*"],
           "key": "{{component}}"
         }],
@@ -1435,7 +1435,7 @@
       "tests": [{
         "key": "{{component}}",
         "artifacts": ["./reports/**/*"],
-        "report": {"name": "java", "format": "raw"}
+        "report": {"name": "java", "format": "raw","result-path": "./reports/report/*.json"}
       }],
       "releases": [{
         "profile": "maven",
@@ -1457,7 +1457,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/"}
+          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
@@ -1486,7 +1486,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/"}
+          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
@@ -1515,7 +1515,7 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java_playwright", "format": "raw", "result-path": "./reports/report/"}
+          "report": {"name": "java_playwright", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
