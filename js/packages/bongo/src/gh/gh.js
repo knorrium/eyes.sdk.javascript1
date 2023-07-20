@@ -1,7 +1,7 @@
 const {execSync} = require('child_process')
 
 async function getReleaseNotes({repo, tag}) {
-  return execSync(`gh release view '${tag}' --repo ${repo} --json body --jq .body`, {encoding: 'utf8'})
+  return execSync(`gh release view "${tag}" --repo ${repo} --json body --jq .body`, {encoding: 'utf8'})
 }
 
 async function getReleases({repo, limit}) {
