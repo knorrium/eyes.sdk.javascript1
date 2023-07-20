@@ -4,9 +4,50 @@ const yargs = require('yargs')
 const chalk = require('chalk')
 const {sendTestReport} = require('../qa/send-report')
 const {sendReleaseNotification} = require('../qa/send-notification')
+const {extractSimplifiedChangelog} = require('../changelog/changelog')
+const {getReleases} = require('../gh/gh')
 
 yargs
   .config({cwd: process.cwd()})
+  .command({
+    command: 'changelog',
+    description: 'Provides a production changelog for a specific package an version',
+    builder: yargs =>
+      yargs.options({
+        tag: {
+          type: 'string',
+          description: 'release tag of the package',
+        },
+      }),
+    async handler({tag, repo = 'https://github.com/applitools/eyes.sdk.javascript1'}) {
+      const inquirer = await import('inquirer')
+      if (!tag) {
+        const releases = await getReleases({
+          repo: 'https://github.com/applitools/eyes.sdk.javascript1',
+          limit: 100,
+        })
+        const answers = await inquirer.default.prompt([
+          {
+            name: 'package',
+            message: 'Package:',
+            type: 'list',
+            pageSize: 10,
+            choices: Object.keys(releases),
+          },
+          {
+            name: 'tag',
+            message: 'Version:',
+            type: 'list',
+            pageSize: 10,
+            choices: ({package}) => releases[package].map(({version, tag}) => ({name: version, value: tag})),
+          },
+        ])
+        tag = answers.tag
+      }
+      const changelog = await extractSimplifiedChangelog({tag, repo})
+      console.log(changelog)
+    },
+  })
   .command({
     command: ['send-release-notification'],
     description: 'Send a notification that an sdk has been released',
