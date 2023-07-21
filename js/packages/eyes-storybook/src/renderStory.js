@@ -125,17 +125,18 @@ function makeRenderStory({
     };
 
     return timeItAsync(baselineName, async () => {
-      const {checkAndClose} = await openEyes({settings: openParams});
+      const eyes = await openEyes({settings: openParams});
       return new Promise((resolve, reject) => {
         throttle(async () => {
           try {
-            const checkResults = await checkAndClose({
-              settings: {...checkParams, ...closeSettings, throwEx: false},
+            await eyes.checkAndClose({
               target: snapshots,
+              settings: {...checkParams, ...closeSettings},
             });
-            resolve(checkResults);
-          } catch (ex) {
-            reject(ex);
+            const results = await eyes.getResults();
+            resolve(results);
+          } catch (err) {
+            reject(err);
           }
         });
       });

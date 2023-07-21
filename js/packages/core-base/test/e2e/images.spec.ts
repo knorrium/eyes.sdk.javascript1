@@ -12,7 +12,7 @@ describe('images', () => {
   it('works with png image input', async () => {
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY as string,
         appName: 'Test App',
         testName: 'Test',
@@ -39,7 +39,7 @@ describe('images', () => {
   it('works with jpeg image input', async () => {
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY as string,
         appName: 'Test App',
         testName: 'Test',
@@ -66,7 +66,7 @@ describe('images', () => {
   it('works with bmp image input', async () => {
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY as string,
         appName: 'Test App',
         testName: 'Test',
@@ -106,7 +106,7 @@ describe('images', () => {
 
     const eyesStep1 = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         appName: 'Test App',
         testName: 'Passing accessibility',
         apiKey: process.env.APPLITOOLS_API_KEY as string,
@@ -137,7 +137,7 @@ describe('images', () => {
 
     const eyesStep2 = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         appName: 'Test App',
         testName: 'Failing accessibility',
         apiKey: process.env.APPLITOOLS_API_KEY as string,

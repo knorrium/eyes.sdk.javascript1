@@ -50,11 +50,7 @@ function generateConfig({argv = {}, defaultConfig = {}, externalConfigParams = [
     ? result.concurrency * 5
     : 5;
 
-  result.serverUrl = result.serverUrl
-    ? result.serverUrl
-    : utils.general.getEnvValue('SERVER_URL')
-    ? utils.general.getEnvValue('SERVER_URL')
-    : 'https://eyesapi.applitools.com';
+  result.eyesServerUrl = result.serverUrl;
 
   result.viewportSize = result.viewportSize ? result.viewportSize : {width: 1024, height: 600};
 

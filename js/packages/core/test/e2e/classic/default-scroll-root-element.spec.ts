@@ -18,7 +18,7 @@ describe('default scroll root element', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'scrollingElement',
         testName: 'test scrollingElement',

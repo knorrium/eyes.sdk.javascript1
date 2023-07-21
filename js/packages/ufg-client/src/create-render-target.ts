@@ -1,4 +1,4 @@
-import type {DomSnapshot, RenderTarget, Snapshot} from './types'
+import type {Snapshot, DomSnapshot, RenderTargetSettings, RenderTarget} from './types'
 import {type Logger} from '@applitools/logger'
 import {type ProcessResources, type ProcessResourcesSettings, type ResourceMapping} from './resources/process-resources'
 import {makeResource, type HashedResource} from './resources/resource'
@@ -17,8 +17,8 @@ export function makeCreateRenderTarget({processResources, logger: mainLogger}: O
     settings,
     logger = mainLogger,
   }: {
-    snapshot: any
-    settings?: ProcessResourcesSettings
+    snapshot: Snapshot
+    settings?: RenderTargetSettings
     logger?: Logger
   }): Promise<RenderTarget> {
     logger = logger.extend(mainLogger, {tags: [`render-target-${utils.general.shortid()}`]})
@@ -26,18 +26,15 @@ export function makeCreateRenderTarget({processResources, logger: mainLogger}: O
     const processedSnapshotResources = await processSnapshotResources({snapshot, settings, logger})
     const resources = await processedSnapshotResources.promise
 
-    const isWeb = !!snapshot.cdt
-    const hashedSnapshot = resources[isWeb ? snapshot.url : 'vhs'] as HashedResource
-    if (isWeb) {
+    if (utils.types.has(snapshot, 'cdt')) {
+      const snapshotResource = resources[snapshot.url] as HashedResource
       delete resources[snapshot.url]
-    }
-
-    return {
-      snapshot: hashedSnapshot,
-      resources,
-      source: snapshot.url,
-      vhsType: snapshot.vhsType,
-      vhsCompatibilityParams: snapshot.vhsCompatibilityParams,
+      return {snapshot: snapshotResource, resources, source: snapshot.url}
+    } else {
+      const snapshotResource = resources.vhs as HashedResource
+      return utils.types.has(snapshot, 'vhsType')
+        ? {snapshot: snapshotResource, resources, vhsType: snapshot.vhsType}
+        : {snapshot: snapshotResource, resources, vhsCompatibilityParams: snapshot.vhsCompatibilityParams}
     }
   }
 
@@ -79,7 +76,7 @@ export function makeCreateRenderTarget({processResources, logger: mainLogger}: O
     ])
 
     const frameDomResourceMapping = frameResources.reduce((mapping, resources, index) => {
-      const frameUrl = (snapshot as DomSnapshot).frames[index].url
+      const frameUrl = (snapshot as DomSnapshot).frames![index].url
       return Object.assign(mapping, {[frameUrl]: resources.mapping[frameUrl]})
     }, {})
 

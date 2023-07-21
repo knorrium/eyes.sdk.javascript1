@@ -9,6 +9,7 @@ type Options = {
 }
 
 export function makeGetResults({requests, logger: mainLogger}: Options) {
+  let results: TestResult[]
   return async function getResults({
     settings,
     logger = mainLogger,
@@ -19,6 +20,7 @@ export function makeGetResults({requests, logger: mainLogger}: Options) {
     logger = logger.extend(mainLogger, {tags: [`get-results-base-${utils.general.shortid()}`]})
 
     logger.log('Command "getResults" is called with settings', settings)
-    return requests.getResults({settings, logger})
+    results ??= await requests.getResults({settings, logger})
+    return results
   }
 }

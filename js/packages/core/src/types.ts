@@ -97,7 +97,7 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
     >
     config?: Config<TSpec, TDefaultType> & Config<TSpec, TType>
     logger?: Logger
-  }): Promise<TestResult<TType>[]>
+  }): Promise<void>
   close(options?: {
     settings?: Partial<CloseSettings<TDefaultType>>
     config?: Config<TSpec, TDefaultType>

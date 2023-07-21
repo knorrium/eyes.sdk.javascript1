@@ -1,6 +1,6 @@
 import type {DriverTarget, TypedCore, TypedEyes, OpenSettings} from './types'
 import {type SpecType} from '@applitools/driver'
-import {type RendererSettings} from '@applitools/ufg-client'
+import {type RenderEnvironmentSettings} from '@applitools/ufg-client'
 import {type Logger} from '@applitools/logger'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
@@ -25,7 +25,7 @@ export function makeGetTypedEyes<TSpec extends SpecType, TDefaultType extends 'c
     logger = mainLogger,
   }: {
     type?: TType
-    settings?: RendererSettings[]
+    settings?: RenderEnvironmentSettings[]
     logger?: Logger
   } = {}): Promise<TypedEyes<TSpec, TType>> {
     logger = logger.extend(mainLogger)

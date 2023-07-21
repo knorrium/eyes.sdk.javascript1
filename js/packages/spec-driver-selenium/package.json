@@ -45,15 +45,15 @@
     "up:framework": "run --top-level add-silent selenium-webdriver"
   },
   "dependencies": {
-    "@applitools/driver": "1.13.1",
-    "@applitools/utils": "1.5.0"
+    "@applitools/driver": "workspace:",
+    "@applitools/utils": "workspace:"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
-    "@types/selenium-webdriver": "^4.1.1",
-    "nock": "^13.2.9",
+    "@types/selenium-webdriver": "^4.1.15",
+    "nock": "^13.3.2",
     "selenium-webdriver": "4.4.0"
   },
   "peerDependencies": {

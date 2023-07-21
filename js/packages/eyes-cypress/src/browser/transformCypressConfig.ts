@@ -7,7 +7,7 @@ export function transformCypressConfig(config: CypressEyesConfig): Config<SpecTy
   return {
     open: {
       apiKey: config.apiKey,
-      serverUrl: config.serverUrl,
+      eyesServerUrl: config.serverUrl,
       proxy: config.proxy,
       appName: config.appName,
       testName: config.testName,

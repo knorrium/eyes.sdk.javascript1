@@ -17,7 +17,7 @@ describe('open-eyes', () => {
 
     await assert.rejects(
       core.openEyes({
-        settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+        settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
       }),
       error => error.message === 'get account info failed',
     )
@@ -27,13 +27,11 @@ describe('open-eyes', () => {
     const fakeClient = makeFakeClient()
     const accountInfo = {
       ufgServer: {
-        serverUrl: 'server-url',
-        uploadUrl: 'uploadUrl',
-        stitchingServiceUrl: 'stitchingService',
+        ufgServerUrl: 'server-url',
         accessToken: 'token',
         useDnsCache: true,
       },
-      server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
+      eyesServer: {eyesServerUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
       rcaEnable: true,
       stitchingServiceUrl: 'stitchingService',
       uploadUrl: 'uploadUrl',
@@ -47,7 +45,7 @@ describe('open-eyes', () => {
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const openResult = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -66,8 +64,10 @@ describe('open-eyes', () => {
       userTestId: 'testId',
       batchId: 'batchId',
       keepBatchOpen: true,
-      server: accountInfo.server,
+      eyesServer: accountInfo.eyesServer,
       ufgServer: accountInfo.ufgServer,
+      stitchingServiceUrl: 'stitchingService',
+      uploadUrl: 'uploadUrl',
       account: accountInfo,
     }
     assert.deepStrictEqual(openResult.test, expected)

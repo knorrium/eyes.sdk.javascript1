@@ -24,7 +24,7 @@ describe('DNS cache', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'DNS cache',

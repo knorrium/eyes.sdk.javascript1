@@ -91,7 +91,9 @@ describe('create-render-target', () => {
     const createRenderTarget = makeCreateRenderTarget({processResources, logger: makeLogger()})
 
     const snapshot = {
+      url: 'page.url',
       cdt: [],
+      resourceUrls: [],
       resourceContents: {
         'url-1': {
           value: 'YWJj', //Buffer.from('abc').toString('base64'),

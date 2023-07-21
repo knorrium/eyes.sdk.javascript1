@@ -23,8 +23,8 @@ export function makeFakeCore({
       emitter.emit('getAccountInfo', options)
       await hooks?.getAccountInfo?.(options)
       return {
-        server: {
-          serverUrl: options.settings?.serverUrl,
+        eyesServer: {
+          eyesServerUrl: options.settings?.eyesServerUrl,
           apiKey: options.settings?.apiKey,
           proxy: options.settings?.proxy,
         },
@@ -88,16 +88,16 @@ export function makeFakeCore({
             keepIfDuplicate: !!options.settings.baselineEnvName,
             account: account as Account,
             ufgServer: {
-              serverUrl: options.settings?.serverUrl,
-              uploadUrl: '',
-              stitchingServiceUrl: '',
+              ufgServerUrl: options.settings?.eyesServerUrl,
               accessToken: '',
             },
-            server: {
-              serverUrl: options.settings?.serverUrl,
+            eyesServer: {
+              eyesServerUrl: options.settings?.eyesServerUrl,
               apiKey: options.settings?.apiKey,
               proxy: options.settings?.proxy,
             },
+            uploadUrl: '',
+            stitchingServiceUrl: '',
           },
           core,
           get running() {
@@ -144,12 +144,6 @@ export function makeFakeCore({
               }
               const result = {asExpected: !settings?.name?.startsWith('diff'), target, settings, environment}
               steps.push(result)
-              return [
-                {
-                  status: steps.every(result => result.asExpected) ? ('Passed' as const) : ('Unresolved' as const),
-                  stepsInfo: steps,
-                },
-              ] as TestResult[]
             } finally {
               emitter.emit('afterCheckAndClose', options)
             }
@@ -166,7 +160,7 @@ export function makeFakeCore({
                 baselineId: 'baseline-id',
                 batchId: 'batch-id',
                 keepIfDuplicate: false,
-                server: {serverUrl: 'server-url', apiKey: 'api-key', proxy: 'proxy'},
+                eyesServer: {eyesServerUrl: 'server-url', apiKey: 'api-key', proxy: 'proxy'},
               })
             } finally {
               emitter.emit('afterClose', options)

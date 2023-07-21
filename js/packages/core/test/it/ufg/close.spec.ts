@@ -9,7 +9,7 @@ describe('close', async () => {
     const fakeCore = makeFakeCore()
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
     let closed = false
@@ -35,7 +35,7 @@ describe('close', async () => {
     const core = makeCore({concurrency: 1, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes1 = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
     await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})

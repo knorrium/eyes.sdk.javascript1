@@ -44,7 +44,7 @@ describe('check', () => {
     const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await driver.switchToFrame('frame1')
 
@@ -61,7 +61,7 @@ describe('check', () => {
     const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await driver.switchToFrame('frame1')
 
@@ -78,7 +78,7 @@ describe('check', () => {
     const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await driver.switchToFrame('frame1')
     await driver.switchToFrame('frame1-2')
@@ -97,7 +97,7 @@ describe('check', () => {
     const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await driver.switchToFrame('frame1')
     await driver.switchToFrame('frame1-2')
@@ -115,7 +115,7 @@ describe('check', () => {
     const core = await makeCore({spec, base: makeFakeCore()})
     const eyes = await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await driver.switchToFrame('frame1')
     await driver.switchToFrame('frame1-cors')

@@ -36,7 +36,7 @@ describe('chrome 107 on window 8', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'test',
         testName: 'test environment',
@@ -86,7 +86,7 @@ describe('chrome 107 on mac os 12', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'test',
         testName: 'test environment',

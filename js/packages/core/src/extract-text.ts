@@ -29,7 +29,11 @@ export function makeExtractText<TSpec extends SpecType>({spec, core, logger: mai
     settings = settings.map(settings => {
       settings = {...config?.open, ...config?.screenshot, ...settings}
       settings.userCommandId ??= `extract-text--${utils.general.guid()}`
-      settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
+      settings.eyesServerUrl ??=
+        (settings as any).serverUrl ??
+        utils.general.getEnvValue('EYES_SERVER_URL') ??
+        utils.general.getEnvValue('SERVER_URL') ??
+        'https://eyesapi.applitools.com'
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')
       return settings
     })

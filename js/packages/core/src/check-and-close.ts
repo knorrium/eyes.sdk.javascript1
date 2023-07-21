@@ -1,4 +1,4 @@
-import type {Target, DriverTarget, Eyes, Config, CheckSettings, CloseSettings, TestResult} from './types'
+import type {Target, DriverTarget, Eyes, Config, CheckSettings, CloseSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import * as utils from '@applitools/utils'
@@ -33,7 +33,7 @@ export function makeCheckAndClose<TSpec extends SpecType, TDefaultType extends '
       CloseSettings<TType>
     config?: Config<TSpec, TDefaultType> & Config<TSpec, TType>
     logger?: Logger
-  } = {}): Promise<TestResult<TType>[]> {
+  } = {}): Promise<void> {
     logger = logger.extend(mainLogger, {tags: [`check-and-close-${type}-${utils.general.shortid()}`]})
 
     settings = {...config?.screenshot, ...config?.check, ...config?.close, ...settings}
@@ -50,7 +50,6 @@ export function makeCheckAndClose<TSpec extends SpecType, TDefaultType extends '
       })),
       logger,
     })
-    const results = await typedEyes.checkAndClose({target: driver ?? target, settings, logger})
-    return results as TestResult<TType>[]
+    await typedEyes.checkAndClose({target: driver ?? target, settings, logger})
   }
 }

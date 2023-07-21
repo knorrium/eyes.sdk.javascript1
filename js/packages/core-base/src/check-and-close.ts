@@ -1,4 +1,4 @@
-import type {Target, CheckSettings, CloseSettings, TestResult} from './types'
+import type {Target, CheckSettings, CloseSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {type AbortSignal} from 'abort-controller'
 import {type EyesRequests} from './server/requests'
@@ -21,7 +21,7 @@ export function makeCheckAndClose({requests, done, signal, logger: mainLogger}: 
     target: Target
     settings?: CheckSettings & CloseSettings
     logger?: Logger
-  }): Promise<TestResult[]> {
+  }): Promise<void> {
     logger = logger.extend(mainLogger, {tags: [`check-and-close-base-${utils.general.shortid()}`]})
 
     settings ??= {}

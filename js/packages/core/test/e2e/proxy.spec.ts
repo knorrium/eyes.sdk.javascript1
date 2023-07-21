@@ -181,8 +181,6 @@ describe('proxy', () => {
       const eyes = await manager.openEyes({
         target: driver,
         settings: {
-          serverUrl: 'https://eyesapi.applitools.com',
-          apiKey: process.env.APPLITOOLS_API_KEY,
           proxy: {url: `http://localhost:${proxy.port}`},
           appName: 'core app',
           testName: 'native ufg ios nml',

@@ -4,7 +4,7 @@ import type {
   Core,
   Eyes,
   FunctionalSession,
-  ServerSettings,
+  EyesServerSettings,
   OpenSettings,
   CheckSettings,
   LocateSettings,
@@ -25,7 +25,7 @@ import type {
   TestResult,
   GetResultsSettings,
 } from '../types'
-import {type Fetch} from '@applitools/req'
+import {type Fetch, type Response} from '@applitools/req'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeReqEyes, type ReqEyes} from './req-eyes'
 import {makeUpload, type Upload} from './upload'
@@ -35,7 +35,7 @@ export interface CoreRequests extends Core {
   openEyes(options: {settings: OpenSettings; logger?: Logger}): Promise<EyesRequests>
   openFunctionalSession(options: {settings: OpenSettings; logger?: Logger}): Promise<FunctionalSessionRequests>
   getBatchBranches(options: {
-    settings: ServerSettings & {batchId: string}
+    settings: EyesServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}>
 }
@@ -62,10 +62,10 @@ export function makeCoreRequests({
   const mainLogger = makeLogger({logger: defaultLogger, format: {label: 'core-requests'}})
 
   const getAccountInfoWithCache = utils.general.cachify(getAccountInfo, ([{settings}]) => {
-    return [settings.serverUrl, settings.apiKey]
+    return [settings.eyesServerUrl, settings.apiKey]
   })
   const getBatchBranchesWithCache = utils.general.cachify(getBatchBranches, ([{settings}]) => {
-    return [settings.batchId, settings.serverUrl, settings.apiKey]
+    return [settings.batchId, settings.eyesServerUrl, settings.apiKey]
   })
 
   const core = {
@@ -93,7 +93,7 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "openEyes" called with settings', settings)
 
     const accountPromise = getAccountInfoWithCache({settings})
@@ -111,7 +111,7 @@ export function makeCoreRequests({
           appIdOrName: settings.appName,
           scenarioIdOrName: settings.testName,
           displayName: settings.displayName,
-          properties: settings.properties,
+          properties: [...(settings.properties ?? []), ...(settings.environment?.properties ?? [])],
           batchInfo: settings.batch && {
             id: settings.batch.id,
             name: settings.batch.name,
@@ -148,44 +148,31 @@ export function makeCoreRequests({
       logger,
     })
     const test: VisualTest = await response.json().then(async (result: any) => {
-      const test = {
+      const account = await accountPromise
+      return {
         testId: result.id,
         userTestId: settings.userTestId!,
         batchId: settings.batch?.id ?? result.batchId,
         baselineId: result.baselineId,
         sessionId: result.sessionId,
-        resultsUrl: result.url,
+        renderEnvironmentId: settings.environment?.renderEnvironmentId,
+        renderer: settings.environment?.renderer,
         initializedAt,
         appId: settings.appName,
         isNew: result.isNew ?? response.status === 201,
         keepBatchOpen: !!settings.keepBatchOpen,
         keepIfDuplicate: !!settings.baselineEnvName,
-        rendererId: settings.environment?.rendererId,
-        rendererUniqueId: settings.environment?.rendererUniqueId,
-        rendererInfo: settings.environment?.rendererInfo,
-      } as VisualTest
-      if (result.renderingInfo) {
-        const {serviceUrl, accessToken, resultsUrl, ...rest} = result.renderingInfo
-        test.account = {server: {...settings, agentId}, uploadUrl: resultsUrl, ...rest} as Account
-        test.account.ufgServer = {
-          serverUrl: serviceUrl,
-          uploadUrl: test.account.uploadUrl,
-          stitchingServiceUrl: test.account.stitchingServiceUrl,
-          accessToken,
-          agentId: test.account.server.agentId,
-          proxy: test.account.server.proxy,
-          useDnsCache: settings.useDnsCache,
-        }
-      } else {
-        test.account = await accountPromise
-      }
-      test.server = test.account.server
-      test.ufgServer = test.account.ufgServer
-      return test
+        resultsUrl: result.url,
+        eyesServer: account.eyesServer,
+        ufgServer: account.ufgServer,
+        uploadUrl: account.uploadUrl,
+        stitchingServiceUrl: account.stitchingServiceUrl,
+        account,
+      } satisfies VisualTest
     })
     logger.log('Request "openEyes" finished successfully with body', test)
 
-    const upload = makeUpload({config: {uploadUrl: test.account.uploadUrl, proxy: settings.proxy}, logger})
+    const upload = makeUpload({settings: {uploadUrl: test.account.uploadUrl, proxy: settings.proxy}, logger})
 
     return makeEyesRequests({core, test, req, upload, logger})
   }
@@ -200,7 +187,7 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "openFunctionalSession" called with settings', settings)
 
     const accountPromise = getAccountInfoWithCache({settings})
@@ -218,7 +205,7 @@ export function makeCoreRequests({
           appIdOrName: settings.appName,
           scenarioIdOrName: settings.testName,
           displayName: settings.displayName,
-          properties: settings.properties,
+          properties: [...(settings.properties ?? []), ...(settings.environment?.properties ?? [])],
           batchInfo: settings.batch && {
             id: settings.batch.id,
             name: settings.batch.name,
@@ -248,7 +235,7 @@ export function makeCoreRequests({
     })
     const test: FunctionalTest = await response.json().then(async (result: any) => {
       const account = await accountPromise
-      const test = {
+      return {
         testId: result.id,
         userTestId: settings.userTestId!,
         batchId: settings.batch?.id ?? result.batchId,
@@ -257,10 +244,10 @@ export function makeCoreRequests({
         resultsUrl: result.url,
         initializedAt,
         keepBatchOpen: !!settings.keepBatchOpen,
-        server: account.server,
+        keepIfDuplicate: !!settings.baselineEnvName,
+        eyesServer: account.eyesServer,
         account,
-      } as FunctionalTest
-      return test
+      } satisfies FunctionalTest
     })
     logger.log('Request "openFunctionalSession" finished successfully with body', test)
 
@@ -279,11 +266,11 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "locate" called for target', target, 'with settings', settings)
 
     const account = await getAccountInfoWithCache({settings})
-    const upload = makeUpload({config: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
+    const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
     target.image = await upload({name: 'image', resource: target.image as Buffer})
     const response = await req('/api/locators/locate', {
@@ -321,11 +308,11 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "locateText" called for target', target, 'with settings', settings)
 
     const account = await getAccountInfoWithCache({settings})
-    const upload = makeUpload({config: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
+    const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
@@ -365,11 +352,11 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "extractText" called for target', target, 'with settings', settings)
 
     const account = await getAccountInfoWithCache({settings})
-    const upload = makeUpload({config: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
+    const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
     ;[target.image, target.dom] = await Promise.all([
       upload({name: 'image', resource: target.image as Buffer}),
@@ -400,13 +387,13 @@ export function makeCoreRequests({
     settings,
     logger = mainLogger,
   }: {
-    settings: ServerSettings
+    settings: EyesServerSettings
     logger?: Logger
   }): Promise<Account> {
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "getAccountInfo" called with settings', settings)
     const response = await req('/api/sessions/renderinfo', {
       name: 'getAccountInfo',
@@ -414,23 +401,26 @@ export function makeCoreRequests({
       expected: 200,
       logger,
     })
-    const result = await response.json().then((result: any) => {
-      const {serviceUrl, accessToken, resultsUrl, ...rest} = result
-      const account = {
-        server: {serverUrl: settings.serverUrl, apiKey: settings.apiKey, proxy: settings.proxy, agentId},
-        uploadUrl: resultsUrl,
+    const result: Account = await response.json().then((result: any) => {
+      const {serviceUrl: ufgServerUrl, accessToken, resultsUrl: uploadUrl, ...rest} = result
+      return {
+        eyesServer: {
+          eyesServerUrl: settings.eyesServerUrl,
+          apiKey: settings.apiKey,
+          agentId,
+          proxy: settings.proxy,
+          useDnsCache: settings.useDnsCache,
+        },
+        ufgServer: {
+          ufgServerUrl,
+          accessToken,
+          agentId,
+          proxy: settings.proxy,
+          useDnsCache: settings.useDnsCache,
+        },
+        uploadUrl,
         ...rest,
-      } as Account
-      account.ufgServer = {
-        serverUrl: serviceUrl,
-        uploadUrl: account.uploadUrl,
-        stitchingServiceUrl: account.stitchingServiceUrl,
-        accessToken,
-        agentId: account.server.agentId,
-        proxy: account.server.proxy,
-        useDnsCache: settings.useDnsCache,
-      }
-      return account
+      } satisfies Account
     })
     logger.log('Request "getAccountInfo" finished successfully with body', result)
     return result
@@ -440,13 +430,13 @@ export function makeCoreRequests({
     settings,
     logger = mainLogger,
   }: {
-    settings: ServerSettings & {batchId: string}
+    settings: EyesServerSettings & {batchId: string}
     logger?: Logger
   }): Promise<{branchName?: string; parentBranchName?: string}> {
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "getBatchBranches" called with settings', settings)
     const response = await req(`/api/sessions/batches/${settings.batchId}/config/bypointerId`, {
       name: 'getBatchBranches',
@@ -467,7 +457,7 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "closeBatch" called with settings', settings)
     await req(`/api/sessions/batches/${settings.batchId}/close/bypointerId`, {
       name: 'closeBatch',
@@ -482,7 +472,7 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     const agentId = `${defaultAgentId} ${settings.agentId ? `[${settings.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...settings, agentId}, fetch, logger})
+    const req = makeReqEyes({settings: {...settings, agentId}, fetch, logger})
     logger.log('Request "deleteTest" called with settings', settings)
     await req(`/api/sessions/batches/${settings.batchId}/${settings.testId}`, {
       name: 'deleteTest',
@@ -500,9 +490,8 @@ export function makeCoreRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     settings = utils.types.isArray(settings) ? settings : [settings]
-    const [config] = settings
-    const agentId = `${defaultAgentId} ${config.agentId ? `[${config.agentId}]` : ''}`.trim()
-    const req = makeReqEyes({config: {...config, agentId}, fetch, logger})
+    const agentId = `${defaultAgentId} ${settings[0].agentId ? `[${settings[0].agentId}]` : ''}`.trim()
+    const req = makeReqEyes({settings: {...settings[0], agentId}, fetch, logger})
     logger.log('Request "logEvent" called with settings', settings)
     await req(`/api/sessions/log`, {
       name: 'logEvent',
@@ -536,14 +525,14 @@ export function makeEyesRequests({
   upload: Upload
   logger: Logger
 }): EyesRequests {
-  let resultsPromise = undefined as Promise<TestResult[]> | undefined
+  let resultResponsePromise: Promise<Response> | undefined
   let supportsCheckAndClose = true
 
   const eyes = {
     core,
     test,
     get running() {
-      return !resultsPromise
+      return !resultResponsePromise
     },
     check,
     checkAndClose,
@@ -592,14 +581,13 @@ export function makeEyesRequests({
     target: ImageTarget
     settings: CheckSettings & CloseSettings
     logger?: Logger
-  }): Promise<TestResult[]> {
+  }): Promise<void> {
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     if (!supportsCheckAndClose) {
-      logger.log('Request "checkAndClose" is notSupported by the server, using "check" and "close" requests instead')
+      logger.log('Request "checkAndClose" is not supported by the server, using "check" and "close" requests instead')
       await check({target, settings, logger})
-      await close({settings, logger})
-      return getResults({settings, logger})
+      return close({settings, logger})
     }
     logger.log('Request "checkAndClose" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
@@ -607,7 +595,7 @@ export function makeEyesRequests({
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const matchOptions = transformCheckOptions({target, settings})
-    resultsPromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
+    resultResponsePromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
       name: 'checkAndClose',
       method: 'POST',
       body: {
@@ -630,22 +618,18 @@ export function makeEyesRequests({
       },
       expected: 200,
       logger,
-    }).then(async response => {
-      if (response.status === 404) {
-        supportsCheckAndClose = false
-        return checkAndClose({target, settings})
-      }
-      const result: any = await response.json()
-      result.userTestId = test.userTestId
-      result.url = test.resultsUrl
-      result.isNew = test.isNew
-      result.initializedAt = test.initializedAt
-      result.keepIfDuplicate = test.keepIfDuplicate
-      result.server = test.server
-      logger.log('Request "checkAndClose" finished successfully with body', result)
-      return [result]
     })
-    return resultsPromise
+
+    return resultResponsePromise
+      .then(response => {
+        if (response.status === 404) {
+          supportsCheckAndClose = false
+          return checkAndClose({target, settings})
+        } else {
+          logger.log('Request "checkAndClose" finished successfully')
+        }
+      })
+      .catch(() => undefined)
   }
 
   async function close({
@@ -658,37 +642,28 @@ export function makeEyesRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
-    if (resultsPromise) {
+    if (resultResponsePromise) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
       return
     }
-    resultsPromise = report({settings, logger})
-      .then(() =>
-        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-          name: 'close',
-          method: 'DELETE',
-          query: {
-            aborted: false,
-            updateBaseline: test.isNew ? settings?.updateBaselineIfNew : settings?.updateBaselineIfDifferent,
-          },
-          expected: 200,
-          logger,
-        }),
-      )
-      .then(async response => {
-        const result: any = await response.json()
-        result.userTestId = test.userTestId
-        result.url = test.resultsUrl
-        result.isNew = test.isNew
-        result.initializedAt = test.initializedAt
-        result.keepIfDuplicate = test.keepIfDuplicate
-        result.server = test.server
-        // for backwards compatibility with outdated servers
-        result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
-        logger.log('Request "close" finished successfully with body', result)
-        return [result]
+    resultResponsePromise = report({settings, logger}).then(() =>
+      req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+        name: 'close',
+        method: 'DELETE',
+        query: {
+          aborted: false,
+          updateBaseline: test.isNew ? settings?.updateBaselineIfNew : settings?.updateBaselineIfDifferent,
+        },
+        expected: 200,
+        logger,
+      }),
+    )
+
+    return resultResponsePromise
+      .then(() => {
+        logger.log('Request "close" finished successfully')
       })
-    return resultsPromise.then(() => undefined).catch(() => undefined)
+      .catch(() => undefined)
   }
 
   async function abort({
@@ -701,32 +676,27 @@ export function makeEyesRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
-    if (resultsPromise) {
+    if (resultResponsePromise) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
       return
     }
-    resultsPromise = report({settings, logger})
-      .then(() =>
-        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-          name: 'abort',
-          method: 'DELETE',
-          query: {
-            aborted: true,
-          },
-          expected: 200,
-          logger,
-        }),
-      )
-      .then(async response => {
-        const result: any = await response.json()
-        result.userTestId = test.userTestId
-        result.initializedAt = test.initializedAt
-        result.keepIfDuplicate = test.keepIfDuplicate
-        result.server = test.server
-        logger.log('Request "abort" finished successfully with body', result)
-        return [result]
+    resultResponsePromise = report({settings, logger}).then(() =>
+      req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+        name: 'abort',
+        method: 'DELETE',
+        query: {
+          aborted: true,
+        },
+        expected: 200,
+        logger,
+      }),
+    )
+
+    return resultResponsePromise
+      .then(() => {
+        logger.log('Request "abort" finished successfully')
       })
-    return resultsPromise.then(() => undefined).catch(() => undefined)
+      .catch(() => undefined)
   }
 
   async function getResults({
@@ -739,11 +709,23 @@ export function makeEyesRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
-    if (!resultsPromise) {
+    if (!resultResponsePromise) {
       logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
       await abort({settings, logger})
     }
-    const results = await resultsPromise!
+    const response = await resultResponsePromise!
+    const results: TestResult[] = await response.json().then((result: any) => {
+      result.userTestId = test.userTestId
+      result.url = test.resultsUrl
+      result.isNew = test.isNew
+      result.initializedAt = test.initializedAt
+      result.keepIfDuplicate = test.keepIfDuplicate
+      result.eyesServer = test.eyesServer
+      // for backwards compatibility with outdated servers
+      result.status ??= result.missing === 0 && result.mismatches === 0 ? 'Passed' : 'Unresolved'
+      return [result]
+    })
+
     logger.log('Request "getResults" finished successfully with body', results)
     return results
   }
@@ -782,13 +764,13 @@ export function makeFunctionalSessionRequests({
   req: ReqEyes
   logger: Logger
 }): FunctionalSessionRequests {
-  let resultsPromise = undefined as Promise<TestResult[]> | undefined
+  let resultResponsePromise: Promise<Response> | undefined
 
   const functionalSession = {
     core,
     test,
     get running() {
-      return !resultsPromise
+      return !resultResponsePromise
     },
     report,
     close,
@@ -808,31 +790,24 @@ export function makeFunctionalSessionRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "close" called for test ${test.testId} with settings`, settings)
-    if (resultsPromise) {
+    if (resultResponsePromise) {
       logger.log(`Request "close" called for test ${test.testId} that was already stopped`)
       return
     }
-    resultsPromise = report({settings, logger})
-      .then(() =>
-        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-          name: 'close',
-          method: 'DELETE',
-          query: {aborted: false, nonVisualStatus: settings?.status ?? 'Completed'},
-          expected: 200,
-          logger,
-        }),
-      )
-      .then(async response => {
-        const result: any = await response.json()
-        result.userTestId = test.userTestId
-        result.url = test.resultsUrl
-        result.initializedAt = test.initializedAt
-        result.keepIfDuplicate = test.keepIfDuplicate
-        result.server = test.server
-        logger.log('Request "close" finished successfully with body', result)
-        return [result]
+    resultResponsePromise = report({settings, logger}).then(() =>
+      req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+        name: 'close',
+        method: 'DELETE',
+        query: {aborted: false, nonVisualStatus: settings?.status ?? 'Completed'},
+        expected: 200,
+        logger,
+      }),
+    )
+    return resultResponsePromise
+      .then(() => {
+        logger.log('Request "close" finished successfully')
       })
-    return resultsPromise.then(() => undefined).catch(() => undefined)
+      .catch(() => undefined)
   }
 
   async function abort({
@@ -845,32 +820,26 @@ export function makeFunctionalSessionRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "abort" called for test ${test.testId} with settings`, settings)
-    if (resultsPromise) {
+    if (resultResponsePromise) {
       logger.log(`Request "abort" called for test ${test.testId} that was already stopped`)
       return
     }
-    resultsPromise = report({settings, logger})
-      .then(() =>
-        req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
-          name: 'abort',
-          method: 'DELETE',
-          query: {
-            aborted: true,
-          },
-          expected: 200,
-          logger,
-        }),
-      )
-      .then(async response => {
-        const result: any = await response.json()
-        result.userTestId = test.userTestId
-        result.initializedAt = test.initializedAt
-        result.keepIfDuplicate = test.keepIfDuplicate
-        result.server = test.server
-        logger.log('Request "abort" finished successfully with body', result)
-        return [result]
+    resultResponsePromise = report({settings, logger}).then(() =>
+      req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
+        name: 'abort',
+        method: 'DELETE',
+        query: {
+          aborted: true,
+        },
+        expected: 200,
+        logger,
+      }),
+    )
+    return resultResponsePromise
+      .then(() => {
+        logger.log('Request "abort" finished successfully')
       })
-    return resultsPromise.then(() => undefined).catch(() => undefined)
+      .catch(() => undefined)
   }
 
   async function getResults({
@@ -883,11 +852,19 @@ export function makeFunctionalSessionRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log(`Request "getResults" called for test ${test.testId} with settings`, settings)
-    if (!resultsPromise) {
+    if (!resultResponsePromise) {
       logger.warn(`The test with id "${test.testId}" is going to be auto aborted`)
       await abort({settings, logger})
     }
-    const results = await resultsPromise!
+    const response = await resultResponsePromise!
+    const results: TestResult[] = await response.json().then((result: any) => {
+      result.userTestId = test.userTestId
+      result.url = test.resultsUrl
+      result.initializedAt = test.initializedAt
+      result.keepIfDuplicate = test.keepIfDuplicate
+      result.eyesServer = test.eyesServer
+      return [result]
+    })
     logger.log('Request "getResults" finished successfully with body', results)
     return results
   }

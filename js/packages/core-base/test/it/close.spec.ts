@@ -55,7 +55,7 @@ describe('close', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',

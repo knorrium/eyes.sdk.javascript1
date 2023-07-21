@@ -31,7 +31,7 @@ describe('coded regions', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core classic',
         testName: 'coded region in full page',
@@ -56,7 +56,7 @@ describe('coded regions', () => {
       const eyes = await core.openEyes({
         target: driver,
         settings: {
-          serverUrl: 'https://eyesapi.applitools.com',
+          eyesServerUrl: 'https://eyesapi.applitools.com',
           apiKey: process.env.APPLITOOLS_API_KEY!,
           appName: 'core classic',
           testName: 'coded region inside an element',

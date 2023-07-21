@@ -53,7 +53,7 @@ export interface Eyes<TSpec extends SpecType> extends BaseCore.Eyes {
     target?: Target<TSpec>
     settings?: CheckSettings<TSpec> & BaseCore.CloseSettings
     logger?: Logger
-  }): Promise<BaseCore.TestResult[]>
+  }): Promise<void>
 }
 
 export interface ScreenshotSettings<TSpec extends SpecType>

@@ -30,7 +30,7 @@ describe('browser-fetching', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'VgFetch',
         testName: 'TestDisableBrowserFetching',

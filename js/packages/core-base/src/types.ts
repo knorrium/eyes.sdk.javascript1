@@ -30,7 +30,7 @@ export interface Core {
     logger?: Logger
   }): Promise<LocateTextResult<TPattern>>
   extractText(options: {target: Target; settings: MaybeArray<ExtractTextSettings>; logger?: Logger}): Promise<string[]>
-  getAccountInfo(options: {settings: ServerSettings; logger?: Logger}): Promise<Account>
+  getAccountInfo(options: {settings: EyesServerSettings; logger?: Logger}): Promise<Account>
   closeBatch(options: {settings: MaybeArray<CloseBatchSettings>; logger?: Logger}): Promise<void>
   deleteTest(options: {settings: MaybeArray<DeleteTestSettings>; logger?: Logger}): Promise<void>
   /** @internal */
@@ -42,11 +42,7 @@ export interface Eyes {
   readonly test: VisualTest
   readonly running: boolean
   check(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
-  checkAndClose(options: {
-    target: Target
-    settings?: CheckSettings & CloseSettings
-    logger?: Logger
-  }): Promise<TestResult[]>
+  checkAndClose(options: {target: Target; settings?: CheckSettings & CloseSettings; logger?: Logger}): Promise<void>
   close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<void>
   abort(options?: {settings?: AbortSettings; logger?: Logger}): Promise<void>
   getResults(options?: {settings?: GetResultsSettings; logger?: Logger}): Promise<TestResult[]>
@@ -68,17 +64,18 @@ export interface VisualTest {
   baselineId: string
   sessionId: string
   appId: string
-  resultsUrl: string
+  renderEnvironmentId?: string
+  renderer?: Record<string, any>
   initializedAt: string
   isNew: boolean
   keepBatchOpen: boolean
   keepIfDuplicate: boolean
-  server: ServerSettings
+  eyesServer: EyesServerSettings
   ufgServer: UFGServerSettings
+  uploadUrl: string
+  stitchingServiceUrl: string
+  resultsUrl: string
   account: Account
-  rendererId?: string
-  rendererUniqueId?: string
-  rendererInfo?: {type?: 'web' | 'native'; renderer?: Record<string, any>}
 }
 
 export interface FunctionalTest {
@@ -87,16 +84,16 @@ export interface FunctionalTest {
   batchId: string
   sessionId: string
   appId: string
-  resultsUrl: string
   initializedAt: string
   keepBatchOpen: boolean
   keepIfDuplicate: boolean
-  server: ServerSettings
+  eyesServer: EyesServerSettings
+  resultsUrl: string
   account: Account
 }
 
 export interface Account {
-  server: ServerSettings
+  eyesServer: EyesServerSettings
   ufgServer: UFGServerSettings
   stitchingServiceUrl: string
   uploadUrl: string
@@ -107,8 +104,8 @@ export interface Account {
   ecEnabled: boolean
 }
 
-export interface ServerSettings {
-  serverUrl: string
+export interface EyesServerSettings {
+  eyesServerUrl: string
   apiKey: string
   agentId?: string
   proxy?: Proxy
@@ -116,9 +113,7 @@ export interface ServerSettings {
 }
 
 export interface UFGServerSettings {
-  serverUrl: string
-  uploadUrl: string
-  stitchingServiceUrl: string
+  ufgServerUrl: string
   accessToken: string
   agentId?: string
   proxy?: Proxy
@@ -135,6 +130,8 @@ export type Batch = {
   properties?: CustomProperty[]
 }
 export type Environment = {
+  renderEnvironmentId?: string
+  ecSessionId?: string
   os?: string
   osInfo?: string
   hostingApp?: string
@@ -142,13 +139,11 @@ export type Environment = {
   deviceName?: string
   viewportSize?: Size
   userAgent?: string
+  renderer?: Record<string, any>
   rawEnvironment?: Record<string, any>
-  rendererId?: string
-  rendererUniqueId?: string
-  rendererInfo?: {type?: 'web' | 'native'; renderer?: Record<string, any>}
-  ecSessionId?: string
+  properties?: CustomProperty[]
 }
-export interface OpenSettings extends ServerSettings {
+export interface OpenSettings extends EyesServerSettings {
   appName: string
   testName: string
   displayName?: string
@@ -177,7 +172,7 @@ export interface OpenSettings extends ServerSettings {
 }
 
 export interface LocateSettings<TLocator extends string, TRegion = Region>
-  extends ServerSettings,
+  extends EyesServerSettings,
     ImageSettings<TRegion> {
   appName: string
   locatorNames: TLocator[]
@@ -189,7 +184,7 @@ export interface LocateSettings<TLocator extends string, TRegion = Region>
 export type LocateResult<TLocator extends string> = Record<TLocator, Region[]>
 
 export interface LocateTextSettings<TPattern extends string, TRegion = Region>
-  extends ServerSettings,
+  extends EyesServerSettings,
     ImageSettings<TRegion> {
   patterns: TPattern[]
   ignoreCase?: boolean
@@ -201,7 +196,7 @@ export interface LocateTextSettings<TPattern extends string, TRegion = Region>
 
 export type LocateTextResult<TPattern extends string> = Record<TPattern, (Region & {text: string})[]>
 
-export interface ExtractTextSettings<TRegion = Region> extends ServerSettings, ImageSettings<TRegion> {
+export interface ExtractTextSettings<TRegion = Region> extends EyesServerSettings, ImageSettings<TRegion> {
   hint?: string
   minMatch?: number
   language?: string
@@ -209,17 +204,17 @@ export interface ExtractTextSettings<TRegion = Region> extends ServerSettings, I
   userCommandId?: string
 }
 
-export interface CloseBatchSettings extends ServerSettings {
+export interface CloseBatchSettings extends EyesServerSettings {
   batchId: string
 }
 
-export interface DeleteTestSettings extends ServerSettings {
+export interface DeleteTestSettings extends EyesServerSettings {
   testId: string
   batchId: string
   secretToken: string
 }
 
-export interface LogEventSettings extends ServerSettings {
+export interface LogEventSettings extends EyesServerSettings {
   event: {type: string} & Record<string, any>
   level?: 'Info' | 'Notice' | 'Warn' | 'Error'
   timestamp?: string
@@ -341,7 +336,7 @@ export interface TestResult {
   readonly baselineId: string
   readonly userTestId: string
   readonly batchId: string
-  readonly server: ServerSettings
+  readonly eyesServer: EyesServerSettings
   readonly secretToken: string
   readonly status: 'Passed' | 'Unresolved' | 'Failed'
   readonly name: string

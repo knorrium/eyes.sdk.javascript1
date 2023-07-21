@@ -41,22 +41,18 @@ export function makeFakeClient({
         emitter.emit('afterCreateRenderTarget', options)
       }
     },
-    async bookRenderer(options) {
-      emitter.emit('beforeBookRenderer', options)
+    async getRenderEnvironment(options) {
+      emitter.emit('beforeGetRenderEnvironment', options)
       try {
         await utils.general.sleep(0)
-        await hooks?.bookRenderer?.(options)
+        await hooks?.getRenderEnvironment?.(options)
         const {settings} = options
         const renderer = settings.renderer as any
         const deviceName = renderer.chromeEmulationInfo ?? renderer.iosDeviceInfo ?? renderer.androidDeviceInfo
         const browserName = renderer.name
         return {
-          rendererId: 'renderer-uid',
-          rendererUniqueId: 'renderer-uid',
-          rendererInfo: {
-            type: 'web',
-            renderer: settings.renderer,
-          },
+          renderEnvironmentId: 'renderer-uid',
+          renderer: settings.renderer,
           rawEnvironment: {
             os: 'os',
             osInfo: 'os',
@@ -68,7 +64,7 @@ export function makeFakeClient({
           },
         }
       } finally {
-        emitter.emit('afterBookRenderer', options)
+        emitter.emit('afterGetRenderEnvironment', options)
       }
     },
     async render(options) {

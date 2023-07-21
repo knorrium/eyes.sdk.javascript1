@@ -10,7 +10,7 @@ describe('abort', () => {
     const fakeCore = makeFakeCore()
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
     let aborted = false
@@ -27,7 +27,7 @@ describe('abort', () => {
     const fakeCore = makeFakeCore()
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
       target: {cdt: []},
@@ -40,7 +40,7 @@ describe('abort', () => {
     fakeCore.emitter.on('afterAbort', () => (aborted = true))
 
     await new Promise<void>(resolve => {
-      fakeClient.emitter.on('afterBookRenderer', () => resolve(eyes.abort()))
+      fakeClient.emitter.on('afterGetRenderEnvironment', () => resolve(eyes.abort()))
     })
 
     const results = await eyes.getResults()
@@ -57,7 +57,7 @@ describe('abort', () => {
   it('handles abort during open base eyes', async () => {
     const fakeClient = makeFakeClient({
       hooks: {
-        bookRenderer: () => utils.general.sleep(0),
+        getRenderEnvironment: () => utils.general.sleep(0),
       },
     })
     const fakeCore = makeFakeCore({
@@ -67,7 +67,7 @@ describe('abort', () => {
     })
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
       target: {cdt: []},
@@ -100,7 +100,7 @@ describe('abort', () => {
   it('handles abort during check base eyes', async () => {
     const fakeClient = makeFakeClient({
       hooks: {
-        bookRenderer: () => utils.general.sleep(0),
+        getRenderEnvironment: () => utils.general.sleep(0),
       },
     })
     const fakeCore = makeFakeCore({
@@ -110,7 +110,7 @@ describe('abort', () => {
     })
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
     await eyes.check({

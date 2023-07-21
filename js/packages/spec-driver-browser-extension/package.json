@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
-    "@applitools/spec-driver-playwright": "^1.3.18",
+    "@applitools/spec-driver-playwright": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",

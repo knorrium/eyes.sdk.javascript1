@@ -45,7 +45,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',
@@ -98,7 +98,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',
@@ -159,7 +159,7 @@ describe('check', () => {
     const core = makeCore({agentId: 'test-core'})
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',

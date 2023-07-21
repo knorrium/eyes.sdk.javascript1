@@ -18,7 +18,7 @@ export function makeTunnelClient({
 }: {
   settings?: TunnelClientSettings
   logger?: Logger
-}): TunnelClient {
+} = {}): TunnelClient {
   const logger = makeLogger({logger: defaultLogger, format: {label: 'tunnel-client'}})
 
   const tunnelServerUrl =

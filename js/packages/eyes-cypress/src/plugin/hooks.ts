@@ -45,7 +45,7 @@ export default function makeGlobalRunHooks({
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({
             batchId: config.appliConfFile.batchId || config.appliConfFile.batch.id,
-            serverUrl: config.appliConfFile.serverUrl,
+            eyesServerUrl: config.appliConfFile.serverUrl,
             proxy: config.appliConfFile.proxy,
             apiKey: config.appliConfFile.apiKey,
           })

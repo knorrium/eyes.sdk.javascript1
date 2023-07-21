@@ -1,17 +1,18 @@
 import type {
-  Selector,
+  UFGServerSettings,
   AndroidDevice,
   IOSDevice,
   ChromeEmulationDevice,
   RenderTarget,
-  RendererSettings,
-  RendererEnvironment,
+  RenderEnvironmentSettings,
+  RenderEnvironment,
   RenderSettings,
   RenderResult,
+  Selector,
 } from '../types'
 import {type ContentfulResource} from '../resources/resource'
 import {makeLogger, type Logger} from '@applitools/logger'
-import {makeReqUFG, type ReqUFGConfig} from './req-ufg'
+import {makeReqUFG} from './req-ufg'
 import * as utils from '@applitools/utils'
 
 export type RenderRequest = {
@@ -26,7 +27,7 @@ export type StartedRender = {
 }
 
 export interface UFGRequests {
-  bookRenderers(options: {settings: RendererSettings[]; logger?: Logger}): Promise<RendererEnvironment[]>
+  getRenderEnvironments(options: {settings: RenderEnvironmentSettings[]; logger?: Logger}): Promise<RenderEnvironment[]>
   startRenders(options: {requests: RenderRequest[]; logger?: Logger}): Promise<StartedRender[]>
   checkRenderResults(options: {renders: StartedRender[]; logger?: Logger}): Promise<RenderResult[]>
   uploadResource(options: {resource: ContentfulResource; logger?: Logger}): Promise<void>
@@ -36,21 +37,18 @@ export interface UFGRequests {
   getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
 }
 
-export type UFGRequestsConfig = ReqUFGConfig & {
-  uploadUrl: string
-  stitchingServiceUrl: string
-}
-
-export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; logger?: Logger}): UFGRequests {
+export function makeUFGRequests({settings, logger}: {settings: UFGServerSettings; logger?: Logger}): UFGRequests {
   const mainLogger = makeLogger({logger, format: {label: 'ufg-requests'}})
-  const req = makeReqUFG({config, logger: mainLogger})
+  const req = makeReqUFG({settings, logger: mainLogger})
+
+  const defaultAgentId = settings.agentId
 
   const getChromeEmulationDevicesWithCache = utils.general.cachify(getChromeEmulationDevices)
   const getIOSDevicesWithCache = utils.general.cachify(getIOSDevices)
   const getAndroidDevicesWithCache = utils.general.cachify(() => null as never)
 
   return {
-    bookRenderers,
+    getRenderEnvironments,
     startRenders,
     checkRenderResults,
     uploadResource,
@@ -60,25 +58,25 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
     getAndroidDevices: getAndroidDevicesWithCache,
   }
 
-  async function bookRenderers({
+  async function getRenderEnvironments({
     settings,
     logger = mainLogger,
   }: {
-    settings: RendererSettings[]
+    settings: RenderEnvironmentSettings[]
     logger?: Logger
-  }): Promise<RendererEnvironment[]> {
-    logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
+  }): Promise<RenderEnvironment[]> {
+    logger = logger.extend(mainLogger, {tags: [`get-render-environments-${utils.general.shortid()}`]})
 
-    logger.log('Request "bookRenderers" called for with settings', settings)
+    logger.log('Request "getRenderEnvironments" called for with settings', settings)
     const response = await req('./job-info', {
-      name: 'bookRenderers',
+      name: 'getRenderEnvironments',
       method: 'POST',
       body: settings.map(settings => {
         const renderOptions: any = {
-          agentId: config.agentId,
-          webhook: config.uploadUrl,
-          stitchingService: config.stitchingServiceUrl,
-          ...extractRenderEnvironment({settings}),
+          agentId: defaultAgentId,
+          webhook: '',
+          stitchingService: '',
+          ...transformRenderEnvironmentSettings(settings),
         }
         renderOptions.renderInfo.target = 'viewport'
         return renderOptions
@@ -89,14 +87,13 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
     const results = await response.json().then((results: any) => {
       return (results as any[]).map((result, index) => {
         return {
-          rendererId: result.renderer,
-          rendererUniqueId: utils.general.guid(),
-          rendererInfo: {type: settings[index]?.type, renderer: settings[index]?.renderer},
+          renderEnvironmentId: utils.general.guid(),
+          renderer: settings[index]?.renderer,
           rawEnvironment: result.eyesEnvironment,
-        } as RendererEnvironment
+        }
       })
     })
-    logger.log('Request "bookRenderers" finished successfully with body', results)
+    logger.log('Request "getRenderEnvironments" finished successfully with body', results)
     return results
   }
 
@@ -118,19 +115,18 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
           url: target.source,
           snapshot: target.snapshot,
           resources: target.resources,
-          selectorsToFindRegionsFor: settings.selectorsToCalculate?.map(selector => transformSelector({selector})),
+          selectorsToFindRegionsFor: settings.selectorsToCalculate?.map(transformSelector),
           options: settings.ufgOptions,
           scriptHooks: settings.hooks,
-          renderer: settings.rendererId,
-          agentId: config.agentId,
-          webhook: config.uploadUrl,
-          stitchingService: config.stitchingServiceUrl,
+          agentId: defaultAgentId,
+          webhook: settings.uploadUrl,
+          stitchingService: settings.stitchingServiceUrl,
           sendDom: settings.sendDom,
           includeFullPageSize: settings.includeFullPageSize,
           enableMultipleResultsPerSelector: true,
-          ...extractRenderEnvironment({settings}),
+          ...transformRenderEnvironmentSettings(settings),
         }
-        if (settings.type === 'native') {
+        if (utils.types.has(settings.renderer, 'type') && settings.renderer.type === 'native') {
           renderOptions.renderInfo.vhsType = target.vhsType
           renderOptions.renderInfo.vhsCompatibilityParams = target.vhsCompatibilityParams
           //NOTE: at the moment stitch mode is supported only for native devices
@@ -142,12 +138,12 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
             renderOptions.renderInfo.region = settings.region
           } else {
             renderOptions.renderInfo.target = settings.fully ? 'full-selector' : 'selector'
-            renderOptions.renderInfo.selector = transformSelector({selector: settings.region})
+            renderOptions.renderInfo.selector = transformSelector(settings.region)
           }
         } else {
           renderOptions.renderInfo.target = settings.fully ? 'full-page' : 'viewport'
           //NOTE: at the moment scroll root is supported only for native devices
-          if (settings.type === 'native') {
+          if (utils.types.has(settings.renderer, 'type') && settings.renderer.type === 'native') {
             renderOptions.renderInfo.selector = settings.scrollRootElement
           }
         }
@@ -270,9 +266,11 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
     logger.log('Request "uploadResource" finished successfully')
   }
 
-  async function getChromeEmulationDevices({logger = mainLogger}: {logger?: Logger} = {}): Promise<
-    Record<ChromeEmulationDevice, any>
-  > {
+  async function getChromeEmulationDevices({
+    logger = mainLogger,
+  }: {
+    logger?: Logger
+  } = {}): Promise<Record<ChromeEmulationDevice, any>> {
     logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
 
     logger.log('Request "getChromeEmulationDevices" called')
@@ -286,7 +284,11 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
     return result
   }
 
-  async function getIOSDevices({logger = mainLogger}: {logger?: Logger} = {}): Promise<Record<IOSDevice, any>> {
+  async function getIOSDevices({
+    logger = mainLogger,
+  }: {
+    logger?: Logger
+  } = {}): Promise<Record<IOSDevice, any>> {
     logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
 
     logger.log('Request "getIOSDevices" called')
@@ -301,7 +303,7 @@ export function makeUFGRequests({config, logger}: {config: UFGRequestsConfig; lo
   }
 }
 
-function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
+function transformRenderEnvironmentSettings(settings: RenderEnvironmentSettings) {
   if (utils.types.has(settings.renderer, ['width', 'height'])) {
     return {
       platform: {name: 'linux', type: 'web'},
@@ -323,8 +325,8 @@ function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
     }
   } else if (utils.types.has(settings.renderer, 'androidDeviceInfo')) {
     return {
-      platform: {name: 'android', type: settings.type ?? 'native'},
-      browser: settings.type === 'web' ? {name: 'chrome'} : undefined,
+      platform: {name: 'android', type: settings.renderer.type ?? 'native'},
+      browser: settings.renderer.type === 'web' ? {name: 'chrome'} : undefined,
       renderInfo: {
         androidDeviceInfo: {
           name: settings.renderer.androidDeviceInfo.deviceName,
@@ -335,8 +337,8 @@ function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
     }
   } else if (utils.types.has(settings.renderer, 'iosDeviceInfo')) {
     return {
-      platform: {name: 'ios', type: settings.type ?? 'native'},
-      browser: settings.type === 'web' ? {name: 'safari'} : undefined,
+      platform: {name: 'ios', type: settings.renderer.type ?? 'native'},
+      browser: settings.renderer.type === 'web' ? {name: 'safari'} : undefined,
       renderInfo: {
         iosDeviceInfo: {
           name: settings.renderer.iosDeviceInfo.deviceName,
@@ -348,7 +350,7 @@ function extractRenderEnvironment({settings}: {settings: RendererSettings}) {
   }
 }
 
-function transformSelector({selector}: {selector: Selector}) {
+function transformSelector(selector: Selector) {
   if (utils.types.isString(selector)) return {type: 'css', selector}
   if (!selector.frame && !selector.shadow) return selector
   const pathSelector = [] as {nodeType: string; type: string; selector: string}[]

@@ -39,7 +39,7 @@ export type TestResults = {
   readonly noneMatches?: number
   readonly url?: string
   readonly server?: {
-    serverUrl: string
+    eyesServerUrl: string
     apiKey: string
     proxy?: ProxySettings
   }
@@ -390,7 +390,7 @@ export class TestResultsData implements Required<TestResults> {
   }
 
   get server() {
-    return this._result.server
+    return this._result.eyesServer
   }
 
   get keepIfDuplicate() {
@@ -404,9 +404,9 @@ export class TestResultsData implements Required<TestResults> {
   async delete(): Promise<void> {
     return this._core?.deleteTest({
       settings: {
-        serverUrl: this._result.server.serverUrl,
-        apiKey: this._result.server.apiKey,
-        proxy: this._result.server.proxy,
+        eyesServerUrl: this._result.eyesServer.eyesServerUrl,
+        apiKey: this._result.eyesServer.apiKey,
+        proxy: this._result.eyesServer.proxy,
         testId: this._result.id!,
         batchId: this._result.batchId,
         secretToken: this._result.secretToken,

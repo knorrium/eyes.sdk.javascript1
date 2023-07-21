@@ -14,7 +14,9 @@ export function closeBatch(sdk: SDK): (options: BatchCloseOptions) => Promise<vo
   return function closeBatch(settings: BatchCloseOptions) {
     utils.guard.notNull(settings.batchIds, {name: 'options.batchIds'})
     const {core} = initSDK(sdk)
-    return core.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
+    return core.closeBatch({
+      settings: settings.batchIds.map(batchId => ({batchId, eyesServerUrl: settings.serverUrl, ...settings})),
+    })
   }
 }
 
@@ -30,7 +32,9 @@ export class BatchClose {
   static async close(settings: BatchCloseOptions): Promise<void> {
     utils.guard.notNull(settings.batchIds, {name: 'options.batchIds'})
     const {core} = initSDK(this._sdk)
-    await core.closeBatch({settings: settings.batchIds.map(batchId => ({batchId, ...settings}))})
+    await core.closeBatch({
+      settings: settings.batchIds.map(batchId => ({batchId, eyesServerUrl: settings.serverUrl, ...settings})),
+    })
   }
 
   constructor(options?: BatchCloseOptions) {
@@ -41,7 +45,13 @@ export class BatchClose {
 
   async close(): Promise<void> {
     utils.guard.notNull(this._settings.batchIds, {name: 'batchIds'})
-    await this._core.closeBatch({settings: this._settings.batchIds.map(batchId => ({batchId, ...this._settings}))})
+    await this._core.closeBatch({
+      settings: this._settings.batchIds.map(batchId => ({
+        batchId,
+        eyesServerUrl: this._settings.serverUrl,
+        ...this._settings,
+      })),
+    })
   }
 
   setBatchIds(batchIds: string[]): this {

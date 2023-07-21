@@ -45,7 +45,7 @@ export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic'
     settings.ignoreCaret ??= true
     settings.sendDom ??=
       eyes.test.account.rcaEnabled || settings.matchLevel === 'Layout' || settings.enablePatterns || settings.useDom
-    settings.autProxy ??= eyes.test.server.proxy
+    settings.autProxy ??= eyes.test.eyesServer.proxy
     settings.useDom ??= false
     ;(settings as CheckSettings<TSpec, 'classic'>).retryTimeout ??= 2000
     settings.lazyLoad = settings.lazyLoad === true ? {} : settings.lazyLoad

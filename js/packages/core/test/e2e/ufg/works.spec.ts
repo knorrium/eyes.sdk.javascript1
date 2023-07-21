@@ -31,7 +31,7 @@ describe('works', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
@@ -140,7 +140,7 @@ describe('works', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
@@ -181,7 +181,7 @@ describe('works', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',
@@ -226,7 +226,7 @@ describe('works', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'passes with correct screenshot',

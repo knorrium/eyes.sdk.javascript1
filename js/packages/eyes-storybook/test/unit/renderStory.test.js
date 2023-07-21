@@ -25,11 +25,11 @@ describe('renderStory', () => {
   });
 
   it('passes correct parameters to openEyes and checkAndClose - basic', async () => {
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -85,7 +85,6 @@ describe('renderStory', () => {
         settings: {
           renderers: [{name: 'chrome', width: 800, height: 600}],
           url: 'url',
-          throwEx: false,
         },
         target: 'snapshot',
       },
@@ -95,11 +94,11 @@ describe('renderStory', () => {
 
   it('passes correct parameters to openEyes and checkAndClose - local configuration', async () => {
     const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -183,7 +182,6 @@ describe('renderStory', () => {
           useDom: 'useDom',
           enablePatterns: 'enablePatterns',
           ignoreDisplacements: 'ignoreDisplacements',
-          throwEx: false,
         },
       },
     };
@@ -191,11 +189,11 @@ describe('renderStory', () => {
   });
 
   it('passes correct parameters to openEyes and checkAndClose - global configuration', async () => {
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -254,7 +252,6 @@ describe('renderStory', () => {
       },
       checkParams: {
         settings: {
-          throwEx: false,
           ignoreRegions: 'ignore',
           floatingRegions: [
             {region: '.floating-region', offset: {bottom: 10, top: 0, left: 10, right: 0}},
@@ -279,11 +276,11 @@ describe('renderStory', () => {
   });
 
   it('passes correct parameters to openEyes and checkAndClose - local configuration overrides global configuration', async () => {
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -374,7 +371,6 @@ describe('renderStory', () => {
       },
       checkParams: {
         settings: {
-          throwEx: false,
           ignoreRegions: 'ignore',
           floatingRegions: [
             {region: '.floating-region', offset: {bottom: 0, top: 0, left: 0, right: 0}},
@@ -400,11 +396,11 @@ describe('renderStory', () => {
   });
 
   it('sets performance timing', async () => {
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -446,11 +442,11 @@ describe('renderStory', () => {
 
   it('passes local ignore param for backward compatibility', async () => {
     const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -480,7 +476,6 @@ describe('renderStory', () => {
       checkParams: {
         settings: {
           ignoreRegions: 'ignore',
-          throwEx: false,
         },
       },
       openParams: {
@@ -500,11 +495,11 @@ describe('renderStory', () => {
 
   it('ignoreRegions take precedence over ignore param', async () => {
     const getStoriesWithConfig = makeGetStoriesWithConfig({config: {}});
-    const openEyes = async x => {
+    const openEyes = async openParams => {
+      const result = {openParams};
       return {
-        checkAndClose: async y => {
-          return {openParams: x, checkParams: y};
-        },
+        checkAndClose: async checkParams => (result.checkParams = checkParams),
+        getResults: async () => result,
       };
     };
 
@@ -534,7 +529,6 @@ describe('renderStory', () => {
     const expected = {
       checkParams: {
         settings: {
-          throwEx: false,
           ignoreRegions: 'ignoreRegions',
         },
       },

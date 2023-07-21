@@ -52,16 +52,16 @@
     "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/core-base": "1.4.1",
-    "@applitools/driver": "1.13.1",
-    "@applitools/logger": "2.0.5",
-    "@applitools/req": "1.5.0",
-    "@applitools/socket": "1.1.5",
-    "@applitools/spec-driver-webdriver": "1.0.38",
-    "@applitools/tunnel-client": "1.1.1",
-    "@applitools/utils": "1.5.0",
+    "@applitools/core-base": "workspace:",
+    "@applitools/driver": "workspace:",
+    "@applitools/logger": "workspace:",
+    "@applitools/req": "workspace:",
+    "@applitools/socket": "workspace:",
+    "@applitools/spec-driver-webdriver": "workspace:",
+    "@applitools/tunnel-client": "workspace:",
+    "@applitools/utils": "workspace:",
     "abort-controller": "3.0.0",
-    "webdriver": "7",
+    "webdriver": "7.30.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
@@ -71,7 +71,7 @@
     "@types/node-fetch": "^2.6.1",
     "@types/selenium-webdriver": "^4.0.19",
     "@types/yargs": "^17.0.19",
-    "nock": "^13.2.4",
+    "nock": "^13.3.2",
     "selenium-webdriver": "^4.10.0"
   },
   "engines": {

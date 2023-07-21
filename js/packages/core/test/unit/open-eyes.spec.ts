@@ -10,7 +10,7 @@ describe('open-eyes', () => {
       const fakeCore = makeFakeCore({
         hooks: {
           openEyes({settings}) {
-            assert.strictEqual(settings.serverUrl, process.env.APPLITOOLS_SERVER_URL)
+            assert.strictEqual(settings.eyesServerUrl, process.env.APPLITOOLS_SERVER_URL)
             assert.strictEqual(settings.apiKey, process.env.APPLITOOLS_API_KEY)
             assert.strictEqual(settings.batch!.id, process.env.APPLITOOLS_BATCH_ID)
             assert.strictEqual(settings.batch!.name, process.env.APPLITOOLS_BATCH_NAME)

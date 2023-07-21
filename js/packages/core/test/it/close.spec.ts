@@ -26,7 +26,7 @@ describe('get results', async () => {
     ])
 
     const fakeCore = makeFakeCore()
-    core = makeCore({spec, core: fakeCore})
+    core = makeCore({spec, base: fakeCore})
   })
 
   it('should not throw if driver is destroyed before close', async () => {

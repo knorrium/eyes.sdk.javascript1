@@ -35,8 +35,6 @@ describe('coded regions', () => {
       const eyes = await manager.openEyes({
         target: driver,
         settings: {
-          serverUrl: 'https://eyesapi.applitools.com',
-          apiKey: process.env.APPLITOOLS_API_KEY,
           appName: 'js core',
           testName: `coded region regionId ${type}`,
           environment: {viewportSize: {width: 800, height: 600}},
@@ -104,8 +102,6 @@ describe('coded regions', () => {
     const eyes = await manager.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
-        apiKey: process.env.APPLITOOLS_API_KEY,
         appName: 'js core',
         testName: `non-existent coded region`,
         environment: {viewportSize: {width: 800, height: 600}},

@@ -1,48 +1,42 @@
 import type {Location, Size, Region} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
-import {type HashedResource} from './resources/resource'
+import {type Proxy} from '@applitools/req'
 import {type AbortSignal} from 'abort-controller'
-import {type ProcessResourcesSettings} from './resources/process-resources'
-import {type UFGRequestsConfig} from './server/requests'
+import {type HashedResource} from './resources/resource'
 
-export type DomSnapshot = {
-  cdt: any[]
-  url: string
-  resourceUrls: string[]
-  resourceContents: Record<string, {type: string; value: string; dependencies?: string[]} | {errorStatusCode: number}>
-  frames: DomSnapshot[]
-  cookies?: Cookie[]
+export interface UFGClient {
+  createRenderTarget(options: {
+    snapshot: Snapshot
+    settings?: RenderTargetSettings
+    logger?: Logger
+  }): Promise<RenderTarget>
+  getRenderEnvironment(options: {settings: RenderEnvironmentSettings; logger?: Logger}): Promise<RenderEnvironment>
+  render(options: {
+    target: RenderTarget
+    settings: RenderSettings
+    signal?: AbortSignal
+    logger?: Logger
+  }): Promise<RenderResult>
+  getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<ChromeEmulationDevice, any>>
+  getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
+  getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
+  getCachedResourceUrls(): string[]
 }
-export type AndroidSnapshot = {
-  platformName: 'android'
-  vhsType: string
-  vhsHash: {hashFormat: string; hash: string; contentType: string}
+
+export interface UFGServerSettings {
+  ufgServerUrl: string
+  accessToken: string
+  agentId?: string
+  proxy?: Proxy
+  useDnsCache?: boolean
+  connectionTimeout?: number
 }
-export type IOSSnapshot = {
-  platformName: 'ios'
-  vhsCompatibilityParams: Record<string, any>
-} & (
-  | {
-      resourceContents: Record<
-        string,
-        {type: string; value: Buffer; dependencies?: string[]} | {errorStatusCode: number}
-      >
-    }
-  | {vhsHash: {hashFormat: string; hash: string; contentType: string}}
-)
-export type Snapshot = DomSnapshot | AndroidSnapshot | IOSSnapshot
 
-export type Selector = string | {selector: string; type?: string; shadow?: Selector; frame?: Selector}
-
-export type Cookie = {
-  name: string
-  value: string
-  domain?: string
-  path?: string
-  expiry?: number
-  httpOnly?: boolean
-  secure?: boolean
-  sameSite?: 'Strict' | 'Lax' | 'None'
+export interface UFGClientSettings extends UFGServerSettings {
+  tunnelIds?: string
+  eyesServerUrl?: string
+  apiKey?: string
+  fetchConcurrency?: number
 }
 
 export type DesktopBrowser =
@@ -63,7 +57,7 @@ export type DesktopBrowser =
   | 'safari-earlyaccess'
   | 'safari-one-version-back'
   | 'safari-two-versions-back'
-export type DesktopBrowserRenderer = {
+export interface DesktopBrowserRenderer {
   name?: DesktopBrowser
   width: number
   height: number
@@ -144,7 +138,7 @@ export type ChromeEmulationDevice =
   | 'Sony Xperia 10 II'
   | 'Huawei Mate 50 Pro'
   | 'Huawei Matepad 11'
-export type ChromeEmulationDeviceRenderer = {
+export interface ChromeEmulationDeviceRenderer {
   chromeEmulationInfo: {
     deviceName: ChromeEmulationDevice
     screenOrientation?: ScreenOrientation
@@ -178,7 +172,7 @@ export type IOSDevice =
   | 'iPad Air (2nd generation)'
   | 'iPad Air (4th generation)'
 export type IOSVersion = 'latest' | 'latest-1'
-export type IOSDeviceRenderer = {
+export interface IOSDeviceRenderer {
   iosDeviceInfo: {
     deviceName: IOSDevice
     version?: IOSVersion
@@ -213,7 +207,7 @@ export type AndroidDevice =
   | 'Sony Xperia Ace II'
   | 'Huawei P30 Lite'
 export type AndroidVersion = 'latest' | 'latest-1'
-export type AndroidDeviceRenderer = {
+export interface AndroidDeviceRenderer {
   androidDeviceInfo: {
     deviceName: AndroidDevice
     version?: AndroidVersion
@@ -221,12 +215,9 @@ export type AndroidDeviceRenderer = {
   }
 }
 
-export type Renderer = (
-  | DesktopBrowserRenderer
-  | ChromeEmulationDeviceRenderer
-  | IOSDeviceRenderer
-  | AndroidDeviceRenderer
-) & {
+export type MobileDeviceRenderer = (IOSDeviceRenderer | AndroidDeviceRenderer) & {type?: 'web' | 'native'}
+
+export type Renderer = (DesktopBrowserRenderer | ChromeEmulationDeviceRenderer | MobileDeviceRenderer) & {
   /**
    * The id of the renderer
    * Used to identify the renderer if the same renderer is used multiple times
@@ -235,37 +226,47 @@ export type Renderer = (
   id?: string
 }
 
-export interface UFGClient {
-  createRenderTarget(options: {
-    snapshot: Snapshot
-    settings?: ProcessResourcesSettings
-    logger?: Logger
-  }): Promise<RenderTarget>
-  bookRenderer(options: {settings: RendererSettings; logger?: Logger}): Promise<RendererEnvironment>
-  render(options: {
-    target: RenderTarget
-    settings: RenderSettings
-    signal?: AbortSignal
-    logger?: Logger
-  }): Promise<RenderResult>
-  getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<ChromeEmulationDevice, any>>
-  getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
-  getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
-  getCachedResourceUrls(): string[]
+export interface Cookie {
+  name: string
+  value: string
+  domain?: string
+  path?: string
+  expiry?: number
+  httpOnly?: boolean
+  secure?: boolean
+  sameSite?: 'Strict' | 'Lax' | 'None'
 }
 
-export type UFGClientConfig = UFGRequestsConfig & {
-  fetchConcurrency?: number
+export interface DomSnapshot {
+  cdt: any[]
+  url: string
+  resourceUrls: string[]
+  resourceContents: Record<string, {type: string; value: string; dependencies?: string[]} | {errorStatusCode: number}>
+  frames?: DomSnapshot[]
+  cookies?: Cookie[]
+}
+export interface AndroidSnapshot {
+  platformName: 'android'
+  vhsHash: {hashFormat: string; hash: string; contentType: string}
+  vhsType: string
+}
+export interface IOSSnapshot {
+  platformName: 'ios'
+  vhsHash: {hashFormat: string; hash: string; contentType: string}
+  vhsCompatibilityParams: Record<string, any>
+}
+export type Snapshot = DomSnapshot | AndroidSnapshot | IOSSnapshot
+
+export interface RenderTargetSettings {
+  renderer?: Renderer
+  referer?: string
+  proxy?: Proxy
+  autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
+  cookies?: Cookie[]
+  userAgent?: string
 }
 
-export type RendererEnvironment = {
-  rendererId: string
-  rendererUniqueId: string
-  rendererInfo: {type: 'native' | 'web'; renderer: Renderer}
-  rawEnvironment: Record<string, any>
-}
-
-export type RenderTarget = {
+export interface RenderTarget {
   snapshot: HashedResource
   resources: Record<string, HashedResource | {errorStatusCode: number}>
   source?: string
@@ -273,14 +274,22 @@ export type RenderTarget = {
   vhsCompatibilityParams?: Record<string, any>
 }
 
-export type RendererSettings = {
-  type: 'web' | 'native'
+export interface RenderEnvironmentSettings {
   renderer: Renderer
 }
 
-export type RenderSettings = RendererSettings & {
-  rendererUniqueId: string
-  rendererId: string
+export interface RenderEnvironment {
+  renderEnvironmentId: string
+  renderer: Renderer
+  rawEnvironment: Record<string, any>
+}
+
+export type Selector = string | {selector: string; type?: string; shadow?: Selector; frame?: Selector}
+
+export interface RenderSettings extends RenderEnvironmentSettings {
+  renderEnvironmentId: string
+  uploadUrl: string
+  stitchingServiceUrl: string
   region?: Region | Selector
   fully?: boolean
   scrollRootElement?: Selector
@@ -294,7 +303,7 @@ export type RenderSettings = RendererSettings & {
   sendDom?: boolean
 }
 
-export type RenderResult = {
+export interface RenderResult {
   renderId: string
   status: 'rendering' | 'rendered' | 'error'
   error?: any

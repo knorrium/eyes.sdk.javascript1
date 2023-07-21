@@ -28,7 +28,7 @@ describe('eyesStorybook', () => {
     await closeStorybook();
   });
 
-  let serverUrl, closeEyesServer;
+  let eyesServerUrl, closeEyesServer;
   beforeEach(async function () {});
   afterEach(async () => {
     await closeEyesServer();
@@ -37,7 +37,7 @@ describe('eyesStorybook', () => {
   it('renders test storybook with fake eyes and visual grid', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream, getEvents} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
     const globalConfig = require(configPath);
@@ -46,7 +46,7 @@ describe('eyesStorybook', () => {
     let results = await eyesStorybook({
       config: {
         ...config,
-        serverUrl,
+        eyesServerUrl,
         storybookUrl: 'http://localhost:9001',
         browser: [{name: 'chrome', width: 800, height: 600}],
         // puppeteerOptions: {headless: false, devtools: true},
@@ -164,8 +164,8 @@ describe('eyesStorybook', () => {
     expect(results).to.have.length(expectedResults.length);
     for (const testResults of results) {
       const id = `${testResults.appName}__${testResults.name}`;
-      const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
-        testResults.eyes.test.batchId,
+      const sessionUrl = `${eyesServerUrl}/api/sessions/batches/${encodeURIComponent(
+        testResults.batchId,
       )}/${encodeURIComponent(id)}`;
 
       const session = await fetch(sessionUrl).then(r => r.json());
@@ -219,7 +219,7 @@ describe('eyesStorybook', () => {
     // adding renderDelay to reach max concurrency
     const {port, close} = await fakeEyesServer({renderDelay: 1500});
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
@@ -227,7 +227,7 @@ describe('eyesStorybook', () => {
       config: {
         ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
-        serverUrl,
+        eyesServerUrl,
         storybookUrl: 'http://localhost:9001',
       },
       logger,
@@ -236,14 +236,14 @@ describe('eyesStorybook', () => {
       outputStream: stream,
     });
 
-    const {maxRunning} = await fetch(`${serverUrl}/api/usage`).then(r => r.json());
+    const {maxRunning} = await fetch(`${eyesServerUrl}/api/usage`).then(r => r.json());
     expect(maxRunning).to.equal(5); // TODO require from core
   });
 
   it('enforces testConcurrency', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
@@ -251,7 +251,7 @@ describe('eyesStorybook', () => {
       config: {
         ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
-        serverUrl,
+        eyesServerUrl,
         storybookUrl: 'http://localhost:9001',
         testConcurrency: 3,
       },
@@ -261,14 +261,14 @@ describe('eyesStorybook', () => {
       outputStream: stream,
     });
 
-    const {maxRunning} = await fetch(`${serverUrl}/api/usage`).then(r => r.json());
+    const {maxRunning} = await fetch(`${eyesServerUrl}/api/usage`).then(r => r.json());
     expect(maxRunning).to.equal(3);
   });
 
   it('enforces testConcurrency over legacy concurrency', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
@@ -276,7 +276,7 @@ describe('eyesStorybook', () => {
       config: {
         ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
-        serverUrl,
+        eyesServerUrl,
         storybookUrl: 'http://localhost:9001',
         testConcurrency: 3,
         concurrency: 20,
@@ -287,14 +287,14 @@ describe('eyesStorybook', () => {
       outputStream: stream,
     });
 
-    const {maxRunning} = await fetch(`${serverUrl}/api/usage`).then(r => r.json());
+    const {maxRunning} = await fetch(`${eyesServerUrl}/api/usage`).then(r => r.json());
     expect(maxRunning).to.equal(3);
   });
 
   it('enforces legacy concurrency', async () => {
     const {port, close} = await fakeEyesServer({renderDelay: 5000});
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(
       __dirname,
@@ -306,7 +306,7 @@ describe('eyesStorybook', () => {
         ...config,
         browser: [{name: 'chrome', width: 800, height: 600}],
         storybookUrl: 'http://localhost:9001',
-        serverUrl,
+        eyesServerUrl,
       },
       logger,
       performance,
@@ -314,7 +314,7 @@ describe('eyesStorybook', () => {
       outputStream: stream,
     });
 
-    const {maxRunning} = await fetch(`${serverUrl}/api/usage`).then(r => r.json());
+    const {maxRunning} = await fetch(`${eyesServerUrl}/api/usage`).then(r => r.json());
     expect(maxRunning).to.equal(10);
   });
 
@@ -322,7 +322,7 @@ describe('eyesStorybook', () => {
   it.skip('sends parentBranchBaselineSavedBefore when branchName and parentBranchName are specified, and there is a merge-base time for them', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(
       __dirname,
@@ -336,7 +336,7 @@ describe('eyesStorybook', () => {
 
     let results = await eyesStorybook({
       config: {
-        serverUrl,
+        eyesServerUrl,
         browser: [{name: 'chrome', width: 800, height: 600}],
         storybookUrl: 'http://localhost:9001',
         ...config,
@@ -348,7 +348,7 @@ describe('eyesStorybook', () => {
     });
     results = flatten(results.map(r => r.resultsOrErr));
     for (const testResults of results) {
-      const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
+      const sessionUrl = `${eyesServerUrl}/api/sessions/batches/${encodeURIComponent(
         testResults.getBatchId(),
       )}/${encodeURIComponent(testResults.getId())}`;
 
@@ -362,7 +362,7 @@ describe('eyesStorybook', () => {
   it('handles ignoreGitMergeBase', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const {stream} = testStream();
     const configPath = path.resolve(
       __dirname,
@@ -374,7 +374,7 @@ describe('eyesStorybook', () => {
     let results = await eyesStorybook({
       config: {
         ...config,
-        serverUrl,
+        eyesServerUrl,
         browser: [{name: 'chrome', width: 800, height: 600}],
         storybookUrl: 'http://localhost:9001',
       },
@@ -386,8 +386,8 @@ describe('eyesStorybook', () => {
     results = results.results.flatMap(r => r.resultsOrErr);
     for (const testResults of results) {
       const id = `${testResults.appName}__${testResults.name}`;
-      const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
-        testResults.eyes.test.batchId,
+      const sessionUrl = `${eyesServerUrl}/api/sessions/batches/${encodeURIComponent(
+        testResults.batchId,
       )}/${encodeURIComponent(id)}`;
 
       const session = await fetch(sessionUrl).then(r => r.json());
@@ -398,7 +398,7 @@ describe('eyesStorybook', () => {
   it('fail immediately, wrong api key', async () => {
     const {port, close} = await fakeEyesServer();
     closeEyesServer = close;
-    serverUrl = `http://localhost:${port}`;
+    eyesServerUrl = `http://localhost:${port}`;
     const config = {apiKey: 'INVALIDAPIKEY'}; // this is a well-known apiKey that is meant to return 401 from fake eyes server
     let errorMessage;
 
@@ -406,7 +406,7 @@ describe('eyesStorybook', () => {
       await eyesStorybook({
         config: {
           ...config,
-          serverUrl,
+          eyesServerUrl,
           storybookUrl: 'http://localhost:9001',
           appName: 'bla',
           browser: [{name: 'chrome', width: 800, height: 600}],

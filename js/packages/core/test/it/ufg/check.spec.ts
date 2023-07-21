@@ -10,7 +10,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -43,7 +43,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -73,7 +73,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -104,7 +104,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -143,7 +143,7 @@ describe('check', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -164,7 +164,7 @@ describe('check', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -209,7 +209,7 @@ describe('check', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -227,7 +227,7 @@ describe('check', () => {
 
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'server-url',
+        eyesServerUrl: 'server-url',
         apiKey: 'api-key',
         appName: 'app-name',
         testName: 'test-name',
@@ -281,7 +281,7 @@ describe('check', () => {
     const core = makeCore({concurrency: 1, base: fakeCore as any, clients: {ufg: fakeClient}})
 
     const eyes1 = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
     await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})

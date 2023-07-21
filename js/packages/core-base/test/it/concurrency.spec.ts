@@ -53,10 +53,20 @@ describe('concurrency', () => {
     const core = makeCore({concurrency: 1})
 
     const eyesPromise1 = core.openEyes({
-      settings: {serverUrl: 'https://localhost:3000', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {
+        eyesServerUrl: 'https://localhost:3000',
+        apiKey: 'api-key',
+        appName: 'app-name',
+        testName: 'test-name',
+      },
     })
     const eyesPromise2 = core.openEyes({
-      settings: {serverUrl: 'https://localhost:3000', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {
+        eyesServerUrl: 'https://localhost:3000',
+        apiKey: 'api-key',
+        appName: 'app-name',
+        testName: 'test-name',
+      },
     })
 
     // t0 - nothing happened

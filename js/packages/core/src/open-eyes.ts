@@ -47,8 +47,13 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
 
     settings = {...config?.open, ...settings} as Partial<OpenSettings<TDefaultType> & OpenSettings<TType>>
     settings.userTestId ??= `${settings.testName}--${utils.general.guid()}`
-    settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
+    settings.eyesServerUrl ??=
+      ((settings as any).serverUrl as string) ??
+      utils.general.getEnvValue('EYES_SERVER_URL') ??
+      utils.general.getEnvValue('SERVER_URL') ??
+      'https://eyesapi.applitools.com'
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')
+    settings.useDnsCache ??= utils.general.getEnvValue('USE_DNS_CACHE', 'boolean')
     settings.batch = {...batch, ...settings.batch}
     settings.batch.id ??= utils.general.getEnvValue('BATCH_ID') ?? `generated-${utils.general.guid()}`
     settings.batch.name ??= utils.general.getEnvValue('BATCH_NAME')
@@ -60,14 +65,13 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     settings.baselineBranchName ??= utils.general.getEnvValue('BASELINE_BRANCH')
     settings.ignoreBaseline ??= false
     settings.compareWithParentBranch ??= false
-    settings.useDnsCache ??= utils.general.getEnvValue('USE_DNS_CACHE', 'boolean')
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
 
     core.logEvent({
       settings: {
-        serverUrl: settings.serverUrl,
+        eyesServerUrl: settings.eyesServerUrl,
         apiKey: settings.apiKey,
         proxy: settings.proxy,
         agentId: settings.agentId,

@@ -5,8 +5,8 @@ import nock from 'nock'
 
 describe('req-eyes', () => {
   const req = makeReqEyes({
-    config: {
-      serverUrl: 'https://eyesapi.applitools.com',
+    settings: {
+      eyesServerUrl: 'https://eyesapi.applitools.com',
       apiKey: 'api-key',
       agentId: 'agent-id',
     },

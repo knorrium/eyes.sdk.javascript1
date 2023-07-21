@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "extends": ["../../.eslintrc"],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "logs",
+    "tmp/",
+    "types/",
+    "test/generic",
+    "*.d.ts",
+    "applitools.config.js",
+    "test/coverage/generic/cypress.config.js",
+    "test/unit/setup/fixtures/pluginCypress10.js",
+    "test/unit/setup/fixtures/cypressConfig-legacy-file/cypress.config.js",
+    "test/play/support.js",
+    "test/unit/setup/fixtures/supportFile-handle-commands.js",
+    "test/e2e/setup/fixtures/cypress.config.js",
+    "test/e2e/ts/**/*.ts",
+    "test/play/cypress",
+    "test/components/"
+  ],
+  "rules": {
+    "prettier/prettier": ["error", {"arrowParens": "avoid", "printWidth": 120}],
+    "no-console": "off",
+    "@typescript-eslint/no-empty-function": "off"
+  }
+}

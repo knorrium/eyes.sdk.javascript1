@@ -62,17 +62,17 @@
   },
   "dependencies": {
     "@applitools/execution-grid-tunnel": "2.1.8",
-    "@applitools/logger": "2.0.5",
-    "@applitools/req": "1.5.0",
-    "@applitools/socket": "1.1.5",
-    "@applitools/utils": "1.5.0",
-    "abort-controller": "^3.0.0",
-    "yargs": "^17.7.2"
+    "@applitools/logger": "workspace:",
+    "@applitools/req": "workspace:",
+    "@applitools/socket": "workspace:",
+    "@applitools/utils": "workspace:",
+    "abort-controller": "3.0.0",
+    "yargs": "17.7.2"
   },
   "devDependencies": {
     "@types/node": "^12.20.55",
     "@types/yargs": "^17.0.24",
-    "nock": "^13.3.1",
+    "nock": "^13.3.2",
     "pkg": "^5.8.1"
   },
   "engines": {

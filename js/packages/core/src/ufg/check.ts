@@ -1,6 +1,7 @@
 import type {Region} from '@applitools/utils'
 import type {DriverTarget, Target, Eyes, CheckSettings, CheckResult} from './types'
-import {type DomSnapshot, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
+import type {Eyes as BaseEyes} from '@applitools/core-base'
+import {type Renderer, type DomSnapshot, type AndroidSnapshot, type IOSSnapshot} from '@applitools/ufg-client'
 import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {
@@ -23,6 +24,7 @@ import chalk from 'chalk'
 
 type Options<TSpec extends SpecType> = {
   eyes: Eyes<TSpec>
+  storage: Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>
   target?: DriverTarget<TSpec>
   spec?: SpecDriver<TSpec>
   signal?: AbortSignal
@@ -31,6 +33,7 @@ type Options<TSpec extends SpecType> = {
 
 export function makeCheck<TSpec extends SpecType>({
   eyes,
+  storage,
   target: defaultTarget,
   spec,
   signal,
@@ -44,7 +47,7 @@ export function makeCheck<TSpec extends SpecType>({
     settings?: CheckSettings<TSpec>
     target?: Target<TSpec>
     logger?: Logger
-  }): Promise<CheckResult[]> {
+  } = {}): Promise<CheckResult[]> {
     logger = logger.extend(mainLogger)
 
     logger.log('Command "check" is called with settings', settings)
@@ -60,8 +63,11 @@ export function makeCheck<TSpec extends SpecType>({
 
     const uniqueRenderers = uniquifyRenderers(settings.renderers ?? [])
     const ufgClient = await eyes.core.getUFGClient({
-      config: {...eyes.test.ufgServer, eyesServerUrl: eyes.test.server.serverUrl, eyesApiKey: eyes.test.server.apiKey},
-      concurrency: uniqueRenderers.length || 5,
+      settings: {
+        ...eyes.test.ufgServer,
+        eyesServerUrl: eyes.test.eyesServer.eyesServerUrl,
+        apiKey: eyes.test.eyesServer.apiKey,
+      },
       logger,
     })
 
@@ -123,7 +129,7 @@ export function makeCheck<TSpec extends SpecType>({
 
       const snapshotOptions = {
         settings: {
-          ...eyes.test.server,
+          ...eyes.test.eyesServer,
           waitBeforeCapture: settings.waitBeforeCapture,
           disableBrowserFetching: settings.disableBrowserFetching,
           layoutBreakpoints: settings.layoutBreakpoints,
@@ -149,7 +155,7 @@ export function makeCheck<TSpec extends SpecType>({
       if (environment.isWeb) {
         snapshots = await takeDomSnapshots({driver, ...snapshotOptions, logger})
       } else {
-        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
+        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.eyesServer, driver, logger})
         snapshots = (await nmlClient.takeSnapshots({...snapshotOptions, logger})) as AndroidSnapshot[] | IOSSnapshot[]
       }
 
@@ -185,24 +191,25 @@ export function makeCheck<TSpec extends SpecType>({
         }
 
         const {cookies, ...snapshot} = snapshots[index] as (typeof snapshots)[number] & {cookies: Cookie[]}
-        const snapshotType = utils.types.has(snapshot, 'cdt') ? 'web' : 'native'
+
+        if (utils.types.has(renderer, 'iosDeviceInfo') || utils.types.has(renderer, 'androidDeviceInfo')) {
+          renderer.type = utils.types.has(snapshot, 'cdt') ? 'web' : 'native'
+        }
+
         const renderTargetPromise = ufgClient.createRenderTarget({
           snapshot,
           settings: {
             renderer,
             referer: snapshotUrl,
             cookies,
-            proxy: eyes.test.server.proxy,
+            proxy: eyes.test.eyesServer.proxy,
             autProxy: settings.autProxy,
             userAgent,
           },
           logger: rendererLogger,
         })
 
-        const [baseEyes] = await eyes.getBaseEyes({
-          settings: {renderer, type: snapshotType, properties},
-          logger: rendererLogger,
-        })
+        const [baseEyes] = await eyes.getBaseEyes({settings: {renderer, properties}, logger: rendererLogger})
 
         try {
           if (signal?.aborted) {
@@ -210,10 +217,10 @@ export function makeCheck<TSpec extends SpecType>({
             throw new AbortError('Command "check" was aborted before rendering')
           } else if (!baseEyes.running) {
             rendererLogger.warn(
-              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
             throw new AbortError(
-              `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
           }
 
@@ -224,10 +231,10 @@ export function makeCheck<TSpec extends SpecType>({
             throw new AbortError('Command "check" was aborted before rendering')
           } else if (!baseEyes.running) {
             rendererLogger.warn(
-              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
             throw new AbortError(
-              `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
           }
 
@@ -239,10 +246,10 @@ export function makeCheck<TSpec extends SpecType>({
               scrollRootElement: scrollRootSelector,
               selectorsToCalculate: selectorsToCalculate.flatMap(({safeSelector}) => safeSelector ?? []),
               includeFullPageSize: Boolean(settings.pageId),
-              type: snapshotType,
               renderer,
-              rendererUniqueId: baseEyes.test.rendererUniqueId!,
-              rendererId: baseEyes.test.rendererId!,
+              renderEnvironmentId: baseEyes.test.renderEnvironmentId!,
+              uploadUrl: baseEyes.test.uploadUrl,
+              stitchingServiceUrl: baseEyes.test.stitchingServiceUrl,
             },
             signal,
             logger: rendererLogger,
@@ -263,14 +270,14 @@ export function makeCheck<TSpec extends SpecType>({
             throw new AbortError('Command "check" was aborted after rendering')
           } else if (!baseEyes.running) {
             rendererLogger.warn(
-              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
             throw new AbortError(
-              `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
           }
 
-          const [result] = await baseEyes.check({
+          await baseEyes.check({
             target: {...baseTarget, isTransformed: true},
             settings: baseSettings,
             logger: rendererLogger,
@@ -278,16 +285,19 @@ export function makeCheck<TSpec extends SpecType>({
 
           if (!baseEyes.running) {
             rendererLogger.warn(
-              `Renderer with id ${baseEyes.test.rendererId} was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
             throw new AbortError(
-              `Renderer with id "${baseEyes.test.rendererId}" was aborted during one of the previous steps`,
+              `Render on environment with id "${baseEyes.test.renderEnvironmentId}" was aborted during one of the previous steps`,
             )
           }
 
-          return {...result, eyes: baseEyes, renderer}
+          return {eyes: baseEyes, renderer}
         } catch (error: any) {
-          rendererLogger.error(`Renderer with id ${baseEyes.test.rendererId} failed due to an error`, error)
+          rendererLogger.error(
+            `Render on environment with id "${baseEyes.test.renderEnvironmentId}" failed due to an error`,
+            error,
+          )
           if (baseEyes.running && !signal?.aborted) await baseEyes.abort({logger: rendererLogger})
           error.info = {eyes: baseEyes}
           throw error
@@ -299,11 +309,10 @@ export function makeCheck<TSpec extends SpecType>({
       }
     })
 
-    return uniqueRenderers.map((renderer, index) => ({
-      asExpected: true,
-      userTestId: eyes.test.userTestId,
-      renderer,
-      promise: promises[index],
-    }))
+    return uniqueRenderers.map((renderer, index) => {
+      const key = JSON.stringify(renderer)
+      storage.set(key, [...(storage.get(key) ?? []), promises[index]])
+      return {asExpected: true, userTestId: eyes.test.userTestId, renderer}
+    })
   }
 }

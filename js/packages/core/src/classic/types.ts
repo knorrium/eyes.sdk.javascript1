@@ -27,7 +27,7 @@ export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec>
     target?: AutomationCore.Target<TSpec>
     settings?: CheckSettings<TSpec> & AutomationCore.CloseSettings
     logger?: Logger
-  }): Promise<AutomationCore.TestResult[]>
+  }): Promise<void>
 }
 
 export type OpenSettings = AutomationCore.OpenSettings & {

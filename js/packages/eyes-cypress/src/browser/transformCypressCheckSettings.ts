@@ -13,11 +13,16 @@ import type {
 import type {CheckSettings, SpecType} from '@applitools/core'
 import * as utils from '@applitools/utils'
 import {transformBrowsers} from './utils'
-type CodedRegion = MaybeArray<Element | Selector | ElementWithOptions | SelectorWithOptions | LegacyRegion | EyesSelector>
+type CodedRegion = MaybeArray<
+  Element | Selector | ElementWithOptions | SelectorWithOptions | LegacyRegion | EyesSelector
+>
 type Ref = {'applitools-ref-id': string}
 type RefRegionWIthOptions = {region: Ref} & {padding?: number | LegacyRegion; regionId?: string}
 
-export function transformCypressCheckSettings(settings: CypressCheckSettings, refer: any): CheckSettings<SpecType, 'ufg'> {
+export function transformCypressCheckSettings(
+  settings: CypressCheckSettings,
+  refer: any,
+): CheckSettings<SpecType, 'ufg'> {
   if (utils.types.isString(settings)) {
     return {name: settings}
   }

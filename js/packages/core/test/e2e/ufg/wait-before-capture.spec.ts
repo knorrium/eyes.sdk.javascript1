@@ -21,7 +21,7 @@ describe('wait before capture', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'waitBeforeCapture with layoutbreakpoints - config',
@@ -50,7 +50,7 @@ describe('wait before capture', () => {
     const eyes = await core.openEyes({
       target: driver,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core app',
         testName: 'should show smurfs with small viewport size',

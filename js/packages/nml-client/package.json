@@ -36,17 +36,17 @@
     "test": "run --top-level mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
   "dependencies": {
-    "@applitools/logger": "2.0.5",
-    "@applitools/req": "1.5.0",
-    "@applitools/utils": "1.5.0"
+    "@applitools/logger": "workspace:",
+    "@applitools/req": "workspace:",
+    "@applitools/utils": "workspace:"
   },
   "devDependencies": {
-    "@applitools/spec-driver-webdriverio": "^1.5.7",
+    "@applitools/spec-driver-webdriverio": "workspace:^",
     "@applitools/test-server": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
-    "chromedriver": "^114.0.1",
-    "nock": "^13.2.9",
+    "chromedriver": "^114.0.3",
+    "nock": "^13.3.2",
     "webdriverio": "^7.25.0"
   },
   "engines": {

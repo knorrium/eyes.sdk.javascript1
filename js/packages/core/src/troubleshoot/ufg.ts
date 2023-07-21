@@ -68,7 +68,7 @@ export default {
   testServer: async () => {
     const url = new URL(UFG_PUT_RESOURCE_URL)
     const requests = makeUFGRequests({
-      config: {serverUrl: url.origin, accessToken: await accessTokenPromise, uploadUrl: '', stitchingServiceUrl: ''},
+      settings: {ufgServerUrl: url.origin, accessToken: await accessTokenPromise},
       logger: makeLogger(),
     })
     await requests.uploadResource({resource})

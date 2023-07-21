@@ -6,7 +6,9 @@ function setupEyes({driver, vg, ...config} = {}) {
       },
     },
     runner: {
-      getAllTestResults(_throwErr) {},
+      getAllTestResults(_throwErr) {
+        return undefined
+      },
     },
     async getViewportSize(_driver) {
       return driver.evaluate(() => window.__applitools.getViewportSize())

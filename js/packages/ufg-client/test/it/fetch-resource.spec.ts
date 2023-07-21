@@ -26,7 +26,7 @@ describe('fetch-resource', () => {
       middlewares: ['slow'],
     })
 
-    const fetchResource = makeFetchResource({retryLimit: 1, fetchTimeout: 1000, logger: makeLogger()})
+    const fetchResource = makeFetchResource({retryLimit: 1, timeout: 1000, logger: makeLogger()})
     await assert.rejects(
       fetchResource({
         resource: makeResource({url: `http://localhost:${server.port}/page/smurfs.jpg`}),

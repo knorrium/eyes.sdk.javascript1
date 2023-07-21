@@ -1,17 +1,7 @@
+import type {UFGServerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
-import {makeReq, type Req, type Options, type Proxy, type Hooks} from '@applitools/req'
+import {makeReq, type Req, type Options, type Hooks} from '@applitools/req'
 import * as utils from '@applitools/utils'
-
-export type ReqUFGConfig = {
-  serverUrl: string
-  accessToken: string
-  proxy?: Proxy
-  useDnsCache?: boolean
-  agentId?: string
-  connectionTimeout?: number
-  eyesServerUrl?: string
-  eyesApiKey?: string
-}
 
 export type ReqUFGOptions = Options & {
   name: string
@@ -21,18 +11,18 @@ export type ReqUFGOptions = Options & {
 
 export type ReqUFG = Req<ReqUFGOptions>
 
-export function makeReqUFG({config, logger}: {config: ReqUFGConfig; logger: Logger}) {
+export function makeReqUFG({settings, logger}: {settings: UFGServerSettings; logger: Logger}) {
   return makeReq<ReqUFGOptions>({
-    baseUrl: config.serverUrl,
+    baseUrl: settings.ufgServerUrl,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-Auth-Token': config.accessToken,
-      'User-Agent': config.agentId,
+      'X-Auth-Token': settings.accessToken,
+      'User-Agent': settings.agentId,
     },
-    proxy: config.proxy,
-    useDnsCache: config.useDnsCache,
-    connectionTimeout: config.connectionTimeout ?? 300000 /* 5min */,
+    proxy: settings.proxy,
+    useDnsCache: settings.useDnsCache,
+    connectionTimeout: settings.connectionTimeout ?? 300000 /* 5min */,
     retry: {
       limit: 5,
       timeout: 200,

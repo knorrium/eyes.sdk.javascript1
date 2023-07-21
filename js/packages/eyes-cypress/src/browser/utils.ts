@@ -4,7 +4,9 @@ import type {CypressEyesConfig, MaybeArray, DeviceName, ScreenOrientationPlain} 
 import type {SpecType, Config} from '@applitools/core'
 import type {Renderer} from '@applitools/core'
 
-type CypressBrowser = MaybeArray<Renderer | {deviceName: DeviceName; screenOrientation?: ScreenOrientationPlain; name?: string}>
+type CypressBrowser = MaybeArray<
+  Renderer | {deviceName: DeviceName; screenOrientation?: ScreenOrientationPlain; name?: string}
+>
 
 export function transformBrowsers(browsers: CypressBrowser): Renderer[] {
   if (!browsers) return

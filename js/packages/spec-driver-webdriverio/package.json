@@ -90,15 +90,15 @@
     "up:framework": "run --top-level add-silent webdriverio"
   },
   "dependencies": {
-    "@applitools/driver": "1.13.1",
-    "@applitools/utils": "1.5.0"
+    "@applitools/driver": "workspace:",
+    "@applitools/utils": "workspace:"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^16.18.14",
-    "chromedriver": "^114.0.1",
-    "nock": "^13.2.9",
+    "chromedriver": "^114.0.3",
+    "nock": "^13.3.2",
     "webdriverio": "^8.10.7"
   },
   "peerDependencies": {

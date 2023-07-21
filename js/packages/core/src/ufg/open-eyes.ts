@@ -62,8 +62,10 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: mainLo
           userTestId: settings.userTestId,
           batchId: settings.batch?.id,
           keepBatchOpen: settings.keepBatchOpen,
-          server: account.server,
+          eyesServer: account.eyesServer,
           ufgServer: account.ufgServer,
+          uploadUrl: account.uploadUrl,
+          stitchingServiceUrl: account.stitchingServiceUrl,
           account,
         } as VisualTest,
         get running() {
@@ -71,28 +73,8 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: mainLo
         },
         getBaseEyes: makeGetBaseEyes({settings, eyes, base, logger}),
         // check with indexing and storage
-        check: utils.general.wrap(
-          makeCheck({eyes, target: driver, spec, signal: controller.signal, logger}),
-          async (check, options = {}) => {
-            const results = await check(options)
-            results.forEach(result => {
-              const key = JSON.stringify(result.renderer)
-              storage.set(key, [...(storage.get(key) ?? ([] as any[])), result.promise])
-            })
-            return results
-          },
-        ),
-        checkAndClose: utils.general.wrap(
-          makeCheckAndClose({eyes, target: driver, spec, signal: controller.signal, logger}),
-          async (checkAndClose, options = {}) => {
-            const results = await checkAndClose(options)
-            results.forEach(result => {
-              const key = JSON.stringify(result.renderer)
-              storage.set(key, [...(storage.get(key) ?? ([] as any[])), {eyes: result.eyes, renderer: result.renderer}])
-            })
-            return results
-          },
-        ),
+        check: makeCheck({eyes, storage, target: driver, spec, signal: controller.signal, logger}),
+        checkAndClose: makeCheckAndClose({eyes, storage, target: driver, spec, signal: controller.signal, logger}),
         close: utils.general.wrap(makeClose({storage, target: driver, logger}), async (close, options) => {
           if (!running) return
           running = false

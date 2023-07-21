@@ -26,7 +26,11 @@ export function makeLocate<TSpec extends SpecType>({spec, core, logger: mainLogg
     logger = logger.extend(mainLogger, {tags: [`locate-${utils.general.shortid()}`]})
 
     settings = {...config?.open, ...config?.screenshot, ...settings}
-    settings.serverUrl ??= utils.general.getEnvValue('SERVER_URL') ?? 'https://eyesapi.applitools.com'
+    settings.eyesServerUrl ??=
+      (settings as any).serverUrl ??
+      utils.general.getEnvValue('EYES_SERVER_URL') ??
+      utils.general.getEnvValue('SERVER_URL') ??
+      'https://eyesapi.applitools.com'
     settings.apiKey ??= utils.general.getEnvValue('API_KEY')
 
     const classicCore = makeClassicCore({spec, base: core.base, logger})

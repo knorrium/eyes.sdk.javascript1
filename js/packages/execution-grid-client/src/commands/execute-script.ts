@@ -52,7 +52,7 @@ export function makeExecuteScript({req, core}: Options) {
         session.tests ??= {}
         session.tests.current = await core.openFunctionalSession({
           settings: {
-            serverUrl: session.credentials.eyesServerUrl,
+            eyesServerUrl: session.credentials.eyesServerUrl,
             apiKey: session.credentials.apiKey,
             proxy: session.proxy,
             appName: options?.appName ?? session.options.appName ?? ((await driver.getTitle()) || 'default'),

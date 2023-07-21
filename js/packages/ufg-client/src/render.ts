@@ -2,8 +2,8 @@ import type {RenderTarget, RenderSettings, RenderResult} from './types'
 import {type AbortSignal} from 'abort-controller'
 import {type UFGRequests, type StartedRender} from './server/requests'
 import {mergeLoggers, type Logger} from '@applitools/logger'
-import * as utils from '@applitools/utils'
 import throat from 'throat'
+import * as utils from '@applitools/utils'
 
 type Options = {
   requests: UFGRequests
@@ -27,8 +27,8 @@ export function makeRender({
 
   const throttles = new Map<string, ReturnType<typeof throat>>()
   const renderWithConcurrency = utils.general.wrap(render, (render, options) => {
-    let throttle = throttles.get(options.settings.rendererUniqueId)
-    if (!throttle) throttles.set(options.settings.rendererUniqueId, (throttle = throat(concurrency)))
+    let throttle = throttles.get(options.settings.renderEnvironmentId)
+    if (!throttle) throttles.set(options.settings.renderEnvironmentId, (throttle = throat(concurrency)))
     return throttle(render, options)
   })
 

@@ -16,7 +16,7 @@ describe('extract-text', () => {
   it('works', async () => {
     const core = makeCore({spec})
     const serverSettings = {
-      serverUrl: 'https://eyesapi.applitools.com',
+      eyesServerUrl: 'https://eyesapi.applitools.com',
       apiKey: process.env.APPLITOOLS_API_KEY!,
     }
     await core.setViewportSize!({target: driver, size: {width: 700, height: 460}})

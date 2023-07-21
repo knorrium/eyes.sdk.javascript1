@@ -1,15 +1,11 @@
+import type {EyesServerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
-import globalReq, {makeReq, type Req, type Options, type Proxy, type Hooks, type Fetch} from '@applitools/req'
+import globalReq, {makeReq, type Req, type Options, type Hooks, type Fetch} from '@applitools/req'
 import * as utils from '@applitools/utils'
 
-export type ReqEyesConfig = {
-  serverUrl: string
-  apiKey: string
-  proxy?: Proxy
-  agentId?: string
+export type ReqEyesSettings = EyesServerSettings & {
   connectionTimeout?: number
   removeSession?: boolean
-  useDnsCache?: boolean
 }
 
 export type ReqEyesOptions = Options & {
@@ -20,19 +16,19 @@ export type ReqEyesOptions = Options & {
 
 export type ReqEyes = Req<ReqEyesOptions>
 
-export function makeReqEyes({config, fetch, logger}: {config: ReqEyesConfig; fetch?: Fetch; logger?: Logger}) {
+export function makeReqEyes({settings, fetch, logger}: {settings: ReqEyesSettings; fetch?: Fetch; logger?: Logger}) {
   return makeReq<ReqEyesOptions>({
-    baseUrl: config.serverUrl,
-    query: {apiKey: config.apiKey, removeSession: config.removeSession},
+    baseUrl: settings.eyesServerUrl,
+    query: {apiKey: settings.apiKey, removeSession: settings.removeSession},
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'x-applitools-eyes-client': config.agentId,
-      'User-Agent': config.agentId,
+      'x-applitools-eyes-client': settings.agentId,
+      'User-Agent': settings.agentId,
     },
-    proxy: config.proxy,
-    useDnsCache: config.useDnsCache,
-    connectionTimeout: config.connectionTimeout ?? 300000 /* 5min */,
+    proxy: settings.proxy,
+    useDnsCache: settings.useDnsCache,
+    connectionTimeout: settings.connectionTimeout ?? 300000 /* 5min */,
     retry: [
       // retry on network issues
       {

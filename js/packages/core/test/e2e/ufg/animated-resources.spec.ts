@@ -25,7 +25,7 @@ describe('animated resources', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'some app',
         testName: 'frozen gif',

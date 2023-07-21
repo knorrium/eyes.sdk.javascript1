@@ -84,7 +84,7 @@ export function makeCheck<TSpec extends SpecType>({
         if (environment.isWeb && settings.sendDom) {
           if (settings.fully) await screenshot.scrollingElement?.setAttribute('data-applitools-scroll', 'true')
           else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-          baseTarget.dom = await takeDomCapture({driver, settings: {proxy: eyes.test.server.proxy}, logger}).catch(
+          baseTarget.dom = await takeDomCapture({driver, settings: {proxy: eyes.test.eyesServer.proxy}, logger}).catch(
             () => undefined,
           )
         }
@@ -99,7 +99,7 @@ export function makeCheck<TSpec extends SpecType>({
         }
         await screenshot.restoreState()
       } else {
-        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
+        const nmlClient = await eyes.core.getNMLClient({config: eyes.test.eyesServer, driver, logger})
         const screenshot = await nmlClient.takeScreenshot({
           settings: {name: settings.name, waitBeforeCapture: settings.waitBeforeCapture, fully: settings.fully},
           logger,

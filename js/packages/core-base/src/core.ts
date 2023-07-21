@@ -9,7 +9,7 @@ import {makeExtractText} from './extract-text'
 import {makeCloseBatch} from './close-batch'
 import {makeDeleteTest} from './delete-test'
 
-type Options = {
+export type Options = {
   agentId?: string
   concurrency?: number
   cwd?: string

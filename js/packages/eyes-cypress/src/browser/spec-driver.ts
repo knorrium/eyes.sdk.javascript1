@@ -47,8 +47,12 @@ export function getViewportSize(): {width: number; height: number} {
   //@ts-ignore
   const currWindow = cy.state('window')
   const viewportSize = {
-    width: currWindow.innerWidth || currWindow.document.documentElement.clientWidth || currWindow.document.body.clientWidth,
-    height: currWindow.innerHeight || currWindow.document.documentElement.clientHeight || currWindow.document.body.clientHeight,
+    width:
+      currWindow.innerWidth || currWindow.document.documentElement.clientWidth || currWindow.document.body.clientWidth,
+    height:
+      currWindow.innerHeight ||
+      currWindow.document.documentElement.clientHeight ||
+      currWindow.document.body.clientHeight,
   }
   return viewportSize
 }
@@ -59,7 +63,10 @@ export function setViewportSize(vs: any): void {
 }
 
 export function transformSelector(selector: Selector): Selector {
-  if (selector.hasOwnProperty('selector') && (!selector.hasOwnProperty('type') || (selector as EyesSelector).type === 'css')) {
+  if (
+    selector.hasOwnProperty('selector') &&
+    (!selector.hasOwnProperty('type') || (selector as EyesSelector).type === 'css')
+  ) {
     return (selector as EyesSelector).selector
   }
   return selector

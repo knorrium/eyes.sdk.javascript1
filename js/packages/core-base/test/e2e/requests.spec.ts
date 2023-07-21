@@ -1,7 +1,7 @@
 import assert from 'assert'
+import {makeCoreRequests, type CoreRequests} from '../../src/server/requests'
 import {readFileSync} from 'fs'
 import {getTestInfo} from '@applitools/test-utils'
-import {makeCoreRequests, type CoreRequests} from '../../src/server/requests'
 
 describe('requests', () => {
   let core: CoreRequests
@@ -13,7 +13,7 @@ describe('requests', () => {
   it('works with basic flow', async () => {
     const eyes = await core.openEyes({
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY as string,
         appName: 'Test App',
         testName: 'Test',
@@ -47,11 +47,12 @@ describe('requests', () => {
     assert.ok(result.url)
     assert.strictEqual(result.isNew, false)
     assert.strictEqual(result.keepIfDuplicate, false)
-    assert.deepStrictEqual(result.server, {
-      agentId: 'core-base/test',
-      serverUrl: 'https://eyesapi.applitools.com',
+    assert.deepStrictEqual(result.eyesServer, {
+      eyesServerUrl: 'https://eyesapi.applitools.com',
       apiKey: process.env.APPLITOOLS_API_KEY,
+      agentId: 'core-base/test',
       proxy: undefined,
+      useDnsCache: undefined,
     })
 
     const info = await getTestInfo(result)

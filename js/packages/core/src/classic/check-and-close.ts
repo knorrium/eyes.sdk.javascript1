@@ -1,4 +1,4 @@
-import type {Target, DriverTarget, Eyes, CheckSettings, CloseSettings, TestResult} from './types'
+import type {Target, DriverTarget, Eyes, CheckSettings, CloseSettings} from './types'
 import type {
   Target as BaseTarget,
   CheckSettings as BaseCheckSettings,
@@ -33,7 +33,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     target?: Target<TSpec>
     settings?: CheckSettings<TSpec> & CloseSettings
     logger?: Logger
-  } = {}): Promise<TestResult[]> {
+  } = {}): Promise<void> {
     logger = logger.extend(mainLogger)
 
     logger.log('Command "checkAndClose" is called with settings', settings)
@@ -41,9 +41,8 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     const baseEyes = await eyes.getBaseEyes({logger})
     if (!isDriver(target, spec)) {
       const baseSettings = settings as BaseCheckSettings & BaseCloseSettings
-      return (
-        await Promise.all(baseEyes.map(baseEyes => baseEyes.checkAndClose({target, settings: baseSettings, logger})))
-      ).flat()
+      await Promise.all(baseEyes.map(baseEyes => baseEyes.checkAndClose({target, settings: baseSettings, logger})))
+      return
     }
     const driver = await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
     const environment = await driver.getEnvironment()
@@ -79,7 +78,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       if (environment.isWeb && settings.sendDom) {
         if (settings.fully) await screenshot.scrollingElement?.setAttribute('data-applitools-scroll', 'true')
         else await screenshot.element?.setAttribute('data-applitools-scroll', 'true')
-        baseTarget.dom = await takeDomCapture({driver, settings: {proxy: eyes.test.server.proxy}, logger}).catch(
+        baseTarget.dom = await takeDomCapture({driver, settings: {proxy: eyes.test.eyesServer.proxy}, logger}).catch(
           () => undefined,
         )
       }
@@ -94,7 +93,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       }
       await screenshot.restoreState()
     } else {
-      const nmlClient = await eyes.core.getNMLClient({config: eyes.test.server, driver, logger})
+      const nmlClient = await eyes.core.getNMLClient({config: eyes.test.eyesServer, driver, logger})
       const screenshot = await nmlClient.takeScreenshot({
         settings: {name: settings.name, waitBeforeCapture: settings.waitBeforeCapture, fully: settings.fully},
         logger,
@@ -102,10 +101,8 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       baseTarget = {image: screenshot.image, isTransformed: true}
       baseSettings = getBaseCheckSettings({calculatedRegions: []})
     }
-    return (
-      await Promise.all(
-        baseEyes.map(baseEyes => baseEyes.checkAndClose({target: baseTarget, settings: baseSettings, logger})),
-      )
-    ).flat()
+    await Promise.all(
+      baseEyes.map(baseEyes => baseEyes.checkAndClose({target: baseTarget, settings: baseSettings, logger})),
+    )
   }
 }

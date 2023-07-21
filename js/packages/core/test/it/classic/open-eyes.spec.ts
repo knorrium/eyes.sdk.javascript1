@@ -21,7 +21,7 @@ describe('check', () => {
 
     await core.openEyes({
       target: driver,
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
   })
 })

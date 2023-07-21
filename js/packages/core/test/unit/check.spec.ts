@@ -13,7 +13,7 @@ describe('check', () => {
         },
       },
     })
-    const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
+    const fakeEyes = await fakeCore.openEyes({settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''}})
 
     const check = makeCheck({
       eyes: fakeEyes as Eyes<any, 'classic'>,
@@ -36,7 +36,7 @@ describe('check', () => {
       },
       account: {rcaEnabled: true},
     })
-    const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
+    const fakeEyes = await fakeCore.openEyes({settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''}})
 
     const check = makeCheck({
       eyes: fakeEyes as Eyes<any, 'classic'>,
@@ -61,7 +61,7 @@ describe('check', () => {
         },
       },
     })
-    const fakeEyes = await fakeCore.openEyes({settings: {serverUrl: '', apiKey: '', appName: '', testName: ''}})
+    const fakeEyes = await fakeCore.openEyes({settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''}})
     const check = makeCheck({
       eyes: fakeEyes as Eyes<any, 'classic'>,
       logger: makeLogger(),

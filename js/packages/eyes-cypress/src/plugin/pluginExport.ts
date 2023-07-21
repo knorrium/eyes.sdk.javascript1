@@ -47,7 +47,10 @@ export default function makePluginExport({
     } else {
       // this is required because we are currently support cypress < 10
       // in the version before 10 the `e2e.setupNodeEvents` and `component.setupNodeEvents` were not supported
-      const pluginAsCypress10PluginOptions = pluginInitArgs as {e2e: {setupNodeEvents: any}; component: {setupNodeEvents: any}}
+      const pluginAsCypress10PluginOptions = pluginInitArgs as {
+        e2e: {setupNodeEvents: any}
+        component: {setupNodeEvents: any}
+      }
       if (pluginAsCypress10PluginOptions.component) {
         pluginExportsComponent = pluginAsCypress10PluginOptions.component.setupNodeEvents
         pluginAsCypress10PluginOptions.component.setupNodeEvents = setupNodeEvents

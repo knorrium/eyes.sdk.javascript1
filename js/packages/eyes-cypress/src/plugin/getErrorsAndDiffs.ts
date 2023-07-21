@@ -10,7 +10,9 @@ export default function getErrorsAndDiffs(testResultsArr: any) {
         } else {
           if (testStatus === 'Unresolved') {
             if (testResults.isNew) {
-              testResults.error = new Error(`${testResults.name}. Please approve the new baseline at ${testResults.url}`)
+              testResults.error = new Error(
+                `${testResults.name}. Please approve the new baseline at ${testResults.url}`,
+              )
               failed.push(testResults)
             } else {
               diffs.push(testResults)

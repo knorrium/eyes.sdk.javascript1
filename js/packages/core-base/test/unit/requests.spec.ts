@@ -62,7 +62,7 @@ describe('requests', () => {
 
     const {test} = await requests.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',
@@ -146,7 +146,7 @@ describe('requests', () => {
 
     const {test} = await requests.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         appName: 'app-name',
         testName: 'test-name',
@@ -176,40 +176,8 @@ describe('requests', () => {
           bla: 'lala',
           yada: 'yada yada',
         },
+        properties: [],
       },
-    })
-  })
-
-  it('openEyes with rendererInfo', async () => {
-    const requests = makeCoreRequests({agentId: 'test-core'})
-
-    const {test} = await requests.openEyes({
-      settings: {
-        serverUrl: 'https://localhost:3000',
-        apiKey: 'my0api0key',
-        appName: 'app-name',
-        testName: 'test-name',
-        environment: {
-          os: 'Linux',
-          osInfo: 'Arch Linux',
-          hostingApp: 'Chromium',
-          hostingAppInfo: 'Chromium 105.0',
-          deviceName: 'Desktop',
-          viewportSize: {width: 100.25, height: 200.75},
-          userAgent: 'UserAgent string',
-          rendererId: 'renderer-id',
-          rendererUniqueId: 'renderer-unique-id',
-          rendererInfo: {
-            type: 'web',
-            renderer: {name: 'chrome', width: 100, height: 101},
-          },
-        },
-      },
-    })
-
-    assert.deepStrictEqual(test.rendererInfo, {
-      type: 'web',
-      renderer: {name: 'chrome', width: 100, height: 101},
     })
   })
 
@@ -218,7 +186,7 @@ describe('requests', () => {
 
     const eyes = await requests.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',
@@ -372,7 +340,7 @@ describe('requests', () => {
         locationInViewport: {x: 10.25, y: 20.75},
       },
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         hint: 'HiNt',
@@ -398,7 +366,7 @@ describe('requests', () => {
 
     const eyes = await requests.openEyes({
       settings: {
-        serverUrl: 'https://localhost:3000',
+        eyesServerUrl: 'https://localhost:3000',
         apiKey: 'my0api0key',
         agentId: 'custom-agent',
         appName: 'My wonderful app',

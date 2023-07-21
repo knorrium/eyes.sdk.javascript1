@@ -25,7 +25,7 @@ describe('data urls', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'data url image iframe',
@@ -48,7 +48,7 @@ describe('data urls', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core e2e',
         testName: 'data url html iframe',

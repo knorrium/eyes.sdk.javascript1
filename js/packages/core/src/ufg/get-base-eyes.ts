@@ -1,4 +1,4 @@
-import type {Eyes, GetBaseEyesSettings, OpenSettings} from './types'
+import type {Eyes, GetBaseEyesSettings, OpenSettings, Environment} from './types'
 import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
@@ -17,11 +17,9 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
   base,
   logger: mainLogger,
 }: Options<TSpec>) {
-  const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, ([options]) => options?.settings)
+  const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, ([options]) => options?.settings?.renderer)
   if (base) {
-    base.forEach(baseEyes =>
-      getBaseEyesWithCache.setCachedValue(baseEyes.test.rendererInfo, Promise.resolve([baseEyes])),
-    )
+    base.forEach(baseEyes => getBaseEyesWithCache.setCachedValue(baseEyes.test.renderer, Promise.resolve([baseEyes])))
   }
   return getBaseEyesWithCache
 
@@ -37,16 +35,17 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
     if (!settings) throw new Error('')
     const ufgClient = await eyes.core.getUFGClient({
-      config: {...eyes.test.ufgServer},
+      settings: {
+        ...eyes.test.ufgServer,
+        eyesServerUrl: eyes.test.eyesServer.eyesServerUrl,
+        apiKey: eyes.test.eyesServer.apiKey,
+      },
       logger,
     })
-    const environment = await ufgClient.bookRenderer({settings, logger})
-    let properties
-    if (defaultSettings.properties || settings.properties) {
-      properties = (defaultSettings.properties ?? []).concat(settings.properties ?? [])
-    }
+    const environment: Environment = await ufgClient.getRenderEnvironment({settings, logger})
+    environment.properties = settings.properties
     const baseEyes = await eyes.core.base.openEyes({
-      settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}, properties},
+      settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},
       logger,
     })
     return [baseEyes]

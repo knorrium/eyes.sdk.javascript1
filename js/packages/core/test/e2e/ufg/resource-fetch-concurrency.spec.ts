@@ -43,7 +43,7 @@ describe('resource fetching with fetchConcurrency', () => {
     const eyes = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'VgFetchConcurrency',
         testName: 'FetchConcurrency',
@@ -75,7 +75,7 @@ describe('resource fetching with fetchConcurrency', () => {
     const eyes1 = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'VgFetchConcurrency Eyes 1',
         testName: 'FetchConcurrency',
@@ -84,7 +84,7 @@ describe('resource fetching with fetchConcurrency', () => {
     const eyes2 = await core.openEyes({
       target: page,
       settings: {
-        serverUrl: 'https://eyesapi.applitools.com',
+        eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'VgFetchConcurrency Eyes 2',
         testName: 'FetchConcurrency',

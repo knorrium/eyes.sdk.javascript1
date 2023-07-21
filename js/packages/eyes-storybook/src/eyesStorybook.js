@@ -47,14 +47,7 @@ async function eyesStorybook({
     : Number(process.env.APPLITOOLS_CONCURRENT_TABS);
   logger.log(`Running with ${CONCURRENT_TABS} concurrent tabs`);
 
-  const {
-    storybookUrl,
-    readStoriesTimeout,
-    reloadPagePerStory,
-    proxy,
-    testConcurrency,
-    useDnsCache,
-  } = config;
+  const {storybookUrl, readStoriesTimeout, reloadPagePerStory} = config;
 
   let iframeUrl;
   try {
@@ -75,40 +68,33 @@ async function eyesStorybook({
   const core = await makeCore({spec, agentId, logger});
   const manager = await core.makeManager({
     type: 'ufg',
-    settings: {
-      concurrency: testConcurrency,
-    },
-    logger,
+    settings: {concurrency: config.testConcurrency},
   });
 
-  const settings = {
-    proxy: config.proxy,
-    serverUrl: config.serverUrl,
-    apiKey: config.apiKey,
-    agentId,
-    useDnsCache,
-  };
-  const [error, account] = await presult(core.getAccountInfo({settings, logger}));
+  const account = await core
+    .getAccountInfo({
+      settings: {
+        eyesServerUrl: config.eyesServerUrl,
+        apiKey: config.apiKey,
+        agentId,
+        proxy: config.proxy,
+        useDnsCache: config.useDnsCache,
+      },
+    })
+    .catch(async error => {
+      if (error && error.message && error.message.includes('Unauthorized(401)')) {
+        const failMsg = 'Incorrect API Key';
+        logger.log(failMsg);
+        await browser.close();
+        clearTimeout(memoryTimeout);
+        throw new Error(failMsg);
+      } else {
+        throw error;
+      }
+    });
 
   const getStoriesWithConfig = makeGetStoriesWithConfig({config});
-
-  if (error && error.message && error.message.includes('Unauthorized(401)')) {
-    const failMsg = 'Incorrect API Key';
-    logger.log(failMsg);
-    await browser.close();
-    clearTimeout(memoryTimeout);
-    throw new Error(failMsg);
-  }
-  const client = await makeUFGClient({
-    config: {
-      ...account.ufgServer,
-      ...account,
-      proxy,
-      concurrency: testConcurrency,
-      useDnsCache,
-    },
-    logger,
-  });
+  const client = await makeUFGClient({settings: {...account.ufgServer, ...account}, logger});
 
   const initPage = makeInitPage({
     iframeUrl,
@@ -191,11 +177,6 @@ async function eyesStorybook({
       logger,
       takeDomSnapshots: doTakeDomSnapshots,
     });
-    const closeSettings = {
-      ...settings,
-      updateBaselineIfNew: config.saveNewTests,
-      updateBaselineIfDifferent: config.saveFailedTests,
-    };
     const renderStory = makeRenderStory({
       logger: logger.extend({label: 'renderStory'}),
       openEyes: manager.openEyes,
@@ -203,10 +184,13 @@ async function eyesStorybook({
       timeItAsync,
       reloadPagePerStory,
       storyDataGap: config.storyDataGap,
-      concurrency: testConcurrency,
+      concurrency: config.testConcurrency,
       appName: config.appName,
-      closeSettings,
-      serverSettings: settings,
+      closeSettings: {
+        updateBaselineIfNew: config.saveNewTests,
+        updateBaselineIfDifferent: config.saveFailedTests,
+      },
+      serverSettings: account.eyesServer,
     });
 
     const renderStories = makeRenderStories({

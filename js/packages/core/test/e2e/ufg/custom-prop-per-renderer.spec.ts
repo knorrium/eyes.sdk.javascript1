@@ -1,11 +1,8 @@
 import {makeCore} from '../../../src/ufg/core'
 import {makeTestServer} from '@applitools/test-server'
-import {adjustUrlToDocker} from '../../utils/adjust-url-to-docker'
 import {getTestInfo} from '@applitools/test-utils'
-import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
-import {Renderer} from '@applitools/ufg-client'
-import type * as BaseCore from '@applitools/core-base/types'
+import * as spec from '@applitools/spec-driver-puppeteer'
 
 const batch = {id: `${Date.now()}`}
 
@@ -25,14 +22,13 @@ describe('custom properties per renderer', () => {
   })
 
   it('sets custom properties per renderer', async () => {
-    const pageUrl = adjustUrlToDocker(`${baseUrl}/page/index.html`)
-    await driver.url(pageUrl)
+    await driver.goto(`${baseUrl}/page/index.html`)
     const core = makeCore({spec, concurrency: 10})
 
     const customProp = {name: 'prop-1', value: 'testing 123'}
 
     const openSettings = {
-      serverUrl: 'https://eyesapi.applitools.com',
+      eyesServerUrl: 'https://eyesapi.applitools.com',
       apiKey: process.env.APPLITOOLS_API_KEY!,
       appName: 'core app',
       testName: 'sets custom properties per browser',
@@ -40,11 +36,11 @@ describe('custom properties per renderer', () => {
       batch,
     }
 
-    const renderers: (Renderer & {properties?: BaseCore.CustomProperty[]})[] = [
+    const renderers = [
       {
         width: 640,
         height: 480,
-        name: 'chrome',
+        name: 'chrome' as const,
         properties: [
           {name: 'renderer', value: 'chrome'},
           {name: 'prop-1', value: 'duplicate so what 1'},
@@ -53,14 +49,14 @@ describe('custom properties per renderer', () => {
       {
         width: 800,
         height: 600,
-        name: 'firefox',
+        name: 'firefox' as const,
         properties: [
           {name: 'renderer', value: 'firefox'},
           {name: 'prop-1', value: 'duplicate so what 2'},
         ],
       },
       {
-        chromeEmulationInfo: {deviceName: 'iPhone X'},
+        chromeEmulationInfo: {deviceName: 'iPhone X' as const},
         properties: [
           {name: 'renderer', value: 'iPhone X'},
           {name: 'prop-1', value: 'duplicate so what 3'},
@@ -68,34 +64,24 @@ describe('custom properties per renderer', () => {
       },
     ]
     const bothResults = []
-    const checkPromise = core
-      .openEyes({
-        target: driver,
-        settings: openSettings,
-      })
-      .then(async eyes => {
-        await eyes.check({settings: {renderers}})
-        await eyes.close({settings: {updateBaselineIfNew: false}})
-        return eyes.getResults()
-      })
+    const checkPromise = core.openEyes({target: driver, settings: openSettings}).then(async eyes => {
+      await eyes.check({settings: {renderers}})
+      await eyes.close({settings: {updateBaselineIfNew: false}})
+      return eyes.getResults()
+    })
 
     bothResults.push(await checkPromise)
 
-    const checkAndClosePromise = core
-      .openEyes({
-        target: driver,
-        settings: openSettings,
-      })
-      .then(async eyes => {
-        await eyes.checkAndClose({settings: {renderers, updateBaselineIfNew: false}})
-        return eyes.getResults()
-      })
+    const checkAndClosePromise = core.openEyes({target: driver, settings: openSettings}).then(async eyes => {
+      await eyes.checkAndClose({settings: {renderers, updateBaselineIfNew: false}})
+      return eyes.getResults()
+    })
 
     bothResults.push(await checkAndClosePromise)
 
     for (const results of bothResults) {
       for (const [index, result] of results.entries()) {
-        const testData = await getTestInfo(result, process.env.APPLITOOLS_API_KEY)
+        const testData = await getTestInfo(result)
         assert.deepStrictEqual(testData.startInfo.properties, [customProp, ...renderers[index].properties!])
       }
     }

@@ -32,7 +32,7 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
     settings?: GetManagerResultsSettings<TType>
     logger?: Logger
   } = {}): Promise<TestResultSummary<TType>> {
-    logger = logger.extend(mainLogger, {tags: [`get-eyes-manager-${utils.general.shortid()}`]})
+    logger = logger.extend(mainLogger, {tags: [`get-manager-results-${utils.general.shortid()}`]})
 
     let containers = await storage.reduce(async (promise, eyes) => {
       try {
@@ -63,7 +63,7 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
             if (container.result) {
               await core.deleteTest({
                 settings: {
-                  ...container.result.server,
+                  ...container.result.eyesServer,
                   testId: container.result.id,
                   batchId: container.result.batchId,
                   secretToken: container.result.secretToken,
@@ -78,8 +78,8 @@ export function makeGetManagerResults<TSpec extends SpecType, TType extends 'cla
 
     const batches = storage.reduce((batches, eyes) => {
       if (!eyes.test.keepBatchOpen) {
-        const settings = {...eyes.test.server, batchId: eyes.test.batchId}
-        batches[`${settings.serverUrl}:${settings.apiKey}:${settings.batchId}`] = settings
+        const settings = {...eyes.test.eyesServer, batchId: eyes.test.batchId}
+        batches[`${settings.eyesServerUrl}:${settings.apiKey}:${settings.batchId}`] = settings
       }
       return batches
     }, {} as Record<string, CloseBatchSettings>)

@@ -9,7 +9,7 @@ describe('get results', () => {
     const fakeCore = makeFakeCore()
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
       target: {cdt: []},
@@ -44,7 +44,7 @@ describe('get results', () => {
     })
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
       target: {cdt: []},
@@ -74,7 +74,7 @@ describe('get results', () => {
     const fakeCore = makeFakeCore()
     const core = makeCore({concurrency: 5, base: fakeCore, clients: {ufg: fakeClient}})
     const eyes = await core.openEyes({
-      settings: {serverUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
+      settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
       target: {cdt: []},

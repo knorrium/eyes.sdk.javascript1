@@ -15,7 +15,7 @@ describe('check', () => {
 
   it("throws error when check region by selector that doesn't exist", async () => {
     const fakeCore = makeFakeCore()
-    const core = makeCore({spec, core: fakeCore})
+    const core = makeCore({spec, base: fakeCore})
     const eyes = await core.openEyes({
       target: driver,
       settings: {appName: 'app-name', testName: 'test-name'},
@@ -27,7 +27,7 @@ describe('check', () => {
 
   it("doesn't throw when check with ignore region by selector that doesn't exist", async () => {
     const fakeCore = makeFakeCore()
-    const core = makeCore({spec, core: fakeCore})
+    const core = makeCore({spec, base: fakeCore})
     const eyes = await core.openEyes({
       target: driver,
       settings: {appName: 'app-name', testName: 'test-name'},

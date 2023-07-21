@@ -5,7 +5,7 @@ import * as utils from '@applitools/utils'
 import assert from 'assert'
 
 describe('render', () => {
-  function createRenderRequest(snapshotHash: string, rendererUniqueId?: string) {
+  function createRenderRequest(snapshotHash: string, renderEnvironmentId?: string) {
     return {
       target: {
         snapshot: {hashFormat: 'sha256' as const, hash: snapshotHash, contentType: 'x-applitools-html/cdt'},
@@ -14,7 +14,7 @@ describe('render', () => {
       settings: {
         type: 'web' as const,
         renderer: {name: 'chrome' as const, width: 1000, height: 700},
-        rendererUniqueId: rendererUniqueId ?? Math.random(),
+        renderEnvironmentId: renderEnvironmentId ?? Math.random(),
       },
     } as any
   }

@@ -56,21 +56,19 @@
     "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &"
   },
   "dependencies": {
-    "@applitools/image": "1.1.0",
-    "@applitools/logger": "2.0.5",
-    "@applitools/snippets": "2.4.21",
-    "@applitools/utils": "1.5.0",
-    "jpeg-js": "0.4.4",
-    "png-async": "0.9.4"
+    "@applitools/image": "workspace:",
+    "@applitools/logger": "workspace:",
+    "@applitools/snippets": "workspace:",
+    "@applitools/utils": "workspace:"
   },
   "devDependencies": {
-    "@applitools/driver": "^1.13.1",
-    "@applitools/spec-driver-webdriverio": "^1.5.7",
+    "@applitools/driver": "workspace:^",
+    "@applitools/spec-driver-webdriverio": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "appium": "^1.22.3",
-    "chromedriver": "^114.0.1",
+    "chromedriver": "^114.0.3",
     "pixelmatch": "^5.3.0",
-    "webdriverio": "^7.25.0"
+    "webdriverio": "^7.30.0"
   },
   "engines": {
     "node": ">=12.13.0"
