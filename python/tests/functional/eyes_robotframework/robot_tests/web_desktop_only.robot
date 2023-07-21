@@ -1,7 +1,7 @@
 *** Settings ***
 Resource    resources/setup.robot
 Library     SeleniumLibrary
-Library     EyesLibrary     runner=${RUNNER}
+Library     EyesLibrary     runner=${RUNNER}    config=applitools.yaml
 
 Test Setup       Setup
 Test Teardown    Teardown
