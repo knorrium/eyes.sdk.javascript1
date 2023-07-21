@@ -9,7 +9,7 @@ describe('screenshoter android app', () => {
   })
 
   beforeEach(async () => {
-    driver.refresh()
+    driver.refresh({reset: true})
   })
 
   after(async () => {
