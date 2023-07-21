@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.23.14](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.13...js/eyes-images@4.23.14) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+
+
 ## [4.23.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.12...js/eyes-images@4.23.13) (2023-07-18)
 
 

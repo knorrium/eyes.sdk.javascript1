@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.53](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.52...js/spec-driver-selenium@1.5.53) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+
+
 ## [1.5.52](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.51...js/spec-driver-selenium@1.5.52) (2023-07-13)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.15](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.17.14...js/eyes-puppeteer@1.17.15) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+
+
 ## [1.17.14](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.17.13...js/eyes-puppeteer@1.17.14) (2023-07-18)
 
 

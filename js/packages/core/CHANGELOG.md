@@ -2,6 +2,50 @@
 
 ## Unreleased
 
+## [3.6.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.2...js/core@3.6.3) (2023-07-21)
+
+
+### Bug Fixes
+
+* improve performance by not resetting the environment ([#1779](https://github.com/applitools/eyes.sdk.javascript1/issues/1779)) ([8178978](https://github.com/applitools/eyes.sdk.javascript1/commit/8178978e9443e60f3e8b10693395e4c80cb9e02f))
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+* @applitools/spec-driver-puppeteer bumped to 1.1.70
+  #### Code Refactoring
+
+  * ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+
+* @applitools/spec-driver-selenium bumped to 1.5.53
+  #### Code Refactoring
+
+  * ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+
+* @applitools/spec-driver-webdriverio bumped to 1.5.8
+  #### Code Refactoring
+
+  * ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+
+* @applitools/tunnel-client bumped to 1.1.2
+  #### Code Refactoring
+
+  * ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+
+
 ## [3.6.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.1...js/core@3.6.2) (2023-07-18)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.44.14",
+  "version": "5.44.15",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -96,8 +96,8 @@
     "up:framework": "run --top-level add-silent webdriverio"
   },
   "dependencies": {
-    "@applitools/eyes": "workspace:",
-    "@applitools/spec-driver-webdriverio": "workspace:"
+    "@applitools/eyes": "workspace:1.6.3",
+    "@applitools/spec-driver-webdriverio": "workspace:1.5.8"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

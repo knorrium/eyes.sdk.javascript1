@@ -1,6 +1,6 @@
 {
   "name": "@applitools/driver",
-  "version": "1.13.1",
+  "version": "1.13.2",
   "description": "Applitools universal framework wrapper",
   "keywords": [
     "applitools",
@@ -73,7 +73,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/logger": "workspace:",
+    "@applitools/logger": "workspace:2.0.6",
     "@applitools/snippets": "workspace:",
     "@applitools/utils": "workspace:",
     "semver": "7.5.4"

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-nightwatch",
-  "version": "1.15.12",
+  "version": "1.15.13",
   "description": "Applitools Eyes SDK for Nightwatch.js",
   "keywords": [
     "eyes-nightwatch",
@@ -51,9 +51,9 @@
     "up:framework": "run --top-level add-silent nightwatch"
   },
   "dependencies": {
-    "@applitools/driver": "workspace:",
-    "@applitools/eyes": "workspace:",
-    "@applitools/spec-driver-webdriver": "workspace:",
+    "@applitools/driver": "workspace:1.13.2",
+    "@applitools/eyes": "workspace:1.6.3",
+    "@applitools/spec-driver-webdriver": "workspace:1.0.39",
     "@applitools/utils": "workspace:",
     "webdriver": "7.30.0"
   },

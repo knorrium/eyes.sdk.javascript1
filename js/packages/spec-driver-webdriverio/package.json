@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-webdriverio",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "keywords": [
     "webdriverio",
     "wdio",
@@ -90,7 +90,7 @@
     "up:framework": "run --top-level add-silent webdriverio"
   },
   "dependencies": {
-    "@applitools/driver": "workspace:",
+    "@applitools/driver": "workspace:1.13.2",
     "@applitools/utils": "workspace:"
   },
   "devDependencies": {

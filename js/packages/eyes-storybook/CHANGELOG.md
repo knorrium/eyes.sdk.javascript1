@@ -4,6 +4,18 @@
 
 
 
+## [3.37.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.2...js/eyes-storybook@3.37.3) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+
+
 ## [3.37.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.1...js/eyes-storybook@3.37.2) (2023-07-18)
 
 

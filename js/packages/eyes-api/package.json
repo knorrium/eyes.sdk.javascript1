@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "keywords": [
     "applitools",
     "eyes",
@@ -45,8 +45,8 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/core": "workspace:",
-    "@applitools/logger": "workspace:",
+    "@applitools/core": "workspace:3.6.3",
+    "@applitools/logger": "workspace:2.0.6",
     "@applitools/utils": "workspace:"
   },
   "devDependencies": {

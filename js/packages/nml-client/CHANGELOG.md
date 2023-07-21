@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.3...js/nml-client@1.5.4) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+* @applitools/spec-driver-webdriverio bumped to 1.5.8
+  #### Code Refactoring
+
+  * ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+
+
 ## [1.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.2...js/nml-client@1.5.3) (2023-07-18)
 
 

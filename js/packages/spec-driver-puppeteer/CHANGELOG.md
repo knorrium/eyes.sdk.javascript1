@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.70](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.69...js/spec-driver-puppeteer@1.1.70) (2023-07-21)
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+
+
 ## [1.1.69](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.68...js/spec-driver-puppeteer@1.1.69) (2023-07-13)
 
 

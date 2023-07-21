@@ -1,6 +1,6 @@
 {
   "name": "@applitools/ec-client",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -52,13 +52,13 @@
     "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/core-base": "workspace:",
-    "@applitools/driver": "workspace:",
-    "@applitools/logger": "workspace:",
-    "@applitools/req": "workspace:",
-    "@applitools/socket": "workspace:",
-    "@applitools/spec-driver-webdriver": "workspace:",
-    "@applitools/tunnel-client": "workspace:",
+    "@applitools/core-base": "workspace:1.4.2",
+    "@applitools/driver": "workspace:1.13.2",
+    "@applitools/logger": "workspace:2.0.6",
+    "@applitools/req": "workspace:1.5.1",
+    "@applitools/socket": "workspace:1.1.6",
+    "@applitools/spec-driver-webdriver": "workspace:1.0.39",
+    "@applitools/tunnel-client": "workspace:1.1.2",
     "@applitools/utils": "workspace:",
     "abort-controller": "3.0.0",
     "webdriver": "7.30.0",

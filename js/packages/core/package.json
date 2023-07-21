@@ -1,6 +1,6 @@
 {
   "name": "@applitools/core",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "homepage": "https://applitools.com",
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
@@ -68,19 +68,19 @@
     ]
   },
   "dependencies": {
-    "@applitools/core-base": "workspace:",
+    "@applitools/core-base": "workspace:1.4.2",
     "@applitools/dom-capture": "11.2.2",
     "@applitools/dom-snapshot": "4.7.9",
-    "@applitools/driver": "workspace:",
-    "@applitools/ec-client": "workspace:",
-    "@applitools/logger": "workspace:",
-    "@applitools/nml-client": "workspace:",
-    "@applitools/req": "workspace:",
-    "@applitools/screenshoter": "workspace:",
+    "@applitools/driver": "workspace:1.13.2",
+    "@applitools/ec-client": "workspace:1.7.2",
+    "@applitools/logger": "workspace:2.0.6",
+    "@applitools/nml-client": "workspace:1.5.4",
+    "@applitools/req": "workspace:1.5.1",
+    "@applitools/screenshoter": "workspace:3.8.5",
     "@applitools/snippets": "workspace:",
-    "@applitools/socket": "workspace:",
-    "@applitools/spec-driver-webdriver": "workspace:",
-    "@applitools/ufg-client": "workspace:",
+    "@applitools/socket": "workspace:1.1.6",
+    "@applitools/spec-driver-webdriver": "workspace:1.0.39",
+    "@applitools/ufg-client": "workspace:1.5.1",
     "@applitools/utils": "workspace:",
     "@types/ws": "8.5.5",
     "abort-controller": "3.0.0",

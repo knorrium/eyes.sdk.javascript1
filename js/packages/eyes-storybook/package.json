@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-storybook",
-  "version": "3.37.2",
+  "version": "3.37.3",
   "description": "",
   "keywords": [
     "applitools",
@@ -57,13 +57,13 @@
     "postinstall": "node src/postinstall"
   },
   "dependencies": {
-    "@applitools/core": "workspace:",
-    "@applitools/driver": "workspace:",
+    "@applitools/core": "workspace:3.6.3",
+    "@applitools/driver": "workspace:1.13.2",
     "@applitools/functional-commons": "1.6.0",
-    "@applitools/logger": "workspace:",
+    "@applitools/logger": "workspace:2.0.6",
     "@applitools/monitoring-commons": "1.0.19",
-    "@applitools/spec-driver-puppeteer": "workspace:",
-    "@applitools/ufg-client": "workspace:",
+    "@applitools/spec-driver-puppeteer": "workspace:1.1.70",
+    "@applitools/ufg-client": "workspace:1.5.1",
     "@applitools/utils": "workspace:",
     "boxen": "4.2.0",
     "chalk": "3.0.0",
