@@ -60,20 +60,20 @@ def legacy():
     return False
 
 
-@fixture
-def name_of_test(request):
-    return "Py{}.{}|App{} {}".format(
-        *sys.version_info[:2], appium_version, request.node.name[5:]
-    )
-
-
 @fixture(scope="function")
 def orientation():
     return "portrait"
 
 
 @fixture
-def driver(driver_builder):
+def driver(driver_builder, request):
+    test_name = "Py{}.{}|App{} {}".format(
+        *sys.version_info[:2], appium_version, request.node.name[5:]
+    )
+    # Attempting to provide sauce job name in caps causes sauce instabilities.
+    # Seems that it increases session start command execution above 40 seconds and
+    # that triggers some sauce internal timeout
+    driver_builder.execute_script("sauce:job-name=" + test_name)
     yield driver_builder
     driver_builder.quit()
 

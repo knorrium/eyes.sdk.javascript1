@@ -8,12 +8,11 @@ from . import sauce
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def pixel_3_xl(app, sauce_url, browser_name, orientation, name_of_test):
+def pixel_3_xl(app, sauce_url, browser_name, orientation):
     capabilities = {
         "automationName": "UIAutomator2",
         "deviceName": "Google Pixel 3 XL GoogleAPI Emulator",
         "deviceOrientation": orientation.upper(),
-        "name": name_of_test,
         "platformName": "Android",
         "platformVersion": "10.0",
     }
@@ -22,12 +21,11 @@ def pixel_3_xl(app, sauce_url, browser_name, orientation, name_of_test):
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def pixel_3a_xl(app, sauce_url, browser_name, orientation, name_of_test):
+def pixel_3a_xl(app, sauce_url, browser_name, orientation):
     capabilities = {
         "automationName": "UIAutomator2",
         "deviceName": "Google Pixel 3a XL GoogleAPI Emulator",
         "deviceOrientation": orientation.upper(),
-        "name": name_of_test,
         "platformName": "Android",
         "platformVersion": "10.0",
     }
@@ -36,15 +34,12 @@ def pixel_3a_xl(app, sauce_url, browser_name, orientation, name_of_test):
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def samsung_galaxy_s8(app, sauce_url, browser_name, orientation, name_of_test):
+def samsung_galaxy_s8(app, sauce_url, browser_name, orientation):
     capabilities = {
         "appium:automationName": "UIAutomator2",
         "appium:deviceName": "Samsung Galaxy S8 FHD GoogleAPI Emulator",
         "appium:platformVersion": "7.0",
-        "sauce:options": {
-            "deviceOrientation": orientation.upper(),
-            "name": name_of_test,
-        },
+        "sauce:options": {"deviceOrientation": orientation.upper()},
         "platformName": "Android",
     }
     return appium(capabilities, sauce_url, app=app, browser_name=browser_name)
@@ -52,12 +47,11 @@ def samsung_galaxy_s8(app, sauce_url, browser_name, orientation, name_of_test):
 
 @sauce.mac_vm
 @pytest.fixture(scope="function")
-def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
+def iphone_xs(app, sauce_url, browser_name, orientation):
     capabilities = {
         "deviceName": "iPhone XS Simulator",
         "deviceOrientation": orientation.upper(),
         "idleTimeout": 180,
-        "name": name_of_test,
         "platformName": "iOS",
         "platformVersion": "13.0",
     }
@@ -66,12 +60,11 @@ def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
 
 @sauce.mac_vm
 @pytest.fixture(scope="function")
-def iphone_12(app, sauce_url, browser_name, orientation, name_of_test):
+def iphone_12(app, sauce_url, browser_name, orientation):
     capabilities = {
         "deviceName": "iPhone 12 Pro Simulator",
         "deviceOrientation": orientation.upper(),
         "idleTimeout": 180,
-        "name": name_of_test,
         "platformName": "iOS",
         "platformVersion": "15.2",
     }

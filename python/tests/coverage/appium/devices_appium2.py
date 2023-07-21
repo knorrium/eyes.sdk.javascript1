@@ -11,53 +11,51 @@ from . import sauce
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def pixel_3_xl(app, sauce_url, browser_name, orientation, name_of_test):
+def pixel_3_xl(app, sauce_url, browser_name, orientation):
     options = UiAutomator2Options()
     options.device_name = "Google Pixel 3 XL GoogleAPI Emulator"
     options.orientation = orientation.upper()
     options.set_capability("platformVersion", "10.0")
-    options.set_capability("sauce:options", {"name": name_of_test})
     return appium(options, sauce_url, app=app, browser_name=browser_name)
 
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def pixel_3a_xl(app, sauce_url, browser_name, orientation, name_of_test):
+def pixel_3a_xl(app, sauce_url, browser_name, orientation):
     options = UiAutomator2Options()
     options.device_name = "Google Pixel 3a XL GoogleAPI Emulator"
     options.orientation = orientation.upper()
     options.set_capability("platformVersion", "10.0")
-    options.set_capability("sauce:options", {"name": name_of_test})
     return appium(options, sauce_url, app=app, browser_name=browser_name)
 
 
 @sauce.vm
 @pytest.fixture(scope="function")
-def samsung_galaxy_s8(app, sauce_url, browser_name, orientation, name_of_test):
+def samsung_galaxy_s8(app, sauce_url, browser_name, orientation):
     options = UiAutomator2Options()
     options.device_name = "Samsung Galaxy S8 FHD GoogleAPI Emulator"
     options.set_capability("platformVersion", "7.0")
     options.orientation = orientation.upper()
-    options.set_capability("sauce:options", {"name": name_of_test})
     return appium(options, sauce_url, app=app, browser_name=browser_name)
 
 
 @sauce.mac_vm
 @pytest.fixture(scope="function")
-def iphone_xs(app, sauce_url, browser_name, orientation, name_of_test):
-    # 2023-06-29 sauce raises "The test with session id # has already finished" error
-    # right from the session start
-    pytest.skip("There is no way to instantiate iPhone XS device with Appium2")
+def iphone_xs(app, sauce_url, browser_name, orientation):
+    options = XCUITestOptions()
+    options.device_name = "iPhone XS Simulator"
+    options.orientation = orientation.upper()
+    options.set_capability("platformVersion", "13.0")
+    return appium(options, sauce_url, app=app, browser_name=browser_name)
 
 
 @sauce.mac_vm
 @pytest.fixture(scope="function")
-def iphone_12(app, sauce_url, browser_name, orientation, name_of_test):
+def iphone_12(app, sauce_url, browser_name, orientation):
     options = XCUITestOptions()
     options.device_name = "iPhone 12 Pro Simulator"
     options.orientation = orientation.upper()
     options.set_capability("platformVersion", "15.2")
-    options.set_capability("sauce:options", {"name": name_of_test})
     return appium(options, sauce_url, app=app, browser_name=browser_name)
 
 
