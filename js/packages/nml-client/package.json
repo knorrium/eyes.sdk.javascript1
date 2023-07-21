@@ -36,9 +36,9 @@
     "test": "run --top-level mocha './test/**/*.spec.ts' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
   "dependencies": {
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/req": "workspace:1.5.1",
-    "@applitools/utils": "workspace:"
+    "@applitools/logger": "workspace:*",
+    "@applitools/req": "workspace:*",
+    "@applitools/utils": "workspace:*"
   },
   "devDependencies": {
     "@applitools/spec-driver-webdriverio": "workspace:^",

@@ -54,7 +54,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/utils": "workspace:",
+    "@applitools/utils": "workspace:*",
     "abort-controller": "3.0.0",
     "http-proxy-agent": "5.0.0",
     "https-proxy-agent": "5.0.1",

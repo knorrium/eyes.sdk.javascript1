@@ -40,10 +40,10 @@
     "test:unit": "MOCHA_GROUP=unit run --top-level mocha './test/unit/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/image": "workspace:1.1.1",
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/req": "workspace:1.5.1",
-    "@applitools/utils": "workspace:",
+    "@applitools/image": "workspace:*",
+    "@applitools/logger": "workspace:*",
+    "@applitools/req": "workspace:*",
+    "@applitools/utils": "workspace:*",
     "abort-controller": "3.0.0",
     "css-tree": "2.3.1",
     "jsdom": "19.0.0",

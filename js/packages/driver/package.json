@@ -73,9 +73,9 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/snippets": "workspace:",
-    "@applitools/utils": "workspace:",
+    "@applitools/logger": "workspace:*",
+    "@applitools/snippets": "workspace:*",
+    "@applitools/utils": "workspace:*",
     "semver": "7.5.4"
   },
   "devDependencies": {

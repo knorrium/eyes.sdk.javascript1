@@ -48,8 +48,8 @@
     "setup": "run --top-level browsers:setup"
   },
   "dependencies": {
-    "@applitools/driver": "workspace:1.13.2",
-    "@applitools/utils": "workspace:",
+    "@applitools/driver": "workspace:*",
+    "@applitools/utils": "workspace:*",
     "http-proxy-agent": "5.0.0",
     "https-proxy-agent": "5.0.1"
   },

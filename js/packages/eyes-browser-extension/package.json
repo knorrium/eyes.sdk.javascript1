@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "@applitools/eyes-sdk-core": "13.11.14",
-    "@applitools/spec-driver-browser-extension": "workspace:",
-    "@applitools/utils": "workspace:"
+    "@applitools/spec-driver-browser-extension": "workspace:*",
+    "@applitools/utils": "workspace:*"
   },
   "devDependencies": {
     "@applitools/bongo": "workspace:^",

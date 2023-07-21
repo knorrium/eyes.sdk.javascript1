@@ -49,8 +49,8 @@
     "up:framework": "run --top-level add-silent selenium-webdriver"
   },
   "dependencies": {
-    "@applitools/eyes": "workspace:1.6.3",
-    "@applitools/spec-driver-selenium": "workspace:1.5.53"
+    "@applitools/eyes": "workspace:*",
+    "@applitools/spec-driver-selenium": "workspace:*"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

@@ -42,8 +42,8 @@
     "up:framework": "run --top-level add-silent puppeteer"
   },
   "dependencies": {
-    "@applitools/eyes": "workspace:1.6.3",
-    "@applitools/spec-driver-puppeteer": "workspace:1.1.70"
+    "@applitools/eyes": "workspace:*",
+    "@applitools/spec-driver-puppeteer": "workspace:*"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",

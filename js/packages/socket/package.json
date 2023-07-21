@@ -42,8 +42,8 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "dependencies": {
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/utils": "workspace:"
+    "@applitools/logger": "workspace:*",
+    "@applitools/utils": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^12.20.55"

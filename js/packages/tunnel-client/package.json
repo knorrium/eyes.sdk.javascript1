@@ -62,10 +62,10 @@
   },
   "dependencies": {
     "@applitools/execution-grid-tunnel": "2.1.8",
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/req": "workspace:1.5.1",
-    "@applitools/socket": "workspace:1.1.6",
-    "@applitools/utils": "workspace:",
+    "@applitools/logger": "workspace:*",
+    "@applitools/req": "workspace:*",
+    "@applitools/socket": "workspace:*",
+    "@applitools/utils": "workspace:*",
     "abort-controller": "3.0.0",
     "yargs": "17.7.2"
   },

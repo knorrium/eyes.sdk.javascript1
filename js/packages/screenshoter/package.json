@@ -56,10 +56,10 @@
     "appium:setup": "mkdir -p ./logs && appium --address 127.0.0.1 --port 4723 --base-path /wd/hub --log-level error:info --log ./logs/appium.log --relaxed-security &"
   },
   "dependencies": {
-    "@applitools/image": "workspace:1.1.1",
-    "@applitools/logger": "workspace:2.0.6",
-    "@applitools/snippets": "workspace:",
-    "@applitools/utils": "workspace:"
+    "@applitools/image": "workspace:*",
+    "@applitools/logger": "workspace:*",
+    "@applitools/snippets": "workspace:*",
+    "@applitools/utils": "workspace:*"
   },
   "devDependencies": {
     "@applitools/driver": "workspace:^",

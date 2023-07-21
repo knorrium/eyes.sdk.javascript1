@@ -51,10 +51,10 @@
     "up:framework": "run --top-level add-silent nightwatch"
   },
   "dependencies": {
-    "@applitools/driver": "workspace:1.13.2",
-    "@applitools/eyes": "workspace:1.6.3",
-    "@applitools/spec-driver-webdriver": "workspace:1.0.39",
-    "@applitools/utils": "workspace:",
+    "@applitools/driver": "workspace:*",
+    "@applitools/eyes": "workspace:*",
+    "@applitools/spec-driver-webdriver": "workspace:*",
+    "@applitools/utils": "workspace:*",
     "webdriver": "7.30.0"
   },
   "devDependencies": {

@@ -96,8 +96,8 @@
     "up:framework": "run --top-level add-silent webdriverio"
   },
   "dependencies": {
-    "@applitools/eyes": "workspace:1.6.3",
-    "@applitools/spec-driver-webdriverio": "workspace:1.5.8"
+    "@applitools/eyes": "workspace:*",
+    "@applitools/spec-driver-webdriverio": "workspace:*"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
