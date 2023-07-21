@@ -75,7 +75,7 @@ export default function makeStartServer({
           logger.log('==> ', 'Core.logEvent')
           socketWithUniversal.request('Core.logEvent', {
             settings: {
-              serverUrl: config.serverUrl ? config.serverUrl : PUBLIC_CLOUD,
+              eyesServerUrl: config.serverUrl ? config.serverUrl : PUBLIC_CLOUD,
               apiKey: config.apiKey,
               agentId: `eyes.cypress/${require('../../package.json').version}`,
               proxy: config.proxy,
