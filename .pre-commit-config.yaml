@@ -36,7 +36,7 @@ repos:
           - id: trailing-whitespace
             args: [--markdown-linebreak-ext=md]
             files: python/.*
-            exclude: setup.cfg|python/tests/.*
+            exclude: setup.cfg|.bumpversion.cfg|python/tests/.*
           - id: end-of-file-fixer
             files: python/.*
             exclude: tests/.*

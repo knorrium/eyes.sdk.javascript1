@@ -127,8 +127,7 @@ def test_usdk_commands_open_abort_eyes(local_chrome_driver):
             {
                 "result": test_result,
                 "error": {
-                    "message": "Test 'USDK Commands open abort' of 'USDK Test' is failed! "
-                    "See details at undefined",
+                    "message": ANY,
                     "reason": "test failed",
                     "stack": ANY,
                     "info": ANY,
@@ -137,6 +136,8 @@ def test_usdk_commands_open_abort_eyes(local_chrome_driver):
             }
         ],
     }
+    error = manager_close_result["results"][0]["error"]["message"]
+    assert error.startswith("Test 'USDK Commands open abort' of 'USDK Test' is failed!")
 
 
 def test_usdk_commands_open_check_close_eyes(local_chrome_driver):
