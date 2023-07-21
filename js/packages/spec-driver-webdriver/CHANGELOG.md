@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.40](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriver@1.0.39...js/spec-driver-webdriver@1.0.40) (2023-07-21)
+
+
+### Bug Fixes
+
+* fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.13.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+
+
+* @applitools/logger bumped to 2.0.7
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
 ## [1.0.39](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriver@1.0.38...js/spec-driver-webdriver@1.0.39) (2023-07-21)
 
 

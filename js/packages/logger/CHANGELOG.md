@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/logger@2.0.6...js/logger@2.0.7) (2023-07-21)
+
+
+### Bug Fixes
+
+* fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
 ## [2.0.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/logger@2.0.5...js/logger@2.0.6) (2023-07-21)
 
 

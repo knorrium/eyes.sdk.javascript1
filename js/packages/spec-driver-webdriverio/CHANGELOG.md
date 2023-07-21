@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.5.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriverio@1.5.8...js/spec-driver-webdriverio@1.5.9) (2023-07-21)
+
+
+### Bug Fixes
+
+* fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.13.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+
+
+* @applitools/logger bumped to 2.0.7
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
 ## [1.5.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriverio@1.5.7...js/spec-driver-webdriverio@1.5.8) (2023-07-21)
 
 

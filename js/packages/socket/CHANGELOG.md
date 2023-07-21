@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/socket@1.1.6...js/socket@1.1.7) (2023-07-21)
+
+
+### Bug Fixes
+
+* fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+
+### Dependencies
+
+* @applitools/logger bumped to 2.0.7
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
 ## [1.1.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/socket@1.1.5...js/socket@1.1.6) (2023-07-21)
 
 
