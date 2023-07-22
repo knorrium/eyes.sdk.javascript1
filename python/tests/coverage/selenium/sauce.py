@@ -28,7 +28,9 @@ def rd(func):
 @pytest.fixture(scope="function")
 def sauce_url():
     name, access_key = _sauce_credentials()
-    return "https://{}:{}@ondemand.saucelabs.com/wd/hub".format(name, access_key)
+    return "https://{}:{}@ondemand.us-west-1.saucelabs.com/wd/hub".format(
+        name, access_key
+    )
 
 
 @pytest.hookimpl(tryfirst=True)

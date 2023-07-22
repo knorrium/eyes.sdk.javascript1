@@ -82,11 +82,9 @@ def get_variables(
         batch_name += " | UFG Native"
 
     if platform in ["android", "ios"]:
-        remote_url = (
-            "https://{username}:{password}@ondemand.saucelabs.com:443/wd/hub".format(
-                username=os.environ["SAUCE_USERNAME"],
-                password=os.environ["SAUCE_ACCESS_KEY"],
-            )
+        remote_url = "https://{}:{}@ondemand.us-west-1.saucelabs.com:443/wd/hub".format(
+            os.environ["SAUCE_USERNAME"],
+            os.environ["SAUCE_ACCESS_KEY"],
         )
     else:
         remote_url = False
