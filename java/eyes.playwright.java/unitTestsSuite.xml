@@ -2,7 +2,7 @@
 
 <suite name="Playwright Unit Tests" parallel="classes" verbose="1">
     <listeners>
-        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+        <listener class-name="com.applitools.eyes.utils.PlaywrightReportingListener"/>
     </listeners>
 
     <test name="Unit">

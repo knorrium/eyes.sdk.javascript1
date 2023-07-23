@@ -7,7 +7,7 @@ in the same thread while taking advantage of TestNG using as many threads as pos
 -->
 <suite name="android suite" verbose="1" parallel="classes" thread-count="15">
     <listeners>
-        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+        <listener class-name="com.applitools.eyes.utils.AppiumReportingListener"/>
     </listeners>
 
     <test name="TestEyes">

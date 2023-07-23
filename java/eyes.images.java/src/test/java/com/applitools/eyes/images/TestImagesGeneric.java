@@ -1,7 +1,7 @@
 package com.applitools.eyes.images;
 
 import com.applitools.eyes.*;
-import com.applitools.eyes.images.utils.TestSetup;
+import com.applitools.eyes.utils.TestSetup;
 import com.applitools.eyes.metadata.SessionResults;
 import com.applitools.utils.ImageUtils;
 import org.testng.Assert;

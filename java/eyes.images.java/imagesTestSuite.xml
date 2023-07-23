@@ -2,7 +2,7 @@
 
 <suite name="Images Tests" verbose="1">
     <listeners>
-        <listener class-name="com.applitools.eyes.utils.ReportingListener"/>
+        <listener class-name="com.applitools.eyes.utils.ImagesReportingListener"/>
     </listeners>
 
     <test name="TestEyesImages" parallel="classes">

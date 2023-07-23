@@ -1,4 +1,4 @@
-package com.applitools.eyes.images.utils;
+package com.applitools.eyes.utils;
 
 import com.applitools.eyes.*;
 import com.applitools.eyes.images.Eyes;

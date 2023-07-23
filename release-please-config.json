@@ -1434,11 +1434,11 @@
       "tests": [{
         "key": "{{component}}",
         "artifacts": ["./reports/**/*"],
-        "report": {"name": "java", "format": "raw","result-path": "./reports/report/*.json"}
+        "report": {"name": "java_images", "format": "raw","result-path": "./reports/report/*.json"}
       }],
       "releases": [{
         "profile": "maven",
-        "notification": {"name": "java"}
+        "notification": {"name": "java_images"}
       }]
     },
     "java/eyes.selenium.java": {
@@ -1456,18 +1456,18 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"}
+          "report": {"name": "java_selenium", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
+          "report": {"name": "java_selenium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
         "profile": "maven",
-        "notification": {"name": "java"}
+        "notification": {"name": "java_selenium"}
       }]
     },
     "java/eyes.appium.java": {
@@ -1485,18 +1485,18 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"}
+          "report": {"name": "java_appium", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
+          "report": {"name": "java_appium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
         "profile": "maven",
-        "notification": {"name": "java"}
+        "notification": {"name": "java_appium"}
       }]
     },
     "java/eyes.playwright.java": {

@@ -14,7 +14,7 @@ public class TestResultReportSummary {
     private String id = null;
 
     @JsonProperty("sdk")
-    private String sdk = "java";
+    private String sdk = "java_selenium";
 
     @JsonProperty("sdk")
     public String getSdkName() {
