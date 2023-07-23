@@ -1264,7 +1264,6 @@
       "builds": [{
         "key": "{{component}}/{{environment}}",
         "artifacts": ["./target", "./src/main/resources", "~/.m2/repository"],
-        "runner": "linuxarm",
         "builds": ["js/core/arm64/{{environment}}"],
         "build-type": "maven"
       }],
