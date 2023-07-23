@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [5.63.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-binaries-v5.63.0...java/eyes-universal-core-binaries@5.63.1) (2023-07-23)
+
+
+### Bug Fixes
+
+* some fix ([789acbe](https://github.com/applitools/eyes.sdk.javascript1/commit/789acbedd543af21fa6df278d0fb31c5f097f63c))
+
 ## [5.63.0] - 2023-07-13
 ### Features
 - 
