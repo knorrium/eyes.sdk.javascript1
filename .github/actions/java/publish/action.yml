@@ -9,8 +9,7 @@ inputs:
   profile:
     description: Distribution management repository (snapshot, maven, jfrog)
     type: string
-    required: false
-    default: snapshot
+    required: true
 
 runs:
   using: composite
