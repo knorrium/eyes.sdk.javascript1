@@ -1,6 +1,21 @@
 # Changelog
 
 
+## [5.63.2](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-ufg-java5@5.63.1...java/eyes-ufg-java5@5.63.2) (2023-07-23)
+
+
+### Bug Fixes
+
+* internal fix ([86ee28d](https://github.com/applitools/eyes.sdk.javascript1/commit/86ee28dd0617203a0b8744930a6ccf3718fca0e8))
+
+
+### Dependencies
+
+* com.applitools:eyes-common-java5 bumped to 5.63.2
+  #### Bug Fixes
+
+  * internal fix ([86ee28d](https://github.com/applitools/eyes.sdk.javascript1/commit/86ee28dd0617203a0b8744930a6ccf3718fca0e8))
+
 ## [5.63.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-ufg-java5-v5.63.0...java/eyes-ufg-java5@5.63.1) (2023-07-23)
 
 
