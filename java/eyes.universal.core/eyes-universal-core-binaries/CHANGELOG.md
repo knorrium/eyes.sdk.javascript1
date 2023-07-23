@@ -1,20 +1,6 @@
 # Changelog
 
 
-## [5.63.2](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-binaries@5.63.1...java/eyes-universal-core-binaries@5.63.2) (2023-07-23)
-
-
-### Bug Fixes
-
-* internal fix ([86ee28d](https://github.com/applitools/eyes.sdk.javascript1/commit/86ee28dd0617203a0b8744930a6ccf3718fca0e8))
-
-## [5.63.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-binaries-v5.63.0...java/eyes-universal-core-binaries@5.63.1) (2023-07-23)
-
-
-### Bug Fixes
-
-* some fix ([789acbe](https://github.com/applitools/eyes.sdk.javascript1/commit/789acbedd543af21fa6df278d0fb31c5f097f63c))
-
 ## [5.63.0] - 2023-07-13
 ### Features
 - 
@@ -89,7 +75,7 @@
 
 ## [5.52.0] - 2023-05-18
 ### Features
-- Add emulation device `Galaxy S22`. 
+- Add emulation device `Galaxy S22`.
 ### Bug fixes
 - Fixed layoutBreakpoints to accept Integer array input type.
 
