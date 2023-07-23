@@ -1,14 +1,19 @@
 # eyes-universal-core
-Internal module of the Java SDKs.
+Internal module of the Java SDKs to manage universal core binaries.
 
-For a tutorial on how to use the SDKs, check out the Applitools website:
+Each binary has its respective module, and an additional module with all binaries inside:
+```text
+eyes-universal-core-linux
+eyes-universal-core-linux-arm
+eyes-universal-core-alpine
+eyes-universal-core-mac
+eyes-universal-core-win
+eyes-universal-core-binaries
+```
 
-- Selenium Java example: https://applitools.com/tutorials/quickstart/web/selenium/java/junit#step-2-getting-your-example-project
+The actual binaries do not exist in the repository. During CI testing and release the binaries will be provided by 
+`js/core` build artifact or by download if the artifact doesn't exist.
 
-- Playwright Java example: https://applitools.com/tutorials/quickstart/web/playwright/java#step-2-getting-your-example-project
+For local development, run `eyes-universal-core-<your_os>/build.sh` from the directory of the module matching your OS,
+which will download the latest `js/core` release and install the module.
 
-- Java Appium Native example: https://applitools.com/tutorials/quickstart/native-mobile/appium/java#run-your-first-test
-
-- Java Appium Web example: https://applitools.com/tutorials/quickstart/mobile-browser/appium/java#run-your-first-test
-
-- Java Screenshots example: https://applitools.com/tutorials/quickstart/images/code/java#running-the-example-project
