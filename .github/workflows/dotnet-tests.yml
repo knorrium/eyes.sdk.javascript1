@@ -113,6 +113,25 @@ jobs:
           cd dotnet
           chmod +x ./download_core_linux.sh && ./download_core_linux.sh
           chmod +x ./genericTests_appium.sh && ./genericTests_appium.sh
+        
+  dotnet-test-appium2-generated:
+    if: ${{ github.event_name == 'pull_request' || inputs.generic }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{inputs.ref || github.ref}}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Run Appium coverage tests
+        run: |
+          cd dotnet
+          chmod +x ./download_core_linux.sh && ./download_core_linux.sh
+          chmod +x ./genericTests_appium2.sh && ./genericTests_appium2.sh
 
   dotnet-test-selenium3-generated:
     if: ${{ github.event_name == 'pull_request' || inputs.generic }}

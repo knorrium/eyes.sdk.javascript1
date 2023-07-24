@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("Test.Eyes.Selenium.DotNet")]
+[assembly: InternalsVisibleTo("Eyes.Appium2.DotNet")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -29,6 +30,6 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9566068d-e5cf-4b08-b336-2a8145e8341a")]
+[assembly: Guid("0979725C-ACA5-4035-ADE7-96C3324897AB")]
 
 [assembly: CLSCompliant(false)]

@@ -41,13 +41,13 @@ namespace Applitools.Selenium
         }
 
         public Eyes(
-            EyesRunner runner,
+            SeleniumEyesRunner runner,
             string serverUrlFieldName = "remoteServerUri",
             ILogHandler logHandler = null,
-            SelectorTransformer selectorTransformer = null)
+            ISelectorTransformer selectorTransformer = null)
             : base(runner, serverUrlFieldName: serverUrlFieldName, logHandler: logHandler)
         {
-            selectorTransformer_ = selectorTransformer ?? new SelectorTransformer();
+            selectorTransformer_ = selectorTransformer ?? new SeleniumSelectorTransformer();
             ocrRegionTransformer_ = new OcrRegionTransformer(selectorTransformer_);
         }
 
@@ -405,13 +405,7 @@ namespace Applitools.Selenium
         {
             return driver_;
         }
-
-        public ICollection<string> ExtractText(params OcrRegion[] regions)
-        {
-            return ExtractText(regions.ToList());
-        }
-
-        public ICollection<string> ExtractText(ICollection<OcrRegion> regions)
+        public override ICollection<string> ExtractText(ICollection<OcrRegionBase> regions)
         {
             Logger.Log("ExtractText");
 
@@ -422,25 +416,25 @@ namespace Applitools.Selenium
             }
 
             var eyesConfig = ToConfig(Config);
-            var remoteWebDriver = (WebDriver)driver_;
-            var serverUrl = GetServerUrl(remoteWebDriver.CommandExecutor);
-            var eyesExtractTextRequest = new EyesExtractTextRequest
+            var webDriver = (WebDriver)driver_;
+            var serverUrl = GetServerUrl(webDriver.CommandExecutor);
+            var extractTextRequest = new EyesExtractTextRequest
             {
                 Payload = new ExtractTextRequestPayload
                 {
-                    Config = eyesConfig,
+                    Config = ToConfig(Config),
                     Target = new DriverTarget
                     {
                         ServerUrl = serverUrl,
-                        Capabilities = GetCapabilities(remoteWebDriver),
-                        SessionId = remoteWebDriver.SessionId.ToString(),
+                        Capabilities = GetCapabilities(webDriver),
+                        SessionId = webDriver.SessionId.ToString(),
                         Proxy = Config.Proxy
                     },
                     Settings = ToExtractTextSettings(regions)
                 }
             };
 
-            var response = Runner.SendRequest<EyesExtractTextRequest, EyesExtractTextResponse>(eyesExtractTextRequest);
+            var response = Runner.SendRequest<EyesExtractTextRequest, EyesExtractTextResponse>(extractTextRequest);
 
             return response.Payload.Result;
         }
@@ -456,8 +450,8 @@ namespace Applitools.Selenium
             }
 
             var eyesConfig = ToConfig(Config);
-            var remoteWebDriver = (WebDriver)driver_;
-            var serverUrl = GetServerUrl(remoteWebDriver.CommandExecutor);
+            var webDriver = (WebDriver)driver_;
+            var serverUrl = GetServerUrl(webDriver.CommandExecutor);
             var extractTextRegionsRequest = new EyesExtractTextRegionsRequest
             {
                 Payload = new ExtractTextRegionsRequestPayload
@@ -466,8 +460,8 @@ namespace Applitools.Selenium
                     Target = new DriverTarget
                     {
                         ServerUrl = serverUrl,
-                        Capabilities = GetCapabilities(remoteWebDriver),
-                        SessionId = remoteWebDriver.SessionId.ToString(),
+                        Capabilities = GetCapabilities(webDriver),
+                        SessionId = webDriver.SessionId.ToString(),
                         Proxy = Config.Proxy
                     },
                     Settings = textRegionSettings
@@ -572,7 +566,7 @@ namespace Applitools.Selenium
             Config.SetHostOS(hostOs);
             Config.SetHostApp(hostApp);
         }
-
+    
         internal virtual void CheckImpl_(ICheckSettings checkSettings)
         {
             Logger.Log("CheckImpl");
@@ -583,10 +577,17 @@ namespace Applitools.Selenium
                 return;
             }
 
-            var seleniumCheckSettings = (SeleniumCheckSettings)checkSettings;
+            var request = CreateCheckRequest(checkSettings);
+
+            SendCheckRequest(request);
+        }
+
+        internal EyesCheckRequest CreateCheckRequest(ICheckSettings checkSettings)
+        {
+            var seleniumCheckSettings = (ICheckSettingsInternal)checkSettings;
             var eyesConfig = ToConfig(Config);
-            var remoteWebDriver = (WebDriver)driver_;
-            var serverUrl = GetServerUrl(remoteWebDriver.CommandExecutor);
+            var webDriver = (WebDriver)driver_;
+            var serverUrl = GetServerUrl(webDriver.CommandExecutor);
             var request = new EyesCheckRequest
             {
                 Key = Guid.NewGuid().ToString(),
@@ -597,34 +598,46 @@ namespace Applitools.Selenium
                     Target = new DriverTarget
                     {
                         ServerUrl = serverUrl,
-                        Capabilities = GetCapabilities(remoteWebDriver),
-                        SessionId = remoteWebDriver.SessionId.ToString(),
+                        Capabilities = GetCapabilities(webDriver),
+                        SessionId = webDriver.SessionId.ToString(),
                         Proxy = Config.Proxy
                     },
                     Settings = CreateUniversalCheckSettings(seleniumCheckSettings)
                 }
             };
+            return request;
+        }
 
+        internal void SendCheckRequest(EyesCheckRequest request)
+        {
             var result = Runner.SendRequest<EyesCheckRequest, EyesCheckResponse>(request);
-            var error = result.Payload.Error;
+            var error = result?.Payload?.Error;
             if (error != null)
             {
                 throw new EyesException(error.ToString());
             }
 
+            if (result?.Payload?.Result == null)
+            {
+                return;
+            }
+
             foreach (var matchResult in result.Payload.Result)
             {
-                if (matchResult.AsExpected == false)
+                if (matchResult.AsExpected)
                 {
-#pragma warning disable CS0612
-                    if (FailureReports == FailureReports.Immediate)
-                    {
-                        throw new EyesException($"Unexpected match result for {matchResult}");
-                    }
-#pragma warning restore CS0612
+                    continue;
                 }
+
+#pragma warning disable CS0612
+                if (FailureReports == FailureReports.Immediate)
+                {
+                    throw new EyesException($"Unexpected match result for {matchResult}");
+                }
+#pragma warning restore CS0612
             }
         }
+
 
         private IWebDriver OpenEyes(IWebDriver driver, string appName = null, string testName = null,
             Size? viewportSize = null)
@@ -794,7 +807,7 @@ namespace Applitools.Selenium
                 region = CreateCheckSettingsTargetRegion(checkSettingsInternal);
             }
 
-            if (region == null && checkSettings is ISeleniumCheckTarget seleniumCheckTarget)
+            if (region == null && checkSettings is ITargetContainer seleniumCheckTarget)
             {
                 var targetLocator = seleniumCheckTarget.GetTargetLocator();
                 if (targetLocator != null)
@@ -861,19 +874,19 @@ namespace Applitools.Selenium
             return currentDto;
         }
 
-        private IWebElement GetTargetElement(ISeleniumCheckTarget checkSettings)
+        private IWebElement GetTargetElement(ITargetContainer checkSettings)
         {
             return checkSettings.GetTargetElement();
         }
 
-        private RegionSelector CreateCheckSettingsRegionSelector(ISeleniumCheckTarget settings)
+        private RegionSelector CreateCheckSettingsRegionSelector(ITargetContainer settings)
         {
             RegionSelector regionSelector = null;
 
             var targetSelector = settings.GetTargetSelector();
             if (targetSelector != null)
             {
-                regionSelector = new SelectorTransformer().GetRegionSelector(targetSelector);
+                regionSelector = selectorTransformer_.GetRegionSelector(targetSelector);
             }
 
             return regionSelector;
@@ -913,7 +926,8 @@ namespace Applitools.Selenium
             Type cet = commandExecutor.GetType();
             if (cet.FullName == "OpenQA.Selenium.Appium.Service.AppiumCommandExecutor")
             {
-                return commandExecutor.GetPrivateFieldValue<Uri>("URL").AbsoluteUri;
+                commandExecutor = commandExecutor.GetPrivateFieldValue<HttpCommandExecutor>("RealExecutor");
+                return commandExecutor.GetPrivateFieldValue<Uri>("remoteServerUri").AbsoluteUri;
             }
 
             if (cet.FullName == "OpenQA.Selenium.Remote.DriverServiceCommandExecutor")
@@ -929,12 +943,12 @@ namespace Applitools.Selenium
             return webDriver.Capabilities.GetPrivateFieldValue<IDictionary<string, object>>("capabilities");
         }
 
-        private ICollection<ExtractTextSettings> ToExtractTextSettings(ICollection<OcrRegion> regions)
+        protected override ICollection<ExtractTextSettings> ToExtractTextSettings(ICollection<OcrRegionBase> regions)
         {
             var extractTextSettings = new List<ExtractTextSettings>();
             foreach (var region in regions)
             {
-                var ocrRegion = ocrRegionTransformer_.GetRegion(region);
+                var ocrRegion = ocrRegionTransformer_.GetRegion((OcrRegion)region);
                 var extractTextSetting = new ExtractTextSettings
                 {
                     Region = ocrRegion,

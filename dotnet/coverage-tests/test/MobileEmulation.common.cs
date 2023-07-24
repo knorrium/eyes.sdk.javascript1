@@ -101,7 +101,7 @@ namespace Applitools.Tests.Utils
                 },
             };
 
-        public const string SauceServerUrl = "https://ondemand.saucelabs.com:443/wd/hub";
+        public const string SauceServerUrl = "https://ondemand.us-west-1.saucelabs.com:443/wd/hub";
 
         public static readonly Dictionary<string, Dictionary<string, string>> Credentials =
             new()
@@ -115,59 +115,5 @@ namespace Applitools.Tests.Utils
                 }
             };
 
-        public static RemoteWebDriver InitDriver(string device, string app = null, string browser = null)
-        {
-            AppiumOptions options = new AppiumOptions();
-            //options.AddAdditionalCapability(MobileCapabilityType.AppiumVersion, "1.17.1");
-            options.AddAdditionalCapability(MobileCapabilityType.PlatformName,
-                Devices[device]["platformName"]);
-            options.AddAdditionalCapability(MobileCapabilityType.PlatformVersion,
-                Devices[device]["platformVersion"]);
-            options.AddAdditionalCapability(MobileCapabilityType.DeviceName,
-                Devices[device]["deviceName"]);
-            if (Devices[device].ContainsKey("deviceOrientation"))
-                options.AddAdditionalCapability("deviceOrientation",
-                    Devices[device]["deviceOrientation"]);
-            else options.AddAdditionalCapability("deviceOrientation", "portrait");
-
-            if (browser != null)
-            {
-                options.AddAdditionalCapability("browserName", browser);
-            }
-            else if (app != null)
-            {
-                options.AddAdditionalCapability(MobileCapabilityType.App, app);
-            }
-
-            options.AddAdditionalCapability("phoneOnly", false);
-            options.AddAdditionalCapability("tabletOnly", false);
-            options.AddAdditionalCapability("privateDevicesOnly", false);
-
-
-            string url = null;
-            if (Devices[device].ContainsKey("sauce"))
-            {
-                options.AddAdditionalCapability("username", Credentials["sauce"]["username"]);
-                options.AddAdditionalCapability("accesskey", Credentials["sauce"]["access_key"]);
-                url = SauceServerUrl;
-            }
-
-            string platformName = (string)Devices[device]["platformName"];
-            options.AddAdditionalCapability("name", $"{platformName} Demo");
-
-            options.AddAdditionalCapability("idleTimeout", 300);
-
-            switch (platformName)
-            {
-                case "Android":
-                    return new AndroidDriver<AppiumWebElement>(
-                        new Uri(url), options, TimeSpan.FromMinutes(5));
-                case "iOS":
-                    return new IOSDriver<AppiumWebElement>(
-                        new Uri(url), options, TimeSpan.FromMinutes(5));
-                default:
-                    return null;
-            }
-        }
     }
 }

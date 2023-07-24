@@ -7,8 +7,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("Test.Eyes.Appium.DotNet")]
-[assembly: InternalsVisibleTo("Tests.Eyes.Appium.Generated")]
+[assembly: InternalsVisibleTo("Test.Eyes.Appium2.DotNet")]
+[assembly: InternalsVisibleTo("Tests.Eyes.Appium2.Generated")]
+
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -16,4 +17,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("10c96a1a-e5f1-4bdc-a1b4-0c023bbb22dc")]
+[assembly: Guid("34D2B420-DFD7-48B2-A2A7-475B9866C248")]

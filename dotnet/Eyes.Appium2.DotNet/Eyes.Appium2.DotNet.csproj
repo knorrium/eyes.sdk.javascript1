@@ -1,43 +1,44 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Description>Applitools Eyes adds automated visual validation to your automated tests.
 With Applitools Eyes, you can automatically validate the correctness of your application's UI layout, content and appearance.
 To learn more, visit https://applitools.com/ .</Description>
     <PackageProjectUrl>https://applitools.com/</PackageProjectUrl>
     <Copyright>Applitools 2013</Copyright>
-    <Version>5.62</Version>
+    <Version>5.52-beta04</Version>
     <Authors>Applitools</Authors>
     <Company>Applitools</Company>
     <Product>Eyes SDK</Product>
     <PackageTags>applitools eyes appium</PackageTags>
     <PackageReleaseNotes>### Updated
-- Match to latest Eyes.Selenium
+- Match to latest Eyes.Selenium4
 </PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageId>Eyes.Appium</PackageId>
+    <PackageId>Eyes.Appium2</PackageId>
     <PackageLicenseExpression />
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>applitools_nuget_icon.png</PackageIcon>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageOutputPath>..\PackagesOutput</PackageOutputPath>
+    <RootNamespace>Eyes.Appium4.DotNet</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Appium.WebDriver" Version="4.3.1" />
+    <PackageReference Include="Appium.WebDriver" Version="5.0.0-beta04" />
     <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\applitools_nuget_icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\Eyes.Selenium.DotNet\Eyes.Selenium.DotNet.csproj" />
+    <ProjectReference Include="..\Eyes.Selenium4.DotNet\Eyes.Selenium4.DotNet.csproj" />
   </ItemGroup>
   
 </Project>

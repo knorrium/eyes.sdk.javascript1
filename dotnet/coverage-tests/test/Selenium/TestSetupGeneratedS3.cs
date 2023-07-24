@@ -49,14 +49,6 @@ namespace Applitools.Generated.Selenium.Tests
         protected void SetUpDriver(browserType browser = browserType.Chrome,
             bool legacy = false, bool headless = false, bool executionGrid = false, string device = null)
         {
-            if (device != null)
-            {
-                driver = MobileEmulation.InitDriver(device, browser: browser.ToString());
-                if (driver != null)
-                {
-                    return;
-                }
-            }
             switch (browser)
             {
                 case browserType.Chrome:

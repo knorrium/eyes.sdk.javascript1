@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
 RESULT=0
+MESSAGE=""
 
-echo "generating tests - selenium 4"
+echo "generating tests - appium 4"
 pushd coverage-tests
 # export UFG_ON_EG=true
 npm run generate
 if [ $? -ne 0 ]; then
-    RESULT=1
-    echo "npm run dotnet:generate have failed"
-    exit 1
+    ((RESULT+=1))
+    MESSAGE+=$'npm run dotnet:generate have failed'
+    echo $MESSAGE
 fi
 
 # start eg client and save process id
@@ -20,16 +21,17 @@ EG_PID="$!"
 export EXECUTION_GRID_URL=http://localhost:8080
 echo $EXECUTION_GRID_URL
 
-echo "running tests - selenium 4"
-npm run run:parallel:selenium4
+echo "running tests - appium 2"
+npm run run:parallel:appium2
 result=$?
 echo $result
 if [ $result -ne 0 ]; then
     echo "Not all tests passed... Retrying."
-    npm run run:parallel:selenium4
+    npm run run:parallel:appium2
 	if [ $? -ne 0 ]; then
-      RESULT=1
-      echo "npm run dotnet:run:parallel:selenium4 have failed"
+      ((RESULT+=1))
+      MESSAGE+=$'npm run dotnet:run:parallel:appium2 have failed'
+      echo $MESSAGE
     fi
 fi
 
@@ -38,6 +40,7 @@ echo $EG_PID
 kill $EG_PID
 
 echo "RESULT = ${RESULT}"
+echo $MESSAGE
 if [ $RESULT -eq 0 ]; then
     exit 0
 else

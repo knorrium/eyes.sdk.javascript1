@@ -4,7 +4,7 @@ using NUnit.Framework.Interfaces;
 
 namespace Applitools.Generated.Selenium.Tests
 {
-    public abstract class ReportingTestSuiteGenerratedAppium : ReportingTestSuite
+    public abstract class ReportingTestSuiteGenerateAppium : ReportingTestSuite
     {
         protected override TestResult GetTestResult()
         {
