@@ -4,6 +4,7 @@ const fs = require('fs')
 const yargs = require('yargs')
 const chalk = require('chalk')
 const msee = require('msee')
+const ms = require('ms')
 const {sendTestReport} = require('../qa/send-report')
 const {sendReleaseNotification} = require('../qa/send-notification')
 const {extractSimplifiedChangelog} = require('../changelog/changelog')
@@ -20,74 +21,105 @@ yargs
           type: 'string',
           description: 'release tag of the package',
         },
+        package: {
+          type: 'string',
+          description: 'name of the package',
+        },
+        since: {
+          type: 'string',
+          description: 'generate changelog for a time period started since date',
+          coerce: since => (since.endsWith(' ago') ? Date.now() - ms(since.slice(0, -4)) : Date.parse(since)),
+        },
         file: {
           type: 'string',
           descriptions: 'file to save changelog',
           coerce: file => (file === '' ? true : file),
         },
       }),
-    async handler({tag, repo = 'https://github.com/applitools/eyes.sdk.javascript1', file}) {
+    async handler(options) {
+      if (!options.repo) options.repo = 'https://github.com/applitools/eyes.sdk.javascript1'
       const {default: inquirer} = await import('inquirer')
       const {default: DatePrompt} = await import('inquirer-date-prompt')
-
       inquirer.registerPrompt('date', DatePrompt)
-      const interactive = !tag
 
-      while (true) {
-        if (interactive) {
-          const formatter = Intl.DateTimeFormat('en', {dateStyle: 'long'})
+      const interactive = !options.tag
+      if (interactive) {
+        const formatter = Intl.DateTimeFormat('en', {dateStyle: 'long'})
+        const releasesPromise = getReleases({...options, limit: 500})
 
-          const answers = await inquirer.prompt([
+        options = await inquirer.prompt(
+          [
             {
-              name: 'versions',
-              message: 'Package:',
+              type: 'confirm',
+              name: 'shouldInputDate',
+              prefix: '❓',
+              message: 'Do you want to choose a date?',
+              when: ({since}) => !since,
+            },
+            {
+              type: 'date',
+              name: 'since',
+              prefix: '🗓️ ',
+              message: 'Choose a date:',
+              when: ({shouldInputDate}) => shouldInputDate,
+              locale: 'en-US',
+              format: {month: 'short', year: undefined, hour: undefined, minute: undefined},
+            },
+            {
               type: 'list',
+              name: 'package',
+              prefix: '📦',
+              message: 'Choose a package:',
               pageSize: 10,
-              choices: async () => {
-                const releases = await getReleases({
-                  repo: 'https://github.com/applitools/eyes.sdk.javascript1',
-                  limit: 100,
-                })
-                return Object.entries(releases).map(([name, release]) => ({
-                  name: `${name} ${chalk.grey(`(latest ${formatter.format(release[0].createdAt)})`)}`,
-                  value: release,
-                }))
+              choices: async ({since}) => {
+                const releases = await releasesPromise
+                return Object.entries(releases)
+                  .filter(([_, release]) => !since || release.some(({createdAt}) => Date.parse(createdAt) >= since))
+                  .map(([name, release]) => ({
+                    name: `${name} ${chalk.grey(`(latest ${formatter.format(release[0].createdAt)})`)}`,
+                    value: name,
+                  }))
               },
             },
             {
+              type: 'list',
               name: 'tag',
-              message: 'Version:',
-              type: 'list',
+              prefix: '🔥',
+              message: 'Choose a version:',
               pageSize: 10,
-              choices: ({versions}) => {
-                return versions.map(({version, tag, createdAt}) => ({
-                  name: `${version} ${chalk.grey(`(${formatter.format(createdAt)})`)}`,
-                  value: tag,
-                }))
+              when: ({since}) => !since,
+              choices: async ({since, package}) => {
+                const releases = await releasesPromise
+                return releases[package]
+                  .filter(({createdAt}) => !since || Date.parse(createdAt) >= since)
+                  .map(({version, tag, createdAt}) => ({
+                    name: `${version} ${chalk.grey(`(${formatter.format(createdAt)})`)}`,
+                    value: tag,
+                  }))
               },
             },
-          ])
-          tag = answers.tag
-        }
+          ],
+          options,
+        )
 
-        const changelog = await extractSimplifiedChangelog({tag, repo})
-        if (file) {
-          if (file === true) file = `./${tag.replace('/', '-')}.md`
-          fs.writeFileSync(file, changelog)
-          console.log(chalk.green('✓'), chalk.bold('Changelog saved to the file:'), chalk.cyan(file))
-        } else {
-          console.log(msee.parse(changelog))
+        if (!options.tag && options.package) {
+          const releases = await releasesPromise
+          options.tag = releases[options.package]
+            .filter(({createdAt}) => !options.since || Date.parse(createdAt) >= options.since)
+            .map(({tag}) => tag)
         }
+      }
 
-        if (interactive) {
-          const {restart} = await inquirer.prompt({
-            name: 'restart',
-            message: 'Do you want to continue?',
-            type: 'confirm',
-            default: false,
-          })
-          if (!restart) return
+      const changelog = await extractSimplifiedChangelog(options)
+
+      if (options.file) {
+        if (options.file === true) {
+          options.file = `./${options.since ? options.package.replace('/', '-') : options.tag.replace('/', '-')}.md`
         }
+        fs.writeFileSync(options.file, changelog)
+        console.log(chalk.bold('✅ Changelog saved to the file:'), chalk.cyan(options.file))
+      } else {
+        console.log(msee.parse(changelog))
       }
     },
   })

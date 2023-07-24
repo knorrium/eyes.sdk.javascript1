@@ -1,8 +1,15 @@
 const {getReleaseNotes} = require('../gh/gh')
+const utils = require('@applitools/utils')
 
 async function extractSimplifiedChangelog({tag, repo}) {
-  const notes = await getReleaseNotes({tag, repo})
-  return `${extractChangelogHeader(notes)}\n\n${extractChangelogSections(notes)}`
+  const tags = utils.types.isArray(tag) ? tag : [tag]
+  const entries = await tags.reduce(async (promise, tag) => {
+    const notes = await getReleaseNotes({tag, repo})
+    return promise.then(entries =>
+      entries.concat(`${extractChangelogHeader(notes)}\n\n${extractChangelogSections(notes)}`),
+    )
+  }, Promise.resolve([]))
+  return entries.join('\n\n')
 }
 
 function extractChangelogHeader(changelog) {
