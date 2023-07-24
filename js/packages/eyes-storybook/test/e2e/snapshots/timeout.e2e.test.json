@@ -2,6 +2,7 @@
   "timeout": [
     "- Starting storybook server",
     "\u001b[31m✖\u001b[39m Storybook dev server didn't start after waiting 2 seconds.",
+    "Please consider setting a higher timeout using the --startStorybookServerTimeout option (in seconds). For example: eyes-storybook --startStorybookServerTimeout 600",
     ""
   ]
 }

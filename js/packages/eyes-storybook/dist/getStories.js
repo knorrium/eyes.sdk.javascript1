@@ -125,6 +125,7 @@ function __getStories(...args) {
                   });
                 } else {
                   // storybook v7
+                  await clientAPI.storyStore.initializationPromise;
                   frameWindow.__STORYBOOK_PREVIEW__.selectionStore.setSelection({storyId});
                 }
                 await frameWindow.__STORYBOOK_PREVIEW__.renderSelection();

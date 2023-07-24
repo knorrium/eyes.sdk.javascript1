@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
-    "build-storybook": "build-storybook",
+    "build-storybook": "sb build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "storybook": "APPLITOOLS_FRAMEWORK_VERSION=latest start-storybook -p 9010 --no-manager-cache",
+    "storybook": "APPLITOOLS_FRAMEWORK_VERSION=latest sb dev -p 9010",
     "test": "npx eyes-storybook"
   },
   "dependencies": {
@@ -16,17 +16,22 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-lifecycles-compat": "^3.0.4",
-    "react-scripts": "^4.0.2"
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@storybook/addon-actions": "latest",
     "@storybook/addon-storyshots": "latest",
     "@storybook/addons": "latest",
-    "@storybook/builder-webpack4": "latest",
-    "@storybook/preset-create-react-app": "^3.1.6",
+    "@storybook/react-webpack5": "latest",
+    "@storybook/preset-create-react-app": "latest",
     "@storybook/react": "latest",
-    "webpack": "4"
+    "webpack": "5.75.0",
+    "@storybook/testing-library": "latest",
+    "@storybook/addon-interactions": "latest",
+    "@storybook/cli": "latest",
+    "@storybook/manager-webpack5": "latest",
+    "@storybook/builder-webpack5": "latest"
   },
   "snaptdout":{
     "snapshotsPrefix": "v_latest_"
