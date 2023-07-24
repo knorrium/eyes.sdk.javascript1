@@ -184,7 +184,7 @@ In addition to command-line arguments, it's possible to define the following con
 | `tapFilePath`             | undefined                   | Directory path of a results file. If set, then a [TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol#Specification) file is created in this directory, the file is created with the name eyes.tap and contains the Eyes test results. |
 | `xmlFilePath`             | undefined                   | Directory path of a results file. If set, then a [XUnit XML](https://google.github.io/rich-test-results/xunitxml) file is created in this directory, the file is created with the name eyes.xml and contains the Eyes test results. |
 | `waitBeforeCapture`    | undefined                   | Selector, function or timeout.<br/>If ```number``` then the argument is treated as time in milliseconds to wait before all screenshots.<br/>If ```string``` then the argument is treated as a selector for elements to wait for before all screenshots.<br/>If ```function```, then the argument is treated as a predicate to wait for before all screenshots.<br/><hr/>For per component configuration see [waitBeforeCapture.](#waitBeforeCapture)<br/>Note that we use Puppeteer's [page.waitForTimeout()](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitfortimeoutmilliseconds), [page.waitForSelector()](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitforselectorselector-options), [page.waitForXPath()](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitforxpathxpath-options) and [page.waitForFunction()](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagewaitforfunctionpagefunction-options-args), checkout it's API for more details. |
-| `include`                 | true                        | A predicate function, a string or a regular expression specifying which stories should be visually tested.<br/>Visual baselines will be created only for the components specified.<br/>The function receives an object with ```name```, ```kind```, ```storyTitle```  and ```parameters``` properties.<br/>For example (exclude all stories with a name that start with [SKIP]):<br/>```({name,  kind, storyTitle, parameters}) => !/^\[SKIP\]/.test(name)```<br/>For more information, see [per component configuration - include](#include). |
+| `include`                 | true                        | A predicate function, a string or a regular expression specifying which stories should be visually tested.<br/>Visual baselines will be created only for the components specified.<br/>The function receives an object with ```name```, ```kind```, ```storyTitle```, ```index```  and ```parameters``` properties.<br/>For example (exclude all stories with a name that start with [SKIP]):<br/>```({name,  kind, storyTitle, index, parameters}) => !/^\[SKIP\]/.test(name)```<br/>For more information, see [per component configuration - include](#include). |
 | `variations`              | undefined                   | Specifies additional variations for all or some of the stories. For example, RTL. For more information, see [per component  configuration - variations](#variations).|
 | `dontCloseBatches`        | false                       | If true, batches are not closed for notifyOnCompletion.|
 | `testConcurrency`             | 5                          | The maximum number of tests that can run concurrently. The default value is the allowed amount for free accounts. For paid accounts, set this number to the quota set for your account. |
@@ -377,7 +377,7 @@ All these properties except  `storyTitle` come from `storybook` and they represe
 
 More information can be found in the [Storybook docs - Naming components and hierarchy](https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy).
 
-You can filter by `kind`, `name`, `storyTitle`, `parameters`, a combination of them or any logic that will result in a `boolean`. For example:
+You can filter by `kind`, `name`, `storyTitle`, `index`, `parameters`, a combination of them or any logic that will result in a `boolean`. For example:
 ```js
 // applitools.config.js
 module.exports = {
@@ -410,6 +410,18 @@ include: /Button: */,
 ...
 }
 ```
+
+The `include` method can also be used for test sharding, to split the stories between multiple machines:
+```js
+module.exports = {
+...
+  include: ({index}) => {
+    return index % totalShards === currShard - 1
+  }
+...
+}
+```
+
 > NOTE you can use regular expressions or any other method you'd like, as long as you return a `boolean` from this function
 
 #### component
