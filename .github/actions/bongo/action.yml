@@ -13,26 +13,31 @@ inputs:
     description: name of the reported entity
     type: string
     required: true
-  group:
-    description: group of the reported entity
-    type: string
-  release-version:
-    description: released version of the notification entity
-    type: string
-  params:
-    description: additional parameters will be added to every reported test
-    type: string
   report-id:
     description: id of the target report
     type: string
+
+  params:
+    description: additional parameters will be added to every reported test (report only)
+    type: string
   result-path:
-    description: path to the report file
+    description: path to the report file (report only)
     type: string
   result-format:
-    description: format of the report file
+    description: format of the report file (report only)
     type: string
   meta-path:
-    description: path to the test metadata file
+    description: path to the test metadata file (report only)
+    type: string
+  group:
+    description: group of the reported entity (report only)
+    type: string
+
+  release-version:
+    description: released version of the notification entity (notification only)
+    type: string
+  recipient:
+    description: specific recipient for notification (notification only)
     type: string
   shell:
     description: shell to use

@@ -1,7 +1,7 @@
 const {getLatestReleaseEntries} = require('../changelog/query')
 const fetch = require('node-fetch')
 
-async function sendReleaseNotification({reportId, name, releaseVersion, changelogPath}) {
+async function sendReleaseNotification({reportId, name, releaseVersion, recipient, changelogPath}) {
   if (!changelogPath) changelogPath = process.cwd()
   const changelog = getLatestReleaseEntries({targetFolder: changelogPath}).join('\n')
 
@@ -10,6 +10,7 @@ async function sendReleaseNotification({reportId, name, releaseVersion, changelo
     sdk: name,
     version: releaseVersion,
     changeLog: changelog,
+    specificRecipient: recipient,
     testCoverageGap: 'TODO',
   }
 

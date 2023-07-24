@@ -108,6 +108,10 @@ yargs
           type: 'string',
           description: 'the sdk version name',
         },
+        recipient: {
+          type: 'string',
+          description: 'specific recipient for the notification',
+        },
       }),
     handler: sendReleaseNotification,
   })

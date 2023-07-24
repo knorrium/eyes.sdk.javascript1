@@ -180,7 +180,7 @@ describe('report', () => {
       .reply((_uri, body) => {
         assert.deepStrictEqual(body, {
           group: 'selenium',
-          id: '0000-0000',
+          id: 'report-id',
           sdk: 'java',
           results: [
             {passed: true, parameters: {}, test_name: 'testDefaultPadding'},
@@ -193,6 +193,7 @@ describe('report', () => {
       })
 
     await sendTestReport({
+      reportId: 'report-id',
       resultFormat: 'raw',
       resultPath: path.resolve(fixtureDir, 'raw-report.json'),
     })
