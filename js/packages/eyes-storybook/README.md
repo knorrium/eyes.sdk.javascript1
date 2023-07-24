@@ -131,6 +131,7 @@ Options:
   --storybookStaticDir, --storybook-static-dir      Path to Storybook's static files folder                                          [string]
   --showStorybookOutput, --show-storybook-output    Whether or not you want to see Storybook output                                 [boolean]
   --readStoriesTimeout, --read-stories-timeout      The time to wait until all stories are read, before starting the visual tests    [number]
+  --startStorybookServerTimeout                     The time to wait until the storybook server is built and serving (in seconds)    [number]
   --exitcode, -e                                    If tests failed close with non-zero exit code                                   [boolean]
 ```
 
