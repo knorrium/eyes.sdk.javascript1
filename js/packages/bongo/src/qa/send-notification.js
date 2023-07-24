@@ -10,7 +10,7 @@ async function sendReleaseNotification({reportId, name, releaseVersion, recipien
     sdk: name,
     version: releaseVersion,
     changeLog: changelog,
-    specificRecipient: recipient,
+    specificRecipient: recipient || undefined,
     testCoverageGap: 'TODO',
   }
 

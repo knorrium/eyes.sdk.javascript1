@@ -62,5 +62,5 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --release-version="${{inputs.release-version}}"
+        npx --package=@applitools/bongo@latest --yes -- bongo send-release-notification --report-id="${{inputs.report-id || '$REPORT_ID'}}" --name="${{inputs.name}}" --release-version="${{inputs.release-version}}" --recipient="${{inputs.recipient || '$RECIPIENT'}}"
 
