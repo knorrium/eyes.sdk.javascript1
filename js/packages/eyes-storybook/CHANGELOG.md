@@ -4,6 +4,13 @@
 
 
 
+## [3.37.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.4...js/eyes-storybook@3.37.5) (2023-07-24)
+
+
+### Bug Fixes
+
+* wait for initializationPromise ([#1628](https://github.com/applitools/eyes.sdk.javascript1/issues/1628)) ([01c528a](https://github.com/applitools/eyes.sdk.javascript1/commit/01c528ac9379239c445018f1c12d87a7b404e214))
+
 ## [3.37.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.3...js/eyes-storybook@3.37.4) (2023-07-21)
 
 
