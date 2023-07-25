@@ -70,7 +70,7 @@
   "dependencies": {
     "@applitools/core-base": "workspace:*",
     "@applitools/dom-capture": "11.2.2",
-    "@applitools/dom-snapshot": "4.7.9",
+    "@applitools/dom-snapshot": "4.7.10",
     "@applitools/driver": "workspace:*",
     "@applitools/ec-client": "workspace:*",
     "@applitools/logger": "workspace:*",
