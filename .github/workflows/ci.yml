@@ -303,7 +303,7 @@ jobs:
 
   report:
     needs: [setup, js-test, java-test]
-    if: (success() || failure()) && fromJSON(needs.setup.outputs.tests).*
+    if: contains(fromJSON('["success", "failed"]'), needs.js-test.result) || contains(fromJSON('["success", "failed"]'), needs.java-test.result)
     name: Report
     runs-on: ubuntu-latest
     steps:
