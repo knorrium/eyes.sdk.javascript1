@@ -65,15 +65,15 @@ install_unit_tests_requirements: install_tests_requirements
 	python -m pip install 'psutil'
 
 
-install_functional_tests_requirements: install_tests_requirements node_modules
-	python -m pip install 'pillow' "webdriver-manager==3.7.0; python_version>='3'" "futures<4; python_version<'3.0'"
+install_functional_tests_requirements: install_tests_requirements
+	python -m pip install 'pillow' "futures<4; python_version<'3.0'"
 
 
-install_installation_tests_requirements: install_tests_requirements node_modules
+install_installation_tests_requirements: install_tests_requirements
 	python -m pip install 'pytest-venv==0.2.1' 'virtualenv==20.11'
 
 
-install_selenium_generated_tests_requirements: install_functional_tests_requirements node_modules
+install_selenium_generated_tests_requirements: install_functional_tests_requirements
 	python -m pip install "webdriver-manager==3.7.0; python_version>='3'"
 
 
@@ -204,6 +204,9 @@ unit_tests: install_eyes_images install_eyes_playwright install_eyes_robotframew
 eyes_selenium_unit_tests: unit_tests
 
 
+eyes_selenium_installation_tests: install_eyes_images install_eyes_robotframework install_eyes_playwright install_installation_tests_requirements
+
+
 eyes_selenium_installation_tests: install_eyes_images install_eyes_robotframework install_installation_tests_requirements
 	$(PYTEST) tests/test_installation.py
 
@@ -264,4 +267,4 @@ eyes_robotframework_all_tests: eyes_robotframework_functional_tests eyes_robotfr
 
 
 node_modules:
-	npm install '@applitools/bongo@4.0.0' '@applitools/sdk-coverage-tests' 'prettier'
+	npm install '@applitools/sdk-coverage-tests' 'prettier'

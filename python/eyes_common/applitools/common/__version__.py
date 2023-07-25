@@ -9,4 +9,4 @@ def _version(package_name):
         return get_distribution(package_name).version
 
 
-__version__ = _version("eyes-robotframework")
+__version__ = _version("eyes-common")

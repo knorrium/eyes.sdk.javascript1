@@ -1,6 +1,6 @@
+import os
 from base64 import b64encode
 from hashlib import md5
-from os import chmod, path, remove, uname
 from shutil import copy
 from sys import platform
 
@@ -29,9 +29,10 @@ def current_platform_executable():
     elif platform == "win32":
         return "win"
     if platform in ("linux", "linux2"):
-        if uname().machine == "aarch64":
+        machine = 4  # python2 compatibility
+        if os.uname()[machine] == "aarch64":
             return "linux-arm64"
-        if path.exists("/etc/alpine-release"):
+        if os.path.exists("/etc/alpine-release"):
             return "alpine"
         else:
             return "linux"
@@ -95,10 +96,10 @@ def download(executable, version, dry_run):
             try:
                 urlretrieve(url, relative_bin_name)
             except BaseException:
-                if path.isfile(relative_bin_name):
-                    remove(relative_bin_name)
+                if os.path.isfile(relative_bin_name):
+                    os.remove(relative_bin_name)
                 raise
-            chmod(relative_bin_name, 0o755)
+            os.chmod(relative_bin_name, 0o755)
     return package_bin_name
 
 
@@ -111,7 +112,7 @@ def copy_built(build_dir, executable, dry_run):
             build_dir=build_dir, exe=executable, ext=ext
         )
         copy(built_file_name, relative_bin_name)
-        chmod(relative_bin_name, 0o755)
+        os.chmod(relative_bin_name, 0o755)
     return package_bin_name
 
 

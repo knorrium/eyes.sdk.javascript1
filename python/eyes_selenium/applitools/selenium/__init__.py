@@ -41,11 +41,10 @@ from applitools.common.ultrafastgrid import (
     ScreenOrientation,
 )
 
+from .__version__ import __version__  # noqa
 from .eyes import Eyes
 from .fluent.target import Target
 from .runner import ClassicRunner, RunnerOptions, VisualGridRunner
-
-__version__ = "5.20.0"
 
 __all__ = (
     "AccessibilityGuidelinesVersion",
@@ -89,13 +88,3 @@ __all__ = (
     "VisualLocator",
     "logger",
 )
-
-
-class _DummyVersionModule(str):
-    @property  # applitools.selenium <=5.19 had __version__ module with __version__ attr
-    def __version__(self):
-        return str(self)
-
-
-__version__ = _DummyVersionModule(__version__)
-sys.modules[__name__ + ".__version__"] = __version__  # noqa

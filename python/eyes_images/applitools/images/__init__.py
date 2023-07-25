@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import sys
-
 from applitools.common import logger
 from applitools.common.accessibility import (
     AccessibilityGuidelinesVersion,
@@ -26,11 +24,10 @@ from applitools.common.test_results import (
     TestResultsSummary,
 )
 
+from .__version__ import __version__  # noqa
 from .extract_text import OCRRegion, TextRegionSettings
 from .eyes import Eyes
 from .fluent import Target
-
-__version__ = "5.20.0"
 
 __all__ = (
     "AccessibilityGuidelinesVersion",
@@ -59,13 +56,3 @@ __all__ = (
     "UnscaledFixedCutProvider",
     "logger",
 )
-
-
-class _DummyVersionModule(str):
-    @property  # applitools.images <=5.19 had __version__ module with __version__ attr
-    def __version__(self):
-        return str(self)
-
-
-__version__ = _DummyVersionModule(__version__)
-sys.modules[__name__ + ".__version__"] = __version__  # noqa

@@ -3,6 +3,7 @@ import {execSync} from 'node:child_process'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import * as core from '@actions/core'
+import * as ini from 'ini'
 import * as xml from 'xml-js'
 
 enum Runner {
@@ -104,6 +105,23 @@ async function main() {
           }
           return packages
         })
+      }
+      if (packageConfig.component.startsWith('python/')) {
+          const setupConfigFilePath = path.resolve(packagePath, 'setup.cfg')
+          const manifest = ini.parse(await fs.readFile(setupConfigFilePath, 'utf-8'))
+          return packages.then(packages => {
+              packages[manifest.metadata.name] = {
+                  index,
+                  name: manifest.metadata.name,
+                  version: manifest.metadata.version,
+                  component: packageConfig.component,
+                  path: packagePath,
+                  tests: packageConfig.tests ?? [],
+                  builds: packageConfig.builds ?? [],
+                  releases: packageConfig.releases ?? [],
+              }
+              return packages
+          })
       }
       return packages
     }, Promise.resolve({} as Record<string, Package>))

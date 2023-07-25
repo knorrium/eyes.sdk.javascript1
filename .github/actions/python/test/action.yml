@@ -1,0 +1,30 @@
+name: Python tests
+description: Test Python SDK package
+
+inputs:
+  working-directory:
+    description: path to the package directory relative to repository root
+    required: true
+  test-type:
+    description: test type
+    required: true
+  test-filter:
+    description: test filter substring
+    required: false
+  core-build-dir:
+    required: false
+    description: path to the core-universal binaries relative to repository root
+
+runs:
+  using: composite
+  steps:
+    - name: Test python package
+      shell: sh
+      run: |
+        # pass absolute path to core-build-dir only if it exists and is not empty
+        export USDK_BUILD_DIR="`realpath ${{inputs.core-build-dir}} || true`"
+        HAS_FILES=`ls "$USDK_BUILD_DIR" || true`
+        if [ -z "$HAS_FILES" ]; then export USDK_BUILD_DIR=; fi
+        make --directory=python ${{inputs.test-type}}_tests
+      env:
+        PYTEST_FILTER: ${{inputs.test-filter}}

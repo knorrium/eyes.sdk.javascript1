@@ -1,0 +1,23 @@
+name: Python build
+description: Build Python SDK Package
+
+inputs:
+  working-directory:
+    description: path to the package directory relative to repository root
+    required: true
+  pypi-token:
+    description: publishing token from pypi.org
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Build Python SDK Package
+      if: success()
+      shell: sh
+      run: |
+        python -m pip install twine
+        python -m twine upload --verbose ${{working-directory}}/dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{inputs.pypi-token}}

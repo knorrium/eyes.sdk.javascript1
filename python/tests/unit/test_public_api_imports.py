@@ -217,6 +217,13 @@ def test_import_selenium_version():
     assert selenium_version == selenium_version_alias
 
 
+def test_import_eyes_library_version():
+    from EyesLibrary import __version__ as eyes_library_version
+    from EyesLibrary.__version__ import __version__ as eyes_library_version_alias
+
+    assert eyes_library_version == eyes_library_version_alias
+
+
 @pytest.mark.skipif(no_playwright, reason="Test requires playwright support")
 def test_import_playwright_version():
     from applitools.playwright import __version__ as playwright_version

@@ -17,6 +17,7 @@ root_dir = os.path.normpath(os.path.join(here, os.pardir))
 
 env = dict(os.environ)
 env.pop("PYTHONPATH", None)
+no_playwright = sys.version_info < (3, 7) or os.path.exists("/etc/alpine-release")
 
 
 def _get_venv_package_license(venv, package):
@@ -132,9 +133,7 @@ def test_eyes_selenium_has_license(venv, eyes_selenium_installed):
     assert "SDK LICENSE AGREEMENT" in license
 
 
-@pytest.mark.skipif(
-    sys.version_info < (3, 7), reason="Playwright is not supported here"
-)
+@pytest.mark.skipif(no_playwright, reason="Playwright is not supported here")
 def test_eyes_playwright_has_license(venv, eyes_playwright_installed):
     license = _get_venv_package_license(venv, "eyes-playwright")
     assert "SDK LICENSE AGREEMENT" in license

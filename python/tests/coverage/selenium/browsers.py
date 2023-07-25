@@ -1,7 +1,8 @@
+import sys
+
 import pytest
 import selenium
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
 from applitools.selenium import VisualGridRunner
@@ -11,12 +12,15 @@ from . import sauce
 LEGACY_SELENIUM = int(selenium.__version__.split(".")[0]) < 4
 # Download driver during module import to avoid racy downloads by xdist workers
 GECKO_DRIVER = GeckoDriverManager().install()
-CHROME_DRIVER = ChromeDriverManager().install()
 
 
 @pytest.fixture(scope="function")
 def chrome(eyes_runner_class):
     options = webdriver.ChromeOptions()
+    if sys.platform == "darwin":
+        options.binary_location = (
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        )
     options.add_argument("--headless")
     if isinstance(eyes_runner_class, VisualGridRunner):
         options.capabilities.pop("platform", None)
@@ -155,8 +159,8 @@ def chrome_emulator():
 
 def start_chrome_driver(options):
     if LEGACY_SELENIUM:
-        return webdriver.Chrome(executable_path=CHROME_DRIVER, options=options)
+        return webdriver.Chrome(options=options)
     else:
         from selenium.webdriver.chrome.service import Service
 
-        return webdriver.Chrome(service=Service(CHROME_DRIVER), options=options)
+        return webdriver.Chrome(options=options)

@@ -1,4 +1,5 @@
 import os
+import sys
 import traceback
 import typing
 from typing import TYPE_CHECKING, Dict, Union
@@ -15,7 +16,6 @@ from applitools.selenium import ClassicRunner, Eyes, VisualGridRunner
 from applitools.selenium.eyes import EyesRunner
 from applitools.selenium.fluent import SeleniumCheckSettings
 
-from .__version__ import __version__
 from .config import RobotConfiguration
 from .config_parser import (
     ConfigurationTrafaret,
@@ -41,6 +41,9 @@ if TYPE_CHECKING:
     from typing import TYPE_CHECKING, Optional, Text
 
     from applitools.common.utils.custom_types import AnyWebDriver
+
+
+from .__version__ import __version__  # noqa
 
 
 def get_suite_path():

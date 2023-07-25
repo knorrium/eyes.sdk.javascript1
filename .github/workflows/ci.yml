@@ -301,8 +301,121 @@ jobs:
           meta-path: ${{matrix.report.meta-path}}
           result-format: ${{matrix.report.format}}
 
+
+  python-build:
+    needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.builds).python}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.builds).python}}
+    name: Build / ${{matrix.display-name || 'python (skipped)'}}
+    timeout-minutes: 20
+    runs-on: ${{matrix.runner || 'ubuntu-20.04'}} # there are no old pythons for new Ubuntu
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+      - name: Restore build artifacts
+        if: join(matrix.builds)
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+          wait: true
+      - name: Build
+        uses: ./.github/actions/python/build
+        with:
+          core-build-dir: js/packages/core/bin
+          working-directory: ${{matrix.working-directory}}
+      - name: Save build artifacts
+        if: ${{matrix.key && matrix.artifacts}}
+        uses: ./.github/actions/storage/save
+        with:
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+
+
+  python-test:
+    needs: [setup, python-build]
+    if: ${{fromJSON(needs.setup.outputs.tests).python}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.tests).python}}
+    name: Test / ${{matrix.display-name || 'python (skipped)'}}
+    timeout-minutes: 45
+    runs-on: ${{matrix.runner || 'ubuntu-20.04'}} # there are no old pythons for new Ubuntu
+    container: ${{matrix.container}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+      - name: Restore build artifacts
+        if: join(matrix.builds)
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+      - name: Setup Python
+        if: matrix.python-version
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+      - name: Alpine dependencies
+        if: matrix.container == 'alpine'
+        run: apk add bash gcc libffi-dev make musl-dev npm py3-pip python3-dev
+      - name: Semaphore
+        if: ${{matrix.semaphore}}
+        uses: ./.github/actions/semaphore
+        with:
+          name: ${{matrix.semaphore}}
+          max-parallel: 5
+      - name: Run tests
+        uses: ./.github/actions/python/test
+        with:
+          core-build-dir: js/packages/core/bin
+          test-filter: ${{matrix.grep}}
+          test-type: ${{matrix.test-type}}
+          working-directory: ${{matrix.working-directory}}
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
+      - name: Save testing artifacts
+        if: ${{always() && matrix.key && matrix.artifacts}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{matrix.key}}
+          path: ${{join(matrix.artifacts)}}
+          retention-days: 2
+          if-no-files-found: ignore
+      - name: Sending report
+        if: always() && matrix.report
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          command: report
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
+          name: ${{matrix.report.name}}
+          group: ${{matrix.report.group}}
+          params: ${{toJSON(matrix.report.params)}}
+          result-path: ${{matrix.report.result-path}}
+          meta-path: ${{matrix.report.meta-path}}
+
+
   report:
-    needs: [setup, js-test, java-test]
+    needs: [setup, js-test, java-test, python-test]
     if: always() && contains(fromJSON('["success", "failed"]'), needs.js-test.result) || contains(fromJSON('["success", "failed"]'), needs.java-test.result)
     name: Report
     runs-on: ubuntu-latest

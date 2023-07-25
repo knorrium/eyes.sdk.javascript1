@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+from .__version__ import __version__  # noqa
 from .accessibility import (
     AccessibilityGuidelinesVersion,
     AccessibilityLevel,
@@ -57,8 +58,6 @@ from .ultrafastgrid.render_browser_info import (
     IosDeviceInfo,
     RenderBrowserInfo,
 )
-
-__version__ = "5.20.0"
 
 __all__ = (
     "AccessibilityGuidelinesVersion",

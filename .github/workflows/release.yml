@@ -155,3 +155,40 @@ jobs:
           command: notification
           name: ${{matrix.notification.name}}
           report-id: ${{matrix.name}}@${{matrix.package-version}}
+
+
+  python-release:
+    needs: [setup]
+    if: ${{fromJSON(needs.setup.outputs.releases).python}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{fromJSON(needs.setup.outputs.releases).python}}
+    name: Release / ${{matrix.display-name}}
+    runs-on: ${{matrix.runner || 'ubuntu-latest'}}
+    env: ${{matrix.env}}
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+      - name: Restore build artifacts
+        uses: ./.github/actions/storage/restore
+        with:
+          name: ${{join(matrix.builds)}}
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Publish Python package
+        uses: ./.github/actions/python/publish
+        with:
+          working-directory: ${{matrix.working-directory}}
+          pypi-token: ${{secrets.PYPI_TOKEN}}
+      - name: Sending notification
+        if: ${{matrix.notification}}
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: ${{matrix.working-directory}}
+          shell: ${{matrix.shell || 'bash'}}
+          command: notification
+          name: ${{matrix.notification.name}}
+          report-id: ${{matrix.name}}@${{matrix.package-version}}
