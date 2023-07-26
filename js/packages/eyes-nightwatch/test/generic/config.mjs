@@ -1,8 +1,8 @@
-module.exports = {
-  extends: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js',
+export const config = {
+  extends: '../../../../test/generic/config.mjs',
   overrides: [
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/js-overrides.js',
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/overrides.js',
+    '../../../../test/generic/overrides.mjs',
+    '../../../../../test/generic/overrides.mjs',
     {
       'check region by selector on ie': {skip: true},
       'should send dom on ie': {skip: true},

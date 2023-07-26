@@ -101,8 +101,8 @@ export function makeFramework(options?: FrameworkOptions): Framework {
       fixture.toText = () => (options?.fixtures && readFileSync(fixture.toString()).toString())!
       return fixture
     },
-    async emit({template, emitter: spec}) {
-      const tests = context.tests.map(test => ({...test, page: test.page && context.config?.pages[test.page]}))
+    async emit({override, template, emitter: spec}) {
+      const tests = context.tests.map(test => override({...test, page: test.page && context.config?.pages[test.page]}))
       const emittedTests = []
       const errors = []
       let skippedTestCount = 0

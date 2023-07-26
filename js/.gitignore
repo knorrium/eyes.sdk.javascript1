@@ -15,7 +15,7 @@ packages/*/types/**/*.d.mts
 packages/*/types/**/*.d.cts
 
 # Coverage tests
-**/test/generic/
+**/test/generated-coverage/
 coverage-test-report.xml
 coverage-tests-metadata.json
 

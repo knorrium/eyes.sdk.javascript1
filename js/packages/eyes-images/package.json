@@ -43,9 +43,9 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
-    "generate:tests": "coverage-tests generate ./test/coverage/config.js --name 'eyes-images' --meta-path './logs'",
+    "generate:tests": "generic ./test/generic/config.mjs",
     "test": "yarn test:coverage",
-    "test:coverage": "yarn generate:tests && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generic/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}"
+    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-images' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15}"
   },
   "dependencies": {
     "@applitools/eyes": "workspace:*"

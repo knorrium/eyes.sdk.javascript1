@@ -6,7 +6,7 @@
   },
   "plugins": ["@typescript-eslint", "prettier", "node", "no-only-tests"],
   "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
-  "ignorePatterns": ["node_modules/", "dist/", "types/", "logs/", "tmp/", "test/generic/", "fixtures/", "example/"],
+  "ignorePatterns": ["node_modules/", "dist/", "types/", "logs/", "tmp/", "test/generated-coverage/", "fixtures/", "example/"],
   "rules": {
     "prettier/prettier": "error",
     "no-only-tests/no-only-tests": ["error", {"fix": true}],

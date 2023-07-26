@@ -1,16 +1,20 @@
-const path = require('path')
+import * as path from 'path'
 
-module.exports = {
-  extends: 'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/config.js',
+export const config = {
+  extends: '../../../../test/generic/config.mjs',
   env: {
     NO_SDK: true,
     SPEC_DRIVER: path.resolve('./test/utils/spec-driver.js'),
     SETUP_EYES: path.resolve('./test/utils/setup-eyes.js'),
   },
   overrides: [
-    'https://raw.githubusercontent.com/applitools/sdk.coverage.tests/universal-sdk/js/overrides.js',
+    '../../../../test/generic/overrides.mjs',
+    '../../../../../test/generic/overrides.mjs',
     test => {
       if (!test.vg) return {config: {branchName: 'onscreen'}}
+    },
+    test => {
+      if (test.api === 'classic') return {skipEmit: true}
     },
     {
       // not possible because of browser api
@@ -28,8 +32,4 @@ module.exports = {
       'check window with layout breakpoints in config': {skipEmit: true},
     },
   ],
-  emitOnly: test => {
-    if (test.api === 'classic') return false
-    return true
-  },
 }

@@ -33,11 +33,11 @@ export async function load(url: string, context: Context, next: Next) {
 
   if (context.importAssertions?.format === 'template') {
     format ??= 'module'
-    source ??= await readFile(url, {encoding: 'utf8'})
+    source ??= await readFile(new URL(url), {encoding: 'utf8'})
     source = await transformTemplate(source)
   } else if (context.importAssertions?.format === 'tests') {
     format ??= 'module'
-    source ??= await readFile(url, {encoding: 'utf8'})
+    source ??= await readFile(new URL(url), {encoding: 'utf8'})
     source = await transformTests(source)
   }
 

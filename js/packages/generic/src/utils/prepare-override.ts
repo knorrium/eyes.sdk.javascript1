@@ -11,8 +11,8 @@ export async function prepareOverride(overrides?: MaybeArray<string | Override>)
   } else if (utils.types.isArray(overrides)) {
     return overrides.reduce(
       async (promise, item) => {
-        const overrides = await prepareOverride(item)
-        return promise.then(baseOverrides => test => overrides(baseOverrides(test)))
+        const override = await prepareOverride(item)
+        return promise.then(baseOverride => test => override(baseOverride(test)))
       },
       Promise.resolve((test: Test) => test),
     )
