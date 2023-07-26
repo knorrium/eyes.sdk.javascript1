@@ -10,6 +10,7 @@
       "type": "rich-workspace",
       "workspaces": ["node", "maven"],
       "synthetic-dependencies": {
+        "java/eyes-universal-core": ["js/core"],
         "java/eyes-universal-core-binaries": ["js/core"],
         "java/eyes-universal-core-linux": ["js/core"],
         "java/eyes-universal-core-alpine": ["js/core"],
