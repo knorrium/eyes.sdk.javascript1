@@ -15,8 +15,7 @@
         "java/eyes-universal-core-alpine": ["js/core"],
         "java/eyes-universal-core-arm": ["js/core"],
         "java/eyes-universal-core-mac": ["js/core"],
-        "java/eyes-universal-core-win": ["js/core"],
-        "python/core_universal": ["js/core"]
+        "java/eyes-universal-core-win": ["js/core"]
       }
     }
   ],
