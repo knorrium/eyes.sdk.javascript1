@@ -106,7 +106,6 @@ __metadata:
     "@applitools/dom-snapshot": 4.7.10
     "@applitools/driver": "workspace:*"
     "@applitools/ec-client": "workspace:*"
-    "@applitools/generic": "workspace:^"
     "@applitools/logger": "workspace:*"
     "@applitools/nml-client": "workspace:*"
     "@applitools/req": "workspace:*"
@@ -601,6 +600,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@applitools/generic@workspace:packages/generic"
   dependencies:
+    "@applitools/utils": "workspace:*"
     "@babel/core": 7.22.9
     "@types/babel__core": ^7.20.1
     "@types/node": ^16.11.7
