@@ -83,6 +83,7 @@ export class RichWorkspace extends ManifestPlugin {
         const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
         if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
           const path = this.paths.byComponent[dependantComponent]
+          console.log(path, dependantComponent)
           const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
           candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path]})
         }
