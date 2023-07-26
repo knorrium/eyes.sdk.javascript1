@@ -1,4 +1,4 @@
-import {makeResource, type ContentfulResource} from '../../src/resources/resource'
+import {makeResource, type ContentfulResource, type FailedResource} from '../../src/resources/resource'
 import {makeFetchResource} from '../../src/resources/fetch-resource'
 import {makeLogger} from '@applitools/logger'
 import assert from 'assert'
@@ -113,9 +113,9 @@ describe('fetch-resource', () => {
             'Content-Type': 'application/octet-stream',
             'x-is-streaming-content': 'true',
             'x-resource-hash': '',
-            'x-fetch-status-code': '',
-            'x-fetch-status-text': '',
-            'x-fetch-response-headers': '',
+            'x-fetch-status-code': 222,
+            'x-fetch-status-text': 'status text',
+            'x-fetch-response-header-content-type': 'some/content-type',
           },
         ]
       })
@@ -128,7 +128,57 @@ describe('fetch-resource', () => {
       logger: makeLogger(),
     })
     const resource = await fetchResource({resource: urlResource})
-    assert.deepStrictEqual((resource as ContentfulResource).value, mockResource.value)
+    assert.deepStrictEqual(resource as ContentfulResource, {
+      id: mockResource.url,
+      url: mockResource.url,
+      value: mockResource.value,
+      contentType: mockResource.contentType,
+      hash: {
+        hashFormat: 'sha256',
+        hash: '4df3c3f68fcc83b27e9d42c90431a72499f17875c81a599b566c9889b9696703', //crypto.createHash('sha256').update(mockResource.value).digest('hex'),
+        contentType: mockResource.contentType,
+      },
+      dependencies: undefined,
+    })
+  })
+
+  it('handles resources with error status code from tunnel', async () => {
+    nock('https://exec-wus.applitools.com', {
+      reqheaders: {
+        'x-eyes-api-key': 'blah',
+        'x-eyes-server-url': 'blah',
+        'x-ufg-jwt-token': () => true,
+        'x-tunnel-ids': '1,2,3',
+      },
+    })
+      .post('/handle-resource')
+      .reply(() => {
+        return [
+          200,
+          '',
+          {
+            'Content-Type': 'application/octet-stream',
+            'x-fetch-status-code': 404,
+            'x-fetch-status-text': 'not found',
+          },
+        ]
+      })
+
+    const fetchResource = makeFetchResource({
+      eyesServerUrl: 'blah',
+      apiKey: 'blah',
+      accessToken: 'blah',
+      tunnelIds: '1,2,3',
+      logger: makeLogger(),
+    })
+    const resource = await fetchResource({resource: urlResource})
+    assert.deepStrictEqual(resource as FailedResource, {
+      id: mockResource.url,
+      errorStatusCode: 404,
+      hash: {
+        errorStatusCode: 404,
+      },
+    })
   })
 
   describe('works with streamingTimeout', () => {
