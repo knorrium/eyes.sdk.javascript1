@@ -163,7 +163,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-win</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -179,7 +179,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-mac</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -197,7 +197,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-arm</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -213,7 +213,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-alpine</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -234,7 +234,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-linux</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -255,7 +255,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-linux</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -268,7 +268,7 @@
                 <dependency>
                     <groupId>com.applitools</groupId>
                     <artifactId>eyes-universal-core-binaries</artifactId>
-                    <version>5.63.3</version>
+                    <version>${project.version}</version>
                 </dependency>
             </dependencies>
         </profile>
