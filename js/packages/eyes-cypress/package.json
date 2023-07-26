@@ -69,7 +69,7 @@
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/bongo": "workspace:^",
-    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/generic": "workspace:^",
     "@applitools/snaptdout": "1.0.1",
     "@applitools/test-server": "workspace:^",
     "@applitools/test-utils": "workspace:^",

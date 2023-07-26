@@ -48,7 +48,7 @@
     "packages/eyes-storybook",
     "packages/eyes-cypress",
     "packages/bongo",
-    "packages/sdk-coverage-tests",
+    "packages/generic",
     "packages/api-extractor",
     "packages/test-utils",
     "packages/test-server"

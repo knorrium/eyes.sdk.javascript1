@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@applitools/bongo": "workspace:^",
-    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/generic": "workspace:^",
     "@applitools/spec-driver-puppeteer": "workspace:^",
     "@applitools/spec-driver-selenium": "workspace:^",
     "@applitools/spec-driver-webdriverio": "workspace:^",

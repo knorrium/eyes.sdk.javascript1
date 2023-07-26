@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@applitools/bongo": "workspace:^",
-    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/generic": "workspace:^",
     "@applitools/spec-driver-playwright": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@babel/core": "^7.15.5",

@@ -60,7 +60,7 @@
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/bongo": "workspace:^",
-    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/generic": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/nightwatch": "^2.3.16",
     "@types/node": "^12.20.55",

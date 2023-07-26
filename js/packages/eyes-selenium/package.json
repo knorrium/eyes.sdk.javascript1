@@ -55,7 +55,7 @@
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/bongo": "workspace:^",
-    "@applitools/sdk-coverage-tests": "workspace:^",
+    "@applitools/generic": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55",
     "@types/selenium-webdriver": "^4.1.1",

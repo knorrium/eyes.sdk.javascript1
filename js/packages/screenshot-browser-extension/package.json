@@ -34,7 +34,7 @@
   "devDependencies": {
     "@applitools/bongo": "^2.2.2",
     "@applitools/scripts": "^1.2.0",
-    "@applitools/sdk-coverage-tests": "^2.7.10",
+    "@applitools/generic": "^2.7.10",
     "@applitools/spec-driver-playwright": "^1.3.8",
     "@applitools/test-utils": "^1.5.12",
     "@babel/core": "^7.15.5",

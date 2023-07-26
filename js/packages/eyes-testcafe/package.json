@@ -89,7 +89,7 @@
   "devDependencies": {
     "@applitools/api-extractor": "^1.2.11",
     "@applitools/bongo": "^2.2.2",
-    "@applitools/sdk-coverage-tests": "^2.7.10",
+    "@applitools/generic": "^2.7.10",
     "@applitools/test-server": "^1.1.22",
     "@applitools/test-utils": "^1.5.11",
     "@types/node": "12",
