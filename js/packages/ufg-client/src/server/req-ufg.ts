@@ -23,11 +23,12 @@ export function makeReqUFG({settings, logger}: {settings: UFGServerSettings; log
     proxy: settings.proxy,
     useDnsCache: settings.useDnsCache,
     connectionTimeout: settings.connectionTimeout ?? 300000 /* 5min */,
+    requestTimeout: 30000,
     retry: {
       limit: 5,
       timeout: 200,
       statuses: [404, 500, 502, 504],
-      codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN'],
+      codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN', 'STUCK_REQUEST'],
     },
     hooks: [handleLogs({logger}), handleUnexpectedResponse()],
   })

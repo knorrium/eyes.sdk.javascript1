@@ -29,13 +29,14 @@ export function makeReqEyes({settings, fetch, logger}: {settings: ReqEyesSetting
     proxy: settings.proxy,
     useDnsCache: settings.useDnsCache,
     connectionTimeout: settings.connectionTimeout ?? 300000 /* 5min */,
+    requestTimeout: 30000,
     retry: [
       // retry on network issues
       {
         limit: 5,
         timeout: 200,
         statuses: [404, 500, 502, 504],
-        codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN'],
+        codes: ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN', 'STUCK_REQUEST'],
       },
       // retry on requests that were blocked by concurrency
       {
