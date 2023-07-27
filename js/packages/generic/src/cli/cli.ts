@@ -11,9 +11,14 @@ yargs(hideBin(process.argv))
     builder: {
       extends: {
         alias: ['config', 'c'],
-        description: 'path to the sdk configuration .js file',
+        description: 'path to the sdk configuration file',
         type: 'string',
-        default: './test/coverage/index.js',
+        default: './test/generic/index.js',
+      },
+      suite: {
+        alias: ['s'],
+        description: 'suite name to generate',
+        type: 'string',
       },
       tests: {
         alias: ['t'],

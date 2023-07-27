@@ -14,11 +14,12 @@ export async function generate(config: GenericConfig): Promise<void> {
     console.log(`Generating code for file ${config.tests}...\n`)
 
     const fixtures = config.fixtures ? await downloadFixtures(config.fixtures) : undefined
+    const filter = config.suites?.[config.suite!]
     const override = await prepareOverride(config.overrides)
-    const {emit} = await import(config.tests, {assert: {format: 'tests'}})
     const {emitter} = await import(config.emitter)
     const {template} = await import(config.template, {assert: {format: 'template'}})
-    const {tests, skippedTestCount, skippedEmitTestCount, errors} = await emit({fixtures, override, emitter, template})
+    const {emit} = await import(config.tests, {assert: {format: 'tests'}})
+    const {tests, errors, skipped, skippedEmit} = await emit({fixtures, filter, override, emitter, template})
 
     if (errors.length > 0) {
       if (config.strict) {
@@ -36,8 +37,8 @@ export async function generate(config: GenericConfig): Promise<void> {
     await saveMeta(tests, config.meta)
 
     console.log(chalk.green(`${chalk.bold(`${tests.length}`.padEnd(3))} test(s) generated`))
-    console.log(chalk.cyan(`${chalk.bold(`${skippedTestCount}`.padEnd(3))} test(s) skipped execution`))
-    console.log(chalk.cyan(`${chalk.bold(`${skippedEmitTestCount}`.padEnd(3))} test(s) skipped emit`))
+    console.log(chalk.cyan(`${chalk.bold(`${skipped}`.padEnd(3))} test(s) skipped execution`))
+    console.log(chalk.cyan(`${chalk.bold(`${skippedEmit}`.padEnd(3))} test(s) skipped emit`))
     console.log(chalk.red(`${chalk.bold(`${errors.length}`.padEnd(3))} error(s) occurred`))
   } catch (error: any) {
     console.log(chalk.red(error.stack))

@@ -1,5 +1,5 @@
 import type {MaybeArray} from '@applitools/utils'
-import {type Override} from './framework.js'
+import {type Test, type Override} from './framework.js'
 
 export interface GenericConfig {
   /**
@@ -11,10 +11,6 @@ export interface GenericConfig {
    */
   tests: string
   /**
-   * Path or url to an implementation file
-   */
-  overrides?: MaybeArray<string | Override>
-  /**
    * Path or url to a emitter spec
    */
   emitter: string
@@ -23,13 +19,25 @@ export interface GenericConfig {
    */
   template: string
   /**
-   * Path to directory or url to zip with fixtures
-   */
-  fixtures?: string
-  /**
    * Output patter for emitted files
    */
   output: string
+  /**
+   * Path or url to an implementation file
+   */
+  overrides?: MaybeArray<string | Override>
+  /**
+   * Suite name
+   */
+  suite?: string
+  /**
+   * Suites declaration
+   */
+  suites?: Record<string, (test: Test) => boolean>
+  /**
+   * Path to directory or url to zip with fixtures
+   */
+  fixtures?: string
   /**
    * Meta config
    */

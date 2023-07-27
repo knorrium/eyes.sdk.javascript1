@@ -9,7 +9,6 @@ export const config = {
   },
   overrides: [
     '../../../../test/generic/overrides.mjs',
-    '../../../../../test/generic/overrides.mjs',
     test => {
       if (!test.vg) return {config: {branchName: 'onscreen'}}
     },

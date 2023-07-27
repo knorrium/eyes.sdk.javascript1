@@ -8,6 +8,9 @@ inputs:
   config:
     description: path to the configuration file (local or remote)
     type: string
+  suite:
+    description: suite name
+    type: string
   shell:
     description: shell to use
     type: string

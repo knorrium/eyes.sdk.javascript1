@@ -113,6 +113,7 @@ jobs:
         with:
           working-directory: ${{matrix.working-directory}}
           config: ${{matrix.generic.config}}
+          suite: ${{matrix.generic.suite}}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:

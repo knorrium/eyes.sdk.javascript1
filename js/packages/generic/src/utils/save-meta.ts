@@ -10,11 +10,11 @@ export async function saveMeta(
 
   const meta = tests.reduce((meta, test) => {
     meta[pascalize ? test.key : test.name] = {
-      isGeneric: true,
       name: test.group,
       variant: test.variant,
-      skip: test.skip,
-      skipEmit: test.skipEmit,
+      generic: true,
+      skip: test.skipEmit || test.skip,
+      reason: test.reason,
     }
     return meta
   }, {} as Record<string, any>)
