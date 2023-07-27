@@ -1,6 +1,6 @@
 {
   "name": "@applitools/generic",
-  "version": "3.2.0",
+  "version": "3.2.2",
   "description": "Generic coverage tests for Applitools SDKs",
   "author": "Applitools <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
@@ -14,10 +14,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "type": "module",
-  "bin": {
-    "coverage-tests": "./dist/cli/cli.js",
-    "generic": "./dist/cli/cli.js"
-  },
+  "bin": "./dist/cli/cli.js",
   "files": [
     "dist",
     "types"

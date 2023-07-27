@@ -1,4 +1,4 @@
-#!/usr/bin/env node --experimental-import-meta-resolve --experimental-loader @applitools/generic/dist/code-loader.js
+#!/usr/bin/env node
 
 import type {GenericConfig} from '../types.js'
 import yargs, {type CommandModule} from 'yargs'

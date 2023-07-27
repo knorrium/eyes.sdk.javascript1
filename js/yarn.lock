@@ -611,7 +611,6 @@ __metadata:
     prettier: ^3.0.0
     yargs: 17.7.2
   bin:
-    coverage-tests: ./dist/cli/cli.js
     generic: ./dist/cli/cli.js
   languageName: unknown
   linkType: soft
