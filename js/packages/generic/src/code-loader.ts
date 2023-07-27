@@ -95,6 +95,6 @@ async function transformTests(source: string): Promise<string> {
 
   const url = import.meta.url
   const code = `export async function emit(options) {\nconst {makeFramework} = await import(await import.meta.resolve('./framework.js', '${url}'))\nconst {config, test, fixture, emit} = makeFramework(options)\n${source}\nreturn emit(options)\n}`
-  const transformed = await transformAsync(code, {plugins: [transformer]})
+  const transformed = await transformAsync(code, {configFile: false, plugins: [transformer]})
   return transformed?.code ?? source
 }
