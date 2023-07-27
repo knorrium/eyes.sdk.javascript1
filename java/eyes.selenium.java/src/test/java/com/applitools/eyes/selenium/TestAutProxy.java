@@ -14,14 +14,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 public class TestAutProxy {
-
-    @BeforeTest
-    public void setup() {
-        String chromeDriverPath = System.getenv("CHROME_DRIVER_PATH");
-        if(chromeDriverPath == null) throw new EyesException("CHROME_DRIVER_PATH missing");
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-    }
-
+    
     private void startProxyDocker() throws IOException, InterruptedException {
         Process stopDocker = Runtime.getRuntime().exec(new String[]{"bash","-c","docker run -d --name='tinyproxy' -p 8080:8888 dannydirect/tinyproxy:latest ANY"});
         stopDocker.waitFor();

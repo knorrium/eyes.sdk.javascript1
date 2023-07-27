@@ -4,7 +4,6 @@
 set -e;
 
 # to not fail tests due to missing env var
-export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver";
 export FIREFOX_DRIVER_PATH="/usr/local/bin/geckodriver";
 export APPLITOOLS_LOG_DIR="./reports/logs/";
 

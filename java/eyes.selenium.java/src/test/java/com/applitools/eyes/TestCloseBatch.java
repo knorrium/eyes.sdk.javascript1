@@ -35,10 +35,6 @@ public class TestCloseBatch extends ReportingTestSuite {
 
     @BeforeTest(alwaysRun = true)
     public void before() {
-        String chromeDriverPath = System.getenv("CHROME_DRIVER_PATH");
-        if(chromeDriverPath == null) throw new EyesException("CHROME_DRIVER_PATH missing");
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
         driver = SeleniumUtils.createChromeDriver(new ChromeOptions().setHeadless(true));
 
         batch = new BatchInfo("closeBatch");

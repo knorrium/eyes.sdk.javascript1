@@ -6,11 +6,6 @@ set -e;
 export APPLITOOLS_LOG_DIR="./reports/logs/";
 
 # Setup web drivers
-echo "Chromedriver setup"
-chmod +x ./../initChromeDriver.sh;
-sh ./../initChromeDriver.sh;
-export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver";
-
 echo "Geckodriver setup"
 chmod +x ./../initGeckoDriver.sh;
 sh ./../initGeckoDriver.sh;

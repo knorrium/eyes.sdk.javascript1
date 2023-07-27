@@ -5,9 +5,6 @@ set -e;
 
 # Setup web drivers
 echo "Chromedriver setup"
-chmod +x ./../initChromeDriver.sh;
-sh ./../initChromeDriver.sh;
-export CHROME_DRIVER_PATH="/usr/local/bin/chromedriver";
 export FIREFOX_DRIVER_PATH="/usr/local/bin/geckodriver";
 export APPLITOOLS_LOG_DIR="./reports/logs/";
 

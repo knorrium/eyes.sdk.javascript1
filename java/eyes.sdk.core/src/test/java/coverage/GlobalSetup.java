@@ -34,9 +34,6 @@ public class GlobalSetup {
             useDocker = false;
         }
         if(!useDocker) {
-            String chromeDriverPath = System.getenv("CHROME_DRIVER_PATH");
-            if(chromeDriverPath == null) throw new MissingEnvVarException("CHROME_DRIVER_PATH");
-            System.setProperty("webdriver.chrome.driver", chromeDriverPath);
             String firefoxDriverPath = System.getenv("FIREFOX_DRIVER_PATH");
             if(firefoxDriverPath == null) throw new MissingEnvVarException("FIREFOX_DRIVER_PATH");
             System.setProperty("webdriver.gecko.driver", firefoxDriverPath);

@@ -41,10 +41,6 @@ public class TestProxy extends ReportingTestSuite {
     public void setup() throws IOException, InterruptedException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException {
         super.setGroupName("selenium");
 
-        String chromeDriverPath = System.getenv("CHROME_DRIVER_PATH");
-        if(chromeDriverPath == null) throw new EyesException("CHROME_DRIVER_PATH missing");
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
         driver = SeleniumUtils.createChromeDriver(new ChromeOptions().setHeadless(true));
         proxySettings = new ProxySettings("http://127.0.0.1", 8080, "username", "password");
         autProxySettings = new AutProxySettings(proxySettings);
