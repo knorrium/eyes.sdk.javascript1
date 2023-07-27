@@ -40,7 +40,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts' '**/*.js'",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
-    "generate:tests": "generic ./test/generic/config.mjs",
+    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
     "test": "run test:it && run test:e2e && run test:coverage",
     "test:local": "run test:it && run test:e2e && MOCHA_OMIT_TAGS=sauce run test:coverage",
     "test:sauce": "MOCHA_ONLY_TAGS=sauce run test:coverage",

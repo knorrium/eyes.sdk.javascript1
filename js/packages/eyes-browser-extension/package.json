@@ -17,7 +17,7 @@
     "build": "yarn build:dist && yarn build:zip",
     "build:dist": "webpack",
     "build:zip": "mkdir ./bin && cd ./dist && zip -r ../bin/eyes-browser-extension.zip ./*",
-    "generate:tests": "generic ./test/generic/config.mjs",
+    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
     "test": "yarn test:coverage",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-browser-extension' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level xvfb:setup"
