@@ -107,6 +107,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{github.event.pull_request.head.ref}}
+      - name: Generate tests
+        if: ${{matrix.generic}}
+        uses: ./.github/actions/generic
+        with:
+          working-directory: ${{matrix.working-directory}}
+          config: ${{matrix.generic.config}}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -128,12 +134,6 @@ jobs:
         with:
           name: ${{matrix.semaphore}}
           max-parallel: 3
-      - name: Generate tests
-        if: ${{matrix.generic}}
-        uses: ./.github/actions/generic
-        with:
-          working-directory: ${{matrix.working-directory}}
-          config: ${{matrix.generic.config}}
       - name: Run tests
         uses: ./.github/actions/js/test
         with:
