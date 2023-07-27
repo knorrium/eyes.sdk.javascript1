@@ -13,7 +13,7 @@ namespace Applitools.Appium
         }
 
         internal ClassicRunner(ILogHandler logHandler, IServerConnectorFactory serverConnectorFactory)
-            : base(logHandler, "Eyes.Appium.DotNet")
+            : base(logHandler, "Eyes.Appium2.DotNet")
         {
             ManagerApplitoolsRefId = GetCoreMakeManager();
         }

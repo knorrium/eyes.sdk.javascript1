@@ -1,8 +1,4 @@
 #!/usr/bin/env pwsh
-Param
-(
-    [String] [Parameter(Mandatory=$true)] $CORE_VERSION = "3.1.1"
-)
 
 $version = ${env:CORE_VERSION}
 wget -nv "https://github.com/applitools/eyes.sdk.javascript1/releases/download/js%2Fcore%40$version/core-alpine"

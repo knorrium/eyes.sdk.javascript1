@@ -5,7 +5,7 @@ import datetime
 import json
 
 def upSemanticVersion(currentVersion, part):
-    versionPattern = r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)(\.(?P<patch>[0-9]+))?"
+    versionPattern = r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)(\.(?P<patch>[0-9]+))?(?P<suffix>-.*)?"
     matches = re.search(versionPattern, currentVersion)
     if matches:
         vMajor = int(matches.group('major'))
@@ -16,6 +16,9 @@ def upSemanticVersion(currentVersion, part):
         else:
             vPatch = 0
         vNext = "{}.{}"
+        suffix = matches.group('suffix')
+        if not suffix:
+            suffix = ""
         partPattern = r"(?P<partName>[a-z]+)(\+(?P<increase>[0-9]+))?"
         matches = re.match(partPattern, part)
         if matches:
@@ -33,13 +36,14 @@ def upSemanticVersion(currentVersion, part):
                 vNext = (vNext+".{}").format(vMajor, vMinor, vPatch + 1)
         else:
             vNext = part
-    return vNext
+    return vNext+suffix
 
 def getDependentPackages(packageName, packageNextVersions, versionPart):
     packageDependencies = {
         "Eyes.Image.Core": ["Eyes.Images"],
         "Eyes.Images": ["Eyes.Selenium", "Eyes.Selenium4", "Eyes.Playwright"],
         "Eyes.Selenium": ["Eyes.Appium"],
+        "Eyes.Selenium4": ["Eyes.Appium2"],
     }
     dependencyDefaultChangelogStr="### Updated\n- Match to latest {}\n"
     dependentPackages = packageDependencies.get(packageName)
@@ -61,8 +65,8 @@ def collect_changes():
     f = open("CHANGELOG.md", "r")
     lastVNextPackageName = False
     vNextPattern = r"^## \[(?P<PackageName>.*)? vNext( (?P<VersionPart>.*))?\]$"
-    vUpdatedPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+)\] - UPDATED$"
-    vLastPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+)\] - .*$"
+    vUpdatedPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+(-.*)?)\] - UPDATED$"
+    vLastPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+(-.*)?)\] - .*$"
     for line in f:
         matches = re.search(vNextPattern, line)
         if matches:
@@ -153,6 +157,17 @@ if __name__ == '__main__':
     new_tags = []
     reported_version = "RELEASE_CANDIDATE"
     dateStr = datetime.datetime.now().strftime("%Y-%m-%d")
+    matrixJsonStr = "{\"include\":["
+
+    packageInfo = {
+        # "Eyes.Image.Core": {"name":'core', "report": "coverage-test-reportC.xml"},
+        "Eyes.Images": {"name":'images', "report": "coverage-test-reportI.xml", "sdk": "dotnet", "group":"images"},
+        "Eyes.Selenium": {"name":'selenium3', "report": "coverage-test-reportS3.xml", "sdk": "dotnet", "group": "selenium"},
+        "Eyes.Selenium4": {"name":'selenium4', "report": "coverage-test-reportS4.xml", "sdk": "dotnet4", "group": "selenium"},
+        "Eyes.Playwright": {"name":'playwright', "report": "coverage-test-reportP.xml", "sdk": "dotnet_playwright", "group": "selenium"},
+        "Eyes.Appium": {"name":'appium', "report": "coverage-test-reportA.xml", "sdk": "dotnet", "group": "appium"},
+        "Eyes.Appium2": {"name":'appium2', "report": "coverage-test-reportA2.xml", "sdk": "dotnet2", "group": "appium"},
+    }
 
     for (p,v) in packageNextVersions.items():
         newLines += "## [" + p + " " + v['version'] + "] - " + dateStr + "\n"
@@ -161,12 +176,22 @@ if __name__ == '__main__':
         new_tags.append(p + "@" + v['version'] + "\n")
         updated_projects.append(p + "\n")
         reported_version += ";" + p + "@" + v['version']
-    
+        if p in packageInfo:
+            pi = packageInfo[p]
+            pi['version'] = v['version']
+            matrixJsonStr += json.dumps(pi) + ','
+    matrixJsonStr = matrixJsonStr.rstrip(',')
+    matrixJsonStr += "]}"
+
     f = open("RECENT_CHANGES.md", "w")
     f.write(newLines)
     f.close()
 
-    sendMailStr = create_send_mail_json(reported_version, newLines);
+    f = open("MATRIX.json", "w")
+    f.write(matrixJsonStr)
+    f.close()
+
+    sendMailStr = create_send_mail_json(reported_version, newLines)
     f = open("SEND_MAIL.json", "w")
     f.writelines(sendMailStr)
     f.close()

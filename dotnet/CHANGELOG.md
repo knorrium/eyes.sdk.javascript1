@@ -1,3 +1,36 @@
+## [Eyes.Image.Core 3.6.4] - 2023-07-27
+### Updated
+- Server Core to 3.6.4
+
+## [Eyes.Images 3.36] - 2023-07-27
+### Updated
+- Match to latest Eyes.Image.Core
+
+## [Eyes.Selenium 3.65] - 2023-07-27
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium 5.63] - 2023-07-27
+### Updated
+- Match to latest Eyes.Selenium
+
+## [Eyes.Selenium4 3.65] - 2023-07-27
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium2 5.63-beta04] - 2023-07-27
+### Updated
+- Match to latest Eyes.Selenium4
+
+## [Eyes.Playwright 1.13] - 2023-07-27
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium2 5.62-beta04] - NEW
+### Added
+- DotNet Appium2 support.
+- Server Core version 3.6.2.
+
 ## [Eyes.Image.Core 3.6.2] - 2023-07-18
 ### Updated
 - Server Core to 3.6.2

@@ -7,17 +7,17 @@ on:
         description: Run tests
         type: boolean
         required: false
-        default: false
+        default: true
       core_version:
         description: Core version
         type: string
         required: true
-        default: "3.6.2"
+        default: "3.6.4"
       core_nuget_version:
         description: Core NuGet version
         type: string
         required: false
-        default: "3.6.2"
+        default: "3.6.4"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -37,17 +37,21 @@ jobs:
       release_branch: ${{steps.create_release_branch.outputs.release_branch}}
       new_tags: ${{steps.update_versions.outputs.new_tags}}
       updated_projects: ${{steps.update_versions.outputs.updated_projects}}
+      packages_matrix: ${{steps.update_versions.outputs.packages_matrix}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
       - name: Update versions
+        id: update_versions
         shell: pwsh
         run: |
           cd dotnet
           ./update_core_versions.ps1
           python updateChangelogAndProjectFiles.py
+          cat ./MATRIX.json
+          echo "packages_matrix=$(cat ./MATRIX.json)" >> $env:GITHUB_OUTPUT
       - name: Set release branch
         shell: bash
         run: |
@@ -61,6 +65,12 @@ jobs:
             dotnet/*.json
             dotnet/CHANGELOG.md
             dotnet/Eyes.*/Eyes.*.csproj
+
+  # dummy:
+  #   needs: [update_cores]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: echo ${{needs.update_cores.outputs.packages_matrix}}
 
   test:
     if: ${{ inputs.run_tests }}
@@ -103,6 +113,7 @@ jobs:
           dotnet pack ./Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj
           dotnet pack ./Eyes.Images.DotNet/Eyes.Images.DotNet.csproj
           dotnet pack ./Eyes.Appium.DotNet/Eyes.Appium.DotNet.csproj
+          dotnet pack ./Eyes.Appium2.DotNet/Eyes.Appium2.DotNet.csproj
           dotnet pack ./Eyes.Playwright.DotNet/Eyes.Playwright.DotNet.csproj
           dotnet pack ./Eyes.Selenium.DotNet/Eyes.Selenium.DotNet.csproj
           dotnet pack ./Eyes.Selenium4.DotNet/Eyes.Selenium4.DotNet.csproj
@@ -159,14 +170,67 @@ jobs:
         shell: pwsh
         run: |
           cd dotnet
+          echo "will upload nugets"
+          ls ./PackagesOutput/*.nupkg
           dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${env:NUGET_API_KEY} --skip-duplicate
       - name: Create PR
         shell: bash
         run: |
           cd dotnet
+          echo "will create PR"
           hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -F NEW_TAGS.txt
-      - name: Send update notice
-        shell: bash
-        run: |
-          cd dotnet
-          chmod +x ./sendMail.sh && ./sendMail.sh
+    
+  report_test_results:
+    if: |
+      always() &&
+      (needs.release.result == 'success')
+    needs: [release, update_cores]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.update_cores.outputs.packages_matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{needs.update_cores.outputs.release_branch}}
+      - uses: actions/download-artifact@v3
+        with:
+          name: test-report
+          path: dotnet
+      - name: Sending report
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: dotnet
+          shell: bash
+          command: report
+          report-id: dotnet_${{ matrix.name }}_$GITHUB_SHA
+          name: dotnet_${{ matrix.name }}
+          group: ${{matrix.group}}
+          result-path: ${{matrix.report}}
+          meta-path: meta.json
+
+  release_report:
+    if: |
+      always() &&
+      (needs.report_test_results.result == 'success')
+    needs: [report_test_results, update_cores]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.update_cores.outputs.packages_matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{needs.update_cores.outputs.release_branch}}
+      - name: Sending notification
+        uses: ./.github/actions/bongo
+        with:
+          working-directory: dotnet
+          shell: bash
+          command: notification
+          report-id: dotnet_${{ matrix.name }}_$GITHUB_SHA
+          name: dotnet_${{ matrix.name }}
+          release-version: ${{ matrix.version }}
+          # recipient: itai.barhaim@applitools.com
+
