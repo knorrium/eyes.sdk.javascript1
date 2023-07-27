@@ -20,16 +20,14 @@ function processXunit(xunit, {metadata, params} = {}) {
   }
 
   return Object.entries(xmlTests).map(([name, test]) => {
-    const isSkipped = test.skip || test.skipEmit || false // we explicitly set false to preserve backwards compatibility
+    const skip = test.skip || test.skipEmit || false
     return {
       test_name: test.name || name,
-      parameters: {
-        ...params,
-        variant: test.variant,
-      },
-      passed: isSkipped ? undefined : !test.failure,
-      isGeneric: !!test.isGeneric,
-      isSkipped,
+      parameters: {...params, variant: test.variant},
+      passed: skip ? undefined : !test.failure,
+      isGeneric: !!test.isGeneric || !!test.generic,
+      isSkipped: skip,
+      skipCause: skip ? test.reason : undefined,
     }
   })
 }

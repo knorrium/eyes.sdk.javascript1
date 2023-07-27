@@ -29,7 +29,7 @@ export interface GenericConfig {
   /**
    * Suite name
    */
-  suite?: string
+  suite?: string | ((test: Test) => boolean)
   /**
    * Suites declaration
    */

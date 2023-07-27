@@ -5,6 +5,7 @@ import {prepareOverride} from './utils/prepare-override.js'
 import {saveTests} from './utils/save-tests.js'
 import {saveMeta} from './utils/save-meta.js'
 import chalk from 'chalk'
+import * as utils from '@applitools/utils'
 
 export async function generate(config: GenericConfig): Promise<void> {
   try {
@@ -14,7 +15,7 @@ export async function generate(config: GenericConfig): Promise<void> {
     console.log(`Generating code for file ${config.tests}...\n`)
 
     const fixtures = config.fixtures ? await downloadFixtures(config.fixtures) : undefined
-    const filter = config.suites?.[config.suite!]
+    const filter = utils.types.isFunction(config.suite) ? config.suite : config.suites?.[config.suite as string]
     const override = await prepareOverride(config.overrides)
     const {emitter} = await import(config.emitter)
     const {template} = await import(config.template, {assert: {format: 'template'}})

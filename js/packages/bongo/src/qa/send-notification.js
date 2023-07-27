@@ -26,9 +26,7 @@ async function sendReleaseNotification({reportId, name, releaseVersion, recipien
 
   if (response.status !== 200) {
     console.error(await response.text())
-    throw new Error(
-      `There was a problem sending the release notification: status ${response.status} with message ${response.message}`,
-    )
+    throw new Error(`Request failed with status ${response.status}`)
   }
 }
 

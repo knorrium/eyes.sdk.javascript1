@@ -71,11 +71,9 @@ async function sendTestReport({reportId, name, group, params, metaPath, resultPa
     body: JSON.stringify(report),
   })
 
-  if (response.status === 200) {
-    process.stdout.write(chalk.green('Done!\n'))
-  } else {
-    process.stdout.write(chalk.red('Failed!\n'))
-    console.log(response.statusText)
+  if (response.status !== 200) {
+    console.error(await response.text())
+    throw new Error(`Request failed with status ${response.status}`)
   }
 }
 
