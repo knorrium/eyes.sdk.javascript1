@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-universal-core</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.63.3</version>
+    <version>5.63.4</version>
     <name>eyes-universal-core</name>
     <url>http://www.applitools.com</url>
     <description>Eyes universal core for storing and lunching binary server</description>

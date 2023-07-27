@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## [3.6.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.4...js/core@3.6.5) (2023-07-27)
+
+
+### Bug Fixes
+
+* rendering issue with chrome &gt;113 and css white-space property ([cf34ad1](https://github.com/applitools/eyes.sdk.javascript1/commit/cf34ad1a5b3cba0b29b3509616b20a2b1313c62f))
+
+
+### Dependencies
+
+* @applitools/ufg-client bumped to 1.5.3
+  #### Bug Fixes
+
+  * consider response headers and status code which are returned from the EC resource handler ([#1823](https://github.com/applitools/eyes.sdk.javascript1/issues/1823)) ([b7bd541](https://github.com/applitools/eyes.sdk.javascript1/commit/b7bd5415ae8f92a8032fc68ba993ccac1d9ff76a))
+
 ## [3.6.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.3...js/core@3.6.4) (2023-07-21)
 
 

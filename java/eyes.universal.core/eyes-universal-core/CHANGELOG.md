@@ -1,6 +1,23 @@
 # Changelog
 
 
+## [5.63.4](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core@5.63.3...java/eyes-universal-core@5.63.4) (2023-07-27)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.6.5
+  #### Bug Fixes
+
+  * rendering issue with chrome &gt;113 and css white-space property ([cf34ad1](https://github.com/applitools/eyes.sdk.javascript1/commit/cf34ad1a5b3cba0b29b3509616b20a2b1313c62f))
+
+
+
+* @applitools/ufg-client bumped to 1.5.3
+  #### Bug Fixes
+
+  * consider response headers and status code which are returned from the EC resource handler ([#1823](https://github.com/applitools/eyes.sdk.javascript1/issues/1823)) ([b7bd541](https://github.com/applitools/eyes.sdk.javascript1/commit/b7bd5415ae8f92a8032fc68ba993ccac1d9ff76a))
+
 ## [5.63.3](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core@5.63.2...java/eyes-universal-core@5.63.3) (2023-07-23)
 
 

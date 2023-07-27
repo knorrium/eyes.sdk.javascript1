@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.5.2...js/ufg-client@1.5.3) (2023-07-27)
+
+
+### Bug Fixes
+
+* consider response headers and status code which are returned from the EC resource handler ([#1823](https://github.com/applitools/eyes.sdk.javascript1/issues/1823)) ([b7bd541](https://github.com/applitools/eyes.sdk.javascript1/commit/b7bd5415ae8f92a8032fc68ba993ccac1d9ff76a))
+
 ## [1.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.5.1...js/ufg-client@1.5.2) (2023-07-21)
 
 

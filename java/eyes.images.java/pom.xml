@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-images-java5</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.63.3</version>
+    <version>5.63.4</version>
     <name>eyes-images-java5</name>
     <url>http://www.applitools.com</url>
     <description>Applitools Eyes SDK for Images</description>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-sdk-core-java5</artifactId>
-            <version>5.63.3</version>
+            <version>5.63.4</version>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-sdk-core-java5</artifactId>
-            <version>5.63.3</version>
+            <version>5.63.4</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
