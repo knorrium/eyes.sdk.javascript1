@@ -1,20 +1,5 @@
 const {mochaGrep} = require('@applitools/test-utils')
 
-const tags = [
-  'image',
-  'headfull',
-  'webdriver',
-  'emulator',
-  'mobile',
-  'chrome',
-  'firefox',
-  'ie',
-  'edge',
-  'safari',
-]
-if (Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_VERSION) <= 1) {
-  tags.push('jsonwire')
-}
 const group = process.env.MOCHA_GROUP
 
 module.exports = {
@@ -22,5 +7,5 @@ module.exports = {
   require: ['ts-node/register'],
   reporter: 'mocha-multi',
   reporterOptions: [`spec=-,json=./logs/report${group ? `-${group}` : ''}.json,xunit=./logs/report.xml`],
-  grep: group !== 'it' ? mochaGrep({tags: {allow: tags}}) : undefined,
+  grep: mochaGrep(),
 }

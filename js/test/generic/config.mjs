@@ -6,7 +6,7 @@ export const config = {
   template: './template.hbs',
   fixtures: '../../../test/fixtures',
   suites: {
-    image: test => test.features?.includes('image'),
+    images: test => test.features?.includes('image'),
     local: test => !test.features?.includes('sauce'),
     sauce: test => test.features?.includes('sauce'),
   },

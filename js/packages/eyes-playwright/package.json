@@ -36,7 +36,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project ./tsconfig.build.json",
-    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ../../test/generic/config.mjs",
+    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
     "test": "yarn test:coverage",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-playwright' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "up:framework": "run --top-level add-silent playwright"
