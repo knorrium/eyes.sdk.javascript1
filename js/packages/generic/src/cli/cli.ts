@@ -19,6 +19,7 @@ yargs(hideBin(process.argv))
         alias: ['s'],
         description: 'suite name to generate',
         type: 'string',
+        coerce: suite => (suite === '' ? undefined : suite),
       },
       tests: {
         alias: ['t'],

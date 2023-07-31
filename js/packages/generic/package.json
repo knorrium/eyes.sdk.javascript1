@@ -1,6 +1,6 @@
 {
   "name": "@applitools/generic",
-  "version": "3.3.2",
+  "version": "3.3.4",
   "description": "Generic coverage tests for Applitools SDKs",
   "author": "Applitools <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
