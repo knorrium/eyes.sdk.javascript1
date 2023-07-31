@@ -86,7 +86,7 @@
   "scripts": {
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project tsconfig.build.v$([ ! -z $APPLITOOLS_FRAMEWORK_VERSION ] && echo $APPLITOOLS_FRAMEWORK_VERSION | cut -f1 -d'.' || echo 8).json",
-    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ../../test/generic/config.mjs",
+    "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
     "test": "run test:service && run test:coverage",
     "test:local": "run test:service && MOCHA_OMIT_TAGS=sauce run test:coverage",
     "test:sauce": "MOCHA_ONLY_TAGS=sauce run test:coverage",

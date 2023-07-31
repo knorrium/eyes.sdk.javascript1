@@ -23,5 +23,5 @@ runs:
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
-        npx --package=@applitools/generic@latest --yes -- 'NODE_OPTIONS=$(echo --experimental-import-meta-resolve --experimental-loader=$(NODE_PATH=$(echo $PATH | sed "s/.bin.*//") node -pe "require.resolve(\"@applitools/generic/dist/code-loader.js\")")) generic ${{inputs.config}}'
+        npx --package=@applitools/generic@latest --yes -- 'NODE_OPTIONS=$(echo --experimental-import-meta-resolve --experimental-loader=$(NODE_PATH=$(echo $PATH | sed "s/.bin.*//") node -pe "require.resolve(\"@applitools/generic/dist/code-loader.js\")")) generic="${{inputs.config}}" --suite="${{inputs.suite}}"'
 

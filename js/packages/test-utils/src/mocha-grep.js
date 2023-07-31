@@ -15,8 +15,6 @@ function mochaGrep({grep = process.env.MOCHA_GREP, tags = {}} = {}) {
     if (tags.only) tags.only = tags.only.filter(tag => !tags.omit.includes(tag))
   }
 
-  console.log(grep, tags)
-
   if (grep) return new RegExp(`^.*?${grep}.*?$`, 'i')
 
   if (tags.allow) {
