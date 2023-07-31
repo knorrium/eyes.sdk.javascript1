@@ -881,7 +881,7 @@
           "framework-version": 5,
           "node-version": 14,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 5, "node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -890,7 +890,7 @@
           "framework-version": 6,
           "node-version": 14,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 6, "node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -899,7 +899,7 @@
           "framework-version": 7,
           "node-version": 16,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 7, "node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -908,7 +908,7 @@
           "framework-version": 8,
           "node-version": 18,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 8, "node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -917,7 +917,7 @@
           "framework-version": 8,
           "node-version": 20,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 8, "node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -925,7 +925,7 @@
           "artifacts": ["./logs/**/*"],
           "framework-version": 8,
           "test-type": "sauce",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "sauce"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "sauce"},
           "parallel": 2,
           "semaphore": "sauce",
           "report": {"name": "js_wdio_5", "params": {"framework": 8}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
@@ -950,7 +950,7 @@
           "framework-version": 4.4,
           "node-version": 14,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_selenium_4", "params": {"framework": 4, "node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -959,7 +959,7 @@
           "framework-version": 4.4,
           "node-version": 16,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_selenium_4", "params": {"framework": 4, "node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -968,7 +968,7 @@
           "framework-version": 4.4,
           "node-version": 18,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_selenium_4", "params": {"framework": 4, "node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -977,7 +977,7 @@
           "framework-version": 4.4,
           "node-version": 20,
           "test-type": "local",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "local"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_selenium_4", "params": {"framework": 4, "node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
@@ -985,7 +985,7 @@
           "artifacts": ["./logs/**/*"],
           "framework-version": 4.4,
           "test-type": "sauce",
-          "generic": {"config": "../../test/generic/config.mjs", "suite": "sauce"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "sauce"},
           "parallel": 2,
           "semaphore": "sauce",
           "report": {"name": "js_selenium_4", "params": {"framework": 4}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
@@ -1050,28 +1050,28 @@
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "playwright", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "playwright", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "playwright", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "playwright", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
@@ -1092,28 +1092,28 @@
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "puppeteer", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "puppeteer", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "puppeteer", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
-          "generic": {"config": "../../test/generic/config.mjs"},
+          "generic": {"config": "./test/generic/config.mjs"},
           "report": {"name": "puppeteer", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
