@@ -3,7 +3,7 @@ import type {MaybeArray} from '@applitools/utils'
 import {merge} from './merge.js'
 import * as utils from '@applitools/utils'
 
-export async function prepareOverride(
+export async function prepareTransform(
   overrides?: MaybeArray<string | Override>,
   parentUrl?: string,
 ): Promise<(test: Test) => Test> {
@@ -11,11 +11,11 @@ export async function prepareOverride(
     return test => test
   } else if (utils.types.isString(overrides)) {
     const overrideUrl = await import.meta.resolve!(overrides, parentUrl)
-    return prepareOverride((await import(overrideUrl)).overrides, overrideUrl)
+    return prepareTransform((await import(overrideUrl)).overrides, overrideUrl)
   } else if (utils.types.isArray(overrides)) {
     return overrides.reduce(
       async (promise, item) => {
-        const override = await prepareOverride(item, parentUrl)
+        const override = await prepareTransform(item, parentUrl)
         return promise.then(baseOverride => test => override(baseOverride(test)))
       },
       Promise.resolve((test: Test) => test),

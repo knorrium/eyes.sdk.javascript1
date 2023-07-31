@@ -9,15 +9,15 @@ export interface Framework {
   config(config: Record<string, any>): void
   fixture(path: string): Fixture
   emit(options: EmitOptions): {
-    tests: EmittedTest[]
-    errors: {error: any; test: Test}[]
-    skipped: number
-    skippedEmit: number
+    all: Test[]
+    emitted: EmittedTest[]
+    errors: (Error & {tets: Test})[]
   }
 }
 
 export interface Test {
   key: string
+  suite?: string
   name: string
   group: string
   variant?: string
@@ -47,7 +47,7 @@ export interface FrameworkOptions {
 
 export interface EmitOptions {
   filter?(test: Test): boolean
-  override(test: Test): Test
+  transform?(test: Test): Test
   emitter(emitter: Emitter, test: Test): any
   template(options: {test: Test; commands: Record<string, string[]>}): string
 }
@@ -59,7 +59,7 @@ export interface Fixture extends String {
 }
 
 export function makeFramework(options?: FrameworkOptions): Framework {
-  const context = {config: null as Record<string, any> | null, tests: [] as Test[]}
+  const storage = {config: null as Record<string, any> | null, tests: [] as Test[]}
 
   return {test, config, fixture, emit}
 
@@ -72,10 +72,10 @@ export function makeFramework(options?: FrameworkOptions): Framework {
         testVariant.key = testVariant.key || test.key + toPascalCase(variant)
         testVariant.name = variant ? `${test.name} ${variant}` : test.name
         testVariant.variant = variant
-        context.tests.push(merge(test, testVariant))
+        storage.tests.push(merge(test, testVariant))
       })
     } else {
-      context.tests.push(test)
+      storage.tests.push(test)
     }
 
     function toPascalCase(value: string) {
@@ -88,10 +88,10 @@ export function makeFramework(options?: FrameworkOptions): Framework {
   }
 
   function config(config: Record<string, any>): void {
-    if (context.config) {
+    if (storage.config) {
       console.log(chalk.yellow(`WARNING: tests configuration object was reset`))
     }
-    context.config = config
+    storage.config = config
   }
 
   function fixture(path: string): Fixture {
@@ -106,61 +106,56 @@ export function makeFramework(options?: FrameworkOptions): Framework {
     return fixture
   }
 
-  function emit({filter, override, template, emitter}: EmitOptions): {
-    tests: EmittedTest[]
-    errors: {error: any; test: Test}[]
-    skipped: number
-    skippedEmit: number
+  function emit({filter, transform, template, emitter}: EmitOptions): {
+    all: Test[]
+    emitted: EmittedTest[]
+    errors: (Error & {tets: Test})[]
   } {
-    return context.tests.reduce(
-      (result, test) => {
-        if (filter && !filter(test)) {
-          return result
+    const result = {
+      all: [] as Test[],
+      emitted: [] as EmittedTest[],
+      errors: [] as (Error & {tets: Test})[],
+    }
+    for (const test of storage.tests) {
+      if (filter && !filter(test)) continue
+      const transformedTest = transform?.({...test}) ?? {...test}
+      if (storage.config?.pages[transformedTest.page!]) {
+        transformedTest.page = storage.config?.pages[transformedTest.page!]
+      }
+      transformedTest.config ??= {}
+      transformedTest.config.baselineName = transformedTest.config?.baselineName || transformedTest.key
+      result.all.push(transformedTest)
+      if (transformedTest.skipEmit) continue
+      try {
+        if (!utils.types.isFunction(transformedTest.test)) {
+          throw new Error(`Missing implementation for test ${transformedTest.name}`)
         }
-        test = override({...test, page: test.page && context.config?.pages[test.page]})
-        if (test.skipEmit) {
-          result.skippedEmit += 1
-          return result
+        const emittedTest = {...transformedTest} as EmittedTest
+        emittedTest.meta = {
+          features: test.features,
+          browser: test.env?.browser,
+          emulator: Boolean(test.env?.emulation),
+          mobile: Boolean(test.env?.device),
+          native: Boolean(test.env?.device && !test.env.browser),
+          headfull: test.env?.headless === false,
         }
-        try {
-          if (!utils.types.isFunction(test.test)) {
-            throw new Error(`Missing implementation for test ${test.name}`)
-          }
-          const emittedTest = {...test} as EmittedTest
-          emittedTest.config ??= {}
-          emittedTest.config.baselineName = emittedTest.config.baselineName || test.key
-          emittedTest.meta = {
-            features: test.features,
-            browser: test.env?.browser,
-            emulator: Boolean(test.env?.emulation),
-            mobile: Boolean(test.env?.device),
-            native: Boolean(test.env?.device && !test.env.browser),
-            headfull: test.env?.headless === false,
-          }
-          emittedTest.tags = Object.entries(emittedTest.meta).reduce((tags, [name, value]) => {
-            if (utils.types.isArray(value)) tags.push(...value)
-            else if (utils.types.isString(value)) tags.push(value.replace(/-[\d.]+$/, ''))
-            else if (value) tags.push(name)
-            return tags
-          }, [] as string[])
-          const {commands, context, ...api} = makeEmitter()
-          const sdk = emitter(api, emittedTest)
-          if (emittedTest.page) sdk.driver.visit(emittedTest.page)
-          test.test.call(context, {...test, ...sdk})
-          emittedTest.code = template({test, commands})
-          result.tests.push(emittedTest)
-          if (test.skip) result.skipped += 1
-        } catch (error: any) {
-          result.errors.push({test, error})
-        }
-        return result
-      },
-      {
-        tests: [] as EmittedTest[],
-        errors: [] as {error: AnalyserNode; test: Test}[],
-        skipped: 0,
-        skippedEmit: 0,
-      },
-    )
+        emittedTest.tags = Object.entries(emittedTest.meta).reduce((tags, [name, value]) => {
+          if (utils.types.isArray(value)) tags.push(...value)
+          else if (utils.types.isString(value)) tags.push(value.replace(/-[\d.]+$/, ''))
+          else if (value) tags.push(name)
+          return tags
+        }, [] as string[])
+        const {commands, context, ...api} = makeEmitter()
+        const sdk = emitter(api, emittedTest)
+        if (emittedTest.page) sdk.driver.visit(emittedTest.page)
+        test.test.call(context, {...test, ...sdk})
+        emittedTest.code = template({test, commands})
+        result.emitted.push(emittedTest)
+      } catch (error: any) {
+        error.test = transformedTest
+        result.errors.push(error)
+      }
+    }
+    return result
   }
 }

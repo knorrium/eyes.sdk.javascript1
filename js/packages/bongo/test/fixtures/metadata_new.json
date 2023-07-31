@@ -1,0 +1,27 @@
+{
+  "TestCheckWindow": {
+    "name": "test check window with css",
+    "params": {"variant": "css"},
+    "generic": true
+  },
+  "TestCheckWindow_VG": {
+    "name": "test check window with vg",
+    "params": {"variant": "vg"},
+    "generic": true,
+    "skip": true
+  },
+  "TestCheckWindow_Scroll": {
+    "name": "test check window with scroll",
+    "generic": true,
+    "skip": true
+  },
+  "TestThatWasNotEmitted": {
+    "name": "test that was not emitted",
+    "generic": true,
+    "skip": true
+  },
+  "TestThatWasEmittedButNotExecuted": {
+    "name": "test that was emitted but not executed",
+    "generic": true
+  }
+}

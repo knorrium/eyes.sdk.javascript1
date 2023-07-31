@@ -3,11 +3,9 @@ const path = require('path')
 const chalk = require('chalk')
 const fetch = require('node-fetch')
 const {processXunit} = require('./process-xunit')
-const {processMocha} = require('./process-mocha')
 
 const processReport = {
   xunit: processXunit,
-  mocha: processMocha,
 }
 
 async function sendTestReport({reportId, name, group, params, metaPath, resultPath, resultFormat, sandbox = false}) {

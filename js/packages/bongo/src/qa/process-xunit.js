@@ -23,7 +23,7 @@ function processXunit(xunit, {metadata, params} = {}) {
     const skip = test.skip || test.skipEmit || false
     return {
       test_name: test.name || name,
-      parameters: {...params, variant: test.variant},
+      parameters: {...params, variant: test.variant, ...test.params},
       passed: skip ? undefined : !test.failure,
       isGeneric: !!test.isGeneric || !!test.generic,
       isSkipped: skip,

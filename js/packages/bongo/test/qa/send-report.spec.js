@@ -173,6 +173,68 @@ describe('report', () => {
     })
   })
 
+  it('should create a report with new metadata format', async () => {
+    nock('http://applitools-quality-server.herokuapp.com')
+      .post('/result')
+      .matchHeader('Content-Type', 'application/json')
+      .reply((_uri, body) => {
+        assert.deepStrictEqual(body, {
+          sdk: 'js_selenium_4',
+          group: 'selenium',
+          sandbox: false,
+          results: [
+            {
+              test_name: 'test check window with vg',
+              parameters: {variant: 'vg'},
+              passed: true,
+              isSkipped: false,
+              isGeneric: true,
+            },
+            {
+              test_name: 'test check window with css',
+              parameters: {variant: 'css'},
+              passed: true,
+              isSkipped: false,
+              isGeneric: true,
+            },
+            {
+              test_name: 'test check window with scroll',
+              parameters: {},
+              passed: true,
+              isSkipped: false,
+              isGeneric: true,
+            },
+            {
+              test_name: 'some custom test',
+              parameters: {},
+              passed: false,
+              isSkipped: false,
+              isGeneric: false,
+            },
+            {
+              test_name: 'test that was not emitted',
+              parameters: {},
+              isSkipped: true,
+              isGeneric: true,
+            },
+            {
+              test_name: 'test that was emitted but not executed',
+              parameters: {},
+              isSkipped: true,
+              isGeneric: true,
+            },
+          ],
+        })
+        return [200]
+      })
+
+    await sendTestReport({
+      name: 'js_selenium_4',
+      resultPath: path.resolve(fixtureDir, 'multiple-suites-with-custom-tests.xml'),
+      metaPath: path.resolve(fixtureDir, 'metadata_new.json'),
+    })
+  })
+
   it('should create a report from raw file', async () => {
     nock('http://applitools-quality-server.herokuapp.com')
       .post('/result')

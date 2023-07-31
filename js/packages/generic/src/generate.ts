@@ -1,7 +1,7 @@
 import type {GenericConfig} from './types.js'
 import {prepareConfig} from './utils/prepare-config.js'
 import {downloadFixtures} from './utils/download-fixtures.js'
-import {prepareOverride} from './utils/prepare-override.js'
+import {prepareTransform} from './utils/prepare-transform.js'
 import {saveTests} from './utils/save-tests.js'
 import {saveMeta} from './utils/save-meta.js'
 import chalk from 'chalk'
@@ -12,35 +12,43 @@ export async function generate(config: GenericConfig): Promise<void> {
     config = await prepareConfig(config)
     if (config.env) Object.entries(config.env).forEach(([key, value]) => (process.env[key] = value))
 
-    console.log(`Generating code for file ${config.tests}...\n`)
+    console.log(`Generating tests for file ${config.tests}${config.suite ? ` and suite ${config.suite}` : ''}...\n`)
 
     const fixtures = config.fixtures ? await downloadFixtures(config.fixtures) : undefined
     const filter = utils.types.isFunction(config.suite) ? config.suite : config.suites?.[config.suite as string]
-    const override = await prepareOverride(config.overrides)
+    const transform = await prepareTransform(config.overrides)
     const {emitter} = await import(config.emitter)
     const {template} = await import(config.template, {assert: {format: 'template'}})
     const {emit} = await import(config.tests, {assert: {format: 'tests'}})
-    const {tests, errors, skipped, skippedEmit} = await emit({fixtures, filter, override, emitter, template})
+    const tests = await emit({fixtures, filter, transform, emitter, template})
 
-    if (errors.length > 0) {
+    if (tests.errors.length > 0) {
       if (config.strict) {
-        const [{test, error}] = errors
-        console.log(chalk.red(`Error during emitting test "${test.name}":`))
+        const [error] = tests.errors
+        console.log(chalk.red(`Error during emitting test "${error.test.name}":`))
         throw error
+      } else {
+        tests.errors.forEach((error: any) => {
+          console.log(chalk.red(`Error during emitting test "${error.test.name}":`))
+          console.log(chalk.grey(error.stack))
+        })
       }
-      errors.forEach(({test, error}: any) => {
-        console.log(chalk.red(`Error during emitting test "${test.name}":`))
-        console.log(chalk.grey(error.stack))
-      })
     }
 
-    await saveTests(tests, config)
-    await saveMeta(tests, config.meta)
+    await Promise.all([
+      saveTests(tests.emitted, config),
+      saveMeta(tests.all, {
+        ...config.meta,
+        params: {suite: utils.types.isFunction(config.suite) ? 'unknown' : config.suite},
+      }),
+    ])
 
-    console.log(chalk.green(`${chalk.bold(`${tests.length}`.padEnd(3))} test(s) generated`))
-    console.log(chalk.cyan(`${chalk.bold(`${skipped}`.padEnd(3))} test(s) skipped execution`))
-    console.log(chalk.cyan(`${chalk.bold(`${skippedEmit}`.padEnd(3))} test(s) skipped emit`))
-    console.log(chalk.red(`${chalk.bold(`${errors.length}`.padEnd(3))} error(s) occurred`))
+    console.log(chalk.green(`${chalk.bold(`${tests.emitted.length}`.padEnd(3))} test(s) generated`))
+    const skippedCount = (tests.emitted as any[]).reduce((count, test) => count + (test.skip ? 1 : 0), 0)
+    console.log(chalk.cyan(`${chalk.bold(`${skippedCount}`.padEnd(3))} test(s) skipped execution`))
+    const skippedEmitCount = tests.all.length - tests.emitted.length
+    console.log(chalk.cyan(`${chalk.bold(`${skippedEmitCount}`.padEnd(3))} test(s) skipped emit`))
+    console.log(chalk.red(`${chalk.bold(`${tests.errors.length}`.padEnd(3))} error(s) occurred`))
   } catch (error: any) {
     console.log(chalk.red(error.stack))
     process.exit(1)

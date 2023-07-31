@@ -9,6 +9,7 @@ const {sendTestReport} = require('../qa/send-report')
 const {sendReleaseNotification} = require('../qa/send-notification')
 const {extractSimplifiedChangelog} = require('../changelog/changelog')
 const {getReleases} = require('../gh/gh')
+const {getLatestReleaseEntries} = require('../changelog/query')
 
 yargs
   .config({cwd: process.cwd()})
@@ -192,6 +193,13 @@ yargs
         },
       }),
     handler: sendTestReport,
+  })
+  .command({
+    command: 'latest-release-entry',
+    handler: async () => {
+      const changelog = getLatestReleaseEntries({targetFolder: process.cwd()}).join('\n')
+      console.log(changelog)
+    },
   })
   .demandCommand(1, 'exit')
   .fail((msg, error, args) => {

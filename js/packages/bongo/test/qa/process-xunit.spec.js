@@ -22,6 +22,7 @@ describe('process xunit', () => {
           passed: false,
           isGeneric: false,
           isSkipped: false,
+          skipCause: undefined,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow',
@@ -29,6 +30,7 @@ describe('process xunit', () => {
           passed: true,
           isGeneric: false,
           isSkipped: false,
+          skipCause: undefined,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow_Scroll',
@@ -36,6 +38,7 @@ describe('process xunit', () => {
           passed: true,
           isGeneric: false,
           isSkipped: false,
+          skipCause: undefined,
         },
       ],
     )
@@ -51,6 +54,7 @@ describe('process xunit', () => {
           parameters: {variant: undefined},
           passed: false,
           test_name: 'Coverage Tests TestCheckWindow_VG',
+          skipCause: undefined,
         },
         {
           isGeneric: false,
@@ -58,6 +62,7 @@ describe('process xunit', () => {
           parameters: {variant: undefined},
           passed: true,
           test_name: 'Coverage Tests TestCheckWindow',
+          skipCause: undefined,
         },
         {
           isGeneric: false,
@@ -65,6 +70,7 @@ describe('process xunit', () => {
           parameters: {variant: undefined},
           passed: true,
           test_name: 'Coverage Tests TestCheckWindow_Scroll',
+          skipCause: undefined,
         },
       ],
     )
@@ -80,6 +86,7 @@ describe('process xunit', () => {
           passed: false,
           isGeneric: false,
           isSkipped: false,
+          skipCause: undefined,
         },
         {
           test_name: 'Coverage Tests TestCheckWindow',
@@ -87,6 +94,7 @@ describe('process xunit', () => {
           passed: true,
           isGeneric: false,
           isSkipped: false,
+          skipCause: undefined,
         },
       ],
     )
@@ -100,6 +108,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
     ])
   })
@@ -113,6 +122,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
     ])
   })
@@ -126,6 +136,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
       {
         test_name:
@@ -134,6 +145,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
       {
         test_name:
@@ -142,6 +154,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
       {
         test_name:
@@ -150,6 +163,7 @@ describe('process xunit', () => {
         passed: true,
         isGeneric: false,
         isSkipped: false,
+        skipCause: undefined,
       },
     ])
   })
@@ -163,6 +177,7 @@ describe('process xunit', () => {
         passed: undefined,
         isGeneric: false,
         isSkipped: true,
+        skipCause: undefined,
       },
     ])
   })

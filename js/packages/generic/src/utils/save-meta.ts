@@ -4,14 +4,18 @@ import * as path from 'path'
 
 export async function saveMeta(
   tests: Test[],
-  {output = './meta.json', pascalize = true}: {output?: string; pascalize?: boolean} = {},
+  {
+    output = './meta.json',
+    pascalize = true,
+    params,
+  }: {output?: string; pascalize?: boolean; params?: Record<string, any>} = {},
 ) {
   mkdir(path.dirname(output), {recursive: true})
 
   const meta = tests.reduce((meta, test) => {
     meta[pascalize ? test.key : test.name] = {
       name: test.group,
-      variant: test.variant,
+      params: {...params, variant: test.variant},
       generic: true,
       skip: test.skipEmit || test.skip,
       reason: test.reason,
