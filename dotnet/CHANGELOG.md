@@ -1,6 +1,30 @@
-## [Eyes.Images vNext]
+## [Eyes.Image.Core 3.6.5] - 2023-07-31
+### Updated
+- Server Core to 3.6.5
+
+## [Eyes.Images 3.38] - 2023-07-31
 ### Fixed
 - Debug screenshots support.
+
+## [Eyes.Selenium 3.67] - 2023-07-31
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium 5.65] - 2023-07-31
+### Updated
+- Match to latest Eyes.Selenium
+
+## [Eyes.Selenium4 3.67] - 2023-07-31
+### Updated
+- Match to latest Eyes.Images
+
+## [Eyes.Appium2 5.65-beta04] - 2023-07-31
+### Updated
+- Match to latest Eyes.Selenium4
+
+## [Eyes.Playwright 1.15] - 2023-07-31
+### Updated
+- Match to latest Eyes.Images
 
 ## [Eyes.Image.Core 3.6.5] - 2023-07-30
 ### Updated
