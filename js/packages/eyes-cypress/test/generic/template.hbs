@@ -1,0 +1,8 @@
+// {{test.name}}
+describe("Coverage tests", () => {
+    it("{{test.name}}{{#tags test.tags}}@{{this}}{{/tags}}", () => {
+        {{#each commands.default as |command|}}
+        {{command}}
+        {{/each}}
+    })
+})

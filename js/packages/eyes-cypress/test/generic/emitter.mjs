@@ -1,13 +1,12 @@
-module.exports = (tracker, test) => {
+export function emitter(tracker, test) {
   const {addSyntax, addCommand} = tracker
 
-  // addSyntax('var', ({constant, name, value}) => `${value}.then(${name} => {})`)
   addSyntax('getter', ({target, key}) => `${target}['${key}']`)
+
   const driver = {
     visit(url) {
       addCommand(js`cy.visit(${url})`)
     },
-
     executeScript(script, ...args) {
       return addCommand(js`cy.window().then(win => {
             const func = new win.Function(${script})
@@ -30,7 +29,6 @@ module.exports = (tracker, test) => {
       } else {
         selector = element.selector
       }
-
       return addCommand(js`cy.get(${selector})`)
     },
   }

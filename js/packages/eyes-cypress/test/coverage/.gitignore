@@ -1,4 +1,4 @@
 .yarn
 cypress/integration/generic
-cypress/e2e/generic
+cypress/e2e/generated
 cypress/screenshots

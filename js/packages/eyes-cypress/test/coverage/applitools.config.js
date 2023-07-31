@@ -8,8 +8,4 @@ const config = {
   testConcurrency: 100,
 };
 
-if (process.env.APPLITOOLS_API_KEY_SDK) {
-  config.apiKey = process.env.APPLITOOLS_API_KEY_SDK;
-}
-
 module.exports = config;

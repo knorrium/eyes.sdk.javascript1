@@ -32,10 +32,6 @@ function setupEyes({
     ...config,
   }
 
-  if (process.env.APPLITOOLS_API_KEY_SDK) {
-    configuration.apiKey = process.env.APPLITOOLS_API_KEY_SDK
-  }
-
   if (process.env.APPLITOOLS_SAVE_DEBUG_SCREENSHOTS || saveDebugScreenshots) {
     const debugScreenshotsPath = path.resolve(
       cwd,
