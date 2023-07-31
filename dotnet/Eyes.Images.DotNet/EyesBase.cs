@@ -87,6 +87,12 @@ namespace Applitools
             var checkConfig = mapper.Map<CheckConfig>(configuration);
             var closeConfig = mapper.Map<CloseConfig>(configuration);
 
+            var debugScreenshots = configuration.DebugScreenshotProvider;
+            if (debugScreenshots != null)
+            {
+                screenshotConfig.DebugImages = new DebugImages(debugScreenshots.Path, debugScreenshots.Prefix);
+            }
+
             return new Config(openConfig, screenshotConfig, checkConfig, closeConfig);
         }
 

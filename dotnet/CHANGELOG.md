@@ -1,3 +1,7 @@
+## [Eyes.Images vNext]
+### Fixed
+- Debug screenshots support.
+
 ## [Eyes.Image.Core 3.6.5] - 2023-07-30
 ### Updated
 - Server Core to 3.6.5
