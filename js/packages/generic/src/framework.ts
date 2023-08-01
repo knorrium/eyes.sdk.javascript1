@@ -148,8 +148,8 @@ export function makeFramework(options?: FrameworkOptions): Framework {
         const {commands, context, ...api} = makeEmitter()
         const sdk = emitter(api, emittedTest)
         if (emittedTest.page) sdk.driver.visit(emittedTest.page)
-        test.test.call(context, {...test, ...sdk})
-        emittedTest.code = template({test, commands})
+        emittedTest.test.call(context, {...emittedTest, ...sdk})
+        emittedTest.code = template({test: emittedTest, commands})
         result.emitted.push(emittedTest)
       } catch (error: any) {
         error.test = transformedTest
