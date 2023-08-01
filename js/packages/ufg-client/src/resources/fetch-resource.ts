@@ -142,17 +142,19 @@ function handleTunneledResource({
       }
     },
     afterResponse({response}) {
-      const headers: Record<string, string> = {}
-      for (const [name, value] of response.headers) {
-        if (name.startsWith('x-fetch-response-header')) {
-          headers[name.replace('x-fetch-response-header-', '')] = value
+      if (response.headers.has('x-fetch-status-code')) {
+        const headers: Record<string, string> = {}
+        for (const [name, value] of response.headers) {
+          if (name.startsWith('x-fetch-response-header')) {
+            headers[name.replace('x-fetch-response-header-', '')] = value
+          }
         }
-      }
-      return {
-        body: response.body,
-        status: Number(response.headers.get('x-fetch-status-code')),
-        statusText: response.headers.get('x-fetch-status-text')!,
-        headers,
+        return {
+          body: response.body,
+          status: Number(response.headers.get('x-fetch-status-code')),
+          statusText: response.headers.get('x-fetch-status-text')!,
+          headers,
+        }
       }
     },
   }
