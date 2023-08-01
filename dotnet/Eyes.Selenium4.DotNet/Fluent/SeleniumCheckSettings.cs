@@ -429,10 +429,24 @@ namespace Applitools.Selenium.Fluent
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(By selector, Padding padding = null, string regionId = null)
         {
             var list = new List<By> { selector };
             return Content(list, padding, regionId);
+        }
+        
+        /// <summary>
+        /// Adds one content region.
+        /// </summary>
+        /// <param name="selector">A selector representing a content region.</param>
+        /// <param name="padding">The padding</param>
+        /// <param name="regionId">The regionId</param>
+        /// <returns>An updated clone of this settings object.</returns>
+        public SeleniumCheckSettings IgnoreColors(By selector, Padding padding = null, string regionId = null)
+        {
+            var list = new List<By> { selector };
+            return IgnoreColors(list, padding, regionId);
         }
 
         /// <summary>
@@ -441,6 +455,7 @@ namespace Applitools.Selenium.Fluent
         /// <param name="selector">A selector representing a content region.</param>
         /// <param name="selectors">One or more selectors representing content regions.</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(By selector, params By[] selectors)
         {
             var list = new List<By> { selector };
@@ -455,10 +470,31 @@ namespace Applitools.Selenium.Fluent
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(IEnumerable<By> selectors, Padding padding = null, string regionId = null)
         {
             SeleniumCheckSettings clone = Clone_();
             clone.fluentCode_.Append($".{nameof(Content)}(");
+            foreach (By sel in selectors)
+            {
+                clone.Content_(new SimpleRegionBySelector(sel, padding, regionId));
+                clone.fluentCode_.Append($", {sel}");
+            }
+            clone.fluentCode_.Append(")");
+            return clone;
+        }
+
+        /// <summary>
+        /// Adds one or more content regions.
+        /// </summary>
+        /// <param name="selectors">An enumerable of selectors representing content regions.</param>
+        /// <param name="padding">The padding</param>
+        /// <param name="regionId">The regionId</param>
+        /// <returns>An updated clone of this settings object.</returns>
+        public SeleniumCheckSettings IgnoreColors(IEnumerable<By> selectors, Padding padding = null, string regionId = null)
+        {
+            SeleniumCheckSettings clone = Clone_();
+            clone.fluentCode_.Append($".{nameof(IgnoreColors)}(");
             foreach (By sel in selectors)
             {
                 clone.Content_(new SimpleRegionBySelector(sel, padding, regionId));
@@ -475,10 +511,24 @@ namespace Applitools.Selenium.Fluent
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(IWebElement element, Padding padding = null, string regionId = null)
         {
             var list = new List<IWebElement> { element };
             return Content(list, padding, regionId);
+        }
+
+        /// <summary>
+        /// Adds one content region.
+        /// </summary>
+        /// <param name="element">An element representing a content region.</param>
+        /// <param name="padding">The padding</param>
+        /// <param name="regionId">The regionId</param>
+        /// <returns>An updated clone of this settings object.</returns>
+        public SeleniumCheckSettings IgnoreColors(IWebElement element, Padding padding = null, string regionId = null)
+        {
+            var list = new List<IWebElement> { element };
+            return IgnoreColors(list, padding, regionId);
         }
 
         /// <summary>
@@ -487,6 +537,7 @@ namespace Applitools.Selenium.Fluent
         /// <param name="element">An element representing a content region.</param>
         /// <param name="elements">One or more elements, each representing a content region.</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(IWebElement element, params IWebElement[] elements)
         {
             var list = new List<IWebElement> { element };
@@ -501,6 +552,7 @@ namespace Applitools.Selenium.Fluent
         /// <param name="padding">The padding</param>
         /// <param name="regionId">The regionId</param>
         /// <returns>An updated clone of this settings object.</returns>
+        [Obsolete("Use IgnoreColors")]
         public SeleniumCheckSettings Content(IEnumerable<IWebElement> elements, Padding padding = null, string regionId = null)
         {
             SeleniumCheckSettings clone = Clone_();
@@ -513,7 +565,27 @@ namespace Applitools.Selenium.Fluent
             clone.fluentCode_.Append(")");
             return clone;
         }
-
+        
+        /// <summary>
+        /// Adds one or more content regions.
+        /// </summary>
+        /// <param name="elements">An enumerable of elements, each representing a content region.</param>
+        /// <param name="padding">The padding</param>
+        /// <param name="regionId">The regionId</param>
+        /// <returns>An updated clone of this settings object.</returns>
+        public SeleniumCheckSettings IgnoreColors(IEnumerable<IWebElement> elements, Padding padding = null, string regionId = null)
+        {
+            SeleniumCheckSettings clone = Clone_();
+            clone.fluentCode_.Append($".{nameof(IgnoreColors)}(");
+            foreach (IWebElement elem in elements)
+            {
+                clone.Content_(new SimpleRegionByElement(elem, padding, regionId));
+                clone.fluentCode_.Append($", {elem}");
+            }
+            clone.fluentCode_.Append(")");
+            return clone;
+        }
+        
         public SeleniumCheckSettings Floating(By regionSelector, int maxUpOffset, int maxDownOffset, int maxLeftOffset, int maxRightOffset)
         {
             SeleniumCheckSettings clone = Clone_();

@@ -10,5 +10,13 @@ module.exports = {
   tests: "/home/itaibh/devel/sdk.coverage.tests/coverage-tests.js",
   ext: ".cs",
   outPath: './test/Playwright/coverage/generic',
-  //emitOnly: ["check window with layout breakpoints in config"]
+  emitOnly: test => {
+    return !test.name.startsWith("appium") &&
+           !test.name.includes('on android') &&
+           !test.name.includes('on ios') &&
+          (!test.features || (!test.features.includes('image') && 
+                              !test.features.includes('native-selectors') &&
+                              !test.features.includes('sauce')))
+  },
+  // emitOnly: ["check region by selector within shadow dom with vg"]
 };
