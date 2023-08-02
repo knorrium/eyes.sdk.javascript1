@@ -807,7 +807,7 @@ export class Driver<T extends SpecType> {
   async getOrientation(): Promise<ScreenOrientation | undefined> {
     const environment = await this.getEnvironment()
     if (!environment.isMobile) return undefined
-    if (environment.isEmulation) return this._viewport?.orientation
+    if (environment.isWeb) return this._viewport?.orientation
     if (environment.isAndroid) {
       this._logger.log('Extracting device orientation using adb command on android')
 
