@@ -39,7 +39,7 @@
     "packages/core",
     "packages/eyes",
     "packages/eyes-images",
-    "packages/eyes-webdriverio-5",
+    "packages/eyes-webdriverio",
     "packages/eyes-selenium",
     "packages/eyes-nightwatch",
     "packages/eyes-playwright",

@@ -552,9 +552,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes-webdriverio@workspace:packages/eyes-webdriverio-5":
+"@applitools/eyes-webdriverio@workspace:packages/eyes-webdriverio":
   version: 0.0.0-use.local
-  resolution: "@applitools/eyes-webdriverio@workspace:packages/eyes-webdriverio-5"
+  resolution: "@applitools/eyes-webdriverio@workspace:packages/eyes-webdriverio"
   dependencies:
     "@applitools/api-extractor": "workspace:^"
     "@applitools/bongo": "workspace:^"

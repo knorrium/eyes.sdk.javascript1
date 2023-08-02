@@ -20,7 +20,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/eyes-webdriverio-5"
+    "directory": "js/packages/eyes-webdriverio"
   },
   "license": "SEE LICENSE IN LICENSE",
   "author": {

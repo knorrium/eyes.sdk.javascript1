@@ -792,7 +792,7 @@
         "notification": {"name": "core"}
       }]
     },
-    "js/packages/eyes-api": {
+    "js/packages/eyes": {
       "release-type": "node",
       "component": "js/eyes",
       "builds": [{
@@ -867,7 +867,7 @@
         "notification": {"name": "js_images"}
       }]
     },
-    "js/packages/eyes-webdriverio-5": {
+    "js/packages/eyes-webdriverio": {
       "release-type": "node",
       "component": "js/eyes-webdriverio",
       "builds": [{
