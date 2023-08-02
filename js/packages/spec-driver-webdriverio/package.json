@@ -98,8 +98,9 @@
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^16.18.14",
     "chromedriver": "^114.0.3",
+    "devtools": "^8.14.0",
     "nock": "^13.3.2",
-    "webdriverio": "^8.10.7"
+    "webdriverio": "^8.14.2"
   },
   "peerDependencies": {
     "webdriverio": ">=5.0.0"
