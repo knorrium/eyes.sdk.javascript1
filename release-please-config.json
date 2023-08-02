@@ -890,6 +890,7 @@
           "framework-version": 6,
           "node-version": 14,
           "test-type": "local",
+          "env": {"FIREFOX_IMAGE": "selenium/standalone-firefox:4.1.3-20220427"},
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 6, "node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },

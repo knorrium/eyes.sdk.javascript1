@@ -24,7 +24,7 @@ function generateDockerComposeConfig({saveToDisk, platform = process.platform} =
         ...generateNetworkConfigForPlatform(platform),
       },
       firefox: {
-        image: 'selenium/standalone-firefox',
+        image: process.env.FIREFOX_IMAGE || `selenium/standalone-firefox:latest`,
         environment,
         volumes,
         ports: ['4445:4444'],
