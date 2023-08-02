@@ -16,11 +16,21 @@ function getViewport() {
     width = document.body.clientWidth
   }
 
+  let orientation
+  if (window.screen && window.screen.orientation) {
+    orientation = window.screen.orientation.type.replace(/-primary$/, '')
+  } else if (window.orientation != null) {
+    if (window.orientation === 0) orientation = 'portrait'
+    else if (window.orientation === 180) orientation = 'portrait-secondary'
+    else if (window.orientation === 90) orientation = 'landscape'
+    else if (window.orientation === -90) orientation = 'landscape-secondary'
+  }
+
   return {
     viewportSize: {width, height},
     pixelRatio: window.devicePixelRatio,
     viewportScale: window.visualViewport && window.visualViewport.scale,
-    orientation: window.screen && window.screen.orientation && window.screen.orientation.type.replace(/-primary$/, ''),
+    orientation,
   }
 }
 

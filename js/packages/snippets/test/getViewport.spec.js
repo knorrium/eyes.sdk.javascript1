@@ -34,7 +34,7 @@ describe('getViewport', () => {
         pixelRatio: 1,
         orientation: null,
       },
-      'ios safari': {viewportSize: {width: 375, height: 635}, viewportScale: 1, pixelRatio: 3, orientation: null},
+      'ios safari': {viewportSize: {width: 375, height: 635}, viewportScale: 1, pixelRatio: 3, orientation: 'portrait'},
     }
 
     describe(name, () => {
