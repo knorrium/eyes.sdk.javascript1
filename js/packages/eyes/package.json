@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/eyes-api"
+    "directory": "js/packages/eyes"
   },
   "license": "SEE LICENSE IN LICENSE",
   "author": {

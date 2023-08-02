@@ -577,9 +577,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes@workspace:*, @applitools/eyes@workspace:packages/eyes-api":
+"@applitools/eyes@workspace:*, @applitools/eyes@workspace:packages/eyes":
   version: 0.0.0-use.local
-  resolution: "@applitools/eyes@workspace:packages/eyes-api"
+  resolution: "@applitools/eyes@workspace:packages/eyes"
   dependencies:
     "@applitools/core": "workspace:*"
     "@applitools/logger": "workspace:*"

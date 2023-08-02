@@ -37,7 +37,7 @@
     "packages/execution-grid-client",
     "packages/core-base",
     "packages/core",
-    "packages/eyes-api",
+    "packages/eyes",
     "packages/eyes-images",
     "packages/eyes-webdriverio-5",
     "packages/eyes-selenium",
