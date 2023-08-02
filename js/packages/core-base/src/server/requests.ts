@@ -142,6 +142,7 @@ export function makeCoreRequests({
           ignoreBaseline: settings.ignoreBaseline,
           saveDiffs: settings.saveDiffs,
           timeout: settings.abortIdleTestTimeout,
+          isComponentAgent: settings.isComponentTest,
         },
       },
       expected: [200, 201],

@@ -8,6 +8,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    fallback: {
+      fs: false,
+      path: false,
+    }
+  },
   devtool: false,
   module: {
     rules: [
@@ -33,6 +39,7 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       React: 'react',
+      process: 'process/browser',
     }),
   ],
 };

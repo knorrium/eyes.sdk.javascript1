@@ -168,6 +168,8 @@ export interface OpenSettings extends EyesServerSettings {
   connectionTimeout?: number
   removeSession?: boolean
   isFunctionalTest?: boolean
+  /** @internal */
+  isComponentTest?: boolean
 }
 
 export interface LocateSettings<TLocator extends string, TRegion = Region>

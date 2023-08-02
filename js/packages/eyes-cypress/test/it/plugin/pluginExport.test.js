@@ -49,6 +49,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
 
     __module = {
@@ -77,6 +78,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -106,6 +108,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -133,6 +136,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -160,6 +164,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -187,6 +192,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -217,6 +223,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 
@@ -247,6 +254,7 @@ describe('pluginExport', () => {
       tapDirPath: undefined,
       tapFileName: undefined,
       universalDebug: false,
+      isComponent: false,
     })
   })
 })

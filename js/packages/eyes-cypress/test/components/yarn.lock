@@ -15,6 +15,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@applitools/test-utils@npm:latest":
+  version: 1.5.17
+  resolution: "@applitools/test-utils@npm:1.5.17"
+  dependencies:
+    node-fetch: 2.6.1
+  checksum: 4b1cd7f3519a54a99119ed71d838566759e9a1c1fe309161af287ed36bf0cc4ddabadc34bc342114b10e14da288ca80b99b89c5134382046e273f52cac0d91f3
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/code-frame@npm:7.18.6"
@@ -5453,6 +5462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:2.6.1":
+  version: 2.6.1
+  resolution: "node-fetch@npm:2.6.1"
+  checksum: 91075bedd57879117e310fbcc36983ad5d699e522edb1ebcdc4ee5294c982843982652925c3532729fdc86b2d64a8a827797a745f332040d91823c8752ee4d7c
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
@@ -6045,6 +6061,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"process@npm:^0.11.10":
+  version: 0.11.10
+  resolution: "process@npm:0.11.10"
+  checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
+  languageName: node
+  linkType: hard
+
 "promise-retry@npm:^2.0.1":
   version: 2.0.1
   resolution: "promise-retry@npm:2.0.1"
@@ -6171,6 +6194,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-webpack5@workspace:."
   dependencies:
+    "@applitools/test-utils": latest
     "@babel/core": ^7.17.9
     "@babel/preset-env": ^7.16.11
     "@babel/preset-react": ^7.16.7
@@ -6182,6 +6206,7 @@ __metadata:
     msw: ^0.39.2
     postcss: ^8.4.12
     postcss-loader: ^6.2.1
+    process: ^0.11.10
     react: ^17.0.2
     react-dom: ^17.0.2
     style-loader: ^3.3.1

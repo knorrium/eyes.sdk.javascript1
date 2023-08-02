@@ -138,7 +138,11 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
 
     const appliConfFile = Cypress.config('appliConfFile')
     const mergedConfig = mergeCypressConfigs({globalConfig: appliConfFile, openConfig: {testName, ...args}})
-    openAndGlobalConfig = transformCypressConfig({...mergedConfig, shouldUseBrowserHooks})
+    openAndGlobalConfig = transformCypressConfig({
+      ...mergedConfig,
+      shouldUseBrowserHooks,
+      isComponentTest: Cypress.config('isComponent'),
+    })
 
     eyes = await socket.request('EyesManager.openEyes', {manager, target, config: openAndGlobalConfig})
   })

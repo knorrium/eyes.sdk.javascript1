@@ -32,6 +32,7 @@ export function transformCypressConfig(config: CypressEyesConfig): Config<SpecTy
       environment: {
         viewportSize: config.viewportSize,
       },
+      isComponentTest: config.isComponentTest,
     },
     check: {
       renderers: transformBrowsers(config.browser),

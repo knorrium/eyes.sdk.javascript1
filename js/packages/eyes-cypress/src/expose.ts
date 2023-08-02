@@ -92,6 +92,8 @@ export type CypressEyesConfig = api.ConfigurationPlain<SpecType> & {
   saveNewTests?: boolean
   /** @internal */
   shouldUseBrowserHooks?: boolean
+  /* @internal */
+  isComponentTest?: boolean
 }
 
 export type CypressTestResultsSummary = api.TestResultsSummary
