@@ -1285,8 +1285,7 @@
         "artifacts": ["./reports/**/*"],
         "runner": "linux",
         "grep": "TestCoreBinaries#testLinuxBinaries",
-        "builds": ["js/core/x64/{{environment}}"],
-        "report": {"name": "java", "group": "core"}
+        "builds": ["js/core/x64/{{environment}}"]
       }],
       "releases": [{
         "profile": "maven"
@@ -1307,8 +1306,7 @@
         "artifacts": ["./reports/**/*"],
         "runner": "linuxarm",
         "grep": "TestCoreBinaries#testArm64Binaries",
-        "builds": ["js/core/arm64/{{environment}}"],
-        "report": {"name": "java", "group": "core"}
+        "builds": ["js/core/arm64/{{environment}}"]
       }],
       "releases": [{
         "profile": "maven"
@@ -1331,8 +1329,7 @@
           "runner": "linux",
           "container": "node:lts-alpine",
           "grep": "TestCoreBinaries#testAlpineBinaries",
-          "builds": ["js/core/x64/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
+          "builds": ["js/core/x64/{{environment}}"]
         }
       ],
       "releases": [{
@@ -1354,8 +1351,7 @@
         "artifacts": ["./reports/**/*"],
         "runner": "windows",
         "grep": "TestCoreBinaries#testWindowsBinaries",
-        "builds": ["js/core/x64/{{environment}}"],
-        "report": {"name": "java", "group": "core"}
+        "builds": ["js/core/x64/{{environment}}"]
       }],
       "releases": [{
         "profile": "maven"
@@ -1377,8 +1373,7 @@
           "artifacts": ["./reports/**/*"],
           "runner": "macos",
           "grep": "TestCoreBinaries#testMacosBinaries",
-          "builds": ["js/core/x64/{{environment}}"],
-          "report": {"name": "java", "group": "core"}
+          "builds": ["js/core/x64/{{environment}}"]
         }],
       "releases": [{
         "profile": "maven"
@@ -1395,7 +1390,7 @@
           "builds": ["js/core/x64/{{environment}}", "js/core/arm64/{{environment}}"]
       }],
       "tests": [{
-          "report": {"name": "java", "format": "raw", "result-path": "./reports/report/*.json"},
+          "report": {"name": "java_selenium", "format": "raw", "result-path": "./reports/report/*.json"},
           "artifacts": ["./reports/**/*"],
           "key": "{{component}}"
         }],
@@ -1469,7 +1464,7 @@
       "tests": [{
         "key": "{{component}}",
         "artifacts": ["./reports/**/*"],
-        "report": {"name": "java_images", "format": "raw","result-path": "./reports/report/*.json"}
+        "report": {"name": "java_images", "group": "images", "format": "raw","result-path": "./reports/report/*.json"}
       }],
       "releases": [{
         "profile": "maven",
@@ -1520,13 +1515,13 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java_appium", "format": "raw", "result-path": "./reports/report/*.json"}
+          "report": {"name": "java_appium", "group": "appium", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java_appium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
+          "report": {"name": "java_appium", "group": "appium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
