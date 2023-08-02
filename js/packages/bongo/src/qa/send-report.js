@@ -24,16 +24,13 @@ async function sendTestReport({reportId, name, group, params, metaPath, resultPa
 
   const file = fs.readFileSync(path.resolve(resultPath), {encoding: 'utf-8'})
 
-  const report =
-    resultFormat === 'raw'
-      ? {...JSON.parse(file), id: reportId}
-      : {
-          id: reportId,
-          sdk: name,
-          group: group || 'selenium',
-          results: processReport[resultFormat](file, {metadata, params}),
-          sandbox,
-        }
+  const report = {
+    id: reportId,
+    sdk: name,
+    group: group || 'selenium',
+    results: resultFormat === 'raw' ? JSON.parse(file).results : processReport[resultFormat](file, {metadata, params}),
+    sandbox,
+  }
 
   console.log('Report was successfully generated!\n')
   if (report.id) console.log(`${chalk.bold('Report ID')}: ${report.id}\n`)

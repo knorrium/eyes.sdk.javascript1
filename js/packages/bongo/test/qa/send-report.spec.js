@@ -243,18 +243,19 @@ describe('report', () => {
         assert.deepStrictEqual(body, {
           group: 'selenium',
           id: 'report-id',
-          sdk: 'java',
+          sdk: 'js_selenium_4',
           results: [
             {passed: true, parameters: {}, test_name: 'testDefaultPadding'},
             {passed: true, parameters: {}, test_name: 'testPaddingAllDirections'},
             {passed: true, parameters: {}, test_name: 'testPaddingWhenAssigned'},
           ],
-          sandbox: true,
+          sandbox: false,
         })
         return [200]
       })
 
     await sendTestReport({
+      name: 'js_selenium_4',
       reportId: 'report-id',
       resultFormat: 'raw',
       resultPath: path.resolve(fixtureDir, 'raw-report.json'),
