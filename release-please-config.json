@@ -1515,13 +1515,13 @@
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "unit it e2e",
-          "report": {"name": "java_appium", "group": "appium", "format": "raw", "result-path": "./reports/report/*.json"}
+          "report": {"name": "java_appium", "format": "raw", "result-path": "./reports/report/*.json"}
         },
         {
           "key": "{{component}}/{{test-type}}",
           "artifacts": ["./reports/**/*"],
           "test-type": "coverage",
-          "report": {"name": "java_appium", "group": "appium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
+          "report": {"name": "java_appium", "result-path": "./target/surefire-reports/java_coverage_tests/coverage-test-report.xml", "meta-path": "./coverage-tests-metadata.json"}
         }
       ],
       "releases": [{
