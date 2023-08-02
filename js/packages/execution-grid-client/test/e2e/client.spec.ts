@@ -57,7 +57,7 @@ describe('client', () => {
       .usingServer(client.url)
       .build()
 
-    await driver.get('https://demo.applitools.com')
+    await driver.get(`https://demo.applitools.com?${Math.random()}`)
     await driver.findElement({css: '#log-in'})
     await driver.executeScript("document.querySelector('#log-in').id = 'log-inn'")
     await driver.findElement({css: '#log-in'})

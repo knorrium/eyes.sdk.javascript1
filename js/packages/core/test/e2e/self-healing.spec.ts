@@ -5,7 +5,7 @@ import * as spec from '@applitools/spec-driver-webdriverio'
 import assert from 'assert'
 
 async function triggerSelfHealing(driver: spec.Driver) {
-  await driver.url('https://demo.applitools.com')
+  await driver.url(`https://demo.applitools.com?${Math.random()}`)
   await driver.$('#log-in')
   await driver.execute("document.querySelector('#log-in').id = 'log-inn'")
   await driver.$('#log-in')
