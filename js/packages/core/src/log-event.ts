@@ -1,5 +1,5 @@
 import type {MaybeArray} from '@applitools/utils'
-import type {Core, CloseBatchSettings} from './types'
+import type {Core, LogEventSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
@@ -8,15 +8,15 @@ type Options = {
   logger: Logger
 }
 
-export function makeCloseBatch({core, logger: mainLogger}: Options) {
-  return async function closeBatch({
+export function makeLogEvent({core, logger: mainLogger}: Options) {
+  return async function logEvent({
     settings,
     logger = mainLogger,
   }: {
-    settings: MaybeArray<CloseBatchSettings>
+    settings: MaybeArray<LogEventSettings>
     logger?: Logger
   }): Promise<void> {
-    logger = logger.extend(mainLogger, {tags: [`close-batch-${utils.general.shortid()}`]})
+    logger = logger.extend(mainLogger, {tags: [`log-event-${utils.general.shortid()}`]})
     ;(utils.types.isArray(settings) ? settings : [settings]).forEach(settings => {
       settings.eyesServerUrl ??=
         (settings as any).serverUrl ??
@@ -26,6 +26,6 @@ export function makeCloseBatch({core, logger: mainLogger}: Options) {
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')
     })
 
-    return core.base.closeBatch({settings, logger})
+    return core.base.logEvent({settings, logger})
   }
 }

@@ -26,6 +26,6 @@ export function makeDeleteTest({core, logger: mainLogger}: Options) {
       settings.apiKey ??= utils.general.getEnvValue('API_KEY')
     })
 
-    await core.base.deleteTest({settings, logger})
+    return core.base.deleteTest({settings, logger})
   }
 }

@@ -38,8 +38,13 @@ export function makeFakeCore({
     async deleteTest(options) {
       emitter.emit('deleteTest', options)
     },
-    async logEvent() {
-      emitter.emit('logEvent')
+    async logEvent(options) {
+      emitter.emit('beforeLogEvent', options)
+      try {
+        await hooks?.logEvent?.(options)
+      } finally {
+        emitter.emit('afterLogEvent', options)
+      }
     },
     locate: null as never,
     async locateText(options) {
