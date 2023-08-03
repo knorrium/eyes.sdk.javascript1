@@ -89,6 +89,17 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>
+                        *.jpeg
+                    </exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
     <distributionManagement>

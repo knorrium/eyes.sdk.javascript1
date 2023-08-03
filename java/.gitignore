@@ -29,6 +29,12 @@ eyes.selenium.java/src/main/resources/processResource.js
 venv
 */null
 
+# reports
+*/reports
+
+# universal core binaries
+eyes.universal.core/*/src/main/resources
+
 # sdk-coverage-tests
 **/test/java/coverage/generic/
 coverage-tests/configuration/local.js
