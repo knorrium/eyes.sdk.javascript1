@@ -12,6 +12,81 @@
 
 
 
+## [3.35.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-cypress-v3.34.2...js/eyes-cypress@3.35.0) (2023-08-03)
+
+
+### Features
+
+* mark session as component ([#1841](https://github.com/applitools/eyes.sdk.javascript1/issues/1841)) ([c579bb6](https://github.com/applitools/eyes.sdk.javascript1/commit/c579bb69de8f3bffc64e73ac8bd4fa646e96eb01))
+
+
+### Bug Fixes
+
+* fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+* update serverUrl propery name ([de9f082](https://github.com/applitools/eyes.sdk.javascript1/commit/de9f0825ab55a0b4022eb439698bcbabe2398c14))
+
+
+### Code Refactoring
+
+* ufg client ([#1780](https://github.com/applitools/eyes.sdk.javascript1/issues/1780)) ([d60cf16](https://github.com/applitools/eyes.sdk.javascript1/commit/d60cf1616741a96b152a1548760bb98116e5c3f9))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.6.6
+  #### Bug Fixes
+
+  * populate log event settings with env vars ([#1840](https://github.com/applitools/eyes.sdk.javascript1/issues/1840)) ([0a6af60](https://github.com/applitools/eyes.sdk.javascript1/commit/0a6af60b5b988f59b7adb03f6606b3417fbeb537))
+
+
+
+* @applitools/core-base bumped to 1.5.0
+  #### Features
+
+  * add stuck request retries to all requests to UFG and Eyes ([#1826](https://github.com/applitools/eyes.sdk.javascript1/issues/1826)) ([5884d42](https://github.com/applitools/eyes.sdk.javascript1/commit/5884d428b230e3a832a2110a388ebe63a94006fc))
+  * mark session as component ([#1841](https://github.com/applitools/eyes.sdk.javascript1/issues/1841)) ([c579bb6](https://github.com/applitools/eyes.sdk.javascript1/commit/c579bb69de8f3bffc64e73ac8bd4fa646e96eb01))
+
+
+  #### Bug Fixes
+
+  * populate log event settings with env vars ([#1840](https://github.com/applitools/eyes.sdk.javascript1/issues/1840)) ([0a6af60](https://github.com/applitools/eyes.sdk.javascript1/commit/0a6af60b5b988f59b7adb03f6606b3417fbeb537))
+* @applitools/driver bumped to 1.13.4
+  #### Bug Fixes
+
+  * extract device orientation from a browser for web executions ([d8d4e91](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d4e919965fb9105915e762c397ec2cc57a8a71))
+
+
+
+* @applitools/snippets bumped to 2.4.22
+  #### Bug Fixes
+
+  * improve orientation extraction for ios devices ([378d989](https://github.com/applitools/eyes.sdk.javascript1/commit/378d9894e4fbc7247087ccb8c46266dc4737e2e5))
+* @applitools/ufg-client bumped to 1.6.0
+  #### Features
+
+  * add stuck request retries to all requests to UFG and Eyes ([#1826](https://github.com/applitools/eyes.sdk.javascript1/issues/1826)) ([5884d42](https://github.com/applitools/eyes.sdk.javascript1/commit/5884d428b230e3a832a2110a388ebe63a94006fc))
+
+
+  #### Bug Fixes
+
+  * improve fetch error experience when fetching from tunnel ([e7d8b49](https://github.com/applitools/eyes.sdk.javascript1/commit/e7d8b49947c07beb27f110cb4952e8c3206469af))
+* @applitools/ec-client bumped to 1.7.4
+
+* @applitools/spec-driver-webdriver bumped to 1.0.41
+
+* @applitools/nml-client bumped to 1.5.6
+
+* @applitools/spec-driver-webdriverio bumped to 1.5.10
+
+* @applitools/screenshoter bumped to 3.8.7
+
+* @applitools/spec-driver-puppeteer bumped to 1.1.72
+
+* @applitools/spec-driver-selenium bumped to 1.5.55
+
+* @applitools/eyes bumped to 1.6.6
+
+
 ## [3.34.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-cypress@3.34.0...js/eyes-cypress@3.34.1) (2023-07-05)
 
 

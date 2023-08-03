@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.4.3...js/core-base@1.5.0) (2023-08-03)
+
+
+### Features
+
+* add stuck request retries to all requests to UFG and Eyes ([#1826](https://github.com/applitools/eyes.sdk.javascript1/issues/1826)) ([5884d42](https://github.com/applitools/eyes.sdk.javascript1/commit/5884d428b230e3a832a2110a388ebe63a94006fc))
+* mark session as component ([#1841](https://github.com/applitools/eyes.sdk.javascript1/issues/1841)) ([c579bb6](https://github.com/applitools/eyes.sdk.javascript1/commit/c579bb69de8f3bffc64e73ac8bd4fa646e96eb01))
+
+
+### Bug Fixes
+
+* populate log event settings with env vars ([#1840](https://github.com/applitools/eyes.sdk.javascript1/issues/1840)) ([0a6af60](https://github.com/applitools/eyes.sdk.javascript1/commit/0a6af60b5b988f59b7adb03f6606b3417fbeb537))
+
 ## [1.4.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.4.2...js/core-base@1.4.3) (2023-07-21)
 
 

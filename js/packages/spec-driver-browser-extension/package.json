@@ -1,6 +1,6 @@
 {
   "name": "@applitools/spec-driver-browser-extension",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "keywords": [
     "playwright",
     "chrome devtools protocol",

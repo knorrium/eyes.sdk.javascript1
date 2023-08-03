@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.5...js/spec-driver-browser-extension@1.0.6) (2023-08-03)
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.13.4
+  #### Bug Fixes
+
+  * extract device orientation from a browser for web executions ([d8d4e91](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d4e919965fb9105915e762c397ec2cc57a8a71))
+
+
+
+* @applitools/snippets bumped to 2.4.22
+  #### Bug Fixes
+
+  * improve orientation extraction for ios devices ([378d989](https://github.com/applitools/eyes.sdk.javascript1/commit/378d9894e4fbc7247087ccb8c46266dc4737e2e5))
+* @applitools/spec-driver-playwright bumped to 1.3.21
+
+
 ## [1.0.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.4...js/spec-driver-browser-extension@1.0.5) (2023-07-21)
 
 

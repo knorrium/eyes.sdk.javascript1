@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.5.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriverio@1.5.9...js/spec-driver-webdriverio@1.5.10) (2023-08-03)
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.13.4
+  #### Bug Fixes
+
+  * extract device orientation from a browser for web executions ([d8d4e91](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d4e919965fb9105915e762c397ec2cc57a8a71))
+
+
+
+* @applitools/snippets bumped to 2.4.22
+  #### Bug Fixes
+
+  * improve orientation extraction for ios devices ([378d989](https://github.com/applitools/eyes.sdk.javascript1/commit/378d9894e4fbc7247087ccb8c46266dc4737e2e5))
+
 ## [1.5.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-webdriverio@1.5.8...js/spec-driver-webdriverio@1.5.9) (2023-07-21)
 
 
