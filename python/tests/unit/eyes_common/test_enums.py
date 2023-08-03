@@ -9,7 +9,7 @@ JS_ROOT = path.join(path.dirname(__file__), "../../../../js")
 
 
 def _parse_ts_enum(name):
-    source_file = path.join(JS_ROOT, "packages/eyes-api/src/enums/{}.ts".format(name))
+    source_file = path.join(JS_ROOT, "packages/eyes/src/enums/{}.ts".format(name))
     regex = re.escape(name) + r"Enum\s*\{([^}]+)}"
     with open(source_file) as ts_code:
         (enum_contents,) = re.findall(regex, ts_code.read())
