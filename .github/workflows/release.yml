@@ -155,6 +155,7 @@ jobs:
           command: notification
           name: ${{matrix.notification.name}}
           report-id: ${{matrix.name}}@${{matrix.package-version}}
+          release-version: ${{matrix.package-version}}
 
 
   python-release:
