@@ -57951,20 +57951,18 @@ async function main() {
     }));
     async function restore(options) {
         options.startedAt ??= Date.now();
-        // NOTE: restoreCache mutates paths argument, that makes it impossible to reuse
-        const paths = [...options.paths];
-        const restoredName = await (0,cache.restoreCache)(options.paths, options.name, options.fallbacks, {}, true);
+        const restoredName = await (0,cache.restoreCache)([...options.paths], options.name, options.fallbacks, {}, true);
         if (restoredName) {
             core.info(`cache was successfully restored with ${options.name}`);
             return restoredName;
         }
         else if (options.wait) {
-            if (options.startedAt + options.wait >= Date.now()) {
+            if (options.startedAt + options.wait <= Date.now()) {
                 throw new Error(`Failed to restore artifact during ${options.wait} ms`);
             }
             core.info(`waiting for cache with name ${options.name} to appear`);
             await (0,promises_namespaceObject.setTimeout)(20000);
-            return restore({ ...options, paths });
+            return restore(options);
         }
     }
 }
