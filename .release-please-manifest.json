@@ -45,7 +45,7 @@
   "java/eyes.selenium.java": "5.63.5",
   "java/eyes.appium.java": "5.63.5",
   "java/eyes.playwright.java": "5.63.5",
-  "python/core_universal": "3.6.5",
+  "python/core_universal": "3.6.6",
   "python/eyes_common": "5.20.0",
   "python/eyes_images": "5.20.0",
   "python/eyes_playwright": "5.20.0",
