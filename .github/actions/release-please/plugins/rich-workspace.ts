@@ -28,6 +28,7 @@ export class RichWorkspace extends ManifestPlugin {
   private index = -1
   protected plugins: WorkspacePlugin<unknown>[]
   protected syntheticDependencies: Record<string, string[]>
+  protected order: string[] = []
   protected paths = {byComponent: {} as Record<string, string>, byPackageName: {} as Record<string, string>} 
   protected components = {byPath: {} as Record<string, string>, byPackageName: {} as Record<string, string>} 
   protected packageNames = {byComponent: {} as Record<string, string>, byPath: {} as Record<string, string>} 
@@ -63,6 +64,7 @@ export class RichWorkspace extends ManifestPlugin {
   ): Promise<Record<string, Strategy>> {
     this.strategiesByPath = strategiesByPath as Record<string, BaseStrategy>
     this.releasesByPath = releasesByPath
+    this.order = Object.keys(this.strategiesByPath)
     await Promise.all(Object.entries(strategiesByPath).map(async ([path, strategy]) => {
       const component = await strategy.getComponent()
       if (component) this.paths.byComponent[component] = path
@@ -77,14 +79,22 @@ export class RichWorkspace extends ManifestPlugin {
     return commits
   }
 
-  async run(candidates: CandidateReleasePullRequest[]) {
+  async run(candidates: (CandidateReleasePullRequest & {isSynthetic?: boolean})[]) {
     const updatedCandidates = await this.plugins.reduce((promise, plugin) => promise.then(async candidates => {
       for (const [dependantComponent, dependencyComponents] of Object.entries(this.syntheticDependencies)) {
         const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
-        if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
-          const path = this.paths.byComponent[dependantComponent]
-          const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
-          candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path]})
+        if (dependencyCandidates.length > 0) {
+          const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === dependantComponent)
+          if (!candidate?.isSynthetic) {
+            const path = this.paths.byComponent[dependantComponent]
+            const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
+            if (candidate) {
+              candidate.isSynthetic = true
+              candidate.pullRequest = pullRequest!
+            } else {
+              candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path], isSynthetic: true})
+            }
+          }
         }
       }
 
@@ -98,11 +108,9 @@ export class RichWorkspace extends ManifestPlugin {
     }), Promise.resolve(candidates))
 
     updatedCandidates.forEach(candidate => this.enrichChangelogEntry(candidate, updatedCandidates))
-
-    const order = Object.keys(this.strategiesByPath)
     return updatedCandidates
       .filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
-      .sort((candidate1, candidate2) => order.indexOf(candidate1.path) > order.indexOf(candidate2.path) ? 1 : -1)
+      .sort((candidate1, candidate2) => this.order.indexOf(candidate1.path) > this.order.indexOf(candidate2.path) ? 1 : -1)
   }
 
 
@@ -132,7 +140,13 @@ export class RichWorkspace extends ManifestPlugin {
         return bumps
       }, [] as RichChangelogEntry['bumps'])
       const dependencies = richChangelogEntry.bumps
-        .sort((bump1, bump2) => (bump1.sections.length > 0 ? 1 : 0) > (bump2.sections.length > 0 ? 1 : 0) ? -1 : 1)
+        .sort((bump1, bump2) => {
+          const bump1HasSections = bump1.sections.length > 0
+          const bump2HasSections = bump2.sections.length > 0
+          if (bump1HasSections && !bump2HasSections) return -1
+          else if (bump1HasSections && !bump2HasSections) return 1
+          else return this.order.indexOf(this.paths.byPackageName[bump1.packageName]) > this.order.indexOf(this.paths.byPackageName[bump2.packageName]) ? 1 : -1
+        })
         .map(bump => 
           `* ${bump.packageName} bumped ${bump.from ? `from ${bump.from} ` : ''}to ${bump.to}\n${bump.sections.map(section => `  #${section.replace(/(\n+)([^\n])/g, '$1  $2')}`).join('')}`
         )
