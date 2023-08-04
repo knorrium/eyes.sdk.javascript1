@@ -26,7 +26,7 @@ async function main(): Promise<(string | undefined)[]> {
     const [name, paths] = compositeName.split('$')
     const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : []
 
-    return restore({paths: paths.split(';'), name, fallbacks, wait: wait ? 0 : 600_000})
+    return restore({paths: paths.split(';'), name, fallbacks, wait: wait ? 600_000 : 0})
   }))
 
   async function restore(options: {

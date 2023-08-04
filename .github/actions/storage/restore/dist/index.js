@@ -57947,7 +57947,7 @@ async function main() {
     return Promise.all(names.map(async (compositeName) => {
         const [name, paths] = compositeName.split('$');
         const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
-        return restore({ paths: paths.split(';'), name, fallbacks, wait: wait ? 0 : 600000 });
+        return restore({ paths: paths.split(';'), name, fallbacks, wait: wait ? 600000 : 0 });
     }));
     async function restore(options) {
         options.startedAt ??= Date.now();
