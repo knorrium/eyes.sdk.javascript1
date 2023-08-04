@@ -1,7 +1,19 @@
 import {GitHub, Manifest, registerPlugin} from 'release-please'
+import {PythonWorkspace} from './plugins/python-workspace'
 import {RichWorkspace} from './plugins/rich-workspace'
 import {RichCommits} from './plugins/rich-commits'
 import * as core from '@actions/core'
+
+registerPlugin(
+  'python-workspace',
+  options =>
+    new PythonWorkspace(
+      options.github,
+      options.targetBranch,
+      options.repositoryConfig,
+      {...options, ...(options.type as any)}
+    )
+)
 
 registerPlugin(
   'rich-commits',

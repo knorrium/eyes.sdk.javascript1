@@ -8,7 +8,7 @@
     "rich-commits",
     {
       "type": "rich-workspace",
-      "workspaces": ["node", "maven"],
+      "workspaces": ["node", "maven", "python"],
       "synthetic-dependencies": {
         "java/eyes-universal-core": ["js/core"],
         "java/eyes-universal-core-binaries": ["js/core"],
