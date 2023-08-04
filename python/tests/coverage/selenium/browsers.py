@@ -15,7 +15,9 @@ GECKO_DRIVER = GeckoDriverManager().install()
 
 
 @pytest.fixture(scope="function")
-def chrome(eyes_runner_class):
+def chrome(eyes_runner_class, request):
+    if "RegionByElementWithinShadowDomWithVg" in request.node.name and LEGACY_SELENIUM:
+        pytest.skip("This test can not be run with chrome 96+ and old Selenium")
     options = webdriver.ChromeOptions()
     if sys.platform == "darwin":
         options.binary_location = (
