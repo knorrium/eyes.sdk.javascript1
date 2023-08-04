@@ -83,7 +83,6 @@ export class RichWorkspace extends ManifestPlugin {
         const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
         if (dependencyCandidates.length > 0 && !candidates.some(candidate => this.components.byPath[candidate.path] === dependantComponent)) {
           const path = this.paths.byComponent[dependantComponent]
-          console.log(path, dependantComponent)
           const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
           candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path]})
         }
@@ -101,8 +100,6 @@ export class RichWorkspace extends ManifestPlugin {
     updatedCandidates.forEach(candidate => this.enrichChangelogEntry(candidate, updatedCandidates))
 
     const order = Object.keys(this.strategiesByPath)
-    console.log(order)
-
     return updatedCandidates
       .filter(candidate => !candidate.pullRequest.labels.includes('skip-release'))
       .sort((candidate1, candidate2) => order.indexOf(candidate1.path) > order.indexOf(candidate2.path) ? 1 : -1)
@@ -114,7 +111,6 @@ export class RichWorkspace extends ManifestPlugin {
 
     const update = candidate.pullRequest.updates.find((update): update is Update & {updater: Changelog} => update.updater instanceof Changelog)
     if (!update) return null
-    console.log('BEFORE ENRICH CHANGELOG', update.updater.changelogEntry)
     const richChangelogEntry = {} as RichChangelogEntry
     richChangelogEntry.header = extractChangelogEntryHeader(update.updater.changelogEntry)
     richChangelogEntry.sections = extractChangelogEntrySections(update.updater.changelogEntry).map(section => {

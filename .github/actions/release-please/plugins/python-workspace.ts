@@ -254,7 +254,7 @@ function stringifyPackage(pkg: PythonPackage): string {
 function getChangelogDepsNotes(original: PythonPackage, updated: PythonPackage): string {
   const depUpdateNotes = Object.keys(updated.dependencies).reduce((notes, depName) => {
     if (updated.dependencies[depName] !== original.dependencies[depName]) {
-      notes += `\n  * ${depName} bumped to ${updated.dependencies[depName]}`
+      notes += `\n  * ${depName} bumped to ${updated.dependencies[depName].replace(/^[<=>]+/, '')}`
     }
     return notes
   }, '')

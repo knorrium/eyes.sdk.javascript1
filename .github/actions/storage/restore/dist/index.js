@@ -57947,7 +57947,10 @@ async function main() {
     return Promise.all(names.map(async (compositeName) => {
         const [name, paths] = compositeName.split('$');
         const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
-        return restore({ paths: paths.split(';'), name, fallbacks, wait });
+        return Promise.race([
+            restore({ paths: paths.split(';'), name, fallbacks, wait }),
+            (0,promises_namespaceObject.setTimeout)(600000, Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
+        ]);
     }));
     async function restore(options) {
         // NOTE: restoreCache mutates paths argument, that makes it impossible to reuse

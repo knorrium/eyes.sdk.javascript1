@@ -26,7 +26,10 @@ async function main(): Promise<(string | undefined)[]> {
     const [name, paths] = compositeName.split('$')
     const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : []
 
-    return restore({paths: paths.split(';'), name, fallbacks, wait})
+    return Promise.race([
+      restore({paths: paths.split(';'), name, fallbacks, wait}),
+      setTimeout(600_000, Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
+    ])
   }))
 
   async function restore(options: {paths: string[], name: string, fallbacks: string[], wait?: boolean}): Promise<string | undefined> {
