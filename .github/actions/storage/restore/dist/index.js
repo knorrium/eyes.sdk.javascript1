@@ -57947,12 +57947,10 @@ async function main() {
     return Promise.all(names.map(async (compositeName) => {
         const [name, paths] = compositeName.split('$');
         const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
-        return Promise.race([
-            restore({ paths: paths.split(';'), name, fallbacks, wait }),
-            (0,promises_namespaceObject.setTimeout)(600000).then(() => Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
-        ]);
+        return restore({ paths: paths.split(';'), name, fallbacks, wait: wait ? 0 : 600000 });
     }));
     async function restore(options) {
+        options.startedAt ??= Date.now();
         // NOTE: restoreCache mutates paths argument, that makes it impossible to reuse
         const paths = [...options.paths];
         const restoredName = await (0,cache.restoreCache)(options.paths, options.name, options.fallbacks, {}, true);
@@ -57960,7 +57958,10 @@ async function main() {
             core.info(`cache was successfully restored with ${options.name}`);
             return restoredName;
         }
-        else if (wait) {
+        else if (options.wait) {
+            if (options.startedAt + options.wait >= Date.now()) {
+                throw new Error(`Failed to restore artifact during ${options.wait} ms`);
+            }
             core.info(`waiting for cache with name ${options.name} to appear`);
             await (0,promises_namespaceObject.setTimeout)(20000);
             return restore({ ...options, paths });
