@@ -111,8 +111,10 @@ export class RichWorkspace extends ManifestPlugin {
 
   protected enrichChangelogEntry(candidate: CandidateReleasePullRequest, candidates: CandidateReleasePullRequest[]): RichChangelogEntry | null {
     if (this.richChangelogEntriesByCandidate.has(candidate)) return this.richChangelogEntriesByCandidate.get(candidate)!
+
     const update = candidate.pullRequest.updates.find((update): update is Update & {updater: Changelog} => update.updater instanceof Changelog)
     if (!update) return null
+    console.log('BEFORE ENRICH CHANGELOG', update.updater.changelogEntry)
     const richChangelogEntry = {} as RichChangelogEntry
     richChangelogEntry.header = extractChangelogEntryHeader(update.updater.changelogEntry)
     richChangelogEntry.sections = extractChangelogEntrySections(update.updater.changelogEntry).map(section => {

@@ -252,14 +252,12 @@ function stringifyPackage(pkg: PythonPackage): string {
 }
 
 function getChangelogDepsNotes(original: PythonPackage, updated: PythonPackage): string {
-  let depUpdateNotes = ''
-
-  for (const [depName, currentDepVer] of Object.entries(updated.dependencies)) {
-    const origDepVer = original.dependencies?.[depName]
-    if (currentDepVer !== origDepVer) {
-      depUpdateNotes += `\n  * ${depName} bumped to ${currentDepVer}`
+  const depUpdateNotes = Object.keys(updated.dependencies).reduce((notes, depName) => {
+    if (updated.dependencies[depName] !== original.dependencies[depName]) {
+      notes += `\n  * ${depName} bumped to ${updated.dependencies[depName]}`
     }
-  }
+    return notes
+  }, '')
 
   return depUpdateNotes ? `* The following workspace dependencies were updated${depUpdateNotes}` : ''
 }
