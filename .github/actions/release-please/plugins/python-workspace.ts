@@ -223,7 +223,7 @@ function parsePackage(manifest: string, path: string): PythonPackage {
     path,
     name: data.metadata.name,
     version: data.metadata.version,
-    dependencies: (data.options.install_requires as string[]).reduce((dependencies, dependency) => {
+    dependencies: (data.options.install_requires as string[] ?? []).reduce((dependencies, dependency) => {
       const match = dependency.match(/^(?<name>.*?)(?<version>[<=>].*?)?$/)
       if (match) dependencies[match.groups!.name] = match.groups!.version || ''
       return dependencies
