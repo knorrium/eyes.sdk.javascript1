@@ -317,7 +317,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{fromJSON(needs.setup.outputs.builds).python}}
-    name: Build / ${{matrix.display-name || 'python (skipped)'}}
+    name: Build / ${{matrix.display-name}}
     timeout-minutes: 20
     runs-on: ${{matrix.runner || 'ubuntu-20.04'}} # there are no old pythons for new Ubuntu
     container: ${{matrix.container}}
@@ -356,7 +356,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{fromJSON(needs.setup.outputs.tests).python}}
-    name: Test / ${{matrix.display-name || 'python (skipped)'}}
+    name: Test / ${{matrix.display-name}}
     timeout-minutes: 45
     runs-on: ${{matrix.runner || 'ubuntu-20.04'}} # there are no old pythons for new Ubuntu
     container: ${{matrix.container}}
@@ -397,7 +397,7 @@ jobs:
           test-type: ${{matrix.test-type}}
           working-directory: ${{matrix.working-directory}}
         env:
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Save testing artifacts
         if: ${{always() && matrix.key && matrix.artifacts}}
         uses: actions/upload-artifact@v3
