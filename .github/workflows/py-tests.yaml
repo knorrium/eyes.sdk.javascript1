@@ -455,33 +455,6 @@ jobs:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-
-  report_bongo_selenium:
-    needs:
-      - generated-tests-appium
-      - generated-tests-selenium
-    if: success() || failure()
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{inputs.ref || github.ref}}
-      - name: Send bongo report for the python 3.6 tests
-        uses: ./.github/actions/bongo_separated_report
-        with:
-          artifact: 'selenium_3.6_selenium,selenium_3.6_appium'
-          sdk_name: 'python_selenium_3'
-          report_id: ${{ format('python_selenium_3_{0}', github.sha ) }}
-          sandbox: ${{ !env.RELEASING_PACKAGE }}
-      - name: Send bongo report for the python 3.11 tests
-        uses: ./.github/actions/bongo_separated_report
-        env:
-          SDK_NAME: ${{ env.RELEASING_PACKAGE == 'eyes_robotframework' && 'robotframework' || 'python' }}
-        with:
-          artifact: 'selenium_3.11_selenium,selenium_3.11_appium'
-          sdk_name: ${{ env.SDK_NAME }}
-          report_id: ${{ format('{0}_{1}', env.SDK_NAME, github.sha ) }}
-          sandbox: ${{ !env.RELEASING_PACKAGE }}
   report:
     needs:
       - unit-tests
