@@ -57949,7 +57949,7 @@ async function main() {
         const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
         return Promise.race([
             restore({ paths: paths.split(';'), name, fallbacks, wait }),
-            (0,promises_namespaceObject.setTimeout)(600000, Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
+            (0,promises_namespaceObject.setTimeout)(600000).then(() => Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
         ]);
     }));
     async function restore(options) {

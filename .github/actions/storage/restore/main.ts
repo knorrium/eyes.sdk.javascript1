@@ -28,7 +28,7 @@ async function main(): Promise<(string | undefined)[]> {
 
     return Promise.race([
       restore({paths: paths.split(';'), name, fallbacks, wait}),
-      setTimeout(600_000, Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
+      setTimeout(600_000).then(() => Promise.reject(new Error('Failed to restore artifact during 10 minutes')))
     ])
   }))
 
