@@ -94,7 +94,10 @@ def download(executable, version, dry_run):
             already_downloaded = False
         if not already_downloaded:
             try:
-                urlretrieve(url, relative_bin_name)
+                _, response = urlretrieve(url, relative_bin_name)
+                # python2's urlretrieve doesn't raise on 404 and doesn't preserve status
+                if response.maintype != "application":  # so let's check if it is binary
+                    raise Exception("Failed to download " + url)
             except BaseException:
                 if os.path.isfile(relative_bin_name):
                     os.remove(relative_bin_name)
