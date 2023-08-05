@@ -20,12 +20,6 @@ if TYPE_CHECKING:
     from robot.result import TestSuite as RobotTestSuite
 
 
-backend_to_backend_name = {
-    "selenium": "SeleniumLibrary",
-    "appium": "AppiumLibrary",
-}
-
-
 def run_robot(*args, output_file_path=None, isolation=True):
     test_dir = path.join(path.dirname(__file__), "robot_tests")
     call_args = (
@@ -91,25 +85,24 @@ def test_suite_dir_with_results_propagation_and_one_diff_in_report(
     assert "1 test failed" in local_chrome_driver.page_source
 
 
-@pytest.mark.parametrize(
-    "data",
-    [
-        ("web", "appium", "android"),
-        ("web", "appium", "ios"),
-    ],
-    ids=lambda d: str(d),
-)
-@pytest.mark.sauce
-def test_web_mobile(data, tmp_path):
-    runner, backend, platform = data
-    output_file_path = os.path.join(
-        tmp_path, "{}-{}-{}".format(runner, backend, platform)
-    )
+def test_web_mobile_android(sauce_vm, tmp_path):
+    output_file_path = os.path.join(tmp_path, "web-appium-android")
     run_robot(
         "--variablefile",
-        "variables_test.py:{runner}:{backend}:{platform}".format(
-            runner=runner, backend=backend, platform=platform
-        ),
+        "variables_test.py:web:appium:android",
+        "web_only.robot",
+        output_file_path=output_file_path,
+    )
+    result = ExecutionResult(output_file_path + ".xml")
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+
+
+def test_web_mobile_ios(sauce_mac_vm, tmp_path):
+    output_file_path = os.path.join(tmp_path, "web-appium-ios")
+    run_robot(
+        "--variablefile",
+        "variables_test.py:web:appium:ios",
         "web_only.robot",
         output_file_path=output_file_path,
     )
@@ -146,26 +139,25 @@ def test_web_desktop(data, tmp_path):
     assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
 
 
-@pytest.mark.parametrize(
-    "data",
-    [
-        ["ios", "mobile_native"],
-        ["android", "mobile_native"],
-    ],
-    ids=lambda d: str(d),
-)
-@pytest.mark.sauce
-def test_suite_mobile_native(data, tmp_path):
-    backend = "appium"
-    platform, runner = data
-    output_file_path = os.path.join(
-        tmp_path, "{}-{}-{}".format(runner, backend, platform)
-    )
+def test_suite_mobile_native_android(sauce_vm, tmp_path):
+    output_file_path = os.path.join(tmp_path, "mobile_native-appium-android")
     run_robot(
         "--variablefile",
-        "variables_test.py:{runner}:{backend}:{platform}".format(
-            runner=runner, backend=backend, platform=platform
-        ),
+        "variables_test.py:mobile_native:appium:android",
+        "mobile_native.robot",
+        output_file_path=output_file_path,
+    )
+
+    result = ExecutionResult(output_file_path + ".xml")
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+
+
+def test_suite_mobile_native_ios(sauce_mac_vm, tmp_path):
+    output_file_path = os.path.join(tmp_path, "mobile_native-appium-ios")
+    run_robot(
+        "--variablefile",
+        "variables_test.py:mobile_native:appium:ios",
         "mobile_native.robot",
         output_file_path=output_file_path,
     )

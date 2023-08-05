@@ -6,8 +6,6 @@ from pytest import fixture
 
 from applitools.selenium import BatchInfo, ClassicRunner, Eyes, StitchMode
 
-from .sauce import pytest_collection_modifyitems, sauce_url
-
 if appium_version.startswith("1"):
     from .devices_appium1 import (
         iphone_12,
@@ -27,8 +25,6 @@ else:
 
 # just to avoid unused imports warning
 __all__ = [
-    pytest_collection_modifyitems,
-    sauce_url,
     iphone_xs,
     iphone_12,
     pixel_3_xl,
@@ -55,25 +51,20 @@ def driver_builder(chrome):
     return chrome
 
 
-@fixture
-def legacy():
-    return False
-
-
 @fixture(scope="function")
 def orientation():
     return "portrait"
 
 
 @fixture
-def driver(driver_builder, request):
-    test_name = "Py{}.{}|App{} {}".format(
+def sauce_test_name(request):
+    return "Py{}.{}|App{} {}".format(
         *sys.version_info[:2], appium_version, request.node.name[5:]
     )
-    # Attempting to provide sauce job name in caps causes sauce instabilities.
-    # Seems that it increases session start command execution above 40 seconds and
-    # that triggers some sauce internal timeout
-    driver_builder.execute_script("sauce:job-name=" + test_name)
+
+
+@fixture
+def driver(driver_builder):
     yield driver_builder
     driver_builder.quit()
 

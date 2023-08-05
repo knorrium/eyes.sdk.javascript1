@@ -1,5 +1,6 @@
 *** Settings ***
 Library     AppiumLibrary
+Library     Collections
 Library     EyesLibrary     runner=${RUNNER}    config=applitools.yaml
 Library     String
 
@@ -8,10 +9,11 @@ Test Teardown    Teardown
 
 *** Keywords ***
 Setup
-    ${SAUCE_TEST_NAME}=  Format String  sauce:job-name\=Robot|{} {}  ${RUNNER}  ${TEST_NAME}
-    ${DESIRED_CAPS}=     Eyes Create NMG Capabilities       &{DESIRED_CAPS}
+    ${DESIRED_CAPS}=     Eyes Create NMG Capabilities    &{DESIRED_CAPS}
+    ${SAUCE_TEST_NAME}=  Format String                   Robot|{} {}  ${RUNNER}  ${TEST_NAME}
+    ${SAUCE_OPTIONS}=    Create Dictionary               name     ${SAUCE_TEST_NAME}
+    Set To Dictionary    ${DESIRED_CAPS}  sauce:options  ${SAUCE_OPTIONS}
     Open Application     ${REMOTE_URL}    &{DESIRED_CAPS}
-    Execute Script       ${SAUCE_TEST_NAME}
     Eyes Configure Add Property     RUNNER    ${RUNNER}
     Eyes Configure Add Property     BACKEND_LIBRARY_NAME    ${RUNNER}
 

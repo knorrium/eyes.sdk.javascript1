@@ -7,14 +7,12 @@ from webdriver_manager.firefox import GeckoDriverManager
 
 from applitools.selenium import VisualGridRunner
 
-from . import sauce
-
 LEGACY_SELENIUM = int(selenium.__version__.split(".")[0]) < 4
 # Download driver during module import to avoid racy downloads by xdist workers
 GECKO_DRIVER = GeckoDriverManager().install()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def chrome(eyes_runner_class, request):
     if "RegionByElementWithinShadowDomWithVg" in request.node.name and LEGACY_SELENIUM:
         pytest.skip("This test can not be run with chrome 96+ and old Selenium")
@@ -32,10 +30,10 @@ def chrome(eyes_runner_class, request):
         url = Eyes.get_execution_cloud_url()
         return webdriver.Remote(command_executor=url, options=options)
     else:
-        return start_chrome_driver(options)
+        return webdriver.Chrome(options=options)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def firefox():
     options = webdriver.FirefoxOptions()
     options.add_argument("-headless")
@@ -47,94 +45,62 @@ def firefox():
         return webdriver.Firefox(service=Service(GECKO_DRIVER), options=options)
 
 
-@sauce.vm
-@pytest.fixture(scope="function")
-def firefox_48(sauce_url, legacy, name_of_test):
-    if LEGACY_SELENIUM:
-        if legacy:
-            options = webdriver.FirefoxOptions()
-            options.set_capability("name", name_of_test)
-            options.set_capability("platform", "Windows 10")
-            options.set_capability("version", "48.0")
-            return webdriver.Remote(command_executor=sauce_url, options=options)
-        else:
-            raise Exception("Firefox 48 can only be accessed in legacy protocol")
-    else:
-        pytest.skip("Firefox 48 can only be accessed in legacy Selenium")
-
-
-@sauce.vm
-@pytest.fixture(scope="function")
-def ie_11(sauce_url, name_of_test):
+@pytest.fixture
+def ie_11(sauce_vm, sauce_test_name):
     options = webdriver.IeOptions()
     options.set_capability("browserVersion", "11.285")
     options.set_capability("platformName", "Windows 10")
-    options.set_capability("sauce:options", {"name": name_of_test})
-    return webdriver.Remote(command_executor=sauce_url, options=options)
+    options.set_capability("sauce:options", {"name": sauce_test_name})
+    return webdriver.Remote(command_executor=sauce_vm, options=options)
 
 
-@sauce.vm
-@pytest.fixture(scope="function")
-def edge_18(sauce_url, name_of_test):
+@pytest.fixture
+def edge_18(sauce_vm, sauce_test_name):
     if LEGACY_SELENIUM:
         capabilities = {
             "browserName": "MicrosoftEdge",
             "browserVersion": "18.17763",
             "platformName": "Windows 10",
-            "sauce:options": {"screenResolution": "1920x1080", "name": name_of_test},
+            "sauce:options": {"screenResolution": "1920x1080", "name": sauce_test_name},
         }
-        return webdriver.Remote(sauce_url, capabilities)
+        return webdriver.Remote(sauce_vm, capabilities)
     else:
         options = webdriver.EdgeOptions()
         options.browser_version = "18.17763"
         options.platform_name = "Windows 10"
         options.set_capability(
-            "sauce:options", {"screenResolution": "1920x1080", "name": name_of_test}
+            "sauce:options", {"screenResolution": "1920x1080", "name": sauce_test_name}
         )
-        return webdriver.Remote(command_executor=sauce_url, options=options)
+        return webdriver.Remote(command_executor=sauce_vm, options=options)
 
 
-@sauce.mac_vm
-@pytest.fixture(scope="function")
-def safari_11(sauce_url, legacy, name_of_test):
+@pytest.fixture
+def safari_11(sauce_mac_vm, sauce_test_name):
     if LEGACY_SELENIUM:
-        if legacy:
-            capabilities = {
-                "browserName": "safari",
-                "name": name_of_test,
-                "platform": "macOS 10.13",
-                "version": "11.1",
-            }
-        else:
-            raise NotImplementedError
-        return webdriver.Remote(sauce_url, capabilities)
+        capabilities = {
+            "browserName": "safari",
+            "name": sauce_test_name,
+            "platform": "macOS 10.13",
+            "version": "11.1",
+        }
+        return webdriver.Remote(sauce_mac_vm, capabilities)
     else:
-        if legacy:
-            pytest.skip("Legacy Safari 11 driver is not functional in Selenium 4")
-        else:
-            raise NotImplementedError
+        pytest.skip("Safari 11 can only be accessed in legacy Selenium 3")
 
 
-@sauce.mac_vm
-@pytest.fixture(scope="function")
-def safari_12(sauce_url, legacy, name_of_test):
+@pytest.fixture
+def safari_12(sauce_mac_vm, sauce_test_name):
     if LEGACY_SELENIUM:
-        if legacy:
-            capabilities = {
-                "browserName": "safari",
-                "name": name_of_test,
-                "platform": "macOS 10.13",
-                "seleniumVersion": "3.4.0",
-                "version": "12.1",
-            }
-        else:
-            raise NotImplementedError
-        return webdriver.Remote(sauce_url, capabilities)
+        capabilities = {
+            "browserName": "safari",
+            "name": sauce_test_name,
+            "platform": "macOS 10.13",
+            "seleniumVersion": "3.4.0",
+            "version": "12.1",
+        }
+        return webdriver.Remote(sauce_mac_vm, capabilities)
     else:
-        if legacy:
-            pytest.skip("Safari 12 can only be accessed in legacy Selenium 3")
-        else:
-            raise NotImplementedError
+        pytest.skip("Safari 12 can only be accessed in legacy Selenium 3")
 
 
 @pytest.fixture
@@ -154,15 +120,6 @@ def chrome_emulator():
         options.add_argument("--headless")
         for arg in args or ():
             options.add_argument(arg)
-        return start_chrome_driver(options)
+        return webdriver.Chrome(options=options)
 
     return make_emulated_driver
-
-
-def start_chrome_driver(options):
-    if LEGACY_SELENIUM:
-        return webdriver.Chrome(options=options)
-    else:
-        from selenium.webdriver.chrome.service import Service
-
-        return webdriver.Chrome(options=options)

@@ -1,13 +1,9 @@
-import sys
-
-import selenium
 from pytest import fixture
 from selenium.common.exceptions import WebDriverException
 
 from applitools.selenium import BatchInfo, ClassicRunner, Eyes, StitchMode
 
 from .browsers import *
-from .sauce import pytest_collection_modifyitems, sauce_url
 
 batch_info = BatchInfo(
     "Py{}.{}|Sel{} Generated tests".format(*sys.version_info[:2], selenium.__version__)
@@ -15,15 +11,10 @@ batch_info = BatchInfo(
 
 
 @fixture
-def name_of_test(request):
+def sauce_test_name(request):
     return "Py{}.{}|Sel{} {}".format(
         *sys.version_info[:2], selenium.__version__, request.node.name[5:]
     )
-
-
-@fixture
-def legacy():
-    return False
 
 
 @fixture
