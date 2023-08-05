@@ -2,7 +2,7 @@ import os
 from base64 import b64encode
 from hashlib import md5
 from shutil import copy
-from sys import platform
+from sys import platform, version_info
 
 from setuptools import setup
 from setuptools.command.build_py import build_py as _build_py
@@ -21,6 +21,8 @@ try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 except ImportError:
     _bdist_wheel = None
+
+PY2 = version_info[0] == 2
 
 
 def current_platform_executable():
@@ -96,7 +98,7 @@ def download(executable, version, dry_run):
             try:
                 _, response = urlretrieve(url, relative_bin_name)
                 # python2's urlretrieve doesn't raise on 404 and doesn't preserve status
-                if response.maintype != "application":  # so let's check if it is binary
+                if PY2 and response.maintype != "application":  # check if it is binary
                     raise Exception("Failed to download " + url)
             except BaseException:
                 if os.path.isfile(relative_bin_name):
