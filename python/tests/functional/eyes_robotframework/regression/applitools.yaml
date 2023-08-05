@@ -6,3 +6,6 @@ web_ufg:
       - browser_type: CHROME  # names from BrowserType
         width: 800
         height: 600
+
+batch:
+  name: eyes-robotframework regression tests

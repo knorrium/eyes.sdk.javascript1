@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Generator, Optional, Text
 
 from robot.api import logger as robot_logger
+from robot.result import Keyword
 from robot.utils import get_timestamp
 
 from applitools.common.test_results import TestResultsStatus
@@ -84,14 +85,13 @@ class SuitePostProcessManager(object):
                 continue  # skip non-eyes tests
             robot_test_status, steps_info = robot_test_name_to_status[robot_test.name]
             robot_test.status = robot_test_status
-            check_keywords = (
-                kw
-                for kw in robot_test.body
-                if kw.libname == "EyesLibrary" and kw.kwname in CHECK_KEYWORDS_LIST
-            )
+            check_keywords = all_check_keywords_recursively(robot_test)
             for check_keyword, step_info in zip(check_keywords, steps_info):
                 if step_info["is_different"]:
-                    check_keyword.status = "FAIL"
+                    call_chain = check_keyword
+                    while isinstance(call_chain, Keyword):
+                        call_chain.status = "FAIL"
+                        call_chain = call_chain.parent
                 check_keyword.body.create_message(
                     message="Check result url: " + step_info["url"],
                     timestamp=get_timestamp(),
@@ -182,3 +182,14 @@ class EyesToRobotTestResultsManager(object):
                     break
             else:
                 yield test_results_list[0]
+
+
+def all_check_keywords_recursively(test_or_kw):
+    check_keywords = []
+    for kw in test_or_kw.body:
+        if isinstance(kw, Keyword):
+            if kw.libname == "EyesLibrary" and kw.kwname in CHECK_KEYWORDS_LIST:
+                check_keywords.append(kw)
+            else:
+                check_keywords.extend(all_check_keywords_recursively(kw))
+    return check_keywords
