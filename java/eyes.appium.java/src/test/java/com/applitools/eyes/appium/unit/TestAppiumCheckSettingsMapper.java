@@ -5,6 +5,7 @@ import com.applitools.eyes.appium.AppiumCheckSettings;
 import com.applitools.eyes.appium.AppiumCheckSettingsMapper;
 import com.applitools.eyes.appium.Target;
 import com.applitools.eyes.config.Configuration;
+import com.applitools.eyes.selenium.StitchMode;
 import com.applitools.eyes.universal.ManagerType;
 import com.applitools.eyes.universal.dto.CheckSettingsDto;
 import com.applitools.eyes.universal.dto.SelectorRegionDto;
@@ -214,5 +215,15 @@ public class TestAppiumCheckSettingsMapper extends ReportingTestSuite {
         Assert.assertEquals((int) densityMetrics2.getXdpi(), 10);
         Assert.assertEquals((int) densityMetrics2.getYdpi(), 20);
         Assert.assertEquals(densityMetrics2.getScaleRatio(), 2.0);
+    }
+
+    @Test
+    public void testAppiumStitchMode() {
+        Configuration config = new Configuration();
+        config.setStitchMode(StitchMode.SCROLL);
+        AppiumCheckSettings checkSettings = (AppiumCheckSettings) Target.window().stitchMode(StitchMode.RESIZE);
+        CheckSettingsDto dto = AppiumCheckSettingsMapper.toCheckSettingsDto(checkSettings, config);
+
+        Assert.assertEquals(dto.getStitchMode(), "Resize");
     }
 }

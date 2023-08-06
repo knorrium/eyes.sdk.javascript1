@@ -23,7 +23,8 @@ public class AppiumCheckSettingsMapper {
         checkSettingsDto.setFully(appiumCheckSettings.getStitchContent());
         checkSettingsDto.setScrollRootElement(AppiumTRegionMapper.toTRegionDtoFromScrolls(appiumCheckSettings
                 .getScrollRootElementSelector(), appiumCheckSettings.getScrollRootElement()));
-        checkSettingsDto.setStitchMode(config.getStitchMode() == null ? null : config.getStitchMode().getName());
+        checkSettingsDto.setStitchMode(appiumCheckSettings.getStitchMode() != null ? appiumCheckSettings.getStitchMode().getName()
+                : config.getStitchMode() != null ? config.getStitchMode().getName() : null);
         checkSettingsDto.setHideScrollbars(config.getHideScrollbars());
         checkSettingsDto.setHideCaret(config.getHideCaret());
         checkSettingsDto.setOverlap(config.getOverlap());
