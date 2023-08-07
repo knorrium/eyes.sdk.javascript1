@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [5.63.6](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.63.5...java/eyes-appium-java5@5.63.6) (2023-08-07)
+
+
+### Bug Fixes
+
+* fix incorrect stitchMode mapping in checkSettings ([90431d3](https://github.com/applitools/eyes.sdk.javascript1/commit/90431d33cb29419475875c4863603eb778bb7bc0))
+
 ## [5.63.5](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.63.4...java/eyes-appium-java5@5.63.5) (2023-08-03)
 
 
