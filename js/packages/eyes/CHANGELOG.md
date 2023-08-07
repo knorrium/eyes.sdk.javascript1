@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (2023-08-03)
+## [1.6.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.6.5...js/eyes@1.6.6) (2023-08-03)
 
 
 ### Dependencies

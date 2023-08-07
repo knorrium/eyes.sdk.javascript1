@@ -1,17 +1,5 @@
 # Changelog
 
-## Unreleased
-
-
-
-
-
-
-
-
-
-
-
 ## [3.35.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-cypress-v3.34.2...js/eyes-cypress@3.35.0) (2023-08-03)
 
 

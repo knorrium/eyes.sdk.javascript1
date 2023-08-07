@@ -1,9 +1,5 @@
 # Changelog
 
-## Unreleased
-
-
-
 ## [3.37.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.6...js/eyes-storybook@3.37.7) (2023-08-03)
 
 

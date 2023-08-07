@@ -1,7 +1,5 @@
 # Changelog
 
-## Unreleased
-
 ## [3.6.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.5...js/core@3.6.6) (2023-08-03)
 
 

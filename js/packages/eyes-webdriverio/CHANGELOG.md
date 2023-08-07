@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (2023-08-03)
+## [5.44.18](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.17...js/eyes-webdriverio@5.44.18) (2023-08-03)
 
 
 ### Dependencies

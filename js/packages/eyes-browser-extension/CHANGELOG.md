@@ -1,8 +1,5 @@
 # Changelog
 
-## Unreleased
-
-
 ## 0.2.0 - 2021/8/13
 
 - support richer core api for throwing errors
