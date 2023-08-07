@@ -5494,7 +5494,7 @@ main()
 });
 async function main() {
     const sha = await getSha();
-    const packages = await getPackages();
+    const packages = await makePackages();
     const envs = core.getInput('env').split(/[;\s]+/).reduce((envs, env) => {
         const [key, value] = env.split('=');
         return { ...envs, [key]: value };
@@ -5503,233 +5503,235 @@ async function main() {
     const ci = type.startsWith('ci');
     const release = type === 'release';
     const environment = ['ci-prod', 'release'].includes(type) ? 'prod' : 'dev';
-    let input;
+    let jobs;
     if (ci) {
-        input = getChangedPackagesInput();
-        core.notice(`Changed packages: "${input}"`);
+        const names = getChangedPackageNames();
+        core.notice(`Changed packages: "${names.join(' ')}"`);
+        jobs = makeJobs(names);
     }
     else if (release) {
         const tags = core.getMultilineInput('tag').flatMap(tag => tag.split(/[\s\n,]+/));
-        input = getPackagesInputFromTags(tags);
-        core.notice(`Release packages: "${input}"`);
+        const names = getPackageNamesFromTags(tags);
+        core.notice(`Release packages: "${names.join(' ')}"`);
+        jobs = makeJobs(names);
     }
     else {
-        input = core.getInput('packages');
+        const input = core.getInput('packages');
         core.notice(`Requested packages: "${input}"`);
+        jobs = {};
     }
-    let jobs = createJobs(input);
     core.debug(JSON.stringify(jobs, null, 2));
-    if (Object.values(jobs.builds).flat().length > 0) {
+    if (jobs.builds && Object.values(jobs.builds).flat().length > 0) {
         core.info(`Build jobs: "${Object.values(jobs.builds).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('builds', jobs.builds);
     }
-    if (Object.values(jobs.tests).flat().length > 0) {
+    if (jobs.tests && Object.values(jobs.tests).flat().length > 0) {
         core.info(`Test jobs: "${Object.values(jobs.tests).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('tests', jobs.tests);
     }
-    if (Object.values(jobs.releases).flat().length > 0) {
+    if (jobs.releases && Object.values(jobs.releases).flat().length > 0) {
         core.info(`Release jobs: "${Object.values(jobs.releases).flat().map(job => job['display-name']).join(', ')}"`);
         core.setOutput('releases', jobs.releases);
     }
-    async function getPackages() {
+    async function makePackages() {
         const releaseConfigPath = external_node_path_namespaceObject.resolve(process.cwd(), './release-please-config.json');
         const releaseConfig = JSON.parse(await promises_namespaceObject.readFile(releaseConfigPath, { encoding: 'utf8' }));
-        const packages = await Object.entries(releaseConfig.packages).reduce(async (packages, [packagePath, packageConfig], index) => {
+        return Object.entries(releaseConfig.packages).reduce(async (promise, [packagePath, packageConfig], index) => {
             if (packageConfig.component.startsWith('js/')) {
                 const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'package.json');
                 const manifest = JSON.parse(await promises_namespaceObject.readFile(packageManifestPath, { encoding: 'utf8' }));
-                return packages.then(packages => {
-                    packages[manifest.name] = {
-                        index,
-                        name: manifest.name,
-                        version: manifest.version,
-                        component: packageConfig.component,
-                        path: packagePath,
-                        tests: packageConfig.tests ?? [],
-                        builds: packageConfig.builds ?? [],
-                        releases: packageConfig.releases ?? [],
-                    };
-                    return packages;
-                });
+                return promise.then(packages => packages.concat({
+                    index,
+                    lang: 'js',
+                    name: manifest.name,
+                    version: manifest.version,
+                    component: packageConfig.component,
+                    path: packagePath,
+                    tests: packageConfig.tests ?? [],
+                    builds: packageConfig.builds ?? [],
+                    releases: packageConfig.releases ?? [],
+                }));
             }
             if (packageConfig.component.startsWith('java/')) {
                 const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'pom.xml');
-                const manifest = await promises_namespaceObject.readFile(packageManifestPath, 'utf-8');
-                const pomJson = lib.xml2js(manifest, { compact: true });
-                return packages.then(packages => {
-                    packages[pomJson.project.name._text] = {
-                        index,
-                        name: pomJson.project.name._text,
-                        version: pomJson.project.version._text,
-                        component: packageConfig.component,
-                        path: packagePath,
-                        tests: packageConfig.tests ?? [],
-                        builds: packageConfig.builds ?? [],
-                        releases: packageConfig.releases ?? [],
-                    };
-                    return packages;
-                });
+                const manifest = lib.xml2js(await promises_namespaceObject.readFile(packageManifestPath, 'utf-8'), { compact: true });
+                return promise.then(packages => packages.concat({
+                    index,
+                    lang: 'java',
+                    name: manifest.project.name._text,
+                    version: manifest.project.version._text,
+                    component: packageConfig.component,
+                    path: packagePath,
+                    tests: packageConfig.tests ?? [],
+                    builds: packageConfig.builds ?? [],
+                    releases: packageConfig.releases ?? [],
+                }));
             }
             if (packageConfig.component.startsWith('python/')) {
-                const setupConfigFilePath = external_node_path_namespaceObject.resolve(packagePath, 'setup.cfg');
-                const manifest = ini.parse(await promises_namespaceObject.readFile(setupConfigFilePath, 'utf-8'));
-                return packages.then(packages => {
-                    packages[manifest.metadata.name] = {
-                        index,
-                        name: manifest.metadata.name,
-                        version: manifest.metadata.version,
-                        component: packageConfig.component,
-                        path: packagePath,
-                        tests: packageConfig.tests ?? [],
-                        builds: packageConfig.builds ?? [],
-                        releases: packageConfig.releases ?? [],
-                    };
-                    return packages;
+                const packageManifestPath = external_node_path_namespaceObject.resolve(packagePath, 'setup.cfg');
+                const manifest = ini.parse(await promises_namespaceObject.readFile(packageManifestPath, 'utf-8'));
+                return promise.then(packages => packages.concat({
+                    index,
+                    lang: 'python',
+                    name: manifest.metadata.name,
+                    version: manifest.metadata.version,
+                    component: packageConfig.component,
+                    path: packagePath,
+                    tests: packageConfig.tests ?? [],
+                    builds: packageConfig.builds ?? [],
+                    releases: packageConfig.releases ?? [],
+                }));
+            }
+            return promise;
+        }, Promise.resolve([]));
+    }
+    function makeJobs(names) {
+        // Make all possible jobs grouped by type and lang
+        const jobs = packages.reduce((jobs, pkg) => {
+            const packageJob = {
+                name: pkg.component,
+                lang: pkg.lang,
+                'short-name': pkg.component.replace(/^.+?\//, ''),
+                'display-name': pkg.component,
+                'package-name': pkg.name,
+                'package-index': pkg.index,
+                'package-version': pkg.version,
+                'working-directory': pkg.path,
+            };
+            pkg.builds.forEach(extension => {
+                jobs.build.push(makeJob(packageJob, { type: 'build', extension }));
+            });
+            if (ci) {
+                pkg.tests.forEach(extension => {
+                    if (pkg.builds.length > 0)
+                        extension['build-type'] ??= 'none';
+                    jobs.main.push(makeJob(packageJob, { type: 'test', extension }));
                 });
             }
-            return packages;
-        }, Promise.resolve({}));
-        return packages;
+            else if (release) {
+                pkg.releases.forEach(extension => {
+                    jobs.main.push(makeJob(packageJob, { type: 'release', extension }));
+                });
+            }
+            return jobs;
+        }, { build: [], main: [] });
+        // Selecting only relevant jobs from main jobs group
+        const mainJobs = sortJobs(prepareMainJobs(jobs, names));
+        const buildJobs = sortJobs(prepareBuildJobs(jobs, mainJobs.flatMap(job => job.builds ?? [])));
+        const artifacts = buildJobs.reduce((artifacts, job) => {
+            if (job.key && job.artifacts)
+                artifacts[job.key] = job.artifacts;
+            return artifacts;
+        }, {});
+        mainJobs.forEach(mainJob => {
+            mainJob.builds &&= mainJob.builds.flatMap(key => artifacts[key] ? `${key}$${artifacts[key].join(';')}` : []);
+        });
+        buildJobs.forEach(buildJob => {
+            buildJob.builds &&= buildJob.builds.flatMap(key => artifacts[key] ? `${key}$${artifacts[key].join(';')}` : []);
+        });
+        const result = {};
+        result.builds = buildJobs.reduce((buildJobs, buildJob) => {
+            buildJobs[buildJob.lang] ??= [];
+            buildJobs[buildJob.lang].push(buildJob);
+            return buildJobs;
+        }, {});
+        result[release ? 'releases' : 'tests'] = mainJobs.reduce((mainJobs, mainJob) => {
+            mainJobs[mainJob.lang] ??= [];
+            mainJobs[mainJob.lang].push(mainJob);
+            return mainJobs;
+        }, {});
+        return result;
+        function prepareMainJobs(jobs, names) {
+            return jobs.main.reduce((selectedJobs, mainJob) => {
+                if (names.includes(mainJob.name)) {
+                    const selectedJob = { ...mainJob };
+                    selectedJob.builds = selectedJob.builds
+                        ? selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key))
+                        : jobs.build.reduce((keys, buildJob) => {
+                            return buildJob.key && buildJob.name === selectedJob.name ? keys.concat(buildJob.key) : keys;
+                        }, []);
+                    selectedJobs.push(selectedJob);
+                }
+                return selectedJobs;
+            }, []);
+        }
+        function prepareBuildJobs(jobs, keys) {
+            return jobs.build.reduce((selectedJobs, buildJob) => {
+                if (keys.includes(buildJob.key)) {
+                    const selectedJob = { ...buildJob };
+                    if (selectedJob.builds) {
+                        selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key));
+                        const dependencyJobs = prepareBuildJobs(jobs, selectedJob.builds.filter(key => selectedJobs.every(selectedJob => selectedJob.key !== key)));
+                        selectedJobs.push(...dependencyJobs);
+                    }
+                    selectedJobs.push(selectedJob);
+                }
+                return selectedJobs;
+            }, []);
+        }
+        function sortJobs(jobs) {
+            return jobs.sort((job1, job2) => {
+                if (job1['package-index'] > job2['package-index'])
+                    return 1;
+                else if (job1['package-index'] < job2['package-index'])
+                    return -1;
+                else
+                    return 0;
+            });
+        }
+    }
+    function makeJob(baseJob, { type, extension }) {
+        const job = {
+            ...baseJob,
+            ...extension,
+            runner: extension?.runner ? (Runner[extension.runner] ?? extension.runner) : baseJob.runner,
+            env: { ...baseJob.env, ...extension?.env }
+        };
+        const description = Object.entries({
+            runner: Object.keys(Runner).find(runner => Runner[runner] === job.runner) ?? job.runner,
+            container: job.container,
+            node: job['node-version'],
+            java: job['java-version'],
+            python: job['python-version'],
+            ruby: job['ruby-version'],
+            framework: job['framework-version'],
+            [type]: job[`${type}-type`],
+        })
+            .flatMap(([key, value]) => value ? `${key}: ${value}` : [])
+            .join(', ');
+        job['display-name'] = `${job['display-name'] ?? job.name} ${description ? `(${description})` : ''}`.trim();
+        job.artifacts &&= job.artifacts.map(artifactPath => {
+            return (external_node_path_namespaceObject.isAbsolute(artifactPath) || artifactPath.startsWith('~'))
+                ? artifactPath
+                : external_node_path_namespaceObject.join(job['working-directory'], artifactPath);
+        });
+        job.key &&= populateString(job.key, { filename: type === 'test', sha: type === 'build' });
+        job.builds &&= job.builds.map(key => populateString(key, { sha: true }));
+        return job;
+        function populateString(string, options) {
+            let result = string.replace(/\{\{([^}]+)\}\}/g, (_, name) => {
+                if (name === 'environment')
+                    return environment;
+                else if (name === 'component')
+                    return job.name;
+                else
+                    return job[name];
+            });
+            if (options?.filename)
+                result = result.replace(/[\/\s]+/g, '-');
+            if (options?.sha)
+                result += `#${sha}`;
+            return result;
+        }
     }
     function getSha() {
         const sha = (0,external_node_child_process_namespaceObject.execSync)(`git --no-pager log --format=%H -n 1`, { encoding: 'utf8' });
         return sha.trim();
     }
-    function createJobs(input) {
-        const jobs = input.split(/[\s,]+(?=(?:[^()]*\([^())]*\))*[^()]*$)/).reduce((jobs, input) => {
-            let [_, packageKey, frameworkVersion, langName, langVersion, runner, shortFrameworkVersion] = input.match(/^(.*?)(?:\((?:framework-version:([\d.]+);?)?(?:(node|python|java|ruby)-version:([\d.]+);?)?(?:runner:(linux|ubuntu|linuxarm|ubuntuarm|mac|macos|win|windows);?)?\))?(?:@([\d.]+))?$/i) ?? [];
-            frameworkVersion ??= shortFrameworkVersion;
-            const packageInfo = Object.values(packages).find(({ name, path, component }) => [name, component, path].includes(packageKey));
-            if (!packageInfo) {
-                core.warning(`Package name is unknown! Package configured as "${input}" will be ignored!`);
-                return jobs;
-            }
-            const [type] = packageInfo.path.split('/', 1);
-            const baseJob = {
-                name: packageInfo.component,
-                'short-name': packageInfo.component.replace(/^.+?\//, ''),
-                'display-name': packageInfo.component,
-                'package-name': packageInfo.name,
-                'package-index': packageInfo.index,
-                'package-version': packageInfo.version,
-                'working-directory': packageInfo.path,
-                runner: Runner[runner],
-                [`${langName}-version`]: langVersion,
-                [`framework-version`]: frameworkVersion,
-                env: envs
-            };
-            if (ci) {
-                jobs.builds[type] ??= [];
-                jobs.tests[type] ??= [];
-                packageInfo.builds.forEach(extension => {
-                    jobs.builds[type].push(makeJob(baseJob, { type: 'build', extension }));
-                });
-                packageInfo.tests.forEach(extension => {
-                    if (packageInfo.builds.length > 0)
-                        extension['build-type'] ??= 'none';
-                    jobs.tests[type].push(makeJob(baseJob, { type: 'test', extension }));
-                });
-            }
-            if (release) {
-                jobs.builds[type] ??= [];
-                jobs.releases[type] ??= [];
-                packageInfo.builds.forEach(extension => {
-                    jobs.builds[type].push(makeJob(baseJob, { type: 'build', extension }));
-                });
-                packageInfo.releases.forEach(extension => {
-                    jobs.releases[type].push(makeJob(baseJob, { type: 'release', extension }));
-                });
-            }
-            if (!release && (!ci || packageInfo.tests.length === 0)) {
-                jobs.tests[type] ??= [];
-                jobs.tests[type].push(makeJob(baseJob, { type: 'test' }));
-            }
-            return jobs;
-        }, { builds: {}, tests: {}, releases: {} });
-        Object.values(jobs).forEach((jobsGroup) => {
-            Object.entries(jobsGroup).forEach(([type, jobs]) => {
-                jobsGroup[type] = jobs.sort((job1, job2) => {
-                    if (job1['package-index'] > job2['package-index'])
-                        return 1;
-                    else if (job1['package-index'] < job2['package-index'])
-                        return -1;
-                    else
-                        return 0;
-                });
-            });
-        });
-        const builds = Object.values(jobs.builds).flat().reduce((builds, buildJob) => {
-            if (buildJob.artifacts && buildJob.key) {
-                builds[buildJob.key] = { name: buildJob.name, artifacts: buildJob.artifacts };
-            }
-            return builds;
-        }, {});
-        if (ci || release) {
-            Object.values(ci ? jobs.tests : jobs.releases).flat().forEach(job => {
-                const jobBuilds = job.builds
-                    ? Object.fromEntries(Object.entries(builds).filter(([key]) => job.builds.includes(key)))
-                    : Object.fromEntries(Object.entries(builds).filter(([, { name }]) => job.name === name));
-                job.builds = Object.entries(jobBuilds).map(([key, { artifacts }]) => `${key}$${artifacts.join(';')}`);
-            });
-        }
-        if (ci) {
-            Object.values(jobs.builds).flat().forEach(job => {
-                if (job.builds) {
-                    const jobBuilds = Object.fromEntries(Object.entries(builds).filter(([key]) => job.builds.includes(key)));
-                    job.builds = Object.entries(jobBuilds).map(([key, { artifacts }]) => `${key}$${artifacts.join(';')}`);
-                }
-            });
-        }
-        return jobs;
-        function makeJob(baseJob, { type, extension }) {
-            const job = {
-                ...baseJob,
-                ...extension,
-                runner: extension?.runner ? (Runner[extension.runner] ?? extension.runner) : baseJob.runner,
-                env: { ...baseJob.env, ...extension?.env }
-            };
-            const description = Object.entries({
-                runner: Object.keys(Runner).find(runner => Runner[runner] === job.runner) ?? job.runner,
-                container: job.container,
-                node: job['node-version'],
-                java: job['java-version'],
-                python: job['python-version'],
-                ruby: job['ruby-version'],
-                framework: job['framework-version'],
-                [type]: job[`${type}-type`],
-            })
-                .flatMap(([key, value]) => value ? `${key}: ${value}` : [])
-                .join(', ');
-            job['display-name'] = `${job['display-name'] ?? job.name} ${description ? `(${description})` : ''}`.trim();
-            job.artifacts &&= job.artifacts.map(artifactPath => {
-                return (external_node_path_namespaceObject.isAbsolute(artifactPath) || artifactPath.startsWith('~'))
-                    ? artifactPath
-                    : external_node_path_namespaceObject.join(job['working-directory'], artifactPath);
-            });
-            job.key &&= populateString(job.key, { filename: type === 'test', sha: type === 'build' });
-            job.builds &&= job.builds.map(key => populateString(key, { sha: true }));
-            return job;
-            function populateString(string, options) {
-                let result = string.replace(/\{\{([^}]+)\}\}/g, (_, name) => {
-                    if (name === 'environment')
-                        return environment;
-                    else if (name === 'component')
-                        return job.name;
-                    else
-                        return job[name];
-                });
-                if (options?.filename)
-                    result = result.replace(/[\/\s]+/g, '-');
-                if (options?.sha)
-                    result += `#${sha}`;
-                return result;
-            }
-        }
-    }
-    function getChangedPackagesInput() {
+    function getChangedPackageNames() {
         const changedFiles = (0,external_node_child_process_namespaceObject.execSync)(`git --no-pager diff --name-only $(git merge-base --fork-point origin/${process.env.GITHUB_BASE_REF || 'master'})`, { encoding: 'utf8' });
         const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
-            const changedPackage = Object.values(packages).find(changedPackage => {
+            const changedPackage = packages.find(changedPackage => {
                 const changedPackagePath = external_node_path_namespaceObject.resolve(process.cwd(), changedPackage.path) + '/';
                 const changedFilePath = external_node_path_namespaceObject.resolve(process.cwd(), changedFile);
                 return changedFilePath.startsWith(changedPackagePath);
@@ -5738,13 +5740,10 @@ async function main() {
                 changedPackageNames.add(changedPackage.component);
             return changedPackageNames;
         }, new Set());
-        return Array.from(changedPackageNames.values()).join(' ');
+        return Array.from(changedPackageNames.values());
     }
-    function getPackagesInputFromTags(tags) {
-        return tags.map(tag => tag.replace(/@[^@]+$/, '')).join(' ');
-    }
-    function getAllPackagesInput() {
-        return Object.values(packages).map(({ component }) => component).join(' ');
+    function getPackageNamesFromTags(tags) {
+        return tags.map(tag => tag.replace(/@[^@]+$/, ''));
     }
 }
 

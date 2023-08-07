@@ -1,5 +1,6 @@
 export interface Job {
   name: string
+  lang: Lang
   'short-name': string
   'display-name': string
   'package-name': string
@@ -25,6 +26,7 @@ export interface Job {
 
 export interface Package {
   index: number,
+  lang: Lang,
   name: string
   version: string
   component: string
@@ -33,3 +35,5 @@ export interface Package {
   tests: Record<string, any>[]
   releases: Record<string, any>[]
 }
+
+export type Lang = 'js' | 'java' | 'python' | 'ruby' | 'csharp'
