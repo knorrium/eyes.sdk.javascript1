@@ -5619,7 +5619,8 @@ async function main() {
         }, { build: [], main: [] });
         // Selecting only relevant jobs from main jobs group
         const mainJobs = sortJobs(prepareMainJobs(jobs, mainJob => names.includes(mainJob.name)));
-        const buildJobs = sortJobs(prepareBuildJobs(jobs, buildJob => names.includes(buildJob.name) || mainJobs.flat().some(mainJob => mainJob.builds?.includes(buildJob.key)), environment === 'dev'));
+        console.log(names, mainJobs);
+        const buildJobs = sortJobs(prepareBuildJobs(jobs, buildJob => names.includes(buildJob.name) || mainJobs.some(mainJob => mainJob.builds?.includes(buildJob.key)), environment === 'dev'));
         const artifacts = buildJobs.reduce((artifacts, job) => {
             if (job.key && job.artifacts)
                 artifacts[job.key] = job.artifacts;

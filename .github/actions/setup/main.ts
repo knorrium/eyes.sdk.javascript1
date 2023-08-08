@@ -160,10 +160,13 @@ async function main() {
     const mainJobs = sortJobs(
       prepareMainJobs(jobs, mainJob => names.includes(mainJob.name))
     )
+
+    console.log(names, mainJobs)
+
     const buildJobs = sortJobs(
       prepareBuildJobs(
         jobs,
-        buildJob => names.includes(buildJob.name) || mainJobs.flat().some(mainJob => mainJob.builds?.includes(buildJob.key!)),
+        buildJob => names.includes(buildJob.name) || mainJobs.some(mainJob => mainJob.builds?.includes(buildJob.key!)),
         environment === 'dev'
       )
     )
