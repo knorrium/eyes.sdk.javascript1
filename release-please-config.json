@@ -22,7 +22,8 @@
     {
       "type": "linked-versions",
       "groupName": "core",
-      "components": ["js/core", "python/core_universal"]
+      "components": ["js/core", "python/core-universal"],
+      "merge": false
     }
   ],
   "changelog-sections": [
