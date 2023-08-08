@@ -149,7 +149,9 @@ describe('processResources', () => {
 
     const resources = await processResources({
       resources: {[url]: makeResource({url})},
-      settings: {referer: 'some-referer', userAgent: 'SomeUserAgent'},
+      settings: {
+        headers: {Referer: 'some-referer', 'User-Agent': 'SomeUserAgent'},
+      },
     })
 
     assert.deepStrictEqual(resources.mapping, {
@@ -749,7 +751,7 @@ describe('processResources', () => {
       },
       settings: {
         renderer: {name: 'chrome', width: 100, height: 100},
-        userAgent: defaultUserAgent,
+        headers: {'User-Agent': defaultUserAgent},
       },
     })
 

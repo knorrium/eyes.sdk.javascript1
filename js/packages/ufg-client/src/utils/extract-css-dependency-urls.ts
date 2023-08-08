@@ -3,7 +3,7 @@ import * as utils from '@applitools/utils'
 
 export function extractCssDependencyUrls(
   css: string,
-  {resourceUrl, pageUrl}: {resourceUrl: string; pageUrl?: string},
+  {resourceUrl, sourceUrl}: {resourceUrl: string; sourceUrl?: string},
 ): string[] {
   const urls = new Set<string>()
   const ast = csstree.parse(css, {
@@ -16,7 +16,7 @@ export function extractCssDependencyUrls(
     if (node.type === 'Atrule' && node.name === 'import' && node.prelude?.type === 'AtrulePrelude') {
       return processImportPrelude(node.prelude, {baseUrl: resourceUrl})
     } else if (node.type === 'Declaration' && node.property.startsWith('--')) {
-      return processCustomPropertyValue(node.value, {baseUrl: pageUrl ?? resourceUrl})
+      return processCustomPropertyValue(node.value, {baseUrl: sourceUrl ?? resourceUrl})
     } else {
       return processCssNode(node, {baseUrl: resourceUrl})
     }

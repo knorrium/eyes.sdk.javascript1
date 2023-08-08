@@ -67,7 +67,10 @@ export function makeCreateRenderTarget({processResources, logger: mainLogger}: O
             ]
           }),
         ]),
-        settings: {referer: utils.types.has(snapshot, 'url') ? snapshot.url : undefined, ...settings},
+        settings: {
+          ...settings,
+          headers: {...settings?.headers, Referer: utils.types.has(snapshot, 'url') ? snapshot.url : undefined},
+        },
         logger,
       }),
       ...((snapshot as DomSnapshot).frames ?? []).map(frameSnapshot => {

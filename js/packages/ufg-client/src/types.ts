@@ -259,11 +259,10 @@ export type Snapshot = DomSnapshot | AndroidSnapshot | IOSSnapshot
 
 export interface RenderTargetSettings {
   renderer?: Renderer
-  referer?: string
   proxy?: Proxy
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
   cookies?: Cookie[]
-  userAgent?: string
+  headers?: Record<string, string | undefined>
 }
 
 export interface RenderTarget {

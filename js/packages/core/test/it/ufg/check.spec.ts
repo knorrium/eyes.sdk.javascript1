@@ -290,4 +290,47 @@ describe('check', () => {
     assert.strictEqual(aborted, true)
     await assert.rejects(eyes1.getResults(), error => error.message === 'render')
   })
+
+  it('passes custom headers for resource fetching', async () => {
+    const expectedHeaders = {
+      Referer: 'referer',
+      'User-Agent': 'custom-user-agent',
+    }
+
+    let actualHeaders: Record<string, string | undefined> | undefined
+    const core = makeCore({
+      base: makeFakeCore(),
+      clients: {
+        ufg: makeFakeClient({
+          hooks: {
+            createRenderTarget({settings}) {
+              actualHeaders = settings?.headers
+            },
+          },
+        }),
+      },
+      concurrency: 10,
+    })
+
+    const eyes = await core.openEyes({
+      settings: {
+        eyesServerUrl: 'server-url',
+        apiKey: 'api-key',
+        appName: 'app-name',
+        testName: 'test-name',
+      },
+    })
+
+    await eyes.check({
+      target: {cdt: []},
+      settings: {
+        renderers: [{width: 320, height: 480}],
+        headers: expectedHeaders,
+      },
+    })
+
+    await eyes.close()
+    await eyes.getResults()
+    assert.deepStrictEqual(actualHeaders, expectedHeaders)
+  })
 })

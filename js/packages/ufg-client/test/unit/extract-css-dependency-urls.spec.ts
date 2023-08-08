@@ -91,7 +91,7 @@ describe('extract-css-dependency-urls', () => {
     const cssText = `:root { --relative-image-url: url("./hello.jpeg"); --absolute-image-url: url("http://other/hello.jpeg"); }`
     const resourceUrls = extractCssDependencyUrls(cssText, {
       resourceUrl: 'http://this/theme/style.css',
-      pageUrl: 'http://this/index.html',
+      sourceUrl: 'http://this/index.html',
     })
     assert.deepStrictEqual(resourceUrls, ['http://this/hello.jpeg', 'http://other/hello.jpeg'])
   })
@@ -100,7 +100,7 @@ describe('extract-css-dependency-urls', () => {
     const cssText = `:root { --image-set: image-set(url("./hello.jpeg") 1x, "http://other/hello.jpeg" 1x); }`
     const resourceUrls = extractCssDependencyUrls(cssText, {
       resourceUrl: 'http://this/theme/style.css',
-      pageUrl: 'http://this/index.html',
+      sourceUrl: 'http://this/index.html',
     })
     assert.deepStrictEqual(resourceUrls, ['http://this/hello.jpeg', 'http://other/hello.jpeg'])
   })
@@ -109,7 +109,7 @@ describe('extract-css-dependency-urls', () => {
     const cssText = `:root { --relative-image-url: url( ./hello.jpeg`
     const resourceUrls = extractCssDependencyUrls(cssText, {
       resourceUrl: 'http://this/theme/style.css',
-      pageUrl: 'http://this/index.html',
+      sourceUrl: 'http://this/index.html',
     })
     assert.deepStrictEqual(resourceUrls, ['http://this/hello.jpeg'])
   })

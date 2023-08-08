@@ -23,11 +23,10 @@ type Options = {
 }
 
 export type FetchResourceSettings = {
-  referer?: string
   proxy?: Proxy
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
   cookies?: Cookie[]
-  userAgent?: string
+  headers?: Record<string, string | undefined>
 }
 
 export type FetchResource = (options: {
@@ -73,9 +72,11 @@ export function makeFetchResource({
 
     runningRequest = req(resource.url, {
       headers: {
-        Referer: settings.referer,
         Cookie: settings.cookies && createCookieHeader({url: resource.url, cookies: settings.cookies}),
-        'User-Agent': (resource.renderer && createUserAgentHeader({renderer: resource.renderer})) ?? settings.userAgent,
+        ...settings.headers,
+        'User-Agent':
+          (resource.renderer && createUserAgentHeader({renderer: resource.renderer})) ??
+          settings.headers?.['User-Agent'],
       },
       proxy: resourceUrl => {
         const {proxy, autProxy} = settings

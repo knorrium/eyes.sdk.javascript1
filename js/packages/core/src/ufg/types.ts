@@ -54,6 +54,7 @@ export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
   ufgOptions?: Record<string, any>
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
+  headers?: Record<string, string>
 }
 
 export type CheckResult = AutomationCore.CheckResult & {

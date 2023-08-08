@@ -2,7 +2,10 @@ import {JSDOM} from 'jsdom'
 import {extractCssDependencyUrls} from './extract-css-dependency-urls'
 import * as utils from '@applitools/utils'
 
-export function extractSvgDependencyUrls(svg: string, {resourceUrl, pageUrl}: {resourceUrl: string; pageUrl?: string}) {
+export function extractSvgDependencyUrls(
+  svg: string,
+  {resourceUrl, sourceUrl}: {resourceUrl: string; sourceUrl?: string},
+) {
   const urls = new Set<string>()
   const doc =
     typeof DOMParser === 'function'
@@ -23,7 +26,7 @@ export function extractSvgDependencyUrls(svg: string, {resourceUrl, pageUrl}: {r
     urls.add(sanitizeUrl(element.getAttribute('data')!, {baseUrl: resourceUrl}))
   })
   Array.from(doc.querySelectorAll('style')).forEach(element => {
-    const cssUrls = element.textContent ? extractCssDependencyUrls(element.textContent, {resourceUrl, pageUrl}) : []
+    const cssUrls = element.textContent ? extractCssDependencyUrls(element.textContent, {resourceUrl, sourceUrl}) : []
     cssUrls.forEach(url => urls.add(url))
   })
   Array.from(doc.querySelectorAll<SVGElement>('*[style]')).forEach(element => {

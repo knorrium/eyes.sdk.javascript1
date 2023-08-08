@@ -118,7 +118,11 @@ export function makeProcessResources({
       try {
         const fetchedResource = await fetchResource({resource, settings, logger})
         if (utils.types.has(fetchedResource, 'value')) {
-          const dependencies = await extractDependencyUrls({resource: fetchedResource, settings, logger})
+          const dependencies = await extractDependencyUrls({
+            resource: fetchedResource,
+            settings: {sourceUrl: settings?.headers?.Referer},
+            logger,
+          })
           logger.log(`dependencyUrls for ${resource.url} --> ${dependencies}`)
           fetchedResource.dependencies = dependencies
         }
@@ -198,7 +202,7 @@ export function makeProcessResources({
     logger = mainLogger,
   }: {
     resource: ContentfulResource
-    settings?: {referer?: string}
+    settings?: {sourceUrl?: string}
     logger?: Logger
   }): Promise<string[]> {
     try {
@@ -206,12 +210,12 @@ export function makeProcessResources({
       if (/text\/css/.test(resource.contentType)) {
         dependencyUrls = extractCssDependencyUrls(resource.value.toString(), {
           resourceUrl: resource.url,
-          pageUrl: settings?.referer,
+          sourceUrl: settings?.sourceUrl,
         })
       } else if (/image\/svg/.test(resource.contentType)) {
         dependencyUrls = extractSvgDependencyUrls(resource.value.toString(), {
           resourceUrl: resource.url,
-          pageUrl: settings?.referer,
+          sourceUrl: settings?.sourceUrl,
         })
       }
       // avoid recursive dependencies

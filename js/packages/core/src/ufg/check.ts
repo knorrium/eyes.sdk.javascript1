@@ -200,11 +200,14 @@ export function makeCheck<TSpec extends SpecType>({
           snapshot,
           settings: {
             renderer,
-            referer: snapshotUrl,
             cookies,
+            headers: {
+              Referer: snapshotUrl,
+              'User-Agent': userAgent,
+              ...settings.headers,
+            },
             proxy: eyes.test.eyesServer.proxy,
             autProxy: settings.autProxy,
-            userAgent,
           },
           logger: rendererLogger,
         })
