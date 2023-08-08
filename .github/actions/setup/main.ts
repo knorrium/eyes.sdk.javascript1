@@ -155,7 +155,7 @@ async function main() {
 
     // Selecting only relevant jobs from main jobs group
     const mainJobs = sortJobs(prepareMainJobs(jobs, names))
-    const buildJobs = sortJobs(prepareBuildJobs(jobs, mainJobs.flatMap(job => job.builds ?? [])))
+    const buildJobs = sortJobs(prepareBuildJobs(jobs, mainJobs.flatMap(job => job.builds ?? []), environment === 'dev'))
 
     const artifacts = buildJobs.reduce((artifacts, job) => {
       if (job.key && job.artifacts) artifacts[job.key] = job.artifacts
@@ -198,14 +198,20 @@ async function main() {
       }, [] as Job[])
     }
 
-    function prepareBuildJobs(jobs: {build: Job[]}, keys: string[]) {
+    function prepareBuildJobs(jobs: {build: Job[]}, keys: string[], recursive?: boolean) {
       return jobs.build.reduce((selectedJobs, buildJob) => {
         if (keys.includes(buildJob.key!)) {
           const selectedJob = {...buildJob}
           if (selectedJob.builds) {
             selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key))
-            const dependencyJobs = prepareBuildJobs(jobs, selectedJob.builds.filter(key => selectedJobs.every(selectedJob => selectedJob.key !== key)))
-            selectedJobs.push(...dependencyJobs)
+            if (recursive) {
+              const dependencyJobs = prepareBuildJobs(
+                jobs,
+                selectedJob.builds.filter(key => selectedJobs.every(selectedJob => selectedJob.key !== key)),
+                recursive
+              )
+              selectedJobs.push(...dependencyJobs)
+            }
           }
           selectedJobs.push(selectedJob)
         }
@@ -273,7 +279,8 @@ async function main() {
   }
 
   function getChangedPackageNames(): string[] {
-    const changedFiles = execSync(`git --no-pager diff --name-only $(git merge-base --fork-point origin/${process.env.GITHUB_BASE_REF || 'master'})`, {encoding: 'utf8'})
+    const mergeBase = execSync(`git merge-base origin/${process.env.GITHUB_BASE_REF || 'master'} ${sha}`, {encoding: 'utf8'}).trim()
+    const changedFiles = execSync(`git --no-pager diff --name-only ${mergeBase}`, {encoding: 'utf8'})
     const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
       const changedPackage = packages.find(changedPackage => {
         const changedPackagePath = path.resolve(process.cwd(), changedPackage.path) + '/'

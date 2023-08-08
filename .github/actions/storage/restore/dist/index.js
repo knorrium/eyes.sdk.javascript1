@@ -57928,9 +57928,15 @@ var core = __nccwpck_require__(2186);
 
 
 
-if (process.platform === 'linux' && (0,external_node_fs_namespaceObject.existsSync)('/etc/alpine-release')) {
-    core.debug('alpine system is detected, installing necessary dependencies');
-    (0,external_node_child_process_namespaceObject.execSync)('apk add --no-cache zstd tar');
+if (process.platform === 'linux') {
+    if ((0,external_node_fs_namespaceObject.existsSync)('/etc/alpine-release')) {
+        core.debug('alpine system is detected, installing necessary dependencies');
+        (0,external_node_child_process_namespaceObject.execSync)('apk add --no-cache zstd tar');
+    }
+    else if ((0,external_node_child_process_namespaceObject.execSync)('cat /etc/*release | grep ^ID=', { encoding: 'utf-8' }).includes('debian')) {
+        core.debug('debian system is detected, installing necessary dependencies');
+        (0,external_node_child_process_namespaceObject.execSync)('apt-get update && apt-get install -y zstd');
+    }
 }
 main()
     .then(results => {

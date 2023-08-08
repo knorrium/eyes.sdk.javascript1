@@ -4,9 +4,14 @@ import {setTimeout} from 'node:timers/promises'
 import {restoreCache} from '@actions/cache'
 import * as core from '@actions/core'
 
-if (process.platform === 'linux' && existsSync('/etc/alpine-release')) {
-  core.debug('alpine system is detected, installing necessary dependencies')
-  execSync('apk add --no-cache zstd tar')
+if (process.platform === 'linux') {
+  if (existsSync('/etc/alpine-release')) {
+    core.debug('alpine system is detected, installing necessary dependencies')
+    execSync('apk add --no-cache zstd tar')
+  } else if (execSync('cat /etc/*release | grep ^ID=', {encoding: 'utf-8'}).includes('debian')) {
+    core.debug('debian system is detected, installing necessary dependencies')
+    execSync('apt-get update && apt-get install -y zstd')
+  }
 }
 
 main()
