@@ -5617,7 +5617,6 @@ async function main() {
             }
             return jobs;
         }, { build: [], main: [] });
-        console.log(jobs);
         // Selecting only relevant jobs from main jobs group
         const mainJobs = sortJobs(prepareMainJobs(jobs, mainJob => names.includes(mainJob.name)));
         const buildJobs = sortJobs(prepareBuildJobs(jobs, buildJob => names.includes(buildJob.name) || mainJobs.some(mainJob => mainJob.builds?.includes(buildJob.key)), environment === 'dev'));
@@ -5626,7 +5625,6 @@ async function main() {
                 artifacts[job.key] = job.artifacts;
             return artifacts;
         }, {});
-        console.log(artifacts);
         mainJobs.forEach(mainJob => {
             mainJob.builds &&= mainJob.builds.flatMap(key => artifacts[key] ? `${key}$${artifacts[key].join(';')}` : []);
         });
@@ -5663,9 +5661,9 @@ async function main() {
             return jobs.build.reduce((selectedJobs, buildJob) => {
                 if (filter(buildJob)) {
                     const selectedJob = { ...buildJob };
+                    selectedJobs.push(selectedJob);
                     if (selectedJob.builds) {
                         selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key));
-                        selectedJobs.push(selectedJob);
                         if (recursive) {
                             const dependencyJobs = prepareBuildJobs(jobs, filteredJob => !selectedJobs.includes(filteredJob) && selectedJob.builds.includes(filteredJob.key), recursive);
                             selectedJobs.push(...dependencyJobs);
