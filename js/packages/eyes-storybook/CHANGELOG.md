@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.37.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.7...js/eyes-storybook@3.37.8) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/ufg-client bumped to 1.7.0
+  #### Features
+
+  * allow providing custom headers for resource fetching  ([#1852](https://github.com/applitools/eyes.sdk.javascript1/issues/1852)) ([372cb96](https://github.com/applitools/eyes.sdk.javascript1/commit/372cb96b905a0661c36e2fa10a7855208fb55bb0))
+* @applitools/core bumped to 3.7.0
+  #### Features
+
+  * allow providing custom headers for resource fetching  ([#1852](https://github.com/applitools/eyes.sdk.javascript1/issues/1852)) ([372cb96](https://github.com/applitools/eyes.sdk.javascript1/commit/372cb96b905a0661c36e2fa10a7855208fb55bb0))
+
+
+
+
 ## [3.37.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.6...js/eyes-storybook@3.37.7) (2023-08-03)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.6.0...js/ufg-client@1.7.0) (2023-08-08)
+
+
+### Features
+
+* allow providing custom headers for resource fetching  ([#1852](https://github.com/applitools/eyes.sdk.javascript1/issues/1852)) ([372cb96](https://github.com/applitools/eyes.sdk.javascript1/commit/372cb96b905a0661c36e2fa10a7855208fb55bb0))
+
 ## [1.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.5.3...js/ufg-client@1.6.0) (2023-08-03)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.6...js/core@3.7.0) (2023-08-08)
+
+
+### Features
+
+* allow providing custom headers for resource fetching  ([#1852](https://github.com/applitools/eyes.sdk.javascript1/issues/1852)) ([372cb96](https://github.com/applitools/eyes.sdk.javascript1/commit/372cb96b905a0661c36e2fa10a7855208fb55bb0))
+
+
+### Dependencies
+
+* @applitools/ufg-client bumped to 1.7.0
+  #### Features
+
+  * allow providing custom headers for resource fetching  ([#1852](https://github.com/applitools/eyes.sdk.javascript1/issues/1852)) ([372cb96](https://github.com/applitools/eyes.sdk.javascript1/commit/372cb96b905a0661c36e2fa10a7855208fb55bb0))
+
 ## [3.6.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.6.5...js/core@3.6.6) (2023-08-03)
 
 
