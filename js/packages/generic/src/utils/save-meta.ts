@@ -10,7 +10,9 @@ export async function saveMeta(
     params,
   }: {output?: string; pascalize?: boolean; params?: Record<string, any>} = {},
 ) {
-  mkdir(path.dirname(output), {recursive: true})
+  const filePath = path.resolve(output)
+
+  await mkdir(path.dirname(filePath), {recursive: true})
 
   const meta = tests.reduce((meta, test) => {
     meta[pascalize ? test.key : test.name] = {
@@ -23,6 +25,5 @@ export async function saveMeta(
     return meta
   }, {} as Record<string, any>)
 
-  const filePath = path.resolve(output)
   await writeFile(filePath, JSON.stringify(meta, null, 2))
 }
