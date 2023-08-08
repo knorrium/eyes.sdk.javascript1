@@ -160,9 +160,6 @@ async function main() {
     const mainJobs = sortJobs(
       prepareMainJobs(jobs, mainJob => names.includes(mainJob.name))
     )
-
-    console.log(names, mainJobs)
-
     const buildJobs = sortJobs(
       prepareBuildJobs(
         jobs,
@@ -171,10 +168,14 @@ async function main() {
       )
     )
 
+    console.log(buildJobs)
+
     const artifacts = buildJobs.reduce((artifacts, job) => {
       if (job.key && job.artifacts) artifacts[job.key] = job.artifacts
       return artifacts
     }, {} as Record<string, string[]>)
+
+    console.log(artifacts)
 
     mainJobs.forEach(mainJob => {
       mainJob.builds &&= mainJob.builds.flatMap(key => artifacts[key] ? `${key}$${artifacts[key].join(';')}` : [])

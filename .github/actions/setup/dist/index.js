@@ -5619,13 +5619,14 @@ async function main() {
         }, { build: [], main: [] });
         // Selecting only relevant jobs from main jobs group
         const mainJobs = sortJobs(prepareMainJobs(jobs, mainJob => names.includes(mainJob.name)));
-        console.log(names, mainJobs);
         const buildJobs = sortJobs(prepareBuildJobs(jobs, buildJob => names.includes(buildJob.name) || mainJobs.some(mainJob => mainJob.builds?.includes(buildJob.key)), environment === 'dev'));
+        console.log(buildJobs);
         const artifacts = buildJobs.reduce((artifacts, job) => {
             if (job.key && job.artifacts)
                 artifacts[job.key] = job.artifacts;
             return artifacts;
         }, {});
+        console.log(artifacts);
         mainJobs.forEach(mainJob => {
             mainJob.builds &&= mainJob.builds.flatMap(key => artifacts[key] ? `${key}$${artifacts[key].join(';')}` : []);
         });
