@@ -156,6 +156,8 @@ async function main() {
       return jobs
     }, {build: [] as Job[], main: [] as Job[]})
 
+    console.log(jobs)
+
     // Selecting only relevant jobs from main jobs group
     const mainJobs = sortJobs(
       prepareMainJobs(jobs, mainJob => names.includes(mainJob.name))
@@ -167,8 +169,6 @@ async function main() {
         environment === 'dev'
       )
     )
-
-    console.log(buildJobs)
 
     const artifacts = buildJobs.reduce((artifacts, job) => {
       if (job.key && job.artifacts) artifacts[job.key] = job.artifacts
