@@ -6,6 +6,12 @@
   "plugins": [
     "rich-commits",
     {
+      "type": "linked-versions",
+      "groupName": "core",
+      "components": ["js/core", "python/core-universal"],
+      "merge": false
+    },
+    {
       "type": "rich-workspace",
       "workspaces": ["node", "maven", "python"],
       "synthetic-dependencies": {
@@ -18,12 +24,6 @@
         "java/eyes-universal-core-mac": ["js/core"],
         "java/eyes-universal-core-win": ["js/core"]
       }
-    },
-    {
-      "type": "linked-versions",
-      "groupName": "core",
-      "components": ["js/core", "python/core-universal"],
-      "merge": false
     }
   ],
   "changelog-sections": [
