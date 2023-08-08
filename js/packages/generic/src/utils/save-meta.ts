@@ -6,7 +6,7 @@ export async function saveMeta(
   tests: Test[],
   {
     output = './meta.json',
-    pascalize = true,
+    pascalize,
     params,
   }: {output?: string; pascalize?: boolean; params?: Record<string, any>} = {},
 ) {
