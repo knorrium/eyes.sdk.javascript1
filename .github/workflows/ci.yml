@@ -134,7 +134,7 @@ jobs:
         uses: ./.github/actions/semaphore
         with:
           name: ${{matrix.semaphore}}
-          max-parallel: 3
+          max-parallel: 4
       - name: Run tests
         uses: ./.github/actions/js/test
         with:
@@ -277,7 +277,7 @@ jobs:
         uses: ./.github/actions/semaphore
         with:
           name: ${{matrix.semaphore}}
-          max-parallel: 5
+          max-parallel: 4
       - name: Run Tests
         uses: ./.github/actions/java/tests/
         with:
@@ -386,7 +386,7 @@ jobs:
         uses: ./.github/actions/semaphore
         with:
           name: ${{matrix.semaphore}}
-          max-parallel: 5
+          max-parallel: 4
       - name: Run tests
         uses: ./.github/actions/python/test
         with:

@@ -13,6 +13,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Semaphore
+      uses: ./.github/actions/semaphore
+      with:
+        name: js-publish
     - name: Publish
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}

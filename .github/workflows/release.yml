@@ -63,10 +63,6 @@ jobs:
         with: 
           name: ${{join(matrix.builds)}}
           latest: true
-      - name: Semaphore
-        uses: ./.github/actions/semaphore
-        with:
-          name: js-release
       - name: Publish to NPM
         if: ${{matrix.npm}}
         uses: ./.github/actions/js/publish
@@ -132,10 +128,6 @@ jobs:
         with:
           name: ${{join(matrix.builds)}}
           latest: true
-      - name: Semaphore
-        uses: ./.github/actions/semaphore
-        with:
-          name: java-release
       - name: Publish Java SDKs
         if: ${{matrix.profile}}
         uses: ./.github/actions/java/publish
