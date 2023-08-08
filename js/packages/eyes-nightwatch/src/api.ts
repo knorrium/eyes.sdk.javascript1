@@ -1,5 +1,6 @@
 import type {SpecType as BaseSpecType} from '@applitools/driver'
 import type {SpecDriver} from '@applitools/driver'
+import {extractEnvironment} from './extract-environment'
 import * as eyes from '@applitools/eyes'
 import * as spec from './spec-driver'
 
@@ -10,7 +11,8 @@ export type Element = spec.NWElement | spec.NWResponseElement
 export type Selector = spec.NWSelector
 export type SpecType = BaseSpecType<Driver, Driver, Element, Selector>
 
-const sdk = {agentId: `eyes.nightwatch/${require('../package.json').version}`, spec}
+const environment = extractEnvironment()
+const sdk = {spec, agentId: `eyes.nightwatch/${require('../package.json').version}`, environment}
 
 export class Eyes extends eyes.Eyes<SpecType> {
   protected static readonly _sdk = sdk

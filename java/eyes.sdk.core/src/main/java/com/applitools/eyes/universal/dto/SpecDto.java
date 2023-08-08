@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SpecDto {
@@ -22,7 +23,7 @@ public class SpecDto {
 
     @JsonProperty("spec")
     public Object getSpec() {
-        return protocol != null? protocol : commands;
+        return protocol.equals("webdriver") ? protocol : commands;
     }
 
     public String getProtocol() {

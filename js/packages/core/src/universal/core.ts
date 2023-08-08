@@ -9,8 +9,9 @@ import * as utils from '@applitools/utils'
 //TODO add refer and sanitizing support, solve types issues
 
 export function makeCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'>(options: {
-  agentId: string
   spec: 'webdriver' | SpecDriver<TSpec>
+  environment?: Record<string, any>
+  agentId: string
 }): Core<TSpec, TType> {
   const socketPromise = makeClientSocket(options)
   const core: Core<TSpec, TType> = {
@@ -138,9 +139,11 @@ export function makeEyes<TSpec extends SpecType, TType extends 'classic' | 'ufg'
 
 export async function makeClientSocket<TSpec extends SpecType>({
   agentId,
+  environment,
   spec,
 }: {
   agentId: string
+  environment?: Record<string, any>
   spec: 'webdriver' | SpecDriver<TSpec>
 }): Promise<ClientSocket<TSpec, 'classic' | 'ufg'> & Socket<WebSocket>> {
   const {port} = await makeCoreServer()
@@ -148,9 +151,10 @@ export async function makeClientSocket<TSpec extends SpecType>({
     transport: 'ws',
   }) as ClientSocket<TSpec, 'classic' | 'ufg'> & Socket<WebSocket>
   socket.emit('Core.makeCore', {
-    agentId,
-    cwd: process.cwd(),
     spec: utils.types.isString(spec) ? spec : Object.keys(spec),
+    agentId,
+    environment,
+    cwd: process.cwd(),
   })
 
   if (!utils.types.isString(spec)) {

@@ -1,39 +1,22 @@
 package com.applitools.eyes.playwright.visualgrid;
 
-import com.applitools.eyes.*;
-import com.applitools.eyes.playwright.universal.PSDKListener;
+import com.applitools.eyes.AbstractProxySettings;
+import com.applitools.eyes.AutProxySettings;
+import com.applitools.eyes.EyesRunner;
+import com.applitools.eyes.Logger;
+import com.applitools.eyes.playwright.PlaywrightRunnerSettings;
 import com.applitools.eyes.playwright.universal.PlaywrightStaleElementReferenceException;
 import com.applitools.eyes.playwright.universal.Refer;
-import com.applitools.eyes.playwright.universal.driver.SpecDriverPlaywright;
 import com.applitools.eyes.settings.EyesManagerSettings;
 import com.applitools.eyes.universal.ManagerType;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
-import com.applitools.utils.ClassVersionGetter;
 
 /**
  * Used to manage multiple Eyes sessions when working with the Ultrafast Grid
  */
 public class VisualGridRunner extends EyesRunner {
 
-    /**
-     * name of the client sdk
-     */
-    protected static String BASE_AGENT_ID = "eyes.playwright.java";
-
-    /**
-     * version of the client sdk
-     */
-    protected static String VERSION = ClassVersionGetter.CURRENT_VERSION;
-
-    /**
-     * spec-driver commands
-     */
-    protected static String[] COMMANDS = SpecDriverPlaywright.getMethodNames();
-
-    /**
-     * webSocket listener
-     */
-    private static final PSDKListener listener = PSDKListener.getInstance();
+    private static final PlaywrightRunnerSettings runnerSettings = new PlaywrightRunnerSettings();
 
     static final int DEFAULT_CONCURRENCY = 5;
     private boolean isDisabled;
@@ -44,14 +27,14 @@ public class VisualGridRunner extends EyesRunner {
     }
 
     public VisualGridRunner(int testConcurrency) {
-        super(BASE_AGENT_ID, VERSION, null, COMMANDS, listener);
+        super(runnerSettings);
         this.runnerOptions = new RunnerOptions().testConcurrency(testConcurrency);
         EyesManagerSettings managerSettings = new EyesManagerSettings(null, testConcurrency, null);
         managerRef = commandExecutor.coreMakeManager(ManagerType.VISUAL_GRID.value, managerSettings);
     }
 
     public VisualGridRunner(RunnerOptions runnerOptions) {
-        super(BASE_AGENT_ID, VERSION, null, COMMANDS, listener, runnerOptions);
+        super(runnerSettings, runnerOptions);
         this.runnerOptions = runnerOptions;
         int testConcurrency = runnerOptions.getTestConcurrency() == null ? DEFAULT_CONCURRENCY : runnerOptions.getTestConcurrency();
         EyesManagerSettings managerSettings = new EyesManagerSettings(testConcurrency, null, null);
@@ -91,7 +74,7 @@ public class VisualGridRunner extends EyesRunner {
 
     @Override
     protected Refer getRefer() {
-        return listener.getRefer();
+        return runnerSettings.getListener().getRefer();
     }
 
 }

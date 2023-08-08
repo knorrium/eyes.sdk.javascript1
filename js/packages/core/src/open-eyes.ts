@@ -8,7 +8,6 @@ import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeClose} from './close'
 import {makeGetEyesResults} from './get-eyes-results'
-import {extractCIProvider} from './utils/extract-ci-provider'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
@@ -18,6 +17,7 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   core: Core<TSpec, TType>
   cores?: {[TKey in 'classic' | 'ufg']: TypedCore<TSpec, TKey>}
   spec?: SpecDriver<TSpec>
+  environment?: Record<string, any>
   logger: Logger
 }
 
@@ -28,6 +28,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
   core,
   cores,
   spec,
+  environment,
   logger: mainLogger,
 }: Options<TSpec, TDefaultType>) {
   return async function openEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
@@ -71,19 +72,13 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
 
     core.logEvent({
       settings: {
-        eyesServerUrl: settings.eyesServerUrl,
-        apiKey: settings.apiKey,
-        proxy: settings.proxy,
-        agentId: settings.agentId,
-        useDnsCache: settings.useDnsCache,
+        ...(settings as OpenSettings<'ufg' | 'classic'>),
         level: 'Notice',
         event: {
-          type: 'runnerStarted',
-          testConcurrency: concurrency,
-          concurrentRendersPerTest: (config as Config<SpecType, 'ufg'>)?.check?.renderers?.length ?? 1,
-          node: {version: process.version, platform: process.platform, arch: process.arch},
+          type: 'openEyes',
+          environment,
+          concurrency,
           driverUrl: await driver?.getDriverUrl(),
-          extractedCIProvider: extractCIProvider(),
         },
       },
       logger,

@@ -46,9 +46,10 @@ Events don't imply any response. This is a one-way communication used in order t
 This event will be listened by the server and meant to be emitted by the client.
 ```ts
 interface MakeCorePayload {
-  agentId: string
-  cwd: string
   spec: 'webdriver' | string[]
+  agentId: string
+  environment?: Record<string, string | number | boolean>
+  cwd: string
 }
 ```
 

@@ -4,36 +4,22 @@ import com.applitools.eyes.AbstractProxySettings;
 import com.applitools.eyes.AutProxySettings;
 import com.applitools.eyes.EyesRunner;
 import com.applitools.eyes.Logger;
+import com.applitools.eyes.selenium.SeleniumRunnerSettings;
 import com.applitools.eyes.selenium.exceptions.StaleElementReferenceException;
 import com.applitools.eyes.settings.EyesManagerSettings;
 import com.applitools.eyes.universal.ManagerType;
-import com.applitools.eyes.universal.USDKListener;
+import com.applitools.eyes.universal.settings.RunnerSettings;
 import com.applitools.utils.ArgumentGuard;
-import com.applitools.utils.ClassVersionGetter;
 
 /**
  * Used to manage multiple Eyes sessions when working with the Ultrafast Grid
  */
 public class VisualGridRunner extends EyesRunner {
 
-    /**
-     * name of the client sdk
-     */
-    protected static String BASE_AGENT_ID = "eyes.sdk.java";
-
-    /**
-     * version of the client sdk
-     */
-    protected static String VERSION = ClassVersionGetter.CURRENT_VERSION;
-
-    /**
-     * universal server listener
-     */
-    private static final USDKListener listener = USDKListener.getInstance();
-
     static final int DEFAULT_CONCURRENCY = 5;
     private boolean isDisabled;
     private RunnerOptions runnerOptions;
+    private static final SeleniumRunnerSettings runnerSettings = new SeleniumRunnerSettings();
 
     public VisualGridRunner() {
         this(Thread.currentThread().getStackTrace()[2].getClassName());
@@ -48,7 +34,7 @@ public class VisualGridRunner extends EyesRunner {
     }
 
     public VisualGridRunner(int testConcurrency, String suiteName) {
-        super(BASE_AGENT_ID, VERSION, listener);
+        super(runnerSettings);
         this.runnerOptions = new RunnerOptions().testConcurrency(testConcurrency);
         EyesManagerSettings managerSettings = new EyesManagerSettings(null, testConcurrency, null);
         managerRef = commandExecutor.coreMakeManager(ManagerType.VISUAL_GRID.value, managerSettings);
@@ -59,29 +45,29 @@ public class VisualGridRunner extends EyesRunner {
     }
 
     public VisualGridRunner(RunnerOptions runnerOptions, String suiteName) {
-        super(BASE_AGENT_ID, VERSION, runnerOptions, listener);
+        super(runnerSettings, runnerOptions);
         this.runnerOptions = runnerOptions;
         int testConcurrency = runnerOptions.getTestConcurrency() == null ? DEFAULT_CONCURRENCY : runnerOptions.getTestConcurrency();
         EyesManagerSettings managerSettings = new EyesManagerSettings(testConcurrency, null, null);
         managerRef = commandExecutor.coreMakeManager(ManagerType.VISUAL_GRID.value, managerSettings);
     }
 
-    protected VisualGridRunner(String baseAgentId, String version) {
-        super(baseAgentId, version, listener);
+    protected VisualGridRunner(RunnerSettings runnerSettings) {
+        super(runnerSettings);
         this.runnerOptions = new RunnerOptions().testConcurrency(DEFAULT_CONCURRENCY);
         EyesManagerSettings managerSettings = new EyesManagerSettings(DEFAULT_CONCURRENCY, null, null);
         managerRef = commandExecutor.coreMakeManager(ManagerType.VISUAL_GRID.value, managerSettings);
     }
 
-    protected VisualGridRunner(int testConcurrency, String baseAgentId, String version) {
-        super(baseAgentId, version, listener);
+    protected VisualGridRunner(int testConcurrency, RunnerSettings runnerSettings) {
+        super(runnerSettings);
         this.runnerOptions = new RunnerOptions().testConcurrency(testConcurrency);
         EyesManagerSettings managerSettings = new EyesManagerSettings(null, testConcurrency, null);
         managerRef = commandExecutor.coreMakeManager(ManagerType.VISUAL_GRID.value, managerSettings);
     }
 
-    protected VisualGridRunner(RunnerOptions runnerOptions,  String baseAgentId, String version) {
-        super(baseAgentId, version, listener);
+    protected VisualGridRunner(RunnerSettings runnerSettings, RunnerOptions runnerOptions) {
+        super(runnerSettings);
         ArgumentGuard.notNull(runnerOptions, "runnerOptions");
         this.runnerOptions = runnerOptions;
         int testConcurrency = runnerOptions.getTestConcurrency() == null ? DEFAULT_CONCURRENCY : runnerOptions.getTestConcurrency();

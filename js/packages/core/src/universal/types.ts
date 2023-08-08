@@ -50,9 +50,10 @@ export type ServerSocket<TSpec extends SpecType, TType extends 'classic' | 'ufg'
 
 export interface UniversalCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'> {
   makeCore(options: {
-    agentId: string
-    cwd: string
     spec: 'webdriver' | (keyof UniversalSpecDriver<TSpec>)[]
+    agentId: string
+    environment?: Record<string, any>
+    cwd: string
   }): Promise<MainCore.Core<TSpec, TType>>
 }
 

@@ -7,17 +7,19 @@ import com.applitools.eyes.exceptions.TestFailedException;
 import com.applitools.eyes.logging.Stage;
 import com.applitools.eyes.logging.Type;
 import com.applitools.eyes.settings.GetResultsSettings;
-import com.applitools.eyes.universal.*;
-import com.applitools.eyes.universal.dto.SpecDto;
+import com.applitools.eyes.universal.CommandExecutor;
+import com.applitools.eyes.universal.Refer;
+import com.applitools.eyes.universal.Reference;
 import com.applitools.eyes.universal.dto.TestResultsSummaryDto;
 import com.applitools.eyes.universal.mapper.TestResultsSummaryMapper;
 import com.applitools.eyes.universal.server.UniversalSdkNativeLoader;
+import com.applitools.eyes.universal.settings.RunnerSettings;
 import com.applitools.eyes.visualgrid.services.RunnerOptions;
 import com.applitools.utils.ArgumentGuard;
-import com.applitools.utils.ClassVersionGetter;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class EyesRunner implements AutoCloseable {
+
   /**
    * command executor
    */
@@ -27,100 +29,44 @@ public abstract class EyesRunner implements AutoCloseable {
    * this reference has to be used in order to perform manager related actions (EyesManager.openEyes, EyesManager.closeAllEyes)
    */
   protected Reference managerRef;
-
-  /**
-   * name of the client sdk
-   */
-  protected static String BASE_AGENT_ID = "eyes.sdk.java";
-
-  /**
-   * version of the client sdk
-   */
-  protected static String VERSION = ClassVersionGetter.CURRENT_VERSION;
-
-  /**
-   * the protocol to be used
-   */
-  protected static String PROTOCOL = "webdriver";
-
-  /**
-   * list of commands sent to the server.
-   */
-  protected static String[] COMMANDS = null;
-
-  /**
-   * the universal server listener.
-   */
-  protected static AbstractSDKListener listener;
-
+  protected Logger logger = new Logger();
   private Boolean dontCloseBatches;
   private Boolean removeDuplicateTests;
-
-  protected Logger logger = new Logger();
+  private static final RunnerSettings runnerSettings = new RunnerSettings();
 
   /**
    * used for instantiating Classic Runner
    */
   public EyesRunner() {
     setLogHandler(new NullLogHandler());
-    runServer(BASE_AGENT_ID, VERSION);
+    runServer(runnerSettings);
   }
 
   /**
    * used for instantiating Classic Runner
    */
+  @Deprecated
   public EyesRunner(String baseAgentId, String version) {
     setLogHandler(new NullLogHandler());
-    runServer(baseAgentId, version);
+    runServer(runnerSettings);
   }
 
-  public EyesRunner(String baseAgentId, String version, AbstractSDKListener listener) {
-    runServer(baseAgentId, version, PROTOCOL, COMMANDS, listener);
-  }
-
-  /**
-   * used for instantiating VisualGrid Runner
-   */
-  public EyesRunner(String baseAgentId, String version, RunnerOptions runnerOptions) {
-    ArgumentGuard.notNull(runnerOptions, "runnerOptions");
-    setLogHandler(runnerOptions.getLogHandler());
-    runServer(baseAgentId, version);
-  }
-
-  /**
-   * used for instantiating VisualGrid Runner
-   */
-  public EyesRunner(String baseAgentId, String version, RunnerOptions runnerOptions, AbstractSDKListener listener) {
-    ArgumentGuard.notNull(runnerOptions, "runnerOptions");
-    setLogHandler(runnerOptions.getLogHandler());
-    runServer(baseAgentId, version, PROTOCOL, COMMANDS, listener);
-  }
-
-  /**
-   * used for instantiating Classic Runner
-   */
-  public EyesRunner(String baseAgentId, String version, String protocol, String[] commands, AbstractSDKListener listener) {
+  public EyesRunner(RunnerSettings runnerSettings) {
     setLogHandler(new NullLogHandler());
-    runServer(baseAgentId, version, protocol, commands, listener);
+    runServer(runnerSettings);
   }
 
-  /**
-   * used for instantiating VisualGrid Runner
-   */
-  public EyesRunner(String baseAgentId, String version, String protocol, String[] commands, AbstractSDKListener listener, RunnerOptions runnerOptions) {
+  public EyesRunner(RunnerSettings runnerSettings, RunnerOptions runnerOptions) {
     ArgumentGuard.notNull(runnerOptions, "runnerOptions");
     setLogHandler(runnerOptions.getLogHandler());
-    runServer(baseAgentId, version, protocol, commands, listener);
+    runServer(runnerSettings);
   }
 
-  protected void runServer(String baseAgentId, String version) {
-    runServer(baseAgentId, version, PROTOCOL, null, listener);
-  }
-
-  protected void runServer(String baseAgentId, String version, String protocol, String[] commands, AbstractSDKListener listener){
+  protected void runServer(RunnerSettings runnerSettings) {
     UniversalSdkNativeLoader.setLogger(getLogger());
     UniversalSdkNativeLoader.start();
-    commandExecutor = CommandExecutor.getInstance(baseAgentId + '/' + version, new SpecDto(protocol, commands), listener, getStaleElementException());
+
+    commandExecutor = CommandExecutor.getInstance(runnerSettings, getStaleElementException());
   }
 
   public TestResultsSummary getAllTestResults(boolean shouldThrowException) {
@@ -217,7 +163,7 @@ public abstract class EyesRunner implements AutoCloseable {
   }
 
   public String getAgentId() {
-    return BASE_AGENT_ID;
+    return runnerSettings.getBaseAgentId();
   }
 
   /**
@@ -250,7 +196,7 @@ public abstract class EyesRunner implements AutoCloseable {
 
 
   protected Refer getRefer() {
-    return listener.getRefer();
+    return runnerSettings.getListener().getRefer();
   }
 
   @Override

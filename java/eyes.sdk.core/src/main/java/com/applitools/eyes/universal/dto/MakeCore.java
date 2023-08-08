@@ -1,5 +1,6 @@
 package com.applitools.eyes.universal.dto;
 
+import com.applitools.eyes.universal.settings.EnvironmentSettings;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
@@ -22,10 +23,13 @@ public class MakeCore {
   @JsonUnwrapped
   private SpecDto spec;
 
-  public MakeCore(String agentId, String cwd, SpecDto spec) {
+  private EnvironmentSettings environment;
+
+  public MakeCore(String agentId, String cwd, SpecDto spec, EnvironmentSettings environmentSettings) {
     this.agentId = agentId;
     this.cwd = cwd;
     this.spec = spec;
+    this.environment = environmentSettings;
   }
 
   public String getAgentId() {
@@ -52,12 +56,21 @@ public class MakeCore {
     this.spec = spec;
   }
 
+  public EnvironmentSettings getEnvironment() {
+    return environment;
+  }
+
+  public void setEnvironment(EnvironmentSettings environment) {
+    this.environment = environment;
+  }
+
   @Override
   public String toString() {
     return "MakeCore{" +
         "agentId='" + agentId + '\'' +
         ", cwd='" + cwd + '\'' +
         ", spec='" + spec + '\'' +
+        ", environment='" + environment + '\'' +
         '}';
   }
 }

@@ -15,6 +15,7 @@ import {makeOpenEyes} from './open-eyes'
 import {makeMakeManager} from './make-manager'
 import {makeCloseBatch} from './close-batch'
 import {makeDeleteTest} from './delete-test'
+import {extractEnvironment} from './utils/extract-environment'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
@@ -22,6 +23,7 @@ type Options<TSpec extends SpecType> = {
   concurrency?: number
   base?: BaseCore
   agentId?: string
+  environment?: Record<string, any>
   cwd?: string
   logger?: Logger
 }
@@ -30,12 +32,14 @@ export function makeCore<TSpec extends SpecType>({
   spec,
   concurrency,
   base: defaultBase,
+  environment: defaultEnvironment,
   agentId = 'core',
   cwd = process.cwd(),
   logger: defaultLogger,
 }: Options<TSpec> = {}): Core<TSpec, 'classic' | 'ufg'> {
   const logger = makeLogger({logger: defaultLogger, format: {label: 'core'}})
-  logger.log(`Core is initialized ${defaultBase ? 'with' : 'without'} custom base core`)
+  const environment = extractEnvironment(defaultEnvironment)
+  logger.log(`Core is initialized ${defaultBase ? 'with' : 'without'} custom base core and environment`, environment)
 
   const base = defaultBase ?? makeBaseCore({agentId, cwd, logger})
   return utils.general.extend(base, core => {
@@ -46,11 +50,11 @@ export function makeCore<TSpec extends SpecType>({
       getNMLClient: makeGetNMLClient({logger}),
       getECClient: makeGetECClient({logger}),
       getAccountInfo: makeGetAccountInfo({core, logger}),
-      makeManager: makeMakeManager({spec, concurrency, core, base: defaultBase, agentId, logger}),
+      makeManager: makeMakeManager({spec, concurrency, core, base: defaultBase, agentId, environment, logger}),
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
-      openEyes: makeOpenEyes({spec, core, concurrency, logger}),
+      openEyes: makeOpenEyes({spec, core, concurrency, environment, logger}),
       closeBatch: makeCloseBatch({core, logger}),
       deleteTest: makeDeleteTest({core, logger}),
     }

@@ -2,8 +2,9 @@ import {makeCore as makeDefaultCore, type Core, type SpecType, type SpecDriver} 
 import * as utils from '@applitools/utils'
 
 export interface SDK<TSpec extends SpecType = SpecType> {
-  agentId?: string
   spec?: SpecDriver<TSpec>
+  agentId?: string
+  environment?: Record<string, any>
   makeCore?: typeof makeDefaultCore
 }
 

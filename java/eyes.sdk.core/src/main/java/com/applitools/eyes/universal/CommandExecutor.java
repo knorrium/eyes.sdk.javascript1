@@ -1,11 +1,8 @@
 package com.applitools.eyes.universal;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-
-import com.applitools.eyes.*;
+import com.applitools.eyes.EyesException;
+import com.applitools.eyes.SyncTaskListener;
+import com.applitools.eyes.TestResults;
 import com.applitools.eyes.exceptions.DiffsFoundException;
 import com.applitools.eyes.exceptions.NewTestException;
 import com.applitools.eyes.exceptions.StaleElementReferenceException;
@@ -16,7 +13,11 @@ import com.applitools.eyes.settings.GetResultsSettings;
 import com.applitools.eyes.universal.dto.*;
 import com.applitools.eyes.universal.dto.request.*;
 import com.applitools.eyes.universal.dto.response.CommandEyesGetResultsResponseDto;
-import com.applitools.utils.GeneralUtils;
+import com.applitools.eyes.universal.settings.RunnerSettings;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * command executor
@@ -27,29 +28,30 @@ public class CommandExecutor implements AutoCloseable {
   private static volatile CommandExecutor instance;
   private static StaleElementReferenceException staleElementReferenceException;
 
-  public static CommandExecutor getInstance(String agentId, SpecDto spec, AbstractSDKListener listener,
-                                            StaleElementReferenceException e) {
+  public static CommandExecutor getInstance(RunnerSettings runnerSettings, StaleElementReferenceException e) {
     if (instance == null) {
       synchronized (CommandExecutor.class) {
         if (instance == null) {
           staleElementReferenceException = e;
-          instance = new CommandExecutor(agentId, spec, listener);
+          instance = new CommandExecutor(runnerSettings);
         }
       }
     }
     return instance;
   }
 
-  private CommandExecutor(String agentId, SpecDto spec, AbstractSDKListener listener) {
-    connection = new USDKConnection(listener);
+  private CommandExecutor(RunnerSettings runnerSettings) {
+    connection = new USDKConnection(runnerSettings.getListener());
     connection.init();
-    makeCore(agentId, GeneralUtils.getPropertyString("user.dir"), spec);
+    makeCore(runnerSettings);
   }
 
-  public void makeCore(String agentId, String cwd, SpecDto spec) {
+  private void makeCore(RunnerSettings runnerSettings) {
     EventDto<MakeCore> request = new EventDto<>();
     request.setName("Core.makeCore");
-    request.setPayload(new MakeCore(agentId, cwd, spec));
+    String agentId = runnerSettings.getBaseAgentId() + '/' + runnerSettings.getVersion();
+    SpecDto spec = new SpecDto(runnerSettings.getProtocol(), runnerSettings.getCommands());
+    request.setPayload(new MakeCore(agentId, runnerSettings.getCwd(), spec, runnerSettings.getEnvironment()));
     checkedCommand(request);
   }
 

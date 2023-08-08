@@ -19,13 +19,16 @@ enum Runner {
 
 main()
   .catch(err => {
-    core.debug(err)
+    console.error(err)
     core.setFailed(err.message)
   })
 
 async function main() {
+  core.debug(`current base ref - ${process.env.GITHUB_BASE_REF}`)
   const sha = await getSha()
+  core.debug(`current sha - ${sha}`)
   const packages = await makePackages()
+
   const envs = core.getInput('env').split(/[;\s]+/).reduce((envs, env) => {
     const [key, value] = env.split('=')
     return {...envs, [key]: value}
@@ -288,7 +291,9 @@ async function main() {
 
   function getChangedPackageNames(): string[] {
     const mergeBase = execSync(`git merge-base origin/${process.env.GITHUB_BASE_REF || 'master'} ${sha}`, {encoding: 'utf8'}).trim()
+    core.debug(`merge base - ${mergeBase}`)
     const changedFiles = execSync(`git --no-pager diff --name-only ${mergeBase}`, {encoding: 'utf8'})
+    core.debug(`changed files - ${changedFiles}`)
     const changedPackageNames = changedFiles.split('\n').reduce((changedPackageNames, changedFile) => {
       const changedPackage = packages.find(changedPackage => {
         const changedPackagePath = path.resolve(process.cwd(), changedPackage.path) + '/'

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import logging
+import platform
 from enum import Enum
 from os import getcwd
 from threading import Lock
@@ -68,6 +69,7 @@ class CommandExecutor(object):
                 "agentId": agent_id,
                 "cwd": cwd,
                 "spec": self._protocol.commands_or_kind(),
+                "environment": collect_environment(),
             },
         )
 
@@ -278,6 +280,41 @@ def _check_error(payload):
         usdk_error = demarshal_error(error)
         logger.error("Re-raising an error received from SDK server: %r", usdk_error)
         raise usdk_error
+
+
+def collect_versions_of_packages(*packages):
+    try:  # assume python>=3.9
+        from importlib.metadata import PackageNotFoundError
+    except ImportError:  # older python
+        from pkg_resources import DistributionNotFound as PackageNotFoundError
+
+    from applitools.common.__version__ import _version
+
+    versions = {}
+    for package in packages:
+        try:
+            versions[package] = _version(package)
+        except PackageNotFoundError:
+            pass  # skip not installed packages
+    return versions
+
+
+def collect_environment():
+    versions = collect_versions_of_packages(
+        "appium-python-client",
+        "core-universal",
+        "eyes-common",
+        "eyes-images",
+        "eyes-playwright",
+        "eyes-robotframework",
+        "eyes-selenium",
+        "robotframework",
+        "robotframework-appiumlibrary",
+        "robotframework-seleniumlibrary",
+        "selenium",
+    )
+    versions["python"] = platform.python_version()
+    return {"versions": versions}
 
 
 _instances = {}

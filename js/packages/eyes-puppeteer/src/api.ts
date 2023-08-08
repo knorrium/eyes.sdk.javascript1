@@ -1,3 +1,4 @@
+import {extractEnvironment} from './extract-environment'
 import * as eyes from '@applitools/eyes'
 import * as spec from '@applitools/spec-driver-puppeteer'
 
@@ -9,7 +10,8 @@ export type Element = spec.Element
 export type Selector = spec.Selector
 export type SpecType = spec.SpecType
 
-const sdk = {agentId: `eyes.puppeteer/${require('../package.json').version}`, spec}
+const environment = extractEnvironment()
+const sdk = {spec, agentId: `eyes.puppeteer/${require('../package.json').version}`, environment}
 
 export class Eyes extends eyes.Eyes<SpecType> {
   protected static readonly _sdk = sdk

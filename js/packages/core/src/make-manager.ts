@@ -15,6 +15,7 @@ type Options<TSpec extends SpecType> = {
   core: Core<TSpec>
   base?: BaseCore
   agentId?: string
+  environment?: Record<string, any>
   cwd?: string
   logger: Logger
 }
@@ -25,6 +26,7 @@ export function makeMakeManager<TSpec extends SpecType>({
   core,
   base,
   agentId: defaultAgentId,
+  environment,
   cwd = process.cwd(),
   logger: mainLogger,
 }: Options<TSpec>) {
@@ -56,7 +58,7 @@ export function makeMakeManager<TSpec extends SpecType>({
     const storage = [] as Eyes<TSpec, TType>[]
     return {
       openEyes: utils.general.wrap(
-        makeOpenEyes({type, batch: settings.batch, spec, core, cores, logger}),
+        makeOpenEyes({type, batch: settings.batch, spec, core, cores, environment, logger}),
         async (openEyes, options) => {
           const eyes = await openEyes(options)
           storage.push(eyes)

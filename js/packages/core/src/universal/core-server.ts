@@ -98,11 +98,12 @@ export async function makeCoreServer({
 
     logger.console.log(`Logs saved in: ${logDirname}`)
 
-    const corePromise = socket.wait('Core.makeCore', ({agentId, cwd, spec}) => {
+    const corePromise = socket.wait('Core.makeCore', ({spec, agentId, environment, cwd}) => {
       return makeMainCore<CustomSpecType | WDSpecType>({
-        agentId: `eyes-universal/${require('../../package.json').version}/${agentId}`,
         spec: spec === 'webdriver' ? wdSpec : makeSpec({socket, spec}),
+        agentId: `eyes-universal/${require('../../package.json').version}/${agentId}`,
         cwd,
+        environment,
         logger,
       })
     })

@@ -21,6 +21,7 @@ const {Driver} = require('@applitools/driver');
 const spec = require('@applitools/spec-driver-puppeteer');
 const {refineErrorMessage} = require('./errMessages');
 const executeRenders = require('./executeRenders');
+const {extractEnvironment} = require('./extractEnvironment');
 const {makeCore} = require('@applitools/core');
 const {makeUFGClient} = require('@applitools/ufg-client');
 const makeGetStoriesWithConfig = require('./getStoriesWithConfig');
@@ -65,7 +66,8 @@ async function eyesStorybook({
   if (config.puppeteerExtraHTTPHeaders) {
     await page.setExtraHTTPHeaders(config.puppeteerExtraHTTPHeaders);
   }
-  const core = await makeCore({spec, agentId, logger});
+  const environment = extractEnvironment();
+  const core = await makeCore({spec, agentId, environment, logger});
   const manager = await core.makeManager({
     type: 'ufg',
     settings: {concurrency: config.testConcurrency},
