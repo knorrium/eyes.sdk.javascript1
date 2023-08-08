@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.38.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.8...js/eyes-storybook@3.38.0) (2023-08-08)
+
+
+### Features
+
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
 ## [3.37.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.37.7...js/eyes-storybook@3.37.8) (2023-08-08)
 
 

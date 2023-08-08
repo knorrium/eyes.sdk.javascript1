@@ -4,6 +4,23 @@
 - CheckSettings.use_system_screenshot method to switch between nml and system approaches [Trello 3253](https://trello.com/c/bFHk2pRR)
 - Galaxy S21, Galaxy S21 Ultra, and Galaxy S22 Ultra to the enum of supported emulators
 
+## [5.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-common-v5.20.0...python/eyes-common@5.21.0) (2023-08-08)
+
+
+### Features
+
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+* core-universal bumped to 3.8.0
+
+
 ## [5.19.0] - 2023-05-24
 ### Added
 - Support of reloading the browser after resizing the page with layout_breakpoints [Trello 99](https://trello.com/c/3KZDat3M)

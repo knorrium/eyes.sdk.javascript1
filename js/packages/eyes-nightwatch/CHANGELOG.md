@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.15.17...js/eyes-nightwatch@1.16.0) (2023-08-08)
+
+
+### Features
+
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+* @applitools/eyes bumped to 1.7.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+
+
 ## [1.15.17](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.15.16...js/eyes-nightwatch@1.15.17) (2023-08-08)
 
 

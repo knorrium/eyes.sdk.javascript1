@@ -2,6 +2,27 @@
 ### Fixed
 - Avoid pyyaml versions broken by recent cython major release
 
+## [5.12.2](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-robotframework-v5.12.1...python/eyes-robotframework@5.12.2) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+* eyes-common bumped to 5.21.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+
+* core-universal bumped to 3.8.0
+
+* eyes-selenium bumped to 5.20.1
+
+
 ## [5.12.0] - 2023-05-24
 ### Added
 - Get Execution Cloud URL  keyword [Trello 3228](https://trello.com/c/WJDMOddC)

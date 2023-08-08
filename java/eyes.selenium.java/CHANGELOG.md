@@ -1,6 +1,32 @@
 # Changelog
 
 
+## [5.64.0](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-selenium-java5@5.63.6...java/eyes-selenium-java5@5.64.0) (2023-08-08)
+
+
+### Features
+
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+* com.applitools:eyes-universal-core bumped to 5.63.7
+
+* com.applitools:eyes-sdk-core-java5 bumped to 5.64.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+
+* com.applitools:eyes-selenium-common-java5 bumped to 5.63.7
+
+
 ## [5.63.6](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-selenium-java5@5.63.5...java/eyes-selenium-java5@5.63.6) (2023-08-08)
 
 

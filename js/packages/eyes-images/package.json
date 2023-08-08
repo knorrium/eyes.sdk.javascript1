@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-images",
-  "version": "4.23.18",
+  "version": "4.23.19",
   "description": "The simplest implementation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",

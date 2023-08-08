@@ -1,6 +1,16 @@
 # Changelog
 
 
+## [5.63.7](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-mac@5.63.6...java/eyes-universal-core-mac@5.63.7) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.0
+  #### Features
+
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
 ## [5.63.6](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core-mac@5.63.5...java/eyes-universal-core-mac@5.63.6) (2023-08-08)
 
 
