@@ -5616,8 +5616,8 @@ async function main() {
             return jobs;
         }, { build: [], main: [] });
         // Selecting only relevant jobs from main jobs group
-        const mainJobs = sortJobs(prepareMainJobs(jobs, names));
-        const buildJobs = sortJobs(prepareBuildJobs(jobs, mainJobs.flatMap(job => job.builds ?? []), environment === 'dev'));
+        const mainJobs = sortJobs(prepareMainJobs(jobs, mainJob => names.includes(mainJob.name)));
+        const buildJobs = sortJobs(prepareBuildJobs(jobs, buildJob => names.includes(buildJob.name) || mainJobs.flat().some(mainJob => mainJob.builds?.includes(buildJob.key)), environment === 'dev'));
         const artifacts = buildJobs.reduce((artifacts, job) => {
             if (job.key && job.artifacts)
                 artifacts[job.key] = job.artifacts;
@@ -5641,9 +5641,9 @@ async function main() {
             return mainJobs;
         }, {});
         return result;
-        function prepareMainJobs(jobs, names) {
+        function prepareMainJobs(jobs, filter) {
             return jobs.main.reduce((selectedJobs, mainJob) => {
-                if (names.includes(mainJob.name)) {
+                if (filter(mainJob)) {
                     const selectedJob = { ...mainJob };
                     selectedJob.builds = selectedJob.builds
                         ? selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key))
@@ -5655,18 +5655,18 @@ async function main() {
                 return selectedJobs;
             }, []);
         }
-        function prepareBuildJobs(jobs, keys, recursive) {
+        function prepareBuildJobs(jobs, filter, recursive) {
             return jobs.build.reduce((selectedJobs, buildJob) => {
-                if (keys.includes(buildJob.key)) {
+                if (filter(buildJob)) {
                     const selectedJob = { ...buildJob };
                     if (selectedJob.builds) {
                         selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key));
+                        selectedJobs.push(selectedJob);
                         if (recursive) {
-                            const dependencyJobs = prepareBuildJobs(jobs, selectedJob.builds.filter(key => selectedJobs.every(selectedJob => selectedJob.key !== key)), recursive);
+                            const dependencyJobs = prepareBuildJobs(jobs, filteredJob => !selectedJobs.includes(filteredJob) && selectedJob.builds.includes(filteredJob.key), recursive);
                             selectedJobs.push(...dependencyJobs);
                         }
                     }
-                    selectedJobs.push(selectedJob);
                 }
                 return selectedJobs;
             }, []);

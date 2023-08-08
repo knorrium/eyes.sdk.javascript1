@@ -154,8 +154,16 @@ async function main() {
     }, {build: [] as Job[], main: [] as Job[]})
 
     // Selecting only relevant jobs from main jobs group
-    const mainJobs = sortJobs(prepareMainJobs(jobs, names))
-    const buildJobs = sortJobs(prepareBuildJobs(jobs, mainJobs.flatMap(job => job.builds ?? []), environment === 'dev'))
+    const mainJobs = sortJobs(
+      prepareMainJobs(jobs, mainJob => names.includes(mainJob.name))
+    )
+    const buildJobs = sortJobs(
+      prepareBuildJobs(
+        jobs,
+        buildJob => names.includes(buildJob.name) || mainJobs.flat().some(mainJob => mainJob.builds?.includes(buildJob.key!)),
+        environment === 'dev'
+      )
+    )
 
     const artifacts = buildJobs.reduce((artifacts, job) => {
       if (job.key && job.artifacts) artifacts[job.key] = job.artifacts
@@ -183,9 +191,9 @@ async function main() {
 
     return result
 
-    function prepareMainJobs(jobs: {main: Job[], build: Job[]}, names: string[]) {
+    function prepareMainJobs(jobs: {main: Job[], build: Job[]}, filter: (job: Job) => boolean) {
       return jobs.main.reduce((selectedJobs, mainJob) => {
-        if (names.includes(mainJob.name)) {
+        if (filter(mainJob)) {
           const selectedJob = {...mainJob}
           selectedJob.builds = selectedJob.builds
             ? selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key))
@@ -198,22 +206,22 @@ async function main() {
       }, [] as Job[])
     }
 
-    function prepareBuildJobs(jobs: {build: Job[]}, keys: string[], recursive?: boolean) {
+    function prepareBuildJobs(jobs: {build: Job[]}, filter: (job: Job) => boolean, recursive?: boolean) {
       return jobs.build.reduce((selectedJobs, buildJob) => {
-        if (keys.includes(buildJob.key!)) {
+        if (filter(buildJob)) {
           const selectedJob = {...buildJob}
           if (selectedJob.builds) {
             selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key))
+            selectedJobs.push(selectedJob)
             if (recursive) {
               const dependencyJobs = prepareBuildJobs(
                 jobs,
-                selectedJob.builds.filter(key => selectedJobs.every(selectedJob => selectedJob.key !== key)),
+                filteredJob => !selectedJobs.includes(filteredJob) && selectedJob.builds!.includes(filteredJob.key!),
                 recursive
               )
               selectedJobs.push(...dependencyJobs)
             }
           }
-          selectedJobs.push(selectedJob)
         }
         return selectedJobs
       }, [] as Job[])
