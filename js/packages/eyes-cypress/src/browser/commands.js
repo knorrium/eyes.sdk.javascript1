@@ -4,7 +4,6 @@ const spec = require('../../dist/browser/spec-driver')
 const Refer = require('./refer')
 const Socket = require('./socket')
 const {socketCommands} = require('./socketCommands')
-const {extractEnvironment} = require('./extract-environment')
 const {TestResultsSummaryData: TestResultsSummary} = require('@applitools/eyes/dist/output/TestResultsSummary')
 const {TestResultsData} = require('@applitools/eyes/dist/output/TestResults')
 const refer = new Refer()
@@ -120,11 +119,9 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     if (!connectedToUniversal) {
       socket.connect(`wss://localhost:${Cypress.config('eyesPort')}/eyes`)
       connectedToUniversal = true
-      const environment = extractEnvironment()
       socket.emit('Core.makeCore', {
         spec: Object.keys(spec).concat(['isSelector', 'isDriver', 'isElement']), // TODO fix spec.isSelector and spec.isDriver and spec.isElement in driver
         agentId: `eyes.cypress/${require('../../package.json').version}`,
-        environment: {...environment, testingType: options?.testingType ?? 'e2e'},
         cwd: Cypress.config('projectRoot'),
       })
 

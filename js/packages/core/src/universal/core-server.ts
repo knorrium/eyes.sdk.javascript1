@@ -11,6 +11,7 @@ import os from 'os'
 import path from 'path'
 
 export type Options = ServerOptions & {
+  environment?: Record<string, any>
   debug?: boolean
   shutdownMode?: 'lazy' | 'stdin'
   idleTimeout?: number
@@ -19,6 +20,7 @@ export type Options = ServerOptions & {
 }
 
 export async function makeCoreServer({
+  environment: defaultEnvironment,
   debug = false,
   shutdownMode = 'lazy',
   idleTimeout = 900000, // 15min
@@ -37,6 +39,7 @@ export async function makeCoreServer({
     shutdownMode,
     idleTimeout,
     printStdout,
+    defaultEnvironment,
     ...handlerOptions,
   })
   const {server, port} = await makeServer({...handlerOptions, debug})
@@ -103,7 +106,12 @@ export async function makeCoreServer({
         spec: spec === 'webdriver' ? wdSpec : makeSpec({socket, spec}),
         agentId: `eyes-universal/${require('../../package.json').version}/${agentId}`,
         cwd,
-        environment,
+        environment: {
+          ...defaultEnvironment,
+          ...environment,
+          versions: {...defaultEnvironment?.versions, ...environment?.versions},
+          universal: true,
+        },
         logger,
       })
     })

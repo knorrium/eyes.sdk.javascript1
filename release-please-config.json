@@ -1205,9 +1205,9 @@
           "node-version": 18
         },
         {
-          "framework-version": 8,
           "key": "{{component}}/framework-{{framework-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 8,
           "node-version": 16,
           "test-type": "ts:run"
         },

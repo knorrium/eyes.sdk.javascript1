@@ -1,4 +1,4 @@
-export function extractEnvironment(): Record<string, any> {
+export function extractEnvironment(options: Cypress.PluginConfigOptions): Record<string, any> {
   const versions = {} as Record<string, string>
   try {
     const {name, version} = require('cypress/package.json')
@@ -6,5 +6,5 @@ export function extractEnvironment(): Record<string, any> {
   } catch {
     // NOTE: ignore error
   }
-  return {versions}
+  return {versions, testingType: options?.testingType ?? 'e2e'}
 }

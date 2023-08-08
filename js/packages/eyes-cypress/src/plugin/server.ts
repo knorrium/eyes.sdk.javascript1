@@ -9,6 +9,7 @@ import {type Logger} from '@applitools/logger'
 import {AddressInfo} from 'net'
 import {promisify} from 'util'
 import {EyesPluginConfig} from './index'
+import {extractEnvironment} from '../plugin/extractEnvironment'
 
 export type StartServerReturn = {
   server: Omit<SocketWithUniversal, 'disconnect' | 'ref' | 'unref' | 'send' | 'request' | 'setPassthroughListener'>
@@ -19,7 +20,7 @@ export type StartServerReturn = {
 }
 
 export default function makeStartServer({logger, eyesConfig}: {logger: Logger; eyesConfig: EyesPluginConfig}) {
-  return async function startServer(): Promise<StartServerReturn> {
+  return async function startServer(options?: Cypress.PluginConfigOptions): Promise<StartServerReturn> {
     const key = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.key'))
     const cert = fs.readFileSync(path.resolve(__dirname, '../../src/pem/server.cert'))
     const https = new HttpsServer({
@@ -36,11 +37,13 @@ export default function makeStartServer({logger, eyesConfig}: {logger: Logger; e
       closeUniversalServer()
     })
 
+    const environment = extractEnvironment(options)
     const {port: universalPort, close: closeUniversalServer} = await makeCoreServer({
       idleTimeout: 0,
       printStdout: true,
       singleton: false,
       portResolutionMode: 'random',
+      environment,
       debug: eyesConfig.universalDebug,
     })
 
