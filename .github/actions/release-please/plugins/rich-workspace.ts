@@ -21,13 +21,13 @@ type RichChangelogEntry = {
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
   manifestPath: string;
   workspaces: ('node' | 'maven' | 'python' | 'ruby')[]
-  'synthetic-dependencies': Record<string, string[]>
+  'synthetic-dependencies': {dependency: string, dependents: (string | {component: string, 'inherit-version'?: boolean})[]}[]
 }
 
 export class RichWorkspace extends ManifestPlugin {
   private index = -1
   protected plugins: WorkspacePlugin<unknown>[]
-  protected syntheticDependencies: Record<string, string[]>
+  protected syntheticDependencies: {dependency: string, dependents: {component: string, inheritVersion: boolean}[]}[]
   protected order: string[] = []
   protected paths = {byComponent: {} as Record<string, string>, byPackageName: {} as Record<string, string>} 
   protected components = {byPath: {} as Record<string, string>, byPackageName: {} as Record<string, string>} 
@@ -54,7 +54,16 @@ export class RichWorkspace extends ManifestPlugin {
         repositoryConfig,
       }) as WorkspacePlugin<unknown>)
     })
-    this.syntheticDependencies = options['synthetic-dependencies']
+    this.syntheticDependencies = options['synthetic-dependencies'].map(({dependency, dependents}) => {
+      return {
+        dependency,
+        dependents: dependents.map(dependent => {
+          return typeof dependent === 'string'
+            ? {component: dependent, inheritVersion: false}
+            : {component: dependent.component, inheritVersion: dependent['inherit-version'] ?? false}
+        })
+      }
+    })
   }
 
   async preconfigure(
@@ -81,19 +90,20 @@ export class RichWorkspace extends ManifestPlugin {
 
   async run(candidates: (CandidateReleasePullRequest & {isSynthetic?: boolean})[]) {
     const updatedCandidates = await this.plugins.reduce((promise, plugin) => promise.then(async candidates => {
-      for (const [dependantComponent, dependencyComponents] of Object.entries(this.syntheticDependencies)) {
-        const dependencyCandidates = candidates.filter(candidate => dependencyComponents.includes(this.components.byPath[candidate.path]) && this.packageNames.byPath[candidate.path])
-        if (dependencyCandidates.length > 0) {
-          const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === dependantComponent)
-          if (!candidate?.isSynthetic) {
-            const path = this.paths.byComponent[dependantComponent]
-            const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path]))!
-            if (candidate) {
-              pullRequest.updates = candidate.pullRequest.updates.map(originalUpdate => pullRequest.updates.find(newUpdate => newUpdate.path === originalUpdate.path) ?? originalUpdate)
-              candidate.isSynthetic = true
-              candidate.pullRequest = pullRequest
-            } else {
-              candidates.push({path, pullRequest, config: this.repositoryConfig[path], isSynthetic: true})
+      for (const {dependency, dependents} of this.syntheticDependencies) {
+        const dependencyCandidate = candidates.find(candidate => this.components.byPath[candidate.path] === dependency && this.packageNames.byPath[candidate.path])
+        if (dependencyCandidate) {
+          for (const dependent of dependents) {
+            const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === candidate.path)
+            if (!candidate?.isSynthetic) {
+              const path = this.paths.byComponent[dependent.component]
+              const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
+              if (candidate) {
+                candidate.isSynthetic = true
+                candidate.pullRequest = pullRequest
+              } else {
+                candidates.push({path, pullRequest, config: this.repositoryConfig[path], isSynthetic: true})
+              }
             }
           }
         }

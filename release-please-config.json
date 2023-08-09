@@ -6,24 +6,21 @@
   "plugins": [
     "rich-commits",
     {
-      "type": "linked-versions",
-      "groupName": "core",
-      "components": ["js/core", "python/core-universal"],
-      "merge": false
-    },
-    {
       "type": "rich-workspace",
       "workspaces": ["node", "maven", "python"],
-      "synthetic-dependencies": {
-        "python/core-universal": ["js/core"],
-        "java/eyes-universal-core": ["js/core"],
-        "java/eyes-universal-core-binaries": ["js/core"],
-        "java/eyes-universal-core-linux": ["js/core"],
-        "java/eyes-universal-core-alpine": ["js/core"],
-        "java/eyes-universal-core-arm": ["js/core"],
-        "java/eyes-universal-core-mac": ["js/core"],
-        "java/eyes-universal-core-win": ["js/core"]
-      }
+      "synthetic-dependencies": [{
+        "dependency": "js/core",
+        "dependents": [
+          "java/eyes-universal-core",
+          "java/eyes-universal-core-binaries",
+          "java/eyes-universal-core-linux",
+          "java/eyes-universal-core-alpine",
+          "java/eyes-universal-core-arm",
+          "java/eyes-universal-core-mac",
+          "java/eyes-universal-core-win",
+          {"component": "python/core-universal", "inherit-version": true}
+        ]
+      }]
     }
   ],
   "changelog-sections": [
