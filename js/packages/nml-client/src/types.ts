@@ -8,6 +8,7 @@ export type ScreenshotSettings = {
   debugImages?: {path: string; prefix?: string}
   fully?: boolean
   scrollRootElement?: Selector
+  stitchMode?: 'Scroll' | 'CSS' | 'Resize'
   hideScrollbars?: boolean
   hideCaret?: boolean
   overlap?: {

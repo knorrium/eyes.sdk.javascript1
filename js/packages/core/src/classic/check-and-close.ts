@@ -95,7 +95,17 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     } else {
       const nmlClient = await eyes.core.getNMLClient({config: eyes.test.eyesServer, driver, logger})
       const screenshot = await nmlClient.takeScreenshot({
-        settings: {name: settings.name, waitBeforeCapture: settings.waitBeforeCapture, fully: settings.fully},
+        settings: {
+          name: settings.name,
+          fully: settings.fully,
+          stitchMode: settings.stitchMode,
+          hideScrollbars: settings.hideScrollbars,
+          hideCaret: settings.hideScrollbars,
+          overlap: settings.overlap,
+          waitBeforeCapture: settings.waitBeforeCapture,
+          waitBetweenStitches: settings.waitBetweenStitches,
+          lazyLoad: settings.lazyLoad,
+        },
         logger,
       })
       baseTarget = {image: screenshot.image, isTransformed: true}
