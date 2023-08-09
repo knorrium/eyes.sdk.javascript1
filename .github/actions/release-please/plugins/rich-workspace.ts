@@ -87,12 +87,13 @@ export class RichWorkspace extends ManifestPlugin {
           const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === dependantComponent)
           if (!candidate?.isSynthetic) {
             const path = this.paths.byComponent[dependantComponent]
-            const pullRequest = await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path])
+            const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits(dependencyCandidates)], this.releasesByPath[path]))!
             if (candidate) {
+              pullRequest.updates = candidate.pullRequest.updates.map(originalUpdate => pullRequest.updates.find(newUpdate => newUpdate.path === originalUpdate.path) ?? originalUpdate)
               candidate.isSynthetic = true
-              candidate.pullRequest = pullRequest!
+              candidate.pullRequest = pullRequest
             } else {
-              candidates.push({path, pullRequest: pullRequest!, config: this.repositoryConfig[path], isSynthetic: true})
+              candidates.push({path, pullRequest, config: this.repositoryConfig[path], isSynthetic: true})
             }
           }
         }
@@ -101,7 +102,7 @@ export class RichWorkspace extends ManifestPlugin {
       for (const [path, strategy] of Object.entries(this.strategiesByPath)) {
         this.releasePullRequestsByPath[path] = 
           candidates.find(candidate => candidate.path === path)?.pullRequest ??
-          await strategy.buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits()], this.releasesByPath[path])
+          (await strategy.buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits()], this.releasesByPath[path]))!
       }
 
       return plugin.run(candidates.filter(candidate => !candidate.pullRequest.labels.includes('skip-release')))
