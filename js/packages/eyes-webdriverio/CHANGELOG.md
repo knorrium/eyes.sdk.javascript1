@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.45.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.45.0...js/eyes-webdriverio@5.45.1) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+* @applitools/eyes bumped to 1.7.1
+
+
 ## [5.45.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-webdriverio@5.44.19...js/eyes-webdriverio@5.45.0) (2023-08-08)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.16.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.16.0...js/eyes-nightwatch@1.16.1) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+* @applitools/eyes bumped to 1.7.1
+
+
 ## [1.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.15.17...js/eyes-nightwatch@1.16.0) (2023-08-08)
 
 

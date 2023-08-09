@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.8.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.8.0...js/core@3.8.1) (2023-08-08)
+
+
+### Bug Fixes
+
+* some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+
 ## [3.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.7.0...js/core@3.8.0) (2023-08-08)
 
 

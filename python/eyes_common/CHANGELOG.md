@@ -4,6 +4,18 @@
 - CheckSettings.use_system_screenshot method to switch between nml and system approaches [Trello 3253](https://trello.com/c/bFHk2pRR)
 - Galaxy S21, Galaxy S21 Ultra, and Galaxy S22 Ultra to the enum of supported emulators
 
+## [5.21.1](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-common@5.21.0...python/eyes-common@5.21.1) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+* core-universal bumped to 3.8.1
+
+
 ## [5.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-common-v5.20.0...python/eyes-common@5.21.0) (2023-08-08)
 
 

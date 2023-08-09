@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.7.0...js/eyes@1.7.1) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+
 ## [1.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.6.7...js/eyes@1.7.0) (2023-08-08)
 
 

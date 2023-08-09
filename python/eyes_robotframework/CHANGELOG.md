@@ -2,6 +2,22 @@
 ### Fixed
 - Avoid pyyaml versions broken by recent cython major release
 
+## [5.12.3](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-robotframework@5.12.2...python/eyes-robotframework@5.12.3) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+* core-universal bumped to 3.8.1
+
+* eyes-common bumped to 5.21.1
+
+* eyes-selenium bumped to 5.20.2
+
+
 ## [5.12.2](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-robotframework-v5.12.1...python/eyes-robotframework@5.12.2) (2023-08-08)
 
 

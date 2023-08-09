@@ -1,6 +1,24 @@
 # Changelog
 
 
+## [5.64.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.64.0...java/eyes-appium-java5@5.64.1) (2023-08-08)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.8.1
+  #### Bug Fixes
+
+  * some fix ([5dc537a](https://github.com/applitools/eyes.sdk.javascript1/commit/5dc537aa5d40933c21f21b8f138f7ff944c064a8))
+* com.applitools:eyes-universal-core bumped to 5.63.8
+
+* com.applitools:eyes-sdk-core-java5 bumped to 5.64.1
+
+* com.applitools:eyes-selenium-common-java5 bumped to 5.63.8
+
+* com.applitools:eyes-selenium-java5 bumped to 5.64.1
+
+
 ## [5.64.0](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.63.7...java/eyes-appium-java5@5.64.0) (2023-08-08)
 
 
