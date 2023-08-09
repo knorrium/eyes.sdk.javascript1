@@ -27,9 +27,13 @@ export interface GenericConfig {
    */
   overrides?: MaybeArray<string | Override>
   /**
+   * Filter out irrelevant tests
+   */
+  filter?: (test: Test) => boolean
+  /**
    * Suite name
    */
-  suite?: string | ((test: Test) => boolean)
+  suite?: string
   /**
    * Suites declaration
    */

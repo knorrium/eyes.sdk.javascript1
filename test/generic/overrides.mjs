@@ -37,4 +37,10 @@ export const overrides = {
     // 'should send dom on ie': {skip: true},
     // 'should send dom on edge legacy': {skip: true},
     // 'should set viewport size on edge legacy': {skip: true},
+
+    //sauce lab has problems with ie and legacy edge
+    'check region by selector on ie': {skip: true, reason: 'sauce lab has problems with ie and legacy edge'},
+    'should send dom on ie': {skip: true, reason: 'sauce lab has problems with ie and legacy edge'},
+    'should set viewport size on edge legacy': {skip: true, reason: 'sauce lab has problems with ie and legacy edge'},
+    'should send dom on edge legacy': {skip: true, reason: 'sauce lab has problems with ie and legacy edge'},
 }

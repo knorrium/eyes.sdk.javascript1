@@ -1009,32 +1009,45 @@
       }],
       "tests": [
         {
-          "key": "{{component}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 14,
-          "generic": {"config": "./test/generic/config.mjs"},
+          "test-type": "local",
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 16,
-          "generic": {"config": "./test/generic/config.mjs"},
+          "test-type": "local",
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 18,
-          "generic": {"config": "./test/generic/config.mjs"},
+          "test-type": "local",
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "node-version": 20,
-          "generic": {"config": "./test/generic/config.mjs"},
+          "test-type": "local",
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        },
+        {
+          "key": "{{component}}/{{test-type}}",
+          "artifacts": ["./logs/**/*"],
+          "test-type": "sauce",
+          "generic": {"config": "./test/generic/config.mjs", "suite": "sauce"},
+          "parallel": 2,
+          "semaphore": "sauce",
+          "report": {"name": "nightwatch", "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         }
       ],
       "releases": [{

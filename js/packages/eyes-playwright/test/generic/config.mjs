@@ -1,6 +1,6 @@
 export const config = {
   extends: '../../../../test/generic/config.mjs',
-  suite: test => {
+  filter: test => {
     return (
       (!test.env ||
         (!test.env.device &&

@@ -1,4 +1,5 @@
 import type {GenericConfig} from './types.js'
+import {type Test} from './framework.js'
 import {prepareConfig} from './utils/prepare-config.js'
 import {downloadFixtures} from './utils/download-fixtures.js'
 import {prepareTransform} from './utils/prepare-transform.js'
@@ -15,7 +16,9 @@ export async function generate(config: GenericConfig): Promise<void> {
     console.log(`Generating tests for file ${config.tests}${config.suite ? ` and suite ${config.suite}` : ''}...\n`)
 
     const fixtures = config.fixtures ? await downloadFixtures(config.fixtures) : undefined
-    const filter = utils.types.isFunction(config.suite) ? config.suite : config.suites?.[config.suite as string]
+    const filter = (test: Test) =>
+      (!config.filter || config.filter(test)) &&
+      (!config.suite || !config.suites?.[config.suite] || config.suites?.[config.suite](test))
     const transform = await prepareTransform(config.overrides)
     const {emitter} = await import(config.emitter)
     const {template} = await import(config.template, {assert: {format: 'template'}})
