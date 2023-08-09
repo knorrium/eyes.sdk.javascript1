@@ -1,25 +1,28 @@
 ﻿using System;
 using Applitools;
+using Applitools.Utils;
 using NUnit.Framework;
 using OpenQA.Selenium.Appium;
 
 namespace Eyes.Appium.UnitTests
 {
-    public class TestNmgCapabilities
+    public class TestMobileCapabilities
     {
         private const string API_KEY = "asd123";
         private const string SERVER_URL = "https://eyesapi.applitools.com";
         private static ProxySettings proxySettings = new ProxySettings("http://127.0.0.1", 8888);
 
         private const string LIBRARY_PATH =
-            "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib:@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib";
+            "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS";
+        private const string SIM_LIBRARY_PATH =
+            "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS";
 
         [Test]
-        public void TestAndroidNmgCaps()
+        public void TestAndroidMobileCaps()
         {
             var caps = GetCaps();
 
-            Applitools.Appium.Eyes.SetNmgCapabilities(caps, API_KEY, SERVER_URL, proxySettings);
+            Applitools.Appium.Eyes.SetMobileCapabilities(caps, API_KEY, SERVER_URL, proxySettings);
             
             caps.ToDictionary().TryGetValue("optionalIntentArguments", out object androidArgs);
             Assert.NotNull(androidArgs);
@@ -29,15 +32,15 @@ namespace Eyes.Appium.UnitTests
             Assert.AreEqual(androidIntentArguments[0], "--es");
             Assert.AreEqual(androidIntentArguments[1], "APPLITOOLS");
             Assert.AreEqual(androidIntentArguments[2],
-                $"'{{\"NML_API_KEY\":\"{API_KEY}\",\"NML_SERVER_URL\":\"{SERVER_URL}\",\"NML_PROXY_URL\":\"{proxySettings}\",}}'");
+                $"'{{\"APPLITOOLS_API_KEY\":\"{API_KEY}\",\"APPLITOOLS_SERVER_URL\":\"{SERVER_URL}\",\"APPLITOOLS_PROXY_URL\":\"{proxySettings}\"}}'");
         }
 
         [Test]
-        public void TestIosNmgCaps()
+        public void TestIosMobileCaps()
         {
             var caps = GetCaps();
 
-            Applitools.Appium.Eyes.SetNmgCapabilities(caps, API_KEY, SERVER_URL, proxySettings);
+            Applitools.Appium.Eyes.SetMobileCapabilities(caps, API_KEY, SERVER_URL, proxySettings);
 
             caps.ToDictionary().TryGetValue("processArguments", out object iosArgs);
             Assert.NotNull(iosArgs);
@@ -46,8 +49,22 @@ namespace Eyes.Appium.UnitTests
             string[] iosIntentArguments = ((string)iosArgs).Split(" ", 3);
             Assert.AreEqual(iosIntentArguments[0], "{\"args\":");
             Assert.AreEqual(iosIntentArguments[1], "[],");
+
             Assert.AreEqual(iosIntentArguments[2],
-                $"\"env\":{{\"DYLD_INSERT_LIBRARIES\":\"{LIBRARY_PATH}\",\"NML_API_KEY\":\"{API_KEY}\",\"NML_SERVER_URL\":\"{SERVER_URL}\",\"NML_PROXY_URL\":\"{proxySettings}\",}}}}");
+                $"\"env\":{{\"DYLD_INSERT_LIBRARIES\":\"{LIBRARY_PATH}:{SIM_LIBRARY_PATH}\",\"APPLITOOLS_API_KEY\":\"{API_KEY}\",\"APPLITOOLS_SERVER_URL\":\"{SERVER_URL}\",\"APPLITOOLS_PROXY_URL\":\"{proxySettings}\"}}}}");
+
+            var expectedObj = new
+            {
+                deviceName = "Google Pixel 5 GoogleAPI Emulator", 
+                deviceOrientation="portrait",
+                platformVersion="11.0",
+                platformName= "Android",
+                automationName="UiAutomator2",
+                optionalIntentArguments= "--es APPLITOOLS '{\"APPLITOOLS_API_KEY\":\"asd123\",\"APPLITOOLS_SERVER_URL\":\"https://eyesapi.applitools.com\",\"APPLITOOLS_PROXY_URL\":\"http://127.0.0.1:8888/\"}'",
+                processArguments="{\"args\": [], \"env\":{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS:@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS\",\"APPLITOOLS_API_KEY\":\"asd123\",\"APPLITOOLS_SERVER_URL\":\"https://eyesapi.applitools.com\",\"APPLITOOLS_PROXY_URL\":\"http://127.0.0.1:8888/\"}}"
+            };
+            var capsAsDict = caps.ToDictionary();
+            Assert.AreEqual(expectedObj.ToJson(), capsAsDict.ToJson());
         }
 
         [Test]
@@ -63,7 +80,7 @@ namespace Eyes.Appium.UnitTests
             Environment.SetEnvironmentVariable("APPLITOOLS_SERVER_URL", FAKE_SERVER_URL);
             Environment.SetEnvironmentVariable("APPLITOOLS_HTTP_PROXY", FAKE_PROXY_URI);
 
-            Applitools.Appium.Eyes.SetNmgCapabilities(caps);
+            Applitools.Appium.Eyes.SetMobileCapabilities(caps);
             
             caps.ToDictionary().TryGetValue("optionalIntentArguments", out object androidArgs);
             Assert.NotNull(androidArgs);
@@ -73,7 +90,7 @@ namespace Eyes.Appium.UnitTests
             Assert.AreEqual(androidIntentArguments[0], "--es");
             Assert.AreEqual(androidIntentArguments[1], "APPLITOOLS");
             Assert.AreEqual(androidIntentArguments[2],
-                $"'{{\"NML_API_KEY\":\"{FAKE_API_KEY}\",\"NML_SERVER_URL\":\"{FAKE_SERVER_URL}\",\"NML_PROXY_URL\":\"{FAKE_PROXY_URI}\",}}'");
+                $"'{{\"APPLITOOLS_API_KEY\":\"{FAKE_API_KEY}\",\"APPLITOOLS_SERVER_URL\":\"{FAKE_SERVER_URL}\",\"APPLITOOLS_PROXY_URL\":\"{FAKE_PROXY_URI}\"}}'");
         }
 
         private AppiumOptions GetCaps()

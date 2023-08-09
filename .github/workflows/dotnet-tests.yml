@@ -19,7 +19,7 @@ on:
         description: core version
         required: false
         type: string
-        default: "3.6.0"
+        default: "3.8.1"
       generic:
         type: boolean
         required: false
@@ -35,7 +35,7 @@ env:
   APPLITOOLS_API_KEY_READ: ${{ secrets.APPLITOOLS_API_KEY_READ }}
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-  CORE_VERSION: ${{ inputs.core_version || '3.6.0' }}
+  CORE_VERSION: ${{ inputs.core_version || '3.8.1' }}
 
 jobs:
 

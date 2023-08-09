@@ -1,0 +1,387 @@
+# Changelog
+
+## Unreleased
+
+## [3.67](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.66...dotnet/selenium@3.67) (2023-07-31)
+
+### Dependencies
+
+* dotnet/Eyes.Images bumped to 3.38
+  ### Bug Fixes
+  
+  * debug screenshots support
+
+## [3.66](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.65...dotnet/selenium@3.66) (2023-07-30)
+
+### Dependencies
+
+* dotnet/Eyes.Images bumped to 3.37
+
+* dotnet/Eyes.Image.Core bumped to 3.6.5
+
+* @applitools/core bumped to 3.6.5
+  #### Bug Fixes
+
+  * rendering issue with chrome &gt;113 and css white-space property ([cf34ad1](https://github.com/applitools/eyes.sdk.javascript1/commit/cf34ad1a5b3cba0b29b3509616b20a2b1313c62f))
+
+* @applitools/ufg-client bumped to 1.5.3
+  #### Bug Fixes
+
+  * consider response headers and status code which are returned from the EC resource handler ([#1823](https://github.com/applitools/eyes.sdk.javascript1/issues/1823)) ([b7bd541](https://github.com/applitools/eyes.sdk.javascript1/commit/b7bd5415ae8f92a8032fc68ba993ccac1d9ff76a))
+* com.applitools:eyes-universal-core bumped to 5.63.4
+
+
+## [3.65](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.64...dotnet/selenium@3.65) (2023-07-27)
+
+### Dependencies
+
+* dotnet/Eyes.Images bumped to 3.36
+
+* dotnet/Eyes.Image.Core bumped to 3.6.4
+
+* @applitools/core bumped to 3.6.4
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/core-base bumped to 1.4.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/image bumped to 1.1.2
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+* @applitools/logger bumped to 2.0.7
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+* @applitools/req bumped to 1.5.2
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+* @applitools/driver bumped to 1.13.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/ec-client bumped to 1.7.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/socket bumped to 1.1.7
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/spec-driver-webdriver bumped to 1.0.40
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/tunnel-client bumped to 1.1.3
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/nml-client bumped to 1.5.5
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/spec-driver-webdriverio bumped to 1.5.9
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/screenshoter bumped to 3.8.6
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/ufg-client bumped to 1.5.2
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/spec-driver-puppeteer bumped to 1.1.71
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+* @applitools/spec-driver-selenium bumped to 1.5.54
+  #### Bug Fixes
+
+  * fix workspace dependencies ([2a3856f](https://github.com/applitools/eyes.sdk.javascript1/commit/2a3856f3ce3bcf1407f59c676653b6f218556760))
+
+## [3.64](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.63...dotnet/selenium@3.64) (2023-07-18)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.63](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.62...dotnet/selenium@3.63) (2023-07-14)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.62](https://github.com/applitools/eyes.sdk.javascript1/releases/tag/dotnet/selenium@3.62) (2023-07-13)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.61] (2023-07-11)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.60] (2023-07-10)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.59] (2023-07-09)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.58] (2023-07-09)
+### Added
+- New emulated devices:
+  * Galaxy S21
+  * Galaxy S21 Ultra
+### Removed
+- Emulated devices:
+  * Galaxy S21 5G
+  * Galaxy S22 Ultra 5G
+
+## [3.57] (2023-07-06)
+### Added
+- Shadow DOM support
+- New emulated devices:
+  * Galaxy S21 5G
+  * Galaxy S22 Ultra
+  * Galaxy S21 Ultra 5G
+
+## [3.56] (2023-07-02)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.55] (2023-06-27)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.54] (2023-06-20)
+### Updated
+- Internal changes to support Appium
+
+## [3.52] (2023-06-14)
+### Updated
+- Server Core to 3.2.1
+
+## [3.51] (2023-05-15)
+### Updated
+- Server Core to 3.0.1
+
+## [3.50] (2023-05-01)
+### Fixed
+- Tunnel issue
+
+## [3.49] (2023-04-21)
+### Fixed
+- Locate method
+
+## [3.48] (2023-04-18)
+### Updated
+- Server Core to 2.5.0
+
+## [3.47] (2023-04-17)
+### Updated
+- Added support of Remove Duplicated Tests [Trello 3203](https://trello.com/c/3d56SQGL)
+
+## [3.46] (2023-04-16)
+### Updated
+- Match to latest Eyes.Images
+
+## [3.45] (2023-04-12)
+### Updated
+- Server Core to 2.4.11
+- Locate method due to Server expectation
+### Fixed
+- Copied Server file in case it does not exist in output folder
+
+## [3.44] (2023-04-05)
+### Updated
+- Server Core to 2.4.7
+
+## [3.43] (2023-03-25)
+### Fixed
+- Copy Core Server binaries for .Net Framework
+
+## [3.42] (2023-03-22)
+### Updated
+- Universal Server Core to 2.4.3
+
+## [3.41] (2023-03-20)
+### Implemented
+- ExecutionCloudURL for C# SDK [Trello 3178] (https://trello.com/c/JMoqMWZ4)
+
+## [3.40] (2023-03-18)
+### Implemented
+- Introduced Command Executor [Trello 3120] (https://trello.com/c/K0kZfnEc)
+- Added Eyes Locate support for C# Images sdk [Trello 3173] (https://trello.com/c/xI7r70ML)
+- Moved C# sdk to Core Server [Trello 3177] (https://trello.com/c/eYQCLXJm)
+
+## [3.39] (2023-03-07)
+### Implemented
+- Fixed Missing Server Response for Core.makeManager [Trello 3120] (https://trello.com/c/K0kZfnEc)
+
+## [3.38] (2023-03-01)
+### Implemented
+- Eyes.ExtractTextRegions and Eyes.ExtractText [Trello 3139] (https://trello.com/c/26ruEr2N)
+
+## [3.37] (2023-02-17)
+### Fixed
+- Introduced overloaded Image method with byte[] and base64 string parameter to support .NET 7 [Trello 3121] (https://trello.com/c/tleubWtm)
+
+## [3.36] (2023-02-03)
+### Fixed
+- Visual Locators not identified as expected in .NET [Trello 3122] (https://trello.com/c/2S8Sa9Uj)
+
+## [3.35] (2023-01-26)
+### Fixed
+- Selenium .NET SDK does not default Eyes.SaveNewTests to true [Trello 3109] (https://trello.com/c/WVo1QJn8)
+### Implemented
+- LazyLoad [Trello 3132] (https://trello.com/c/5KtPC4n1)
+
+## [3.34] (2023-01-02)
+### Updated
+- Universal Server Version to 3.2.1
+- Added Request and Response Server's messages 
+
+## [3.33] (2022-12-19)
+### Updated
+- Universal Server Version to 3.1.0
+
+## [3.32] (2022-12-12)
+### Fixed
+- Implemented BatchClose
+
+## [3.31] (2022-12-11)
+### Fixed
+- DontCloseBatches/KeepBatchOpen
+
+## [3.30] (2022-12-08)
+### Fixed
+- Made Eyes Thread safe [Trello 3009] (https://trello.com/c/5S5OWP79)
+- Set default Batch Info
+
+## [3.29] (2022-12-04)
+### Updated
+- WebSocketClient
+
+## [3.28] (2022-11-23)
+### Updated
+- Migrated to Universal SDK v.3
+- Removed Test.Eyes.Sdk.Core.S3.DotNet dependency
+
+## [3.27] (2022-11-11)
+### Implemented
+- Support for Padded regions [Trello 42] (https://trello.com/c/PYKqJLbg)
+- Support for Region Id
+
+## [3.26] (2022-10-31)
+### Fixed
+- Multithreading issue on uSDK using xUnit [Trello 3048] (https://trello.com/c/nkcG69eG)
+### Updated
+- Match to latest Universal Server
+
+## [3.25] (2022-10-04)
+### Updated
+- Universal Server Version to 2.16.1
+### Fixed
+- Issue with screenshots being taken on chrome-emulated devices
+
+## [3.24] (2022-09-29)
+### Updated
+- Added iPhone 14 and iPhone 14 Pro Max devices [Trello 73] (https://trello.com/c/M1YiwtHb)
+- Universal Server Version to 2.15.0
+
+## [3.23] (2022-09-21)
+### Fixed
+- Element Id for IOSElement [Trello 3028] (https://trello.com/c/RsA9XpkO)
+
+## [3.22] (2022-09-20)
+### Updated
+- Match to latest Universal Server
+### Fixed
+- C# Appium | Error using IWebElement for Region on Web for Target.Region [Trello 3028] (https://trello.com/c/RsA9XpkO)
+
+## [3.21] (2022-09-16)
+### Updated
+- Created testing client for eyes-universal
+- Using lazyLoad.waitingTime as a delay between stitches by default
+- Using proxy while polling for the result of the nml command
+
+## [3.20] (2022-09-16)
+### Updated
+- Match to latest Universal Server
+
+## [3.19] (2022-09-13)
+### Fixed
+- Universal C# 3.5.0 - Delete Test Result not Working (#2) [Trello 2884] (https://trello.com/c/1D5u95rZ)
+
+## [3.18] (2022-09-07)
+### Updated
+- Match to latest Universal Server
+- Added Support for Alpine
+
+## [3.17] (2022-09-05)
+### Updated
+- Match to latest Universal Server
+
+## [3.16] (2022-09-02)
+### Fixed
+- Universal Server Child Process
+
+## [3.15] (2022-08-15)
+### Fixed
+- DontCloseBatches for Runner [Trello 2968] (https://trello.com/c/5Sjvt505)
+
+## [3.14] (2022-08-12)
+### Fixed
+- .NET Xpath Selector truncated | Element not found error [Trello 2969] (https://trello.com/c/RLiRm5t8)
+
+## [3.13] (2022-08-03)
+### Updated
+- Match to latest Eyes.Sdk.Core.S3
+
+## [3.12] (2022-08-03)
+### Fixed
+- TestResultContainer Exception and BrowserInfo [Trello 2964] (https://trello.com/c/KTRPRood)
+### Updated
+- Android Device Names [Trello 44] https://trello.com/c/SZAPDKSI
+- Universal Server Version to 2.10.3
+
+## [3.11] (2022-07-27)
+### Fixed
+- Layout Breakpoints [Trello 2959] (https://trello.com/c/p3AFQBKi)
+
+## [3.10] (2022-07-24)
+### Updated
+- Match to latest Eyes.Sdk.Core.S3
+
+## [3.9] (2022-07-13)
+- Layout Breakpoints [Trello 2959] (https://trello.com/c/p3AFQBKi)
+
+## [3.8] (2022-06-21)
+### Updated
+- Match to latest Eyes.Sdk.Core.S3
+
+## [3.7] (2022-05-31)
+### Updated
+- Updated SendRequest method
+- Added Extra logs
+
+## [3.5] (2022-04-28)
+### Updated
+- Code refactoring
+
+## [3.4] (2022-04-25)
+### Fixed
+- Fixed Delete() method. [Trello 2851] (https://trello.com/c/90hedYWk)

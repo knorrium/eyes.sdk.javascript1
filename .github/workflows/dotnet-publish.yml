@@ -12,12 +12,12 @@ on:
         description: Core version
         type: string
         required: true
-        default: "3.6.4"
+        default: "3.8.1"
       core_nuget_version:
         description: Core NuGet version
         type: string
         required: false
-        default: "3.6.4"
+        default: "3.8.1"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -48,7 +48,6 @@ jobs:
         shell: pwsh
         run: |
           cd dotnet
-          ./update_core_versions.ps1
           python updateChangelogAndProjectFiles.py
           cat ./MATRIX.json
           echo "packages_matrix=$(cat ./MATRIX.json)" >> $env:GITHUB_OUTPUT
@@ -63,7 +62,7 @@ jobs:
           path: |
             dotnet/*.txt
             dotnet/*.json
-            dotnet/CHANGELOG.md
+            dotnet/Eyes.*/CHANGELOG.md
             dotnet/Eyes.*/Eyes.*.csproj
 
   # dummy:

@@ -38,80 +38,56 @@ def upSemanticVersion(currentVersion, part):
             vNext = part
     return vNext+suffix
 
-def getDependentPackages(packageName, packageNextVersions, versionPart):
-    packageDependencies = {
-        "Eyes.Image.Core": ["Eyes.Images"],
-        "Eyes.Images": ["Eyes.Selenium", "Eyes.Selenium4", "Eyes.Playwright"],
-        "Eyes.Selenium": ["Eyes.Appium"],
-        "Eyes.Selenium4": ["Eyes.Appium2"],
-    }
-    dependencyDefaultChangelogStr="### Updated\n- Match to latest {}\n"
-    dependentPackages = packageDependencies.get(packageName)
-    if dependentPackages:
-        for dependentPackageName in dependentPackages:
-            if not dependentPackageName in packageNextVersions:
-                packageNextVersions[dependentPackageName] = {
-                    "version_part": versionPart, "changelog": dependencyDefaultChangelogStr.format(packageName)
-                    }
-                getDependentPackages(dependentPackageName, packageNextVersions, versionPart)
-
-def collect_changes():
-
-    packageLastVersions = {}
-    packageNextVersions = {}
-
-    originalLines = ""
-
-    f = open("CHANGELOG.md", "r")
-    lastVNextPackageName = False
-    vNextPattern = r"^## \[(?P<PackageName>.*)? vNext( (?P<VersionPart>.*))?\]$"
-    vUpdatedPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+(-.*)?)\] - UPDATED$"
-    vLastPattern = r"^## \[(?P<PackageName>.*)? (?P<Version>(([0-9]+)\.?)+(-.*)?)\] - .*$"
-    for line in f:
-        matches = re.search(vNextPattern, line)
-        if matches:
-            packageName = matches.group('PackageName')
-            versionPart = matches.group('VersionPart')
-            if versionPart is None:
-                versionPart = "minor"
-            lastVNextPackageName = packageName
-            packageNextVersions[packageName] = {
-                "version_part": versionPart, "changelog": ""}
-            getDependentPackages(packageName, packageNextVersions, versionPart)
+def update_changelogs(changelogs, core_changes, dateStr):
+    for (p, v) in changelogs.items():
+        if v['dependency'] == "js/core":
+            changes = core_changes
         else:
-            matches = re.search(vUpdatedPattern, line)
-            if matches:
-                packageName = matches.group('PackageName')
-                version = matches.group('Version')
-                lastVNextPackageName = packageName
-                packageNextVersions[packageName] = {
-                    "version_part": version, "changelog": ""}
-                getDependentPackages(packageName, packageNextVersions, "minor")
+            changes = get_latest_release_entries(changelog_contents=changelogs[v["dependency"]]['content'])
+        headings = ''
+        currentSection = ''
+        lastLineSpacer = False
+        for h in changes['headings']:
+            if h.startswith("### "):
+                matches = re.search(r"^### (?P<Section>.*)$", h)
+                currentSection = matches["Section"]
+                h = h.replace("### ", "#### ")
+            if h == "#### Dependencies":
+                continue
+            if currentSection != "Dependencies":
+                h = "  " + h
+            if not h or h.isspace():
+                if not lastLineSpacer:
+                    headings += "\n"
+                lastLineSpacer = True
             else:
-                matches = re.search(vLastPattern, line)
-                if matches:
-                    originalLines += line
-                    lastVNextPackageName = None
-                    packageName = matches.group('PackageName')
-                    version = matches.group('Version')
-                    if not packageName in packageLastVersions:
-                        packageLastVersions[packageName] = version
-                else:
-                    if lastVNextPackageName:
-                        if (lastVNextPackageName in packageNextVersions) and (line != "\n"):
-                            packageNextVersions[lastVNextPackageName]["changelog"] += line
-                    else:
-                        originalLines += line
+                headings += h + "\n"
+                lastLineSpacer = False
+        version = changes['version']
+        changelogs[p]["content"] = get_changelog_contents(changelogs[p]["path"])
+        updates = f"### Dependencies\n\n* {v['dependency']} bumped to {version}\n{headings}"
+        update_changelog(changelogs, p, updates, version, dateStr)
 
-    f.close()
+def update_changelog(changelogs, p, headings, depVersion, dateStr):
+    target_heading = get_latest_release_heading(changelogs[p]["content"])['heading']
+    prev_ver = get_latest_version_from_content(target_heading)
+    if "versionUpdate" in changelogs[p] and changelogs[p]["versionUpdate"] == "copy":
+        version = depVersion
+    else:
+        version = upSemanticVersion(prev_ver, "minor")
+    package = changelogs[p]["name"]
+    url = f"https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/{package}@{prev_ver}...dotnet/{package}@{version}"
 
-    for (p, v) in packageNextVersions.items():
-        vLast = packageLastVersions[p]
-        vNext = upSemanticVersion(vLast, v["version_part"])
-        v["version"] = vNext
-        packageNextVersions[p] = v
-    
-    return {"next": packageNextVersions, "orig": originalLines}
+    unreleasedDict = get_entries_for_heading(changelogs[p]['content'], "## Unreleased", False)
+    unreleasedEntries = [entry['entry'] for entry in unreleasedDict]
+    unreleased = "\n".join(unreleasedEntries)
+    unreleasedStripped = unreleased.strip('\n')
+    if len(unreleasedStripped) > 0:
+        unreleasedStripped += "\n\n"
+    changes = f"\n## [{version}]({url}) ({dateStr})\n\n{unreleasedStripped}{headings}\n\n"
+    changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", changes)
+    changelogs[p]['version'] = version
+    update_csproj(p, version, f"{unreleasedStripped}{headings}")
 
 def update_csproj(name, version_data, release_notes_data):
     xmlfile = name+".DotNet/"+name+".DotNet.csproj"
@@ -129,6 +105,50 @@ def update_csproj(name, version_data, release_notes_data):
     version.text = version_data
     tree.write(xmlfile)
     print(xmlfile + ": PackageReleaseNotes and Version update done!")
+
+def get_entries_for_heading(changelog_contents, target_heading, include_heading):
+    found_entries = []
+    heading_found = False
+    for index, entry in enumerate(changelog_contents.split('\n')):
+        _entry = entry.strip()
+        if heading_found and re.match(r'^\s*##[^#]', _entry):
+            break
+        if heading_found:
+            found_entries.append({'entry': entry, 'index': index})
+        if _entry == target_heading:
+            if include_heading:
+                found_entries.append({'entry': entry, 'index': index})
+            heading_found = True
+    return found_entries
+
+def get_changelog_contents(target_folder):
+    changelog_path = os.path.join(target_folder, 'CHANGELOG.md')
+    with open(changelog_path, 'r', encoding='utf-8') as file:
+        return file.read()
+
+def get_latest_release_entries(changelog_contents=None, target_folder='.'):
+    if not changelog_contents:
+        changelog_contents = get_changelog_contents(target_folder)
+    target_heading = get_latest_release_heading(changelog_contents)['heading']
+    version = get_latest_version_from_content(target_heading)
+    entries = get_entries_for_heading(changelog_contents, target_heading, False)
+    return {"headings": [entry['entry'] for entry in entries], "version": version}
+
+def get_latest_version_from_content(content):
+    matches = re.search(r"^## \[(?P<Version>.*)?\].*$", content)
+    if matches:
+        return matches["Version"]
+    return "1.0.0"
+
+def get_latest_release_heading(changelog_contents):
+    latest_release_heading = {}
+    for index, entry in enumerate(changelog_contents.split('\n')):
+        _entry = entry.strip()
+        if re.match(r'^\s*##[^#]', _entry) and 'Unreleased' not in _entry:
+            latest_release_heading['heading'] = _entry
+            latest_release_heading['index'] = index
+            break
+    return latest_release_heading
 
 def create_send_mail_json(reported_version, recent_changes):
     f = open("testCoverageGap.txt", "r")
@@ -148,58 +168,50 @@ def create_send_mail_json(reported_version, recent_changes):
 
     return json.dumps(sendMailObj)
 
+def write_new_changelogs(changelogs):
+    for p,v in changelogs.items():
+        if (p == 'js/core'):
+            continue
+        f = open(f"{v['path']}/CHANGELOG.md", "w")
+        f.write(v['content'])
+        f.close()
+
 if __name__ == '__main__':
-    data = collect_changes()
-    packageNextVersions = data["next"]
-    originalLines = data["orig"]
     newLines = ""
     updated_projects = []
     new_tags = []
     reported_version = "RELEASE_CANDIDATE"
+    core_changes = get_latest_release_entries(target_folder="../js/packages/core")
     dateStr = datetime.datetime.now().strftime("%Y-%m-%d")
-    matrixJsonStr = "{\"include\":["
+    matrixJson = {"include":[]}
 
-    packageInfo = {
-        # "Eyes.Image.Core": {"name":'core', "report": "coverage-test-reportC.xml"},
-        "Eyes.Images": {"name":'images', "report": "coverage-test-reportI.xml", "sdk": "dotnet", "group":"images"},
-        "Eyes.Selenium": {"name":'selenium3', "report": "coverage-test-reportS3.xml", "sdk": "dotnet", "group": "selenium"},
-        "Eyes.Selenium4": {"name":'selenium4', "report": "coverage-test-reportS4.xml", "sdk": "dotnet4", "group": "selenium"},
-        "Eyes.Playwright": {"name":'playwright', "report": "coverage-test-reportP.xml", "sdk": "dotnet_playwright", "group": "selenium"},
-        "Eyes.Appium": {"name":'appium', "report": "coverage-test-reportA.xml", "sdk": "dotnet", "group": "appium"},
-        "Eyes.Appium2": {"name":'appium2', "report": "coverage-test-reportA2.xml", "sdk": "dotnet2", "group": "appium"},
+    changelogs = {
+        #"js/core": {"path": "../js/packages/core"},
+        "Eyes.Image.Core": {"dependency": "js/core", "path": "Eyes.Image.Core.DotNet", "versionUpdate": "copy", "name": "image.core"},
+        "Eyes.Images": {"dependency": "Eyes.Image.Core", "path": "Eyes.Images.DotNet", "name": "images", "report": "coverage-test-reportI.xml", "group":"images"}, 
+        "Eyes.Selenium": {"dependency": "Eyes.Images", "path": "Eyes.Selenium.DotNet", "name": "selenium", "report": "coverage-test-reportS3.xml", "group": "selenium"},
+        "Eyes.Selenium4": {"dependency": "Eyes.Images", "path": "Eyes.Selenium4.DotNet", "name": "seleniun4", "report": "coverage-test-reportS4.xml", "group": "selenium"},
+        "Eyes.Playwright": {"dependency": "Eyes.Images", "path": "Eyes.Playwright.DotNet", "name": "playwright", "report": "coverage-test-reportP.xml", "group": "selenium"},
+        "Eyes.Appium": {"dependency": "Eyes.Selenium", "path": "Eyes.Appium.DotNet", "name": "appium", "report": "coverage-test-reportA.xml", "group": "appium"},
+        "Eyes.Appium2": {"dependency": "Eyes.Selenium4", "path": "Eyes.Appium2.DotNet", "name": "appium2", "report": "coverage-test-reportA2.xml", "group": "appium"},
     }
+  
+    update_changelogs(changelogs, core_changes, dateStr)
 
-    for (p,v) in packageNextVersions.items():
-        newLines += "## [" + p + " " + v['version'] + "] - " + dateStr + "\n"
-        newLines += v['changelog'] + "\n"
-        update_csproj(p, v['version'], v['changelog'])
+    write_new_changelogs(changelogs)
+
+    for (p,v) in changelogs.items():
         new_tags.append(p + "@" + v['version'] + "\n")
         updated_projects.append(p + "\n")
-        reported_version += ";" + p + "@" + v['version']
-        if p in packageInfo:
-            pi = packageInfo[p]
-            pi['version'] = v['version']
-            matrixJsonStr += json.dumps(pi) + ','
-    matrixJsonStr = matrixJsonStr.rstrip(',')
-    matrixJsonStr += "]}"
-
-    f = open("RECENT_CHANGES.md", "w")
-    f.write(newLines)
-    f.close()
+        if v['name'] != 'image.core':
+            matrixJson["include"].append(
+                {'name':v['name'], 
+                 'report':v['report'], 
+                 'group':v['group'],
+                 'version':v['version']})
 
     f = open("MATRIX.json", "w")
-    f.write(matrixJsonStr)
-    f.close()
-
-    sendMailStr = create_send_mail_json(reported_version, newLines)
-    f = open("SEND_MAIL.json", "w")
-    f.writelines(sendMailStr)
-    f.close()
-
-    newLines += originalLines
-    
-    f = open("CHANGELOG.md", "w")
-    f.write(newLines)
+    f.write(json.dumps(matrixJson))
     f.close()
 
     f = open("NEW_TAGS.txt", "w")

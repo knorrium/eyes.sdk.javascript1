@@ -13,6 +13,11 @@
         /// <summary>
         /// CSS translation based stitching.
         /// </summary>
-        CSS = 10
+        CSS = 10,
+        
+        /// <summary>
+        /// Resize based full-content.
+        /// </summary>
+        Resize = 20
     }
 }

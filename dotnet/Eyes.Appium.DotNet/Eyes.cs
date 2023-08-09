@@ -85,7 +85,7 @@ namespace Applitools.Appium
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
                               + ":"
-                              + "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib\",";
+                              + "@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64_x86_64-simulator/UFG_lib.framework/UFG_lib\"";
 
             var iosCapValueSuffix = "}}";
 
@@ -103,8 +103,8 @@ namespace Applitools.Appium
                 }
             }
 
-            androidCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
-            iosCapValue += "\"NML_API_KEY\":\"" + apiKey + "\",";
+            androidCapValue += "\"NML_API_KEY\":\"" + apiKey + "\"";
+            iosCapValue += ",\"NML_API_KEY\":\"" + apiKey + "\"";
 
             // Check for the server URL in the env variable. (might still be null and this is fine.
             if (eyesServerUrl == null)
@@ -114,8 +114,8 @@ namespace Applitools.Appium
 
             if (!string.IsNullOrEmpty(eyesServerUrl))
             {
-                androidCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
-                iosCapValue += "\"NML_SERVER_URL\":\"" + eyesServerUrl + "\",";
+                androidCapValue += ",\"NML_SERVER_URL\":\"" + eyesServerUrl + "\"";
+                iosCapValue += ",\"NML_SERVER_URL\":\"" + eyesServerUrl + "\"";
             }
 
             if (proxySettings == null)
@@ -129,8 +129,8 @@ namespace Applitools.Appium
 
             if (proxySettings != null)
             {
-                androidCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
-                iosCapValue += "\"NML_PROXY_URL\":\"" + proxySettings + "\",";
+                androidCapValue += ",\"NML_PROXY_URL\":\"" + proxySettings + "\"";
+                iosCapValue += ",\"NML_PROXY_URL\":\"" + proxySettings + "\"";
             }
 
             androidCapValue += androidCapValueSuffix;
@@ -150,7 +150,7 @@ namespace Applitools.Appium
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
                               + ":"
-                              + "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS\",";
+                              + "@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64_x86_64-simulator/Applitools_iOS.framework/Applitools_iOS\"";
 
             var iosCapValueSuffix = "}}";
 
@@ -168,8 +168,8 @@ namespace Applitools.Appium
                 }
             }
 
-            androidCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\",";
-            iosCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\",";
+            androidCapValue += "\"APPLITOOLS_API_KEY\":\"" + apiKey + "\"";
+            iosCapValue += ",\"APPLITOOLS_API_KEY\":\"" + apiKey + "\"";
 
             // Check for the server URL in the env variable. (might still be null and this is fine.
             if (eyesServerUrl == null)
@@ -179,8 +179,8 @@ namespace Applitools.Appium
 
             if (!string.IsNullOrEmpty(eyesServerUrl))
             {
-                androidCapValue += "\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\",";
-                iosCapValue += "\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\",";
+                androidCapValue += ",\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\"";
+                iosCapValue += ",\"APPLITOOLS_SERVER_URL\":\"" + eyesServerUrl + "\"";
             }
 
             if (proxySettings == null)
@@ -194,8 +194,8 @@ namespace Applitools.Appium
 
             if (proxySettings != null)
             {
-                androidCapValue += "\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\",";
-                iosCapValue += "\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\",";
+                androidCapValue += ",\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\"";
+                iosCapValue += ",\"APPLITOOLS_PROXY_URL\":\"" + proxySettings + "\"";
             }
 
             androidCapValue += androidCapValueSuffix;
