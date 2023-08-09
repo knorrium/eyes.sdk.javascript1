@@ -1,5 +1,4 @@
 import {type GitHub} from 'release-please/build/src/github'
-import {type RepositoryConfig, type CandidateReleasePullRequest} from 'release-please/build/src/manifest'
 import {type ReleasePullRequest} from 'release-please/build/src/release-pull-request'
 import {type Strategy} from 'release-please/build/src/strategy'
 import {type BaseStrategy} from 'release-please/build/src/strategies/base'
@@ -8,7 +7,9 @@ import {type Release} from 'release-please/build/src/release'
 import {type Commit, type ConventionalCommit} from 'release-please/build/src/commit'
 import {type Update} from 'release-please/build/src/update'
 import {type WorkspacePlugin, type WorkspacePluginOptions, type DependencyGraph, type AllPackages} from 'release-please/build/src/plugins/workspace'
+import {DEFAULT_RELEASE_PLEASE_MANIFEST, type RepositoryConfig, type CandidateReleasePullRequest} from 'release-please/build/src/manifest'
 import {Changelog} from 'release-please/build/src/updaters/changelog'
+import {ReleasePleaseManifest} from 'release-please/build/src/updaters/release-please-manifest';
 import {ManifestPlugin} from 'release-please/build/src/plugin'
 import {buildPlugin} from 'release-please/build/src/factories/plugin-factory'
 
@@ -19,13 +20,13 @@ type RichChangelogEntry = {
 }
 
 export interface RichWorkspaceOptions extends WorkspacePluginOptions {
-  manifestPath: string;
   workspaces: ('node' | 'maven' | 'python' | 'ruby')[]
   'synthetic-dependencies': {dependency: string, dependents: (string | {component: string, 'inherit-version'?: boolean})[]}[]
 }
 
 export class RichWorkspace extends ManifestPlugin {
   private index = -1
+  protected manifestPath: string
   protected plugins: WorkspacePlugin<unknown>[]
   protected syntheticDependencies: {dependency: string, dependents: {component: string, inheritVersion: boolean}[]}[]
   protected order: string[] = []
@@ -45,6 +46,7 @@ export class RichWorkspace extends ManifestPlugin {
     options: RichWorkspaceOptions
   ) {
     super(github, targetBranch, repositoryConfig, options.logger);
+    this.manifestPath = options.manifestPath ?? DEFAULT_RELEASE_PLEASE_MANIFEST;
     this.plugins = options.workspaces.map(workspaceName => {
       return this.patchWorkspacePlugin(buildPlugin({
         ...options,
@@ -52,6 +54,7 @@ export class RichWorkspace extends ManifestPlugin {
         github,
         targetBranch,
         repositoryConfig,
+        manifestPath: this.manifestPath
       }) as WorkspacePlugin<unknown>)
     })
     this.syntheticDependencies = options['synthetic-dependencies'].map(({dependency, dependents}) => {
@@ -97,12 +100,12 @@ export class RichWorkspace extends ManifestPlugin {
             const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === candidate.path)
             if (!candidate?.isSynthetic) {
               this.logger.info(`adding synthetic dependency ${dependency} to ${dependent.component}`)
-              const path = this.paths.byComponent[dependent.component]
-              const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
+              const pullRequest = await this.buildDependentReleasePullRequest(dependencyCandidate, dependent)
               if (candidate) {
                 candidate.isSynthetic = true
                 candidate.pullRequest = pullRequest
               } else {
+                const path = this.paths.byComponent[dependent.component]
                 candidates.push({path, pullRequest, config: this.repositoryConfig[path], isSynthetic: true})
               }
             }
@@ -125,6 +128,19 @@ export class RichWorkspace extends ManifestPlugin {
       .sort((candidate1, candidate2) => this.order.indexOf(candidate1.path) > this.order.indexOf(candidate2.path) ? 1 : -1)
   }
 
+  protected async buildDependentReleasePullRequest(dependencyCandidate: CandidateReleasePullRequest, dependent: {component: string, inheritVersion: boolean}) {
+    const path = this.paths.byComponent[dependent.component]
+    const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
+    pullRequest.updates.push({
+      path: this.manifestPath,
+      createIfMissing: false,
+      updater: new ReleasePleaseManifest({
+        version: pullRequest.version!,
+        versionsMap: new Map([[path, pullRequest.version!]]),
+      })
+    })
+    return pullRequest
+  }
 
   protected enrichChangelogEntry(candidate: CandidateReleasePullRequest, candidates: CandidateReleasePullRequest[]): RichChangelogEntry | null {
     if (this.richChangelogEntriesByCandidate.has(candidate)) return this.richChangelogEntriesByCandidate.get(candidate)!
