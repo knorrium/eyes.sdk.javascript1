@@ -167,6 +167,7 @@ jobs:
         uses: ./.github/actions/storage/restore
         with:
           name: ${{join(matrix.builds)}}
+          latest: true
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
