@@ -130,7 +130,11 @@ export class RichWorkspace extends ManifestPlugin {
 
   protected async buildDependentReleasePullRequest(dependencyCandidate: CandidateReleasePullRequest, dependent: {component: string, inheritVersion: boolean}) {
     const path = this.paths.byComponent[dependent.component]
-    const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
+    const strategy = this.strategiesByPath[path]
+    if (dependent.inheritVersion) {
+      (strategy as any).releaseAs = dependencyCandidate.pullRequest.version!.toString()
+    }
+    const pullRequest = (await strategy.buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
     pullRequest.updates.push({
       path: this.manifestPath,
       createIfMissing: false,
