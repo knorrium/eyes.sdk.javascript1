@@ -5665,7 +5665,7 @@ async function main() {
                     if (selectedJob.builds) {
                         selectedJob.builds = selectedJob.builds.filter(key => jobs.build.some(buildJob => buildJob.key === key));
                         if (recursive) {
-                            const dependencyJobs = prepareBuildJobs(jobs, filteredJob => !selectedJobs.includes(filteredJob) && selectedJob.builds.includes(filteredJob.key), recursive);
+                            const dependencyJobs = prepareBuildJobs(jobs, filteredJob => !selectedJobs.some(selectedJob => selectedJob.key === filteredJob.key) && selectedJob.builds.includes(filteredJob.key), recursive);
                             selectedJobs.push(...dependencyJobs);
                         }
                     }

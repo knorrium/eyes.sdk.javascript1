@@ -219,7 +219,7 @@ async function main() {
             if (recursive) {
               const dependencyJobs = prepareBuildJobs(
                 jobs,
-                filteredJob => !selectedJobs.includes(filteredJob) && selectedJob.builds!.includes(filteredJob.key!),
+                filteredJob => !selectedJobs.some(selectedJob => selectedJob.key === filteredJob.key) && selectedJob.builds!.includes(filteredJob.key!),
                 recursive
               )
               selectedJobs.push(...dependencyJobs)
