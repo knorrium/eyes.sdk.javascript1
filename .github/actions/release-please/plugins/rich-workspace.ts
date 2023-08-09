@@ -96,6 +96,7 @@ export class RichWorkspace extends ManifestPlugin {
           for (const dependent of dependents) {
             const candidate = candidates.find(candidate => this.components.byPath[candidate.path] === candidate.path)
             if (!candidate?.isSynthetic) {
+              this.logger.info(`adding synthetic dependency ${dependency} to ${dependent.component}`)
               const path = this.paths.byComponent[dependent.component]
               const pullRequest = (await this.strategiesByPath[path].buildReleasePullRequest([...this.commitsByPath[path], ...this.generateDepsCommits([dependencyCandidate])], this.releasesByPath[path]))!
               if (candidate) {
