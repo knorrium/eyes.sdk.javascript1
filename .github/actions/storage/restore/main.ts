@@ -23,17 +23,16 @@ main()
     core.setFailed(err.message)
   })
 
-async function main(): Promise<(string | Error)[]> {
+async function main(): Promise<string[]> {
   const names = core.getMultilineInput('name', {required: true}).flatMap(name => name ? name.split(/[\s\n,]+/) : [])
   const latest = core.getBooleanInput('latest')
   const wait = core.getBooleanInput('wait')
-  const result = await Promise.allSettled(names.map(async compositeName => {
+
+  return Promise.all(names.map(compositeName => {
     const [name, paths] = compositeName.split('$')
     const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : []
     return restore({paths: paths.split(';'), name, fallbacks, wait: wait ? 600_000 : 0})
   }))
-
-  return result.map(result => result.status === 'fulfilled' ? result.value : result.reason)
 
   async function restore(options: {
     paths: string[],
@@ -41,7 +40,7 @@ async function main(): Promise<(string | Error)[]> {
     fallbacks: string[],
     wait?: number,
     startedAt?: number
-  }): Promise<string | undefined> {
+  }): Promise<string> {
     options.startedAt ??= Date.now()
     const restoredName = await restoreCache([...options.paths], options.name, options.fallbacks, {}, true)
     if (restoredName) {

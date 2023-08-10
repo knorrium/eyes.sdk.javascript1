@@ -57950,12 +57950,11 @@ async function main() {
     const names = core.getMultilineInput('name', { required: true }).flatMap(name => name ? name.split(/[\s\n,]+/) : []);
     const latest = core.getBooleanInput('latest');
     const wait = core.getBooleanInput('wait');
-    const result = await Promise.allSettled(names.map(async (compositeName) => {
+    return Promise.all(names.map(compositeName => {
         const [name, paths] = compositeName.split('$');
         const fallbacks = latest ? [name.replace(/(?<=#).+$/, '')] : [];
         return restore({ paths: paths.split(';'), name, fallbacks, wait: wait ? 600000 : 0 });
     }));
-    return result.map(result => result.status === 'fulfilled' ? result.value : result.reason);
     async function restore(options) {
         options.startedAt ??= Date.now();
         const restoredName = await (0,cache.restoreCache)([...options.paths], options.name, options.fallbacks, {}, true);
