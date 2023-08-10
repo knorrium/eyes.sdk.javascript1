@@ -1,6 +1,4 @@
-## [5.12.1] - 2023-07-18
-### Fixed
-- Avoid pyyaml versions broken by recent cython major release
+# Changelog
 
 ## [5.12.4](https://github.com/applitools/eyes.sdk.javascript1/compare/python/eyes-robotframework@5.12.3...python/eyes-robotframework@5.12.4) (2023-08-10)
 
@@ -66,6 +64,10 @@
 
 * eyes-selenium bumped to 5.20.1
 
+
+## [5.12.1] - 2023-07-18
+### Fixed
+- Avoid pyyaml versions broken by recent cython major release
 
 ## [5.12.0] - 2023-05-24
 ### Added
