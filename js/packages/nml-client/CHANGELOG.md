@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.6...js/nml-client@1.5.7) (2023-08-10)
+
+
+### Bug Fixes
+
+* propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
 ## [1.5.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.5...js/nml-client@1.5.6) (2023-08-03)
 
 

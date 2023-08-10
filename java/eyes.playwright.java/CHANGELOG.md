@@ -1,6 +1,32 @@
 # Changelog
 
 
+## [5.64.2](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-playwright-java5@5.64.1...java/eyes-playwright-java5@5.64.2) (2023-08-10)
+
+
+### Dependencies
+
+* @applitools/nml-client bumped to 1.5.7
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+* @applitools/core bumped to 3.9.0
+  #### Features
+
+  * re-release ([e62abc7](https://github.com/applitools/eyes.sdk.javascript1/commit/e62abc7e74ea0e193eb7770036ae7f97bd11188a))
+
+
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
+
+
+* com.applitools:eyes-universal-core bumped to 5.63.9
+
+* com.applitools:eyes-sdk-core-java5 bumped to 5.64.2
+
+
 ## [5.64.1](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-playwright-java5@5.64.0...java/eyes-playwright-java5@5.64.1) (2023-08-08)
 
 
