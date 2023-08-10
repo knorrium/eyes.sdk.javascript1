@@ -14,12 +14,11 @@
   },
   "scripts": {
     "lint": "run --top-level eslint '**/*.js'",
-    "build": "yarn build:dist && yarn build:zip",
+    "build": "run build:dist && run build:zip",
     "build:dist": "webpack",
     "build:zip": "mkdir ./bin && cd ./dist && zip -r ../bin/eyes-browser-extension.zip ./*",
     "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
-    "test": "yarn test:coverage",
-    "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-browser-extension' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
+    "test": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-browser-extension' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/{generated-coverage,e2e}/*.spec.{ts,js}' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level xvfb:setup"
   },
   "dependencies": {
@@ -29,6 +28,7 @@
   },
   "devDependencies": {
     "@applitools/bongo": "workspace:^",
+    "@applitools/eyes": "workspace:^",
     "@applitools/generic": "workspace:^",
     "@applitools/spec-driver-playwright": "workspace:^",
     "@applitools/test-utils": "workspace:^",
@@ -47,10 +47,12 @@
     "crypto-browserify": "^3.12.0",
     "https-browserify": "^1.0.0",
     "net-browserify": "^0.2.4",
+    "ora": "^6.3.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "playwright": "^1.34.3",
     "process": "^0.11.10",
+    "selenium-webdriver": "4.10.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tls-browserify": "^0.2.2",

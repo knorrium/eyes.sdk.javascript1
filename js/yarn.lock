@@ -324,6 +324,7 @@ __metadata:
   resolution: "@applitools/eyes-browser-extension@workspace:packages/eyes-browser-extension"
   dependencies:
     "@applitools/bongo": "workspace:^"
+    "@applitools/eyes": "workspace:^"
     "@applitools/eyes-sdk-core": 13.11.14
     "@applitools/generic": "workspace:^"
     "@applitools/spec-driver-browser-extension": "workspace:*"
@@ -345,10 +346,12 @@ __metadata:
     crypto-browserify: ^3.12.0
     https-browserify: ^1.0.0
     net-browserify: ^0.2.4
+    ora: ^6.3.1
     os-browserify: ^0.3.0
     path-browserify: ^1.0.1
     playwright: ^1.34.3
     process: ^0.11.10
+    selenium-webdriver: 4.10.0
     stream-browserify: ^3.0.0
     stream-http: ^3.2.0
     tls-browserify: ^0.2.2
@@ -577,7 +580,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@applitools/eyes@workspace:*, @applitools/eyes@workspace:packages/eyes":
+"@applitools/eyes@workspace:*, @applitools/eyes@workspace:^, @applitools/eyes@workspace:packages/eyes":
   version: 0.0.0-use.local
   resolution: "@applitools/eyes@workspace:packages/eyes"
   dependencies:
@@ -9721,6 +9724,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bl@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "bl@npm:5.1.0"
+  dependencies:
+    buffer: ^6.0.3
+    inherits: ^2.0.4
+    readable-stream: ^3.4.0
+  checksum: a7a438ee0bc540e80b8eb68cc1ad759a9c87df06874a99411d701d01cc0b36f30cd20050512ac3e77090138890960e07bfee724f3ee6619bb39a569f5cc3b1bc
+  languageName: node
+  linkType: hard
+
 "blob-util@npm:^2.0.2":
   version: 2.0.2
   resolution: "blob-util@npm:2.0.2"
@@ -10614,7 +10628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:5.3.0, chalk@npm:^5.3.0":
+"chalk@npm:5.3.0, chalk@npm:^5.0.0, chalk@npm:^5.3.0":
   version: 5.3.0
   resolution: "chalk@npm:5.3.0"
   checksum: 623922e077b7d1e9dedaea6f8b9e9352921f8ae3afe739132e0e00c275971bdd331268183b2628cf4ab1727c45ea1f28d7e24ac23ce1db1eb653c414ca8a5a80
@@ -10933,7 +10947,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cli-spinners@npm:^2.0.0, cli-spinners@npm:^2.5.0, cli-spinners@npm:^2.9.0":
+"cli-cursor@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "cli-cursor@npm:4.0.0"
+  dependencies:
+    restore-cursor: ^4.0.0
+  checksum: ab3f3ea2076e2176a1da29f9d64f72ec3efad51c0960898b56c8a17671365c26e67b735920530eaf7328d61f8bd41c27f46b9cf6e4e10fe2fa44b5e8c0e392cc
+  languageName: node
+  linkType: hard
+
+"cli-spinners@npm:^2.0.0, cli-spinners@npm:^2.5.0, cli-spinners@npm:^2.6.1, cli-spinners@npm:^2.9.0":
   version: 2.9.0
   resolution: "cli-spinners@npm:2.9.0"
   checksum: a9c56e1f44457d4a9f4f535364e729cb8726198efa9e98990cfd9eda9e220dfa4ba12f92808d1be5e29029cdfead781db82dc8549b97b31c907d55f96aa9b0e2
@@ -17526,6 +17549,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-interactive@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "is-interactive@npm:2.0.0"
+  checksum: e8d52ad490bed7ae665032c7675ec07732bbfe25808b0efbc4d5a76b1a1f01c165f332775c63e25e9a03d319ebb6b24f571a9e902669fc1e40b0a60b5be6e26c
+  languageName: node
+  linkType: hard
+
 "is-lambda@npm:^1.0.1":
   version: 1.0.1
   resolution: "is-lambda@npm:1.0.1"
@@ -17780,7 +17810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-unicode-supported@npm:^1.2.0":
+"is-unicode-supported@npm:^1.1.0, is-unicode-supported@npm:^1.2.0":
   version: 1.3.0
   resolution: "is-unicode-supported@npm:1.3.0"
   checksum: 20a1fc161afafaf49243551a5ac33b6c4cf0bbcce369fcd8f2951fbdd000c30698ce320de3ee6830497310a8f41880f8066d440aa3eb0a853e2aa4836dd89abc
@@ -19087,6 +19117,16 @@ __metadata:
   dependencies:
     chalk: ^2.0.1
   checksum: 4c95e3b65f0352dbe91dc4989c10baf7a44e2ef5b0db7e6721e1476268e2b6f7090c3aa880d4f833a05c5c3ff18f4ec5215a09bd0099986d64a8186cfeb48ac8
+  languageName: node
+  linkType: hard
+
+"log-symbols@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "log-symbols@npm:5.1.0"
+  dependencies:
+    chalk: ^5.0.0
+    is-unicode-supported: ^1.1.0
+  checksum: 7291b6e7f1b3df6865bdaeb9b59605c832668ac2fa0965c63b1e7dd3700349aec09c1d7d40c368d5041ff58b7f89461a56e4009471921301af7b3609cbff9a29
   languageName: node
   linkType: hard
 
@@ -21227,6 +21267,23 @@ __metadata:
     strip-ansi: ^6.0.0
     wcwidth: ^1.0.1
   checksum: 28d476ee6c1049d68368c0dc922e7225e3b5600c3ede88fade8052837f9ed342625fdaa84a6209302587c8ddd9b664f71f0759833cbdb3a4cf81344057e63c63
+  languageName: node
+  linkType: hard
+
+"ora@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "ora@npm:6.3.1"
+  dependencies:
+    chalk: ^5.0.0
+    cli-cursor: ^4.0.0
+    cli-spinners: ^2.6.1
+    is-interactive: ^2.0.0
+    is-unicode-supported: ^1.1.0
+    log-symbols: ^5.1.0
+    stdin-discarder: ^0.1.0
+    strip-ansi: ^7.0.1
+    wcwidth: ^1.0.1
+  checksum: 474c0596a35c1be1e836bb836bea8a2d9e37458fc63b020e1435c8fe2030ab224454bfb263618e3ec09fcab2008dd525e9047f4c61548c4ace7b6490a766fc1c
   languageName: node
   linkType: hard
 
@@ -23834,6 +23891,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"restore-cursor@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "restore-cursor@npm:4.0.0"
+  dependencies:
+    onetime: ^5.1.0
+    signal-exit: ^3.0.2
+  checksum: 5b675c5a59763bf26e604289eab35711525f11388d77f409453904e1e69c0d37ae5889295706b2c81d23bd780165084d040f9b68fffc32cc921519031c4fa4af
+  languageName: node
+  linkType: hard
+
 "ret@npm:~0.1.10":
   version: 0.1.15
   resolution: "ret@npm:0.1.15"
@@ -24280,6 +24347,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"selenium-webdriver@npm:4.10.0, selenium-webdriver@npm:^4.10.0":
+  version: 4.10.0
+  resolution: "selenium-webdriver@npm:4.10.0"
+  dependencies:
+    jszip: ^3.10.1
+    tmp: ^0.2.1
+    ws: ">=8.13.0"
+  checksum: fae9bbfa69d28ed1d143234a5ce0350bee7d41178b88f9812c69b2099ac99df8037f3fafee14efb65af3d91356f163e8a43a36151bf48eff1515415ccd17cb75
+  languageName: node
+  linkType: hard
+
 "selenium-webdriver@npm:4.4, selenium-webdriver@npm:4.4.0":
   version: 4.4.0
   resolution: "selenium-webdriver@npm:4.4.0"
@@ -24311,17 +24389,6 @@ __metadata:
     tmp: 0.0.30
     xml2js: ^0.4.17
   checksum: 5bc1045d0205c5aed1f3e3cf8047d3bb677e370e96ae4a8acd172846c07aeb40c031bee5017a7c432bec36e46c5bbce82fe3b40086b7daa4cb31dcaf69daad55
-  languageName: node
-  linkType: hard
-
-"selenium-webdriver@npm:^4.10.0":
-  version: 4.10.0
-  resolution: "selenium-webdriver@npm:4.10.0"
-  dependencies:
-    jszip: ^3.10.1
-    tmp: ^0.2.1
-    ws: ">=8.13.0"
-  checksum: fae9bbfa69d28ed1d143234a5ce0350bee7d41178b88f9812c69b2099ac99df8037f3fafee14efb65af3d91356f163e8a43a36151bf48eff1515415ccd17cb75
   languageName: node
   linkType: hard
 
@@ -25250,6 +25317,15 @@ __metadata:
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
+  languageName: node
+  linkType: hard
+
+"stdin-discarder@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "stdin-discarder@npm:0.1.0"
+  dependencies:
+    bl: ^5.0.0
+  checksum: 85131f70ae2830144133b7a6211d56f9ac2603573f4af3d0b66e828af5e13fcdea351f9192f86bb7fed2c64604c8097bf36d50cb77d54e898ce4604c3b7b6b8f
   languageName: node
   linkType: hard
 

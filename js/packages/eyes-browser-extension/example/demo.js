@@ -12,7 +12,7 @@ function wait(ms) {
 }
 
 ;(async function main() {
-  const extensionPath = process.argv[2] ? process.argv[2] : path.resolve(__dirname, 'dist')
+  const extensionPath = process.argv[2] ? process.argv[2] : path.resolve(__dirname, '../dist')
   console.log('loading Eyes browser extension from', extensionPath)
 
   const driver = await new Builder()

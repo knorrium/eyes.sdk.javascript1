@@ -53,3 +53,5 @@ frameMessenger.on('*', (_, type) => backgroundMessenger.emit(type))
 
 // NOTE: Listen for events initiated by the background script
 backgroundMessenger.on('*', async (payload, name) => apiMessenger.emit(name, payload))
+
+setInterval(() => backgroundMessenger.request('Extension.heartbeat'), 5000)

@@ -1146,13 +1146,17 @@
         "key": "{{component}}/{{environment}}",
         "artifacts": ["../*/dist", "../*/types", "./bin"]
       }],
-      "tests": [{
-        "key": "{{component}}",
-        "artifacts": ["./logs/**/*"],
-        "generic": {"config": "./test/generic/config.mjs"}
-      }],
+      "tests": [
+        {
+          "key": "{{component}}",
+          "artifacts": ["./logs/**/*"],
+          "generic": {"config": "./test/generic/config.mjs"},
+          "report": {"name": "browser_extension", "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        }
+      ],
       "releases": [{
-        "artifacts": ["./bin/*"]
+        "artifacts": ["./bin/*"],
+        "jfrog": {"url": "https://applitools.jfrog.io", "repository": "eyes-browser-extension"}
       }]
     },
     "js/packages/eyes-storybook": {

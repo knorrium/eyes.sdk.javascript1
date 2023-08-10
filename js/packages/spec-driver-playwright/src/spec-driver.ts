@@ -207,6 +207,14 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
     headless: headless && !extension,
     ignoreDefaultArgs: ['--hide-scrollbars'],
   }
+
+  // TODO remove this once Playwright provides formal support for headless: 'new' (https://github.com/microsoft/playwright/issues/21194)
+  if (headless === 'new') {
+    options.args.push('--headless=new')
+    delete options.headless
+    options.ignoreDefaultArgs.push('--headless')
+  }
+
   if (extension) {
     options.args.push(`--load-extension=${extension}`, `--disable-extensions-except=${extension}`)
   }
