@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.22](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.21...js/spec-driver-playwright@1.3.22) (2023-08-10)
+
+
+### Bug Fixes
+
+* avoid service worker shutdown ([#1830](https://github.com/applitools/eyes.sdk.javascript1/issues/1830)) ([f552d84](https://github.com/applitools/eyes.sdk.javascript1/commit/f552d8425778f300cad31c0297a04f3f282f34e0))
+
 ## [1.3.21](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.20...js/spec-driver-playwright@1.3.21) (2023-08-03)
 
 

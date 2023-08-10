@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-browser-extension-v0.3.4...js/eyes-browser-extension@0.3.5) (2023-08-10)
+
+
+### Bug Fixes
+
+* avoid service worker shutdown ([#1830](https://github.com/applitools/eyes.sdk.javascript1/issues/1830)) ([f552d84](https://github.com/applitools/eyes.sdk.javascript1/commit/f552d8425778f300cad31c0297a04f3f282f34e0))
+
+
+### Dependencies
+
+* @applitools/spec-driver-playwright bumped to 1.3.22
+  #### Bug Fixes
+
+  * avoid service worker shutdown ([#1830](https://github.com/applitools/eyes.sdk.javascript1/issues/1830)) ([f552d84](https://github.com/applitools/eyes.sdk.javascript1/commit/f552d8425778f300cad31c0297a04f3f282f34e0))
+* @applitools/spec-driver-browser-extension bumped to 1.0.7
+
+
 ## 0.2.0 - 2021/8/13
 
 - support richer core api for throwing errors
