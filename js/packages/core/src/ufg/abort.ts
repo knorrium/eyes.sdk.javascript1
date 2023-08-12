@@ -32,10 +32,10 @@ export function makeAbort<TSpec extends SpecType>({
     logger.log('Command "abort" is called with settings', settings)
     controller.abort()
     settings ??= {}
-    if (!settings.testMetadata) {
+    if (!settings.testMetadata && isDriver(target, spec)) {
       try {
-        const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
-        settings.testMetadata = await driver?.getSessionMetadata()
+        const driver = await makeDriver({spec, driver: target, relaxed: true, logger})
+        settings.testMetadata = await driver.getSessionMetadata()
       } catch (error: any) {
         logger.warn('Command "abort" received an error during extracting driver metadata', error)
       }

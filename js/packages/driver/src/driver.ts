@@ -531,6 +531,9 @@ export class Driver<T extends SpecType> {
   }
 
   async getSessionMetadata(): Promise<any | undefined> {
+    // NOTE: not using this.getEnvironment() to not provoke environment extraction if it was not calculated yet.
+    // It is faster to try to execute and fail then collect all of the environment information
+    if (this._environment?.isECClient === false) return undefined
     try {
       const metadata = await this.currentContext.execute('applitools:metadata')
       this._logger.log('Extracted session metadata', metadata)
@@ -894,8 +897,12 @@ export class Driver<T extends SpecType> {
   }
 }
 
+export function isDriverInstance<T extends SpecType>(driver: any): driver is Driver<T> {
+  return driver instanceof Driver
+}
+
 export function isDriver<T extends SpecType>(driver: any, spec?: SpecDriver<T>): driver is Driver<T> | T['driver'] {
-  return driver instanceof Driver || !!spec?.isDriver(driver)
+  return isDriverInstance<T>(driver) || !!spec?.isDriver(driver)
 }
 
 export async function makeDriver<T extends SpecType>(options: {
@@ -903,9 +910,16 @@ export async function makeDriver<T extends SpecType>(options: {
   spec?: SpecDriver<T>
   customConfig?: {useCeilForViewportSize?: boolean}
   reset?: boolean
+  relaxed?: boolean
   logger?: Logger
 }): Promise<Driver<T>> {
-  const driver = options.driver instanceof Driver ? options.driver : new Driver(options as DriverOptions<T>)
+  let driver: Driver<T>
+  if (options.driver instanceof Driver) {
+    driver = options.driver
+    if (options.relaxed) return driver
+  } else {
+    driver = new Driver(options as DriverOptions<T>)
+  }
   if (options.logger) driver.updateLogger(options.logger)
   return driver.refresh({reset: options.reset})
 }

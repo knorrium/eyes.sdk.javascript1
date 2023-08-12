@@ -23,10 +23,10 @@ export function makeClose<TSpec extends SpecType>({storage, target, spec, logger
 
     logger.log('Command "close" is called with settings', settings)
     settings ??= {}
-    if (!settings.testMetadata) {
+    if (!settings.testMetadata && isDriver(target, spec)) {
       try {
-        const driver = isDriver(target, spec) ? await makeDriver({spec, driver: target, logger}) : null
-        settings.testMetadata = await driver?.getSessionMetadata()
+        const driver = await makeDriver({spec, driver: target, relaxed: true, logger})
+        settings.testMetadata = await driver.getSessionMetadata()
       } catch (error: any) {
         logger.warn('Command "close" received an error during extracting driver metadata', error)
       }
