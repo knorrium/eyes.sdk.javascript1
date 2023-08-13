@@ -1,6 +1,26 @@
 # Changelog
 
-## Unreleased
+## [3.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/image.core@3.6.6...dotnet/image.core@3.9.0) (2023-08-11)
+
+### Dependencies
+
+* js/core bumped to 3.9.0
+
+  #### Features
+
+  * re-release ([e62abc7](https://github.com/applitools/eyes.sdk.javascript1/commit/e62abc7e74ea0e193eb7770036ae7f97bd11188a))
+
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
+* @applitools/nml-client bumped to 1.5.7
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
+
+
 
 ## [3.6.6](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/image.core@3.6.5...dotnet/image.core@3.6.6) (2023-08-09)
 
