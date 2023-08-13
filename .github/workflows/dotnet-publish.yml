@@ -8,16 +8,6 @@ on:
         type: boolean
         required: false
         default: true
-      core_version:
-        description: Core version
-        type: string
-        required: true
-        default: "3.8.1"
-      core_nuget_version:
-        description: Core NuGet version
-        type: string
-        required: false
-        default: "3.8.1"
 
 env:
   DRIVER_PATH: /usr/bin
@@ -26,8 +16,6 @@ env:
   SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
   SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
   GITHUB_TOKEN: ${{ secrets.RUN_GITHUB_TOKEN }}
-  CORE_VERSION: ${{ inputs.core_version }}
-  CORE_NUGET_VERSION: ${{ inputs.core_nuget_version }}
   NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
@@ -36,8 +24,8 @@ jobs:
     outputs:
       release_branch: ${{steps.create_release_branch.outputs.release_branch}}
       new_tags: ${{steps.update_versions.outputs.new_tags}}
-      updated_projects: ${{steps.update_versions.outputs.updated_projects}}
       packages_matrix: ${{steps.update_versions.outputs.packages_matrix}}
+      core_version: ${{steps.update_versions.outputs.core_version}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -45,17 +33,48 @@ jobs:
           python-version: "3.11"
       - name: Update versions
         id: update_versions
-        shell: pwsh
+        shell: bash
         run: |
           cd dotnet
+          export CORE_VERSION=$(../scripts/download-core-bin.sh --output version)
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-x64/native/
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-arm64/native/
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/osx-x64/native/
+          mkdir -p ./Eyes.Image.Core.DotNet/runtimes/win-x64/native/
+          mv core-alpine Eyes.Image.Core.DotNet/runtimes/linux-alpine/native
+          mv core-linux Eyes.Image.Core.DotNet/runtimes/linux-x64/native
+          mv core-linux-arm64 Eyes.Image.Core.DotNet/runtimes/linux-arm64/native
+          mv core-macos Eyes.Image.Core.DotNet/runtimes/osx-x64/native
+          mv core-win.exe Eyes.Image.Core.DotNet/runtimes/win-x64/native
           python updateChangelogAndProjectFiles.py
           cat ./MATRIX.json
-          echo "packages_matrix=$(cat ./MATRIX.json)" >> $env:GITHUB_OUTPUT
+          echo "packages_matrix=$(cat ./MATRIX.json)" >> $GITHUB_OUTPUT
+          echo "core_version=$CORE_VERSION" >> $GITHUB_OUTPUT
       - name: Set release branch
         shell: bash
         run: |
           RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
           echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - name: Create nugets
+        shell: bash
+        run: |
+          cd dotnet
+          dotnet pack ./Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj
+          dotnet pack ./Eyes.Images.DotNet/Eyes.Images.DotNet.csproj
+          dotnet pack ./Eyes.Appium.DotNet/Eyes.Appium.DotNet.csproj
+          dotnet pack ./Eyes.Appium2.DotNet/Eyes.Appium2.DotNet.csproj
+          dotnet pack ./Eyes.Playwright.DotNet/Eyes.Playwright.DotNet.csproj
+          dotnet pack ./Eyes.Selenium.DotNet/Eyes.Selenium.DotNet.csproj
+          dotnet pack ./Eyes.Selenium4.DotNet/Eyes.Selenium4.DotNet.csproj
+      - name: Store Nugets
+        uses: actions/upload-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
       - uses: actions/upload-artifact@v3
         with:
           name: PublishingFiles
@@ -72,7 +91,9 @@ jobs:
   #     - run: echo ${{needs.update_cores.outputs.packages_matrix}}
 
   test:
-    if: ${{ inputs.run_tests }}
+    if: |
+      !cancelled() &&
+      ${{ inputs.run_tests }}
     needs: [update_cores]
     uses: ./.github/workflows/dotnet-tests.yml
     secrets: inherit
@@ -80,53 +101,13 @@ jobs:
       ref: ${{needs.update_cores.outputs.release_branch}}
       cross_platform: false
       generic: true
-      core_version: ${{ inputs.core_version }}
-
-  create_nugets:
-    runs-on: ubuntu-latest
-    needs: [update_cores, test]
-    if: |
-      always() &&
-      (needs.update_cores.result == 'success') &&
-      (needs.test.result == 'success' || needs.test.result == 'skipped')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{needs.update_cores.outputs.release_branch}}
-      - uses: actions/download-artifact@v3
-        with:
-          name: PublishingFiles
-          path: dotnet
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: "6.0"
-      - name: Download cores
-        shell: pwsh
-        run: |
-          cd dotnet
-          ./download_cores.ps1
-      - name: Create nugets
-        shell: pwsh
-        run: |
-          cd dotnet
-          dotnet pack ./Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj
-          dotnet pack ./Eyes.Images.DotNet/Eyes.Images.DotNet.csproj
-          dotnet pack ./Eyes.Appium.DotNet/Eyes.Appium.DotNet.csproj
-          dotnet pack ./Eyes.Appium2.DotNet/Eyes.Appium2.DotNet.csproj
-          dotnet pack ./Eyes.Playwright.DotNet/Eyes.Playwright.DotNet.csproj
-          dotnet pack ./Eyes.Selenium.DotNet/Eyes.Selenium.DotNet.csproj
-          dotnet pack ./Eyes.Selenium4.DotNet/Eyes.Selenium4.DotNet.csproj
-      - name: Store Nugets
-        uses: actions/upload-artifact@v3
-        with:
-          name: Nugets
-          path: dotnet/PackagesOutput
-
+      core_version: ${{ needs.update_cores.outputs.core_version }}
+   
   test_nugets:
     if: |
-      always() &&
-      (needs.create_nugets.result == 'success')
-    needs: [create_nugets]
+      !cancelled() &&
+      (needs.update_cores.result == 'success')
+    needs: [update_cores]
     uses: ./.github/workflows/dotnet-platform-tests.yml
     secrets: inherit
     with:
@@ -134,9 +115,10 @@ jobs:
 
   release:
     if: |
-      always() &&
-      (needs.test_nugets.result == 'success')
-    needs: [test_nugets]
+      !cancelled() &&
+      (needs.test_nugets.result == 'success') &&
+      (needs.test.result == 'success' || needs.test.result == 'skipped')
+    needs: [test, test_nugets]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -155,8 +137,8 @@ jobs:
           git config --local user.email "action-queue@applitools.com"
           git config --local user.name "queue-bot"
           git checkout -b $RELEASE_BRANCH
-          git add */*.csproj CHANGELOG.md
-          git commit -m 'Updated CHANGELOG and bumped versions.'
+          git add .
+          git commit -m 'Updated changelogs and bumped versions.'
           git push origin HEAD:$RELEASE_BRANCH
       - uses: actions/setup-dotnet@v2
         with:
@@ -166,12 +148,12 @@ jobs:
           name: Nugets
           path: dotnet/PackagesOutput
       - name: Upload nugets
-        shell: pwsh
+        shell: bash
         run: |
           cd dotnet
           echo "will upload nugets"
           ls ./PackagesOutput/*.nupkg
-          dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${env:NUGET_API_KEY} --skip-duplicate
+          dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
       - name: Create PR
         shell: bash
         run: |
@@ -181,9 +163,10 @@ jobs:
     
   report_test_results:
     if: |
-      always() &&
-      (needs.release.result == 'success')
-    needs: [release, update_cores]
+      !cancelled() &&
+      (needs.release.result == 'success') &&
+      (needs.test.result == 'success')
+    needs: [test, release, update_cores]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -211,12 +194,12 @@ jobs:
           name: dotnet_${{ matrix.name }}
           group: ${{matrix.group}}
           result-path: ${{matrix.report}}
-          meta-path: meta.json
+          meta-path: meta-${{matrix.name}}.json
 
   release_report:
     if: |
-      always() &&
-      (needs.report_test_results.result == 'success')
+      !cancelled() &&
+      (needs.report_test_results.result == 'success' || needs.report_test_results.result == 'skipped')
     needs: [report_test_results, update_cores]
     runs-on: ubuntu-latest
     strategy:
@@ -239,5 +222,4 @@ jobs:
           report-id: dotnet_${{ matrix.name }}_$GITHUB_SHA
           name: dotnet_${{ matrix.name }}
           release-version: ${{ matrix.version }}
-          # recipient: itai.barhaim@applitools.com
 

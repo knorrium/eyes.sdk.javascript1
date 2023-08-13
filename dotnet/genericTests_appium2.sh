@@ -3,10 +3,11 @@
 RESULT=0
 MESSAGE=""
 
-echo "generating tests - appium 4"
+echo "generating tests - appium 2"
 pushd coverage-tests
 # export UFG_ON_EG=true
 npm run generate
+mv meta.json meta-appium2.json
 if [ $? -ne 0 ]; then
     ((RESULT+=1))
     MESSAGE+=$'npm run dotnet:generate have failed'

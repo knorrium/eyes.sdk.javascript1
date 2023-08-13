@@ -6,6 +6,7 @@ echo "generating tests - images"
 pushd coverage-tests
 # export UFG_ON_EG=true
 npm run generate:images
+mv meta.json meta-images.json
 if [ $? -ne 0 ]; then
     RESULT=1
     echo "npm run dotnet:generate have failed"

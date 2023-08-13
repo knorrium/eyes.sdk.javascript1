@@ -5,6 +5,7 @@ $RESULT=0
 echo "generating tests - playwright"
 pushd coverage-tests
 npm run generate:playwright
+mv meta.json meta-playwright.json
 if ($? -eq $False) {
     echo "npm run dotnet:generate:playwright have failed"
     exit 1

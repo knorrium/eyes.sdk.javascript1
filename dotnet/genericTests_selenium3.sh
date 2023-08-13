@@ -7,6 +7,7 @@ echo "generating tests - selenium 3"
 pushd coverage-tests
 # export UFG_ON_EG=true
 npm run generate
+mv meta.json meta-selenium3.json
 if [ $? -ne 0 ]; then
     ((RESULT+=1))
     MESSAGE+=$'npm run dotnet:generate have failed'

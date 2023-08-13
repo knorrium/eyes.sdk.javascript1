@@ -43,7 +43,7 @@ def update_changelogs(changelogs, core_changes, dateStr):
         if v['dependency'] == "js/core":
             changes = core_changes
         else:
-            changes = get_latest_release_entries(changelog_contents=changelogs[v["dependency"]]['content'])
+            changes = get_release_entries(changelog_contents=changelogs[v["dependency"]]['content'])
         headings = ''
         currentSection = ''
         lastLineSpacer = False
@@ -69,8 +69,8 @@ def update_changelogs(changelogs, core_changes, dateStr):
         update_changelog(changelogs, p, updates, version, dateStr)
 
 def update_changelog(changelogs, p, headings, depVersion, dateStr):
-    target_heading = get_latest_release_heading(changelogs[p]["content"])['heading']
-    prev_ver = get_latest_version_from_content(target_heading)
+    target_heading = get_release_heading(changelogs[p]["content"])['heading']
+    prev_ver = get_version_from_heading(target_heading)
     if "versionUpdate" in changelogs[p] and changelogs[p]["versionUpdate"] == "copy":
         version = depVersion
     else:
@@ -87,7 +87,7 @@ def update_changelog(changelogs, p, headings, depVersion, dateStr):
     changes = f"\n## [{version}]({url}) ({dateStr})\n\n{unreleasedStripped}{headings}\n\n"
     changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", changes)
     changelogs[p]['version'] = version
-    update_csproj(p, version, f"{unreleasedStripped}{headings}")
+    changelogs[p]['release_notes'] = f"{unreleasedStripped}{headings}"
 
 def update_csproj(name, version_data, release_notes_data):
     xmlfile = name+".DotNet/"+name+".DotNet.csproj"
@@ -126,28 +126,29 @@ def get_changelog_contents(target_folder):
     with open(changelog_path, 'r', encoding='utf-8') as file:
         return file.read()
 
-def get_latest_release_entries(changelog_contents=None, target_folder='.'):
+def get_release_entries(changelog_contents=None, target_folder='.', version=None):
     if not changelog_contents:
         changelog_contents = get_changelog_contents(target_folder)
-    target_heading = get_latest_release_heading(changelog_contents)['heading']
-    version = get_latest_version_from_content(target_heading)
+    target_heading = get_release_heading(changelog_contents, version)['heading']
+    version = get_version_from_heading(target_heading)
     entries = get_entries_for_heading(changelog_contents, target_heading, False)
     return {"headings": [entry['entry'] for entry in entries], "version": version}
 
-def get_latest_version_from_content(content):
+def get_version_from_heading(content, default="1.0.0"):
     matches = re.search(r"^## \[(?P<Version>.*)?\].*$", content)
     if matches:
         return matches["Version"]
-    return "1.0.0"
+    return default
 
-def get_latest_release_heading(changelog_contents):
+def get_release_heading(changelog_contents, version=None):
     latest_release_heading = {}
     for index, entry in enumerate(changelog_contents.split('\n')):
         _entry = entry.strip()
         if re.match(r'^\s*##[^#]', _entry) and 'Unreleased' not in _entry:
-            latest_release_heading['heading'] = _entry
-            latest_release_heading['index'] = index
-            break
+            if not version or version == get_version_from_heading(entry):
+                latest_release_heading['heading'] = _entry
+                latest_release_heading['index'] = index
+                break
     return latest_release_heading
 
 def create_send_mail_json(reported_version, recent_changes):
@@ -176,12 +177,21 @@ def write_new_changelogs(changelogs):
         f.write(v['content'])
         f.close()
 
+def write_new_csproj(changelogs):
+    for p,v in changelogs.items():
+        if (p == 'js/core'):
+            continue
+        update_csproj(p, v['version'], v['release_notes'])
+
+
 if __name__ == '__main__':
     newLines = ""
     updated_projects = []
     new_tags = []
     reported_version = "RELEASE_CANDIDATE"
-    core_changes = get_latest_release_entries(target_folder="../js/packages/core")
+    core_version = os.environ.get('CORE_VERSION')
+    print("Core version: " + core_version)
+    core_changes = get_release_entries(target_folder="../js/packages/core", version=core_version)
     dateStr = datetime.datetime.now().strftime("%Y-%m-%d")
     matrixJson = {"include":[]}
 
@@ -189,8 +199,8 @@ if __name__ == '__main__':
         #"js/core": {"path": "../js/packages/core"},
         "Eyes.Image.Core": {"dependency": "js/core", "path": "Eyes.Image.Core.DotNet", "versionUpdate": "copy", "name": "image.core"},
         "Eyes.Images": {"dependency": "Eyes.Image.Core", "path": "Eyes.Images.DotNet", "name": "images", "report": "coverage-test-reportI.xml", "group":"images"}, 
-        "Eyes.Selenium": {"dependency": "Eyes.Images", "path": "Eyes.Selenium.DotNet", "name": "selenium", "report": "coverage-test-reportS3.xml", "group": "selenium"},
-        "Eyes.Selenium4": {"dependency": "Eyes.Images", "path": "Eyes.Selenium4.DotNet", "name": "seleniun4", "report": "coverage-test-reportS4.xml", "group": "selenium"},
+        "Eyes.Selenium": {"dependency": "Eyes.Images", "path": "Eyes.Selenium.DotNet", "name": "selenium3", "report": "coverage-test-reportS3.xml", "group": "selenium"},
+        "Eyes.Selenium4": {"dependency": "Eyes.Images", "path": "Eyes.Selenium4.DotNet", "name": "selenium4", "report": "coverage-test-reportS4.xml", "group": "selenium"},
         "Eyes.Playwright": {"dependency": "Eyes.Images", "path": "Eyes.Playwright.DotNet", "name": "playwright", "report": "coverage-test-reportP.xml", "group": "selenium"},
         "Eyes.Appium": {"dependency": "Eyes.Selenium", "path": "Eyes.Appium.DotNet", "name": "appium", "report": "coverage-test-reportA.xml", "group": "appium"},
         "Eyes.Appium2": {"dependency": "Eyes.Selenium4", "path": "Eyes.Appium2.DotNet", "name": "appium2", "report": "coverage-test-reportA2.xml", "group": "appium"},
@@ -199,9 +209,10 @@ if __name__ == '__main__':
     update_changelogs(changelogs, core_changes, dateStr)
 
     write_new_changelogs(changelogs)
+    write_new_csproj(changelogs)
 
     for (p,v) in changelogs.items():
-        new_tags.append(p + "@" + v['version'] + "\n")
+        new_tags.append('dotnet/' + v['name'] + "@" + v['version'] + "\n")
         updated_projects.append(p + "\n")
         if v['name'] != 'image.core':
             matrixJson["include"].append(

@@ -104,4 +104,4 @@ jobs:
           name: test-report
           path: |
             dotnet/coverage-tests/coverage-test-*.xml
-            dotnet/coverage-tests/meta.json
+            dotnet/coverage-tests/meta*.json

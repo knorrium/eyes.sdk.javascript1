@@ -11,3 +11,4 @@ dotnet/Eyes.Images.DotNet/VisualGrid/AndroidDeviceName.cs
 dotnet/Eyes.Images.DotNet/VisualGrid/DeviceName.cs
 dotnet/Eyes.Images.DotNet/VisualGrid/IosDeviceName.cs
 dotnet/coverage-tests/meta.json
+dotnet/MATRIX.json
