@@ -29,9 +29,10 @@ public class ImagesCheckSettingsMapper {
         checkSettingsDto.setFrames(null);
         checkSettingsDto.setFully(imagesCheckSettings.getStitchContent());
         checkSettingsDto.setScrollRootElement(null);
-        checkSettingsDto.setStitchMode(config.getStitchMode() == null ? null : config.getStitchMode().getName());
-        checkSettingsDto.setHideScrollbars(config.getHideScrollbars());
-        checkSettingsDto.setHideCaret(config.getHideCaret());
+        checkSettingsDto.setStitchMode(imagesCheckSettings.getStitchMode() != null ? imagesCheckSettings.getStitchMode().getName()
+                : config.getStitchMode() != null ? config.getStitchMode().getName() : null);
+        checkSettingsDto.setHideScrollbars(imagesCheckSettings.getHideScrollBars());
+        checkSettingsDto.setHideCaret(imagesCheckSettings.getHideCaret());
         checkSettingsDto.setOverlap(config.getOverlap());
         checkSettingsDto.setWaitBeforeCapture(imagesCheckSettings.getWaitBeforeCapture());
         checkSettingsDto.setLazyLoad(imagesCheckSettings.getLazyLoadOptions());

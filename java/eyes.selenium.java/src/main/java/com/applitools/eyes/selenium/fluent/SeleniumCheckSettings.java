@@ -5,6 +5,7 @@ import com.applitools.eyes.fluent.CheckSettings;
 import com.applitools.eyes.fluent.ICheckSettingsInternal;
 import com.applitools.eyes.options.LayoutBreakpointsOptions;
 import com.applitools.eyes.positioning.PositionProvider;
+import com.applitools.eyes.selenium.StitchMode;
 import com.applitools.eyes.selenium.TargetPathLocator;
 import com.applitools.eyes.serializers.BySerializer;
 import com.applitools.eyes.serializers.WebElementSerializer;
@@ -1034,10 +1035,47 @@ public class SeleniumCheckSettings extends CheckSettings implements ISeleniumChe
         return (SeleniumCheckSettings) super.stitchOverlap(stitchOverlap);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeleniumCheckSettings hideCaret(Boolean hideCaret) {
+        return (SeleniumCheckSettings) super.hideCaret(hideCaret);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeleniumCheckSettings hideScrollBars(Boolean hideScrollBars) {
+        return (SeleniumCheckSettings) super.hideScrollBars(hideScrollBars);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeleniumCheckSettings stitchMode(StitchMode stitchMode) {
+        return (SeleniumCheckSettings) super.stitchMode(stitchMode);
+    }
+
     public TargetPathLocator getTargetPathLocator() {
         return this.targetLocator;
     }
 
+    /** see {@link #hideCaret(Boolean)} */
+    @Override
+    @Deprecated
+    public SeleniumCheckSettings setHideCaret(Boolean hideCaret) {
+        return hideCaret(hideCaret);
+    }
+
+    /** see {@link #hideScrollBars(Boolean)} */
+    @Override
+    @Deprecated
+    public SeleniumCheckSettings setHideScrollBars(Boolean hideScrollBars) {
+        return hideScrollBars(hideScrollBars);
+    }
 
 }
 

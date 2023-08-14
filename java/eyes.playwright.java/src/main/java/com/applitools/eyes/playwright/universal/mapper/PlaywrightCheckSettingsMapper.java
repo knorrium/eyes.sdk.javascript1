@@ -31,10 +31,11 @@ public class PlaywrightCheckSettingsMapper {
         checkSettingsDto.setFrames(TFramesMapper.toTFramesFromCheckSettings(playwrightCheckSettings.getFrameChain(), refer, root));
         checkSettingsDto.setFully(playwrightCheckSettings.getStitchContent());
         checkSettingsDto.setScrollRootElement(TRegionMapper.toTRegionDtoFromSRE(playwrightCheckSettings.getScrollRootElement(), refer, root));
-        checkSettingsDto.setStitchMode(config.getStitchMode() == null ? null : config.getStitchMode().getName());
-        checkSettingsDto.setHideScrollbars(config.getHideScrollbars());
-        checkSettingsDto.setHideCaret(config.getHideCaret());
-        checkSettingsDto.setOverlap(config.getOverlap());
+        checkSettingsDto.setStitchMode(playwrightCheckSettings.getStitchMode() != null ? playwrightCheckSettings.getStitchMode().getName()
+                : config.getStitchMode() != null ? config.getStitchMode().getName() : null);
+        checkSettingsDto.setHideScrollbars(playwrightCheckSettings.getHideScrollBars());
+        checkSettingsDto.setHideCaret(playwrightCheckSettings.getHideCaret());
+        checkSettingsDto.setOverlap(playwrightCheckSettings.getStitchOverlap());
         checkSettingsDto.setWaitBeforeCapture(playwrightCheckSettings.getWaitBeforeCapture());
         checkSettingsDto.setLazyLoad(playwrightCheckSettings.getLazyLoadOptions());
         checkSettingsDto.setIgnoreDisplacements(playwrightCheckSettings.isIgnoreDisplacements());

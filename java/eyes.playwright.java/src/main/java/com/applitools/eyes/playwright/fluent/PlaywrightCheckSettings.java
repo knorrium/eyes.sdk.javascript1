@@ -1334,16 +1334,16 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
      * {@inheritDoc}
      */
     @Override
-    public PlaywrightCheckSettings setHideScrollBars(Boolean hideScrollBars) {
-        return (PlaywrightCheckSettings) super.setHideScrollBars(hideScrollBars);
+    public PlaywrightCheckSettings hideScrollBars(Boolean hideScrollBars) {
+        return (PlaywrightCheckSettings) super.hideScrollBars(hideScrollBars);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PlaywrightCheckSettings setHideCaret(Boolean hideCaret) {
-        return (PlaywrightCheckSettings) super.setHideCaret(hideCaret);
+    public PlaywrightCheckSettings hideCaret(Boolean hideCaret) {
+        return (PlaywrightCheckSettings) super.hideCaret(hideCaret);
     }
 
     /**
@@ -1598,6 +1598,20 @@ public class PlaywrightCheckSettings extends CheckSettings implements IPlaywrigh
     @Override
     public PlaywrightCheckSettings content(Region region, Region... regions) {
         return ignoreColors(region, regions);
+    }
+
+    /** see {@link #hideCaret(Boolean)} */
+    @Override
+    @Deprecated
+    public PlaywrightCheckSettings setHideCaret(Boolean hideCaret) {
+        return hideCaret(hideCaret);
+    }
+
+    /** see {@link #hideScrollBars(Boolean)} */
+    @Override
+    @Deprecated
+    public PlaywrightCheckSettings setHideScrollBars(Boolean hideScrollBars) {
+        return hideScrollBars(hideScrollBars);
     }
 
 }

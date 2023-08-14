@@ -34,10 +34,11 @@ public class CheckSettingsMapper {
     checkSettingsDto.setFully(seleniumCheckSettings.getStitchContent());
     checkSettingsDto.setScrollRootElement(TRegionMapper.toTRegionDtoFromScrolls(seleniumCheckSettings.getScrollRootSelector(),
             seleniumCheckSettings.getScrollRootElement()));
-    checkSettingsDto.setStitchMode(config.getStitchMode() == null ? null : config.getStitchMode().getName());
-    checkSettingsDto.setHideScrollbars(config.getHideScrollbars());
-    checkSettingsDto.setHideCaret(config.getHideCaret());
-    checkSettingsDto.setOverlap(config.getOverlap());
+    checkSettingsDto.setStitchMode(seleniumCheckSettings.getStitchMode() != null ? seleniumCheckSettings.getStitchMode().getName()
+            : config.getStitchMode() != null ? config.getStitchMode().getName() : null);
+    checkSettingsDto.setHideScrollbars(seleniumCheckSettings.getHideScrollBars());
+    checkSettingsDto.setHideCaret(seleniumCheckSettings.getHideCaret());
+    checkSettingsDto.setOverlap(seleniumCheckSettings.getStitchOverlap());
     checkSettingsDto.setWaitBeforeCapture(seleniumCheckSettings.getWaitBeforeCapture());
     checkSettingsDto.setLazyLoad(seleniumCheckSettings.getLazyLoadOptions());
     checkSettingsDto.setIgnoreDisplacements(seleniumCheckSettings.isIgnoreDisplacements());

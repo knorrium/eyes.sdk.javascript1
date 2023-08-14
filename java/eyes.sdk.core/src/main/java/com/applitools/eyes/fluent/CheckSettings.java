@@ -20,7 +20,7 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
     // screenshot
     private Region targetRegion;
     private Boolean stitchContent = null;
-    private StitchMode stitchMode = StitchMode.CSS; // "CSS" | "Scroll"
+    private StitchMode stitchMode;
     private Boolean hideScrollBars;
     private Boolean hideCaret;
     private StitchOverlap overlap;
@@ -707,6 +707,13 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
         return hideScrollBars;
     }
 
+    public ICheckSettings hideScrollBars(Boolean hideScrollBars) {
+        CheckSettings clone = this.clone();
+        clone.hideScrollBars = hideScrollBars;
+        return clone;
+    }
+
+    @Deprecated
     public ICheckSettings setHideScrollBars(Boolean hideScrollBars) {
         CheckSettings clone = this.clone();
         clone.hideScrollBars = hideScrollBars;
@@ -717,6 +724,13 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
         return hideCaret;
     }
 
+    public ICheckSettings hideCaret(Boolean hideCaret) {
+        CheckSettings clone = this.clone();
+        clone.hideCaret = hideCaret;
+        return clone;
+    }
+
+    @Deprecated
     public ICheckSettings setHideCaret(Boolean hideCaret) {
         CheckSettings clone = this.clone();
         clone.hideCaret = hideCaret;
@@ -725,6 +739,10 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
 
     public Integer getOverlap() {
         return overlap.getBottom();
+    }
+
+    public StitchOverlap getStitchOverlap() {
+        return overlap;
     }
 
     public ICheckSettings setOverlap(Integer overlap) {
