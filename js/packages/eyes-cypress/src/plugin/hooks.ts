@@ -1,27 +1,19 @@
 import handleTestResults from './handleTestResults'
 import {type StartServerReturn} from './server'
 export type EyesCypressAction = 'before:run' | 'after:run'
+import type {appliConfFile} from '../expose'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface ResolvedConfigOptions {
-      appliConfFile: {
-        dontCloseBatches: boolean
-        batch: any
-        serverUrl: string
-        proxy: any // TODO: add proxy type
-        apiKey: string
-        batchId: string
-        tapDirPath: string
-        tapFileName: string
-      }
+      appliConfFile: appliConfFile
     }
   }
 }
 
 export default function makeGlobalRunHooks({
-  closeManager,
+  closeManagers,
   closeBatches,
   closeUniversalServer,
 }: Omit<StartServerReturn, 'server' | 'port'>): {
@@ -36,12 +28,10 @@ export default function makeGlobalRunHooks({
     'after:run': async ({config}: CypressCommandLine.CypressRunResult) => {
       try {
         if (!(config as Cypress.Config).isTextTerminal) return
-        const summaries = await closeManager()
+        const summaries = await closeManagers()
 
-        let testResults
-        for (const summary of summaries) {
-          testResults = summary.results.map(({result}: any) => result)
-        }
+        const testResults = summaries.map(({results}) => results.map(({result}) => result)).flat()
+
         if (!config.appliConfFile.dontCloseBatches) {
           await closeBatches({
             batchId: config.appliConfFile.batchId || config.appliConfFile.batch.id,
@@ -56,6 +46,17 @@ export default function makeGlobalRunHooks({
             tapDirPath: config.appliConfFile.tapDirPath,
             tapFileName: config.appliConfFile.tapFileName,
           })
+        }
+        const resultConfig = {
+          showLogs: config.appliConfFile.showLogs,
+          shouldThrowError: config.appliConfFile.failCypressAfterAllSpecs,
+        }
+        if (config.appliConfFile.failCypressAfterAllSpecs) {
+          // we want to throw an exception in case we have a least one test with diffs
+          // we create a runner per spec file, therefore we could have multiple summeries
+          for (const summary of summaries) {
+            handleTestResults.printTestResults({testResults: summary.results.map(({result}) => result), resultConfig})
+          }
         }
       } finally {
         await closeUniversalServer()

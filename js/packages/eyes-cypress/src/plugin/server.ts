@@ -14,7 +14,7 @@ import {extractEnvironment} from '../plugin/extractEnvironment'
 export type StartServerReturn = {
   server: Omit<SocketWithUniversal, 'disconnect' | 'ref' | 'unref' | 'send' | 'request' | 'setPassthroughListener'>
   port: number
-  closeManager: () => Promise<any[]>
+  closeManagers: () => Promise<any[]>
   closeBatches: (settings: CloseBatchSettings | CloseBatchSettings[]) => Promise<void>
   closeUniversalServer: () => void
 }
@@ -103,12 +103,12 @@ export default function makeStartServer({logger, eyesConfig}: {logger: Logger; e
     return {
       server: wss,
       port,
-      closeManager,
+      closeManagers,
       closeBatches,
       closeUniversalServer,
     }
 
-    function closeManager() {
+    function closeManagers() {
       return Promise.all(
         managers.map(({manager, socketWithUniversal}) =>
           socketWithUniversal.request('EyesManager.getResults', {

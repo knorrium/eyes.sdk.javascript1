@@ -18,7 +18,7 @@ describe('eyes open mapping', () => {
       matchLevel: 'Layout',
       enablePatterns: true,
       batch: {id: '1234'},
-      shouldUseBrowserHooks: true,
+      shouldDoPostSpecTasks: true,
       testName,
     }
 

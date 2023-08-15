@@ -1,9 +1,9 @@
-import type {CypressEyesConfig} from '../expose'
+import type {appliConfFile} from '../expose'
 import type {SpecType, Config} from '@applitools/core'
 import {transformBrowsers, transformAccessibilityValidation} from './utils'
 import * as utils from '@applitools/utils'
 
-export function transformCypressConfig(config: CypressEyesConfig): Config<SpecType, 'ufg'> {
+export function transformCypressConfig(config: appliConfFile): Config<SpecType, 'ufg'> {
   return {
     open: {
       apiKey: config.apiKey,
@@ -19,7 +19,7 @@ export function transformCypressConfig(config: CypressEyesConfig): Config<SpecTy
         sequenceName: config.batchSequenceName ?? config.batch?.sequenceName,
         notifyOnCompletion: config.notifyOnCompletion ?? config.batch?.notifyOnCompletion,
       },
-      keepBatchOpen: !config.shouldUseBrowserHooks,
+      keepBatchOpen: !config.shouldDoPostSpecTasks,
       environmentName: config.envName,
       baselineBranchName: config.baselineBranchName,
       branchName: config.branchName,

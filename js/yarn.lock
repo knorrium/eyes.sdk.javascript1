@@ -399,6 +399,7 @@ __metadata:
     ncp: 2.0.0
     node-fetch: 2.6.0
     semver: 7.3.8
+    strip-ansi: ^6.0.1
     uuid: 8.3.2
     ws: 8.5.0
   bin:

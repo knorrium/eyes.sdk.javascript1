@@ -1,15 +1,15 @@
 'use strict'
-const {describe, it, before, after} = require('mocha') // eslint-disable-line
-const {expect} = require('chai')
+const {describe, it, before, after} = require('mocha')
 const path = require('path')
 const pexec = require('../util/pexec')
 const fs = require('fs')
 const {presult} = require('@applitools/functional-commons')
 const applitoolsConfig = require('../fixtures/testApp/applitools.config.js')
+const {expect} = require('chai')
 const stripAnsi = require('strip-ansi')
 
 const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
-const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-getResults')
+const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-failCypressAfterAllSpecs')
 
 async function runCypress(pluginsFile, testFile) {
   return (
@@ -22,12 +22,7 @@ async function runCypress(pluginsFile, testFile) {
   ).stdout
 }
 
-function parseResults(stdout) {
-  const results = stdout.substring(stdout.indexOf('@@START@@') + '@@START@@'.length, stdout.indexOf('@@END@@'))
-  return JSON.parse(results)
-}
-
-describe('get results', () => {
+describe('CypressFailOnDiffAfterAllSpecs', () => {
   before(async () => {
     if (fs.existsSync(targetTestAppPath)) {
       fs.rmdirSync(targetTestAppPath, {recursive: true})
@@ -38,6 +33,7 @@ describe('get results', () => {
       await pexec(`yarn`, {
         maxBuffer: 1000000,
       })
+      await pexec(`yarn add cypress@9`)
     } catch (ex) {
       console.log(ex)
       throw ex
@@ -48,20 +44,12 @@ describe('get results', () => {
     fs.rmdirSync(targetTestAppPath, {recursive: true})
   })
 
-  it('return test results using eyesGetResults', async () => {
-    const [err, v] = await presult(runCypress('log-plugin.js', 'getResults.js'))
-    expect(err).to.be.undefined
-    const [results] = parseResults(v)
-    expect(results.appName).to.equal('test result 2')
-    expect(results.name).to.equal('some test 2')
-  })
-
-  it('getResults fail test when throwErr is not false', async () => {
-    const config = {...applitoolsConfig, failCypressOnDiff: false}
+  it('failCypressOnDiffAfterAllSpecs', async () => {
+    const config = {...applitoolsConfig, failCypressAfterAllSpecs: true}
     fs.writeFileSync(`${targetTestAppPath}/applitools.config.js`, 'module.exports =' + JSON.stringify(config, 2, null))
-    const [err, _v] = await presult(runCypress('log-plugin.js', 'getResultsWithDiffs.js'))
+    const [err, _v] = await presult(runCypress('index-run.js', 'helloworldDiffs.js'))
     const normalizedStdout = stripAnsi(err.stdout)
-    expect(normalizedStdout).to.contain('✓ Test with diffs and throwErr set to false')
-    expect(normalizedStdout).to.contain('1) Test with diffs and throwErr not set')
+    expect(normalizedStdout).to.contain('✓ shows how to use Applitools Eyes with Cypress')
+    expect(normalizedStdout).to.contain('Eyes-Cypress detected diffs')
   })
 })

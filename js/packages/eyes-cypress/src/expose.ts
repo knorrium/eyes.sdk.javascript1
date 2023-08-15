@@ -89,11 +89,16 @@ export type CypressEyesConfig = api.ConfigurationPlain<SpecType> & {
   scriptHooks?: {
     beforeCaptureScreenshot: string
   }
-  saveNewTests?: boolean
-  /** @internal */
-  shouldUseBrowserHooks?: boolean
-  /* @internal */
+}
+
+export type appliConfFile = CypressEyesConfig & {
+  failCypressAfterAllSpecs?: boolean
+  tapDirPath?: string
+  tapFileName?: string
+  showLogs?: boolean
+  shouldDoPostSpecTasks?: boolean
   isComponentTest?: boolean
+  saveNewTests?: boolean
 }
 
 export type CypressTestResultsSummary = api.TestResultsSummary

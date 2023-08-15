@@ -11,7 +11,7 @@ function printTestResults(testResultsArr: any) {
   })
   if (!testResultsArr.testResults) return
   const {passed, failed, diffs} = getErrorsAndDiffs(testResultsArr.testResults)
-  if ((failed.length || diffs.length) && !!testResultsArr.resultConfig.eyesFailCypressOnDiff) {
+  if ((failed.length || diffs.length) && !!testResultsArr.resultConfig.shouldThrowError) {
     throw new Error(
       errorDigest({
         passed,

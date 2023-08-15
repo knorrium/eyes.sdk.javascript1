@@ -2,7 +2,7 @@ const {mergeCypressConfigs} = require('../../../dist/browser/mergeCypressConfigs
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
 describe('merge cypress configs', () => {
-  const shouldUseBrowserHooks = true,
+  const shouldDoPostSpecTasks = true,
     testName = 'test open mapping',
     keepBatchOpen = false
 
@@ -17,7 +17,7 @@ describe('merge cypress configs', () => {
       showLogs: true,
       keepBatchOpen: false,
       testName,
-      shouldUseBrowserHooks,
+      shouldDoPostSpecTasks,
       useDom: true,
       ignoreCaret: true,
       ignoreDisplacements: true,
@@ -31,7 +31,7 @@ describe('merge cypress configs', () => {
       apiKey: 'my api key',
       showLogs: true,
       testName,
-      shouldUseBrowserHooks,
+      shouldDoPostSpecTasks,
       keepBatchOpen: false,
       enablePatterns: true,
       ignoreCaret: true,
@@ -58,7 +58,7 @@ describe('merge cypress configs', () => {
         {width: 800, height: 1000, name: 'chrome'},
       ],
       testName,
-      shouldUseBrowserHooks,
+      shouldDoPostSpecTasks,
       keepBatchOpen,
       useDom: true,
       ignoreCaret: true,
@@ -86,7 +86,7 @@ describe('merge cypress configs', () => {
     const expected = {
       testName,
       keepBatchOpen,
-      shouldUseBrowserHooks,
+      shouldDoPostSpecTasks,
       enablePatterns: true,
       ignoreCaret: true,
       ignoreDisplacements: true,

@@ -13,12 +13,13 @@ const sourceTestAppPath = path.resolve(__dirname, '../fixtures/testApp')
 const targetTestAppPath = path.resolve(__dirname, '../fixtures/testAppCopies/testApp-tapfile')
 const cwd = process.cwd()
 
-async function runCypress(pluginsFile, testFile = 'helloworld.js') {
+async function runCypress(pluginsFile, testFile = 'helloworld.js', integrationFolder = 'integration-run') {
   return (
     await pexec(
-      `./node_modules/.bin/cypress run --headless --config testFiles=${testFile},integrationFolder=cypress/integration-run,pluginsFile=cypress/plugins/${pluginsFile},supportFile=cypress/support/index-run.js`,
+      `./node_modules/.bin/cypress run --headless --config testFiles=${testFile},integrationFolder=cypress/${integrationFolder},pluginsFile=cypress/plugins/${pluginsFile},supportFile=cypress/support/index-run.js`,
       {
         maxBuffer: 10000000,
+        timeout: 120000,
       },
     )
   ).stdout
@@ -66,7 +67,7 @@ describe('tap file', () => {
     fs.unlinkSync(tapFilePath)
   })
 
-  it(`supports creating '.tap' file from global hooks`, async () => {
+  it(`supports creating '.tap' file from global hooks for all managers`, async () => {
     const packageJsonPath = path.resolve(targetTestAppPath, 'package.json')
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath))
     process.chdir(cwd)
@@ -82,11 +83,15 @@ describe('tap file', () => {
       appName: 'Hello World!',
       testName: 'My first JavaScript test!',
     }
-    const outputLine = `[PASSED TEST] Test: '${helloWorldAppData.testName}', Application: '${helloWorldAppData.appName}'`
+    const helloWorldAppDataWithDiffs = {
+      appName: 'Hello World!',
+      testName: 'With diffs',
+    }
+    const outputTest1 = `[PASSED TEST] Test: '${helloWorldAppData.testName}', Application: '${helloWorldAppData.appName}'`
+    const outputTest2 = `[FAILED TEST] Test: '${helloWorldAppDataWithDiffs.testName}', Application: '${helloWorldAppDataWithDiffs.appName}'`
     const config = {...applitoolsConfig, tapDirPath: './'}
     fs.writeFileSync(`${targetTestAppPath}/applitools.config.js`, 'module.exports =' + JSON.stringify(config, 2, null))
-    const [err] = await presult(runCypress('index-global-hooks-overrides-tap-dir.js', 'helloworld.js'))
-    expect(err).to.be.undefined
+    await presult(runCypress('index-global-hooks-overrides-tap-dir.js', '*.js', 'integration-tap-files'))
     const dirCont = fs.readdirSync(targetTestAppPath)
     const files = dirCont.filter(function (elm) {
       return elm.match(/.*\.(tap?)/gi)
@@ -94,7 +99,8 @@ describe('tap file', () => {
     expect(files.length).to.equal(1, `Created ${files.length} .tap file(s)`)
     const tapFilePath = path.resolve(targetTestAppPath, files[0])
     const tapFileContent = await readTapFile(tapFilePath)
-    expect(tapFileContent).to.include(outputLine, '.tap file content match')
+    expect(tapFileContent).to.include(outputTest1, '.tap file content match')
+    expect(tapFileContent).to.include(outputTest2, '.tap file content match')
     fs.unlinkSync(tapFilePath)
   })
 })

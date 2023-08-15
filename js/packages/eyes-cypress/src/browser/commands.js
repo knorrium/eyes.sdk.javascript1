@@ -41,9 +41,14 @@ function getGlobalConfigProperty(prop) {
   return property ? (shouldParse.includes(prop) ? JSON.parse(property) : property) : undefined
 }
 
-const shouldUseBrowserHooks =
+// tasks = tapFile and closeBatch
+const shouldDoPostSpecTasks =
   !getGlobalConfigProperty('eyesIsDisabled') &&
   (getGlobalConfigProperty('isInteractive') || !getGlobalConfigProperty('eyesIsGlobalHooksSupported'))
+
+const shouldCallAfterHook =
+  (shouldDoPostSpecTasks || Cypress.config('eyesFailCypressOnDiff')) &&
+  !Cypress.config('appliConfFile').failCypressAfterAllSpecs
 
 Cypress.Commands.add('eyesGetAllTestResults', () => {
   Cypress.log({name: 'Eyes: getAllTestResults'})
@@ -66,7 +71,7 @@ Cypress.Commands.add('eyesGetResults', (args = {}) => {
   })
 })
 
-if (shouldUseBrowserHooks || Cypress.config('eyesFailCypressOnDiff')) {
+if (shouldCallAfterHook) {
   after(() => {
     if (!manager) return
     return cy.then({timeout: 86400000}, async () => {
@@ -76,11 +81,11 @@ if (shouldUseBrowserHooks || Cypress.config('eyesFailCypressOnDiff')) {
       }
       const resultConfig = {
         showLogs: Cypress.config('appliConfFile').showLogs,
-        eyesFailCypressOnDiff: Cypress.config('eyesFailCypressOnDiff'),
+        shouldThrowError: Cypress.config('eyesFailCypressOnDiff'),
         isTextTerminal: Cypress.config('isTextTerminal'),
         tapDirPath: Cypress.config('appliConfFile').tapDirPath,
         tapFileName: Cypress.config('appliConfFile').tapFileName,
-        shouldCreateTapFile: shouldUseBrowserHooks,
+        shouldCreateTapFile: shouldDoPostSpecTasks,
       }
 
       const summary = await getSummary()
@@ -140,7 +145,7 @@ Cypress.Commands.add('eyesOpen', function (args = {}) {
     const mergedConfig = mergeCypressConfigs({globalConfig: appliConfFile, openConfig: {testName, ...args}})
     openAndGlobalConfig = transformCypressConfig({
       ...mergedConfig,
-      shouldUseBrowserHooks,
+      shouldDoPostSpecTasks,
       isComponentTest: Cypress.config('isComponent'),
     })
 
