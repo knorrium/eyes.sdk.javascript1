@@ -24,13 +24,18 @@ exports.builder = yargs =>
     },
     file: {
       type: 'string',
-      descriptions: 'file to save changelog',
+      description: 'file to save changelog',
       coerce: file => (file === '' ? true : file),
     },
-    // edit: {
-    //   type: 'boolean',
-    //   descriptions: 'wether you want to edit changelog before output',
-    // },
+    capitalize: {
+      type: 'boolean',
+      description: 'wether to capitalize the log lines',
+      default: true,
+    },
+    edit: {
+      type: 'boolean',
+      descriptions: 'wether you want to edit changelog before output',
+    },
   })
 exports.handler = async options => {
   if (!options.repo) options.repo = 'https://github.com/applitools/eyes.sdk.javascript1'
@@ -76,7 +81,7 @@ exports.handler = async options => {
                 name: `${name} ${chalk.grey(`(latest ${formatter.format(release[0].createdAt)})`)}`,
                 value: name,
               }))
-            if (choices.length > 0) choices.unshift({name: chalk.bold(`Choose all`), value: 'all'})
+            if (choices.length > 0 && since) choices.unshift({name: chalk.bold(`All packages`), value: 'all'})
             return choices
           },
         },
@@ -109,21 +114,50 @@ exports.handler = async options => {
     }
   }
 
-  const spinner = ora(chalk.bold('Generating changelog')).start()
+  const spinner = ora(chalk.bold(' Generating changelog')).start()
   const changelog = await extractSimplifiedChangelog(options).finally(() => spinner.stop())
+
+  if (options.edit) {
+    const items = Object.entries(changelog).reduce((result, [package, releases]) => {
+      Object.entries(releases).forEach(([version, {header, sections}]) => {
+        Object.entries(sections).forEach(([section, items]) => {
+          items.forEach((item, index) => {
+            result[item] ??= []
+            result[item].push({package, version, section, index, date: header.date})
+          })
+        })
+      })
+      return result
+    }, {})
+    console.log(chalk.bold(`🪶  Edit changelog lines`), chalk.grey(`(to keep as is press ↵ Enter)`), '\n')
+    for (const [item, info] of Object.entries(items)) {
+      const {value} = await inquirer.prompt({
+        type: 'input',
+        name: 'value',
+        prefix: '',
+        message: `${item} ${chalk.grey(`(appeared at ${info.map(info => info.package).join(', ')})`)}:`,
+        default: item,
+      })
+      info.forEach(({package, version, section, index}) => {
+        changelog[package][version].sections[section][index] = value
+      })
+    }
+  }
+
+  const formattedChangelog = formatChangelog(changelog)
 
   if (options.file) {
     if (options.file === true) {
       options.file = `./${options.since ? options.package.replace('/', '-') : options.tag.replace('/', '-')}.md`
     }
-    fs.writeFileSync(options.file, changelog)
+    fs.writeFileSync(options.file, formattedChangelog)
     console.log(chalk.bold('✅ Changelog saved to the file:'), chalk.cyan(options.file))
   } else {
-    console.log(msee.parse(changelog))
+    console.log(msee.parse(formattedChangelog))
   }
 }
 
-async function extractSimplifiedChangelog({tag, repo}) {
+async function extractSimplifiedChangelog({tag, repo, capitalize}) {
   const tags = utils.types.isArray(tag) ? tag : [tag]
   const groups = tags.reduce((groups, tag) => {
     const name = tag.split('@', 1)[0]
@@ -134,23 +168,28 @@ async function extractSimplifiedChangelog({tag, repo}) {
   }, new Map())
 
   return Array.from(groups.entries()).reduce(async (promise, [name, tags]) => {
-    const changelog = await tags.reduce(async (promise, tag) => {
+    const versions = await tags.reduce(async (promise, tag) => {
       const notes = await getReleaseNotes({tag, repo})
-      return promise.then(changelog => {
-        return changelog + `${extractChangelogHeader(notes)}\n\n${extractChangelogSections(notes)}\n\n`
+      return promise.then(versions => {
+        const header = extractChangelogHeader(notes)
+        versions[header.version] = {header, sections: extractChangelogSections(notes, {capitalize})}
+        return versions
       })
-    }, Promise.resolve(''))
-    return promise.then(result => result + (groups.size > 1 ? `# ${name}\n\n` : '') + changelog)
-  }, Promise.resolve(''))
+    }, Promise.resolve({}))
+    return promise.then(changelog => {
+      changelog[name] = versions
+      return changelog
+    })
+  }, Promise.resolve({}))
 }
 
 function extractChangelogHeader(changelog) {
-  const match = changelog.match(/^## \[(?<version>.+?)\]\((?<url>.+?)\) \((?<date>.+?)\)/)
-  return `## ${match.groups.version} (${match.groups.date})`
+  const match = changelog.match(/^## \[?(?<version>.+?)\]?(?:\((?<url>.+?)\))? \((?<date>.+?)\)/)
+  return {version: match.groups.version, date: match.groups.date}
 }
 
-function extractChangelogSections(changelog) {
-  const sections = Array.from(changelog.matchAll(/(?<=[^#]|^)### (?<name>.+?(?=\n+))(?<items>.+?)(?=[^#]### |$)/gs))
+function extractChangelogSections(changelog, {capitalize = false} = {}) {
+  return Array.from(changelog.matchAll(/(?<=[^#]|^)### (?<name>.+?(?=\n+))(?<items>.+?)(?=[^#]### |$)/gs))
     .flatMap(match => {
       if (match.groups.name === 'Dependencies') {
         return Array.from(match.groups.items.matchAll(/(?<=[^ ]|^)\* .+?(?=[^ ]\* |$)/gs)).flatMap(([item]) => {
@@ -169,18 +208,29 @@ function extractChangelogSections(changelog) {
           ...items
             .trim()
             .split(/\n+/)
-            .map(item =>
-              item
+            .map(item => {
+              item = item
                 .replace(/^\s*\*\s/, '')
                 .replace(/\(.*\)$/, '')
-                .trim(),
-            ),
+                .trim()
+              if (capitalize) item = item[0].toUpperCase() + item.substring(1)
+              return item
+            }),
         ]),
       )
       return sections
     }, {})
+}
 
-  return Object.entries(sections)
-    .map(([name, items]) => `### ${name}\n\n${items.map(item => `* ${item}`).join('\n')}`)
-    .join('\n\n')
+function formatChangelog(changelog) {
+  return Object.entries(changelog).reduce((changelog, [package, releases], _index, {length}) => {
+    if (length > 1) changelog += `# ${package}\n\n`
+    Object.values(releases).forEach(({header, sections}) => {
+      changelog += `## ${header.version} (${header.date})\n\n`
+      changelog += Object.entries(sections)
+        .map(([name, items]) => `### ${name}\n\n${items.map(item => `* ${item}`).join('\n')}`)
+        .join('\n\n')
+    })
+    return changelog + '\n\n'
+  }, '')
 }
