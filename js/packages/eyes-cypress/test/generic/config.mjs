@@ -1,6 +1,6 @@
 export const config = {
   extends: '../../../../test/generic/config.mjs',
-  output: './test/coverage/cypress/e2e/generated/{{test-key}}.spec.js',
+  output: './test/generic/cypress/e2e/generated/{{test-key}}.spec.js',
   emitter: './emitter.mjs',
   template: './template.hbs',
   overrides: [

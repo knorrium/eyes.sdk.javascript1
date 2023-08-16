@@ -1212,17 +1212,20 @@
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
-          "node-version": 14
+          "node-version": 14,
+          "generic": {"config": "./test/generic/config.mjs"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
-          "node-version": 16
+          "node-version": 16,
+          "generic": {"config": "./test/generic/config.mjs"}
         },
         {
           "key": "{{component}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
-          "node-version": 18
+          "node-version": 18,
+          "generic": {"config": "./test/generic/config.mjs"}
         },
         {
           "key": "{{component}}/framework-{{framework-version}}",

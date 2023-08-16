@@ -42,7 +42,7 @@
     "cypress12": "../../node_modules/cypress12/bin/cypress",
     "test:ts:run:12": "yarn cypress12 run --project ./test/e2e/ts --config-file ./cypress-12.config.ts",
     "test:ts:run": "yarn cypress$APPLITOOLS_FRAMEWORK_VERSION run --project ./test/e2e/ts --config-file ./cypress-$APPLITOOLS_FRAMEWORK_VERSION.config.ts",
-    "test:coverage": "cd test/coverage && yarn && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-cypress' APPLITOOLS_BATCH_ID=$(uuidgen) npx cypress run",
+    "test:coverage": "cd test/generic && yarn && APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-cypress' APPLITOOLS_BATCH_ID=$(uuidgen) npx cypress run",
     "test:e2e": "mkdir -p test/fixtures/testAppCopies && run --top-level mocha --no-timeouts 'test/e2e/**/*.test.js'",
     "test:components": "cd test/components && yarn && npx cypress run --component",
     "cypress": "cypress open --config-file test/fixtures/cypress-play.json",
