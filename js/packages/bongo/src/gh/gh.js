@@ -1,4 +1,4 @@
-const {execSync} = require('child_process')
+const utils = require('@applitools/utils')
 
 async function getTagPackages() {
   return [
@@ -27,12 +27,14 @@ async function getTagPackages() {
 }
 
 async function getReleaseNotes({repo, tag}) {
-  return execSync(`gh release view "${tag}" --repo ${repo} --json body --jq .body`, {encoding: 'utf8'})
+  const result = await utils.process.execute(`gh release view "${tag}" --repo ${repo} --json body --jq .body`)
+  return result.stdout
 }
 
 async function getReleases({repo, limit = 10}) {
   const tagPackages = await getTagPackages({repo})
-  return execSync(`gh release list --repo ${repo} --limit ${limit}`, {encoding: 'utf-8'})
+  const result = await utils.process.execute(`gh release list --repo ${repo} --limit ${limit}`)
+  return result.stdout
     .trim()
     .split('\n')
     .reduce((packages, release) => {
