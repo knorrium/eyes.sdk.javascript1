@@ -230,7 +230,8 @@ function formatChangelog(changelog) {
       changelog += Object.entries(sections)
         .map(([name, items]) => `### ${name}\n\n${items.map(item => `* ${item}`).join('\n')}`)
         .join('\n\n')
+      changelog += '\n\n'
     })
-    return changelog + '\n\n'
+    return changelog
   }, '')
 }
