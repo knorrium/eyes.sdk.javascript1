@@ -16,7 +16,10 @@ export async function* makeGenerator({
     baseUrl: settings.pollingServerUrl,
     retry: {
       timeout: 10_000,
-      validate: ({response, error}) => response?.status !== 200 && !utils.types.instanceOf(error, 'AbortError'),
+      validate: ({response, error}) =>
+        response?.status !== 200 &&
+        !utils.types.instanceOf(error, 'AbortError') &&
+        !utils.types.instanceOf(error, 'ConnectionTimeoutError'),
     },
     hooks: [handleLogs({logger})],
     connectionTimeout: settings.timeout ?? 5 * 60_000,
@@ -83,19 +86,13 @@ export async function* makeGenerator({
           return {
             name: 'TunnelClient.destroy',
             key: task.id,
-            payload: {
-              tunnelId: task.tunnel_id,
-              credentials: {apiKey: task.apiKey, eyesServerUrl: task.eyesServerUrl},
-            },
+            payload: task.tunnel_id,
           }
         } else if (task.type === 'REPLACE_TUNNEL') {
           return {
             name: 'TunnelClient.replace',
             key: task.id,
-            payload: {
-              tunnelId: task.tunnel_id,
-              credentials: {apiKey: task.apiKey, eyesServerUrl: task.eyesServerUrl},
-            },
+            payload: task.tunnel_id,
           }
         } else if (task.type === 'GET_RESOURCE') {
           return {

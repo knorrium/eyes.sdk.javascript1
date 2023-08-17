@@ -110,12 +110,22 @@ export function makeTunnelClient({
     }
   }
 
-  async function replace(tunnel: Tunnel): Promise<Tunnel> {
-    await destroy(tunnel)
+  async function replace(tunnelId: string): Promise<Tunnel> {
+    const tunnel = tunnels.get(tunnelId)
+    if (!tunnel) {
+      logger.error(`Failed to replace tunnel using unknown tunnel id "${tunnelId}"`)
+      throw new Error(`Failed to replace tunnel using unknown tunnel id "${tunnelId}"`)
+    }
+    await destroy(tunnel.tunnelId)
     return create(tunnel.credentials)
   }
 
-  async function destroy(tunnel: Tunnel, options?: {reason?: string}): Promise<void> {
+  async function destroy(tunnelId: string, options?: {reason?: string}): Promise<void> {
+    const tunnel = tunnels.get(tunnelId)
+    if (!tunnel) {
+      logger.error(`Failed to delete tunnel using unknown tunnel id "${tunnelId}"`)
+      throw new Error(`Failed to delete tunnel using unknown tunnel id "${tunnelId}"`)
+    }
     const service = await getTunnelService(tunnel.credentials.tunnelServerUrl ?? tunnelServerUrl)
 
     const response = await req(`/tunnels/${tunnel.tunnelId}`, {
@@ -142,7 +152,7 @@ export function makeTunnelClient({
     try {
       const tunnels = await list()
       logger.log(tunnels)
-      await Promise.all(tunnels.map(tunnel => destroy(tunnel, {reason: 'client-closed'})))
+      await Promise.all(tunnels.map(tunnel => destroy(tunnel.tunnelId, {reason: 'client-closed'})))
       const service = await getTunnelService(tunnelServerUrl)
       await service.close()
     } catch (error) {

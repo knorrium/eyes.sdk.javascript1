@@ -107,19 +107,20 @@ describe('client', () => {
     )
   })
 
-  it('destroys tunnel', async () => {
-    const manager = await makeTunnelClient({settings: {serviceUrl: 'http://service.tunnels.ec'}, logger: makeLogger()})
-
-    nock('http://service.tunnels.ec').persist().delete('/tunnels/tunnel-id').reply(200)
-
-    await manager.destroy({
-      tunnelId: 'tunnel-id',
-      credentials: {eyesServerUrl: 'http://server.eyes', apiKey: 'api-key'},
-    })
-  })
-
   it('destroys tunnel with api key and server url', async () => {
     const manager = await makeTunnelClient({settings: {serviceUrl: 'http://service.tunnels.ec'}, logger: makeLogger()})
+
+    nock('http://service.tunnels.ec')
+      .persist()
+      .post('/tunnels')
+      .reply(function () {
+        const apiKeyHeader = this.req.headers['x-eyes-api-key']
+        const serverUrlHeader = this.req.headers['x-eyes-server-url']
+        if (apiKeyHeader === 'api-key' && serverUrlHeader === 'http://server.eyes') {
+          return [201, `"tunnel-id"`]
+        }
+        return [401, {message: 'UNAUTHORIZED'}]
+      })
 
     nock('http://service.tunnels.ec')
       .persist()
@@ -133,20 +134,25 @@ describe('client', () => {
         return [401, {message: 'UNAUTHORIZED'}]
       })
 
-    await manager.destroy({
-      tunnelId: 'tunnel-id',
-      credentials: {eyesServerUrl: 'http://server.eyes', apiKey: 'api-key'},
-    })
+    const tunnel = await manager.create({apiKey: 'api-key', eyesServerUrl: 'http://server.eyes'})
+    await manager.destroy(tunnel.tunnelId)
   })
 
   it('throws when tunnel was not destroyed', async () => {
     const manager = await makeTunnelClient({settings: {serviceUrl: 'http://service.tunnels.ec'}, logger: makeLogger()})
 
+    nock('http://service.tunnels.ec').persist().post('/tunnels').reply(201, `"tunnel-id"`)
     nock('http://service.tunnels.ec').persist().delete('/tunnels/tunnel-id').reply(404, {message: 'TUNNEL_NOT_FOUND'})
 
-    await assert.rejects(
-      manager.destroy({tunnelId: 'tunnel-id', credentials: {eyesServerUrl: 'http://server.eyes', apiKey: 'api-key'}}),
-      (err: Error) => err.message.includes('TUNNEL_NOT_FOUND'),
-    )
+    const tunnel = await manager.create({apiKey: 'api-key', eyesServerUrl: 'http://server.eyes'})
+    await assert.rejects(manager.destroy(tunnel.tunnelId), (err: Error) => err.message.includes('TUNNEL_NOT_FOUND'))
+  })
+
+  it('throws when tunnel was not found', async () => {
+    const manager = await makeTunnelClient({settings: {serviceUrl: 'http://service.tunnels.ec'}, logger: makeLogger()})
+
+    nock('http://service.tunnels.ec').persist().delete('/tunnels/tunnel-id').reply(404, {message: 'TUNNEL_NOT_FOUND'})
+
+    await assert.rejects(manager.destroy('unknown-tunnel-id'))
   })
 })

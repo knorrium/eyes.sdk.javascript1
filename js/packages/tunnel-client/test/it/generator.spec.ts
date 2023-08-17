@@ -137,12 +137,12 @@ describe('generator', () => {
         {
           key: 'task-id-2',
           name: 'TunnelClient.replace',
-          payload: {credentials: {apiKey: 'api-key', eyesServerUrl: 'eyes-url'}, tunnelId: 'tunnel-id'},
+          payload: 'tunnel-id',
         },
         {
           key: 'task-id-3',
           name: 'TunnelClient.destroy',
-          payload: {credentials: {apiKey: 'api-key', eyesServerUrl: 'eyes-url'}, tunnelId: 'tunnel-id'},
+          payload: 'tunnel-id',
         },
         {
           key: 'task-id-4',
@@ -376,7 +376,7 @@ describe('generator', () => {
     const generator = makeGenerator({settings, logger: makeLogger()})
 
     await assert.rejects(generator.next([]), (error: any) => {
-      return error.name === 'AbortError'
+      return error.name === 'ConnectionTimeoutError'
     })
   })
 })

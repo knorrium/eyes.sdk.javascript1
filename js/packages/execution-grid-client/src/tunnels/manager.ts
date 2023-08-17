@@ -27,7 +27,7 @@ export async function makeTunnelManager({
     if (!pool) {
       pool = makePool({
         create: () => Promise.all(Array.from({length: settings?.groupSize ?? 1}, () => client.create(credentials))),
-        destroy: tunnels => Promise.all(tunnels.map(client.destroy)).then(() => undefined),
+        destroy: tunnels => Promise.all(tunnels.map(tunnel => client.destroy(tunnel.tunnelId))).then(() => undefined),
         ...settings?.pool,
       })
       pools.set(key, pool)

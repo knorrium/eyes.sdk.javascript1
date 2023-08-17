@@ -33,7 +33,7 @@ describe('client', () => {
     )
   })
 
-  it.skip('works in australia', async () => {
+  it('works in australia', async () => {
     client = await makeECClient({settings: {options: {useSelfHealing: false}}})
     driver = await new Builder()
       .withCapabilities({browserName: 'chrome', 'applitools:region': 'australia'})

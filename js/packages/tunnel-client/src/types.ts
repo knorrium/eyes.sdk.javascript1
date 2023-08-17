@@ -20,8 +20,8 @@ export interface TunnelClientWorkerSettings extends TunnelClientSettings {
 export interface TunnelClient {
   list(): Promise<Tunnel[]>
   create(credentials: TunnelCredentials): Promise<Tunnel>
-  replace(tunnel: Tunnel): Promise<Tunnel>
-  destroy(tunnel: Tunnel): Promise<void>
+  replace(tunnelId: string): Promise<Tunnel>
+  destroy(tunnelId: string): Promise<void>
   close(): Promise<void>
 }
 

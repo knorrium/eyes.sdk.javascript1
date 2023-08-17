@@ -173,7 +173,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('error', error => {
-      assert.strictEqual(error.name, 'AbortError')
+      assert.strictEqual(error.name, 'ConnectionTimeoutError')
     })
   })
 
@@ -207,7 +207,7 @@ describe('worker', () => {
     const socket = makeTunnelClientWorker({settings, logger: makeLogger()})
 
     await socket.wait('error', error => {
-      assert.strictEqual(error.name, 'AbortError')
+      assert.strictEqual(error.name, 'ConnectionTimeoutError')
     })
   })
 
