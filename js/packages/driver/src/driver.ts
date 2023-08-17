@@ -12,13 +12,13 @@ import type {
 import {type Selector} from './selector'
 import {type SpecType, type SpecDriver, type WaitOptions} from './spec-driver'
 import {type Element} from './element'
-import {Context, type ContextReference} from './context'
 import {makeLogger, type Logger} from '@applitools/logger'
+import {Context, type ContextReference} from './context'
+import {makeSelector} from './selector'
 import {HelperIOS} from './helper-ios'
 import {HelperAndroid} from './helper-android'
 import {extractUserAgentEnvironment} from './user-agent'
 import {extractCapabilitiesEnvironment, extractCapabilitiesViewport} from './capabilities'
-import * as specUtils from './spec-utils'
 import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
@@ -58,7 +58,7 @@ export class Driver<T extends SpecType> {
     this._customConfig = options.customConfig ?? {}
     this._guid = utils.general.guid()
     this._spec = options.spec
-    this._target = this._spec.transformDriver?.(options.driver) ?? options.driver
+    this._target = options.driver
 
     if (!this._spec.isDriver(this._target)) {
       throw new TypeError('Driver constructor called with argument of unknown type!')
@@ -148,10 +148,6 @@ export class Driver<T extends SpecType> {
       })
     }
 
-    function transformSelector(selector: Selector<T>) {
-      return specUtils.transformSelector(spec, selector, {isWeb: true})
-    }
-
     async function getContextInfo(context: T['context']): Promise<any> {
       const [documentElement, selector, isRoot, isCORS] = await spec.executeScript(context, snippets.getContextInfo)
       return {documentElement, selector, isRoot, isCORS}
@@ -177,14 +173,17 @@ export class Driver<T extends SpecType> {
       if (contextInfo.selector) {
         const contextElement = await spec.findElement(
           context,
-          transformSelector({type: 'xpath', selector: contextInfo.selector}),
+          makeSelector({selector: {type: 'xpath', selector: contextInfo.selector}, spec, environment: {isWeb: true}}),
         )
         if (contextElement) return contextElement
       }
       for (const childContextInfo of await getChildContextsInfo(context)) {
         if (childContextInfo.isCORS !== contextInfo.isCORS) continue
         const childContext = await spec.childContext(context, childContextInfo.contextElement)
-        const contentDocument = await spec.findElement(childContext, transformSelector('html'))
+        const contentDocument = await spec.findElement(
+          childContext,
+          makeSelector({selector: 'html', spec, environment: {isWeb: true}}),
+        )
         const isWantedContext = await isEqualElements(childContext, contentDocument!, contextInfo.documentElement)
         await spec.parentContext!(childContext)
         if (isWantedContext) return childContextInfo.contextElement
@@ -197,7 +196,10 @@ export class Driver<T extends SpecType> {
       contextInfo: any,
       contextPath: T['element'][] = [],
     ): Promise<T['element'][] | undefined> {
-      const contentDocument = await spec.findElement(context, transformSelector('html'))
+      const contentDocument = await spec.findElement(
+        context,
+        makeSelector({selector: 'html', spec, environment: {isWeb: true}}),
+      )
       if (await isEqualElements(context, contentDocument!, contextInfo.documentElement)) {
         return contextPath
       }
@@ -752,7 +754,7 @@ export class Driver<T extends SpecType> {
   async setViewportSize(size: Size): Promise<void> {
     const environment = await this.getEnvironment()
     if (environment.isMobile && !environment.isEmulation) return
-    if (this._spec.setViewportSize) {
+    if (this._spec.setViewportSize && (!this._spec.setWindowSize || environment.isChromium)) {
       this._logger.log('Setting viewport size to', size, 'using spec method')
       await this._spec.setViewportSize(this.target, size)
       return
@@ -863,7 +865,7 @@ export class Driver<T extends SpecType> {
   async getTitle(): Promise<string> {
     const environment = await this.getEnvironment()
     if (environment.isNative) return undefined as never
-    const title = await this._spec.getTitle(this.target)
+    const title = (await this._spec.getTitle?.(this.target)) ?? ''
     this._logger.log('Extracted title:', title)
     return title
   }
@@ -871,7 +873,7 @@ export class Driver<T extends SpecType> {
   async getUrl(): Promise<string> {
     const environment = await this.getEnvironment()
     if (environment.isNative) return undefined as never
-    const url = await this._spec.getUrl(this.target)
+    const url = (await this._spec.getUrl?.(this.target)) ?? ''
     this._logger.log('Extracted url:', url)
     return url
   }
@@ -901,12 +903,15 @@ export function isDriverInstance<T extends SpecType>(driver: any): driver is Dri
   return driver instanceof Driver
 }
 
-export function isDriver<T extends SpecType>(driver: any, spec?: SpecDriver<T>): driver is Driver<T> | T['driver'] {
-  return isDriverInstance<T>(driver) || !!spec?.isDriver(driver)
+export function isDriver<T extends SpecType>(
+  driver: any,
+  spec?: SpecDriver<T>,
+): driver is Driver<T> | T['driver'] | T['secondary']['driver'] {
+  return isDriverInstance<T>(driver) || !!spec?.isDriver(driver) || !!spec?.isSecondaryDriver?.(driver)
 }
 
 export async function makeDriver<T extends SpecType>(options: {
-  driver: Driver<T> | T['driver']
+  driver: Driver<T> | T['driver'] | T['secondary']['driver']
   spec?: SpecDriver<T>
   customConfig?: {useCeilForViewportSize?: boolean}
   reset?: boolean
@@ -918,6 +923,7 @@ export async function makeDriver<T extends SpecType>(options: {
     driver = options.driver
     if (options.relaxed) return driver
   } else {
+    options.driver = (await options.spec?.toDriver?.(options.driver)) ?? options.driver
     driver = new Driver(options as DriverOptions<T>)
   }
   if (options.logger) driver.updateLogger(options.logger)

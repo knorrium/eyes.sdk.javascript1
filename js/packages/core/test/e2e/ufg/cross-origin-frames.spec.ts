@@ -1,7 +1,7 @@
 import {makeCore} from '../../../src/ufg/core'
 import {makeTestServer} from '@applitools/test-server'
 import {adjustUrlToDocker} from '../../utils/adjust-url-to-docker'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('cross origin frames', () => {
@@ -26,7 +26,7 @@ describe('cross origin frames', () => {
   })
 
   it('should take screenshot with cross origin frame', async () => {
-    await driver.url(adjustUrlToDocker(`http://localhost:${server.port}/cors-frames/cors.hbs`))
+    await driver.navigateTo(adjustUrlToDocker(`http://localhost:${server.port}/cors-frames/cors.hbs`))
     const core = makeCore({spec, concurrency: 10})
     const eyes = await core.openEyes({
       target: driver,

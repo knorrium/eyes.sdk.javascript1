@@ -1,15 +1,8 @@
 import {makeCore, type Core, type ECClient} from '../../src/index'
 import {getTestInfo} from '@applitools/test-utils'
 import {type SpecType} from '@applitools/driver'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
-
-async function triggerSelfHealing(driver: spec.Driver) {
-  await driver.url(`https://demo.applitools.com?${Math.random()}`)
-  await driver.$('#log-in')
-  await driver.execute("document.querySelector('#log-in').id = 'log-inn'")
-  await driver.$('#log-in')
-}
 
 describe('self-healing', () => {
   let driver: spec.Driver,
@@ -36,7 +29,10 @@ describe('self-healing', () => {
   })
 
   it('sends report on close - ufg', async () => {
-    await triggerSelfHealing(driver)
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/SelfHealingPage/')
+    // NOTE: This selector doesn't exist on the page
+    await driver.findElement('css selector', '#heal-me')
+
     const eyes = await core.openEyes({
       type: 'ufg',
       target: driver,
@@ -47,13 +43,16 @@ describe('self-healing', () => {
     const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
-      assert.deepStrictEqual(result.old.value, '#log-in')
+      assert.deepStrictEqual(result.old.value, '#heal-me')
       assert(Date.parse(result.timeStamp))
     })
   })
 
   it('sends report on abort - ufg', async () => {
-    await triggerSelfHealing(driver)
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/SelfHealingPage/')
+    // NOTE: This selector doesn't exist on the page
+    await driver.findElement('css selector', '#heal-me')
+
     const eyes = await core.openEyes({
       type: 'ufg',
       target: driver,
@@ -64,13 +63,16 @@ describe('self-healing', () => {
     const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
-      assert.deepStrictEqual(result.old.value, '#log-in')
+      assert.deepStrictEqual(result.old.value, '#heal-me')
       assert(Date.parse(result.timeStamp))
     })
   })
 
   it('sends report on close - classic', async () => {
-    await triggerSelfHealing(driver)
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/SelfHealingPage/')
+    // NOTE: This selector doesn't exist on the page
+    await driver.findElement('css selector', '#heal-me')
+
     const eyes = await core.openEyes({
       target: driver,
       settings: {appName: 'core e2e', testName: 'classic - self-healing'},
@@ -80,13 +82,16 @@ describe('self-healing', () => {
     const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
-      assert.deepStrictEqual(result.old.value, '#log-in')
+      assert.deepStrictEqual(result.old.value, '#heal-me')
       assert(Date.parse(result.timeStamp))
     })
   })
 
   it('sends report on abort - classic', async () => {
-    await triggerSelfHealing(driver)
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/SelfHealingPage/')
+    // NOTE: This selector doesn't exist on the page
+    await driver.findElement('css selector', '#heal-me')
+
     const eyes = await core.openEyes({
       target: driver,
       settings: {appName: 'core e2e', testName: 'classic - self-healing'},
@@ -96,7 +101,7 @@ describe('self-healing', () => {
     const [result] = await eyes.getResults()
     const testInfo = await getTestInfo(result)
     testInfo.selfHealingInfo.operations.forEach((result: any) => {
-      assert.deepStrictEqual(result.old.value, '#log-in')
+      assert.deepStrictEqual(result.old.value, '#heal-me')
       assert(Date.parse(result.timeStamp))
     })
   })

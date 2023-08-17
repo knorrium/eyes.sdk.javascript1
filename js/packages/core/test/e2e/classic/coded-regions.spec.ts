@@ -2,7 +2,7 @@ import type {Core} from '../../../src/classic/types'
 import {type SpecType} from '@applitools/driver'
 import {makeCore} from '../../../src/classic/core'
 import {getTestInfo} from '@applitools/test-utils'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('coded regions', () => {
@@ -20,7 +20,7 @@ describe('coded regions', () => {
           Inner
         </div>
       </div>`
-    await driver.url(page)
+    await driver.navigateTo(page)
   })
 
   after(async () => {

@@ -1,8 +1,8 @@
 import type {Region, Size} from '@applitools/utils'
 import type {Ref, ServerSocket, UniversalSpecDriver} from './types'
 import type {
-  SpecType as BaseSpecType,
-  SpecDriver,
+  SpecType,
+  SpecDriver as BaseSpecDriver,
   CommonSelector,
   Cookie,
   DriverInfo,
@@ -14,19 +14,29 @@ export type Driver = Ref
 export type Context = Ref
 export type Element = Ref
 export type Selector = string | CommonSelector | Ref
-export type SpecType = BaseSpecType<Driver, Context, Element, Selector>
+export type PrimarySpecType = SpecType<Driver, Context, Element, Selector>
+export type SpecDriver = BaseSpecDriver<PrimarySpecType>
 
 export function makeSpec({
   socket,
   spec,
 }: {
-  socket: ServerSocket<SpecType, any>
-  spec: (keyof UniversalSpecDriver<SpecType>)[]
-}): SpecDriver<SpecType> {
+  socket: ServerSocket<PrimarySpecType, any>
+  spec: (keyof UniversalSpecDriver<PrimarySpecType>)[]
+}): SpecDriver {
   const commands: Required<
-    Omit<SpecDriver<SpecType>, 'transformDriver' | 'transformElement' | 'transformSelector' | 'untransformSelector'>
+    Omit<
+      SpecDriver,
+      | 'isSecondaryDriver'
+      | 'isSecondaryContext'
+      | 'isSecondaryElement'
+      | 'isSecondarySelector'
+      | 'toDriver'
+      | 'toElement'
+      | 'toSelector'
+      | 'toSimpleCommonSelector'
+    >
   > = {
-    // #region UTILITY
     isDriver(driver: any): driver is Driver {
       return utils.types.has(driver, 'applitools-ref-id')
     },
@@ -45,32 +55,17 @@ export function makeSpec({
           (utils.types.isString(selector.selector) || utils.types.has(selector, 'applitools-ref-id')))
       )
     },
+    async isEqualElements(context: Context, element1: Element, element2: Element): Promise<boolean> {
+      return socket.request('Driver.isEqualElements', {context, element1, element2})
+    },
+    isStaleElementError(error: any): boolean {
+      return error?.isStaleElementError
+    },
     extractContext(driver: Driver & {context: Context}): Context {
       return driver.context
     },
     extractSelector(element: Element & {selector: Selector}): Selector {
       return element.selector
-    },
-    extractHostName(driver: Driver & {hostname: string}): string | null {
-      return driver.hostname ?? null
-    },
-    isStaleElementError(error: any): boolean {
-      return error?.isStaleElementError
-    },
-    async isEqualElements(context: Context, element1: Element, element2: Element): Promise<boolean> {
-      return socket.request('Driver.isEqualElements', {context, element1, element2})
-    },
-    // #endregion
-
-    // #region COMMANDS
-    async mainContext(context: Context): Promise<Context> {
-      return socket.request('Driver.mainContext', {context})
-    },
-    async parentContext(context: Context): Promise<Context> {
-      return socket.request('Driver.parentContext', {context})
-    },
-    async childContext(context: Context, element: Element): Promise<Context> {
-      return socket.request('Driver.childContext', {context, element})
     },
     async executeScript(context: Context, script: (arg?: any) => any | string, arg?: any): Promise<any> {
       return socket.request('Driver.executeScript', {context, script: script.toString(), arg})
@@ -95,6 +90,33 @@ export function makeSpec({
     async setElementText(context: Context, element: Element, text: string): Promise<void> {
       return socket.request('Driver.setElementText', {context, element, text})
     },
+    async getElementRegion(context: Context, element: Element): Promise<Region> {
+      return socket.request('Driver.getElementRegion', {context, element})
+    },
+    async getElementAttribute(context: Context, element: Element, attr: string): Promise<string> {
+      return socket.request('Driver.getElementAttribute', {context, element, attr})
+    },
+    async hover(context: Context, element: Element): Promise<void> {
+      return socket.request('Driver.hover', {context, element})
+    },
+    async click(context: Context, element: Element): Promise<void> {
+      return socket.request('Driver.click', {context, element})
+    },
+    async mainContext(context: Context): Promise<Context> {
+      return socket.request('Driver.mainContext', {context})
+    },
+    async parentContext(context: Context): Promise<Context> {
+      return socket.request('Driver.parentContext', {context})
+    },
+    async childContext(context: Context, element: Element): Promise<Context> {
+      return socket.request('Driver.childContext', {context, element})
+    },
+    async getCapabilities(driver: Driver): Promise<Record<string, any>> {
+      return socket.request('Driver.getCapabilities', {driver})
+    },
+    async getDriverInfo(driver: Driver): Promise<DriverInfo> {
+      return socket.request('Driver.getDriverInfo', {driver})
+    },
     async getWindowSize(driver: Driver): Promise<Size> {
       return socket.request('Driver.getWindowSize', {driver})
     },
@@ -107,33 +129,6 @@ export function makeSpec({
     async setViewportSize(driver: Driver, size: Size): Promise<void> {
       return socket.request('Driver.setViewportSize', {driver, size})
     },
-    async getCookies(driver: Driver, context?: boolean): Promise<Cookie[]> {
-      return socket.request('Driver.getCookies', {driver, context})
-    },
-    async getCapabilities(driver: Driver): Promise<Record<string, any>> {
-      return socket.request('Driver.getCapabilities', {driver})
-    },
-    async getDriverInfo(driver: Driver): Promise<DriverInfo> {
-      return socket.request('Driver.getDriverInfo', {driver})
-    },
-    async getTitle(driver: Driver): Promise<string> {
-      return socket.request('Driver.getTitle', {driver})
-    },
-    async getUrl(driver: Driver): Promise<string> {
-      return socket.request('Driver.getUrl', {driver})
-    },
-    async takeScreenshot(driver: Driver): Promise<string> {
-      return socket.request('Driver.takeScreenshot', {driver})
-    },
-    async click(context: Context, element: Element | Selector): Promise<void> {
-      return socket.request('Driver.click', {context, element})
-    },
-    async visit(driver: Driver, url: string): Promise<void> {
-      return socket.request('Driver.visit', {driver, url})
-    },
-    // #endregion
-
-    // #region NATIVE COMMANDS
     async getSystemBars(driver: Driver): Promise<{
       statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
       navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
@@ -148,14 +143,23 @@ export function makeSpec({
     async setOrientation(driver: Driver, orientation: 'portrait' | 'landscape'): Promise<void> {
       return socket.request('Driver.setOrientation', {driver, orientation})
     },
-    async getElementRegion(driver: Driver, element: Element): Promise<Region> {
-      return socket.request('Driver.getElementRegion', {driver, element})
+    async getCookies(driver: Driver, context?: boolean): Promise<Cookie[]> {
+      return socket.request('Driver.getCookies', {driver, context})
     },
-    async getElementAttribute(driver: Driver, element: Element, attr: string): Promise<string> {
-      return socket.request('Driver.getElementAttribute', {driver, element, attr})
+    async getTitle(driver: Driver): Promise<string> {
+      return socket.request('Driver.getTitle', {driver})
+    },
+    async getUrl(driver: Driver): Promise<string> {
+      return socket.request('Driver.getUrl', {driver})
+    },
+    async takeScreenshot(driver: Driver): Promise<string> {
+      return socket.request('Driver.takeScreenshot', {driver})
     },
     async performAction(driver: Driver, steps: any[]): Promise<void> {
       return socket.request('Driver.performAction', {driver, steps})
+    },
+    async visit(driver: Driver, url: string): Promise<void> {
+      return socket.request('Driver.visit', {driver, url})
     },
     async getCurrentWorld(driver: Driver): Promise<string> {
       return socket.request('Driver.getCurrentWorld', {driver})
@@ -166,10 +170,9 @@ export function makeSpec({
     async switchWorld(driver: Driver, name: string): Promise<void> {
       return socket.request('Driver.switchWorld', {driver, name})
     },
-    // #endregion
   }
 
   return spec.reduce((spec, name) => {
     return Object.assign(spec, {[name]: commands[name]})
-  }, {} as SpecDriver<SpecType>)
+  }, {} as SpecDriver)
 }

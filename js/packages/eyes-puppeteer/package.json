@@ -39,7 +39,7 @@
     "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
     "test": "yarn test:coverage",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-puppeteer' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
-    "up:framework": "run --top-level add-silent puppeteer"
+    "up:framework": "yarn add --dev --caret puppeteer${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
     "@applitools/eyes": "workspace:*",

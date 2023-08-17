@@ -5722,7 +5722,7 @@ async function main() {
                     return job[name];
             });
             if (options?.filename)
-                result = result.replace(/[\/\s]+/g, '-');
+                result = result.replace(/[\/\s:]+/g, '-');
             if (options?.sha)
                 result += `#${sha}`;
             return result;

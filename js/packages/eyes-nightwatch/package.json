@@ -48,29 +48,29 @@
     "test:e2e": "nightwatch --config test/e2e/nightwatch.conf.js --eyes-config applitools.config.js test/e2e/*.spec.js",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-nightwatch' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' -r @applitools/test-utils/mocha-hooks/docker --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
-    "up:framework": "run --top-level add-silent nightwatch"
+    "up:framework": "yarn add --dev --caret nightwatch${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
     "@applitools/driver": "workspace:*",
     "@applitools/eyes": "workspace:*",
     "@applitools/spec-driver-webdriver": "workspace:*",
     "@applitools/utils": "workspace:*",
-    "webdriver": "7.30.0"
+    "webdriver": "7.31.1"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
     "@applitools/bongo": "workspace:^",
     "@applitools/generic": "workspace:^",
     "@applitools/test-utils": "workspace:^",
-    "@types/nightwatch": "^2.3.16",
+    "@types/nightwatch": "^2.3.25",
     "@types/node": "^12.20.55",
-    "chromedriver": "^114.0.3",
+    "chromedriver": "^115.0.1",
     "cucumber": "6.0.7",
     "geckodriver": "^3.0.1",
-    "nightwatch": "^2.6.21"
+    "nightwatch": "^3.1.2"
   },
   "peerDependencies": {
-    "nightwatch": ">=1.3.4"
+    "nightwatch": ">=2.0.0"
   },
   "engines": {
     "node": ">=12.13.0"

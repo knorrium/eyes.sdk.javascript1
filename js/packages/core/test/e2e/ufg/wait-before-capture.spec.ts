@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/ufg/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('wait before capture', () => {
@@ -14,7 +14,7 @@ describe('wait before capture', () => {
   })
 
   it('waits before taking snapshot', async () => {
-    await driver.url('https://applitools.github.io/demo/TestPages/waitBeforeCapture/')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/waitBeforeCapture/')
 
     const core = makeCore({spec, concurrency: 10})
 
@@ -43,7 +43,7 @@ describe('wait before capture', () => {
   })
 
   it('waits before taking snapshot when resize fail', async () => {
-    await driver.url('https://applitools.github.io/demo/TestPages/waitBeforeCapture/smallViewportSize')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/waitBeforeCapture/smallViewportSize')
 
     const core = makeCore({spec, concurrency: 10})
 

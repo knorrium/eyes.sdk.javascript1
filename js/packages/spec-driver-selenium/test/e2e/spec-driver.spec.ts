@@ -12,7 +12,7 @@ describe('spec driver', async () => {
   describe('headless desktop', async () => {
     before(async () => {
       ;[driver, destroyDriver] = await spec.build({browser: 'chrome'})
-      driver = spec.transformDriver(driver)
+      driver = spec.toDriver(driver)
       await driver.get(url)
     })
 
@@ -42,37 +42,37 @@ describe('spec driver', async () => {
     it('isSelector(wrong)', async () => {
       await isSelector({input: {} as spec.Selector, expected: false})
     })
-    it('transformSelector(by)', async () => {
+    it('toSelector(by)', async () => {
       const by = By.css('div')
-      await transformSelector({input: by, expected: by})
+      await toSelector({input: by, expected: by})
     })
-    it('transformSelector(string)', async () => {
-      await transformSelector({input: '.element', expected: {css: '.element'}})
+    it('toSelector(string)', async () => {
+      await toSelector({input: '.element', expected: {css: '.element'}})
     })
-    it('transformSelector(common-selector)', async () => {
-      await transformSelector({input: {selector: '.element', type: 'css'}, expected: {css: '.element'}})
+    it('toSelector(common-selector)', async () => {
+      await toSelector({input: {selector: '.element', type: 'css'}, expected: {css: '.element'}})
     })
-    it('untransformSelector(by-hash)', async () => {
-      await untransformSelector({input: {className: 'a'}, expected: {type: 'css', selector: '.a'}})
+    it('toSimpleCommonSelector(by-hash)', async () => {
+      await toSimpleCommonSelector({input: {className: 'a'}, expected: {type: 'css', selector: '.a'}})
     })
-    it('untransformSelector(by)', async () => {
-      await untransformSelector({input: By.css('div'), expected: {type: 'css', selector: 'div'}})
+    it('toSimpleCommonSelector(by)', async () => {
+      await toSimpleCommonSelector({input: By.css('div'), expected: {type: 'css', selector: 'div'}})
     })
-    it('untransformSelector(by-js)', async () => {
-      await untransformSelector({input: By.js('document.documentElement'), expected: null})
+    it('toSimpleCommonSelector(by-js)', async () => {
+      await toSimpleCommonSelector({input: By.js('document.documentElement'), expected: null})
     })
-    it('untransformSelector(function)', async () => {
-      await untransformSelector({input: () => Promise.resolve(), expected: null})
+    it('toSimpleCommonSelector(function)', async () => {
+      await toSimpleCommonSelector({input: () => Promise.resolve(), expected: null})
     })
-    it('untransformSelector(relative-by)', async function () {
+    it('toSimpleCommonSelector(relative-by)', async function () {
       if (Number(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION) < 4) this.skip()
-      await untransformSelector({input: locateWith(By.css('div')).near(By.css('button')), expected: null})
+      await toSimpleCommonSelector({input: locateWith(By.css('div')).near(By.css('button')), expected: null})
     })
-    it('untransformSelector(string)', async () => {
-      await untransformSelector({input: 'div', expected: 'div'})
+    it('toSimpleCommonSelector(string)', async () => {
+      await toSimpleCommonSelector({input: 'div', expected: 'div'})
     })
-    it('untransformSelector(common-selector)', async () => {
-      await untransformSelector({
+    it('toSimpleCommonSelector(common-selector)', async () => {
+      await toSimpleCommonSelector({
         input: {selector: '.element', type: 'css'},
         expected: {selector: '.element', type: 'css'},
       })
@@ -146,7 +146,7 @@ describe('spec driver', async () => {
   describe('legacy driver', async () => {
     before(async () => {
       ;[driver, destroyDriver] = await spec.build({browser: 'ie-11', legacy: true})
-      driver = spec.transformDriver(driver)
+      driver = spec.toDriver(driver)
     })
 
     after(async () => {
@@ -164,7 +164,7 @@ describe('spec driver', async () => {
   describe('mobile driver (@mobile @android)', async () => {
     before(async () => {
       ;[driver, destroyDriver] = await spec.build({browser: 'chrome', device: 'Pixel 3a XL', orientation: 'landscape'})
-      driver = spec.transformDriver(driver)
+      driver = spec.toDriver(driver)
       await driver.get(url)
     })
 
@@ -189,8 +189,8 @@ describe('spec driver', async () => {
         app: 'https://applitools.jfrog.io/artifactory/Examples/android/1.3/app-debug.apk',
         device: 'Pixel 3a XL',
       })
-      driver = spec.transformDriver(driver)
-      await spec.click(driver, {using: 'id', value: 'com.applitools.eyes.android:id/btn_web_view'})
+      driver = spec.toDriver(driver)
+      await spec.click(driver, (await spec.findElement(driver, {using: 'id', value: 'btn_web_view'}))!)
       await utils.general.sleep(5000)
     })
 
@@ -228,18 +228,18 @@ describe('spec driver', async () => {
     const result = await spec.isSelector(input)
     assert.strictEqual(result, expected)
   }
-  async function transformSelector({input, expected}: {input: any; expected: spec.Selector}) {
-    const result = spec.transformSelector(input)
+  async function toSelector({input, expected}: {input: any; expected: spec.Selector}) {
+    const result = spec.toSelector(input)
     assert.deepStrictEqual(result, expected || input)
   }
-  async function untransformSelector({
+  async function toSimpleCommonSelector({
     input,
     expected,
   }: {
     input: spec.Selector | {selector: spec.Selector} | {type: string; selector: string} | string
     expected: {type: string; selector: string} | string | null
   }) {
-    assert.deepStrictEqual(spec.untransformSelector(input as spec.Selector), expected)
+    assert.deepStrictEqual(spec.toSimpleCommonSelector(input as spec.Selector), expected)
   }
   async function isEqualElements({
     input,

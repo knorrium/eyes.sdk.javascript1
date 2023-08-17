@@ -1,7 +1,7 @@
 import {makeCore} from '../../../src/ufg/core'
 import {makeTestServer} from '@applitools/test-server'
 import {adjustUrlToDocker} from '../../utils/adjust-url-to-docker'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('cookies', () => {
@@ -27,7 +27,7 @@ describe('cookies', () => {
     const pageUrl = adjustUrlToDocker(
       `http://localhost:${server.port}/cookies/index.hbs?writeCookie[name]=token&writeCookie[value]=12345&writeCookie[options][path]=/cookies/images`,
     )
-    await driver.url(pageUrl)
+    await driver.navigateTo(pageUrl)
     const core = makeCore({spec, concurrency: 10})
     const eyes = await core.openEyes({
       target: driver,

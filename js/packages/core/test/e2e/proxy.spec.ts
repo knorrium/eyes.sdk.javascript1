@@ -1,6 +1,6 @@
 import {makeCore} from '../../src/index'
 import {makeProxyServer, restrictNetwork} from '@applitools/test-server'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import * as utils from '@applitools/utils'
 
 describe('proxy', () => {
@@ -62,7 +62,7 @@ describe('proxy', () => {
     })
 
     it('ufg works with proxy', async () => {
-      await driver.url('https://applitools.com/helloworld')
+      await driver.navigateTo('https://applitools.com/helloworld')
 
       const core = makeCore({spec})
       const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})
@@ -81,7 +81,7 @@ describe('proxy', () => {
     })
 
     it('classic works with proxy', async () => {
-      await driver.url('https://applitools.com/helloworld')
+      await driver.navigateTo('https://applitools.com/helloworld')
 
       const core = makeCore({spec})
       const manager = await core.makeManager({type: 'classic'})
@@ -125,7 +125,7 @@ describe('proxy', () => {
     })
 
     it('ufg works with aut proxy', async () => {
-      await driver.url('https://applitools.com/helloworld')
+      await driver.navigateTo('https://applitools.com/helloworld')
 
       const core = makeCore({spec})
       const manager = await core.makeManager({type: 'ufg', settings: {concurrency: 5}})

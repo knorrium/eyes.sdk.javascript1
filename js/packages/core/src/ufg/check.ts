@@ -118,10 +118,10 @@ export function makeCheck<TSpec extends SpecType>({
         }
       } else {
         regionToTarget = isSelector(elementReferenceToTarget)
-          ? spec?.untransformSelector?.(settings.scrollRootElement) ?? undefined
+          ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
           : undefined
         scrollRootSelector = isSelector(settings.scrollRootElement)
-          ? spec?.untransformSelector?.(settings.scrollRootElement) ?? undefined
+          ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
           : undefined
       }
 

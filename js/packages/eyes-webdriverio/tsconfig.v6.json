@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "types": ["node", "mocha", "webdriverio"]
+  },
+  "include": ["src", "test", "types/v6.d.ts"]
+
+}

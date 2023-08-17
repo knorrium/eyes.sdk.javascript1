@@ -241,7 +241,7 @@ export class Eyes<TSpec extends Core.SpecType = Core.SpecType> {
     viewportSizeOrSessionType?: RectangleSize | SessionType,
     sessionType?: SessionType,
   ): Promise<TSpec['driver'] | void> {
-    if (this._spec?.isDriver?.(driverOrConfigOrAppName)) {
+    if (this._spec?.isDriver?.(driverOrConfigOrAppName) || this._spec?.isSecondaryDriver?.(driverOrConfigOrAppName)) {
       this._driver = driverOrConfigOrAppName
     } else {
       sessionType = viewportSizeOrSessionType as SessionType

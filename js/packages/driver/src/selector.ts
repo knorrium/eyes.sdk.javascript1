@@ -1,7 +1,10 @@
 import {type SpecType, type SpecDriver} from './spec-driver'
 import * as utils from '@applitools/utils'
 
-export type Selector<T extends SpecType = never> = T['selector'] | CommonSelector<T['selector']>
+export type Selector<T extends SpecType = never> =
+  | T['selector']
+  | T['secondary']['selector']
+  | CommonSelector<T['selector'] | T['secondary']['selector']>
 
 export type CommonSelector<TSelector = never> = string | ComplexSelector<TSelector>
 
@@ -16,12 +19,17 @@ type ComplexSelector<TSelector> = {
 
 export function isSelector<T extends SpecType>(
   selector: any,
-  spec?: Pick<SpecDriver<T>, 'isSelector'>,
+  spec?: Pick<SpecDriver<T>, 'isSelector' | 'isSecondarySelector'>,
 ): selector is Selector<T> {
-  return spec?.isSelector(selector) || utils.types.isString(selector) || isObjectCommonSelector(selector, spec)
+  return (
+    spec?.isSelector(selector) ||
+    spec?.isSecondarySelector?.(selector) ||
+    utils.types.isString(selector) ||
+    isComplexSelector(selector, spec)
+  )
 }
 
-export function isObjectCommonSelector<T extends SpecType>(
+export function isComplexSelector<T extends SpecType>(
   selector: any,
   spec?: Pick<SpecDriver<T>, 'isSelector'>,
 ): selector is Exclude<CommonSelector<T['selector']>, string> {
@@ -34,5 +42,21 @@ export function isObjectCommonSelector<T extends SpecType>(
 }
 
 export function isSimpleCommonSelector(selector: any): selector is CommonSelector {
-  return utils.types.isString(selector) || isObjectCommonSelector(selector)
+  return utils.types.isString(selector) || isComplexSelector(selector)
+}
+
+export function makeSelector<T extends SpecType>(options: {
+  selector: Selector<T>
+  spec: Pick<SpecDriver<T>, 'isSelector' | 'toSelector'>
+  environment?: {isWeb?: boolean; isNative?: boolean; isIOS?: boolean; isAndroid?: boolean}
+}): T['selector'] {
+  const {spec, environment} = options
+  let selector = options.selector
+  if (environment?.isWeb && isComplexSelector(selector, spec)) {
+    if (selector.type === 'id') selector = {type: 'css', selector: `#${selector.selector}`}
+    else if (selector.type === 'name') selector = {type: 'css', selector: `[name="${selector.selector}"]`}
+    else if (selector.type === 'class name') selector = {type: 'css', selector: `.${selector.selector}`}
+    else if (selector.type === 'tag name') selector = {type: 'css', selector: `${selector.selector}`}
+  }
+  return spec.toSelector?.(selector) ?? (selector as T['selector'])
 }

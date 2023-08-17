@@ -14,7 +14,7 @@ export class By {
   static attributeValue(attr: string, value: string): By {
     return new By(`*[${attr}="${value}"]`)
   }
-  // @ts-ignore
+  // @ts-expect-error
   static name(name: string): By {
     return By.attributeValue('name', name)
   }

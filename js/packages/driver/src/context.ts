@@ -2,10 +2,9 @@ import type {Location, Size, Region} from '@applitools/utils'
 import type {Cookie} from './types'
 import {type SpecType, type SpecDriver, type WaitOptions} from './spec-driver'
 import {type Driver} from './driver'
-import {isSelector, isObjectCommonSelector, type Selector} from './selector'
-import {Element, type ElementReference} from './element'
+import {makeSelector, isSelector, isComplexSelector, type Selector} from './selector'
+import {makeElement, isElement, isElementInstance, type ElementReference, type Element} from './element'
 import * as utils from '@applitools/utils'
-import * as specUtils from './spec-utils'
 
 const snippets = require('@applitools/snippets')
 
@@ -48,8 +47,7 @@ export class Context<T extends SpecType> {
     return (
       utils.types.isInteger(reference) ||
       utils.types.isString(reference) ||
-      reference instanceof Element ||
-      this._spec.isElement(reference) ||
+      isElement(reference, this._spec) ||
       isSelector(reference, this._spec)
     )
   }
@@ -133,13 +131,13 @@ export class Context<T extends SpecType> {
     const {parent, all, wait} = options
 
     const environment = await this.driver.getEnvironment()
-    const transformedSelector = specUtils.transformSelector(this._spec, selector, environment)
+    const transformedSelector = makeSelector({selector, spec: this._spec, environment})
     let elements = [] as T['element'][]
     if (wait) {
       if (this._spec.waitForSelector) {
         const element = await this._spec.waitForSelector(
           this.target,
-          specUtils.transformSelector(this._spec, selector, environment),
+          makeSelector({selector, spec: this._spec, environment}),
           parent,
           wait,
         )
@@ -150,7 +148,7 @@ export class Context<T extends SpecType> {
         while (waiting) {
           const element = await this._spec.findElement(
             this.target,
-            specUtils.transformSelector(this._spec, selector, environment),
+            makeSelector({selector, spec: this._spec, environment}),
             parent,
           )
           if (element) {
@@ -168,7 +166,7 @@ export class Context<T extends SpecType> {
       if (element) elements = [element]
     }
 
-    if (isObjectCommonSelector(selector, this._spec)) {
+    if (isComplexSelector(selector, this._spec)) {
       if (elements.length > 0) {
         if (selector.child) {
           elements = await elements.reduce((result, element) => {
@@ -234,12 +232,13 @@ export class Context<T extends SpecType> {
           `Context element with name, id, or selector ${JSON.stringify(this._reference)}' is not found`,
         )
       }
-    } else if (this._spec.isElement(this._reference) || this._reference instanceof Element) {
+    } else if (isElement(this._reference, this._spec)) {
       this.logger.log('Initialize context from reference element', this._reference)
-      this._element =
-        this._reference instanceof Element
-          ? this._reference
-          : new Element({spec: this._spec, context: this.parent, element: this._reference})
+      this._element = await makeElement({
+        spec: this._spec,
+        context: this.parent,
+        element: this._reference,
+      })
     } else {
       throw new TypeError('Reference type does not supported')
     }
@@ -308,37 +307,39 @@ export class Context<T extends SpecType> {
   }
 
   async element(elementOrSelector: ElementReference<T>): Promise<Element<T> | null> {
-    if (this._spec.isElement(elementOrSelector)) {
-      return new Element({spec: this._spec, context: this, element: elementOrSelector})
+    if (isElement(elementOrSelector, this._spec)) {
+      return makeElement({spec: this._spec, context: this, element: elementOrSelector})
     } else if (!isSelector(elementOrSelector, this._spec)) {
       throw new TypeError('Cannot find element using argument of unknown type!')
     }
     if (this.isRef) {
-      return new Element({spec: this._spec, context: this, selector: elementOrSelector})
+      return makeElement({spec: this._spec, context: this, selector: elementOrSelector})
     }
     this.logger.log('Finding element by selector: ', elementOrSelector)
     const [element] = await this._findElements(elementOrSelector, {all: false})
-    return element ? new Element({spec: this._spec, context: this, element, selector: elementOrSelector}) : null
+    return element ? makeElement({spec: this._spec, context: this, element, selector: elementOrSelector}) : null
   }
 
   async elements(selectorOrElement: ElementReference<T>): Promise<Element<T>[]> {
     if (isSelector(selectorOrElement, this._spec)) {
       if (this.isRef) {
-        return [new Element({spec: this._spec, context: this, selector: selectorOrElement})]
+        return [await makeElement({spec: this._spec, context: this, selector: selectorOrElement})]
       }
       this.logger.log('Finding elements by selector: ', selectorOrElement)
       const elements = await this._findElements(selectorOrElement, {all: true})
-      return elements.map((element, index) => {
-        return new Element({
-          spec: this._spec,
-          context: this,
-          element,
-          selector: selectorOrElement,
-          index,
-        })
-      })
-    } else if (this._spec.isElement(selectorOrElement)) {
-      return [new Element({spec: this._spec, context: this, element: selectorOrElement})]
+      return Promise.all(
+        elements.map((element, index) => {
+          return makeElement({
+            spec: this._spec,
+            context: this,
+            element,
+            selector: selectorOrElement,
+            index,
+          })
+        }),
+      )
+    } else if (isElement(selectorOrElement, this._spec)) {
+      return [await makeElement({spec: this._spec, context: this, element: selectorOrElement})]
     } else {
       throw new TypeError('Cannot find elements using argument of unknown type!')
     }
@@ -349,7 +350,7 @@ export class Context<T extends SpecType> {
     const [element] = await this._findElements(selector, {
       wait: {state: 'exist', timeout: 10000, interval: 500, ...options},
     })
-    return element ? new Element({spec: this._spec, context: this, element, selector}) : null
+    return element ? makeElement({spec: this._spec, context: this, element, selector}) : null
   }
 
   async execute(script: ((args: any) => any) | string, arg?: any): Promise<any> {
@@ -363,8 +364,8 @@ export class Context<T extends SpecType> {
     }
 
     function serialize(this: Context<T>, value: any): any {
-      if (this._spec.isElement(value) || value instanceof Element) {
-        return value instanceof Element ? value.toJSON() : value
+      if (isElement(value, this._spec)) {
+        return isElementInstance(value) ? value.toJSON() : value
       } else if (utils.types.isArray(value)) {
         return value.map(value => serialize.call(this, value))
       } else if (utils.types.isObject(value)) {
@@ -435,7 +436,7 @@ export class Context<T extends SpecType> {
   }
 
   async getScrollingElement(): Promise<Element<T> | null> {
-    if (!(this._scrollingElement instanceof Element)) {
+    if (!isElementInstance(this._scrollingElement)) {
       await this.focus()
       const environment = await this.driver.getEnvironment()
       if (this._scrollingElement) {
@@ -461,8 +462,7 @@ export class Context<T extends SpecType> {
     if (scrollingElement === undefined) return
     else if (scrollingElement === null) this._scrollingElement = null
     else {
-      this._scrollingElement =
-        scrollingElement instanceof Element ? scrollingElement : await this.element(scrollingElement)
+      this._scrollingElement = await this.element(scrollingElement)
     }
   }
 

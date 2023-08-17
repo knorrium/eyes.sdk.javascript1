@@ -20,10 +20,10 @@ export function isSelector(selector: any): selector is Selector {
     utils.types.isString(selector) || utils.types.has(selector, ['using', 'value']) || selector?.forceSelector === true
   )
 }
-export function transformSelector(selector: Selector | {selector: Selector}): Selector {
+export function toSelector(selector: Selector | {selector: Selector}): Selector {
   return utils.types.has(selector, 'selector') ? selector.selector : selector
 }
-export function untransformSelector(selector: Selector): CommonSelector | null {
+export function toSimpleCommonSelector(selector: Selector): CommonSelector | null {
   if (utils.types.isString(selector)) {
     return {type: 'css', selector: selector}
   } else if (utils.types.has(selector, ['using', 'value'])) {

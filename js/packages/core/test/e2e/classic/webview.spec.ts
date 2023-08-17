@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import * as utils from '@applitools/utils'
 import assert from 'assert'
 
@@ -21,7 +21,8 @@ describe('webview (@sauce)', () => {
       device: 'iPhone 12',
       app: 'https://applitools.jfrog.io/artifactory/Examples/IOSTestApp/1.9/app/IOSTestApp.zip',
     })
-    await driver.$('xpath://XCUIElementTypeStaticText[@name="Web view"]').click()
+    const element = await driver.findElement('xpath', '//XCUIElementTypeStaticText[@name="Web view"]')
+    await driver.elementClick(element['element-6066-11e4-a52e-4f735466cecf'])
   })
 
   after(async () => {

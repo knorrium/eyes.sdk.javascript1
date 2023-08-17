@@ -54,7 +54,7 @@ describe('coded regions', () => {
         By.tagName('my-region'),
         locateWith(By.css('.two')).toRightOf(el as any),
         '.region.three:nth-child(3n)', // 4 regions are targeted by this selector
-      ] as any[]
+      ]
 
       // check #1 - ignore regions
       await eyes.check({settings: {fully: false, ignoreRegions: regions}})

@@ -63,12 +63,12 @@
   },
   "devDependencies": {
     "@applitools/driver": "workspace:^",
-    "@applitools/spec-driver-webdriverio": "workspace:^",
+    "@applitools/spec-driver-webdriver": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "appium": "^1.22.3",
-    "chromedriver": "^114.0.3",
+    "chromedriver": "^115.0.1",
     "pixelmatch": "^5.3.0",
-    "webdriverio": "^7.30.0"
+    "webdriver": "^7.31.1"
   },
   "engines": {
     "node": ">=12.13.0"

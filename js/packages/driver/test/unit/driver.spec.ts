@@ -42,7 +42,7 @@ describe('driver', () => {
         ],
       },
     ])
-    driver = new Driver({logger, spec, driver: mock})
+    driver = new Driver({logger, spec: {...spec}, driver: mock})
   })
 
   afterEach(async () => {

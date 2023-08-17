@@ -6,7 +6,6 @@
   "js/packages/image": "1.1.2",
   "js/packages/snippets": "2.4.22",
   "js/packages/spec-driver-webdriver": "1.0.41",
-  "js/packages/spec-driver-webdriverio": "1.5.10",
   "js/packages/spec-driver-selenium": "1.5.55",
   "js/packages/spec-driver-playwright": "1.3.22",
   "js/packages/spec-driver-puppeteer": "1.1.72",

@@ -6,5 +6,11 @@ export function extractEnvironment(): Record<string, any> {
   } catch {
     // NOTE: ignore error
   }
+  try {
+    const {name, version} = require('webdriver/package.json')
+    versions[name] = version
+  } catch {
+    // NOTE: ignore error
+  }
   return {versions}
 }

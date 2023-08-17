@@ -1,6 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["node", "mocha", "webdriverio/async", "@applitools/spec-driver-webdriverio/v7"]
-  }
-}

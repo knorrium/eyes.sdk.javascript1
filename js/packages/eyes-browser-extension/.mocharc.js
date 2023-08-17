@@ -7,5 +7,5 @@ module.exports = {
   require: ['ts-node/register'],
   reporter: 'mocha-multi',
   reporterOptions: [`spec=-,json=./logs/report${group ? `-${group}` : ''}.json,xunit=./logs/report.xml`],
-  grep: mochaGrep()
+  grep: mochaGrep(),
 }

@@ -50,7 +50,7 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'find element with string selector': async () => {
-      const selector = transformSelector('html>body>h1')
+      const selector = toSelector('html>body>h1')
       const element = await spec.findElement(context, selector)
       const isWantedElement = await spec.executeScript(
         context,
@@ -61,8 +61,8 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'find element with spec selector': async () => {
-      const cssSelector = transformSelector({type: 'css', selector: 'html>body>h1'})
-      const xpathSelector = transformSelector({type: 'xpath', selector: '//html/body/h1'})
+      const cssSelector = toSelector({type: 'css', selector: 'html>body>h1'})
+      const xpathSelector = toSelector({type: 'xpath', selector: '//html/body/h1'})
       const verificationScript = `return arguments[0] === document.querySelector('html>body>h1')`
 
       const cssElement = await spec.findElement(context, cssSelector)
@@ -75,13 +75,13 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'find element with unresolvable selector': async () => {
-      const selector = transformSelector('unresolvable_selector')
+      const selector = toSelector('unresolvable_selector')
       const element = await spec.findElement(context, selector)
       assert.equal(element, null, `returns null by unresolvable selector - "${selector}"`)
     },
 
     'find elements with string selector': async () => {
-      const selector = transformSelector('html p')
+      const selector = toSelector('html p')
       const elements = await spec.findElements(context, selector)
       const isExpectedElements = await spec.executeScript(
         context,
@@ -92,8 +92,8 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'find elements with spec selector': async () => {
-      const cssSelector = transformSelector({type: 'css', selector: 'html p'})
-      const xpathSelector = transformSelector({type: 'xpath', selector: '//html//p'})
+      const cssSelector = toSelector({type: 'css', selector: 'html p'})
+      const xpathSelector = toSelector({type: 'xpath', selector: '//html//p'})
       const verificationScript = `var expected = arguments[0]; return Array.prototype.every.call(document.querySelectorAll('html p'), function(element, index) { return element === expected[index] })`
 
       const cssElements = await spec.findElements(context, cssSelector)
@@ -106,13 +106,13 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'find elements with unresolvable selector': async () => {
-      const selector = transformSelector('unresolvable_selector')
+      const selector = toSelector('unresolvable_selector')
       const element = await spec.findElements(context, selector)
       assert.deepEqual(element, [], `returns empty array by unresolvable selector - "${selector}"`)
     },
 
     'child context': async () => {
-      const element = await spec.findElement(context, transformSelector('[name="frame1"]'))
+      const element = await spec.findElement(context, toSelector('[name="frame1"]'))
       const childContext = await spec.childContext(context, element!)
       const inFrame = await spec.executeScript(childContext, 'return window.frameElement.name === "frame1"')
       assert.ok(inFrame, 'returns or switches to a child context')
@@ -125,7 +125,7 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
 
     'is equal elements': async () => {
       if (!spec.isEqualElements) return {skipped: true}
-      const htmlEl = await spec.findElement(context, transformSelector('html'))
+      const htmlEl = await spec.findElement(context, toSelector('html'))
       const htmlEl2 = await spec.executeScript(context, 'return document.documentElement')
       assert.ok(await spec.isEqualElements(context, htmlEl!, htmlEl2!), 'elements should be equal')
       const bodyEl = await spec.executeScript(context, 'return document.body')
@@ -141,47 +141,47 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     },
 
     'main context': async () => {
-      const mainDocument1 = await spec.findElement(context, transformSelector('html'))
+      const mainDocument1 = await spec.findElement(context, toSelector('html'))
       const childContext1 = await spec.childContext(
         context,
-        (await spec.findElement(context, transformSelector('[name="frame1"]')))!,
+        (await spec.findElement(context, toSelector('[name="frame1"]')))!,
       )
       const childContext2 = await spec.childContext(
         childContext1,
-        (await spec.findElement(childContext1, transformSelector('[name="frame1-1"]')))!,
+        (await spec.findElement(childContext1, toSelector('[name="frame1-1"]')))!,
       )
-      const frameDocument = await spec.findElement(childContext2, transformSelector('html'))
+      const frameDocument = await spec.findElement(childContext2, toSelector('html'))
       assert.ok(!(await isEqualElements(childContext2, mainDocument1!, frameDocument!)))
       const mainContext = await spec.mainContext(childContext2)
-      const mainDocument2 = await spec.findElement(mainContext, transformSelector('html'))
+      const mainDocument2 = await spec.findElement(mainContext, toSelector('html'))
       assert.ok(await isEqualElements(mainContext, mainDocument2!, mainDocument1!))
     },
 
     'parent context': async () => {
       const parentContext1 = await spec.childContext(
         context,
-        (await spec.findElement(context, transformSelector('[name="frame1"]')))!,
+        (await spec.findElement(context, toSelector('[name="frame1"]')))!,
       )
-      const parentDocument1 = await spec.findElement(parentContext1, transformSelector('html'))
+      const parentDocument1 = await spec.findElement(parentContext1, toSelector('html'))
       const frameContext = await spec.childContext(
         parentContext1,
-        (await spec.findElement(parentContext1, transformSelector('[name="frame1-1"]')))!,
+        (await spec.findElement(parentContext1, toSelector('[name="frame1-1"]')))!,
       )
-      const frameDocument = await spec.findElement(frameContext, transformSelector('html'))
+      const frameDocument = await spec.findElement(frameContext, toSelector('html'))
       assert.ok(!(await isEqualElements(frameContext, parentDocument1!, frameDocument!)))
       const parentContext2 = await spec.parentContext!(frameContext)
-      const parentDocument2 = await spec.findElement(parentContext2, transformSelector('html'))
+      const parentDocument2 = await spec.findElement(parentContext2, toSelector('html'))
       assert.ok(await isEqualElements(parentContext2, parentDocument2!, parentDocument1!))
       await spec.mainContext(context)
     },
 
     'get title': async () => {
-      const title = await spec.getTitle(driver)
+      const title = await spec.getTitle?.(driver)
       assert.equal(title, 'Cross SDK test', 'returns title of the current page')
     },
 
     'get url': async () => {
-      const url = await spec.getUrl(driver)
+      const url = await spec.getUrl?.(driver)
       assert.equal(
         url,
         'https://applitools.github.io/demo/TestPages/FramesTestPage/',
@@ -196,7 +196,7 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
       assert.ok(!(await spec.isDriver('str')), 'string should not be considered a driver')
     },
     'is element': async () => {
-      const el = await spec.findElement(context, transformSelector('html'))
+      const el = await spec.findElement(context, toSelector('html'))
       assert.ok(await spec.isElement(el), 'element should be considered an element :)')
       assert.ok(!(await spec.isElement(undefined)), 'undefined should not be considered an element')
       assert.ok(!(await spec.isElement(3)), 'number should not be considered an element')
@@ -222,9 +222,13 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
 
   return report
 
-  function isEqualElements(context: T['context'], element1: T['element'], element2: T['element']): Promise<boolean> {
+  async function isEqualElements(
+    context: T['context'],
+    element1: T['element'],
+    element2: T['element'],
+  ): Promise<boolean> {
     return (
-      spec.isEqualElements?.(context, element1, element2) ??
+      (await spec.isEqualElements?.(context, element1, element2)) ??
       spec.executeScript(context, snippets.isEqualElements, [element1, element2]).catch(() => false)
     )
   }
@@ -233,7 +237,7 @@ export async function checkSpecDriver<T extends SpecType>(options: {spec: SpecDr
     return spec.extractContext?.(driver) ?? (driver as T['context'])
   }
 
-  function transformSelector(selector: any): T['selector'] {
-    return spec.transformSelector?.(selector) ?? selector
+  function toSelector(selector: any): T['selector'] {
+    return spec.toSelector?.(selector) ?? selector
   }
 }

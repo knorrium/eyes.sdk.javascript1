@@ -71,14 +71,7 @@ export interface UniversalDebug<TSpec extends SpecType> {
  * but typescript doesn't have a possibility to convert named tuples to object types at the moment
  */
 export interface UniversalSpecDriver<T extends SpecType> {
-  // #region UTILITY
   isEqualElements(options: {context: T['context']; element1: T['element']; element2: T['element']}): Promise<boolean>
-  // #endregion
-
-  // #region COMMANDS
-  mainContext(options: {context: T['context']}): Promise<T['context']>
-  parentContext(options: {context: T['context']}): Promise<T['context']>
-  childContext(options: {context: T['context']; element: T['element']}): Promise<T['context']>
   executeScript(options: {context: T['context']; script: string; arg?: any}): Promise<any>
   findElement(options: {
     context: T['context']
@@ -96,23 +89,25 @@ export interface UniversalSpecDriver<T extends SpecType> {
     parent?: T['element']
     options?: WaitOptions
   }): Promise<T['element'] | null>
+  getElementRegion(options: {context: T['context']; element: T['element']}): Promise<Region>
+  getElementAttribute(options: {context: T['context']; element: T['element']; attr: string}): Promise<string>
   setElementText(options: {context: T['context']; element: T['element']; text: string}): Promise<void>
   getElementText(options: {context: T['context']; element: T['element']}): Promise<string>
+  hover(options: {context: T['context']; element: T['element']}): Promise<void>
+  click(options: {context: T['context']; element: T['element']}): Promise<void>
+  mainContext(options: {context: T['context']}): Promise<T['context']>
+  parentContext(options: {context: T['context']}): Promise<T['context']>
+  childContext(options: {context: T['context']; element: T['element']}): Promise<T['context']>
+  getDriverInfo(options: {driver: T['driver']}): Promise<DriverInfo>
+  getCapabilities(options: {driver: T['driver']}): Promise<Record<string, any>>
   setWindowSize(options: {driver: T['driver']; size: Size}): Promise<void>
   getWindowSize(options: {driver: T['driver']}): Promise<Size>
   setViewportSize(options: {driver: T['driver']; size: Size}): Promise<void>
   getViewportSize(options: {driver: T['driver']}): Promise<Size>
-  getCookies(options: {driver: T['driver'] | T['context']; context?: boolean}): Promise<Cookie[]>
-  getDriverInfo(options: {driver: T['driver']}): Promise<DriverInfo>
-  getCapabilities(options: {driver: T['driver']}): Promise<Record<string, any>>
-  getTitle(options: {driver: T['driver']}): Promise<string>
-  getUrl(options: {driver: T['driver']}): Promise<string>
-  takeScreenshot(options: {driver: T['driver']}): Promise<string>
-  click(options: {context: T['context']; element: T['element'] | T['selector']}): Promise<void>
-  visit(options: {driver: T['driver']; url: string}): Promise<void>
-  // #endregion
-
-  // #region MOBILE COMMANDS
+  getSystemBars(options: {driver: T['driver']}): Promise<{
+    statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
+    navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
+  }>
   getOrientation(options: {
     driver: T['driver']
   }): Promise<'portrait' | 'landscape' | 'portrait-secondary' | 'landscape-secondary'>
@@ -120,15 +115,13 @@ export interface UniversalSpecDriver<T extends SpecType> {
     driver: T['driver']
     orientation: 'portrait' | 'landscape' | 'portrait-secondary' | 'landscape-secondary'
   }): Promise<void>
-  getSystemBars(options: {driver: T['driver']}): Promise<{
-    statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
-    navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
-  }>
-  getElementRegion(options: {driver: T['driver']; element: T['element']}): Promise<Region>
-  getElementAttribute(options: {driver: T['driver']; element: T['element']; attr: string}): Promise<string>
+  getCookies(options: {driver: T['driver'] | T['context']; context?: boolean}): Promise<Cookie[]>
+  getTitle(options: {driver: T['driver']}): Promise<string>
+  getUrl(options: {driver: T['driver']}): Promise<string>
+  takeScreenshot(options: {driver: T['driver']}): Promise<string>
   performAction(options: {driver: T['driver']; steps: any[]}): Promise<void>
+  visit(options: {driver: T['driver']; url: string}): Promise<void>
   getCurrentWorld(options: {driver: T['driver']}): Promise<string>
   getWorlds(options: {driver: T['driver']}): Promise<string[]>
   switchWorld(options: {driver: T['driver']; name: string}): Promise<void>
-  // #endregion
 }

@@ -1,5 +1,5 @@
 import type {Size} from '@applitools/utils'
-import type {SpecType as BaseSpecType, CommonSelector, Cookie, DriverInfo} from '@applitools/driver'
+import type {SpecType, SpecDriver as BaseSpecDriver, CommonSelector, Cookie, DriverInfo} from '@applitools/driver'
 import type * as Puppeteer from 'puppeteer'
 import * as utils from '@applitools/utils'
 
@@ -9,11 +9,8 @@ export type Driver = Puppeteer.Page & ApplitoolsBrand
 export type Context = Puppeteer.Frame & ApplitoolsBrand
 export type Element<T extends globalThis.Element = globalThis.Element> = Puppeteer.ElementHandle<T> & ApplitoolsBrand
 export type Selector = string & ApplitoolsBrand
-export type SpecType = BaseSpecType<Driver, Context, Element, Selector>
-
-// #region HELPERS
-
-const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
+export type PrimarySpecType = SpecType<Driver, Context, Element, Selector, never>
+export type SpecDriver = BaseSpecDriver<PrimarySpecType>
 
 async function handleToObject(handle: Puppeteer.JSHandle): Promise<any> {
   const [, type] = handle.toString().split('@')
@@ -79,13 +76,10 @@ function scriptRunner(script: string, arg: any, ...elements: HTMLElement[]) {
     }
   }
 }
+const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
 function isXpathSelector(selector: Selector): boolean {
   return XPATH_SELECTOR_START.some(start => selector.startsWith(start))
 }
-
-// #endregion
-
-// #region UTILITY
 
 export function isDriver(page: any): page is Driver {
   if (!page) return false
@@ -102,19 +96,6 @@ export function isElement(element: any): element is Element {
 export function isSelector(selector: any): selector is Selector {
   return utils.types.isString(selector)
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
-  if (utils.types.has(selector, 'selector')) return selector.selector
-  return selector
-}
-export function untransformSelector(selector: Selector): CommonSelector {
-  if (utils.types.isString(selector)) {
-    return {type: isXpathSelector(selector) ? 'xpath' : 'css', selector}
-  }
-  return selector
-}
-export function extractContext(page: Driver | Context): Context {
-  return isDriver(page) ? page.mainFrame() : page
-}
 export function isStaleElementError(err: any): boolean {
   return (
     err?.message?.includes('Execution context was destroyed') ||
@@ -122,31 +103,23 @@ export function isStaleElementError(err: any): boolean {
     err?.message?.includes('JSHandles can be evaluated only in the context they were created')
   )
 }
-
-// #endregion
-
-// #region COMMANDS
-
+export function toSelector(selector: CommonSelector<Selector>): Selector {
+  if (utils.types.has(selector, 'selector')) return selector.selector
+  return selector
+}
+export function toSimpleCommonSelector(selector: Selector): CommonSelector {
+  if (utils.types.isString(selector)) {
+    return {type: isXpathSelector(selector) ? 'xpath' : 'css', selector}
+  }
+  return selector
+}
+export function extractContext(page: Driver): Context {
+  return isDriver(page) ? page.mainFrame() : page
+}
 export async function executeScript(frame: Context, script: ((arg: any) => any) | string, arg: any): Promise<any> {
   script = utils.types.isString(script) ? script : `function() {return (${script.toString()}).apply(null, arguments)}`
   const result = await frame.evaluateHandle(scriptRunner, script, ...transformArgument(arg))
   return handleToObject(result)
-}
-export async function mainContext(frame: Context): Promise<Context> {
-  frame = extractContext(frame)
-  let mainFrame = frame
-  while (mainFrame.parentFrame()) {
-    mainFrame = mainFrame.parentFrame()!
-  }
-  return mainFrame
-}
-export async function parentContext(frame: Context): Promise<Context> {
-  frame = extractContext(frame)
-  return frame.parentFrame() ?? frame
-}
-export async function childContext(_frame: Context, element: Element): Promise<Context> {
-  const frame = (await element.contentFrame())!
-  return frame
 }
 export async function findElement(frame: Context, selector: Selector, parent?: Element): Promise<Element | null> {
   const root = parent ?? frame
@@ -162,6 +135,29 @@ export async function setElementText(frame: Context, element: Element | Selector
   const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
   await resolvedElement?.evaluate(element => ((element as HTMLInputElement).value = ''))
   await resolvedElement?.type(text)
+}
+export async function hover(_frame: Context, element: Element): Promise<void> {
+  await element.hover()
+}
+export async function click(_frame: Context, element: Element): Promise<void> {
+  await element.click()
+}
+export async function mainContext(frame: Context): Promise<Context> {
+  let mainFrame = frame
+  while (mainFrame.parentFrame()) {
+    mainFrame = mainFrame.parentFrame()!
+  }
+  return mainFrame
+}
+export async function parentContext(frame: Context): Promise<Context> {
+  return frame.parentFrame() ?? frame
+}
+export async function childContext(_frame: Context, element: Element): Promise<Context> {
+  const frame = (await element.contentFrame())!
+  return frame
+}
+export async function getDriverInfo(_page: Driver): Promise<DriverInfo> {
+  return {features: {allCookies: true}}
 }
 export async function getViewportSize(page: Driver): Promise<Size> {
   return page.viewport()!
@@ -186,9 +182,6 @@ export async function getCookies(page: Driver): Promise<Cookie[]> {
     return copy
   })
 }
-export async function getDriverInfo(_page: Driver): Promise<DriverInfo> {
-  return {features: {allCookies: true}}
-}
 export async function getTitle(page: Driver): Promise<string> {
   return page.title()
 }
@@ -202,21 +195,7 @@ export async function takeScreenshot(page: Driver): Promise<Buffer> {
   const result = await page.screenshot({captureBeyondViewport: false})
   return result as Buffer
 }
-export async function click(frame: Context, element: Element | Selector): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
-  await resolvedElement?.click()
-}
-export async function hover(frame: Context, element: Element | Selector): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
-  await resolvedElement?.hover()
-}
-export async function waitUntilDisplayed(frame: Context, selector: Selector): Promise<void> {
-  await frame.waitForSelector(selector)
-}
 
-// #endregion
-
-// #region BUILD
 const browserNames = ['chrome', 'firefox']
 /*
  * Spawn a browser with a given configuration (INTERNAL USE ONLY)
@@ -263,5 +242,3 @@ export async function build(env: any): Promise<[Driver, () => Promise<void>]> {
 
   return [page, () => driver.close()]
 }
-
-// #endregion

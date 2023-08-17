@@ -1,7 +1,7 @@
 import {makeCore, type Core, type ECClient} from '../../src/index'
 import {type SpecType} from '@applitools/driver'
 import {getTestInfo} from '@applitools/test-utils'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('ecSessionId', () => {

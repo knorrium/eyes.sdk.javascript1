@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "types": ["node", "mocha", "webdriverio/async"]
+  },
+  "include": ["src", "test", "types/v7.d.ts"]
+
+}

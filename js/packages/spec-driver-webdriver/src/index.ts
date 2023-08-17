@@ -1,7 +1,6 @@
-import type {SpecDriver} from '@applitools/driver'
 import * as spec from './spec-driver'
 
 export * from './spec-driver'
 
-const typedSpec: SpecDriver<spec.SpecType> = spec
+const typedSpec: spec.SpecDriver = spec
 export default typedSpec

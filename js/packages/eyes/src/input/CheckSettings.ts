@@ -422,16 +422,19 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
 
   protected _isElementReference(value: any): value is ElementReference<TSpec> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
-    return !!spec.isElement?.(value) || this._isSelectorReference(value)
+    return !!spec.isElement?.(value) || !!spec.isSecondaryElement?.(value) || this._isSelectorReference(value)
   }
   protected _isSelectorReference(selector: any): selector is SelectorReference<TSpec> {
     const spec = this._spec ?? ((this.constructor as typeof CheckSettingsAutomationFluent)._spec as typeof this._spec)
     return (
       !!spec.isSelector?.(selector) ||
+      !!spec.isSecondarySelector?.(selector) ||
       utils.types.isString(selector) ||
       (utils.types.isPlainObject(selector) &&
         utils.types.has(selector, 'selector') &&
-        (utils.types.isString(selector.selector) || !!spec.isSelector?.(selector.selector)))
+        (utils.types.isString(selector.selector) ||
+          !!spec.isSelector?.(selector.selector) ||
+          !!spec.isSecondarySelector?.(selector)))
     )
   }
   protected _isFrameReference(value: any): value is FrameReference<TSpec> {
@@ -450,7 +453,9 @@ export class CheckSettingsAutomationFluent<TSpec extends Core.SpecType = Core.Sp
   ) {
     super(settings)
     this._spec = spec!
-    this._settings ??= {}
+    this._settings = utils.types.instanceOf(settings, CheckSettingsAutomationFluent)
+      ? settings.toObject()
+      : settings ?? {}
   }
 
   region(region: RegionReference<TSpec>) {

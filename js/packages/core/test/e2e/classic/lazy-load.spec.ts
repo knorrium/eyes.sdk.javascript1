@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('lazy load', () => {
@@ -14,7 +14,7 @@ describe('lazy load', () => {
   })
 
   it('performs lazy load before taking screenshot', async () => {
-    await driver.url('https://applitools.github.io/demo/TestPages/LazyLoad/')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/LazyLoad/')
 
     const core = makeCore({spec})
 
@@ -33,7 +33,7 @@ describe('lazy load', () => {
       settings: {fully: true, lazyLoad: true, hideScrollbars: true},
     })
 
-    await driver.url('https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/LazyLoad/insideScrollableArea.html')
 
     await eyes.check({
       settings: {

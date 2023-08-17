@@ -5,6 +5,5 @@
     "moduleResolution": "nodenext",
     "target": "es2021",
     "types": ["node", "mocha"],
-  },
-  "ts-node": {"transpileOnly": true},
+  }
 }

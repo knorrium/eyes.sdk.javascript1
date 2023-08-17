@@ -115,6 +115,7 @@ export function makeEmitter(): Emitter {
   }
 
   function addExpression(expression: string) {
+    commands.default ??= []
     const id = commands.default.push('') - 1
     return makeRef(({name, type}) => {
       if (name) {

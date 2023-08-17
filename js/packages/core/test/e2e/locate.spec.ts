@@ -1,6 +1,6 @@
 import {makeCore, type Core} from '../../src/index'
 import {type SpecType} from '@applitools/driver'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('locate web', () => {
@@ -18,7 +18,7 @@ describe('locate web', () => {
   })
 
   it('returns correct coordinates for web page', async () => {
-    await driver.url('https://applitools.github.io/demo/')
+    await driver.navigateTo('https://applitools.github.io/demo/')
     const regions = await core.locate({
       target: driver,
       settings: {appName: 'core e2e helloworld', locatorNames: ['button']},
@@ -70,8 +70,8 @@ describe('locate web emulator', () => {
   })
 
   it('returns correct coordinates for web emulator page', async () => {
-    await driver.url('https://applitools.github.io/demo/')
-    await driver.execute(`document.querySelector('meta[name=viewport]').setAttribute('content', '')`)
+    await driver.navigateTo('https://applitools.github.io/demo/')
+    await driver.executeScript(`document.querySelector('meta[name=viewport]').setAttribute('content', '')`, [])
     const regions = await core.locate({
       target: driver,
       settings: {appName: 'core e2e helloworld emulator', locatorNames: ['button']},

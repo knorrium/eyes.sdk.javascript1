@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('default scroll root element', () => {
@@ -24,9 +24,9 @@ describe('default scroll root element', () => {
         testName: 'test scrollingElement',
       },
     })
-    await driver.url('https://applitools.github.io/demo/TestPages/ScrollingElement/body.html')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/ScrollingElement/body.html')
     await eyes.check({settings: {name: 'body scrolling element', fully: true, hideScrollbars: true}})
-    await driver.url('https://applitools.github.io/demo/TestPages/ScrollingElement/html.html')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/ScrollingElement/html.html')
     await eyes.check({settings: {name: 'html scrolling element', fully: true, hideScrollbars: true}})
     await eyes.close({settings: {updateBaselineIfNew: false}})
     const [result] = await eyes.getResults()

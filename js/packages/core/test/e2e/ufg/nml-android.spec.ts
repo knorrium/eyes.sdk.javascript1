@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/ufg/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('nml - android (@sauce)', () => {

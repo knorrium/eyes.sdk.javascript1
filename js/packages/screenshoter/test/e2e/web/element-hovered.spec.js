@@ -15,7 +15,7 @@ describe('screenshoter web', () => {
 
   it('take hovered element screenshot', async () => {
     const element = await driver.element('#input')
-    await driver.target.$(element.target).moveTo()
+    await element.hover()
 
     await test({
       type: 'web',

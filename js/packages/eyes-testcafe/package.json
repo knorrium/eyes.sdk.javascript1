@@ -79,7 +79,7 @@
     "perf:full": "yarn perf && yarn perf -c 5",
     "perf:lite": "testcafe chrome:headless test/perf/perf-lite.spec.js",
     "perf:lite:full": "yarn perf:lite && yarn perf:lite -c 5",
-    "up:framework": "run --top-level add-silent testcafe"
+    "up:framework": "yarn add --dev --caret testcafe${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
     "@applitools/core": "1.4.6",

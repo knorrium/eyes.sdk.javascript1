@@ -1,4 +1,4 @@
-import {Driver, Element, Eyes, VisualGridRunner, ClassicRunner, ConfigurationPlain, TestResults} from './api'
+import {Element, Eyes, VisualGridRunner, ClassicRunner, ConfigurationPlain, TestResults} from './api'
 
 if (!process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION) {
   try {
@@ -43,7 +43,7 @@ class EyesService {
   private async _eyesOpen() {
     if (!this._eyes.isOpen) {
       this._testResults = undefined
-      await this._eyes.open(browser as unknown as Driver)
+      await this._eyes.open(browser)
     }
   }
 

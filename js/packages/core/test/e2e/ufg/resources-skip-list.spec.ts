@@ -1,7 +1,7 @@
 import {makeCore} from '../../../src/ufg/core'
 import {makeTestServer} from '@applitools/test-server'
 import {adjustUrlToDocker} from '../../utils/adjust-url-to-docker'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('resources skip list', () => {
@@ -20,7 +20,7 @@ describe('resources skip list', () => {
 
   it('skips already fetched resources', async () => {
     const pageUrl = adjustUrlToDocker(`http://localhost:${server.port}/skip-list/skip-list.html`)
-    await driver.url(pageUrl)
+    await driver.navigateTo(pageUrl)
     const core = makeCore({spec, concurrency: 10})
     const eyes = await core.openEyes({
       target: driver,
@@ -35,7 +35,7 @@ describe('resources skip list', () => {
       },
     })
     await eyes.check({settings: {stepIndex: 0, fully: true}})
-    await driver.url(pageUrl)
+    await driver.navigateTo(pageUrl)
     await eyes.check({settings: {stepIndex: 1, fully: true}})
     await eyes.close({settings: {updateBaselineIfNew: false}})
     const [result] = await eyes.getResults()

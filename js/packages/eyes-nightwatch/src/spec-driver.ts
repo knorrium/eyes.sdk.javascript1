@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/ban-types: ["error", {"types": {"Function": false}}] */
-import type {CommonSelector} from '@applitools/driver'
+import type {SpecType, CommonSelector} from '@applitools/driver'
 import type * as Selenium from 'selenium-webdriver'
 import type * as Nightwatch from 'nightwatch'
 import * as spec from '@applitools/spec-driver-webdriver'
@@ -9,55 +9,51 @@ export * from '@applitools/spec-driver-webdriver'
 
 type ApplitoolsBrand = {__applitoolsBrand?: never}
 
-export type Driver = spec.Driver
-export type Element = spec.Element
-export type ShadowRoot = spec.ShadowRoot
-export type Selector = spec.Selector
-
 export type NWDriver = Nightwatch.NightwatchBrowser & ApplitoolsBrand
-export type NWElement = Element & ApplitoolsBrand
-export type NWShadowRoot = ({id_: string} | ShadowRoot) & ApplitoolsBrand
+export type NWElement = (spec.Element | Selenium.WebElement | Nightwatch.NightwatchTypedCallbackResult<Element>) &
+  ApplitoolsBrand
+export type NWShadowRoot = ({id_: string} | spec.ShadowRoot) & ApplitoolsBrand
 export type NWSelector = (
-  | Nightwatch.ElementProperties
   | string
+  | Nightwatch.ElementProperties
   | Exclude<Selenium.Locator, Function>
   | ((webdriver: Selenium.WebDriver) => Promise<any>)
   | {using: string; value: string}
-  | Selector
 ) &
   ApplitoolsBrand
+export type NWSpecType = SpecType<NWDriver, NWDriver, NWElement, NWSelector, never>
 
-export type NWResponseElement = Nightwatch.NightwatchTypedCallbackResult<Element> & ApplitoolsBrand
+export type SecondaryDriver = (NWDriver | spec.StaticDriver) & ApplitoolsBrand
+export type SecondaryElement = (Selenium.WebElement | Nightwatch.NightwatchTypedCallbackResult<Element>) &
+  ApplitoolsBrand
+export type SecondarySpecType = SpecType<SecondaryDriver, never, SecondaryElement, never, never>
+
+export type Driver = spec.Driver<NWDriver> & ApplitoolsBrand
+export type Element = spec.Element & ApplitoolsBrand
+export type ShadowRoot = spec.ShadowRoot & ApplitoolsBrand
+export type Selector = NWSelector & ApplitoolsBrand
+export type PrimarySpecType = SpecType<Driver, Driver, Element, Selector, SecondarySpecType>
 
 const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
   return byHash.includes(Object.keys(selector)[0] as (typeof byHash)[number])
-}
-const SHADOW_ROOT_ID = 'shadow-6066-11e4-a52e-4f735466cecf'
-function extractShadowRootId(shadowRoot: ShadowRoot | NWShadowRoot): string {
-  return (
-    (shadowRoot as {'shadow-6066-11e4-a52e-4f735466cecf': string})[SHADOW_ROOT_ID] ?? (shadowRoot as {id_: string}).id_
-  )
-}
-function transformShadowRoot(shadowRoot: ShadowRoot | NWShadowRoot): ShadowRoot {
-  return {[SHADOW_ROOT_ID]: extractShadowRootId(shadowRoot)}
 }
 const XPATH_SELECTOR_START = ['/', '(', '../', './', '*/']
 function isXpathSelector(selector: string): boolean {
   return XPATH_SELECTOR_START.some(start => selector.startsWith(start))
 }
 
-export function isDriver(driver: any): driver is Driver | NWDriver {
-  return spec.isDriver(driver) || utils.types.instanceOf(driver, 'NightwatchAPI')
+export function isSecondaryDriver(driver: any): driver is SecondaryDriver {
+  return utils.types.instanceOf(driver, 'NightwatchAPI') || spec.isSecondaryDriver(driver)
 }
-export function isElement(element: any): element is Element | NWElement | NWResponseElement {
-  return utils.types.has(element, 'value') ? spec.isElement(element.value) : spec.isElement(element)
+export function isSecondaryElement(element: any): element is SecondaryElement {
+  return (
+    (utils.types.has(element, 'value') && spec.isElement(element.value)) ||
+    utils.types.has(element, 'webElement') ||
+    utils.types.instanceOf(element, 'WebElement')
+  )
 }
-export function isShadowRoot(shadowRoot: any): shadowRoot is ShadowRoot | NWShadowRoot {
-  if (!shadowRoot) return false
-  return spec.isShadowRoot(shadowRoot) || Boolean(extractShadowRootId(shadowRoot))
-}
-export function isSelector(selector: any): selector is Selector | NWSelector {
+export function isSelector(selector: any): selector is Selector {
   if (!selector) return false
   return (
     spec.isSelector(selector) ||
@@ -68,26 +64,31 @@ export function isSelector(selector: any): selector is Selector | NWSelector {
     utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy')
   )
 }
-export function transformDriver(driver: NWDriver): Driver {
-  if (spec.isDriver(driver)) return driver
+export function toDriver(driver: SecondaryDriver): Driver | Promise<Driver> {
+  if (spec.isDriver(driver)) return driver as Driver
+  if (spec.isSecondaryDriver(driver)) return spec.toDriver(driver) as Driver | Promise<Driver>
   const selenium = (driver.options as any).selenium
   const webdriver = (driver.options as any).webdriver
   const ssl = selenium?.ssl ?? webdriver?.ssl
   const hostname = selenium?.host ?? webdriver?.host
   const port = selenium?.port ?? webdriver?.port
   const path = selenium?.default_path_prefix ?? webdriver?.default_path_prefix
-  const transformedDriver = spec.transformDriver({
+  return spec.toDriver({
     sessionId: driver.sessionId,
     serverUrl: `http${ssl ? 's' : ''}://${hostname ?? 'localhost'}${port ? `:${port}` : ''}${path}`,
     capabilities: (driver as any).capabilities,
-  }) as spec.Driver
-  transformedDriver.original = driver
-  return transformedDriver
+    original: driver,
+  })
 }
-export function transformElement(element: NWElement | NWResponseElement): Element {
-  return utils.types.has(element, 'value') ? spec.transformElement(element.value) : spec.transformElement(element)
+export function toElement(element: SecondaryElement): Element | Promise<Element> {
+  if (utils.types.has(element, 'value')) {
+    return element.value
+  } else if (utils.types.instanceOf(element, 'WebElement')) {
+    return element.getId().then(elementId => spec.toElement({elementId}))
+  }
+  return element
 }
-export function transformSelector(selector: CommonSelector<NWSelector>): NWSelector {
+export function toSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.isString(selector)) {
     return {locateStrategy: isXpathSelector(selector) ? 'xpath' : 'css selector', selector}
   } else if (utils.types.has(selector, 'selector')) {
@@ -103,7 +104,7 @@ export function transformSelector(selector: CommonSelector<NWSelector>): NWSelec
   }
   return selector
 }
-export function untransformSelector(selector: NWSelector): CommonSelector | null {
+export function toSimpleCommonSelector(selector: Selector): CommonSelector | null {
   if (utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy') || utils.types.isFunction(selector)) {
     return null
   } else if (utils.types.isString(selector)) {
@@ -127,41 +128,31 @@ export function untransformSelector(selector: NWSelector): CommonSelector | null
 }
 export async function findElement(
   driver: Driver,
-  selector: Selector | NWSelector,
-  parent?: Element | ShadowRoot | NWElement | NWShadowRoot,
+  selector: Selector,
+  parent?: Element | ShadowRoot,
 ): Promise<Element | null> {
-  const originalDriver = driver.original as NWDriver
-  let element = null as Element | null
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
-    parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
-    element = await spec.findElement(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
-  } else if (!(Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2)) {
-    try {
-      element = await originalDriver.findElement(selector as any)
-    } catch {
-      element = null
-    }
+    return spec.findElement(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
   }
-  return spec.isElement(element) ? spec.transformElement(element) : null
+  try {
+    return await driver.original.findElement(selector as Nightwatch.Definition)
+  } catch {
+    return null
+  }
 }
 export async function findElements(
   driver: Driver,
-  selector: Selector | NWSelector,
-  parent?: Element | ShadowRoot | NWElement | NWShadowRoot,
+  selector: Selector,
+  parent?: Element | ShadowRoot,
 ): Promise<Element[]> {
-  const originalDriver = driver.original as NWDriver
-  let elements = [] as Element[]
   if (utils.types.has(selector, 'selector') && selector.locateStrategy && !selector.index) {
-    parent = isShadowRoot(parent) ? transformShadowRoot(parent) : parent
-    elements = await spec.findElements(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
-  } else if (!(Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2)) {
-    try {
-      elements = await originalDriver.findElements(selector as any)
-    } catch {
-      elements = []
-    }
+    return spec.findElements(driver, {using: selector.locateStrategy, value: selector.selector}, parent)
   }
-  return utils.types.isArray(elements) ? elements : []
+  try {
+    return await driver.original.findElements(selector as Nightwatch.Definition)
+  } catch {
+    return []
+  }
 }
 
 const browserOptionsNames: Record<string, string> = {
@@ -215,14 +206,6 @@ export async function build(env: any): Promise<[NWDriver, () => Promise<void>]> 
   if (options.capabilities.browserName === '') options.capabilities.browserName = null
   if (options.capabilities.browserName !== 'firefox') options.selenium = options.webdriver
 
-  if (Number.parseInt(process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION!) < 2) {
-    options.desiredCapabilities = options.capabilities
-    const client = Nightwatch.client(options)
-    client.isES6AsyncTestcase = true
-    await client.createSession()
-    return [client.api, () => client.session.close()]
-  } else {
-    const driver = await Nightwatch.createClient(options).launchBrowser()
-    return [driver, () => driver.end()]
-  }
+  const driver = await Nightwatch.createClient(options).launchBrowser()
+  return [driver, () => driver.end()]
 }

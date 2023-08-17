@@ -227,45 +227,6 @@
       }],
       "tests": [
         {
-          "key": "{{component}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "node-version": 14
-        },
-        {
-          "key": "{{component}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "node-version": 16
-        },
-        {
-          "key": "{{component}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "node-version": 18
-        },
-        {
-          "key": "{{component}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "node-version": 20
-        }
-      ],
-      "releases": [{
-        "npm": {"registry-url": "https://registry.npmjs.org"}
-      }]
-    },
-    "js/packages/spec-driver-webdriverio": {
-      "release-type": "node",
-      "component": "js/spec-driver-webdriverio",
-      "builds": [{
-        "key": "{{component}}/{{environment}}",
-        "artifacts": ["../*/dist", "../*/types"]
-      }],
-      "tests": [
-        {
-          "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "framework-version": 5,
-          "node-version": 14
-        },
-        {
           "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "framework-version": 6,
@@ -891,29 +852,20 @@
           "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "framework-version": 6,
-          "node-version": 14,
+          "node-version": 16,
           "test-type": "local",
           "env": {"FIREFOX_IMAGE": "selenium/standalone-firefox:4.1.3-20220427"},
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
-          "report": {"name": "js_wdio_5", "params": {"framework": 6, "node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "js_wdio_5", "params": {"framework": 6, "node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
           "framework-version": 7,
-          "node-version": 16,
-          "test-type": "local",
-          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
-          "report": {"name": "js_wdio_5", "params": {"framework": 7, "node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
-        },
-        {
-          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
-          "artifacts": ["./logs/**/*"],
-          "framework-version": 8,
           "node-version": 18,
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
-          "report": {"name": "js_wdio_5", "params": {"framework": 8, "node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+          "report": {"name": "js_wdio_5", "params": {"framework": 7, "node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
@@ -923,6 +875,16 @@
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "js_wdio_5", "params": {"framework": 8, "node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        },
+        {
+          "key": "{{component}}/{{test-type}}/protocol-cdp/framework-{{framework-version}}/node-{{node-version}}",
+          "artifacts": ["./logs/**/*"],
+          "framework-version": 8,
+          "node-version": 20,
+          "test-type": "local:cdp",
+          "env": {"APPLITOOLS_WEBDRIVERIO_PROTOCOL": "cdp"},
+          "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
+          "report": {"name": "js_wdio_5", "params": {"protocol": "cdp", "framework": 8, "node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
           "key": "{{component}}/{{test-type}}/framework-{{framework-version}}",
@@ -1009,40 +971,45 @@
       }],
       "tests": [
         {
-          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 2,
           "node-version": 14,
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 14}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 3,
           "node-version": 16,
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 3,
           "node-version": 18,
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/{{test-type}}/node-{{node-version}}",
+          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}/node-{{node-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 3,
           "node-version": 20,
           "test-type": "local",
           "generic": {"config": "./test/generic/config.mjs", "suite": "local"},
           "report": {"name": "nightwatch", "params": {"node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
         },
         {
-          "key": "{{component}}/{{test-type}}",
+          "key": "{{component}}/{{test-type}}/framework-{{framework-version}}",
           "artifacts": ["./logs/**/*"],
+          "framework-version": 3,
           "test-type": "sauce",
           "generic": {"config": "./test/generic/config.mjs", "suite": "sauce"},
           "parallel": 2,

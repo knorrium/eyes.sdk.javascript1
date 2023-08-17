@@ -42,7 +42,7 @@
     "build": "run --top-level tspc --project ./tsconfig.build.json",
     "test": "run --top-level mocha './test/**/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker --exit",
     "setup": "run --top-level browsers:setup",
-    "up:framework": "run --top-level add-silent selenium-webdriver"
+    "up:framework": "yarn add --dev --caret selenium-webdriver${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
     "@applitools/driver": "workspace:*",

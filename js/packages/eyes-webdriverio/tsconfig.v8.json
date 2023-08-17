@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "types": ["node", "mocha", "@wdio/globals/types"],
+  },
+  "include": ["src", "test", "types/v8.d.ts"]
+}

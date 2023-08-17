@@ -8,7 +8,7 @@ globalThis.spec = spec
 globalThis.sdk = makeSDK({
   name: 'eyes.browser-extension',
   version: require('../package.json').version,
-  spec,
+  spec: {...spec, transformSelector: spec.toSelector},
 })
 
 browser.tabs.onUpdated.addListener((tabId, change) => {

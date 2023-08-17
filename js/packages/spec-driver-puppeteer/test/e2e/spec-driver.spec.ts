@@ -39,14 +39,14 @@ describe('spec driver', async () => {
     it('isSelector(wrong)', async () => {
       await isSelector({input: {} as spec.Selector, expected: false})
     })
-    it('transformSelector(string)', async () => {
-      await transformSelector({input: '.element', expected: '.element'})
-    })
-    it('transformSelector(common-selector)', async () => {
-      await transformSelector({input: {type: 'xpath', selector: '//element'}, expected: '//element'})
-    })
     it('isStaleElementError(err)', async () => {
       await isStaleElementError()
+    })
+    it('toSelector(string)', async () => {
+      await toSelector({input: '.element', expected: '.element'})
+    })
+    it('toSelector(common-selector)', async () => {
+      await toSelector({input: {type: 'xpath', selector: '//element'}, expected: '//element'})
     })
     it('executeScript(script, args)', async () => {
       await executeScript()
@@ -132,14 +132,14 @@ describe('spec driver', async () => {
     it('isSelector(wrong)', async () => {
       await isSelector({input: {} as spec.Selector, expected: false})
     })
-    it('transformSelector(string)', async () => {
-      await transformSelector({input: '.element', expected: '.element'})
-    })
-    it('transformSelector(common-selector)', async () => {
-      await transformSelector({input: {type: 'xpath', selector: '//element'}, expected: '//element'})
-    })
     it('isStaleElementError(err)', async () => {
       await isStaleElementError()
+    })
+    it('toSelector(string)', async () => {
+      await toSelector({input: '.element', expected: '.element'})
+    })
+    it('toSelector(common-selector)', async () => {
+      await toSelector({input: {type: 'xpath', selector: '//element'}, expected: '//element'})
     })
     it('executeScript(script, args)', async () => {
       await executeScript()
@@ -209,8 +209,8 @@ describe('spec driver', async () => {
     const result = spec.isSelector(input)
     assert.strictEqual(result, expected)
   }
-  async function transformSelector({input, expected}: {input: any; expected: spec.Selector}) {
-    const result = spec.transformSelector(input)
+  async function toSelector({input, expected}: {input: any; expected: spec.Selector}) {
+    const result = spec.toSelector(input)
     assert.deepStrictEqual(result, expected || input)
   }
   async function isStaleElementError() {

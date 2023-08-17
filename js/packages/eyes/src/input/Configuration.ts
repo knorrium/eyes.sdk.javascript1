@@ -109,17 +109,20 @@ export class ConfigurationData<TSpec extends Core.SpecType = Core.SpecType> impl
 
   private _isElementReference(value: any): value is TSpec['element'] | EyesSelector<TSpec['selector']> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
-    return !!spec.isElement?.(value) || this._isSelectorReference(value)
+    return !!spec.isElement?.(value) || !!spec.isSecondaryElement?.(value) || this._isSelectorReference(value)
   }
 
   private _isSelectorReference(selector: any): selector is EyesSelector<TSpec['selector']> {
     const spec = this._spec ?? ((this.constructor as typeof ConfigurationData)._spec as typeof this._spec)
     return (
       !!spec.isSelector?.(selector) ||
+      !!spec.isSecondarySelector?.(selector) ||
       utils.types.isString(selector) ||
       (utils.types.isPlainObject(selector) &&
         utils.types.has(selector, 'selector') &&
-        (utils.types.isString(selector.selector) || !!spec.isSelector?.(selector.selector)))
+        (utils.types.isString(selector.selector) ||
+          !!spec.isSelector?.(selector.selector) ||
+          !!spec.isSecondarySelector?.(selector.selector)))
     )
   }
 

@@ -39,12 +39,12 @@ export function makeExecuteScript({req, core}: Options) {
         }
 
         const driver = await makeDriver({
-          driver: spec.transformDriver({
+          driver: {
             sessionId: session.sessionId,
             serverUrl: session.serverUrl,
             capabilities: session.capabilities,
             proxy: session.proxy,
-          }),
+          },
           spec,
           logger,
         })

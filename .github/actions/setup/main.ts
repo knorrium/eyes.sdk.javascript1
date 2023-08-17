@@ -278,7 +278,7 @@ async function main() {
         else if (name === 'component') return job.name
         else return job[name as keyof Job] as string
       })
-      if (options?.filename) result = result.replace(/[\/\s]+/g, '-')
+      if (options?.filename) result = result.replace(/[\/\s:]+/g, '-')
       if (options?.sha) result += `#${sha}`
       return result
     }

@@ -37,7 +37,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts' --exit",
     "setup": "yarn puppeteer:setup",
     "puppeteer:setup": "PUPPETEER_PRODUCT=firefox node --require puppeteer/install.js --eval null",
-    "up:framework": "run --top-level add-silent puppeteer"
+    "up:framework": "yarn add --dev --caret puppeteer${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
     "@applitools/driver": "workspace:*",

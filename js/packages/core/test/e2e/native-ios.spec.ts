@@ -1,5 +1,5 @@
 import {makeCore} from '../../src/index'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 
 describe('native ios (@sauce)', () => {
   let driver: spec.Driver, destroyDriver: () => Promise<void>

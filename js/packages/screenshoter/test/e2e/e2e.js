@@ -1,10 +1,10 @@
 /* eslint no-console: off */
 
 const assert = require('assert')
-const webdriverio = require('webdriverio')
+const WebDriver = require('webdriver').default
 const pixelmatch = require('pixelmatch')
 const utils = require('@applitools/utils')
-const spec = require('@applitools/spec-driver-webdriverio')
+const spec = require('@applitools/spec-driver-webdriver')
 const {makeLogger} = require('@applitools/logger')
 const {Driver} = require('@applitools/driver')
 const {makeImage} = require('@applitools/image')
@@ -233,7 +233,7 @@ exports.makeDriver = async function makeDriver({
   }
   env = env || envs[process.env.APPLITOOLS_TEST_REMOTE === 'sauce' ? `${type}-sauce` : type]
   const url = new URL(env.url)
-  const browser = await webdriverio.remote({
+  const browser = await WebDriver.newSession({
     protocol: url.protocol ? url.protocol.replace(/:$/, '') : undefined,
     hostname: url.hostname,
     port: Number(url.port),

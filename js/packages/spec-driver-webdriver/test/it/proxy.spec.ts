@@ -38,7 +38,7 @@ describe('proxy', () => {
   })
 
   it('with proxy', async () => {
-    const proxifiedDriver = spec.transformDriver({
+    const proxifiedDriver = await spec.toDriver({
       sessionId: driver.sessionId,
       serverUrl: `https://localhost:${webdriverServer.port}`,
       proxy: {url: `http://localhost:${proxyServer.port}`},

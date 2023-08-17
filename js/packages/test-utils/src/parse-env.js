@@ -664,6 +664,7 @@ function parseEnv(
   } else if (protocol === 'cdp') {
     url = url || process.env.CVG_TESTS_CDP_REMOTE
     env.url = url ? new URL(url) : undefined
+    if (env.emulation) env.emulation = {name: emulation, ...EMULATIONS[emulation]}
   }
   return env
 }

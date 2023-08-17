@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('extract-text', () => {
@@ -20,7 +20,7 @@ describe('extract-text', () => {
       apiKey: process.env.APPLITOOLS_API_KEY!,
     }
     await core.setViewportSize!({target: driver, size: {width: 700, height: 460}})
-    await driver.url('https://applitools.github.io/demo/TestPages/OCRPage')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/OCRPage')
     const strings = await core.extractText({
       target: driver,
       settings: [

@@ -1,12 +1,12 @@
 /* eslint @typescript-eslint/ban-types: ["error", {"types": {"Function": false}}] */
 import type {Size, Region} from '@applitools/utils'
 import type {
-  SpecType as BaseSpecType,
+  SpecType,
+  SpecDriver as BaseSpecDriver,
   CommonSelector,
   Cookie,
   DriverInfo,
   WaitOptions,
-  ScreenOrientation,
 } from '@applitools/driver'
 import {Command} from 'selenium-webdriver/lib/command'
 import * as Selenium from 'selenium-webdriver'
@@ -23,11 +23,8 @@ export type Selector = (
   | {using: string; value: string}
 ) &
   ApplitoolsBrand
-export type SpecType = BaseSpecType<Driver, Driver, Element, Selector>
-
-// #region HELPERS
-
-const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
+export type PrimarySpecType = SpecType<Driver, Driver, Element, Selector, never>
+export type SpecDriver = BaseSpecDriver<PrimarySpecType>
 
 function extractElementId(element: Element | ShadowRoot): Promise<string> | string {
   return isElement(element) ? (element.getId() as Promise<string>) : element['shadow-6066-11e4-a52e-4f735466cecf']
@@ -37,6 +34,7 @@ function transformShadowRoot(driver: Driver, shadowRoot: ShadowRoot | Element): 
     ? new Selenium.WebElement(driver, shadowRoot['shadow-6066-11e4-a52e-4f735466cecf'])
     : shadowRoot
 }
+const byHash = ['className', 'css', 'id', 'js', 'linkText', 'name', 'partialLinkText', 'tagName', 'xpath'] as const
 function isByHashSelector(selector: any): selector is Selenium.ByHash {
   return byHash.includes(Object.keys(selector)[0] as (typeof byHash)[number])
 }
@@ -45,10 +43,6 @@ async function executeCustomCommand(driver: Driver, command: Command) {
     ? (driver as any).schedule(command)
     : driver.execute(command)
 }
-
-// #endregion
-
-// #region UTILITY
 
 export function isDriver(driver: any): driver is Driver {
   return utils.types.instanceOf(driver, 'WebDriver')
@@ -65,7 +59,18 @@ export function isSelector(selector: any): selector is Selector {
     utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy')
   )
 }
-export function transformDriver(driver: Driver): Driver {
+export async function isEqualElements(_driver: Driver, element1: Element, element2: Element): Promise<boolean> {
+  if (!element1 || !element2) return false
+  const elementId1 = await extractElementId(element1)
+  const elementId2 = await extractElementId(element2)
+  return elementId1 === elementId2
+}
+export function isStaleElementError(error: any): boolean {
+  if (!error) return false
+  error = error.originalError || error
+  return error instanceof Error && error.name === 'StaleElementReferenceError'
+}
+export function toDriver(driver: Driver): Driver {
   driver.getExecutor().defineCommand('getSessionDetails', 'GET', '/session/:sessionId')
   driver.getExecutor().defineCommand('getOrientation', 'GET', '/session/:sessionId/orientation')
   driver.getExecutor().defineCommand('getSystemBars', 'GET', '/session/:sessionId/appium/device/system_bars')
@@ -84,7 +89,7 @@ export function transformDriver(driver: Driver): Driver {
   }
   return driver
 }
-export function transformSelector(selector: CommonSelector<Selector>): Selector {
+export function toSelector(selector: CommonSelector<Selector>): Selector {
   if (utils.types.isString(selector)) {
     return {css: selector}
   } else if (utils.types.has(selector, 'selector')) {
@@ -95,8 +100,7 @@ export function transformSelector(selector: CommonSelector<Selector>): Selector 
   }
   return selector
 }
-
-export function untransformSelector(selector: Selector): CommonSelector | null {
+export function toSimpleCommonSelector(selector: Selector): CommonSelector | null {
   if (utils.types.instanceOf<Selenium.RelativeBy>(selector, 'RelativeBy') || utils.types.isFunction(selector)) {
     return null
   } else if (isByHashSelector(selector)) {
@@ -109,42 +113,9 @@ export function untransformSelector(selector: Selector): CommonSelector | null {
   }
   return selector
 }
-export function isStaleElementError(error: any): boolean {
-  if (!error) return false
-  error = error.originalError || error
-  return error instanceof Error && error.name === 'StaleElementReferenceError'
-}
-export async function isEqualElements(_driver: Driver, element1: Element, element2: Element): Promise<boolean> {
-  if (!element1 || !element2) return false
-  const elementId1 = await extractElementId(element1)
-  const elementId2 = await extractElementId(element2)
-  return elementId1 === elementId2
-}
-
-// #endregion
-
-// #region COMMANDS
-
 export async function executeScript(driver: Driver, script: ((arg: any) => any) | string, arg: any): Promise<any> {
   return driver.executeScript(script, arg)
 }
-export async function mainContext(driver: Driver): Promise<Driver> {
-  await driver.switchTo().defaultContent()
-  return driver
-}
-export async function parentContext(driver: Driver): Promise<Driver> {
-  if (process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION === '3') {
-    await executeCustomCommand(driver, new Command('switchToParentFrame'))
-    return driver
-  }
-  await driver.switchTo().parentFrame()
-  return driver
-}
-export async function childContext(driver: Driver, element: Element): Promise<Driver> {
-  await driver.switchTo().frame(element)
-  return driver
-}
-
 export async function findElement(driver: Driver, selector: Selector, parent?: Element): Promise<Element | null> {
   try {
     const root = parent ? transformShadowRoot(driver, parent) : driver
@@ -171,13 +142,66 @@ export async function waitForSelector(
     return driver.wait(Selenium.until.elementLocated(selector as Selenium.Locator), options?.timeout)
   }
 }
-export async function setElementText(driver: Driver, element: Element | Selector, keys: string): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
-  await resolvedElement?.clear()
-  await resolvedElement?.sendKeys(keys)
+export async function getElementRegion(_driver: Driver, element: Element): Promise<Region> {
+  if (utils.types.isFunction(element.getRect)) {
+    return element.getRect()
+  } else {
+    const {x, y} = await element.getLocation()
+    const {width, height} = await element.getSize()
+    return {x, y, width, height}
+  }
+}
+export async function getElementAttribute(_driver: Driver, element: Element, attr: string): Promise<string> {
+  return element.getAttribute(attr)
+}
+export async function setElementText(_driver: Driver, element: Element, keys: string): Promise<void> {
+  await element.clear()
+  await element.sendKeys(keys)
 }
 export async function getElementText(_driver: Driver, element: Element): Promise<string> {
   return element.getText()
+}
+export async function hover(driver: Driver, element: Element): Promise<void> {
+  if (process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION === '3') {
+    const {ActionSequence} = require('selenium-webdriver')
+    const action = new ActionSequence(driver)
+    await action.mouseMove(element).perform()
+  } else {
+    await driver.actions().move({origin: element}).perform()
+  }
+}
+export async function click(_driver: Driver, element: Element): Promise<void> {
+  await element.click()
+}
+export async function mainContext(driver: Driver): Promise<Driver> {
+  await driver.switchTo().defaultContent()
+  return driver
+}
+export async function parentContext(driver: Driver): Promise<Driver> {
+  if (process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION === '3') {
+    await executeCustomCommand(driver, new Command('switchToParentFrame'))
+    return driver
+  }
+  await driver.switchTo().parentFrame()
+  return driver
+}
+export async function childContext(driver: Driver, element: Element): Promise<Driver> {
+  await driver.switchTo().frame(element)
+  return driver
+}
+export async function getDriverInfo(driver: Driver): Promise<DriverInfo> {
+  const session = await driver.getSession()
+  return {sessionId: session.getId()}
+}
+export async function getCapabilities(driver: Driver): Promise<Record<string, any>> {
+  return (
+    (await executeCustomCommand(driver, new Command('getSessionDetails')).catch(() => null)) ??
+    (await driver
+      .getCapabilities()
+      .then(capabilities =>
+        Array.from(capabilities.keys()).reduce((obj, key) => Object.assign(obj, {[key]: capabilities.get(key)}), {}),
+      ))
+  )
 }
 export async function getWindowSize(driver: Driver): Promise<Size> {
   try {
@@ -199,6 +223,19 @@ export async function setWindowSize(driver: Driver, size: Size) {
     if (driver.manage().window().setSize) await driver.manage().window().setSize(size.width, size.height)
     else await executeCustomCommand(driver, new Command('setWindowSize').setParameters({...size}))
   }
+}
+export async function getOrientation(driver: Driver): Promise<'portrait' | 'landscape'> {
+  const orientation = await executeCustomCommand(driver, new Command('getOrientation'))
+  return orientation.toLowerCase() as 'portrait' | 'landscape'
+}
+export async function setOrientation(driver: Driver, orientation: 'portrait' | 'landscape') {
+  await executeCustomCommand(driver, new Command('setOrientation').setParameters({orientation}))
+}
+export async function getSystemBars(driver: Driver): Promise<{
+  statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
+  navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
+}> {
+  return executeCustomCommand(driver, new Command('getSystemBars'))
 }
 export async function getCookies(driver: Driver, context?: boolean): Promise<Cookie[]> {
   if (context) return driver.manage().getCookies()
@@ -227,20 +264,6 @@ export async function getCookies(driver: Driver, context?: boolean): Promise<Coo
     return copy
   })
 }
-export async function getDriverInfo(driver: Driver): Promise<DriverInfo> {
-  const session = await driver.getSession()
-  return {sessionId: session.getId()}
-}
-export async function getCapabilities(driver: Driver): Promise<Record<string, any>> {
-  return (
-    (await executeCustomCommand(driver, new Command('getSessionDetails')).catch(() => null)) ??
-    (await driver
-      .getCapabilities()
-      .then(capabilities =>
-        Array.from(capabilities.keys()).reduce((obj, key) => Object.assign(obj, {[key]: capabilities.get(key)}), {}),
-      ))
-  )
-}
 export async function getTitle(driver: Driver): Promise<string> {
   return driver.getTitle()
 }
@@ -250,58 +273,6 @@ export async function getUrl(driver: Driver): Promise<string> {
 export async function visit(driver: Driver, url: string): Promise<void> {
   await driver.get(url)
 }
-export async function takeScreenshot(driver: Driver): Promise<string> {
-  return driver.takeScreenshot()
-}
-export async function click(driver: Driver, element: Element | Selector): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
-  await resolvedElement?.click()
-}
-export async function hover(driver: Driver, element: Element | Selector) {
-  const resolvedElement = isSelector(element) ? await findElement(driver, element) : element
-  if (process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION === '3') {
-    const {ActionSequence} = require('selenium-webdriver')
-    const action = new ActionSequence(driver)
-    await action.mouseMove(resolvedElement).perform()
-  } else {
-    await driver.actions().move({origin: resolvedElement!}).perform()
-  }
-}
-export async function waitUntilDisplayed(driver: Driver, selector: Selector, timeout: number): Promise<void> {
-  const element = await findElement(driver, selector)
-  await driver.wait(Selenium.until.elementIsVisible(element!), timeout)
-}
-
-// #endregion
-
-// #region MOBILE COMMANDS
-export async function getSystemBars(driver: Driver): Promise<{
-  statusBar: {visible: boolean; x: number; y: number; height: number; width: number}
-  navigationBar: {visible: boolean; x: number; y: number; height: number; width: number}
-}> {
-  return executeCustomCommand(driver, new Command('getSystemBars'))
-}
-
-export async function setOrientation(driver: Driver, orientation: ScreenOrientation) {
-  await executeCustomCommand(driver, new Command('setOrientation').setParameters({orientation}))
-}
-
-export async function getOrientation(driver: Driver): Promise<'portrait' | 'landscape'> {
-  const orientation = await executeCustomCommand(driver, new Command('getOrientation'))
-  return orientation.toLowerCase() as 'portrait' | 'landscape'
-}
-export async function getElementRegion(_driver: Driver, element: Element): Promise<Region> {
-  if (utils.types.isFunction(element.getRect)) {
-    return element.getRect()
-  } else {
-    const {x, y} = await element.getLocation()
-    const {width, height} = await element.getSize()
-    return {x, y, width, height}
-  }
-}
-export async function getElementAttribute(_driver: Driver, element: Element, attr: string): Promise<string> {
-  return element.getAttribute(attr)
-}
 export async function performAction(driver: Driver, steps: any[]): Promise<void> {
   await executeCustomCommand(
     driver,
@@ -309,6 +280,9 @@ export async function performAction(driver: Driver, steps: any[]): Promise<void>
       actions: steps.map(({action, ...options}) => ({action, options})),
     }),
   )
+}
+export async function takeScreenshot(driver: Driver): Promise<string> {
+  return driver.takeScreenshot()
 }
 export async function getCurrentWorld(driver: Driver): Promise<string> {
   return executeCustomCommand(driver, new Command('getCurrentContext'))
@@ -319,10 +293,6 @@ export async function getWorlds(driver: Driver): Promise<string[]> {
 export async function switchWorld(driver: Driver, name: string): Promise<void> {
   return executeCustomCommand(driver, new Command('switchToContext').setParameters({name}))
 }
-
-// #endregion
-
-// #region TESTING
 
 const browserOptionsNames: Record<string, string> = {
   chrome: 'goog:chromeOptions',
@@ -393,5 +363,3 @@ export async function build(env: any): Promise<[Driver & {__serverUrl?: string},
   driver.__serverUrl = url
   return [driver, () => driver.quit()]
 }
-
-// #endregion

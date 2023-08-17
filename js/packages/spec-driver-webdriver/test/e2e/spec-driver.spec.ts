@@ -47,33 +47,33 @@ describe('spec driver', async () => {
     it('isSelector(wrong)', async () => {
       await isSelector({input: {} as spec.Selector, expected: false})
     })
-    it('transformDriver(static-driver)', async () => {
+    it('toDriver(static-driver)', async () => {
       const serverUrl = `${driver.options.protocol}://${driver.options.hostname}:${driver.options.port}/${driver.options.path}`
-      await transformDriver({input: {sessionId: driver.sessionId, serverUrl, capabilities: driver.capabilities}})
+      await toDriver({input: {sessionId: driver.sessionId, serverUrl, capabilities: driver.capabilities}})
     })
-    it('transformElement(element)', async () => {
-      await transformElement({input: await driver.findElement('css selector', 'div')})
+    it('toElement(element)', async () => {
+      await toElement({input: (await driver.findElement('css selector', 'div')) as any})
     })
-    it('transformElement(static-element)', async () => {
-      await transformElement({input: {elementId: 'element-guid'}})
+    it('toElement(static-element)', async () => {
+      await toElement({input: {elementId: 'element-guid'}})
     })
-    it('untransformSelector(css-selector)', async () => {
-      await untransformSelector({
+    it('toSimpleCommonSelector(css-selector)', async () => {
+      await toSimpleCommonSelector({
         input: {using: 'css selector', value: '.class'},
         expected: {type: 'css', selector: '.class'},
       })
     })
-    it('untransformSelector(xpath-selector)', async () => {
-      await untransformSelector({
+    it('toSimpleCommonSelector(xpath-selector)', async () => {
+      await toSimpleCommonSelector({
         input: {using: 'xpath', value: '//html'},
         expected: {type: 'xpath', selector: '//html'},
       })
     })
-    it('untransformSelector(string)', async () => {
-      await untransformSelector({input: '.class', expected: '.class'})
+    it('toSimpleCommonSelector(string)', async () => {
+      await toSimpleCommonSelector({input: '.class', expected: '.class'})
     })
-    it('untransformSelector(common-selector)', async () => {
-      await untransformSelector({
+    it('toSimpleCommonSelector(common-selector)', async () => {
+      await toSimpleCommonSelector({
         input: {type: 'selector', selector: '.class'},
         expected: {type: 'selector', selector: '.class'},
       })
@@ -159,6 +159,9 @@ describe('spec driver', async () => {
         input: {element: await driver.findElement('css selector', 'input'), text: 'Ad multos annos'},
       })
     })
+    it('setViewportSize()', async () => {
+      await setViewportSize({input: {width: 100, height: 100}})
+    })
     it('getCookies()', async () => {
       await getCookies()
     })
@@ -218,7 +221,7 @@ describe('spec driver', async () => {
         app: 'https://applitools.jfrog.io/artifactory/Examples/android/1.3/app-debug.apk',
         device: 'Pixel 3a XL',
       })
-      await spec.click(driver, {using: 'id', value: 'com.applitools.eyes.android:id/btn_web_view'})
+      await spec.click(driver, (await spec.findElement(driver, {using: 'id', value: 'btn_web_view'}))!)
       await utils.general.sleep(5000)
     })
 
@@ -251,7 +254,7 @@ describe('spec driver', async () => {
         device: 'iPhone 13',
         capabilities: {'appium:fullContextList': true},
       })
-      await spec.click(driver, {using: 'accessibility id', value: 'Web view'})
+      await spec.click(driver, (await spec.findElement(driver, {using: 'accessibility id', value: 'Web view'}))!)
       await utils.general.sleep(5000)
       await spec.getWorlds(driver)
       await utils.general.sleep(5000)
@@ -296,28 +299,28 @@ describe('spec driver', async () => {
     const result = await spec.isEqualElements(driver, input.element1, input.element2)
     assert.deepStrictEqual(result, expected)
   }
-  async function transformDriver({input}: {input: spec.StaticDriver}) {
-    const transformedDriver = spec.transformDriver(input)
+  async function toDriver({input}: {input: spec.StaticDriver}) {
+    const transformedDriver = await spec.toDriver(input)
     const result = await transformedDriver.getUrl()
     const expected = await transformedDriver.getUrl()
     assert.deepStrictEqual(result, expected)
   }
-  async function transformElement({input}: {input: spec.Element | spec.StaticElement}) {
+  async function toElement({input}: {input: spec.StaticElement}) {
     const elementId = utils.types.has(input, 'elementId') ? input.elementId : extractElementId(input)
-    const result = spec.transformElement(input)
+    const result = spec.toElement(input)
     assert.deepStrictEqual(result, {
       ELEMENT: elementId,
       'element-6066-11e4-a52e-4f735466cecf': elementId,
     })
   }
-  async function untransformSelector({
+  async function toSimpleCommonSelector({
     input,
     expected,
   }: {
     input: spec.Selector | {type: string; selector: string} | string | null
     expected: {type: string; selector: string} | string | null
   }) {
-    assert.deepStrictEqual(spec.untransformSelector(input as spec.Selector), expected)
+    assert.deepStrictEqual(spec.toSimpleCommonSelector(input as spec.Selector), expected)
   }
   async function executeScript() {
     const element = await driver.findElement('css selector', 'html')
@@ -456,6 +459,11 @@ describe('spec driver', async () => {
       rect = await driver.getWindowRect()
     }
     assert.deepStrictEqual(rect, {x: 0, y: 0, ...input})
+  }
+  async function setViewportSize({input}: {input: Size}) {
+    await spec.setViewportSize(driver, input)
+    const size = await driver.executeScript('return {width: window.innerWidth, height: window.innerHeight}', [])
+    assert.deepStrictEqual(size, {...input})
   }
   async function getCookies({input}: {input?: {context: boolean}} = {}) {
     const cookie: Cookie = {

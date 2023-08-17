@@ -1,4 +1,4 @@
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import {makeCore} from '../../src/index'
 
 describe('typed check', () => {
@@ -13,7 +13,7 @@ describe('typed check', () => {
   })
 
   it('performs classic check during ufg test', async () => {
-    await driver.url('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
 
     const core = makeCore({spec})
     const manager = await core.makeManager({type: 'ufg'})
@@ -69,7 +69,7 @@ describe('typed check', () => {
   })
 
   it.skip('performs ufg check during classic test', async () => {
-    await driver.url('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
 
     const core = makeCore({spec})
     const manager = await core.makeManager({type: 'classic'})

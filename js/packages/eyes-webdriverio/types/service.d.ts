@@ -1,34 +1,20 @@
-import type {
-  Element,
-  Selector,
-  Eyes,
-  ConfigurationPlain,
-  Configuration,
-  CheckSettingsPlain,
-  CheckSettings,
-  TestResults,
-  TestResultsSummary,
-} from './index'
-  
-declare global {
-  namespace WebdriverIO {
-    interface ServiceOption extends ConfigurationPlain {
-      useVisualGrid?: boolean
-      concurrency?: number
-      eyes?: ServiceOption
-    }
-    interface Browser {
-      getEyes(): Eyes
-      eyesCheck(checkSettings?: CheckSettingsPlain): Promise<void>
-      eyesCheck(title: string, checkSettings: CheckSettings): Promise<void>
-      eyesSetScrollRootElement(element: Element | Selector): void
-      eyesAddProperty(key: string, value: string): void
-      eyesClearProperties(): void
-      eyesGetTestResults(): Promise<TestResults>
-      eyesSetConfiguration(configuration: ConfigurationPlain): void
-      eyesGetConfiguration(): Configuration
-      eyesGetIsOpen(): boolean
-      eyesGetAllTestResults(throwErr: boolean): Promise<TestResultsSummary>
-    }
-  }
+import { ConfigurationPlain } from './api';
+interface EyesServiceOptions extends ConfigurationPlain {
+    useVisualGrid?: boolean;
+    concurrency?: number;
+    eyes?: EyesServiceOptions;
 }
+declare class EyesService {
+    private _eyes;
+    private _appName?;
+    private _testResults?;
+    constructor({ useVisualGrid, concurrency, eyes, ...config }: EyesServiceOptions);
+    private _eyesOpen;
+    private _eyesClose;
+    beforeSession(config: Record<string, unknown>): void;
+    before(): void;
+    beforeTest(test: any): void;
+    afterTest(): Promise<void>;
+    after(): Promise<void>;
+}
+export = EyesService;

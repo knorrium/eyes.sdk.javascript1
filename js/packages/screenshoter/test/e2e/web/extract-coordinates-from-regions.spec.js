@@ -13,20 +13,17 @@ describe('coded regions', async () => {
   })
 
   it('extract coded regions coordinates with fully true', async () => {
-    const webElement = await driver.currentContext._spec.findElement(driver.target, {
-      using: 'css selector',
-      value: '#overflowing-div > img:nth-child(3)',
-    })
+    const element = await driver.element('#overflowing-div > img:nth-child(3)')
     const regionsToCalculate = [
       {region: '#overflowing-div > img:nth-child(2)'},
-      {region: webElement},
+      {region: element},
       {region: '#overflowing-div > img:nth-child(4)'},
       {region: '#overflowing-div > img:nth-child(15)'},
     ]
     const expectedCoordinates = [
       {
         regions: [{region: {x: 8, y: 80, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(2)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(2)'},
       },
       {
         regions: [{region: {x: 322, y: 80, width: 310, height: 198}}],
@@ -34,11 +31,11 @@ describe('coded regions', async () => {
       },
       {
         regions: [{region: {x: 636, y: 80, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(4)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(4)'},
       },
       {
         regions: [{region: {x: 322, y: 888, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(15)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(15)'},
       },
     ]
     await testCodedRegions(
@@ -53,20 +50,17 @@ describe('coded regions', async () => {
     )
   })
   it('extract coded regions coordinates with fully false', async () => {
-    const webElement = await driver.currentContext._spec.findElement(driver.target, {
-      using: 'css selector',
-      value: '#overflowing-div > img:nth-child(3)',
-    })
+    const element = await driver.element('#overflowing-div > img:nth-child(3)')
     const regionsToCalculate = [
       {region: '#overflowing-div > img:nth-child(2)'},
-      {region: webElement},
+      {region: element},
       {region: '#overflowing-div > img:nth-child(4)'},
       {region: '#overflowing-div > img:nth-child(15)'},
     ]
     const expectedCoordinates = [
       {
         regions: [{region: {x: 8, y: 80, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(2)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(2)'},
       },
       {
         regions: [{region: {x: 322, y: 80, width: 310, height: 198}}],
@@ -74,11 +68,11 @@ describe('coded regions', async () => {
       },
       {
         regions: [{region: {x: 636, y: 80, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(4)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(4)'},
       },
       {
         regions: [{region: {x: 322, y: 888, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(15)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(15)'},
       },
     ]
     await testCodedRegions(
@@ -98,7 +92,7 @@ describe('coded regions', async () => {
     const expectedCoordinates = [
       {
         regions: [{region: {x: 322, y: 492, width: 310, height: 198}}],
-        selector: {selector: '#overflowing-div > img:nth-child(21)'},
+        selector: {type: 'css', selector: '#overflowing-div > img:nth-child(21)'},
       },
     ]
     await testCodedRegions(
@@ -125,7 +119,7 @@ describe('coded regions', async () => {
     const expectedCoordinates = [
       {
         regions: [{region: {x: 1, y: 519, width: 200, height: 200}}],
-        selector: {selector: '#inner'},
+        selector: {type: 'css', selector: '#inner'},
       },
     ]
     await testCodedRegions(

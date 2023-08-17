@@ -87,17 +87,20 @@
     "lint": "run --top-level eslint '**/*.ts'",
     "build": "run --top-level tspc --project tsconfig.build.v$([ ! -z $APPLITOOLS_FRAMEWORK_VERSION ] && echo $APPLITOOLS_FRAMEWORK_VERSION | cut -f1 -d'.' || echo 8).json",
     "generate:tests": "NODE_OPTIONS='--experimental-import-meta-resolve --experimental-loader=@applitools/generic/dist/code-loader.js' generic ./test/generic/config.mjs",
-    "test": "run test:service && run test:coverage",
-    "test:local": "run test:service && MOCHA_OMIT_TAGS=sauce run test:coverage",
+    "test": "run test:it && run test:service && run test:coverage",
+    "test:it": "MOCHA_GROUP=it run --top-level mocha './test/it/*.spec.ts' -r @applitools/test-utils/mocha-hooks/docker",
+    "test:local": "run test:it && run test:service && MOCHA_OMIT_TAGS=sauce run test:coverage",
+    "test:local:cdp": "APPLITOOLS_WEBDRIVERIO_PROTOCOL=cdp run test:local",
     "test:sauce": "MOCHA_ONLY_TAGS=sauce run test:coverage",
-    "test:service": "MOCHA_GROUP=service run --top-level mocha './test/service/unit/*.spec.js' && wdio run ./test/service/wdio.conf.js && wdio run ./test/service/no-config/wdio.no-config.conf.js && wdio run ./test/service/vg/wdio.vg.conf.js",
+    "test:service": "MOCHA_GROUP=service run --top-level mocha './test/service/unit/*.spec.js' && wdio run ./test/service/wdio.conf.js --autoCompileOpts.autoCompile=0 && wdio run ./test/service/no-config/wdio.no-config.conf.js --autoCompileOpts.autoCompile=0 && wdio run ./test/service/vg/wdio.vg.conf.js --autoCompileOpts.autoCompile=0",
     "test:coverage": "APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio' APPLITOOLS_BATCH_ID=$(uuidgen) MOCHA_GROUP=coverage run --top-level mocha './test/generated-coverage/*.spec.js' --parallel --jobs ${MOCHA_JOBS:-15} --exit",
     "setup": "run --top-level browsers:setup",
-    "up:framework": "run --top-level add-silent webdriverio"
+    "up:framework": "yarn add --dev --caret webdriverio${APPLITOOLS_FRAMEWORK_VERSION:+@$APPLITOOLS_FRAMEWORK_VERSION}"
   },
   "dependencies": {
+    "@applitools/driver": "workspace:*",
     "@applitools/eyes": "workspace:*",
-    "@applitools/spec-driver-webdriverio": "workspace:*"
+    "@applitools/spec-driver-webdriver": "workspace:*"
   },
   "devDependencies": {
     "@applitools/api-extractor": "workspace:^",
@@ -105,15 +108,16 @@
     "@applitools/generic": "workspace:^",
     "@applitools/test-utils": "workspace:^",
     "@types/node": "^16.18.14",
-    "@wdio/cli": "^8.3.9",
-    "@wdio/dot-reporter": "^8.3.0",
-    "@wdio/globals": "^8.3.9",
-    "@wdio/local-runner": "^8.3.9",
-    "@wdio/mocha-framework": "^8.3.0",
-    "chromedriver": "^114.0.3",
+    "@wdio/cli": "^8.14.4",
+    "@wdio/dot-reporter": "^8.14.0",
+    "@wdio/globals": "^8.14.3",
+    "@wdio/local-runner": "^8.14.3",
+    "@wdio/mocha-framework": "^8.14.0",
+    "chromedriver": "^115.0.1",
+    "devtools": "^8.15.4",
     "expect-webdriverio": "^4.0.1",
     "geckodriver": "^1.20.0",
-    "webdriverio": "^8.10.7"
+    "webdriverio": "^8.15.4"
   },
   "peerDependencies": {
     "webdriverio": ">=5.0.0"

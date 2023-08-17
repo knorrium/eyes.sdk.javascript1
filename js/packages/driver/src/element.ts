@@ -6,7 +6,7 @@ import * as utils from '@applitools/utils'
 
 const snippets = require('@applitools/snippets')
 
-export type ElementReference<T extends SpecType> = T['element'] | Selector<T>
+export type ElementReference<T extends SpecType> = T['element'] | T['secondary']['element'] | Selector<T>
 
 type ElementState = {
   contentSize?: Size
@@ -39,7 +39,7 @@ export class Element<T extends SpecType> {
     this._context = options.context
 
     if (utils.types.has(options, 'element')) {
-      this._target = this._spec.transformElement?.(options.element) ?? options.element
+      this._target = options.element
       if (this._spec.isElement(this._target)) {
         // Some frameworks contains information about the selector inside an element
         this._selector = options.selector ?? this._spec.extractSelector?.(options.element)
@@ -53,9 +53,9 @@ export class Element<T extends SpecType> {
 
     if (isSimpleCommonSelector(this._selector) && !utils.types.isString(this._selector)) {
       this._commonSelector = this._selector
-    } else if (this._selector && this._spec.untransformSelector) {
-      this._commonSelector = this._spec.untransformSelector(
-        this._spec.transformSelector?.(this._selector) ?? this._selector,
+    } else if (this._selector && this._spec.toSimpleCommonSelector) {
+      this._commonSelector = this._spec.toSimpleCommonSelector(
+        this._spec.toSelector?.(this._selector as CommonSelector<T>) ?? this._selector,
       )
     } else if (utils.types.isString(this._selector)) {
       this._commonSelector = {selector: this._selector}
@@ -637,6 +637,11 @@ export class Element<T extends SpecType> {
     }
   }
 
+  async hover(): Promise<void> {
+    this.logger.log(`Hovering on the element with selector`, this.selector)
+    await this._spec.hover?.(this.context.target, this.target)
+  }
+
   async click(): Promise<void> {
     this.logger.log(`Clicking on the element with selector`, this.selector)
     await this._spec.click?.(this.context.target, this.target)
@@ -732,9 +737,43 @@ export class Element<T extends SpecType> {
   }
 }
 
+export function isElementInstance<T extends SpecType>(element: any): element is Element<T> {
+  return element instanceof Element
+}
+
+export function isElement<T extends SpecType>(
+  element: any,
+  spec?: SpecDriver<T>,
+): element is Element<T> | T['element'] | T['secondary']['element'] {
+  return isElementInstance(element) || !!spec?.isElement(element) || !!spec?.isSecondaryElement?.(element)
+}
+
 export function isElementReference<T extends SpecType>(
   reference: any,
   spec?: SpecDriver<T>,
 ): reference is ElementReference<T> {
-  return !!spec && (spec.isElement(reference) || isSelector(reference, spec))
+  return isElement(reference, spec) || isSelector(reference, spec)
+}
+
+export async function makeElement<T extends SpecType>(
+  options: {
+    spec: SpecDriver<T>
+    context?: Context<T>
+  } & (
+    | {element: Element<T> | T['element'] | T['secondary']['element']; selector?: Selector<T>; index?: number}
+    | {selector: Selector<T>; index?: number}
+  ),
+) {
+  let element: Element<T>
+  if (utils.types.has(options, 'element')) {
+    if (options.element instanceof Element) {
+      element = options.element
+    } else {
+      options.element = (await options.spec?.toElement?.(options.element)) ?? options.element
+      element = new Element(options as ElementOptions<T>)
+    }
+  } else {
+    element = new Element(options as ElementOptions<T>)
+  }
+  return element
 }

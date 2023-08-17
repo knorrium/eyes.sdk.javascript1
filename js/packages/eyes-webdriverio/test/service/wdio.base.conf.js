@@ -2,6 +2,7 @@ const EyesService = require('../../dist/service')
 
 exports.config = {
   runner: 'local',
+  automationProtocol: process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL === 'cdp' ? 'devtools' : 'webdriver',
   capabilities: [
     {
       browserName: 'chrome',

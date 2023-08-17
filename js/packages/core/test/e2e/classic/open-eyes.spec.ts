@@ -1,5 +1,5 @@
 import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriverio'
+import * as spec from '@applitools/spec-driver-webdriver'
 import assert from 'assert'
 
 describe('open eyes classic', () => {
@@ -16,12 +16,12 @@ describe('open eyes classic', () => {
   it('should preserve original frame after opening', async () => {
     const core = makeCore({spec})
 
-    await driver.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+    await driver.navigateTo('https://applitools.github.io/demo/TestPages/FramesTestPage/')
 
-    const frame = await driver.$('[name="frame1"]')
+    const frame = await driver.findElement('css selector', '[name="frame1"]')
     await driver.switchToFrame(frame)
 
-    const frameUrlBaseline = await driver.execute(`return location.href`)
+    const frameUrlBaseline = await driver.executeScript(`return location.href`, [])
 
     const eyes = await core.openEyes({
       target: driver,
@@ -34,7 +34,7 @@ describe('open eyes classic', () => {
       },
     })
 
-    const frameUrlAfterOpenEyes = await driver.execute(`return location.href`)
+    const frameUrlAfterOpenEyes = await driver.executeScript(`return location.href`, [])
 
     assert.strictEqual(
       frameUrlBaseline,

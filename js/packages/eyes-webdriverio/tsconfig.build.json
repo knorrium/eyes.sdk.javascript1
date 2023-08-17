@@ -14,11 +14,12 @@
       "afterDeclarations": true,
       "rootFile": "./index.ts",
       "allowGlobalNamespaces": ["Applitools"],
+      "allowModules": ["webdriver"],
       "stripPrivate": true,
       "stripProtected": true,
       "stripInternal": true,
       "generateSyntheticOverloads": true,
     }]
   },
-  "exclude" : ["dist", "types", "test"]
+  "exclude": ["test", "dist", "types/index.d.ts"],
 }

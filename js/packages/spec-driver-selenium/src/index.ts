@@ -13,5 +13,5 @@ if (!process.env.APPLITOOLS_FRAMEWORK_MAJOR_VERSION) {
 
 export * from './spec-driver'
 
-const typedSpec: SpecDriver<spec.SpecType> = spec
+const typedSpec: SpecDriver<spec.PrimarySpecType> = spec
 export default typedSpec
