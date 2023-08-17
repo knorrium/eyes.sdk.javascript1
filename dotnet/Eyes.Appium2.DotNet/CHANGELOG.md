@@ -1,10 +1,38 @@
 # Changelog
 
-## Unreleased
+## [5.68-beta04](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/appium2@5.67-beta04...dotnet/appium2@5.68-beta04) (2023-08-17)
 
 ### Bug Fixes
 
 * Added "appium:" prefix to `SetMobileCapabilities` method.
+
+### Dependencies
+
+* Eyes.Selenium4 bumped to 3.70
+
+  #### Bug Fixes
+
+  * Don't send `Target` on `Check` payload.
+
+* Eyes.Images bumped to 3.41
+
+* Eyes.Image.Core bumped to 3.9.0
+
+* js/core bumped to 3.9.0
+
+  #### Features
+
+  * re-release ([e62abc7](https://github.com/applitools/eyes.sdk.javascript1/commit/e62abc7e74ea0e193eb7770036ae7f97bd11188a))
+
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
+* @applitools/nml-client bumped to 1.5.7
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
 
 ## [5.67-beta04](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/appium2@5.66-beta04...dotnet/appium2@5.67-beta04) (2023-08-11)
 

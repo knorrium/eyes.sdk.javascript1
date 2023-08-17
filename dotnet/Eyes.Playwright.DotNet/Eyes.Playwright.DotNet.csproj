@@ -8,14 +8,14 @@ With Applitools Eyes, you can automatically validate the correctness of your app
 To learn more, visit https://applitools.com/ .</Description>
     <PackageProjectUrl>https://applitools.com/</PackageProjectUrl>
     <Copyright>Applitools 2013</Copyright>
-    <Version>1.17</Version>
+    <Version>1.18</Version>
     <Authors>Applitools</Authors>
     <Company>Applitools</Company>
     <Product>Eyes SDK</Product>
     <PackageTags>applitools eyes playwright</PackageTags>
     <PackageReleaseNotes>### Dependencies
 
-* Eyes.Images bumped to 3.40
+* Eyes.Images bumped to 3.41
 
 * Eyes.Image.Core bumped to 3.9.0
 

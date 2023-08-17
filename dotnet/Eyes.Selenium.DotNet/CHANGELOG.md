@@ -1,10 +1,31 @@
 # Changelog
 
-## Unreleased
+## [3.70](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.69...dotnet/selenium@3.70) (2023-08-17)
 
 ### Bug Fixes
 
 * Don't send `Target` on `Check` payload.
+
+### Dependencies
+
+* Eyes.Images bumped to 3.41
+
+* Eyes.Image.Core bumped to 3.9.0
+
+* js/core bumped to 3.9.0
+
+  #### Features
+
+  * re-release ([e62abc7](https://github.com/applitools/eyes.sdk.javascript1/commit/e62abc7e74ea0e193eb7770036ae7f97bd11188a))
+
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
+
+* @applitools/nml-client bumped to 1.5.7
+  #### Bug Fixes
+
+  * propagate stitch mode to applitools lib ([a2dcedb](https://github.com/applitools/eyes.sdk.javascript1/commit/a2dcedb4bc6b999c137ed2aab43e0a463aa90169))
 
 ## [3.69](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.68...dotnet/selenium@3.69) (2023-08-11)
 
