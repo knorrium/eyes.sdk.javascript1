@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug Fixes
+
+* Added "appium:" prefix to `SetMobileCapabilities` method.
+
 ## [5.67](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/appium@5.66...dotnet/appium@5.67) (2023-08-11)
 
 ### Dependencies

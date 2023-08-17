@@ -4,7 +4,6 @@
 .DS_Store
 Session.vim
 dotnet/UPDATED_PROJECTS.txt
-dotnet/NEW_TAGS.txt
 dotnet/RECENT_CHANGES.md
 dotnet/SEND_MAIL.json
 dotnet/Eyes.Images.DotNet/VisualGrid/AndroidDeviceName.cs

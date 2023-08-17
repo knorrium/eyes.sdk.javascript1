@@ -81,7 +81,7 @@ namespace Applitools.Appium
             string eyesServerUrl = null,
             ProxySettings proxySettings = null)
         {
-            var iosCapsKey = "processArguments";
+            var iosCapsKey = "appium:processArguments";
             var iosCapValue = "{\"args\": [], \"env\":"
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
@@ -90,7 +90,7 @@ namespace Applitools.Appium
 
             var iosCapValueSuffix = "}}";
 
-            var androidCapKey = "optionalIntentArguments";
+            var androidCapKey = "appium:optionalIntentArguments";
             var androidCapValue = "--es APPLITOOLS \'{";
             var androidCapValueSuffix = "}\'";
 
@@ -146,7 +146,7 @@ namespace Applitools.Appium
             string eyesServerUrl = null,
             ProxySettings proxySettings = null)
         {
-            var iosCapsKey = "processArguments";
+            var iosCapsKey = "appium:processArguments";
             var iosCapValue = "{\"args\": [], \"env\":"
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
@@ -155,7 +155,7 @@ namespace Applitools.Appium
 
             var iosCapValueSuffix = "}}";
 
-            var androidCapKey = "optionalIntentArguments";
+            var androidCapKey = "appium:optionalIntentArguments";
             var androidCapValue = "--es APPLITOOLS \'{";
             var androidCapValueSuffix = "}\'";
 

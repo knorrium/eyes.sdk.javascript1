@@ -1,6 +1,12 @@
 # Changelog
 
-## [3.69](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium3@3.68...dotnet/selenium3@3.69) (2023-08-11)
+## Unreleased
+
+### Bug Fixes
+
+* Don't send `Target` on `Check` payload.
+
+## [3.69](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.68...dotnet/selenium@3.69) (2023-08-11)
 
 ### Dependencies
 

@@ -8,6 +8,14 @@ on:
         type: boolean
         required: false
         default: true
+      sem_ver_part:
+        description: Semantic version part 
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+        default: minor
 
 env:
   DRIVER_PATH: /usr/bin
@@ -37,6 +45,8 @@ jobs:
         run: |
           cd dotnet
           export CORE_VERSION=$(../scripts/download-core-bin.sh --output version)
+          export SEM_VER_PART=${{inputs.sem_ver_part}}
+
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-x64/native/
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-arm64/native/
@@ -45,8 +55,9 @@ jobs:
           mv core-alpine Eyes.Image.Core.DotNet/runtimes/linux-alpine/native
           mv core-linux Eyes.Image.Core.DotNet/runtimes/linux-x64/native
           mv core-linux-arm64 Eyes.Image.Core.DotNet/runtimes/linux-arm64/native
-          mv core-macos Eyes.Image.Core.DotNet/runtimes/osx-x64/native
           mv core-win.exe Eyes.Image.Core.DotNet/runtimes/win-x64/native
+          mv core-macos Eyes.Image.Core.DotNet/runtimes/osx-x64/native 
+          
           python updateChangelogAndProjectFiles.py
           cat ./MATRIX.json
           echo "packages_matrix=$(cat ./MATRIX.json)" >> $GITHUB_OUTPUT

@@ -595,13 +595,14 @@ namespace Applitools.Selenium
                 {
                     Eyes = eyes_,
                     Config = eyesConfig,
-                    Target = new DriverTarget
-                    {
-                        ServerUrl = serverUrl,
-                        Capabilities = GetCapabilities(webDriver),
-                        SessionId = webDriver.SessionId.ToString(),
-                        Proxy = Config.Proxy
-                    },
+                    // Target = new DriverTarget
+                    // {
+                    //     ServerUrl = serverUrl,
+                    //     Capabilities = GetCapabilities(webDriver),
+                    //     SessionId = webDriver.SessionId.ToString(),
+                    //     Proxy = Config.Proxy
+                    // },
+                    Target = null,
                     Settings = CreateUniversalCheckSettings(seleniumCheckSettings)
                 }
             };

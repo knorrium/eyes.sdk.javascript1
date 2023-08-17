@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using Applitools.Fluent;
 using Applitools.Utils;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Remote;
@@ -11,10 +9,6 @@ namespace Applitools.Appium
     {
         private readonly Selenium.Eyes seleniumEyes_;
         private RemoteWebDriver driver_;
-
-        //public IDictionary<string, object> CachedSessionDetails { get; private set; }
-
-        //public static Func<IWebDriver, bool> IsLandscapeOrientation = IsLandscapeOrientationImpl_;
 
         #region Constructors
 
@@ -80,7 +74,7 @@ namespace Applitools.Appium
             string eyesServerUrl = null,
             ProxySettings proxySettings = null)
         {
-            var iosCapsKey = "processArguments";
+            var iosCapsKey = "appium:processArguments";
             var iosCapValue = "{\"args\": [], \"env\":"
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/UFG_lib.xcframework/ios-arm64/UFG_lib.framework/UFG_lib"
@@ -89,7 +83,7 @@ namespace Applitools.Appium
 
             var iosCapValueSuffix = "}}";
 
-            var androidCapKey = "optionalIntentArguments";
+            var androidCapKey = "appium:optionalIntentArguments";
             var androidCapValue = "--es APPLITOOLS \'{";
             var androidCapValueSuffix = "}\'";
 
@@ -145,7 +139,7 @@ namespace Applitools.Appium
             string eyesServerUrl = null,
             ProxySettings proxySettings = null)
         {
-            var iosCapsKey = "processArguments";
+            var iosCapsKey = "appium:processArguments";
             var iosCapValue = "{\"args\": [], \"env\":"
                               // ReSharper disable once StringLiteralTypo
                               + "{\"DYLD_INSERT_LIBRARIES\":\"@executable_path/Frameworks/Applitools_iOS.xcframework/ios-arm64/Applitools_iOS.framework/Applitools_iOS"
@@ -154,7 +148,7 @@ namespace Applitools.Appium
 
             var iosCapValueSuffix = "}}";
 
-            var androidCapKey = "optionalIntentArguments";
+            var androidCapKey = "appium:optionalIntentArguments";
             var androidCapValue = "--es APPLITOOLS \'{";
             var androidCapValueSuffix = "}\'";
 

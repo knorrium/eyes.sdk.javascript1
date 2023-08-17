@@ -38,10 +38,13 @@ def upSemanticVersion(currentVersion, part):
             vNext = part
     return vNext+suffix
 
-def update_changelogs(changelogs, core_changes, dateStr):
+def update_changelogs(changelogs, core_changes, dateStr, part):
     for (p, v) in changelogs.items():
         if v['dependency'] == "js/core":
-            changes = core_changes
+            if part != "patch":
+                changes = core_changes
+            else:
+                changes = {"headings": [], "version": core_changes['version']}
         else:
             changes = get_release_entries(changelog_contents=changelogs[v["dependency"]]['content'])
         headings = ''
@@ -66,16 +69,19 @@ def update_changelogs(changelogs, core_changes, dateStr):
         version = changes['version']
         changelogs[p]["content"] = get_changelog_contents(changelogs[p]["path"])
         updates = f"### Dependencies\n\n* {v['dependency']} bumped to {version}\n{headings}"
-        update_changelog(changelogs, p, updates, version, dateStr)
+        update_changelog(changelogs, p, updates, version, dateStr, part)
 
-def update_changelog(changelogs, p, headings, depVersion, dateStr):
+def update_changelog(changelogs, p, headings, depVersion, dateStr, part):
     target_heading = get_release_heading(changelogs[p]["content"])['heading']
     prev_ver = get_version_from_heading(target_heading)
     if "versionUpdate" in changelogs[p] and changelogs[p]["versionUpdate"] == "copy":
-        version = depVersion
+        if part != "patch":
+            version = depVersion
+        else:
+            version = upSemanticVersion(depVersion, part)
     else:
-        version = upSemanticVersion(prev_ver, "minor")
-    package = changelogs[p]["name"]
+        version = upSemanticVersion(prev_ver, part)
+    package = changelogs[p]["tag"]
     url = f"https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/{package}@{prev_ver}...dotnet/{package}@{version}"
 
     unreleasedDict = get_entries_for_heading(changelogs[p]['content'], "## Unreleased", False)
@@ -84,8 +90,12 @@ def update_changelog(changelogs, p, headings, depVersion, dateStr):
     unreleasedStripped = unreleased.strip('\n')
     if len(unreleasedStripped) > 0:
         unreleasedStripped += "\n\n"
-    changes = f"\n## [{version}]({url}) ({dateStr})\n\n{unreleasedStripped}{headings}\n\n"
-    changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", changes)
+    changes = f"## [{version}]({url}) ({dateStr})\n\n{unreleasedStripped}{headings}"
+    changes = changes.strip('\n')
+    if len(unreleasedStripped) > 0:
+        changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", f"\n{changes}\n\n")
+    else:
+        changelogs[p]["content"] = changelogs[p]["content"].replace(f"# Changelog\n\n", f"# Changelog\n\n{changes}\n\n")
     changelogs[p]['version'] = version
     changelogs[p]['release_notes'] = f"{unreleasedStripped}{headings}"
 
@@ -190,29 +200,34 @@ if __name__ == '__main__':
     new_tags = []
     reported_version = "RELEASE_CANDIDATE"
     core_version = os.environ.get('CORE_VERSION')
-    print("Core version: " + core_version)
+    print(f"Core version: {core_version}")
+    sem_ver_part = os.environ.get('SEM_VER_PART')
+    print(f"Semantic version part to increase: {sem_ver_part}")
     core_changes = get_release_entries(target_folder="../js/packages/core", version=core_version)
     dateStr = datetime.datetime.now().strftime("%Y-%m-%d")
     matrixJson = {"include":[]}
 
     changelogs = {
         #"js/core": {"path": "../js/packages/core"},
-        "Eyes.Image.Core": {"dependency": "js/core", "path": "Eyes.Image.Core.DotNet", "versionUpdate": "copy", "name": "image.core"},
-        "Eyes.Images": {"dependency": "Eyes.Image.Core", "path": "Eyes.Images.DotNet", "name": "images", "report": "coverage-test-reportI.xml", "group":"images"}, 
-        "Eyes.Selenium": {"dependency": "Eyes.Images", "path": "Eyes.Selenium.DotNet", "name": "selenium3", "report": "coverage-test-reportS3.xml", "group": "selenium"},
-        "Eyes.Selenium4": {"dependency": "Eyes.Images", "path": "Eyes.Selenium4.DotNet", "name": "selenium4", "report": "coverage-test-reportS4.xml", "group": "selenium"},
-        "Eyes.Playwright": {"dependency": "Eyes.Images", "path": "Eyes.Playwright.DotNet", "name": "playwright", "report": "coverage-test-reportP.xml", "group": "selenium"},
-        "Eyes.Appium": {"dependency": "Eyes.Selenium", "path": "Eyes.Appium.DotNet", "name": "appium", "report": "coverage-test-reportA.xml", "group": "appium"},
-        "Eyes.Appium2": {"dependency": "Eyes.Selenium4", "path": "Eyes.Appium2.DotNet", "name": "appium2", "report": "coverage-test-reportA2.xml", "group": "appium"},
+        "Eyes.Image.Core": {"dependency": "js/core", "path": "Eyes.Image.Core.DotNet", "versionUpdate": "copy", "name": "image.core", "tag":"image.core"},
+        "Eyes.Images": {"dependency": "Eyes.Image.Core", "path": "Eyes.Images.DotNet", "name": "images", "tag":"images", "report": "coverage-test-reportI.xml", "group":"images"}, 
+        "Eyes.Selenium": {"dependency": "Eyes.Images", "path": "Eyes.Selenium.DotNet", "name": "selenium3", "tag":"selenium", "report": "coverage-test-reportS3.xml", "group": "selenium"},
+        "Eyes.Selenium4": {"dependency": "Eyes.Images", "path": "Eyes.Selenium4.DotNet", "name": "selenium4", "tag":"selenium4", "report": "coverage-test-reportS4.xml", "group": "selenium"},
+        "Eyes.Playwright": {"dependency": "Eyes.Images", "path": "Eyes.Playwright.DotNet", "name": "playwright", "tag":"playwright", "report": "coverage-test-reportP.xml", "group": "selenium"},
+        "Eyes.Appium": {"dependency": "Eyes.Selenium", "path": "Eyes.Appium.DotNet", "name": "appium", "tag":"appium", "report": "coverage-test-reportA.xml", "group": "appium"},
+        "Eyes.Appium2": {"dependency": "Eyes.Selenium4", "path": "Eyes.Appium2.DotNet", "name": "appium2", "tag":"appium2", "report": "coverage-test-reportA2.xml", "group": "appium"},
     }
   
-    update_changelogs(changelogs, core_changes, dateStr)
+    if sem_ver_part == None:
+        sem_ver_part = "minor"
+
+    update_changelogs(changelogs, core_changes, dateStr, sem_ver_part)
 
     write_new_changelogs(changelogs)
     write_new_csproj(changelogs)
 
     for (p,v) in changelogs.items():
-        new_tags.append('dotnet/' + v['name'] + "@" + v['version'] + "\n")
+        new_tags.append('dotnet/' + v['tag'] + "@" + v['version'] + "\n")
         updated_projects.append(p + "\n")
         if v['name'] != 'image.core':
             matrixJson["include"].append(
