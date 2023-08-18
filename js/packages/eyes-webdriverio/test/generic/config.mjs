@@ -6,9 +6,12 @@ export const config = {
     }
     return true
   },
-  overrides: test => {
-    if (process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL === 'cdp' && test.env?.emulation) {
-      return {skip: true, reason: `failed to run proper emulation with puppeteer`}
-    }
-  },
+  overrides: [
+    '../../../../test/generic/overrides.mjs',
+    test => {
+      if (process.env.APPLITOOLS_WEBDRIVERIO_PROTOCOL === 'cdp' && test.env?.emulation) {
+        return {skip: true, reason: `failed to run proper emulation with puppeteer`}
+      }
+    },
+  ],
 }
