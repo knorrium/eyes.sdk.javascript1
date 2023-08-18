@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.5.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.5.0...js/core-base@1.5.1) (2023-08-18)
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.1
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+* @applitools/logger bumped to 2.0.8
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+
+* @applitools/req bumped to 1.5.3
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+
+* @applitools/image bumped to 1.1.3
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+
+
 ## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.4.3...js/core-base@1.5.0) (2023-08-03)
 
 

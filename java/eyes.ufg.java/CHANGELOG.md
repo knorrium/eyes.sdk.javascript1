@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [5.63.4](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-ufg-java5@5.63.3...java/eyes-ufg-java5@5.63.4) (2023-08-18)
+
+
+### Bug Fixes
+
+* fix incorrect stitchMode, hideScrollbars and hideCaret checkSettings mapping ([#1864](https://github.com/applitools/eyes.sdk.javascript1/issues/1864)) ([2a2f118](https://github.com/applitools/eyes.sdk.javascript1/commit/2a2f1180043382ed2f1ee1dd7d4a52cf766c8ef1))
+
 ## [5.63.3](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-ufg-java5@5.63.2...java/eyes-ufg-java5@5.63.3) (2023-07-23)
 
 

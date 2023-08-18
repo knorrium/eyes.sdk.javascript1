@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.5.0...js/utils@1.5.1) (2023-08-18)
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
 ## [1.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.4.0...js/utils@1.5.0) (2023-06-28)
 
 

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-sdk-core-java5</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.64.2</version>
+    <version>5.64.3</version>
     <name>eyes-sdk-core-java5</name>
     <url>http://www.applitools.com</url>
     <description>Applitools Eyes SDK base for Java</description>
@@ -36,12 +36,12 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-universal-core</artifactId>
-            <version>5.63.9</version>
+            <version>5.63.10</version>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-ufg-java5</artifactId>
-            <version>5.63.3</version>
+            <version>5.63.4</version>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
