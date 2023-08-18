@@ -399,6 +399,7 @@ __metadata:
     node-fetch: 2.6.0
     semver: 7.3.8
     strip-ansi: ^6.0.1
+    typescript: ^5.1.6
     uuid: 8.3.2
     ws: 8.5.0
   bin:
@@ -24497,7 +24498,7 @@ __metadata:
     prettier: ^2.8.3
     ts-node: ^10.9.1
     ts-patch: ^3.0.0
-    typescript: next
+    typescript: 5.3.0-dev.20230817
     yargs: ^17.7.2
   languageName: unknown
   linkType: soft
@@ -27189,6 +27190,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:5.3.0-dev.20230817":
+  version: 5.3.0-dev.20230817
+  resolution: "typescript@npm:5.3.0-dev.20230817"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: e80353b99d4dd5a565acc5ef0f5c17aeac2ae1950b7287185f05c8dfbf3e31087ea0e21bfa3224fc45663fd0282b45b8c8484468210cf6ee292a6064ffee677e
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^4.6.4 || ^5.0.0":
   version: 5.1.3
   resolution: "typescript@npm:5.1.3"
@@ -27199,13 +27210,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:next":
-  version: 5.3.0-dev.20230811
-  resolution: "typescript@npm:5.3.0-dev.20230811"
+"typescript@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "typescript@npm:5.1.6"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 83943065213cf01635ce49f032bdbc46fbdeba5ef0b6f61c147aefc41e3ccffbd4c1f8aa0fca5d9b4259943c5fc764e2cbba8216f3c03f71fa00e9653a2064be
+  checksum: b2f2c35096035fe1f5facd1e38922ccb8558996331405eb00a5111cc948b2e733163cc22fab5db46992aba7dd520fff637f2c1df4996ff0e134e77d3249a7350
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@5.3.0-dev.20230817#~builtin<compat/typescript>":
+  version: 5.3.0-dev.20230817
+  resolution: "typescript@patch:typescript@npm%3A5.3.0-dev.20230817#~builtin<compat/typescript>::version=5.3.0-dev.20230817&hash=5da071"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 26e194ff5ebad4a88514c4d79d9df119c7e35dc59ce039e8db8169a10fafac4182c611ebbbd106a2667636766a47671f9c6d5fbf04f7a134be4134f509a6e3e9
   languageName: node
   linkType: hard
 
@@ -27219,13 +27240,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@next#~builtin<compat/typescript>":
-  version: 5.3.0-dev.20230811
-  resolution: "typescript@patch:typescript@npm%3A5.3.0-dev.20230811#~builtin<compat/typescript>::version=5.3.0-dev.20230811&hash=5da071"
+"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>":
+  version: 5.1.6
+  resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: e71602c86d37a63ca9270db5c92d3850c89b4662c46dccb70b5e0cacd4eb2451e058656227b5faff8b12c00e442c1612d3c4bededc3d5bbe38f19204314b892f
+  checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
   languageName: node
   linkType: hard
 
