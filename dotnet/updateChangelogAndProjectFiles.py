@@ -94,8 +94,12 @@ def update_changelog(changelogs, p, headings, depVersion, dateStr, part):
     changes = changes.strip('\n')
     if len(unreleasedStripped) > 0:
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", f"\n{changes}\n\n")
-    else:
+        changelogs[p]['updated'] = True
+    elif version > prev_ver and changelogs[changelogs[p]['dependency']]['updated']:
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"# Changelog\n\n", f"# Changelog\n\n{changes}\n\n")
+        changelogs[p]['updated'] = True
+    else:
+        changelogs[p]['updated'] = False
     changelogs[p]['version'] = version
     changelogs[p]['release_notes'] = f"{unreleasedStripped}{headings}"
 
@@ -189,10 +193,8 @@ def write_new_changelogs(changelogs):
 
 def write_new_csproj(changelogs):
     for p,v in changelogs.items():
-        if (p == 'js/core'):
-            continue
-        update_csproj(p, v['version'], v['release_notes'])
-
+        if p != 'js/core' and v['updated']:
+            update_csproj(p, v['version'], v['release_notes'])
 
 if __name__ == '__main__':
     newLines = ""
@@ -227,14 +229,15 @@ if __name__ == '__main__':
     write_new_csproj(changelogs)
 
     for (p,v) in changelogs.items():
-        new_tags.append('dotnet/' + v['tag'] + "@" + v['version'] + "\n")
-        updated_projects.append(p + "\n")
-        if v['name'] != 'image.core':
-            matrixJson["include"].append(
-                {'name':v['name'], 
-                 'report':v['report'], 
-                 'group':v['group'],
-                 'version':v['version']})
+        if v['updated']:
+            new_tags.append('dotnet/' + v['tag'] + "@" + v['version'] + "\n")
+            updated_projects.append(p + "\n")
+            if v['name'] != 'image.core':
+                matrixJson["include"].append(
+                    {'name':v['name'], 
+                    'report':v['report'], 
+                    'group':v['group'],
+                    'version':v['version']})
 
     f = open("MATRIX.json", "w")
     f.write(json.dumps(matrixJson))
