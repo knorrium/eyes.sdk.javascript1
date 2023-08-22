@@ -48,6 +48,7 @@ export async function load(url: string, context: Context, next: Next) {
 
 async function transformTemplate(source: string): Promise<string> {
   const url = import.meta.url
+  source = source.replace(/`/g, '\\`')
   return `const {default: handlebars} = await import(await import.meta.resolve('handlebars', '${url}'))\nhandlebars.registerHelper('tags', (context, options) => !context || context.length <= 0 ? '' : \` (\${context.map(options.fn).join(' ')})\`)\nexport const template = handlebars.compile(\`${source}\`, {noEscape: true})`
 }
 
