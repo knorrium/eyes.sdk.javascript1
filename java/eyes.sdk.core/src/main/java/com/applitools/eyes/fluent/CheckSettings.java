@@ -495,6 +495,7 @@ public class CheckSettings implements ICheckSettings, ICheckSettingsInternal {
         clone.densityMetrics = this.densityMetrics;
         clone.overlap = this.overlap;
         clone.layoutBreakpointsOptions = this.layoutBreakpointsOptions;
+        clone.stitchMode = this.stitchMode;
     }
 
     public void setStitchContent(boolean stitchContent) {
