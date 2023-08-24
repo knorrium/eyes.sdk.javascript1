@@ -71,7 +71,7 @@
     "lodash.flatten": "4.4.0",
     "lodash.pick": "4.4.0",
     "ora": "3.4.0",
-    "puppeteer": "20.8.3",
+    "puppeteer": "20.9.0",
     "strip-ansi": "6.0.0",
     "throat": "6.0.2",
     "yargs": "17.7.2"
@@ -99,7 +99,7 @@
     "ua-parser-js": "^0.7.21"
   },
   "engines": {
-    "node": ">=16.16.0"
+    "node": ">=16.0.0"
   },
   "publishConfig": {
     "access": "public"
