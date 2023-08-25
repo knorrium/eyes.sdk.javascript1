@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>eyes-selenium-java5</artifactId>
     <groupId>com.applitools</groupId>
-    <version>5.64.3</version>
+    <version>5.64.4</version>
     <name>eyes-selenium-java5</name>
     <url>http://www.applitools.com</url>
     <description>Applitools Eyes SDK for Selenium Java WebDriver</description>
@@ -37,12 +37,12 @@
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-selenium-common-java5</artifactId>
-            <version>5.63.10</version>
+            <version>5.63.11</version>
         </dependency>
         <dependency>
             <groupId>com.applitools</groupId>
             <artifactId>eyes-sdk-core-java5</artifactId>
-            <version>5.64.3</version>
+            <version>5.64.4</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [5.64.4](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.64.3...java/eyes-appium-java5@5.64.4) (2023-08-25)
+
+
+### Dependencies
+
+* com.applitools:eyes-sdk-core-java5 bumped to 5.64.4
+  #### Bug Fixes
+
+  * fix stitchMode not being applied in some scenarios ([#1885](https://github.com/applitools/eyes.sdk.javascript1/issues/1885)) ([e7f8738](https://github.com/applitools/eyes.sdk.javascript1/commit/e7f8738684c97e17cfbb8b827c85ba82b227f1fb))
+* com.applitools:eyes-selenium-common-java5 bumped to 5.63.11
+
+* com.applitools:eyes-selenium-java5 bumped to 5.64.4
+
+
 ## [5.64.3](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-appium-java5@5.64.2...java/eyes-appium-java5@5.64.3) (2023-08-18)
 
 

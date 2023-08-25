@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.39.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.38.3...js/eyes-storybook@3.39.0) (2023-08-25)
+
+
+### Features
+
+* update puppeteer version and minimum node version ([#1889](https://github.com/applitools/eyes.sdk.javascript1/issues/1889)) ([d449030](https://github.com/applitools/eyes.sdk.javascript1/commit/d449030bed6bf4f4c3e7a0dcb6f3ec78f7623e4c))
+
 ## [3.38.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.38.2...js/eyes-storybook@3.38.3) (2023-08-18)
 
 
