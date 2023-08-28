@@ -1,4 +1,5 @@
 ﻿using System;
+using Applitools.Fluent;
 using Applitools.Utils;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Remote;
@@ -250,6 +251,7 @@ namespace Applitools.Appium
             var request = seleniumEyes_.CreateCheckRequest(checkSettings);
             request.Payload.Settings.Webview = (object) appiumCheckTarget.GetWebview() ??
                                               appiumCheckTarget.IsDefaultWebview();
+            request.Payload.Settings.ScreenshotMode = ToScreenshotMode_(appiumCheckTarget.GetScreenshotMode());
             seleniumEyes_.SendCheckRequest(request);
         }
 
@@ -292,6 +294,14 @@ namespace Applitools.Appium
         public override TestResults Close(bool throwEx = true)
         {
             return seleniumEyes_.Close(throwEx);
+        }
+
+        private static string ToScreenshotMode_(bool? screenshotMode) {
+            if (screenshotMode == null) {
+                return null;
+            }
+
+            return screenshotMode.Value ? "default" : "applitools-lib";
         }
     }
 }

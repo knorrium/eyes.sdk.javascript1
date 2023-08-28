@@ -76,6 +76,12 @@ jobs:
           cd dotnet
           dotnet pack ./Eyes.Image.Core.DotNet/Eyes.Image.Core.DotNet.csproj
           dotnet pack ./Eyes.Images.DotNet/Eyes.Images.DotNet.csproj
+          echo "DeviceName.cs:"
+          cat ./Eyes.Images.DotNet/VisualGrid/DeviceName.cs
+          echo "IosDeviceName.cs:"
+          cat ./Eyes.Images.DotNet/VisualGrid/IosDeviceName.cs
+          echo "AndroidDeviceName.cs:"
+          cat ./Eyes.Images.DotNet/VisualGrid/AndroidDeviceName.cs
           dotnet pack ./Eyes.Appium.DotNet/Eyes.Appium.DotNet.csproj
           dotnet pack ./Eyes.Appium2.DotNet/Eyes.Appium2.DotNet.csproj
           dotnet pack ./Eyes.Playwright.DotNet/Eyes.Playwright.DotNet.csproj

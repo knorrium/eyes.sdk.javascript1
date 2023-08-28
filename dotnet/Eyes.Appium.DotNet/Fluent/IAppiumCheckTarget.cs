@@ -4,5 +4,6 @@
     {
         bool? IsDefaultWebview();
         string GetWebview();
+        bool? GetScreenshotMode();
     }
 }

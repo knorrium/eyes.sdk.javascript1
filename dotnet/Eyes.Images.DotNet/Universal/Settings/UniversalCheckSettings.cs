@@ -30,6 +30,7 @@ namespace Applitools
         public AutProxy AutProxy { get; set; }
         public Hooks Hooks { get; set; }
         public string UserCommandId { get; set; }
+        public string ScreenshotMode { get; set; }
 
         public UniversalCheckSettings()
         {

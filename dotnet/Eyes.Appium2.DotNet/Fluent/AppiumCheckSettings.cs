@@ -18,6 +18,7 @@ namespace Applitools.Appium
         private bool? useCookies_;
         private bool? isDefaultWebview_;
         private string webview_;
+        private bool? useSystemScreenshot_;
 
         internal AppiumCheckSettings()
         {
@@ -836,6 +837,16 @@ namespace Applitools.Appium
         string IAppiumCheckTarget.GetWebview()
         {
             return webview_;
+        }
+        
+        public bool? GetScreenshotMode() {
+            return useSystemScreenshot_;
+        }
+
+        public AppiumCheckSettings UseSystemScreenshot(bool? useSystemScreenshot = true) {
+            AppiumCheckSettings clone = Clone_();
+            clone.useSystemScreenshot_ = useSystemScreenshot;
+            return clone;
         }
     }
 }

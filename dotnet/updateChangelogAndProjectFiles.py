@@ -92,10 +92,11 @@ def update_changelog(changelogs, p, headings, depVersion, dateStr, part):
         unreleasedStripped += "\n\n"
     changes = f"## [{version}]({url}) ({dateStr})\n\n{unreleasedStripped}{headings}"
     changes = changes.strip('\n')
+    dependency = changelogs[p]['dependency']
     if len(unreleasedStripped) > 0:
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", f"\n{changes}\n\n")
         changelogs[p]['updated'] = True
-    elif version > prev_ver and changelogs[changelogs[p]['dependency']]['updated']:
+    elif version > prev_ver and (dependency == "js/core" or changelogs[dependency]['updated']):
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"# Changelog\n\n", f"# Changelog\n\n{changes}\n\n")
         changelogs[p]['updated'] = True
     else:

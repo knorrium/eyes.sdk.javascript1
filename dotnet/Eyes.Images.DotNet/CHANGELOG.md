@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+* Added support for ScreenshotMode
+
 ## [3.41](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/images@3.40...dotnet/images@3.41) (2023-08-17)
 
 ### Dependencies

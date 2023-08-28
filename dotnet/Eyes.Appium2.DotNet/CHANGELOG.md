@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Features
+
+* Added `UseSystemScreenshot` to `AppiumCheckSettings`
+
 ## [5.68-beta04](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/appium2@5.67-beta04...dotnet/appium2@5.68-beta04) (2023-08-17)
 
 ### Bug Fixes
