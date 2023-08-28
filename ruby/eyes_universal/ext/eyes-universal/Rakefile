@@ -1,0 +1,20 @@
+require 'rubygems'
+require 'rake/clean'
+
+CURRENT_VERSION_PATH = File.expand_path('../../lib/applitools/eyes_universal/version', File.dirname(__FILE__))
+require CURRENT_VERSION_PATH
+DOWNLOADER_PATH = File.expand_path('../../lib/applitools/eyes_universal/universal_server_downloader', File.dirname(__FILE__))
+require DOWNLOADER_PATH
+
+desc "Install universal server binaries"
+task :default => [:prepare_server]
+
+# install
+file "prepare_server" do
+  Applitools::EyesUniversal::UniversalServerDownloader.prepare_server(File.dirname(__FILE__))
+end
+
+# build
+file "get_compress_all_binaries" do
+  Applitools::EyesUniversal::UniversalServerDownloader.get_compress_all_binaries(File.dirname(__FILE__))
+end

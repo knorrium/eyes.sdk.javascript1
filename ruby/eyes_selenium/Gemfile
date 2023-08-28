@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+
+gem "rake", "~> 13.0"
+
+group :test, :development do
+
+  gem 'rspec'
+  gem 'parallel_tests'
+  gem 'rspec_junit_formatter'
+
+  # older ruby versions fix
+  if RUBY_VERSION < '2.7' # 2.6
+    gem 'oj', '<= 3.14.2'
+    gem 'selenium-webdriver', ['>= 3', '<= 4.1.0']
+  elsif RUBY_VERSION < '3' # 2.7
+    gem 'selenium-webdriver', ['>= 3', '<= 4.9.0']
+  else
+    gem 'selenium-webdriver', ['>= 3', '<= 4.10.0']
+  end
+
+  # coverage tests fix
+  puts "file://#{ENV['PWD'].chomp('/coverage_tests').chomp('/eyes_selenium')}/pkg"
+  source "file://#{ENV['PWD'].chomp('/coverage_tests').chomp('/eyes_selenium')}/pkg" do
+    gem 'eyes_core'
+  end
+
+end
+
+# Specify your gem's dependencies in eyes_universal.gemspec
+gemspec

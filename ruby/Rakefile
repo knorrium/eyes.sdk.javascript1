@@ -24,13 +24,13 @@ module Bundler
 end
 
 ALL_GEMS = [
-  :eyes_core,
-  :eyes_images,
-  :eyes_selenium,
-  :eyes_calabash,
-  :eyes_capybara,
-  :eyes_appium,
-  :eyes_universal
+  # :eyes_core,
+  # :eyes_images,
+  # :eyes_selenium,
+  # :eyes_calabash,
+  # :eyes_capybara,
+  # :eyes_appium,
+  # :eyes_universal
 ]
 
 # namespace :applitools do
@@ -64,12 +64,6 @@ namespace :applitools do
     end
   end
 
-  task :get_build_server do
-    load 'ext/eyes-universal/Rakefile'
-    # Rake::Task['get_server_compressed'].invoke
-    Rake::Task['get_compress_all_binaries'].invoke
-  end
-
   task :get_dev_server do
     load 'ext/eyes-universal/Rakefile'
     Rake::Task['get_server'].invoke
@@ -80,7 +74,7 @@ namespace :applitools do
   end
 end
 
-task :build => ['applitools:select_gems', 'applitools:get_build_server']
+task :build => ['applitools:select_gems']
 
 unless ENV['BUILD_ONLY'] && !ENV['BUILD_ONLY'].empty?
   require 'rspec/core/rake_task'

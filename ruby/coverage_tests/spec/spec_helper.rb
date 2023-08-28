@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require_relative '../../lib/test_utils/obtain_actual_app_output'
-require 'driver_build'
+require_relative '../../lib/test_utils/obtain_actual_app_output'  # this path ?
+require_relative 'driver_build'
 RSpec.configure do |config|
   config.formatter = :documentation
 

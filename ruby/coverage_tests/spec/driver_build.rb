@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require 'driver_capabilities'
+require_relative 'driver_capabilities'
 
 
 DEFAULT = {
   browser: 'chrome',
-    headless: true
+  headless: true
 }.freeze
 
 def deep_copy(o)
@@ -14,9 +14,9 @@ end
 def get_env(args = {})
   env = {
     url: CHROME_SERVER_URL,
-      capabilities: {
-        browserName: args[:browser] || ''
-      }
+    capabilities: {
+      browserName: args[:browser] || ''
+    }
   }
   env[:capabilities].merge!(args[:capabilities]) unless args[:capabilities].nil?
   preset = DEVICES[args[:device]].clone || BROWSERS[args[:browser]].clone

@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+require 'rake/clean'
+require 'securerandom'
+
+require 'bundler/gem_helper'
+# Monkey patch the Bundler release class to change tags for eyes_images
+module Bundler
+  class GemHelper
+
+    def version_tag
+      ruby_tag = "@applitools/ruby"
+      "#{ruby_tag}/#{gemspec.name}@#{version}"
+    end
+
+  end
+end
+
+Bundler::GemHelper.install_tasks
+
+namespace 'github' do
+  task :set_batch_info do
+    batch_id = SecureRandom.uuid
+    # next if ENV['APPLITOOLS_BATCH_ID'] && !ENV['APPLITOOLS_BATCH_ID'].empty?
+    ENV['APPLITOOLS_DONT_CLOSE_BATCHES'] = 'true'
+    ENV['APPLITOOLS_BATCH_ID'] = batch_id unless ENV['APPLITOOLS_BATCH_ID'] && !ENV['APPLITOOLS_BATCH_ID'].empty?
+    ENV['APPLITOOLS_BATCH_NAME'] = "Eyes Ruby SDK(#{RUBY_VERSION} | #{RUBY_PLATFORM})"
+  end
+
+  task :check do
+    puts "Batch ID: #{ENV['APPLITOOLS_BATCH_ID']}"
+    puts "Batch NAME: #{ENV['APPLITOOLS_BATCH_NAME']}"
+  end
+
+end
