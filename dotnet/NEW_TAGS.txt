@@ -1,7 +1,7 @@
-dotnet/image.core@3.9.0
-dotnet/images@3.41
-dotnet/selenium@3.70
-dotnet/selenium4@3.70
-dotnet/playwright@1.18
-dotnet/appium@5.68
-dotnet/appium2@5.68-beta04
+dotnet/image.core@3.9.1
+dotnet/images@3.42
+dotnet/selenium@3.71
+dotnet/selenium4@3.71
+dotnet/playwright@1.19
+dotnet/appium@5.69
+dotnet/appium2@5.69-beta04
