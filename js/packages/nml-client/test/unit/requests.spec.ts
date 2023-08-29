@@ -14,14 +14,22 @@ describe('requests', () => {
       .post(path => path === `/message-${count}`)
       .times(3)
       .reply((_url, body) => {
-        const payload =
-          (body as any).name === 'TAKE_SNAPSHOT'
-            ? {result: {resourceMap: {metadata: {}}, metadata: {}}}
-            : {result: {screenshotUrl: ''}}
+        const response: any = {nextPath: `http://broker-url.com/message-${count + 1}`}
+        if (count === 0) {
+          response.error = 'Oops! Something went wrong.'
+        } else {
+          response.payload =
+            (body as any).name === 'TAKE_SNAPSHOT'
+              ? {result: {resourceMap: {metadata: {}}, metadata: {}}}
+              : {result: {screenshotUrl: ''}}
+        }
 
         nock('http://broker-url.com')
-          .get(path => path === `/message-${count}-response`)
-          .reply(() => [200, {payload, nextPath: `http://broker-url.com/message-${++count}`}])
+          .get(`/message-${count}-response`)
+          .reply(() => {
+            count += 1
+            return [200, response]
+          })
 
         return [200]
       })
@@ -31,7 +39,7 @@ describe('requests', () => {
       logger: makeLogger(),
     })
 
-    await requests.takeScreenshot({settings: {}})
+    await assert.rejects(requests.takeScreenshot({settings: {}}))
     await requests.takeSnapshots({settings: {renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12'}}]}})
     await requests.takeScreenshot({settings: {}})
 

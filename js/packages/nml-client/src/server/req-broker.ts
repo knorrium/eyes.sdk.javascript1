@@ -92,10 +92,11 @@ function handleUnexpectedResponse(): Hooks<ReqBrokerOptions> {
         const body = await response.text()
         const result = JSON.parse(body)
         if (result?.payload?.error) {
-          const error = result.payload.error
-          throw new Error(
-            `There was a problem when interacting with the mobile application. The provided error message was "${error.message}" and had a stack trace of "${error.stack}"`,
+          const error: any = new Error(
+            `There was a problem when interacting with the mobile application. The provided error message was "${result.payload.error.message}" and had a stack trace of "${result.payload.error.stack}"`,
           )
+          error.nextPath = result.nextPath
+          throw error
         }
         return {response, body}
       }
