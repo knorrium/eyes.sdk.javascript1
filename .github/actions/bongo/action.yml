@@ -51,6 +51,7 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: 20
+        registry-url: https://registry.npmjs.org
     - name: Sending report
       if: ${{inputs.command == 'report'}}
       working-directory: ${{inputs.working-directory}}

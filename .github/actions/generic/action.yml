@@ -23,10 +23,12 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: 20
+        registry-url: https://registry.npmjs.org
     - name: Generating tests
       working-directory: ${{inputs.working-directory}}
       shell: ${{inputs.shell}}
       run: |
         export NODE_AUTH_TOKEN=$NPM_AUTH_TOKEN
+        echo token=$NODE_AUTH_TOKEN
         npx --package=@applitools/generic@latest --yes -- 'NODE_OPTIONS=$(echo --experimental-import-meta-resolve --experimental-loader=$(NODE_PATH=$(echo $PATH | sed "s/.bin.*//") node -pe "require.resolve(\"@applitools/generic/dist/code-loader.js\")")) generic "${{inputs.config}}" --suite="${{inputs.suite}}"'
 
