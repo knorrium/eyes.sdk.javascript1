@@ -28,13 +28,7 @@ describe('requests', () => {
       .query({apiKey: 'my0api0key'})
       .reply((url, body) => {
         history.push({url, body})
-        return [
-          200,
-          {
-            windowId: JSON.stringify(body),
-            asExpected: true,
-          },
-        ]
+        return [200, {windowId: 'window-id', asExpected: true}]
       })
     nock('https://localhost:3000')
       .post('/api/sessions/running/images/text')
@@ -194,7 +188,7 @@ describe('requests', () => {
       },
     })
 
-    const [result] = await eyes.check({
+    await eyes.check({
       target: {
         name: 'My beautiful image',
         source: 'https://localhost:8080/my-beautiful-page.html',
@@ -263,7 +257,9 @@ describe('requests', () => {
       },
     })
 
-    assert.deepStrictEqual(JSON.parse(result.windowId as any), {
+    const request = history.find(({url}) => url.startsWith(`/api/sessions/running/${eyes.test.testId}`))
+
+    assert.deepStrictEqual(request.body, {
       appOutput: {
         title: 'My beautiful image',
         screenshotUrl: 'https://localhost:3000/image.png',

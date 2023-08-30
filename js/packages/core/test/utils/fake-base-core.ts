@@ -103,6 +103,7 @@ export function makeFakeCore({
             },
             uploadUrl: '',
             stitchingServiceUrl: '',
+            renderEnvironmentsUrl: '',
           },
           core,
           get running() {
@@ -133,7 +134,6 @@ export function makeFakeCore({
                 environment,
               }
               steps.push(result)
-              return [result]
             } finally {
               emitter.emit('afterCheck', options)
             }

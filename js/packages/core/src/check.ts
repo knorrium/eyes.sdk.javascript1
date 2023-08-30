@@ -1,4 +1,4 @@
-import type {Target, DriverTarget, Eyes, Config, CheckSettings, CheckResult} from './types'
+import type {Target, DriverTarget, Eyes, Config, CheckSettings} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, isDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import * as utils from '@applitools/utils'
@@ -32,7 +32,7 @@ export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic'
     settings?: CheckSettings<TSpec, TType>
     config?: Config<TSpec, TType>
     logger?: Logger
-  } = {}): Promise<CheckResult<TType>[]> {
+  } = {}): Promise<void> {
     logger = logger.extend(mainLogger, {tags: [`check-${type}-${utils.general.shortid()}`]})
 
     settings = {...config?.screenshot, ...config?.check, ...settings}
@@ -66,16 +66,7 @@ export function makeCheck<TSpec extends SpecType, TDefaultType extends 'classic'
     const driver = isDriver(target, spec)
       ? await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
       : null
-    const environment = await driver?.getEnvironment()
-    const typedEyes = await eyes.getTypedEyes({
-      type,
-      settings: (settings as CheckSettings<TSpec, 'ufg'>).renderers?.map(renderer => ({
-        type: environment?.isNative ? 'native' : 'web',
-        renderer,
-      })),
-      logger,
-    })
-    const results = await typedEyes.check({target: driver ?? target, settings, logger})
-    return results as CheckResult<TType>[]
+    const typedEyes = await eyes.getTypedEyes({type, logger})
+    return typedEyes.check({target: driver ?? target, settings, logger})
   }
 }

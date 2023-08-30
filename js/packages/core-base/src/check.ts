@@ -1,4 +1,4 @@
-import type {Target, CheckSettings, CheckResult} from './types'
+import type {Target, CheckSettings} from './types'
 import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
@@ -22,7 +22,7 @@ export function makeCheck({requests, signal, logger: mainLogger}: Options) {
     target: Target
     settings?: CheckSettings
     logger?: Logger
-  }): Promise<CheckResult[]> {
+  }): Promise<void> {
     logger = logger.extend(mainLogger, {tags: [`check-base-${utils.general.shortid()}`]})
 
     settings ??= {}

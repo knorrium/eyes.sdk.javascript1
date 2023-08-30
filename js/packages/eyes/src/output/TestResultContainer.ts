@@ -49,7 +49,7 @@ export class TestResultContainerData implements Required<TestResultContainer> {
   }
 
   get browserInfo(): RenderInfo {
-    return this._container.renderer!
+    return this._container.renderer! as RenderInfo
   }
   getBrowserInfo(): RenderInfo {
     return this.browserInfo
@@ -60,7 +60,7 @@ export class TestResultContainerData implements Required<TestResultContainer> {
     return {
       testResults: this._container.result,
       exception: this._container.error,
-      browserInfo: this._container.renderer,
+      browserInfo: this._container.renderer as RenderInfo,
     }
   }
 

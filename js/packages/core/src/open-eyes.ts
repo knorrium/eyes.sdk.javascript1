@@ -1,4 +1,6 @@
 import type {DriverTarget, Core, TypedCore, Batch, Eyes, Config, OpenSettings} from './types'
+import {type UFGClient} from '@applitools/ufg-client'
+import {type NMLClient} from '@applitools/nml-client'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeCore as makeClassicCore} from './classic/core'
@@ -7,11 +9,13 @@ import {makeGetTypedEyes} from './get-typed-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
 import {makeClose} from './close'
+import {makeAbort} from './abort'
 import {makeGetEyesResults} from './get-eyes-results'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   type?: TType
+  clients?: {ufg?: UFGClient; nml?: NMLClient}
   concurrency?: number
   batch?: Batch
   core: Core<TSpec, TType>
@@ -23,6 +27,7 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
 
 export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
   type: defaultType = 'classic' as TDefaultType,
+  clients,
   concurrency,
   batch,
   core,
@@ -69,6 +74,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
 
     const driver =
       target && (await makeDriver({spec, driver: target, logger, customConfig: settings as OpenSettings<'classic'>}))
+    const renderers = config?.check?.renderers
 
     core.logEvent({
       settings: {
@@ -89,8 +95,8 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
       settings: settings as OpenSettings<TType>,
       target: driver,
       cores: cores ?? {
-        ufg: makeUFGCore({spec, base: core.base, concurrency: concurrency ?? 5, logger}),
-        classic: makeClassicCore({spec, base: core.base, logger}),
+        ufg: makeUFGCore({spec, clients, base: core.base, concurrency: concurrency ?? 5, logger}),
+        classic: makeClassicCore({spec, clients, base: core.base, logger}),
       },
       logger,
     })
@@ -99,7 +105,8 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
       getTypedEyes,
       check: makeCheck({type, eyes, target: driver, spec, logger}),
       checkAndClose: makeCheckAndClose({type, eyes, target: driver, spec, logger}),
-      close: makeClose({eyes, logger}),
+      close: makeClose({eyes, renderers, logger}),
+      abort: makeAbort({eyes, renderers, logger}),
       getResults: makeGetEyesResults({eyes, logger}),
     })) as unknown as Eyes<TSpec, TType> // TODO solve the types issue
   }

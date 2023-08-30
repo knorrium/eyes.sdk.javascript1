@@ -4,10 +4,9 @@ import type * as ClassicCore from './classic/types'
 import type * as UFGCore from './ufg/types'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
-import {type Renderer} from '@applitools/ufg-client'
 import {type ECClient, type ECClientSettings} from '@applitools/ec-client'
 
-export {ECClient, Renderer}
+export {ECClient}
 export * from './automation/types'
 
 export type TypedCore<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = TType extends 'ufg'
@@ -76,7 +75,6 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
   readonly core: Core<TSpec, TDefaultType>
   getTypedEyes<TType extends 'classic' | 'ufg' = TDefaultType>(options?: {
     type?: TType
-    settings?: any
     logger?: Logger
   }): Promise<TypedEyes<TSpec, TType>>
   check<TType extends 'classic' | 'ufg' = TDefaultType>(options?: {
@@ -85,7 +83,7 @@ export interface Eyes<TSpec extends SpecType, TDefaultType extends 'classic' | '
     settings?: Partial<CheckSettings<TSpec, TDefaultType> & CheckSettings<TSpec, TType>>
     config?: Config<TSpec, TDefaultType> & Config<TSpec, TType>
     logger?: Logger
-  }): Promise<CheckResult<TType>[]>
+  }): Promise<void>
   checkAndClose<TType extends 'classic' | 'ufg' = TDefaultType>(options?: {
     type?: TType
     target?: Target<TSpec, TType>
@@ -157,10 +155,6 @@ export type GetManagerResultsSettings<TType extends 'classic' | 'ufg'> = GetEyes
   removeDuplicateTests?: boolean
 }
 
-export type CheckResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
-  ? UFGCore.CheckResult
-  : ClassicCore.CheckResult
-
 export type TestResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
   ? UFGCore.TestResult
   : ClassicCore.TestResult
@@ -168,7 +162,7 @@ export type TestResult<TType extends 'classic' | 'ufg'> = TType extends 'ufg'
 export interface TestResultContainer<TType extends 'classic' | 'ufg'> {
   readonly error?: Error
   readonly result?: TestResult<TType>
-  readonly renderer?: TType extends 'ufg' ? Renderer : never
+  readonly renderer?: TType extends 'ufg' ? AutomationCore.Renderer : never
   readonly userTestId?: string
 }
 

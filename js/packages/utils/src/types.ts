@@ -83,10 +83,7 @@ export function isEnumValue<TEnum extends Record<string, string | number>, TValu
   return values.has(value)
 }
 
-export function has<TKey extends PropertyKey>(
-  value: any,
-  keys: TKey | readonly TKey[],
-): value is Record<TKey, unknown> {
+export function has<TKey extends PropertyKey>(value: any, keys: TKey | readonly TKey[]): value is Record<TKey, any> {
   if (!isObject(value)) return false
 
   if (!isArray(keys)) keys = [keys as TKey]

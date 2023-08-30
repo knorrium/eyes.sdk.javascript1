@@ -6,7 +6,7 @@ describe('req-broker', () => {
   it('sends request and gets response', async () => {
     fakePublishMessage()
     fakePollMessageResult()
-    const req = makeReqBroker({config: {}})
+    const req = makeReqBroker({settings: {}})
     const response = await req(brokerURL, {
       name: 'test',
       body: {protocolVersion: '1.0', name: 'test', key: 'guid', payload: {}},
@@ -18,7 +18,7 @@ describe('req-broker', () => {
 
   it('rejects if initial request response with non-200 status code', async () => {
     fakePublishMessage({statusCode: 404, message: 'session does not exist'})
-    const req = makeReqBroker({config: {}})
+    const req = makeReqBroker({settings: {}})
     await assert.rejects(
       req(brokerURL, {
         name: 'test',
@@ -45,7 +45,7 @@ describe('req-broker', () => {
 
   it('rejects if command finished with an error', async () => {
     fakeBrokerRequests({payload: {error: {message: 'message', stack: 'stack'}}})
-    const req = makeReqBroker({config: {}})
+    const req = makeReqBroker({settings: {}})
     await assert.rejects(
       req(brokerURL, {
         name: 'test',

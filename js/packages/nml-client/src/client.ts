@@ -1,21 +1,22 @@
-import type {NMLClient} from './types'
+import type {NMLClient, NMLClientSettings} from './types'
 import {makeLogger, type Logger} from '@applitools/logger'
-import {makeNMLRequests, type NMLRequestsConfig} from './server/requests'
+import {makeNMLRequests} from './server/requests'
 import {makeTakeSnapshots} from './take-snapshots'
-import {makeTakeScreenshot} from './take-screenshot'
+import {makeTakeScreenshots} from './take-screenshots'
 
 export function makeNMLClient({
-  config,
+  settings,
   logger: defaultLogger,
 }: {
-  config: NMLRequestsConfig
+  settings: NMLClientSettings
   logger?: Logger
 }): NMLClient {
   const logger = makeLogger({logger: defaultLogger, format: {label: 'nml-client'}})
-  const requests = makeNMLRequests({config, logger})
+  const requests = makeNMLRequests({settings, logger})
 
   return {
-    takeScreenshot: makeTakeScreenshot({requests, logger}),
+    takeScreenshots: makeTakeScreenshots({requests, logger}),
     takeSnapshots: makeTakeSnapshots({requests, logger}),
+    getSupportedRenderEnvironments: requests.getSupportedRenderEnvironments,
   }
 }

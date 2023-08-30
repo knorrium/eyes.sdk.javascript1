@@ -7,7 +7,7 @@ import {makeFakeCore} from '../utils/fake-base-core'
 import {makeFakeClient} from '../utils/fake-ufg-client'
 import assert from 'assert'
 
-describe('close', async () => {
+describe('abort', async () => {
   let driver: MockDriver, core: Core<SpecType<MockDriver>, 'classic' | 'ufg'>
 
   async function destroyDriver(driver: MockDriver) {
@@ -32,16 +32,16 @@ describe('close', async () => {
     core = makeCore({spec, base: fakeCore, clients: {ufg: fakeClient}})
   })
 
-  it('should not throw if driver is destroyed before close', async () => {
+  it('should not throw if driver is destroyed before abort', async () => {
     const eyes = await core.openEyes({target: driver, settings: {appName: 'App', testName: 'Test'}})
     await eyes.check()
     await destroyDriver(driver)
-    await eyes.close()
+    await eyes.abort()
   })
 
   it('should return results of classic eyes if no check was called', async () => {
     const eyes = await core.openEyes({type: 'classic', target: driver, settings: {appName: 'App', testName: 'Test'}})
-    await eyes.close()
+    await eyes.abort()
     const results = await eyes.getResults()
 
     assert.strictEqual(results.length, 1)
@@ -49,7 +49,7 @@ describe('close', async () => {
 
   it('should return results of classic eyes for renderers if no check was called', async () => {
     const eyes = await core.openEyes({type: 'classic', target: driver, settings: {appName: 'App', testName: 'Test'}})
-    await eyes.close({
+    await eyes.abort({
       settings: {
         renderers: [
           {environment: {viewportSize: {width: 100, height: 100}}},
@@ -79,7 +79,7 @@ describe('close', async () => {
         close: {},
       },
     })
-    await eyes.close()
+    await eyes.abort()
     const results = await eyes.getResults()
 
     assert.strictEqual(results.length, 2)
@@ -87,7 +87,7 @@ describe('close', async () => {
 
   it('should not return results of ufg eyes if no check was called', async () => {
     const eyes = await core.openEyes({type: 'ufg', target: driver, settings: {appName: 'App', testName: 'Test'}})
-    await eyes.close()
+    await eyes.abort()
     const results = await eyes.getResults()
 
     assert.strictEqual(results.length, 0)
@@ -95,7 +95,7 @@ describe('close', async () => {
 
   it('should return results of ufg eyes for renderers if no check was called', async () => {
     const eyes = await core.openEyes({type: 'ufg', target: driver, settings: {appName: 'App', testName: 'Test'}})
-    await eyes.close({
+    await eyes.abort({
       settings: {
         renderers: [
           {name: 'chrome', width: 100, height: 100},
@@ -125,7 +125,7 @@ describe('close', async () => {
         close: {},
       },
     })
-    await eyes.close()
+    await eyes.abort()
     const results = await eyes.getResults()
 
     assert.strictEqual(results.length, 0)

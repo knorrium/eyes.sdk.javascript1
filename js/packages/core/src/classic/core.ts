@@ -16,6 +16,7 @@ type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
   clients?: {nml?: NMLClient}
   base?: BaseCore
+  concurrency?: number
   agentId?: string
   cwd?: string
   logger?: Logger
@@ -25,6 +26,7 @@ export function makeCore<TSpec extends SpecType>({
   spec,
   clients,
   base,
+  concurrency,
   agentId = 'core-classic',
   cwd = process.cwd(),
   logger: defaultLogger,
@@ -32,18 +34,18 @@ export function makeCore<TSpec extends SpecType>({
   const logger = makeLogger({logger: defaultLogger, format: {label: 'core-classic'}})
   logger.log(`Core classic is initialized ${base ? 'with' : 'without'} custom base core`)
 
-  base ??= makeBaseCore({agentId, cwd, logger})
+  base ??= makeBaseCore({concurrency, agentId, cwd, logger})
   return utils.general.extend(base, core => {
     return {
       type: 'classic' as const,
       base: base!,
       getViewportSize: spec && makeGetViewportSize({spec, logger}),
       setViewportSize: spec && makeSetViewportSize({spec, logger}),
-      getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
-      openEyes: makeOpenEyes({spec, core, logger}),
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
+      getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
+      openEyes: makeOpenEyes({spec, core, logger}),
     }
   })
 }

@@ -1,6 +1,7 @@
-import type {Eyes, GetBaseEyesSettings, OpenSettings, Environment} from './types'
+import type {Eyes, GetBaseEyesSettings, OpenSettings} from './types'
 import type {Eyes as BaseEyes} from '@applitools/core-base'
 import {type SpecType} from '@applitools/driver'
+import {type Renderer as UFGRenderer} from '@applitools/ufg-client'
 import {type Logger} from '@applitools/logger'
 import * as utils from '@applitools/utils'
 
@@ -14,26 +15,33 @@ type Options<TSpec extends SpecType> = {
 export function makeGetBaseEyes<TSpec extends SpecType>({
   settings: defaultSettings,
   eyes,
-  base,
   logger: mainLogger,
 }: Options<TSpec>) {
-  const getBaseEyesWithCache = utils.general.cachify(getBaseEyes, ([options]) => options?.settings?.renderer)
-  if (base) {
-    base.forEach(baseEyes => getBaseEyesWithCache.setCachedValue(baseEyes.test.renderer, Promise.resolve([baseEyes])))
-  }
+  const getBaseEyesWithCache = utils.general.wrap(getBaseEyes, (getBaseEyes, options) => {
+    const key = JSON.stringify(options.settings.renderer)
+    let item = eyes.storage.get(key)
+    if (!item) {
+      item = {renderer: options.settings.renderer, eyes: getBaseEyes(options), jobs: []}
+      eyes.storage.set(key, item)
+    } else if (!item.eyes) {
+      item.eyes = getBaseEyes(options)
+    }
+    return item.eyes
+  })
+
   return getBaseEyesWithCache
 
   async function getBaseEyes({
     settings,
     logger = mainLogger,
   }: {
-    settings?: GetBaseEyesSettings
+    settings: GetBaseEyesSettings
     logger?: Logger
-  } = {}): Promise<BaseEyes[]> {
+  }): Promise<BaseEyes> {
     logger = logger.extend(mainLogger)
 
     logger.log(`Command "getBaseEyes" is called with settings`, settings)
-    if (!settings) throw new Error('')
+
     const ufgClient = await eyes.core.getUFGClient({
       settings: {
         ...eyes.test.ufgServer,
@@ -42,12 +50,17 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
       },
       logger,
     })
-    const environment: Environment = await ufgClient.getRenderEnvironment({settings, logger})
-    environment.properties = settings.properties
-    const baseEyes = await eyes.core.base.openEyes({
-      settings: {...defaultSettings, environment: {...defaultSettings.environment, ...environment}},
+    const environment = await ufgClient.getRenderEnvironment({
+      settings: {renderer: settings.renderer as UFGRenderer},
       logger,
     })
-    return [baseEyes]
+
+    return eyes.core.base.openEyes({
+      settings: {
+        ...defaultSettings,
+        environment: {...defaultSettings.environment, ...environment, properties: settings.renderer.properties},
+      },
+      logger,
+    })
   }
 }

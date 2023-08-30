@@ -1,15 +1,13 @@
-import type {GetResultsSettings, TestResult} from './types'
-import {type Eyes as BaseEyes} from '@applitools/core-base'
+import type {Eyes, GetResultsSettings, TestResult} from '../ufg/types'
 import {type Logger} from '@applitools/logger'
 import {AbortError} from '../errors/abort-error'
-import {Renderer} from '@applitools/ufg-client'
 
 type Options = {
-  storage: Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>
+  eyes: Eyes<any>
   logger: Logger
 }
 
-export function makeGetResults({storage, logger: mainLogger}: Options) {
+export function makeGetResults({eyes, logger: mainLogger}: Options) {
   return async function getResults({
     settings,
     logger = mainLogger,
@@ -21,11 +19,11 @@ export function makeGetResults({storage, logger: mainLogger}: Options) {
 
     logger.log('Command "getResults" is called with settings', settings)
     return Promise.all(
-      Array.from(storage.values(), async promises => {
+      Array.from(eyes.storage.values(), async item => {
         try {
-          const [{eyes, renderer}] = await Promise.all(promises)
+          const [eyes] = await Promise.all([item.eyes, ...item.jobs])
           const [result] = await eyes.getResults({settings, logger})
-          return {...result, renderer}
+          return {...result, renderer: item.renderer}
         } catch (error: any) {
           if (error instanceof AbortError && error.info?.eyes) {
             logger.warn('Command "getResults" received an abort error during performing', settings)

@@ -1,4 +1,3 @@
-import type * as BaseCore from '@applitools/core-base/types'
 import type * as AutomationCore from '../automation/types'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
@@ -10,7 +9,7 @@ export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec>
   openEyes(options: {
     target?: AutomationCore.DriverTarget<TSpec>
     settings: OpenSettings
-    base?: BaseCore.Eyes[]
+    storage?: AutomationCore.EyesStorage
     logger?: Logger
   }): Promise<Eyes<TSpec>>
 }
@@ -22,7 +21,7 @@ export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec>
     target?: AutomationCore.Target<TSpec>
     settings?: CheckSettings<TSpec>
     logger?: Logger
-  }): Promise<AutomationCore.CheckResult[]>
+  }): Promise<void>
   checkAndClose(options?: {
     target?: AutomationCore.Target<TSpec>
     settings?: CheckSettings<TSpec> & AutomationCore.CloseSettings
@@ -31,8 +30,8 @@ export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec>
 }
 
 export type OpenSettings = AutomationCore.OpenSettings & {
-  keepPlatformNameAsIs?: boolean
   useCeilForViewportSize?: boolean
+  keepPlatformNameAsIs?: boolean
 }
 
 export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings<TSpec> & {

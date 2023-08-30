@@ -34,6 +34,7 @@ describe('open-eyes', () => {
       eyesServer: {eyesServerUrl: 'server-url', apiKey: 'api-key', proxy: {url: 'proxy-url'}},
       rcaEnable: true,
       stitchingServiceUrl: 'stitchingService',
+      renderEnvironmentsUrl: 'renderEnvironments',
       uploadUrl: 'uploadUrl',
       maxImageHeight: 1000,
       maxImageArea: 1000,
@@ -67,6 +68,7 @@ describe('open-eyes', () => {
       eyesServer: accountInfo.eyesServer,
       ufgServer: accountInfo.ufgServer,
       stitchingServiceUrl: 'stitchingService',
+      renderEnvironmentsUrl: 'renderEnvironments',
       uploadUrl: 'uploadUrl',
       account: accountInfo,
     }

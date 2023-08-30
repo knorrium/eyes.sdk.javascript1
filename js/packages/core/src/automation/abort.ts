@@ -1,23 +1,25 @@
-import type {DriverTarget, AbortSettings} from './types'
-import {type Eyes as BaseEyes} from '@applitools/core-base'
+import type {Mutable} from '@applitools/utils'
+import type {DriverTarget, Eyes, AbortSettings, Renderer} from './types'
 import {type Logger} from '@applitools/logger'
 import {type AbortController} from 'abort-controller'
 import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
-import {Renderer} from '@applitools/ufg-client'
+import {uniquifyRenderers} from './utils/uniquify-renderers'
 
 type Options<TSpec extends SpecType> = {
-  storage: Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>
-  controller: AbortController
+  eyes: Eyes<TSpec>
   target?: DriverTarget<TSpec>
+  controller: AbortController
+  renderers?: Renderer[]
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
 export function makeAbort<TSpec extends SpecType>({
-  storage,
+  eyes,
   target,
-  spec,
   controller,
+  renderers: defaultRenderers,
+  spec,
   logger: mainLogger,
 }: Options<TSpec>) {
   return async function abort({
@@ -30,6 +32,14 @@ export function makeAbort<TSpec extends SpecType>({
     logger = logger.extend(mainLogger)
 
     logger.log('Command "abort" is called with settings', settings)
+
+    if (!eyes.running) {
+      logger.log('Command "abort" will be ignored because eyes were already stopped')
+      return
+    } else {
+      ;(eyes as Mutable<typeof eyes>).running = false
+    }
+
     controller.abort()
     settings ??= {}
     if (!settings.testMetadata && isDriver(target, spec)) {
@@ -41,9 +51,16 @@ export function makeAbort<TSpec extends SpecType>({
       }
     }
 
-    storage.forEach(async promises => {
+    settings.renderers ??= defaultRenderers
+    if (eyes.storage.size === 0 && settings.renderers && settings.renderers.length > 0) {
+      const uniqueRenderers = uniquifyRenderers(settings.renderers)
+      logger.log('Command "abort" starting filler tests for renderers', uniqueRenderers)
+      await Promise.all(uniqueRenderers.map(renderer => eyes.getBaseEyes({settings: {renderer}, logger})))
+    }
+
+    eyes.storage.forEach(async item => {
       try {
-        const {eyes} = await Promise.race(promises)
+        const eyes = await item.eyes
         await eyes.abort({settings, logger})
       } catch (error: any) {
         logger.warn('Command "abort" received an error during waiting for eyes instances in background', error)

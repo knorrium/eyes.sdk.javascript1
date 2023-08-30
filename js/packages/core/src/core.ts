@@ -1,5 +1,7 @@
 import type {Core} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
+import {type UFGClient} from '@applitools/ufg-client'
+import {type NMLClient} from '@applitools/nml-client'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
 import {makeCore as makeBaseCore} from '@applitools/core-base'
@@ -20,6 +22,7 @@ import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
   spec?: SpecDriver<TSpec>
+  clients?: {ufg?: UFGClient; nml?: NMLClient}
   concurrency?: number
   base?: BaseCore
   agentId?: string
@@ -30,6 +33,7 @@ type Options<TSpec extends SpecType> = {
 
 export function makeCore<TSpec extends SpecType>({
   spec,
+  clients,
   concurrency,
   base: defaultBase,
   environment: defaultEnvironment,
@@ -47,14 +51,14 @@ export function makeCore<TSpec extends SpecType>({
       base: base!,
       getViewportSize: spec && makeGetViewportSize({spec, logger}),
       setViewportSize: spec && makeSetViewportSize({spec, logger}),
-      getNMLClient: makeGetNMLClient({logger}),
+      getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
       getECClient: makeGetECClient({logger}),
       getAccountInfo: makeGetAccountInfo({core, logger}),
-      makeManager: makeMakeManager({spec, concurrency, core, base: defaultBase, agentId, environment, logger}),
+      makeManager: makeMakeManager({spec, clients, concurrency, core, base: defaultBase, agentId, environment, logger}),
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
-      openEyes: makeOpenEyes({spec, core, concurrency, environment, logger}),
+      openEyes: makeOpenEyes({spec, clients, core, concurrency, environment, logger}),
       closeBatch: makeCloseBatch({core, logger}),
       deleteTest: makeDeleteTest({core, logger}),
     }

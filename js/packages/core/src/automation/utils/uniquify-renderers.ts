@@ -1,4 +1,4 @@
-import {type Renderer} from '@applitools/ufg-client'
+import type {Renderer} from '../types'
 
 export function uniquifyRenderers<TRenderer extends Renderer>(renderers: TRenderer[]): TRenderer[] {
   const duplications = new Map(renderers.map(renderer => [JSON.stringify(renderer), 0]))

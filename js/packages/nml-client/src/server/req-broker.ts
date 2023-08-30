@@ -1,10 +1,6 @@
+import type {BrokerServerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
-import globalReq, {makeReq, type Req, type Options, type Proxy, type Hooks} from '@applitools/req'
-
-export type ReqBrokerConfig = {
-  proxy?: Proxy
-  agentId?: string
-}
+import globalReq, {makeReq, type Req, type Options, type Hooks} from '@applitools/req'
 
 export type ReqBrokerOptions = Options & {
   name: string
@@ -19,14 +15,14 @@ export type ReqBrokerOptions = Options & {
 
 export type ReqBroker = Req<ReqBrokerOptions>
 
-export function makeReqBroker({config, logger}: {config: ReqBrokerConfig; logger?: Logger}) {
+export function makeReqBroker({settings, logger}: {settings: Partial<BrokerServerSettings>; logger?: Logger}) {
   return makeReq<ReqBrokerOptions>({
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'User-Agent': config.agentId,
+      'User-Agent': settings.agentId,
     },
-    proxy: config.proxy,
+    proxy: settings.proxy,
     connectionTimeout: 300000 /* 5min */,
     retry: {
       limit: 5,

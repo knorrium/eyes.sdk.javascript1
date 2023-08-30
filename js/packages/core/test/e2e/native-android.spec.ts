@@ -22,7 +22,7 @@ describe('native android (@sauce)', () => {
     await destroyDriver?.()
   })
 
-  it('works in classic mode', async () => {
+  it('works in applitools-lib mode', async () => {
     const core = makeCore({spec, concurrency: 10})
     const eyes = await core.openEyes({
       type: 'classic',

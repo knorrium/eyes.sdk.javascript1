@@ -1,5 +1,4 @@
 import type {MaybeArray} from '@applitools/utils'
-import type * as BaseCore from '@applitools/core-base/types'
 import type * as AutomationCore from '../automation/types'
 import {type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
@@ -7,8 +6,6 @@ import {type Proxy} from '@applitools/req'
 import {
   type UFGClient,
   type UFGClientSettings,
-  type RenderEnvironmentSettings,
-  type Renderer,
   type DomSnapshot,
   type AndroidSnapshot,
   type IOSSnapshot,
@@ -25,7 +22,7 @@ export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec>
   openEyes(options: {
     target?: AutomationCore.DriverTarget<TSpec>
     settings: AutomationCore.OpenSettings
-    base?: BaseCore.Eyes[]
+    storage?: AutomationCore.EyesStorage
     logger?: Logger
   }): Promise<Eyes<TSpec>>
 }
@@ -33,34 +30,19 @@ export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec>
 export interface Eyes<TSpec extends SpecType> extends AutomationCore.Eyes<TSpec> {
   readonly type: 'ufg'
   readonly core: Core<TSpec>
-  getBaseEyes(options?: {settings?: GetBaseEyesSettings; logger?: Logger}): Promise<BaseCore.Eyes[]>
-  check(options?: {target?: Target<TSpec>; settings?: CheckSettings<TSpec>; logger?: Logger}): Promise<CheckResult[]>
+  check(options?: {target?: Target<TSpec>; settings?: CheckSettings<TSpec>; logger?: Logger}): Promise<void>
   checkAndClose(options?: {
     target?: Target<TSpec>
     settings?: CheckSettings<TSpec> & AutomationCore.CloseSettings
     logger?: Logger
   }): Promise<void>
-  getResults(options?: {settings?: AutomationCore.GetResultsSettings; logger?: Logger}): Promise<TestResult[]>
-}
-
-export type GetBaseEyesSettings = RenderEnvironmentSettings & {
-  properties?: BaseCore.CustomProperty[]
 }
 
 export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings<TSpec> & {
-  renderers?: (Renderer & {properties?: BaseCore.CustomProperty[]})[]
   hooks?: {beforeCaptureScreenshot: string}
   disableBrowserFetching?: boolean
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
   ufgOptions?: Record<string, any>
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
   headers?: Record<string, string>
-}
-
-export type CheckResult = AutomationCore.CheckResult & {
-  readonly renderer: Renderer
-}
-
-export type TestResult = AutomationCore.TestResult & {
-  readonly renderer: Renderer
 }

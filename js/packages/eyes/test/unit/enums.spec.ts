@@ -9,7 +9,7 @@ describe('enums', () => {
     let expectedDeviceNames: string[]
     before(async () => {
       const LEGACY = ['Samsung Galaxy S8', 'Samsung Galaxy A5', 'Galaxy S III', 'Galaxy Note II']
-      const {devices}: {devices: any[]} = await req(url).then(response => response.json())
+      const {devices}: {devices: any[]} = (await req(url).then(response => response.json())) as any
       expectedDeviceNames = devices.map(device => device.deviceName).filter(deviceName => !LEGACY.includes(deviceName))
     })
 
@@ -18,11 +18,12 @@ describe('enums', () => {
     })
   })
 
-  describe('IosDeviceName', () => {
+  // NOTE: skipped because now the enum represents not just ufg supported devices but also those that supported by applitools lib for native devices
+  describe.skip('IosDeviceName', () => {
     const url = 'https://render-wus.applitools.com/ios-devices-sizes'
     let expectedDeviceNames: string[]
     before(async () => {
-      const devices = await req(url).then(response => response.json())
+      const devices = (await req(url).then(response => response.json())) as any
       expectedDeviceNames = Object.keys(devices)
     })
 
@@ -36,7 +37,7 @@ describe('enums', () => {
     let expectedDeviceNames: string[]
     before(async () => {
       const LEGACY = ['Test Phone']
-      const devices = await req(url).then(response => response.json())
+      const devices = (await req(url).then(response => response.json())) as any
       expectedDeviceNames = Object.keys(devices).filter(deviceName => !LEGACY.includes(deviceName))
     })
 

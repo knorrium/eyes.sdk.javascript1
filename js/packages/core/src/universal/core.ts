@@ -111,6 +111,7 @@ export function makeEyes<TSpec extends SpecType, TType extends 'classic' | 'ufg'
   const eyes: Eyes<TSpec, TType> = {
     test: null as never,
     running: null as never,
+    storage: null as never,
     core,
     getBaseEyes() {
       return null as never

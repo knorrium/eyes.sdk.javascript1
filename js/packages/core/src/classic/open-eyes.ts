@@ -1,12 +1,14 @@
-import type {Core, DriverTarget, Eyes, OpenSettings} from './types'
-import type {Eyes as BaseEyes} from '@applitools/core-base'
+import type {DriverTarget, Core, Eyes, EyesStorage, OpenSettings, VisualTest} from './types'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeGetBaseEyes} from './get-base-eyes'
 import {makeCheck} from './check'
 import {makeCheckAndClose} from './check-and-close'
-import {makeClose} from './close'
-import {makeAbort} from './abort'
+import {makeClose} from '../automation/close'
+import {makeAbort} from '../automation/abort'
+import {makeGetResults} from '../automation/get-results'
+import {extractDefaultRenderers} from './utils/extract-default-renderers'
+import {AbortController} from 'abort-controller'
 import * as utils from '@applitools/utils'
 
 type Options<TSpec extends SpecType> = {
@@ -19,78 +21,60 @@ export function makeOpenEyes<TSpec extends SpecType>({core, spec, logger: mainLo
   return async function openEyes({
     target,
     settings,
-    base,
+    storage = new Map(),
     logger = mainLogger,
   }: {
     target?: DriverTarget<TSpec>
     settings: OpenSettings
-    base?: BaseEyes[]
+    storage?: EyesStorage
     logger?: Logger
   }): Promise<Eyes<TSpec>> {
     logger = logger.extend(mainLogger)
 
     logger.log(
-      `Command "openEyes" is called with ${target ? 'default driver and' : ''}`,
-      ...(settings ? ['settings', settings] : []),
-      base ? 'predefined eyes' : '',
+      `Command "openEyes" is called with ${target ? 'default driver' : ''}`,
+      ...(settings ? ['and settings', settings] : []),
+      storage.size > 0 ? 'and default eyes storage' : '',
     )
 
     const driver = target && (await makeDriver({spec, driver: target, logger, customConfig: settings}))
-    if (driver && !base) {
+    if (driver && storage.size === 0) {
       const environment = await driver.getEnvironment()
-      const currentContext = driver.currentContext
-      settings.environment ??= {}
-      if (environment.isEC) {
-        settings.environment.ecSessionId = (await driver.getSessionId())!
-      }
-      if (environment.isWeb) {
-        settings.environment.userAgent ??= await driver.getUserAgentLegacy()
-      }
-      if (!settings.environment.deviceName && environment.deviceName) {
-        settings.environment.deviceName = environment.deviceName
-      }
-      if (!settings.environment.os) {
-        if (environment.isNative && environment.platformName) {
-          settings.environment.os = environment.platformName
-          if (!settings.keepPlatformNameAsIs) {
-            if (/^android/i.test(settings.environment.os)) {
-              settings.environment.os = `Android${settings.environment.os.slice(7)}`
-            }
-            if (/^ios/i.test(settings.environment.os)) {
-              settings.environment.os = `iOS${settings.environment.os.slice(3)}`
-            }
-          }
-          if (environment.platformVersion) {
-            settings.environment.os += ` ${environment.platformVersion}`
-          }
-        } else if (
-          environment.isReliable &&
-          environment.isChromium &&
-          ((environment.isWindows && Number.parseInt(environment.browserVersion!) >= 107) ||
-            (environment.isMac && Number.parseInt(environment.browserVersion!) >= 90))
-        ) {
-          settings.environment.os = `${environment.platformName} ${environment.platformVersion ?? ''}`.trim()
-        }
-      }
-      if (!settings.environment.viewportSize || environment.isMobile) {
-        const viewport = await driver.getViewport()
-        const size = await driver.getViewportSize()
-        settings.environment.viewportSize = utils.geometry.scale(size, viewport.viewportScale)
-      } else {
+      if (settings.environment?.viewportSize && !environment.isMobile) {
         await driver.setViewportSize(settings.environment.viewportSize)
       }
-      await currentContext.focus()
+      settings.environment ??= {}
+      if (environment.isEC) {
+        settings.environment.ecSessionId = (await driver.getSessionId()) ?? undefined
+      }
     }
-
-    base ??= [await core.base.openEyes({settings, logger})]
-    return utils.general.extend(base[0], eyes => ({
-      type: 'classic' as const,
-      core,
-      getBaseEyes: makeGetBaseEyes({settings, eyes, base, logger}),
-      check: makeCheck({eyes, target: driver, spec, logger}),
-      checkAndClose: makeCheckAndClose({eyes, target: driver, spec, logger}),
-      close: makeClose({eyes, target: driver, spec, logger}),
-      abort: makeAbort({eyes, target: driver, spec, logger}),
-    }))
+    const renderers = await extractDefaultRenderers({driver, settings})
+    const controller = new AbortController()
+    const account = await core.getAccountInfo({settings, logger})
+    return utils.general.extend({}, eyes => {
+      return {
+        type: 'classic' as const,
+        core,
+        test: {
+          userTestId: settings.userTestId,
+          batchId: settings.batch?.id,
+          keepBatchOpen: settings.keepBatchOpen,
+          eyesServer: account.eyesServer,
+          ufgServer: account.ufgServer,
+          uploadUrl: account.uploadUrl,
+          stitchingServiceUrl: account.stitchingServiceUrl,
+          renderEnvironmentsUrl: account.renderEnvironmentsUrl,
+          account,
+        } as VisualTest,
+        running: true,
+        storage,
+        getBaseEyes: makeGetBaseEyes({settings, eyes, logger}),
+        check: makeCheck({eyes, target: driver, renderers, spec, signal: controller.signal, logger}),
+        checkAndClose: makeCheckAndClose({eyes, target: driver, renderers, spec, signal: controller.signal, logger}),
+        close: makeClose({eyes, target: driver, renderers, logger}),
+        abort: makeAbort({eyes, target: driver, renderers, spec, controller, logger}),
+        getResults: makeGetResults({eyes, logger}),
+      }
+    })
   }
 }

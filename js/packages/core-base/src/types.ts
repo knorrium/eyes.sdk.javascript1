@@ -40,7 +40,7 @@ export interface Eyes {
   readonly core: Core
   readonly test: VisualTest
   readonly running: boolean
-  check(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<CheckResult[]>
+  check(options: {target: Target; settings?: CheckSettings; logger?: Logger}): Promise<void>
   checkAndClose(options: {target: Target; settings?: CheckSettings & CloseSettings; logger?: Logger}): Promise<void>
   close(options?: {settings?: CloseSettings; logger?: Logger}): Promise<void>
   abort(options?: {settings?: AbortSettings; logger?: Logger}): Promise<void>
@@ -72,6 +72,7 @@ export interface VisualTest {
   eyesServer: EyesServerSettings
   ufgServer: UFGServerSettings
   uploadUrl: string
+  renderEnvironmentsUrl: string
   stitchingServiceUrl: string
   resultsUrl: string
   account: Account
@@ -95,6 +96,7 @@ export interface Account {
   eyesServer: EyesServerSettings
   ufgServer: UFGServerSettings
   stitchingServiceUrl: string
+  renderEnvironmentsUrl: string
   uploadUrl: string
   maxImageHeight: number
   maxImageArea: number
@@ -132,8 +134,10 @@ export type Environment = {
   renderEnvironmentId?: string
   ecSessionId?: string
   os?: string
+  // TODO: rename to displayOs
   osInfo?: string
   hostingApp?: string
+  // TODO: rename to displayHostingApp
   hostingAppInfo?: string
   deviceName?: string
   viewportSize?: Size
@@ -253,7 +257,6 @@ export interface CheckSettings<TRegion = Region> extends ImageSettings<TRegion> 
   accessibilityRegions?: (TRegion | AccessibilityRegion<TRegion>)[]
   accessibilitySettings?: {level?: AccessibilityLevel; version?: AccessibilityGuidelinesVersion}
   matchLevel?: MatchLevel
-  sendDom?: boolean
   useDom?: boolean
   enablePatterns?: boolean
   ignoreCaret?: boolean
@@ -278,12 +281,6 @@ export interface CheckSettings<TRegion = Region> extends ImageSettings<TRegion> 
   forceMismatch?: boolean
   /** @internal */
   forceMatch?: boolean
-}
-
-export interface CheckResult {
-  readonly asExpected: boolean
-  readonly windowId?: number
-  readonly userTestId: string
 }
 
 export interface ReportSettings {

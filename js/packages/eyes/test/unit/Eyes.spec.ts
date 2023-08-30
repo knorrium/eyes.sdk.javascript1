@@ -191,6 +191,30 @@ describe('Eyes', () => {
     assert.deepEqual(eyes.getDriver(), driver)
   })
 
+  it('should provide settings when call "check" method', async () => {
+    const eyes = new Eyes()
+    await eyes.open(driver)
+    await eyes.check({fully: true})
+
+    assert.deepEqual(
+      core.history.filter(h => h.command === 'check'),
+      [
+        {
+          command: 'check',
+          data: {
+            settings: {fully: true},
+            config: {
+              open: {environment: {}},
+              screenshot: {normalization: {}, fully: false},
+              check: {},
+              close: {},
+            },
+          },
+        },
+      ],
+    )
+  })
+
   it('should return null from "check" method if eyes instance is disabled', async () => {
     const eyes = new Eyes()
     await eyes.open(driver)

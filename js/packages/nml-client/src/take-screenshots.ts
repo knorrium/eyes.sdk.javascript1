@@ -7,14 +7,14 @@ type Options = {
   logger: Logger
 }
 
-export function makeTakeScreenshot({requests, logger: defaultLogger}: Options) {
-  return async function takeScreenshot({
+export function makeTakeScreenshots({requests, logger: defaultLogger}: Options) {
+  return async function takeScreenshots({
     settings,
     logger = defaultLogger,
   }: {
     settings: ScreenshotSettings
     logger?: Logger
-  }): Promise<Screenshot> {
-    return requests.takeScreenshot({settings, logger})
+  }): Promise<Screenshot[]> {
+    return requests.takeScreenshots({settings, logger})
   }
 }

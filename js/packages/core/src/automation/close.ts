@@ -1,17 +1,24 @@
-import type {DriverTarget, CloseSettings} from './types'
-import {type Eyes as BaseEyes} from '@applitools/core-base'
+import type {Mutable} from '@applitools/utils'
+import type {DriverTarget, Eyes, CloseSettings, Renderer} from '../ufg/types'
 import {type Logger} from '@applitools/logger'
 import {isDriver, makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
-import {Renderer} from '@applitools/ufg-client'
+import {uniquifyRenderers} from './utils/uniquify-renderers'
 
 type Options<TSpec extends SpecType> = {
-  storage: Map<string, Promise<{renderer: Renderer; eyes: BaseEyes}>[]>
+  eyes: Eyes<TSpec>
   target?: DriverTarget<TSpec>
+  renderers?: Renderer[]
   spec?: SpecDriver<TSpec>
   logger: Logger
 }
 
-export function makeClose<TSpec extends SpecType>({storage, target, spec, logger: mainLogger}: Options<TSpec>) {
+export function makeClose<TSpec extends SpecType>({
+  eyes,
+  target,
+  renderers: defaultRenderers,
+  spec,
+  logger: mainLogger,
+}: Options<TSpec>) {
   return async function close({
     settings,
     logger = mainLogger,
@@ -22,6 +29,14 @@ export function makeClose<TSpec extends SpecType>({storage, target, spec, logger
     logger = logger.extend(mainLogger)
 
     logger.log('Command "close" is called with settings', settings)
+
+    if (!eyes.running) {
+      logger.log('Command "close" will be ignored because eyes were already stopped')
+      return
+    } else {
+      ;(eyes as Mutable<typeof eyes>).running = false
+    }
+
     settings ??= {}
     if (!settings.testMetadata && isDriver(target, spec)) {
       try {
@@ -32,9 +47,16 @@ export function makeClose<TSpec extends SpecType>({storage, target, spec, logger
       }
     }
 
-    storage.forEach(async promises => {
+    settings.renderers ??= defaultRenderers
+    if (eyes.storage.size === 0 && settings.renderers && settings.renderers.length > 0) {
+      const uniqueRenderers = uniquifyRenderers(settings.renderers)
+      logger.log('Command "close" starting filler tests for renderers', settings.renderers)
+      await Promise.all(uniqueRenderers.map(renderer => eyes.getBaseEyes({settings: {renderer}, logger})))
+    }
+
+    eyes.storage.forEach(async item => {
       try {
-        const [{eyes}] = await Promise.all(promises)
+        const [eyes] = await Promise.all([item.eyes, ...item.jobs])
         try {
           await eyes.close({settings, logger})
         } catch (error) {

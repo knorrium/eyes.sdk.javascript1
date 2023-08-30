@@ -10,13 +10,15 @@ describe('requests', () => {
 
   it('updates broker url on each request', async () => {
     let count = 0
+    nock('http://renderer-env-url.com').get('/').reply(200, {})
+
     nock('http://broker-url.com')
       .post(path => path === `/message-${count}`)
       .times(3)
       .reply((_url, body) => {
         const response: any = {nextPath: `http://broker-url.com/message-${count + 1}`}
         if (count === 0) {
-          response.error = 'Oops! Something went wrong.'
+          response.payload = {error: {message: 'Oops! Something went wrong.'}}
         } else {
           response.payload =
             (body as any).name === 'TAKE_SNAPSHOT'
@@ -35,13 +37,17 @@ describe('requests', () => {
       })
 
     const requests = makeNMLRequests({
-      config: {brokerUrl: 'http://broker-url.com/message-0', agentId: 'nml-client'},
+      settings: {
+        brokerUrl: 'http://broker-url.com/message-0',
+        renderEnvironmentsUrl: 'http://renderer-env-url.com',
+        agentId: 'nml-client',
+      },
       logger: makeLogger(),
     })
 
-    await assert.rejects(requests.takeScreenshot({settings: {}}))
+    await assert.rejects(requests.takeScreenshots({settings: {renderers: [{environment: {}}]}}))
     await requests.takeSnapshots({settings: {renderers: [{iosDeviceInfo: {deviceName: 'iPhone 12'}}]}})
-    await requests.takeScreenshot({settings: {}})
+    await requests.takeScreenshots({settings: {renderers: [{environment: {}}]}})
 
     assert.strictEqual(count, 3)
   })

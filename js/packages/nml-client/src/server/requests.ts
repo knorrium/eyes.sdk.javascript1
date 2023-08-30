@@ -1,37 +1,87 @@
-import type {ScreenshotSettings, Screenshot, SnapshotSettings, IOSSnapshot, AndroidSnapshot} from '../types'
+import type {
+  BrokerServerSettings,
+  ScreenshotSettings,
+  Screenshot,
+  SnapshotSettings,
+  IOSSnapshot,
+  AndroidSnapshot,
+  RenderEnvironment,
+} from '../types'
 import {type Logger} from '@applitools/logger'
-import {makeReqBroker, type ReqBrokerConfig} from './req-broker'
+import {makeReqBroker} from './req-broker'
+import globalReq from '@applitools/req'
 import * as utils from '@applitools/utils'
 
 export interface NMLRequests {
-  takeScreenshot(options: {settings: ScreenshotSettings; logger?: Logger}): Promise<Screenshot>
+  getSupportedRenderEnvironments(options: {logger?: Logger}): Promise<Record<string, any>>
+  takeScreenshots(options: {settings: ScreenshotSettings; logger?: Logger}): Promise<Screenshot[]>
   takeSnapshots<TSnapshot extends IOSSnapshot | AndroidSnapshot = IOSSnapshot | AndroidSnapshot>(options: {
     settings: SnapshotSettings
     logger?: Logger
   }): Promise<TSnapshot[]>
 }
 
-export type NMLRequestsConfig = ReqBrokerConfig & {brokerUrl: string}
-
 export function makeNMLRequests({
-  config,
+  settings,
   logger: defaultLogger,
 }: {
-  config: NMLRequestsConfig
+  settings: BrokerServerSettings
   logger: Logger
 }): NMLRequests {
-  let brokerUrl = config.brokerUrl
-  const req = makeReqBroker({config, logger: defaultLogger})
+  let brokerUrl = settings.brokerUrl
+  const req = makeReqBroker({settings, logger: defaultLogger})
 
-  return {takeScreenshot, takeSnapshots}
+  const getSupportedRenderEnvironmentsWithCache = utils.general.cachify(getSupportedRenderEnvironments)
 
-  async function takeScreenshot({
+  return {
+    getSupportedRenderEnvironments: getSupportedRenderEnvironmentsWithCache,
+    takeScreenshots,
+    takeSnapshots,
+  }
+
+  async function getSupportedRenderEnvironments({logger: _logger}: {logger?: Logger}): Promise<Record<string, any>> {
+    const response = await globalReq(settings.renderEnvironmentsUrl)
+    const result: any = await response.json()
+    return result
+  }
+
+  async function takeScreenshots({
     settings,
     logger = defaultLogger,
   }: {
     settings: ScreenshotSettings
     logger?: Logger
-  }): Promise<Screenshot> {
+  }): Promise<Screenshot[]> {
+    const supportedRenderEnvironments = await getSupportedRenderEnvironmentsWithCache({logger})
+    const {localEnvironment, renderEnvironments, rendererSettings} = settings.renderers.reduce(
+      (result, renderer) => {
+        if (utils.types.has(renderer, 'environment')) {
+          result.localEnvironment = {...renderer.environment, renderEnvironmentId: utils.general.guid(), renderer}
+        } else {
+          const deviceInfo = utils.types.has(renderer, 'iosDeviceInfo')
+            ? renderer.iosDeviceInfo
+            : renderer.androidDeviceInfo
+          const orientation =
+            deviceInfo.screenOrientation === 'landscape' ? 'landscapeLeft' : deviceInfo.screenOrientation ?? 'portrait'
+          const rawEnvironment = supportedRenderEnvironments[deviceInfo.deviceName][orientation].env
+          result.renderEnvironments.push({
+            renderEnvironmentId: utils.general.guid(),
+            renderer,
+            deviceName: rawEnvironment.deviceInfo,
+            os: rawEnvironment.os + (deviceInfo.version ? ` ${deviceInfo.version}` : ''),
+            viewportSize: rawEnvironment.displaySize,
+          })
+          result.rendererSettings.push({...supportedRenderEnvironments[deviceInfo.deviceName], orientation})
+        }
+        return result
+      },
+      {
+        localEnvironment: undefined as RenderEnvironment | undefined,
+        renderEnvironments: [] as RenderEnvironment[],
+        rendererSettings: [] as any[],
+      },
+    )
+
     try {
       const response = await req(brokerUrl, {
         name: 'TAKE_SCREENSHOT',
@@ -39,14 +89,22 @@ export function makeNMLRequests({
           protocolVersion: '1.0',
           name: 'TAKE_SCREENSHOT',
           key: utils.general.guid(),
-          payload: settings,
+          payload: {
+            ...settings,
+            renderers: undefined,
+            deviceList: !localEnvironment ? rendererSettings : undefined,
+          },
         },
         logger,
       })
       const result: any = await response.json()
       brokerUrl = result.nextPath
-      return {
-        image: result.payload.result.screenshotUrl,
+      if (localEnvironment) {
+        return [{image: result.payload.result.screenshotUrl, renderEnvironment: localEnvironment}]
+      } else {
+        return renderEnvironments.map((renderEnvironment, index) => {
+          return {image: result.payload[index].result.screenshotUrl, renderEnvironment}
+        })
       }
     } catch (error: any) {
       if (error.nextPath) brokerUrl = error.nextPath
