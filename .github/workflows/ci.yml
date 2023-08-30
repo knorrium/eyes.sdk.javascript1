@@ -368,6 +368,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{github.event.pull_request.head.ref}}
+      - name: Generate tests
+        if: ${{matrix.generic}}
+        uses: ./.github/actions/generic
+        with:
+          working-directory: ${{matrix.working-directory}}
+          config: ${{matrix.generic.config}}
+          suite: ${{matrix.generic.suite}}
       - name: Restore build artifacts
         if: join(matrix.builds)
         uses: ./.github/actions/storage/restore
