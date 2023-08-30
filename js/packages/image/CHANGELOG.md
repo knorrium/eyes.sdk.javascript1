@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.1.3...js/image@1.1.4) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+
 ## [1.1.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.1.2...js/image@1.1.3) (2023-08-18)
 
 

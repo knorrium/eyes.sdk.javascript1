@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.57](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.56...js/spec-driver-selenium@1.5.57) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/driver bumped to 1.13.6
+
+
 ## [1.5.56](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.55...js/spec-driver-selenium@1.5.56) (2023-08-18)
 
 

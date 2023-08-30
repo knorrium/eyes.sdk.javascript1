@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/logger@2.0.8...js/logger@2.0.9) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+
 ## [2.0.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/logger@2.0.7...js/logger@2.0.8) (2023-08-18)
 
 

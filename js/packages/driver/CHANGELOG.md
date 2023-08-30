@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.6](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.13.5...js/driver@1.13.6) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+
 ## [1.13.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.13.4...js/driver@1.13.5) (2023-08-18)
 
 

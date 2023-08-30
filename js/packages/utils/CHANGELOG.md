@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.5.1...js/utils@1.5.2) (2023-08-30)
+
+
+### Bug Fixes
+
+* fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+
 ## [1.5.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.5.0...js/utils@1.5.1) (2023-08-18)
 
 

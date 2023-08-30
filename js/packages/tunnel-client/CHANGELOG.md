@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.2.0...js/tunnel-client@1.2.1) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/socket bumped to 1.1.9
+
+* @applitools/req bumped to 1.5.4
+
+
 ## [1.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.1.3...js/tunnel-client@1.2.0) (2023-08-18)
 
 

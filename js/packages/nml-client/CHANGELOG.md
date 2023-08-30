@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.8...js/nml-client@1.5.9) (2023-08-30)
+
+
+### Bug Fixes
+
+* update broker url when server respond with error ([#1882](https://github.com/applitools/eyes.sdk.javascript1/issues/1882)) ([ab5a6ae](https://github.com/applitools/eyes.sdk.javascript1/commit/ab5a6ae8976b061bda8b56a9cc11c149e47d6dea))
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/req bumped to 1.5.4
+
+* @applitools/spec-driver-webdriver bumped to 1.0.43
+
+* @applitools/driver bumped to 1.13.6
+
+
 ## [1.5.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.7...js/nml-client@1.5.8) (2023-08-18)
 
 

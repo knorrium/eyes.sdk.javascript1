@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.74](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.73...js/spec-driver-puppeteer@1.1.74) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/driver bumped to 1.13.6
+
+
 ## [1.1.73](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-puppeteer@1.1.72...js/spec-driver-puppeteer@1.1.73) (2023-08-18)
 
 

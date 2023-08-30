@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.24](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.23...js/spec-driver-playwright@1.3.24) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/driver bumped to 1.13.6
+
+
 ## [1.3.23](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.22...js/spec-driver-playwright@1.3.23) (2023-08-18)
 
 

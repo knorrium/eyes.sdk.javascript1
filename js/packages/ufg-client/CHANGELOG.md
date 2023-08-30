@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.7.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.7.1...js/ufg-client@1.7.2) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/req bumped to 1.5.4
+
+* @applitools/image bumped to 1.1.4
+
+
 ## [1.7.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.7.0...js/ufg-client@1.7.1) (2023-08-18)
 
 

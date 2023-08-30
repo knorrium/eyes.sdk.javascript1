@@ -1,5 +1,62 @@
 # Changelog
 
+## [1.18.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.18.3...js/eyes-puppeteer@1.18.4) (2023-08-30)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.5.2
+  #### Bug Fixes
+
+  * fixed some types ([498b1d7](https://github.com/applitools/eyes.sdk.javascript1/commit/498b1d7c547df04773b64b66ee39cccb402c093e))
+* @applitools/nml-client bumped to 1.5.9
+  #### Bug Fixes
+
+  * update broker url when server respond with error ([#1882](https://github.com/applitools/eyes.sdk.javascript1/issues/1882)) ([ab5a6ae](https://github.com/applitools/eyes.sdk.javascript1/commit/ab5a6ae8976b061bda8b56a9cc11c149e47d6dea))
+
+
+
+* @applitools/core bumped to 3.10.0
+  #### Features
+
+  * allowed running multiple classic test with different devices for applitoolsified native apps  ([#1891](https://github.com/applitools/eyes.sdk.javascript1/issues/1891)) ([a84311f](https://github.com/applitools/eyes.sdk.javascript1/commit/a84311f88e6f532268543a96f841ae5ad87d5659))
+
+
+
+* @applitools/logger bumped to 2.0.9
+
+* @applitools/socket bumped to 1.1.9
+
+* @applitools/req bumped to 1.5.4
+
+* @applitools/image bumped to 1.1.4
+
+* @applitools/spec-driver-webdriver bumped to 1.0.43
+
+* @applitools/spec-driver-selenium bumped to 1.5.57
+
+* @applitools/spec-driver-puppeteer bumped to 1.1.74
+
+* @applitools/driver bumped to 1.13.6
+
+* @applitools/screenshoter bumped to 3.8.9
+
+* @applitools/tunnel-client bumped to 1.2.1
+
+* @applitools/ufg-client bumped to 1.7.2
+
+* @applitools/ec-client bumped to 1.7.6
+
+* @applitools/core-base bumped to 1.5.2
+
+* @applitools/eyes bumped to 1.8.0
+  #### Features
+
+  * added more iOS devices ([a84311f](https://github.com/applitools/eyes.sdk.javascript1/commit/a84311f88e6f532268543a96f841ae5ad87d5659))
+
+
+
+
 ## [1.18.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-puppeteer@1.18.2...js/eyes-puppeteer@1.18.3) (2023-08-18)
 
 
