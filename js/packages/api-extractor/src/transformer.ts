@@ -115,36 +115,43 @@ export default function transformer(
       for (const {name, type, symbol} of exports.names.values()) {
         if (name === 'default' || name === 'export=' /* `export default` or `export =` */) {
           statements.push(...createExportDefault({type, node: symbol.valueDeclaration ?? symbol.declarations[0]}))
-        } else if (symbol.flags & ts.SymbolFlags.Class /* `export class` */) {
-          statements.push(
-            createClassDeclaration({
-              name,
-              type: type as ts.InterfaceType,
-              node: symbol.valueDeclaration as ts.ClassDeclaration,
-            }),
-          )
-        } else if (symbol.flags & ts.SymbolFlags.Interface /* `export interface` */) {
-          statements.push(
-            createInterfaceDeclaration({
-              name,
-              type: type as ts.InterfaceType,
-              node: symbol.declarations[0] as ts.InterfaceDeclaration,
-            }),
-          )
-        } else if (symbol.flags & ts.SymbolFlags.TypeAlias /* `export type` */) {
-          statements.push(
-            createTypeAliasDeclaration({name, type, node: symbol.declarations[0] as ts.TypeAliasDeclaration}),
-          )
-        } else if (symbol.flags & ts.SymbolFlags.Function /* `export function` */) {
-          statements.push(
-            ...createFunctionDeclaration({name, type, node: symbol.valueDeclaration as ts.FunctionDeclaration}),
-          )
-        } else if (symbol.flags & ts.SymbolFlags.Variable /* `export const` or `export let` or `export var` */) {
-          statements.push(
-            createVariableDeclaration({name, type, node: symbol.valueDeclaration as ts.VariableDeclaration}),
-          )
-        } else if (symbol.flags & ts.SymbolFlags.Enum /* `export enum` */) {
-          statements.push(createEnumDeclaration({name, type, node: symbol.valueDeclaration as ts.EnumDeclaration}))
+        } else {
+          if (symbol.flags & ts.SymbolFlags.Class /* `export class` */) {
+            statements.push(
+              createClassDeclaration({
+                name,
+                type: type as ts.InterfaceType,
+                node: symbol.valueDeclaration as ts.ClassDeclaration,
+              }),
+            )
+          }
+          if (symbol.flags & ts.SymbolFlags.Interface /* `export interface` */) {
+            statements.push(
+              createInterfaceDeclaration({
+                name,
+                type: type as ts.InterfaceType,
+                node: symbol.declarations[0] as ts.InterfaceDeclaration,
+              }),
+            )
+          }
+          if (symbol.flags & ts.SymbolFlags.TypeAlias /* `export type` */) {
+            statements.push(
+              createTypeAliasDeclaration({name, type, node: symbol.declarations[0] as ts.TypeAliasDeclaration}),
+            )
+          }
+          if (symbol.flags & ts.SymbolFlags.Function /* `export function` */) {
+            statements.push(
+              ...createFunctionDeclaration({name, type, node: symbol.valueDeclaration as ts.FunctionDeclaration}),
+            )
+          }
+          if (symbol.flags & ts.SymbolFlags.Variable /* `export const` or `export let` or `export var` */) {
+            statements.push(
+              createVariableDeclaration({name, type, node: symbol.valueDeclaration as ts.VariableDeclaration}),
+            )
+          }
+          if (symbol.flags & ts.SymbolFlags.Enum /* `export enum` */) {
+            statements.push(createEnumDeclaration({name, type, node: symbol.valueDeclaration as ts.EnumDeclaration}))
+          }
         }
       }
 

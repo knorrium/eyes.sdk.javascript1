@@ -110,6 +110,22 @@ describe('transformer', () => {
     assert.equal(output, load('union-reduction.d.ts'))
   })
 
+  it('generates type and variable exports with the same name', () => {
+    const output = compile({
+      options: {strict: true},
+      config: {rootFile: 'index.ts'},
+      input: {
+        'index.ts': `
+        export interface U {
+          u: true
+        }
+        export const U = {u: true, a: true} as U
+        `,
+      },
+    })
+    assert.equal(output, load('export-type-and-variable.d.ts'))
+  })
+
   describe('works with default export', () => {
     it('class', () => {
       const output = compile({
