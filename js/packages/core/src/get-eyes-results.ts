@@ -24,6 +24,7 @@ export function makeGetEyesResults<TSpec extends SpecType, TType extends 'classi
 
     const typedEyes = await eyes.getTypedEyes({logger})
     const results = await typedEyes.getResults({settings, logger})
+
     if (settings?.throwErr) {
       results.forEach(result => {
         if (result.status !== 'Passed') throw new TestError(result)

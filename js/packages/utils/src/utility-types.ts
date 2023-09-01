@@ -1,6 +1,12 @@
 export type MaybeArray<T> = T | T[]
 
-export type Awaitable<TType> = TType | Promise<TType>
+export type Awaitable<T> = T | PromiseLike<T>
+
+export type ControlledPromise<T> = Promise<T> & {
+  readonly settled: boolean
+  resolve(value: Awaitable<T>): void
+  reject(reason?: any): void
+}
 
 export declare type Mutable<T> = {
   -readonly [P in keyof T]: T[P]

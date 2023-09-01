@@ -25,7 +25,7 @@ type Options<TSpec extends SpecType> = {
   logger?: Logger
 }
 
-export function makeCore<TSpec extends SpecType>({
+export function makeCore<TSpec extends SpecType = never>({
   spec,
   clients,
   base,

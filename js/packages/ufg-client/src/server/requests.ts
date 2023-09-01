@@ -1,8 +1,5 @@
 import type {
   UFGServerSettings,
-  AndroidDevice,
-  IOSDevice,
-  ChromeEmulationDevice,
   RenderTarget,
   RenderEnvironmentSettings,
   RenderEnvironment,
@@ -32,9 +29,9 @@ export interface UFGRequests {
   checkRenderResults(options: {renders: StartedRender[]; logger?: Logger}): Promise<RenderResult[]>
   uploadResource(options: {resource: ContentfulResource; logger?: Logger}): Promise<void>
   checkResources(options: {resources: ContentfulResource[]; logger?: Logger}): Promise<(boolean | null)[]>
-  getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<ChromeEmulationDevice, any>>
-  getIOSDevices(options?: {logger?: Logger}): Promise<Record<IOSDevice, any>>
-  getAndroidDevices(options?: {logger?: Logger}): Promise<Record<AndroidDevice, any>>
+  getChromeEmulationDevices(options?: {logger?: Logger}): Promise<Record<string, any>>
+  getIOSDevices(options?: {logger?: Logger}): Promise<Record<string, any>>
+  getAndroidDevices(options?: {logger?: Logger}): Promise<Record<string, any>>
 }
 
 export function makeUFGRequests({settings, logger}: {settings: UFGServerSettings; logger?: Logger}): UFGRequests {
@@ -270,7 +267,7 @@ export function makeUFGRequests({settings, logger}: {settings: UFGServerSettings
     logger = mainLogger,
   }: {
     logger?: Logger
-  } = {}): Promise<Record<ChromeEmulationDevice, any>> {
+  } = {}): Promise<Record<string, any>> {
     logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
 
     logger.log('Request "getChromeEmulationDevices" called')
@@ -288,7 +285,7 @@ export function makeUFGRequests({settings, logger}: {settings: UFGServerSettings
     logger = mainLogger,
   }: {
     logger?: Logger
-  } = {}): Promise<Record<IOSDevice, any>> {
+  } = {}): Promise<Record<string, any>> {
     logger = logger.extend(mainLogger, {tags: [`ufg-request-${utils.general.shortid()}`]})
 
     logger.log('Request "getIOSDevices" called')

@@ -124,8 +124,8 @@ export interface ManagerSettings {
 
 export type Config<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   open: Partial<Omit<OpenSettings<TType>, 'userCommandId'>>
-  screenshot: Partial<Omit<ClassicCore.ScreenshotSettings<TSpec>, 'userCommandId'>>
-  check: Partial<Omit<CheckSettings<TSpec, TType>, keyof ClassicCore.ScreenshotSettings<TSpec> | 'userCommandId'>>
+  screenshot: Partial<Omit<AutomationCore.ScreenshotSettings<TSpec>, 'userCommandId'>>
+  check: Partial<Omit<CheckSettings<TSpec, TType>, 'userCommandId'>>
   close: Partial<Omit<CloseSettings<TType>, 'userCommandId'>>
 }
 

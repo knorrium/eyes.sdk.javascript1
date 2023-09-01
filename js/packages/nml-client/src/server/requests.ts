@@ -23,15 +23,15 @@ export interface NMLRequests {
 
 export function makeNMLRequests({
   settings,
-  logger: defaultLogger,
+  logger: mainLogger,
 }: {
   settings: BrokerServerSettings
   logger: Logger
 }): NMLRequests {
   let brokerUrl = settings.brokerUrl
-  const req = makeReqBroker({settings, logger: defaultLogger})
+  const req = makeReqBroker({settings, logger: mainLogger})
 
-  const getSupportedRenderEnvironmentsWithCache = utils.general.cachify(getSupportedRenderEnvironments)
+  const getSupportedRenderEnvironmentsWithCache = utils.general.cachify(getSupportedRenderEnvironments, () => 'default')
 
   return {
     getSupportedRenderEnvironments: getSupportedRenderEnvironmentsWithCache,
@@ -47,11 +47,15 @@ export function makeNMLRequests({
 
   async function takeScreenshots({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: ScreenshotSettings
     logger?: Logger
   }): Promise<Screenshot[]> {
+    logger = logger.extend(mainLogger, {tags: [`nml-request-${utils.general.shortid()}`]})
+
+    logger.log('Request "takeScreenshots" called with settings', settings)
+
     const supportedRenderEnvironments = await getSupportedRenderEnvironmentsWithCache({logger})
     const {localEnvironment, renderEnvironments, rendererSettings} = settings.renderers.reduce(
       (result, renderer) => {
@@ -99,13 +103,15 @@ export function makeNMLRequests({
       })
       const result: any = await response.json()
       brokerUrl = result.nextPath
-      if (localEnvironment) {
-        return [{image: result.payload.result.screenshotUrl, renderEnvironment: localEnvironment}]
-      } else {
-        return renderEnvironments.map((renderEnvironment, index) => {
-          return {image: result.payload[index].result.screenshotUrl, renderEnvironment}
-        })
-      }
+      const screenshots = localEnvironment
+        ? [{image: result.payload.result.screenshotUrl, renderEnvironment: localEnvironment}]
+        : renderEnvironments.map((renderEnvironment, index) => {
+            return {image: result.payload[index].result.screenshotUrl, renderEnvironment}
+          })
+
+      logger.log('Request "takeScreenshots" finished successfully with body', screenshots)
+
+      return screenshots
     } catch (error: any) {
       if (error.nextPath) brokerUrl = error.nextPath
       throw error
@@ -114,7 +120,7 @@ export function makeNMLRequests({
 
   async function takeSnapshots<TSnapshot extends IOSSnapshot | AndroidSnapshot = IOSSnapshot | AndroidSnapshot>({
     settings,
-    logger = defaultLogger,
+    logger = mainLogger,
   }: {
     settings: SnapshotSettings
     logger?: Logger

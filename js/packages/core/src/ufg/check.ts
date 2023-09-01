@@ -23,6 +23,7 @@ import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {generateSafeSelectors} from './utils/generate-safe-selectors'
 import {uniquifyRenderers} from '../automation/utils/uniquify-renderers'
+import {extractRendererKey} from '../automation/utils/extract-renderer-key'
 import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
 import chalk from 'chalk'
@@ -315,10 +316,10 @@ export function makeCheck<TSpec extends SpecType>({
     })
 
     uniqueRenderers.forEach((renderer, index) => {
-      const key = JSON.stringify(renderer)
+      const key = extractRendererKey(renderer)
       let item = eyes.storage.get(key)
       if (!item) {
-        item = {renderer, eyes: null as never, jobs: []}
+        item = {eyes: utils.promises.makeControlledPromise(), jobs: []}
         eyes.storage.set(key, item)
       }
       item.jobs.push(promises[index])

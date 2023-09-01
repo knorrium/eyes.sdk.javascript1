@@ -12,6 +12,7 @@ import {takeScreenshots} from './utils/take-screenshots'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {uniquifyRenderers} from '../automation/utils/uniquify-renderers'
+import {extractRendererKey} from '../automation/utils/extract-renderer-key'
 import {AbortError} from '../errors/abort-error'
 import * as utils from '@applitools/utils'
 
@@ -56,11 +57,20 @@ export function makeCheckAndClose<TSpec extends SpecType>({
 
     const baseTargets = [] as BaseTarget[]
     const baseSettings = [] as (BaseCheckSettings & BaseCloseSettings)[]
+    const transformedRenderers = [] as Renderer[]
     if (isDriver(target, spec)) {
       const driver = await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
       await driver.currentContext.setScrollingElement(settings.scrollRootElement ?? null)
 
       const environment = await driver.getEnvironment()
+      uniqueRenderers.forEach(renderer => {
+        if (utils.types.has(renderer, 'iosDeviceInfo')) {
+          renderer.iosDeviceInfo.version ??= environment.platformVersion
+        } else if (utils.types.has(renderer, 'androidDeviceInfo')) {
+          renderer.androidDeviceInfo.version ??= environment.platformVersion
+        }
+        return renderer
+      })
 
       if (settings.lazyLoad && environment.isWeb) {
         await waitForLazyLoad({
@@ -83,6 +93,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           },
           logger,
         })
+        transformedRenderers.push(...uniqueRenderers)
         screenshots.forEach(({calculatedRegions, ...baseTarget}) => {
           baseTargets.push(baseTarget)
           baseSettings.push(getBaseCheckSettings({calculatedRegions}))
@@ -108,8 +119,8 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           },
           logger,
         })
-        screenshots.forEach(({calculatedRegions: _calculatedRegions, renderEnvironment, ...baseTarget}, index) => {
-          uniqueRenderers[index] = {environment: renderEnvironment}
+        screenshots.forEach(({calculatedRegions: _calculatedRegions, renderEnvironment, ...baseTarget}) => {
+          transformedRenderers.push({environment: renderEnvironment})
           baseTargets.push({...baseTarget, isTransformed: true})
           baseSettings.push(getBaseCheckSettings({calculatedRegions: []}))
         })
@@ -119,7 +130,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       baseSettings.push(settings as BaseCheckSettings)
     }
 
-    const promises = uniqueRenderers.map(async (renderer, index) => {
+    const promises = transformedRenderers.map(async (renderer, index) => {
       const rendererLogger = logger.extend({tags: [`renderer-${utils.general.shortid()}`]})
 
       try {
@@ -163,11 +174,11 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       }
     })
 
-    uniqueRenderers.forEach((renderer, index) => {
-      const key = JSON.stringify(renderer)
+    transformedRenderers.forEach((renderer, index) => {
+      const key = extractRendererKey(renderer)
       let item = eyes.storage.get(key)
       if (!item) {
-        item = {renderer, eyes: null as never, jobs: []}
+        item = {eyes: utils.promises.makeControlledPromise(), jobs: []}
         eyes.storage.set(key, item)
       }
       item.jobs.push(promises[index])

@@ -18,7 +18,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {
         name: 'good',
         renderers: [
@@ -51,7 +51,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {
         name: 'good',
         region: {x: 3, y: 4, width: 1, height: 2},
@@ -81,7 +81,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {name: 'good', region: 'sel1', renderers: [{width: 100, height: 100}]},
     })
 
@@ -112,7 +112,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {
         name: 'good',
         region: {x: 3, y: 4, width: 1, height: 2},
@@ -235,7 +235,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {
         name: 'good',
         renderers: [
@@ -284,7 +284,10 @@ describe('check', () => {
       settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
-    await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
+    await eyes1.check({
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      settings: {renderers: [{name: 'chrome', width: 100, height: 100}]},
+    })
     await eyes1.close()
 
     assert.strictEqual(aborted, true)
@@ -322,7 +325,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {
         renderers: [{width: 320, height: 480}],
         headers: expectedHeaders,

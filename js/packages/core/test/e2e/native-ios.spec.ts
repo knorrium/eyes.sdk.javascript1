@@ -57,4 +57,35 @@ describe('native ios (@sauce)', () => {
     await eyes.close({settings: {updateBaselineIfNew: false}})
     await eyes.getResults({settings: {throwErr: true}})
   })
+
+  it('works in applitools-lib and default mode with multiple renderers', async () => {
+    const core = makeCore({spec, concurrency: 10})
+    const eyes = await core.openEyes({
+      type: 'classic',
+      target: driver,
+      settings: {appName: 'core app', testName: 'both modes native classic ios nml'},
+    })
+    await eyes.check({
+      settings: {
+        name: 'applitools lib',
+        screenshotMode: 'applitools-lib',
+        renderers: [
+          {iosDeviceInfo: {deviceName: 'iPhone SE (3rd generation)'}},
+          {iosDeviceInfo: {deviceName: 'iPhone 11 Pro'}},
+        ],
+      },
+    })
+    await eyes.check({
+      settings: {
+        name: 'default',
+        screenshotMode: 'default',
+        renderers: [
+          {iosDeviceInfo: {deviceName: 'iPhone SE (3rd generation)'}},
+          {iosDeviceInfo: {deviceName: 'iPhone 11 Pro'}},
+        ],
+      },
+    })
+    await eyes.close({settings: {updateBaselineIfNew: false}})
+    await eyes.getResults({settings: {throwErr: true}})
+  })
 })

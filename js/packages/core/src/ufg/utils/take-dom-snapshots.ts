@@ -1,13 +1,7 @@
 import type {Size} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type Driver} from '@applitools/driver'
-import {
-  type DomSnapshot,
-  type Renderer,
-  type ChromeEmulationDevice,
-  type IOSDevice,
-  type ScreenOrientation,
-} from '@applitools/ufg-client'
+import {type DomSnapshot, type Renderer} from '@applitools/ufg-client'
 import {takeDomSnapshot, type DomSnapshotSettings} from './take-dom-snapshot'
 import * as utils from '@applitools/utils'
 import chalk from 'chalk'
@@ -31,8 +25,8 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
   settings: DomSnapshotsSettings
   hooks?: {beforeSnapshots?(): void | Promise<void>; beforeEachSnapshot?(): void | Promise<void>}
   provides?: {
-    getChromeEmulationDevices(): Promise<Record<ChromeEmulationDevice, Record<ScreenOrientation, Size>>>
-    getIOSDevices(): Promise<Record<IOSDevice, Record<ScreenOrientation, Size>>>
+    getChromeEmulationDevices(): Promise<Record<string, Record<string, Size>>>
+    getIOSDevices(): Promise<Record<string, Record<string, Size>>>
   }
   logger: Logger
 }): Promise<DomSnapshot[]> {

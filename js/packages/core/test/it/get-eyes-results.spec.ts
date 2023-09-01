@@ -4,6 +4,7 @@ import {makeCore} from '../../src/core'
 import {generateScreenshot} from '../utils/generate-screenshot'
 import {MockDriver, spec} from '@applitools/driver/fake'
 import {makeFakeCore} from '../utils/fake-base-core'
+import {makeFakeClient} from '../utils/fake-ufg-client'
 import assert from 'assert'
 
 describe('get eyes results', async () => {
@@ -21,7 +22,8 @@ describe('get eyes results', async () => {
     ])
 
     const fakeCore = makeFakeCore()
-    core = makeCore({spec, base: fakeCore})
+    const fakeClient = makeFakeClient()
+    core = makeCore({spec, base: fakeCore, clients: {ufg: fakeClient}})
   })
 
   it('should not throw on get results', async () => {
@@ -48,5 +50,37 @@ describe('get eyes results', async () => {
     assert.strictEqual(results1[0].status, 'Unresolved')
     const results2 = await eyes.getResults()
     assert.deepStrictEqual(results1, results2)
+  })
+
+  it('should return renderer in result object for ufg eyes', async () => {
+    const eyes = await core.openEyes({type: 'ufg', settings: {appName: 'App', testName: 'Test'}})
+    await eyes.check({
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      settings: {
+        name: 'good',
+        renderers: [{iosDeviceInfo: {deviceName: 'iPhone 14'}}, {iosDeviceInfo: {deviceName: 'iPhone 14 Pro Max'}}],
+      },
+    })
+    await eyes.close()
+    const results = await eyes.getResults()
+    assert.strictEqual(results.length, 2)
+    assert.deepStrictEqual(results[0].renderer, {iosDeviceInfo: {deviceName: 'iPhone 14'}, type: 'web'})
+    assert.deepStrictEqual(results[1].renderer, {iosDeviceInfo: {deviceName: 'iPhone 14 Pro Max'}, type: 'web'})
+  })
+
+  it('should return renderer in result object for classic eyes', async () => {
+    const eyes = await core.openEyes({type: 'classic', settings: {appName: 'App', testName: 'Test'}})
+    await eyes.check({
+      target: driver,
+      settings: {
+        name: 'good',
+        renderers: [{iosDeviceInfo: {deviceName: 'iPhone 14'}}, {iosDeviceInfo: {deviceName: 'iPhone 14 Pro Max'}}],
+      },
+    })
+    await eyes.close()
+    const results = await eyes.getResults()
+    assert.strictEqual(results.length, 2)
+    assert.deepStrictEqual(results[0].renderer, {iosDeviceInfo: {deviceName: 'iPhone 14', version: '10.15'}})
+    assert.deepStrictEqual(results[1].renderer, {iosDeviceInfo: {deviceName: 'iPhone 14 Pro Max', version: '10.15'}})
   })
 })

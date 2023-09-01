@@ -30,7 +30,7 @@ describe('abort', () => {
       settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {renderers: [{width: 100, height: 100}]},
     })
 
@@ -70,7 +70,7 @@ describe('abort', () => {
       settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {renderers: [{width: 100, height: 100}]},
     })
 
@@ -114,7 +114,7 @@ describe('abort', () => {
     })
 
     await eyes.check({
-      target: {cdt: []},
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
       settings: {renderers: [{width: 100, height: 100}]},
     })
 

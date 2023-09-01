@@ -24,6 +24,7 @@ describe('get manager results', () => {
 
     await eyes.check({settings: {fully: false}})
     const summary = await manager.getResults()
+
     assert.ok(summary.results)
     assert.ok(summary.results.length === 1)
     assert.ok(summary.results[0].result?.isAborted)

@@ -92,6 +92,7 @@ export function makeFakeCore({
             initializedAt: new Date().toISOString(),
             keepIfDuplicate: !!options.settings.baselineEnvName,
             account: account as Account,
+            renderer: options.settings.environment?.renderer,
             ufgServer: {
               ufgServerUrl: options.settings?.eyesServerUrl,
               accessToken: '',

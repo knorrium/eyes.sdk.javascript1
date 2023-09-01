@@ -1,3 +1,4 @@
+import type {TestResult} from '../../src/types'
 import {toXmlOutput} from '../../src/utils/format-results'
 import assert from 'assert'
 
@@ -15,7 +16,7 @@ describe('format-result', () => {
           appName: 'My Component | Button2',
           appUrls: {batch: 'https://eyes.com/results'},
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="2" time="10">
 <testcase name="someName1">
@@ -39,7 +40,7 @@ describe('format-result', () => {
           name: 'My Component | Button1',
           appUrls: {batch: 'https://eyes.com/results'},
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="2" time="10">
 <testcase name="My Component | Button2">
@@ -66,7 +67,7 @@ Difference found. See https://eyes.com/results for details.
           name: 'My Component | Button1',
           appUrls: {batch: 'https://eyes.com/results'},
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="2" time="10">
 <testcase name="My Component | Button2">
@@ -90,7 +91,7 @@ Difference found. See https://eyes.com/results for details.
           name: 'My Component | Button2',
           appUrls: {batch: 'https://eyes.com/results'},
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="1" time="10">
 <testcase name="My Component | Button2">
@@ -113,7 +114,7 @@ Difference found. See https://eyes.com/results for details.
           name: 'My Component | Button2',
           duration: 10,
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="1" time="20">
 <testcase name="My Component | Button2" time="10">
@@ -140,7 +141,7 @@ Difference found. See https://eyes.com/results for details.
           hostDisplaySize: {width: 10, height: 20},
           appUrls: {batch: 'https://eyes.com/results'},
         },
-      ]
+      ] as TestResult<'ufg' | 'classic'>[]
       const expected = `<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite name="Eyes Test Suite" tests="2" time="20">
 <testcase name="My Component | Button3">

@@ -502,7 +502,6 @@
           "key": "{{component}}/{{build-type}}/{{environment}}",
           "artifacts": ["../*/dist", "../*/types", "./bin"],
           "runner": "linuxarm",
-          "node-version": 20,
           "build-type": "arm64"
         }
       ],
@@ -652,7 +651,6 @@
           "key": "{{component}}/{{build-type}}/{{environment}}",
           "artifacts": ["../*/dist", "../*/types", "./bin"],
           "runner": "linuxarm",
-          "node-version": 20,
           "build-type": "arm64",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true}
         }
@@ -713,7 +711,6 @@
           "key": "{{component}}/linuxarm",
           "artifacts": ["./logs/**/*"],
           "runner": "linuxarm",
-          "node-version": 20,
           "test-type": "bin",
           "setup-type": "none",
           "env": {"PUPPETEER_SKIP_DOWNLOAD": true, "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": true},

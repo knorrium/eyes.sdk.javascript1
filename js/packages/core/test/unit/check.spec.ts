@@ -1,4 +1,4 @@
-import {Eyes} from '../../src/types'
+import type {Eyes, CheckSettings} from '../../src/types'
 import {makeLogger} from '@applitools/logger'
 import {makeFakeCore} from '../utils/fake-base-core'
 import {makeCheck} from '../../src/check'
@@ -9,16 +9,15 @@ describe('check', () => {
     const fakeCore = makeFakeCore({
       hooks: {
         check({settings}) {
-          assert.strictEqual(settings!.sendDom, true)
+          assert.strictEqual((settings as CheckSettings<any, 'ufg' | 'classic'>).sendDom, true)
         },
       },
     })
-    const fakeEyes = await fakeCore.openEyes({settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''}})
+    const fakeEyes = (await fakeCore.openEyes({
+      settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''},
+    })) as Eyes<any>
 
-    const check = makeCheck({
-      eyes: fakeEyes as Eyes<any, 'classic'>,
-      logger: makeLogger(),
-    })
+    const check = makeCheck({eyes: fakeEyes, logger: makeLogger()})
 
     await check({settings: {enablePatterns: true}})
     await check({settings: {useDom: true}})
@@ -31,12 +30,14 @@ describe('check', () => {
     const fakeCore = makeFakeCore({
       hooks: {
         check({settings}) {
-          assert.strictEqual(settings!.sendDom, true)
+          assert.strictEqual((settings as CheckSettings<any, 'ufg' | 'classic'>).sendDom, true)
         },
       },
       account: {rcaEnabled: true},
     })
-    const fakeEyes = await fakeCore.openEyes({settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''}})
+    const fakeEyes = (await fakeCore.openEyes({
+      settings: {eyesServerUrl: '', apiKey: '', appName: '', testName: ''},
+    })) as Eyes<any>
 
     const check = makeCheck({
       eyes: fakeEyes as Eyes<any, 'classic'>,

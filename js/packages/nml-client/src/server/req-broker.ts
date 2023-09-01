@@ -1,6 +1,7 @@
 import type {BrokerServerSettings} from '../types'
 import {type Logger} from '@applitools/logger'
 import globalReq, {makeReq, type Req, type Options, type Hooks} from '@applitools/req'
+import * as utils from '@applitools/utils'
 
 export type ReqBrokerOptions = Options & {
   name: string
@@ -87,12 +88,17 @@ function handleUnexpectedResponse(): Hooks<ReqBrokerOptions> {
       } else {
         const body = await response.text()
         const result = JSON.parse(body)
-        if (result?.payload?.error) {
-          const error: any = new Error(
-            `There was a problem when interacting with the mobile application. The provided error message was "${result.payload.error.message}" and had a stack trace of "${result.payload.error.stack}"`,
-          )
-          error.nextPath = result.nextPath
-          throw error
+        if (result?.payload) {
+          const error = utils.types.isArray(result.payload)
+            ? (result.payload as any[]).find(payload => payload.error)
+            : result.payload.error
+          if (error) {
+            const nmlError: any = new Error(
+              `There was a problem when interacting with the mobile application. The provided error message was "${error.message}" and had a stack trace of "${error.stack}"`,
+            )
+            nmlError.nextPath = result.nextPath
+            throw nmlError
+          }
         }
         return {response, body}
       }

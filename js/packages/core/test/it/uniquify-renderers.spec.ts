@@ -1,4 +1,4 @@
-import {uniquifyRenderers} from '../../../src/automation/utils/uniquify-renderers'
+import {uniquifyRenderers} from '../../src/automation/utils/uniquify-renderers'
 import assert from 'assert'
 
 describe('uniquify-renderers', () => {

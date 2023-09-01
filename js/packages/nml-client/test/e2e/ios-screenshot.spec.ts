@@ -111,11 +111,12 @@ describe('ios screenshot', () => {
     ])
   })
 
-  it.skip('throws the error when one of the renderer failed', async () => {
+  it('throws the error when one of the renderer failed', async () => {
     const renderEnvironmentsUrl = 'http://renderer-env-url.com'
     nock(renderEnvironmentsUrl)
       .get('/')
       .reply(200, {
+        // NOTE: this renderer info causes problem for ios applitools lib because there is no portrait property with needed info
         'iPhone 13': {
           model: 'iPhone14,5',
           landscapeLeft: {
@@ -129,18 +130,14 @@ describe('ios screenshot', () => {
 
     const brokerUrl = await extractBrokerUrl(driver)
     const {takeScreenshots} = makeNMLClient({settings: {brokerUrl, renderEnvironmentsUrl}})
-    const screenshots = await takeScreenshots({
-      settings: {
-        renderers: [{iosDeviceInfo: {deviceName: 'iPhone 13'}}],
-        fully: true,
-      },
-    })
-
-    screenshots.forEach(screenshot => {
-      if (screenshot.image) screenshot.image = 'image-url'
-      if (screenshot.renderEnvironment?.renderEnvironmentId) {
-        screenshot.renderEnvironment.renderEnvironmentId = 'renderer-id'
-      }
-    })
+    await assert.rejects(
+      takeScreenshots({
+        settings: {
+          renderers: [{iosDeviceInfo: {deviceName: 'iPhone 13', screenOrientation: 'landscape'}}],
+          fully: true,
+        },
+      }),
+      error => error.message.includes('There was a problem when interacting with the mobile application'),
+    )
   })
 })

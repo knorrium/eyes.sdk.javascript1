@@ -21,11 +21,10 @@ export function makeGetBaseEyes<TSpec extends SpecType>({
     const key = JSON.stringify(options.settings.renderer)
     let item = eyes.storage.get(key)
     if (!item) {
-      item = {renderer: options.settings.renderer, eyes: getBaseEyes(options), jobs: []}
+      item = {eyes: utils.promises.makeControlledPromise(), jobs: []}
       eyes.storage.set(key, item)
-    } else if (!item.eyes) {
-      item.eyes = getBaseEyes(options)
     }
+    if (!item.eyes.settled) item.eyes.resolve(getBaseEyes(options))
     return item.eyes
   })
 

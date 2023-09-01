@@ -1,4 +1,4 @@
-import type {MaybeArray, Size, Region} from '@applitools/utils'
+import type {MaybeArray, Size, Region, ControlledPromise} from '@applitools/utils'
 import type * as BaseCore from '@applitools/core-base/types'
 import {type SpecType, type Driver, type ElementReference, type ContextReference} from '@applitools/driver'
 import {type NMLClient, type NMLClientSettings} from '@applitools/nml-client'
@@ -265,7 +265,7 @@ export interface Eyes<TSpec extends SpecType> extends BaseCore.Eyes {
   getResults(options?: {settings?: BaseCore.GetResultsSettings; logger?: Logger}): Promise<TestResult[]>
 }
 
-export type EyesStorage = Map<string, {renderer?: Renderer; eyes: Promise<BaseCore.Eyes>; jobs: Promise<void>[]}>
+export type EyesStorage = Map<string, {eyes: ControlledPromise<BaseCore.Eyes>; jobs: Promise<void>[]}>
 
 export interface GetBaseEyesSettings {
   renderer: Renderer

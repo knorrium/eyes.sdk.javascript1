@@ -38,7 +38,10 @@ describe('close', async () => {
       settings: {eyesServerUrl: 'server-url', apiKey: 'api-key', appName: 'app-name', testName: 'test-name'},
     })
 
-    await eyes1.check({target: {cdt: []}, settings: {renderers: [{name: 'chrome', width: 100, height: 100}]}})
+    await eyes1.check({
+      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      settings: {renderers: [{name: 'chrome', width: 100, height: 100}]},
+    })
     await eyes1.close()
     const [result1] = await eyes1.getResults()
     assert.strictEqual(result1.isAborted, true)

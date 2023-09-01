@@ -26,10 +26,10 @@ describe('take-dom-snapshots', () => {
 
     output = []
     logger = makeLogger()
-    logger.console = {
+    ;(logger as any).console = {
       ...logger.console,
       log: (...chunks) => output.push(...chunks),
-    }
+    } as typeof logger.console
   })
 
   it('warns if not able to resize to the renderer width', async () => {
