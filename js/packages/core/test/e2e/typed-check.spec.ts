@@ -68,6 +68,7 @@ describe('typed check', () => {
     await eyes.getResults({settings: {throwErr: true}})
   })
 
+  // NOTE: this test is skipped because there is currently no implementation to convert EnvironmentRenderer to the kind of renderer that ufg supports
   it.skip('performs ufg check during classic test', async () => {
     await driver.navigateTo('https://applitools.github.io/demo/TestPages/PageWithBurgerMenu/index.html')
 
