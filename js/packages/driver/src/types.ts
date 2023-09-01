@@ -70,7 +70,7 @@ export type Viewport = {
 }
 
 export type Features = {
-  shadowSelector?: boolean
+  nestedSelectors?: boolean
   allCookies?: boolean
   canExecuteOnlyFunctionScripts?: boolean
 }

@@ -58,7 +58,7 @@ export interface SpecDriver<T extends SpecType> {
   /**
    * Assures that the error is a stale element error.
    */
-  isStaleElementError(error: any, selector?: T['selector']): boolean
+  isStaleElementError?(error: any, selector?: T['selector']): boolean
   /**
    * Converts the given driver to a speced driver.
    * (applicable in cases when spec has certain variations or sub-types of the driver.)

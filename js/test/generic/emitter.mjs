@@ -73,33 +73,38 @@ export function emitter(tracker, test) {
     if (process.env.SPEC_DRIVER) addCommand(`const spec = require('${process.env.SPEC_DRIVER}')`, {group: 'deps'})
     else addCommand(`const spec = require(path.resolve('./dist/spec-driver'))`, {group: 'deps'})
   }
-  if (!process.env.NO_SDK) addCommand(`const sdk = require(process.cwd())`, {group: 'deps'})
+  if (!process.env.NO_SDK) {
+    if (process.env.SDK) addCommand(`const sdk = require('${process.env.SDK}')`, {group: 'deps'})
+    else addCommand(`const sdk = require(process.cwd())`, {group: 'deps'})
+  }
 
   addCommand(`let driver, transformedDriver, destroyDriver, eyes`, {group: 'vars'})
 
   if (!process.env.NO_DRIVER) {
-    const env = test.env || {browser: 'chrome'}
-    addCommand(
-      js`
-      let attempt = 0
-      while (!driver) {
-        try {
-          ;[driver, destroyDriver] = await spec.build(${{
-            ...env,
-            url: useRef(
-              process.env.APPLITOOLS_TEST_REMOTE === 'ec' && env.browser === 'chrome' && !env.device
-                ? js`await sdk.Eyes.getExecutionCloudUrl()`
-                : undefined,
-            ),
-          }})
-        } catch (err) {
-          if (attempt++ > 7) throw err
+    if (!process.env.NO_BUILD_DRIVER) {
+      const env = test.env || {browser: 'chrome'}
+      addCommand(
+        js`
+        let attempt = 0
+        while (!driver) {
+          try {
+            ;[driver, destroyDriver] = await spec.build(${{
+              ...env,
+              url: useRef(
+                process.env.APPLITOOLS_TEST_REMOTE === 'ec' && env.browser === 'chrome' && !env.device
+                  ? js`await sdk.Eyes.getExecutionCloudUrl()`
+                  : undefined,
+              ),
+            }})
+          } catch (err) {
+            if (attempt++ > 7) throw err
+          }
         }
-      }
-      transformedDriver = spec.toDriver ? spec.toDriver(driver) : driver
-    `,
-      {group: 'beforeEach'},
-    )
+      `,
+        {group: 'beforeEach'},
+      )
+    }
+    addCommand(js`transformedDriver = spec.toDriver ? spec.toDriver(driver) : driver`, {group: 'beforeEach'})
   }
   addCommand(
     js`

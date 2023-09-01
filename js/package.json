@@ -42,6 +42,7 @@
     "packages/eyes-nightwatch",
     "packages/eyes-playwright",
     "packages/eyes-puppeteer",
+    "packages/eyes-testcafe",
     "packages/eyes-browser-extension",
     "packages/eyes-storybook",
     "packages/eyes-cypress",

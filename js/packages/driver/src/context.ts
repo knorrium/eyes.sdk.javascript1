@@ -167,14 +167,15 @@ export class Context<T extends SpecType> {
     }
 
     if (isComplexSelector(selector, this._spec)) {
+      const features = await this.driver.getFeatures()
       if (elements.length > 0) {
-        if (selector.child) {
+        if (selector.child && !features.nestedSelectors) {
           elements = await elements.reduce((result, element) => {
             return result.then(async result => {
               return result.concat(await this._findElements(selector.child!, {parent: element, all, wait}))
             })
           }, Promise.resolve([] as T['element'][]))
-        } else if (selector.shadow) {
+        } else if (selector.shadow && !features.nestedSelectors) {
           elements = await elements.reduce((result, element) => {
             return result.then(async result => {
               const root: T['element'] = await this._spec.executeScript(this.target, snippets.getShadowRoot, [element])

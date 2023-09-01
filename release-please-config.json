@@ -1109,6 +1109,44 @@
         "notification": {"name": "puppeteer"}
       }]
     },
+    "js/packages/eyes-testcafe": {
+      "release-type": "node",
+      "component": "js/eyes-testcafe",
+      "builds": [{
+        "key": "{{component}}/{{environment}}",
+        "artifacts": ["../*/dist", "../*/types"]
+      }],
+      "tests": [
+        {
+          "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}",
+          "artifacts": ["./logs/**/*"],
+          "framework-version": 1,
+          "node-version": 16,
+          "generic": {"config": "./test/generic/config.mjs"},
+          "report": {"name": "testcafe", "params": {"framework": 1, "node": 16}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        },
+        {
+          "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}",
+          "artifacts": ["./logs/**/*"],
+          "framework-version": 2,
+          "node-version": 18,
+          "generic": {"config": "./test/generic/config.mjs"},
+          "report": {"name": "testcafe", "params": {"framework": 2, "node": 18}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        },
+        {
+          "key": "{{component}}/framework-{{framework-version}}/node-{{node-version}}",
+          "artifacts": ["./logs/**/*"],
+          "framework-version": 3,
+          "node-version": 20,
+          "generic": {"config": "./test/generic/config.mjs"},
+          "report": {"name": "testcafe", "params": {"framework": 3, "node": 20}, "result-path": "./logs/report.xml", "meta-path": "./logs/meta.json"}
+        }
+      ],
+      "releases": [{
+        "npm": {"registry-url": "https://registry.npmjs.org"},
+        "notification": {"name": "testcafe"}
+      }]
+    },
     "js/packages/eyes-browser-extension": {
       "release-type": "node",
       "component": "js/eyes-browser-extension",

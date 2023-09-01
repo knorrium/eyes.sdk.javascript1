@@ -1,0 +1,25 @@
+// {{test.name}}
+{{#each commands.deps as |dep|}}
+{{dep}}
+{{/each}}
+
+{{#each commands.vars as |var|}}
+{{var}}
+{{/each}}
+
+fixture`Coverage Tests - {{test.key}}`
+.beforeEach(async driver => {
+  {{#each commands.beforeEach as |command|}}
+  {{command}}
+  {{/each}}
+})
+.afterEach(async driver => {
+  {{#each commands.afterEach as |command|}}
+  {{command}}
+  {{/each}}
+})
+test{{#if test.skip}}.skip{{/if}}('{{test.name}}{{#tags test.tags}}@{{this}}{{/tags}}', async driver => {
+  {{#each commands.default as |command|}}
+  {{command}}
+  {{/each}}
+})

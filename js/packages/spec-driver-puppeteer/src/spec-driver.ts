@@ -131,10 +131,9 @@ export async function findElements(frame: Context, selector: Selector, parent?: 
   const root = parent ?? frame
   return (isXpathSelector(selector) ? root.$x(selector) : root.$$(selector)) as Promise<Element[]>
 }
-export async function setElementText(frame: Context, element: Element | Selector, text: string): Promise<void> {
-  const resolvedElement = isSelector(element) ? await findElement(frame, element) : element
-  await resolvedElement?.evaluate(element => ((element as HTMLInputElement).value = ''))
-  await resolvedElement?.type(text)
+export async function setElementText(_frame: Context, element: Element, text: string): Promise<void> {
+  await element.evaluate(element => ((element as HTMLInputElement).value = ''))
+  await element.type(text)
 }
 export async function hover(_frame: Context, element: Element): Promise<void> {
   await element.hover()

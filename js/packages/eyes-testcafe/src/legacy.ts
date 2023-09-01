@@ -1,53 +1,41 @@
-import type {Driver, Element, Selector} from './spec-driver'
+import type {MaybeArray} from '@applitools/utils'
+import type {SpecType} from '@applitools/driver'
+import type {PrimarySpecType} from './spec-driver'
 import {formatters} from '@applitools/core'
+import * as eyes from '@applitools/eyes'
 import * as utils from '@applitools/utils'
-import * as api from '@applitools/eyes-api'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as spec from './spec-driver'
 
-export interface LegacyTestCafeEyes<TDriver, TSelector> {
-  open(options: {t: TDriver} & TestCafeConfiguration): Promise<TDriver>
-  checkWindow(settings: TestCafeCheckSettings<TSelector>): Promise<api.MatchResult>
-  waitForResults(throwErr: boolean): Promise<api.TestResultsSummary>
+export interface LegacyTestCafeEyes<TSpec extends SpecType> {
+  open(options: {t: TSpec['driver']} & TestCafeConfiguration): Promise<TSpec['driver']>
+  checkWindow(settings: TestCafeCheckSettings<TSpec>): Promise<eyes.MatchResult>
+  waitForResults(throwErr: boolean): Promise<eyes.TestResultsSummary>
 }
 
-export interface LegacyTestCafeEyesConstructor<TDriver, TElement, TSelector>
-  extends Pick<typeof api.Eyes, keyof typeof api.Eyes> {
-  new (runner?: api.EyesRunner, config?: api.ConfigurationPlain<TElement, TSelector>): api.Eyes<
-    TDriver,
-    TElement,
-    TSelector
-  > &
-    LegacyTestCafeEyes<TDriver, TSelector>
-  new (config?: api.ConfigurationPlain<TElement, TSelector>, runner?: api.EyesRunner): api.Eyes<
-    TDriver,
-    TElement,
-    TSelector
-  > &
-    LegacyTestCafeEyes<TDriver, TSelector>
-  new (options: {configPath: string; runner?: api.EyesRunner}): api.Eyes<TDriver, TElement, TSelector> &
-    LegacyTestCafeEyes<TDriver, TSelector>
+export interface LegacyTestCafeEyesConstructor<TSpec extends SpecType>
+  extends Pick<typeof eyes.Eyes, keyof typeof eyes.Eyes> {
+  new (runner?: eyes.EyesRunner, config?: eyes.ConfigurationPlain<TSpec>): eyes.Eyes<TSpec> & LegacyTestCafeEyes<TSpec>
+  new (config?: eyes.ConfigurationPlain<TSpec>, runner?: eyes.EyesRunner): eyes.Eyes<TSpec> & LegacyTestCafeEyes<TSpec>
+  new (options: {configPath: string; runner?: eyes.EyesRunner}): eyes.Eyes<TSpec> & LegacyTestCafeEyes<TSpec>
 }
 
-export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends Element, TSelector extends Selector>(
-  Eyes: typeof api.Eyes,
-): LegacyTestCafeEyesConstructor<TDriver, TElement, TSelector> {
-  return class TestCafeEyes
-    extends Eyes<TDriver, TElement, TSelector>
-    implements LegacyTestCafeEyes<TDriver, TSelector>
-  {
+export function LegacyTestCafeEyesMixin<TSpec extends PrimarySpecType>(
+  Eyes: typeof eyes.Eyes,
+): LegacyTestCafeEyesConstructor<TSpec> {
+  return class TestCafeEyes extends Eyes<TSpec> implements LegacyTestCafeEyes<TSpec> {
     private _testcafeConfig?: TestCafeConfiguration
 
-    constructor(runner?: api.EyesRunner, config?: api.ConfigurationPlain<TElement, TSelector>)
-    constructor(config?: api.ConfigurationPlain<TElement, TSelector>, runner?: api.EyesRunner)
-    constructor(options?: {configPath: string; runner?: api.EyesRunner})
+    constructor(runner?: eyes.EyesRunner, config?: eyes.ConfigurationPlain<TSpec>)
+    constructor(config?: eyes.ConfigurationPlain<TSpec>, runner?: eyes.EyesRunner)
+    constructor(options?: {configPath: string; runner?: eyes.EyesRunner})
     constructor(
       runnerOrConfigOrOptions?:
-        | api.EyesRunner
-        | api.ConfigurationPlain<TElement, TSelector>
-        | {configPath: string; runner?: api.EyesRunner},
-      configOrRunner?: api.ConfigurationPlain<TElement, TSelector> | api.EyesRunner,
+        | eyes.EyesRunner
+        | eyes.ConfigurationPlain<TSpec>
+        | {configPath: string; runner?: eyes.EyesRunner},
+      configOrRunner?: eyes.ConfigurationPlain<TSpec> | eyes.EyesRunner,
     ) {
       if (utils.types.isNull(runnerOrConfigOrOptions) || utils.types.has(runnerOrConfigOrOptions, 'configPath')) {
         const testcafeConfig = utils.config.getConfig({
@@ -56,49 +44,51 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
         })
         const runner =
           runnerOrConfigOrOptions?.runner ??
-          new api.VisualGridRunner({testConcurrency: testcafeConfig.concurrency ?? testcafeConfig.testConcurrency ?? 1})
+          new eyes.VisualGridRunner({
+            testConcurrency: testcafeConfig.concurrency ?? testcafeConfig.testConcurrency ?? 1,
+          })
         super(runner, transformConfig(testcafeConfig))
         this._testcafeConfig = testcafeConfig
       } else {
-        super(runnerOrConfigOrOptions as api.EyesRunner, configOrRunner as api.ConfigurationPlain<TElement, TSelector>)
+        super(runnerOrConfigOrOptions as eyes.EyesRunner, configOrRunner as eyes.ConfigurationPlain<TSpec>)
       }
     }
 
-    async open(driver: TDriver, config?: api.ConfigurationPlain<TElement, TSelector>): Promise<TDriver>
+    async open(driver: TSpec['driver'], config?: eyes.ConfigurationPlain<TSpec>): Promise<TSpec['driver']>
     async open(
-      driver: TDriver,
+      driver: TSpec['driver'],
       appName?: string,
       testName?: string,
-      viewportSize?: api.RectangleSize,
-      sessionType?: api.SessionType,
-    ): Promise<TDriver>
-    async open(config?: api.ConfigurationPlain<TElement, TSelector>): Promise<void>
+      viewportSize?: eyes.RectangleSize,
+      sessionType?: eyes.SessionType,
+    ): Promise<TSpec['driver']>
+    async open(config?: eyes.ConfigurationPlain<TSpec>): Promise<void>
     async open(
       appName?: string,
       testName?: string,
-      viewportSize?: api.RectangleSize,
-      sessionType?: api.SessionType,
+      viewportSize?: eyes.RectangleSize,
+      sessionType?: eyes.SessionType,
     ): Promise<void>
-    async open(options: {t: TDriver} & TestCafeConfiguration): Promise<TDriver>
+    async open(options: {t: TSpec['driver']} & TestCafeConfiguration): Promise<TSpec['driver']>
     async open(
       driverOrConfigOrAppNameOrOptions?:
-        | TDriver
-        | api.ConfigurationPlain<TElement, TSelector>
+        | TSpec['driver']
+        | eyes.ConfigurationPlain<TSpec>
         | string
-        | ({t: TDriver} & TestCafeConfiguration),
-      configOrAppNameOrTestName?: api.ConfigurationPlain<TElement, TSelector> | string,
-      testNameOrViewportSize?: string | api.RectangleSizePlain,
-      viewportSizeOrSessionType?: api.RectangleSizePlain | api.SessionType,
-      sessionType?: api.SessionType,
-    ): Promise<TDriver | void> {
-      let driver: TDriver | undefined, config: api.ConfigurationPlain<TElement, TSelector> | undefined
+        | ({t: TSpec['driver']} & TestCafeConfiguration),
+      configOrAppNameOrTestName?: eyes.ConfigurationPlain<TSpec> | string,
+      testNameOrViewportSize?: string | eyes.RectangleSizePlain,
+      viewportSizeOrSessionType?: eyes.RectangleSizePlain | eyes.SessionType,
+      sessionType?: eyes.SessionType,
+    ): Promise<TSpec['driver'] | void> {
+      let driver: TSpec['driver'] | undefined, config: eyes.ConfigurationPlain<TSpec> | undefined
       if (spec.isDriver(driverOrConfigOrAppNameOrOptions)) {
         driver = driverOrConfigOrAppNameOrOptions
         config = utils.types.isString(configOrAppNameOrTestName)
           ? {
               appName: configOrAppNameOrTestName,
               testName: testNameOrViewportSize as string,
-              viewportSize: viewportSizeOrSessionType as api.RectangleSize,
+              viewportSize: viewportSizeOrSessionType as eyes.RectangleSize,
               sessionType,
             }
           : configOrAppNameOrTestName
@@ -112,7 +102,7 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
           ? {
               appName: configOrAppNameOrTestName,
               testName: testNameOrViewportSize as string,
-              viewportSize: viewportSizeOrSessionType as api.RectangleSize,
+              viewportSize: viewportSizeOrSessionType as eyes.RectangleSize,
               sessionType,
             }
           : configOrAppNameOrTestName
@@ -136,20 +126,20 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
       }
     }
 
-    async checkWindow(name?: string, timeout?: number, fully?: boolean): Promise<api.MatchResult>
-    async checkWindow(settings: TestCafeCheckSettings<TSelector>): Promise<api.MatchResult>
+    async checkWindow(name?: string, timeout?: number, fully?: boolean): Promise<eyes.MatchResult>
+    async checkWindow(settings: TestCafeCheckSettings<TSpec>): Promise<eyes.MatchResult>
     async checkWindow(
-      nameOrSetting?: string | TestCafeCheckSettings<TSelector>,
+      nameOrSetting?: string | TestCafeCheckSettings<TSpec>,
       timeout?: number,
       fully = true,
-    ): Promise<api.MatchResult> {
+    ): Promise<eyes.MatchResult> {
       if (utils.types.isObject(nameOrSetting)) {
-        return super.check(transformCheckSettings<TElement, TSelector>(nameOrSetting))
+        return super.check(transformCheckSettings<TSpec>(nameOrSetting))
       }
       return super.checkWindow(nameOrSetting, timeout, fully)
     }
 
-    async close(throwErr = true): Promise<api.TestResults> {
+    async close(throwErr = true): Promise<eyes.TestResults> {
       return super.close(throwErr && (this._testcafeConfig?.failTestcafeOnDiff ?? true))
     }
 
@@ -159,9 +149,10 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
       )
       if (this._testcafeConfig?.tapDirPath) {
         const results = resultsSummary.getAllResults().map(r => r.getTestResults())
-        const includeSubTests = false
-        const markNewAsPassed = true
-        const formatted = formatters.toHierarchicTAPString(results, {includeSubTests, markNewAsPassed})
+        const formatted = formatters.toHierarchicTAPString(results as any, {
+          includeSubTests: false,
+          markNewAsPassed: true,
+        })
         fs.writeFileSync(path.resolve(this._testcafeConfig.tapDirPath, 'eyes.tap'), formatted)
       }
       return resultsSummary
@@ -169,7 +160,7 @@ export function LegacyTestCafeEyesMixin<TDriver extends Driver, TElement extends
   }
 }
 
-type RegionReference<TSelector> = api.RegionPlain | TSelector | {selector: TSelector}
+type RegionReference<TSelector> = eyes.RegionPlain | eyes.LegacyRegionPlain | TSelector | {selector: string | TSelector}
 
 type FloatingRegionReference<TSelector> = RegionReference<TSelector> & {
   maxUpOffset?: number
@@ -179,43 +170,46 @@ type FloatingRegionReference<TSelector> = RegionReference<TSelector> & {
 }
 
 type AccessibilityRegionReference<TSelector> = RegionReference<TSelector> & {
-  accessibilityType: api.AccessibilityRegionType
+  accessibilityType: eyes.AccessibilityRegionType | eyes.AccessibilityRegionTypePlain
 }
 
-export type TestCafeCheckSettings<TSelector> = {
+export type TestCafeCheckSettings<TSpec extends SpecType> = {
   tag?: string
   target?: 'window' | 'region'
   fully?: boolean
-  selector?: TSelector
-  region?: api.RegionPlain
-  ignore?: RegionReference<TSelector> | RegionReference<TSelector>[]
-  floating?: FloatingRegionReference<TSelector> | FloatingRegionReference<TSelector>[]
-  layout?: RegionReference<TSelector> | RegionReference<TSelector>[]
-  content?: RegionReference<TSelector> | RegionReference<TSelector>[]
-  strict?: RegionReference<TSelector> | RegionReference<TSelector>[]
-  accessibility?: AccessibilityRegionReference<TSelector> | AccessibilityRegionReference<TSelector>[]
+  selector?: string | TSpec['selector']
+  region?: eyes.RegionPlain | eyes.LegacyRegionPlain
+  ignore?: MaybeArray<RegionReference<TSpec['selector']>>
+  floating?: MaybeArray<FloatingRegionReference<TSpec['selector']>>
+  layout?: MaybeArray<RegionReference<TSpec['selector']>>
+  content?: MaybeArray<RegionReference<TSpec['selector']>>
+  strict?: MaybeArray<RegionReference<TSpec['selector']>>
+  accessibility?: MaybeArray<AccessibilityRegionReference<TSpec['selector']>>
   scriptHooks?: {beforeCaptureScreenshot: string}
   sendDom?: boolean
   ignoreDisplacements?: boolean
+  enablePatterns?: boolean
 }
 
 export type TestCafeConfiguration = {
+  apiKey?: string
+  serverUrl?: string
   appName?: string
   testName?: string
   browser?:
-    | api.DesktopBrowserInfo
-    | api.ChromeEmulationInfo
-    | api.IOSDeviceInfo
-    | (api.DesktopBrowserInfo | api.ChromeEmulationInfo | api.IOSDeviceInfo)[]
+    | eyes.DesktopBrowserInfo
+    | eyes.ChromeEmulationInfo
+    | eyes.IOSDeviceInfo
+    | (eyes.DesktopBrowserInfo | eyes.ChromeEmulationInfo | eyes.IOSDeviceInfo)[]
   batchId?: string
   batchName?: string
   batchSequenceName?: string
   batchSequence?: string
   baselineEnvName?: string
   envName?: string
-  proxy?: string | api.ProxySettingsPlain
+  proxy?: string | eyes.ProxySettingsPlain
   ignoreCaret?: boolean
-  matchLevel?: api.MatchLevel
+  matchLevel?: eyes.MatchLevel | eyes.MatchLevelPlain
   baselineBranchName?: string
   baselineBranch?: string
   parentBranchName?: string
@@ -228,24 +222,32 @@ export type TestCafeConfiguration = {
   properties?: {name: string; value: any}[]
   compareWithParentBranch?: boolean
   ignoreBaseline?: boolean
-  accessibilityValidation?: api.AccessibilitySettings
+  accessibilityValidation?: eyes.AccessibilitySettings
   notifyOnCompletion?: boolean
   batchNotify?: boolean
   isDisabled?: boolean
   ignoreDisplacements?: boolean
+  dontCloseBatches?: boolean
+  disableBrowserFetching?: boolean
   concurrency?: number
   failTestcafeOnDiff?: boolean
   tapDirPath?: string
   showLogs?: boolean
 }
 
-export function transformConfig<TElement, TSelector>(
+export function transformConfig<TSpec extends SpecType>(
   options: TestCafeConfiguration,
-): api.ConfigurationPlain<TElement, TSelector> {
-  const config: api.ConfigurationPlain<TElement, TSelector> = {...(options as any)}
+): eyes.ConfigurationPlain<TSpec> {
+  const config: eyes.ConfigurationPlain<TSpec> = {...(options as any)}
   if (options.concurrency) config.concurrentSessions = options.concurrency
-  if (options.envName) config.environmentName = options.envName
-  if (options.browser) config.browsersInfo = utils.types.isArray(options.browser) ? options.browser : [options.browser]
+  if (options.envName) {
+    config.environmentName = options.envName
+    delete (config as any).envName
+  }
+  if (options.browser) {
+    config.browsersInfo = utils.types.isArray(options.browser) ? options.browser : [options.browser]
+    delete (config as any).browser
+  }
   if (
     options.batchId ||
     options.batchName ||
@@ -257,6 +259,9 @@ export function transformConfig<TElement, TSelector>(
       name: options.batchName,
       notifyOnCompletion: options.notifyOnCompletion || !!process.env.APPLITOOLS_NOTIFY_ON_COMPLETION,
     }
+    delete (config as any).batchId
+    delete (config as any).batchName
+    delete (config as any).notifyOnCompletion
   }
   if (options.matchLevel || options.ignoreCaret || options.ignoreDisplacements || options.accessibilityValidation) {
     config.defaultMatchSettings = {
@@ -265,15 +270,21 @@ export function transformConfig<TElement, TSelector>(
       ignoreDisplacements: options.ignoreDisplacements,
       accessibilitySettings: options.accessibilityValidation,
     }
+    delete (config as any).ignoreCaret
+    delete (config as any).matchLevel
+    delete (config as any).ignoreDisplacements
+    delete (config as any).accessibilityValidation
   }
-  if (utils.types.isString(options.proxy)) config.proxy = {url: options.proxy}
+  if (utils.types.isString(options.proxy)) {
+    config.proxy = {url: options.proxy}
+  }
   return config
 }
 
-export function transformCheckSettings<TElement, TSelector>(
-  options: TestCafeCheckSettings<TSelector>,
-): api.CheckSettingsAutomationPlain<TElement, TSelector> {
-  const settings: api.CheckSettingsAutomationPlain<TElement, TSelector> = {...options}
+export function transformCheckSettings<TSpec extends SpecType>(
+  options: TestCafeCheckSettings<TSpec>,
+): eyes.CheckSettingsAutomationPlain<TSpec> {
+  const settings: eyes.CheckSettingsAutomationPlain<TSpec> = {...options}
   settings.name = options.tag
   settings.hooks = options.scriptHooks
   settings.fully = options.fully ?? options.target !== 'region'
@@ -284,7 +295,7 @@ export function transformCheckSettings<TElement, TSelector>(
     const accessibilityRegions = utils.types.isArray(options.accessibility)
       ? options.accessibility
       : [options.accessibility]
-    settings.accessibilityRegions = <any>accessibilityRegions.map(accessibilityRegion => {
+    settings.accessibilityRegions = accessibilityRegions.map(accessibilityRegion => {
       const {accessibilityType, ...region} = accessibilityRegion
       if (utils.types.has(region, 'selector') && !utils.types.has(region, 'type')) {
         return {region: region.selector, accessibilityType}

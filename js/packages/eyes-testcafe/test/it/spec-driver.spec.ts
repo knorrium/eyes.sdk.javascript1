@@ -1,8 +1,8 @@
-const assert = require('assert')
-const {Selector, ClientFunction} = require('testcafe')
-const spec = require('../../dist/spec-driver')
+import {Selector, ClientFunction} from 'testcafe'
+import * as assert from 'assert'
+import * as spec from '../../src/spec-driver'
 
-function isEqualElements(t, element1, element2) {
+function isEqualElements(t: spec.Driver, element1: spec.Element, element2: spec.Element) {
   if (!element1 || !element2) return false
   const compareElements = ClientFunction(() => element1() === element2(), {
     boundTestRun: t,
@@ -13,27 +13,30 @@ function isEqualElements(t, element1, element2) {
 
 fixture`spec-driver`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/`
 
-test('isDriver(driver)', driver => {
+test('isDriver(driver)', async driver => {
   assert.strictEqual(spec.isDriver(driver), true)
 })
-test('isDriver(wrong)', _driver => {
+test('isDriver(wrong)', async () => {
   assert.strictEqual(spec.isDriver({}), false)
-})
-test('isElement(NodeSnapshot)', async () => {
-  const element = await Selector('div')()
-  assert.strictEqual(spec.isElement(element), true)
 })
 test('isElement(Selector)', async () => {
   const element = Selector('div')
   assert.strictEqual(spec.isElement(element), true)
 })
-test('isElement(wrong)', _driver => {
+test('isElement(wrong)', async () => {
   assert.strictEqual(spec.isElement({}), false)
 })
-test('isSelector(Selector)', _driver => {
+test('isSecondaryElement(NodeSnapshot)', async () => {
+  const element = await Selector('div')()
+  assert.strictEqual(spec.isSecondaryElement(element), true)
+})
+test('isSecondaryElement(wrong)', async () => {
+  assert.strictEqual(spec.isSecondaryElement({}), false)
+})
+test('isSelector(Selector)', async () => {
   assert.strictEqual(spec.isSelector(Selector('div')), true)
 })
-test('isSelector(wrong)', _driver => {
+test('isSelector(wrong)', async () => {
   assert.strictEqual(spec.isSelector({}), false)
 })
 test('findElement(Selector)', async driver => {
@@ -60,7 +63,7 @@ test('executeScript(string, {a, b})', async driver => {
   assert.deepStrictEqual(await spec.executeScript(driver, 'return arguments[0].a + arguments[0].b', {a: 4, b: 5}), 9)
 })
 test('executeScript(function, {a, b})', async driver => {
-  const script = function (arg) {
+  const script = function (arg: {a: number; b: number}) {
     return arg.a + arg.b
   }
   assert.deepStrictEqual(await spec.executeScript(driver, script, {a: 4, b: 5}), 9)
@@ -100,11 +103,10 @@ test('executeScript return mixed data-types (Object)', async driver => {
   assert.deepStrictEqual(actual, expected)
 })
 test('executeScript with serialized arguments', async driver => {
-  const serializedArgs = [{element: Selector('html')}]
-  const fn = function ({element}) {
+  const fn = function ({element}: {element: HTMLElement}) {
     return element.style.overflow
   }
-  await spec.executeScript(driver, fn, ...serializedArgs)
+  await spec.executeScript(driver, fn, {element: Selector('html')})
 })
 test('mainContext()', async driver => {
   try {
@@ -152,10 +154,10 @@ test('visit()', async driver => {
     startUrl = await spec.getUrl(driver)
     const blank = 'about:blank'
     await spec.visit(driver, blank)
-    const actual = await spec.getUrl()
+    const actual = await spec.getUrl(driver)
     assert.deepStrictEqual(actual, blank)
   } finally {
-    await driver.navigateTo(startUrl)
+    await driver.navigateTo(startUrl!)
   }
 })
 test('takeScreenshot', async driver => {
