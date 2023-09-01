@@ -122,6 +122,7 @@ export function makeCheck<TSpec extends SpecType>({
         })
       }
     } else {
+      transformedRenderers.push(...uniqueRenderers)
       baseTargets.push(target)
       baseSettings.push(settings as BaseCheckSettings)
     }
