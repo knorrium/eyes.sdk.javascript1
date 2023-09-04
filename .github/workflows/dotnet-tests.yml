@@ -47,7 +47,7 @@ jobs:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-dotnet@v2
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     container: "alpine:latest"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - run: apk add bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib curl
@@ -85,7 +85,7 @@ jobs:
   
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - uses: actions/setup-node@v3

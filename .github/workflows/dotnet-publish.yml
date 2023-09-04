@@ -35,7 +35,7 @@ jobs:
       packages_matrix: ${{steps.update_versions.outputs.packages_matrix}}
       core_version: ${{steps.update_versions.outputs.core_version}}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
@@ -138,7 +138,7 @@ jobs:
     needs: [test, test_nugets]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{needs.update_cores.outputs.release_branch}}
       - uses: actions/download-artifact@v3
@@ -190,7 +190,7 @@ jobs:
       matrix: ${{ fromJson(needs.update_cores.outputs.packages_matrix) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{needs.update_cores.outputs.release_branch}}
       - uses: actions/download-artifact@v3
@@ -223,7 +223,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.update_cores.outputs.packages_matrix) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{needs.update_cores.outputs.release_branch}}
       - uses: actions/download-artifact@v3

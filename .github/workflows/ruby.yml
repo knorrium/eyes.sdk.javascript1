@@ -52,7 +52,7 @@ jobs:
     if: ${{github.actor != 'dependabot[bot]' && !github.event.pull_request.draft}}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - name: Set up Ruby
@@ -136,7 +136,7 @@ jobs:
 #      APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #        with:
 #          ref: ${{inputs.ref || github.ref}}
 #      - name: Set up Ruby
@@ -184,7 +184,7 @@ jobs:
 #      DISPLAY: ':99'
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #        with:
 #          ref: ${{inputs.ref || github.ref}}
 #      - name: Load gems
@@ -213,7 +213,7 @@ jobs:
 #      APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #        with:
 #          ref: ${{inputs.ref || github.ref}}
 #      - name: Set up Ruby
@@ -246,7 +246,7 @@ jobs:
 #      APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #        with:
 #          ref: ${{inputs.ref || github.ref}}
 #      - name: Set up Ruby
@@ -281,7 +281,7 @@ jobs:
 #      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 #
 #    steps:
-#      - uses: actions/checkout@v3
+#      - uses: actions/checkout@v4
 #        with:
 #          ref: ${{inputs.ref || github.ref}}
 #      - name: Set up Ruby
@@ -311,7 +311,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - name: Set up Ruby
@@ -351,7 +351,7 @@ jobs:
       DISPLAY: ':99'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - name: Set up Ruby
@@ -394,7 +394,7 @@ jobs:
       DISPLAY: ':99'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - name: Set up Ruby
@@ -446,7 +446,7 @@ jobs:
       TEST_REPORT_SANDBOX: False
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{inputs.ref || github.ref}}
       - name: ChangeLog check

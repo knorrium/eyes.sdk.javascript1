@@ -34,7 +34,7 @@ jobs:
       tests: ${{steps.setup.outputs.tests}}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
           fetch-depth: 0
@@ -58,7 +58,7 @@ jobs:
     env: ${{matrix.env}}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
       - name: Setup Node.js
@@ -104,7 +104,7 @@ jobs:
     env: ${{matrix.env}}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
       - name: Generate tests
@@ -190,7 +190,7 @@ jobs:
             echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
           fi
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
           lfs: true
@@ -253,7 +253,7 @@ jobs:
             echo "JAVA_HOME=$(readlink -f /usr/bin/javac | sed 's:/bin/javac::')" >> $GITHUB_ENV
           fi
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
           lfs: true
@@ -324,7 +324,7 @@ jobs:
     env: ${{matrix.env}}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
       - name: Setup Python
@@ -365,7 +365,7 @@ jobs:
     env: ${{matrix.env}}
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.event.pull_request.head.ref}}
       - name: Generate tests
