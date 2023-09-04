@@ -44,7 +44,13 @@ public class TestResultsSummaryMapper {
           } else if (browserInfoDto.getAndroidDeviceInfo() != null) {
             AndroidDeviceInfo androidDeviceInfo = RenderBrowserInfoMapper.toAndroidDeviceInfo(browserInfoDto.getAndroidDeviceInfo());
             renderBrowserInfo = new RenderBrowserInfo(androidDeviceInfo);
-          } else {
+          }
+          else if (browserInfoDto.getEnvironment() != null) { //TODO
+              int width = browserInfoDto.getEnvironment().getViewportSize().getWidth();
+              int height = browserInfoDto.getEnvironment().getViewportSize().getHeight();
+              renderBrowserInfo = new RenderBrowserInfo(width, height);
+          }
+          else {
             renderBrowserInfo = new RenderBrowserInfo(browserInfoDto.getWidth(), browserInfoDto.getHeight(),
                 BrowserType.fromName(browserInfoDto.getName()));
           }

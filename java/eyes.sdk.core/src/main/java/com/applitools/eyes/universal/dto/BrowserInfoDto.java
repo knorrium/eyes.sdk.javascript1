@@ -7,6 +7,7 @@ public class BrowserInfoDto {
   private ChromeEmulationInfoDto chromeEmulationInfo;
   private IosDeviceInfoDto iosDeviceInfo;
   private AndroidDeviceInfoDto androidDeviceInfo;
+  private EnvironmentRendrerer environment;
   private String name;
   private Integer width;
   private Integer height;
@@ -69,5 +70,13 @@ public class BrowserInfoDto {
 
   public void setAndroidDeviceInfo(AndroidDeviceInfoDto androidDeviceInfo) {
     this.androidDeviceInfo = androidDeviceInfo;
+  }
+
+  public EnvironmentRendrerer getEnvironment() {
+    return environment;
+  }
+
+  public void setEnvironment(EnvironmentRendrerer environment) {
+    this.environment = environment;
   }
 }
