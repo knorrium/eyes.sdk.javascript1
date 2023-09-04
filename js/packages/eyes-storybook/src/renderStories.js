@@ -101,7 +101,6 @@ function makeRenderStories({
           if (error) {
             const errMsg = `[page ${pageId}] Failed to get story data for "${title}". ${error}`;
             logger.log(errMsg);
-            throw new Error(errMsg);
           }
           const testResults = await renderStory({
             snapshots: storyData,

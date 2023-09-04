@@ -129,12 +129,19 @@ function makeRenderStory({
       return new Promise((resolve, reject) => {
         throttle(async () => {
           try {
-            await eyes.checkAndClose({
-              target: snapshots,
-              settings: {...checkParams, ...closeSettings},
-            });
-            const results = await eyes.getResults();
-            resolve(results);
+            if (snapshots) {
+              await eyes.checkAndClose({
+                target: snapshots,
+                settings: {...checkParams, ...closeSettings},
+              });
+              const results = await eyes.getResults();
+              resolve(results);
+            } else {
+              await eyes.abort({settings: {renderers}});
+              reject(
+                new Error(`Failed to get story data for ${openParams.testName}, test was aborted`),
+              );
+            }
           } catch (err) {
             reject(err);
           }

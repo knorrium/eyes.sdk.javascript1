@@ -14,26 +14,43 @@ function processResults({
 }) {
   let outputStr = '\n';
   const pluralize = utils.general.pluralize;
-  let testResults = flatten(results.summary.results);
-  const unresolved = testResults.filter(r => r.result.isDifferent);
-  const passedOrNew = testResults.filter(r => r.result.status === 'Passed' || r.result.isNew);
-  const newTests = testResults.filter(r => r.result.isNew);
+  const flattenedTestResults = flatten(results.summary.results);
+  const testResults = flattenedTestResults.filter(r => r && r.result);
+  const testResultsWithErrors = flattenedTestResults.filter(r => r && r.error);
+  const unresolved = testResults.filter(r => r.result.isDifferent && !r.result.isAborted);
+  const passedOrNew = testResults.filter(
+    r => r.result.status === 'Passed' || (r.result.isNew && !r.result.isAborted),
+  );
+  const aborted = testResults.filter(r => r.result.isAborted);
+  const newTests = testResults.filter(r => r.result.isNew && !r.result.isAborted);
   const newTestsSize = newTests.length;
   const warnForUnsavedNewTests = !!(!saveNewTests && newTestsSize);
+  const errMessagesToExclude = [
+    'detected differences',
+    'Please approve the new baseline',
+    'is failed! See details at',
+  ];
 
-  let errors = results.summary.results.map(result => [
-    {err: result.error, title: result.result.name},
-  ]);
-  errors = flatten(errors).filter(
-    ({err}) =>
-      err &&
-      !err.message.includes('detected differences') &&
-      !err.message.includes('Please approve the new baseline'),
-  );
+  const resultsErr = results.results
+    .map(result => {
+      if (!Array.isArray(result.resultsOrErr)) {
+        return {error: result.resultsOrErr, title: result.title};
+      }
+    })
+    .filter(Boolean);
 
-  const hasResults = unresolved.length || passedOrNew.length;
+  const errors = testResultsWithErrors
+    .filter(({error}) => error && !errMessagesToExclude.some(msg => error.message.includes(msg)))
+    .map(({result, error, eyes}) => ({
+      error,
+      title: result?.name || eyes?.test.testName,
+    }))
+    .concat(resultsErr);
+
+  const hasResults = unresolved.length || passedOrNew.length || aborted.length;
   const seeDetailsStr =
-    hasResults && `See details at ${(passedOrNew[0] || unresolved[0]).result.appUrls.batch}`;
+    hasResults &&
+    `See details at ${(passedOrNew[0] || unresolved[0] || aborted[0]).result.appUrls.batch}`;
 
   if (hasResults) {
     outputStr += `${seeDetailsStr}\n\n`;
@@ -46,11 +63,15 @@ function processResults({
   if (unresolved.length > 0) {
     outputStr += testResultsOutput(unresolved, warnForUnsavedNewTests);
   }
+  if (aborted.length > 0) {
+    outputStr += testResultsOutput(aborted, warnForUnsavedNewTests);
+  }
   if (errors.length) {
     const sortedErrors = errors.sort((a, b) => a.title.localeCompare(b.title));
     outputStr += uniq(
       sortedErrors.map(
-        ({title, err}) => `${title} - ${chalk.red('Failed')} ${err.message || err.toString()}`,
+        ({title, error}) =>
+          `${title} - ${chalk.red('Failed')}. ${error.message || error.toString()}`,
       ),
     ).join('\n');
     outputStr += '\n';
@@ -130,7 +151,9 @@ function testResultsOutput(results, warnForUnsavedNewTests) {
   sortedTestResults.forEach(result => {
     const storyTitle = `${result.result.name} [${result.result.hostApp}] [${result.result.hostDisplaySize.width}x${result.result.hostDisplaySize.height}] - `;
 
-    if (result.result.isNew) {
+    if (result.result.isAborted) {
+      outputStr += `${storyTitle}${chalk.keyword('red')(`Aborted`)}\n`;
+    } else if (result.result.isNew) {
       const newResColor = warnForUnsavedNewTests ? 'orange' : 'blue';
       outputStr += `${storyTitle}${chalk.keyword(newResColor)('New')}\n`;
     } else if (!result.result.isDifferent) {

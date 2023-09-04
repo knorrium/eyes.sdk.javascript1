@@ -2,6 +2,7 @@ const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const processResults = require('../../src/processResults');
 const snap = require('@applitools/snaptdout');
+const stripAnsi = require('strip-ansi');
 process.env.FORCE_COLOR = 2;
 
 describe('processResults', () => {
@@ -96,6 +97,7 @@ describe('processResults', () => {
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
+            renderer: {name: 'chrome', width: 10, height: 20},
           },
         ],
       },
@@ -108,6 +110,7 @@ describe('processResults', () => {
             name: 'My Component | Button1',
             hostApp: 'Firefox',
             hostDisplaySize: {width: 100, height: 200},
+            renderer: {name: 'Firefox', width: 100, height: 200},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -174,6 +177,7 @@ describe('processResults', () => {
             name: 'My Component | Button2',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -187,6 +191,7 @@ describe('processResults', () => {
             name: 'My Component | Button1',
             hostApp: 'Firefox',
             hostDisplaySize: {width: 100, height: 200},
+            renderer: {name: 'Firefox', width: 100, height: 200},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -254,13 +259,14 @@ describe('processResults', () => {
             name: 'My Component | Button2',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
       },
       {
         title: 'My Component | Button1',
-        resultsOrErr: [new Error('some error message !')],
+        resultsOrErr: new Error('some error message !'),
       },
     ];
     const summary = {
@@ -276,7 +282,6 @@ describe('processResults', () => {
           },
         },
         {
-          error: {message: 'some error message !'},
           result: {
             name: 'My Component | Button1',
             hostApp: 'Chrome',
@@ -314,44 +319,32 @@ describe('processResults', () => {
     const results = [
       {
         title: 'My Component | Button2',
-        resultsOrErr: [
-          {
-            status: 'Passed',
-            isDifferent: false,
-            name: 'My Component | Button2',
-            hostApp: 'Chrome',
-            hostDisplaySize: {width: 10, height: 20},
-            appUrls: {batch: 'https://eyes.com/results'},
-          },
-          new Error('another error messgae !'),
-        ],
+        resultsOrErr: new Error('another error messgae !'),
       },
       {
         title: 'My Component | Button1',
-        resultsOrErr: [new Error('some error messgae !')],
+        resultsOrErr: new Error('some error messgae !'),
       },
     ];
     const summary = {
       results: [
         {
           result: {
-            status: 'Passed',
-            isDifferent: false,
+            isAborted: true,
             name: 'My Component | Button2',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
-          error: {message: 'another error messgae !'},
         },
         {
           result: {
+            isAborted: true,
             name: 'My Component | Button1',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
-          error: {message: 'some error messgae !'},
         },
       ],
     };
@@ -361,7 +354,7 @@ describe('processResults', () => {
       concurrency: 1,
       configExitCode: true,
     });
-    await snap(outputStr, 'multi err');
+    await snap(stripAnsi(outputStr), 'multi err');
     expect(exitCode).to.eql(1);
 
     // test exitcode false
@@ -390,17 +383,18 @@ describe('processResults', () => {
             name: 'My Component | Button2',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
       },
       {
         title: 'My Component | Button1',
-        resultsOrErr: [new Error('some error messgae !')],
+        resultsOrErr: new Error('some error messgae !'),
       },
       {
         title: 'My Component | Button3',
-        resultsOrErr: [new Error('some error messgae !')],
+        resultsOrErr: new Error('some error messgae !'),
       },
     ];
     const summary = {
@@ -419,13 +413,11 @@ describe('processResults', () => {
           result: {
             name: 'My Component | Button1',
           },
-          error: {message: 'some error messgae !'},
         },
         {
           result: {
             name: 'My Component | Button3',
           },
-          error: {message: 'some error messgae !'},
         },
       ],
     };
@@ -467,6 +459,7 @@ describe('processResults', () => {
             name: 'My Component | Button2',
             hostApp: 'Chrome',
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -511,20 +504,9 @@ describe('processResults', () => {
   });
 
   it('works with no diffs no errors and no succeeses', async () => {
-    const results = [
-      {
-        title: 'My Component | Button2',
-        resultsOrErr: [],
-      },
-    ];
+    const results = [];
     const summary = {
-      results: [
-        {
-          result: {
-            name: 'My Component | Button2',
-          },
-        },
-      ],
+      results: [],
     };
 
     const {outputStr, exitCode} = processResults({
@@ -533,7 +515,6 @@ describe('processResults', () => {
       concurrency: 1,
       configExitCode: true,
     });
-    // console.log(outputStr);
     await snap(outputStr, 'empty');
     expect(exitCode).to.eql(1);
 
@@ -619,6 +600,7 @@ describe('processResults', () => {
             hostApp: 'Chrome',
             isNew: true,
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -674,6 +656,7 @@ describe('processResults', () => {
             hostApp: 'Chrome',
             isNew: true,
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -687,6 +670,7 @@ describe('processResults', () => {
             hostApp: 'Chrome',
             isNew: true,
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -721,7 +705,6 @@ describe('processResults', () => {
       saveNewTests: false,
       configExitCode: true,
     });
-    // console.log(outputStr);
     await snap(outputStr, 'two new without saving');
     expect(exitCode).to.eql(1);
 
@@ -751,6 +734,7 @@ describe('processResults', () => {
             hostApp: 'Chrome',
             isNew: true,
             hostDisplaySize: {width: 10, height: 20},
+            renderer: {name: 'chrome', width: 10, height: 20},
             appUrls: {batch: 'https://eyes.com/results'},
           },
         ],
@@ -773,7 +757,6 @@ describe('processResults', () => {
     const {outputStr, exitCode} = processResults({
       results: {summary, results},
     });
-    // console.log(outputStr);
     await snap(outputStr, 'new with saving');
     expect(exitCode).to.eql(0);
 
@@ -790,5 +773,77 @@ describe('processResults', () => {
       configExitCode: 'nodiffs',
     });
     expect(exitCodeNoDiffs).to.eql(0);
+  });
+
+  it('works with aborted test', async () => {
+    const results = [
+      {
+        name: 'someName1',
+        appName: 'My Component | Button1',
+        hostDisplaySize: {width: 10, height: 20},
+        appUrls: {batch: 'https://eyes.com/results'},
+        resultsOrErr: [{renderer: [{name: 'chrome', width: 800, height: 600}]}],
+      },
+      ,
+      {
+        title: 'My Component | Button2',
+        resultsOrErr: new Error('Failed to get story data for someName2, test was aborted'),
+      },
+    ];
+    const summary = {
+      results: [
+        {
+          result: {
+            name: 'someName1',
+            appName: 'My Component | Button1',
+            hostDisplaySize: {width: 10, height: 20},
+            hostApp: 'Chrome',
+            appUrls: {batch: 'https://eyes.com/results'},
+            status: 'Passed',
+          },
+        },
+        {
+          result: {
+            name: 'someName2',
+            appName: 'My Component | Button2',
+            hostDisplaySize: {width: 100, height: 200},
+            hostApp: 'Chrome',
+            appUrls: {batch: 'https://eyes.com/results'},
+            isAborted: true,
+            error: {message: 'Test is failed! See details at bla'},
+          },
+        },
+      ],
+    };
+    const processResult = processResults({
+      results: {summary, results},
+      totalTime: 10000,
+      concurrency: 1,
+    });
+    await snap(stripAnsi(processResult.outputStr), 'aborted test');
+  });
+
+  it('works when all stories fail', async () => {
+    const results = [
+      {
+        title: 'My Component | Button1',
+        resultsOrErr: new Error('Error while processing story'),
+      },
+      {
+        title: 'My Component | Button2',
+        resultsOrErr: new Error('Error while processing story'),
+      },
+    ];
+    const summary = {
+      results: [undefined, undefined],
+    };
+    const {outputStr, exitCode} = processResults({
+      results: {summary, results},
+      totalTime: 10000,
+      concurrency: 1,
+      configExitCode: true,
+    });
+    await snap(stripAnsi(outputStr), 'all stories fail');
+    expect(exitCode).to.eql(1);
   });
 });

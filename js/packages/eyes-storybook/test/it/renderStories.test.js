@@ -247,7 +247,9 @@ describe('renderStories', () => {
       throw new Error('bla');
     };
 
-    const renderStory = async () => {};
+    const renderStory = async () => {
+      throw new Error(`Failed to get story data for \"k1: s1\", test was aborted`);
+    };
 
     const storybookUrl = 'http://something';
     const {stream, getEvents} = testStream();
@@ -283,11 +285,17 @@ describe('renderStories', () => {
       const story = {name: 's1', kind: 'k1', config: {hello: 'world'}};
       pagePool.addToPool((await pagePool.createPage()).pageId);
       const title = getStoryTitle(story);
+      const timeoutMessage = `timeout reached when trying to take DOM for story ${title}`;
+
       const getStoryData = async () => {
-        throw new Error(`timeout reached when trying to take DOM for story ${title}`);
+        throw new Error(timeoutMessage);
       };
 
-      const renderStory = async arg => [{arg, getStatus: () => 'Passed'}];
+      const renderStory = async () => {
+        return new Promise(resolve =>
+          resolve(new Error(`Failed to get story data for \"k1: s1\", test was aborted`)),
+        );
+      };
 
       const storybookUrl = 'http://something';
       const {stream} = testStream();
@@ -305,7 +313,7 @@ describe('renderStories', () => {
 
       const results = await renderStories([story]);
       expect(results[0].resultsOrErr.message).to.equal(
-        `[page 0] Failed to get story data for \"k1: s1\". Error: timeout reached when trying to take DOM for story ${title}`,
+        `Failed to get story data for \"k1: s1\", test was aborted`,
       );
     } finally {
       await browser.close();

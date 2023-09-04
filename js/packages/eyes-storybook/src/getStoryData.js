@@ -6,7 +6,7 @@ const getStoryBaselineName = require('./getStoryBaselineName');
 const {URL} = require('url');
 const runRunAfterScript = require('../dist/runRunAfterScript');
 const waitFor = require('./waitFor');
-const PAGE_EVALUATE_TIMEOUT = 120000;
+const PAGE_EVALUATE_TIMEOUT = process.env.APPLITOOLS_PAGE_EVALUATE_TIMEOUT || 120000;
 const DOM_SNAPSHOTS_TIMEOUT = 5 * 60 * 1000;
 const utils = require('@applitools/utils');
 

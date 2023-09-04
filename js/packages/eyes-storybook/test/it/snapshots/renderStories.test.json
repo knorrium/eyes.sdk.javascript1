@@ -15,7 +15,7 @@
     ""
   ],
   "err message": [
-    "[page 0] Failed to get story data for \"k1: s1\". Error: bla"
+    "Failed to get story data for \"k1: s1\", test was aborted"
   ],
   "getStoryData err": [
     "- Done 0 stories out of 1 ",

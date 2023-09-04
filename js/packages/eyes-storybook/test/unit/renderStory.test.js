@@ -139,7 +139,7 @@ describe('renderStory', () => {
     const title = getStoryTitle(baseStory);
     const baselineName = getStoryBaselineName(baseStory);
     const storiesWithConfig = await getStoriesWithConfig({stories: [baseStory]});
-    const results = await renderStory({story: storiesWithConfig.stories[0]});
+    const results = await renderStory({story: storiesWithConfig.stories[0], snapshots: 'snapshot'});
     deleteUndefinedPropsRecursive(results);
 
     const {properties} = eyesOptions;
@@ -163,6 +163,7 @@ describe('renderStory', () => {
         },
       },
       checkParams: {
+        target: 'snapshot',
         settings: {
           ignoreRegions: 'ignore',
           floatingRegions: [
@@ -229,7 +230,7 @@ describe('renderStory', () => {
     const title = getStoryTitle(baseStory);
     const story = {...baseStory, storyTitle: title, baselineName, config: globalConfig};
 
-    const results = await renderStory({story});
+    const results = await renderStory({story, snapshots: 'snapshot'});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
@@ -251,6 +252,7 @@ describe('renderStory', () => {
         },
       },
       checkParams: {
+        target: 'snapshot',
         settings: {
           ignoreRegions: 'ignore',
           floatingRegions: [
@@ -346,7 +348,7 @@ describe('renderStory', () => {
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
     const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
-    const results = await renderStory({story: storiesWithConfig.stories[0]});
+    const results = await renderStory({story: storiesWithConfig.stories[0], snapshots: 'snapshot'});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
@@ -370,6 +372,7 @@ describe('renderStory', () => {
         },
       },
       checkParams: {
+        target: 'snapshot',
         settings: {
           ignoreRegions: 'ignore',
           floatingRegions: [
@@ -415,7 +418,7 @@ describe('renderStory', () => {
     const baseStory = {name: 'name', kind: 'kind'};
     const baselineName = getStoryBaselineName(baseStory);
     const story = {...baseStory, baselineName, config: {}};
-    await renderStory({story});
+    await renderStory({story, snapshots: 'snapshot'});
     expect(performance[baselineName]).not.to.equal(undefined);
   });
 
@@ -436,7 +439,7 @@ describe('renderStory', () => {
       performance,
       timeItAsync,
     });
-    const [{message}] = await presult(renderStory({story: {config: {}}}));
+    const [{message}] = await presult(renderStory({story: {config: {}}, snapshots: 'snapshot'}));
     expect(message).to.equal('bla');
   });
 
@@ -469,11 +472,12 @@ describe('renderStory', () => {
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
     const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
-    const results = await renderStory({story: storiesWithConfig.stories[0]});
+    const results = await renderStory({story: storiesWithConfig.stories[0], snapshots: 'snapshot'});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
       checkParams: {
+        target: 'snapshot',
         settings: {
           ignoreRegions: 'ignore',
         },
@@ -523,11 +527,12 @@ describe('renderStory', () => {
     const baselineName = getStoryBaselineName(baseStory);
     const title = getStoryTitle(baseStory);
     const storiesWithConfig = getStoriesWithConfig({stories: [baseStory]});
-    const results = await renderStory({story: storiesWithConfig.stories[0]});
+    const results = await renderStory({story: storiesWithConfig.stories[0], snapshots: 'snapshot'});
 
     deleteUndefinedPropsRecursive(results);
     const expected = {
       checkParams: {
+        target: 'snapshot',
         settings: {
           ignoreRegions: 'ignoreRegions',
         },
@@ -545,6 +550,86 @@ describe('renderStory', () => {
       },
     };
     expect(results).to.eql(expected);
+  });
+
+  it('should abort if snapshot is undefined', async () => {
+    const openEyes = async () => {
+      return {
+        checkAndClose: async () => {
+          throw new Error(
+            'Oops, checkAndClose was called! It should not be called because the story is aborted due to the snapshot not being passed to renderStory',
+          );
+        },
+        abort: async () => {},
+      };
+    };
+
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      performance,
+      timeItAsync,
+      openEyes,
+    });
+
+    const baseStory = {
+      name: 'name',
+      kind: 'kind',
+    };
+    const baselineName = getStoryBaselineName(baseStory);
+    const story = {
+      baselineName,
+      config: {},
+    };
+
+    const [err, _results] = await presult(
+      renderStory({
+        story,
+        snapshots: undefined,
+        url: 'url',
+      }),
+    );
+
+    expect(err.message).to.equal('Failed to get story data for kind: name, test was aborted');
+  });
+
+  it('should throw an error when openEyes fails', async () => {
+    const openEyes = async () => {
+      throw new Error('openEyes failed');
+    };
+
+    const renderStory = makeRenderStory({
+      ...defaultSettings,
+      logger,
+      performance,
+      timeItAsync,
+      openEyes,
+    });
+
+    const baseStory = {
+      name: 'name',
+      kind: 'kind',
+    };
+    const baselineName = getStoryBaselineName(baseStory);
+    const title = getStoryTitle(baseStory);
+    const story = {
+      ...baseStory,
+      storyTitle: title,
+      baselineName,
+      config: {
+        renderers: [{name: 'chrome', width: 800, height: 600}],
+      },
+    };
+
+    const [err, _results] = await presult(
+      renderStory({
+        story,
+        snapshots: 'snapshot',
+        url: 'url',
+      }),
+    );
+
+    expect(err.message).to.equal('openEyes failed');
   });
 });
 

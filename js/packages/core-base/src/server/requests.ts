@@ -168,6 +168,7 @@ export function makeCoreRequests({
         uploadUrl: account.uploadUrl,
         renderEnvironmentsUrl: account.renderEnvironmentsUrl,
         stitchingServiceUrl: account.stitchingServiceUrl,
+        testName: settings.testName,
         account,
       } satisfies VisualTest
     })

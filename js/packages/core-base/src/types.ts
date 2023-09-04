@@ -76,6 +76,7 @@ export interface VisualTest {
   stitchingServiceUrl: string
   resultsUrl: string
   account: Account
+  testName: string
 }
 
 export interface FunctionalTest {
