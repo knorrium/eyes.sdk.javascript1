@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.2.1...js/tunnel-client@1.2.2) (2023-09-04)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.6.0
+  #### Features
+
+  * add support for fallback in `req` ([#1899](https://github.com/applitools/eyes.sdk.javascript1/issues/1899)) ([d69c4b5](https://github.com/applitools/eyes.sdk.javascript1/commit/d69c4b5830370c471dfc25b6e2caddca8b458df9))
+* @applitools/socket bumped to 1.1.10
+
+* @applitools/req bumped to 1.6.0
+  #### Features
+
+  * add support for fallback in `req` ([#1899](https://github.com/applitools/eyes.sdk.javascript1/issues/1899)) ([d69c4b5](https://github.com/applitools/eyes.sdk.javascript1/commit/d69c4b5830370c471dfc25b6e2caddca8b458df9))
+  * update testcafe ([#1884](https://github.com/applitools/eyes.sdk.javascript1/issues/1884)) ([104f1b6](https://github.com/applitools/eyes.sdk.javascript1/commit/104f1b6cc0d4f107ba46404383de2fa11fe99dcf))
+
+
+
+* @applitools/logger bumped to 2.0.10
+
+
 ## [1.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/tunnel-client@1.2.0...js/tunnel-client@1.2.1) (2023-08-30)
 
 

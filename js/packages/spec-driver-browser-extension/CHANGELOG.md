@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.0.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.9...js/spec-driver-browser-extension@1.0.10) (2023-09-04)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.6.0
+  #### Features
+
+  * add support for fallback in `req` ([#1899](https://github.com/applitools/eyes.sdk.javascript1/issues/1899)) ([d69c4b5](https://github.com/applitools/eyes.sdk.javascript1/commit/d69c4b5830370c471dfc25b6e2caddca8b458df9))
+* @applitools/logger bumped to 2.0.10
+
+* @applitools/spec-driver-playwright bumped to 1.3.25
+
+* @applitools/driver bumped to 1.14.0
+  #### Features
+
+  * update testcafe ([#1884](https://github.com/applitools/eyes.sdk.javascript1/issues/1884)) ([104f1b6](https://github.com/applitools/eyes.sdk.javascript1/commit/104f1b6cc0d4f107ba46404383de2fa11fe99dcf))
+
+
+
+
 ## [1.0.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.8...js/spec-driver-browser-extension@1.0.9) (2023-08-30)
 
 

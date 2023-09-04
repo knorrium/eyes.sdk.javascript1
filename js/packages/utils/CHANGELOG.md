@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.5.2...js/utils@1.6.0) (2023-09-04)
+
+
+### Features
+
+* add support for fallback in `req` ([#1899](https://github.com/applitools/eyes.sdk.javascript1/issues/1899)) ([d69c4b5](https://github.com/applitools/eyes.sdk.javascript1/commit/d69c4b5830370c471dfc25b6e2caddca8b458df9))
+
 ## [1.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/utils@1.5.1...js/utils@1.5.2) (2023-08-30)
 
 

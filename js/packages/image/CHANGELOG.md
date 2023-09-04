@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.1.4...js/image@1.1.5) (2023-09-04)
+
+
+### Dependencies
+
+* @applitools/utils bumped to 1.6.0
+  #### Features
+
+  * add support for fallback in `req` ([#1899](https://github.com/applitools/eyes.sdk.javascript1/issues/1899)) ([d69c4b5](https://github.com/applitools/eyes.sdk.javascript1/commit/d69c4b5830370c471dfc25b6e2caddca8b458df9))
+
 ## [1.1.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/image@1.1.3...js/image@1.1.4) (2023-08-30)
 
 
