@@ -1,5 +1,5 @@
 import type {Awaitable} from '@applitools/utils'
-import type {Options, Hooks, Retry} from './types.js'
+import type {Options, Hooks, Retry, Fallback} from './types.js'
 import {AbortController} from 'abort-controller'
 import {stop, type Stop} from './stop.js'
 import {makeAgent} from './agent.js'
@@ -46,7 +46,15 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
   }
 
   async function req(input: string | URL | Request, options: Options): Promise<Response> {
+    const url = new URL(String((input as Request).url ?? input), options.baseUrl)
     const fetch = options.fetch ?? globalFetch
+
+    let optionsFallbacks: Fallback<Options>[] = []
+    if (options.fallbacks)
+      optionsFallbacks = utils.types.isArray(options.fallbacks) ? options.fallbacks : [options.fallbacks]
+
+    const fb = optionsFallbacks.find(fallback => fallback.cache?.get(url.origin))
+    if (fb?.updateOptions) options = await fb.updateOptions({options})
 
     const requestController = new AbortController()
     const requestTimer = options.requestTimeout
@@ -63,7 +71,6 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       options.signal.onabort = () => requestController.abort()
     }
 
-    const url = new URL(String((input as Request).url ?? input), options.baseUrl)
     if (options.query) {
       Object.entries(options.query).forEach(([key, value]) => {
         if (!utils.types.isNull(value)) url.searchParams.set(key, String(value))
@@ -85,13 +92,35 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
       },
       body: options.body ?? (input as Request).body,
       highWaterMark: 1024 * 1024 * 100 + 1, // 100MB + 1b
-      agent: makeAgent({proxy: options.proxy, useDnsCache: options.useDnsCache}),
+      agent: makeAgent({
+        proxy: options.proxy,
+        useDnsCache: options.useDnsCache,
+        keepAliveOptions: options.keepAliveOptions,
+      }),
       signal: requestController.signal,
     })
 
     request = await beforeRequest({request, options})
     try {
       let response = await fetch(request)
+
+      // if the request has a fallback try it
+      if (!response.ok && optionsFallbacks.length > 0) {
+        const fallbackStrategy = optionsFallbacks[0]
+        const shouldFallback = await fallbackStrategy.shouldFallbackCondition({request, response})
+        const fallbackOptions =
+          shouldFallback &&
+          (await fallbackStrategy?.updateOptions?.({
+            options: {...options, fallbacks: optionsFallbacks.slice(1)},
+          }))
+
+        if (fallbackOptions) {
+          const fallbackStrategyResponse = await req(request, fallbackOptions)
+          fallbackStrategy.cache ??= new Map()
+          fallbackStrategy.cache.set(new URL(request.url).origin, fallbackStrategyResponse.ok)
+          return fallbackStrategyResponse
+        }
+      }
 
       // if the request has to be retried due to status code
       const retry = await (options.retry as Retry[])?.reduce(async (prev, retry) => {
@@ -125,6 +154,7 @@ export async function req(input: string | URL | Request, ...requestOptions: Opti
     } catch (error: any) {
       if (abortCode === AbortCode.requestTimeout) error = new RequestTimeoutError()
       else if (abortCode === AbortCode.connectionTimeout) error = new ConnectionTimeoutError()
+
       // if the request has to be retried due to network error
       const retry = await (options.retry as Retry[])?.reduce((prev, retry) => {
         return prev.then(async result => {
@@ -172,6 +202,10 @@ function mergeOptions<TOptions extends Options>(baseOptions: TOptions, ...option
       hooks: [
         ...(baseOptions.hooks ? ([] as Hooks<TOptions>[]).concat(baseOptions.hooks) : []),
         ...(options?.hooks ? ([] as Hooks<TOptions>[]).concat(options.hooks) : []),
+      ],
+      fallbacks: [
+        ...(baseOptions.fallbacks ? ([] as Fallback<TOptions>[]).concat(baseOptions.fallbacks) : []),
+        ...(options?.fallbacks ? ([] as Fallback<TOptions>[]).concat(options.fallbacks) : []),
       ],
     }),
     baseOptions,

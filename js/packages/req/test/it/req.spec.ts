@@ -5,6 +5,7 @@ import {req} from '../../src/req.js'
 import {AbortCode} from '../../src/req-errors.js'
 import {AbortController} from 'abort-controller'
 import * as utils from '@applitools/utils'
+import {Fallback} from '../../src/types.js'
 
 describe('req', () => {
   beforeEach(() => {
@@ -265,5 +266,135 @@ describe('req', () => {
       response.clone().arrayBuffer(),
       utils.general.sleep(3000)?.then(() => Promise.reject(new Error('hangs'))),
     ])
+  })
+
+  it('fallback work', async () => {
+    nock('https://eyesapi.applitools.com')
+      .get('/api/hello')
+      .twice()
+      .reply(function () {
+        if (!this.req.headers.fallback) return [400]
+        return [200, {hello: 'world'}]
+      })
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      fallbacks: [
+        {
+          shouldFallbackCondition: () => {
+            return true
+          },
+          updateOptions: ({options}) => {
+            const headers = {
+              ...options.headers,
+              fallback: 'true',
+            }
+            return {...options, headers}
+          },
+        },
+      ],
+    })
+    assert.deepStrictEqual(await response.json(), {hello: 'world'})
+  })
+
+  it('fallback with retry', async () => {
+    nock('https://eyesapi.applitools.com')
+      .get('/api/hello')
+      .times(3)
+      .reply(function () {
+        if (!this.req.headers.fallback) return [400]
+        return [200, {hello: 'world'}]
+      })
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      fallbacks: [
+        {
+          shouldFallbackCondition: () => {
+            return true
+          },
+          updateOptions: ({options}) => {
+            options.headers = {
+              ...options.headers,
+              fallback: 'true',
+            }
+            return options
+          },
+        },
+      ],
+      retry: [{statuses: [400]}],
+    })
+    assert.deepStrictEqual(await response.json(), {hello: 'world'})
+  })
+
+  it('fallback that not return ok', async () => {
+    nock('https://eyesapi.applitools.com').get('/api/hello').times(3).reply(500)
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      fallbacks: [
+        {
+          shouldFallbackCondition: () => {
+            return true
+          },
+          updateOptions: ({options}) => {
+            options.headers = {
+              ...options.headers,
+              fallback: 'true',
+            }
+            return options
+          },
+        },
+      ],
+    })
+    assert.deepStrictEqual(response.status, 500)
+  })
+
+  it('fallback and retry that not return ok', async () => {
+    const server = nock('https://eyesapi.applitools.com')
+    server.get('/api/hello').once().reply(403) // original request
+    server.get('/api/hello').once().reply(403) // fallback 1
+    server.get('/api/hello').once().reply(403) // fallback 2
+    server.get('/api/hello').once().reply(500) // fallback 3
+    server.get('/api/hello').once().reply(500) // retry 1
+    server.get('/api/hello').once().reply(200, {hello: 'world'}) // retry 2
+
+    const fallbacks = new Array<Fallback>(3).fill({
+      shouldFallbackCondition: ({response}) => {
+        return response.status === 403
+      },
+      updateOptions: ({options}) => options,
+    })
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      retry: {limit: 2, statuses: [500]},
+      fallbacks,
+    })
+
+    assert.deepStrictEqual(nock.activeMocks(), [])
+    assert.deepStrictEqual(response.status, 200)
+    assert.deepStrictEqual(await response.json(), {hello: 'world'})
+  })
+
+  it('fallback change http agent', async () => {
+    nock('https://eyesapi.applitools.com')
+      .get('/api/hello')
+      .times(2)
+      .reply(function () {
+        if (!(this.req as any).options.agent.keepAlive) return [403]
+        return [200]
+      })
+
+    const response = await req('https://eyesapi.applitools.com/api/hello', {
+      fallbacks: [
+        {
+          shouldFallbackCondition: () => {
+            return true
+          },
+          updateOptions: ({options}) => {
+            options.keepAliveOptions = {keepAlive: true}
+            return options
+          },
+        },
+      ],
+    })
+    assert.deepStrictEqual(response.ok, true)
   })
 })

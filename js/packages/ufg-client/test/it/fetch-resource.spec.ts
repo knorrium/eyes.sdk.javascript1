@@ -1,6 +1,6 @@
 import {makeLogger} from '@applitools/logger'
 import {makeFetchResource} from '../../src/resources/fetch-resource'
-import {makeResource} from '../../src/resources/resource'
+import {FailedResource, makeResource} from '../../src/resources/resource'
 import {makeTestServer, generateCertificate} from '@applitools/test-server'
 import assert from 'assert'
 
@@ -33,5 +33,18 @@ describe('fetch-resource', () => {
       }),
       err => err.constructor.name === 'ConnectionTimeoutError',
     )
+  })
+
+  it('fallback to agent keep-alive when https forbidden', async () => {
+    const authority = await generateCertificate({days: 1})
+    server = await makeTestServer({
+      middlewares: ['https-forbidden-without-keep-alive'],
+      ...authority,
+    })
+    const fetchResource = makeFetchResource({retryLimit: 3, logger: makeLogger()})
+    const resource = await fetchResource({
+      resource: makeResource({url: `https://localhost:${server.port}/page/smurfs.jpg`}),
+    })
+    assert.strictEqual((resource as FailedResource).errorStatusCode, undefined)
   })
 })

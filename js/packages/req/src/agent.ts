@@ -1,4 +1,4 @@
-import type {Proxy} from './types.js'
+import type {KeepAliveOptions, Proxy} from './types.js'
 import {parse as urlToHttpOptions} from 'url' // should be replaced with `urlToHttpOptions` after supporting node >=16
 import {Agent as HttpAgent} from 'http'
 import {Agent as HttpsAgent} from 'https'
@@ -10,9 +10,11 @@ import * as utils from '@applitools/utils'
 export function makeAgent({
   proxy,
   useDnsCache,
+  keepAliveOptions,
 }: {
   proxy?: Proxy | undefined | ((url: URL) => Proxy | undefined)
   useDnsCache?: boolean
+  keepAliveOptions?: KeepAliveOptions
 }) {
   return function agent(url: URL) {
     const proxyOptions = utils.types.isFunction(proxy) ? proxy(url) : proxy
@@ -32,10 +34,10 @@ export function makeAgent({
         return createHttpProxyAgent(options)
       }
     } else if (url.protocol === 'https:') {
-      return new HttpsAgent({rejectUnauthorized: false, lookup})
+      return new HttpsAgent({rejectUnauthorized: false, lookup, ...keepAliveOptions})
     } else if (url.protocol === 'http:') {
       // @ts-expect-error due to a wrong type definition for node 12, already fixed in newer versions
-      return new HttpAgent({lookup})
+      return new HttpAgent({lookup, ...keepAliveOptions})
     }
   }
 }

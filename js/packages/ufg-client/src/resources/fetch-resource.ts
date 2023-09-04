@@ -93,6 +93,14 @@ export function makeFetchResource({
         handleStreaming({timeout: streamingTimeout, logger}),
       ],
       connectionTimeout: timeout,
+      fallbacks: {
+        shouldFallbackCondition({response, request}) {
+          return response.status === 403 && new URL(request.url).protocol === 'https:'
+        },
+        updateOptions({options}) {
+          return {...options, keepAliveOptions: {keepAlive: true}}
+        },
+      },
     })
       .then(async response => {
         return response.ok

@@ -66,6 +66,18 @@ export interface Options {
   hooks?: Hooks<this> | Hooks<this>[]
   signal?: AbortSignal
   fetch?: Fetch
+  /**
+   * Fallbacks of the request
+   * @see Fallback
+   */
+  fallbacks?: Fallback<this> | Fallback<this>[]
+  /**
+   * keepAliveOptions option for the request httpAgent
+   * @example {keepAlive: true, keepAliveMsecs: 1000}
+   * @example {keepAlive: false}
+   * @example {keepAlive: false, keepAliveMsecs: 0}
+   */
+  keepAliveOptions?: KeepAliveOptions
 }
 
 export interface Retry {
@@ -105,6 +117,33 @@ export interface Proxy {
   url: string
   username?: string
   password?: string
+}
+
+export interface KeepAliveOptions {
+  keepAlive: boolean
+  keepAliveMsecs?: number
+}
+
+export interface Fallback<TOptions extends Options = Options> {
+  /**
+   * Validation logic of the request outcome to fallback on.
+   * @example ({request, error}) => error || request.status >= 400
+   */
+  shouldFallbackCondition: (options: {response: Response; request: Request}) => Awaitable<boolean>
+  /**
+   * Update request before fallback
+   * @example
+   * ```
+   * {
+   *   updateRequest({options}) {
+   *     options.headers = { ...options.headers, 'x-my-header': 'value' }
+   *     return request
+   *   }
+   *}
+   *  ```
+   **/
+  updateOptions?: (options: {options: TOptions}) => Awaitable<TOptions>
+  cache?: Map<string, boolean>
 }
 
 export interface Hooks<TOptions extends Options = Options> {
