@@ -9,7 +9,7 @@ import attr
 from .accessibility import SessionAccessibilityStatus
 from .geometry import RectangleSize
 from .match import ImageMatchSettings
-from .ultrafastgrid import RenderBrowserInfo
+from .ultrafastgrid import IRenderBrowserInfo
 
 if TYPE_CHECKING:
     from . import ProxySettings
@@ -160,7 +160,7 @@ class TestResults(object):
 @attr.s(repr=False, str=False)
 class TestResultContainer(object):
     test_results = attr.ib(default=None, type=TestResults)  # type: TestResults
-    browser_info = attr.ib(default=None)  # type: Optional[RenderBrowserInfo]
+    browser_info = attr.ib(default=None)  # type: Optional[IRenderBrowserInfo]
     exception = attr.ib(default=None)  # type: Optional[Exception]
     user_test_id = attr.ib(default=None)  # type: Optional[Text]
     __test__ = False  # avoid warnings in test frameworks

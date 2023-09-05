@@ -104,6 +104,25 @@ class Environment(USDKSchema):
     viewport_size = Nested(Size, dump_to="viewportSize")
 
 
+class EnvironmentRenderer(USDKSchema):
+    render_environment_id = String(load_from="renderEnvironmentId")
+    ec_session_id = String(load_from="ecSessionId")
+    os = String()
+    os_info = String(load_from="osInfo")
+    hosting_app = String(load_from="hostingApp")
+    hosting_app_info = String(load_from="hostingAppInfo")
+    device_name = String(load_from="deviceName")
+    viewport_size = Nested(Size, load_from="viewportSize")
+    user_agent = String(load_from="userAgent")
+    renderer = Dict()
+    raw_environment = Dict(load_from="rawEnvironment")
+    properties = List(Dict())
+
+    @post_load
+    def to_python(self, data, **_):
+        return common.EnvironmentInfo(**data)
+
+
 class DesktopBrowserRenderer(USDKSchema):
     width = Float()
     height = Float()

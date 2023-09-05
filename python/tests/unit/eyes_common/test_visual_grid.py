@@ -14,11 +14,6 @@ from applitools.common.ultrafastgrid import (
 )
 
 
-class DummyTest(namedtuple("DummyTest", ("name", "browser_info"))):
-    def __new__(cls, name, width):
-        return super(DummyTest, cls).__new__(cls, name, DesktopBrowserInfo(width, 0))
-
-
 def test_chrome_emulation_info():
     cei = ChromeEmulationInfo(DeviceName.iPhone_X)
     assert cei.device_name == DeviceName.iPhone_X
@@ -72,6 +67,12 @@ def test_desktop_browser_info():
     assert dri.width == 500
     assert dri.height == 600
     assert dri.browser_type == BrowserType.SAFARI
+    assert dri.baseline_env_name is None
+
+    dri = DesktopBrowserInfo(500, 600, "firefox")
+    assert dri.width == 500
+    assert dri.height == 600
+    assert dri.browser_type == BrowserType.FIREFOX
     assert dri.baseline_env_name is None
 
     dri = DesktopBrowserInfo(500, 700, BrowserType.SAFARI, "base env")

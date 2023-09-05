@@ -88,7 +88,6 @@ def test_common_internal_imports():
         ChromeEmulationInfo,
         DesktopBrowserInfo,
         IosDeviceInfo,
-        RenderBrowserInfo,
     )
 
 

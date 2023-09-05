@@ -237,10 +237,17 @@ class BrowserInfo(Field):
             return check_error(
                 ChromeEmulationRenderer().load(value["chromeEmulationInfo"])
             )
-        else:
+        elif "environment" in value:
+            from .schema import EnvironmentRenderer
+
+            return check_error(EnvironmentRenderer().load(value["environment"]))
+        elif "name" in value and "width" in value and "height" in value:
             from .schema import DesktopBrowserRenderer
 
             return check_error(DesktopBrowserRenderer().load(value))
+        else:
+            # According to core team unknown types should be ignored
+            return None
 
 
 def check_error(marshmellow_result):

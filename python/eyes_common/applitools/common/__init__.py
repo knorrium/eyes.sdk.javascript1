@@ -55,8 +55,8 @@ from .ultrafastgrid.render_browser_info import (
     AndroidDeviceInfo,
     ChromeEmulationInfo,
     DesktopBrowserInfo,
+    EnvironmentInfo,
     IosDeviceInfo,
-    RenderBrowserInfo,
 )
 
 __all__ = (
@@ -70,6 +70,7 @@ __all__ = (
     "DesktopBrowserInfo",
     "DeviceName",
     "DiffsFoundError",
+    "EnvironmentInfo",
     "ExactMatchSettings",
     "EyesError",
     "FailureReports",

@@ -2,9 +2,11 @@ from applitools.common import (
     ChromeEmulationInfo,
     DesktopBrowserInfo,
     DeviceName,
+    EnvironmentInfo,
     IosDeviceInfo,
     IosDeviceName,
     IosVersion,
+    RectangleSize,
     ScreenOrientation,
     schema,
 )
@@ -47,6 +49,34 @@ def test_demarshal_browser_info():
                 "screenOrientation": "portrait",
             }
         }
+    )
+
+    assert deserializer.deserialize(
+        {
+            "environment": {
+                "renderEnvironmentId": "renderer-id",
+                "renderer": {
+                    "iosDeviceInfo": {
+                        "deviceName": "iPhone SE (3rd generation)",
+                        "version": "15.0",
+                    }
+                },
+                "deviceName": "iPhone SE (3rd generation)",
+                "os": "iOS 15.0",
+                "viewportSize": {"width": 375, "height": 667},
+            }
+        }
+    ) == EnvironmentInfo(
+        render_environment_id="renderer-id",
+        os="iOS 15.0",
+        device_name="iPhone SE (3rd generation)",
+        viewport_size=RectangleSize(375, 667),
+        renderer={
+            "iosDeviceInfo": {
+                "deviceName": "iPhone SE (3rd generation)",
+                "version": "15.0",
+            }
+        },
     )
 
 
