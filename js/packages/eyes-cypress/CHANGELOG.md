@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.38.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-cypress-v3.37.1...js/eyes-cypress@3.38.0) (2023-09-05)
+
+
+### Features
+
+* add the option to fail on diffs after all spec files ([#1844](https://github.com/applitools/eyes.sdk.javascript1/issues/1844)) ([ca2510d](https://github.com/applitools/eyes.sdk.javascript1/commit/ca2510d094a921c9561b9b9e9094d763a6abce2f))
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Bug Fixes
+
+* upgrade internal dependencies ([3fe2c47](https://github.com/applitools/eyes.sdk.javascript1/commit/3fe2c474258e686e73c352a094a6c2e8934a8567))
+
 ## [3.37.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-cypress@3.36.2...js/eyes-cypress@3.37.0) (2023-08-18)
 
 
