@@ -10,12 +10,13 @@ JS_ROOT = path.join(path.dirname(__file__), "../../../../js")
 
 def _parse_ts_enum(name):
     source_file = path.join(JS_ROOT, "packages/eyes/src/enums/{}.ts".format(name))
-    regex = re.escape(name) + r"Enum\s*\{([^}]+)}"
+    regex = re.escape(name) + r"Enum\s*\{(.+)\n\}"
     with open(source_file) as ts_code:
-        (enum_contents,) = re.findall(regex, ts_code.read())
-    entries = (e.strip() for e in enum_contents.split(","))
-    cleaned_entries = (e for e in entries if e and not e.startswith("//"))
-    pairs = (e.split("=") for e in cleaned_entries)
+        (enum_contents,) = re.findall(regex, ts_code.read(), re.DOTALL)
+    lines = (e.strip() for e in enum_contents.split("\n"))
+    # skip empty lines and comments and remove commas
+    cleaned_lines = (e[:-1] for e in lines if e and not e.startswith("/"))
+    pairs = (e.split("=") for e in cleaned_lines)
     # remove quotes from values
     return {name.strip(): value.strip()[1:-1] for name, value in pairs}
 
@@ -23,7 +24,7 @@ def _parse_ts_enum(name):
 @pytest.mark.parametrize("enum", (DeviceName, AndroidDeviceName, IosDeviceName))
 def test_enum_matches_js(enum):
     ts_dict = _parse_ts_enum(enum.__name__)
-    py_dict = {e.name: e.value for e in enum}
+    py_dict = {key: e.value for (key, e) in enum.__members__.items()}
 
     assert py_dict == ts_dict
 
