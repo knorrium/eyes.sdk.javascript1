@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.7.7...js/ec-client@1.7.8) (2023-09-05)
+
+
+### Dependencies
+
+* @applitools/core-base bumped to 1.6.0
+  #### Features
+
+  * show aborted tests in Eyes dashboard ([#1877](https://github.com/applitools/eyes.sdk.javascript1/issues/1877)) ([f9840d4](https://github.com/applitools/eyes.sdk.javascript1/commit/f9840d494222ccc6c6f262896771e28da2565bc6))
+
 ## [1.7.7](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.7.6...js/ec-client@1.7.7) (2023-09-04)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.5.3...js/core-base@1.6.0) (2023-09-05)
+
+
+### Features
+
+* show aborted tests in Eyes dashboard ([#1877](https://github.com/applitools/eyes.sdk.javascript1/issues/1877)) ([f9840d4](https://github.com/applitools/eyes.sdk.javascript1/commit/f9840d494222ccc6c6f262896771e28da2565bc6))
+
 ## [1.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.5.2...js/core-base@1.5.3) (2023-09-04)
 
 
