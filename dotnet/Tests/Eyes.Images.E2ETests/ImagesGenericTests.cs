@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,11 +9,14 @@ using System.Threading.Tasks;
 using Applitools;
 using Applitools.Commands;
 using Applitools.Images;
+using Applitools.Metadata;
 using Applitools.Tests.Utils;
 using Applitools.Utils;
 using Applitools.Utils.Geometry;
 using Applitools.VisualGrid;
+using AutoMapper.Mappers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Region = Applitools.Utils.Geometry.Region;
 
@@ -199,19 +203,7 @@ namespace Eyes.Images.E2ETests
 
             Assert.AreEqual(MatchLevel.Layout2, matchLevel);
         }
-
-        //[Test]
-        //public void ExtractTextTest()
-        //{
-        //    eyes.Open(GetApplicationName(), "TestExtractText", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-
-        //    var result = eyes.ExtractText(new OcrRegion(EXTRACT_TEXT_IMAGE));
-        //    eyes.Close();
-
-        //    Assert.AreEqual(1, result.size());
-        //    Assert.AreEqual("This is the navigation bar", result.get(0));
-        //}
-
+        
         [Test]
         public void IgnoreDisplacementsFluentTest()
         {
@@ -294,14 +286,6 @@ namespace Eyes.Images.E2ETests
             Assert.IsTrue(info.ActualAppOutput[0].ImageMatchSettings.EnablePatterns);
         }
 
-        //[Test]
-        //public void CheckRegionFluentTest()
-        //{
-        //    eyes.Open(GetApplicationName(), "TestCheckRegionFluent", new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
-        //    eyes.Check(Target.Region(TEST_IMAGE, new Region(50, 50, 50, 50)));
-        //    eyes.Close();
-        //}
-
         [Test]
         public void CheckRegionNonFluentTest()
         {
@@ -368,6 +352,26 @@ namespace Eyes.Images.E2ETests
             }
 
             CollectionAssert.AreEquivalent(deviceNamesFromServer, deviceNamesFromEnum);
+        }
+
+        [Test]
+        public void CustomPropertiesTest()
+        {
+            Eyes.AddProperty("custom property test 1", "custom value 1");
+            Eyes.Batch.AddProperty("custom batch property 2", "custom batch value 2");
+            Eyes.Open(GetApplicationName(), nameof(CustomPropertiesTest),
+                new RectangleSize(TEST_IMAGE.Width, TEST_IMAGE.Height));
+            Eyes.Check(Target.Image(TEST_IMAGE));
+            TestResults result = Eyes.Close();
+            SessionResults info = GetTestInfo(result);
+            Assert.AreEqual(1, info.StartInfo.Properties.Count());
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>
+                    { { "name", "custom property test 1" }, { "value", "custom value 1" } },
+                ((JObject)info.StartInfo.Properties[0]).ToObject<Dictionary<string, object>>());
+            Assert.AreEqual(1, info.StartInfo.BatchInfo.Properties.Count());
+            CollectionAssert.AreEquivalent(new Dictionary<string, string>
+                    { { "name", "custom batch property 2" }, { "value", "custom batch value 2" } },
+                info.StartInfo.BatchInfo.Properties[0].ToDictionary());
         }
     }
 }

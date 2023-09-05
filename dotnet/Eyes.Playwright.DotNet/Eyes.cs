@@ -150,6 +150,7 @@ namespace Applitools.Playwright
                 }
             };
             result.Payload.Config.Open.Properties = properties_; // ?
+            result.Payload.Config.Open.Batch.Properties = Batch.Properties; // ?
             return result;
         }
 

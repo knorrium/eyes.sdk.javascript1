@@ -83,6 +83,7 @@ namespace Applitools
 
             var openConfig = mapper.Map<OpenConfig>(configuration);
             openConfig.Properties = properties_;
+            openConfig.Batch.Properties = Batch.Properties;
             var screenshotConfig = mapper.Map<ScreenshotConfig>(configuration);
             var checkConfig = mapper.Map<CheckConfig>(configuration);
             var closeConfig = mapper.Map<CloseConfig>(configuration);

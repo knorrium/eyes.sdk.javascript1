@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Bug Fixes
+
+* Fixed `BatchInfo.AddProperty` ([Trello 3280](https://trello.com/c/Z3RpuEns))
+
 ## [1.19](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/playwright@1.18...dotnet/playwright@1.19) (2023-08-27)
 
 ### Dependencies
