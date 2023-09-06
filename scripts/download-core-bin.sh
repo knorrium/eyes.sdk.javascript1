@@ -32,7 +32,7 @@ fi
 
 if [[ -z "$tag" ]]
 then
-  tag=$(git ls-remote --sort=creatordate --tags origin 'js/core@*' | tail -n 1 | cut -f 2 | sed -e "s/^refs\/tags\///")
+  tag=$(git ls-remote --tags origin 'js/core@*' | cut -f 2 | sed -e "s/^refs\/tags\///" | sort -V | tail -n 1)
 fi
 echo "Downloading from release - '$tag'"
 
