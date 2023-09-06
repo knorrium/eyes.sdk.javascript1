@@ -1,4 +1,8 @@
+*** Variables ***
+${REMOTE_URL}  https://%{SAUCE_USERNAME}:%{SAUCE_ACCESS_KEY}@ondemand.us-west-1.saucelabs.com:443/wd/hub
+
 *** Settings ***
+Variables   vars.py
 Library     AppiumLibrary
 Library     Collections
 Library     EyesLibrary     runner=${RUNNER}    config=applitools.yaml

@@ -1,4 +1,5 @@
 *** Settings ***
+Variables   vars.py
 Resource    resources/setup.robot
 Library     ${BACKEND_LIBRARY_NAME}
 Library     EyesLibrary     runner=${RUNNER}    config=applitools.yaml

@@ -3,7 +3,7 @@ ifdef PYTEST_FILTER
 endif
 PYTEST=python -m pytest $(PYTEST_FLAGS)
 
-install_dev_requirements: ensure_dev_venv install_installation_tests_requirements generate_images_tests generate_selenium_tests generate_appium_tests generate_playwright_tests
+install_dev_requirements: ensure_dev_venv install_unit_tests_requirements install_installation_tests_requirements install_robotframework_tests_requirements generate_images_tests generate_selenium_tests generate_appium_tests generate_playwright_tests
 	python -m pip install --upgrade --editable core_universal
 	python -m pip install --upgrade --editable eyes_common
 	python -m pip install --upgrade --editable eyes_images
@@ -71,6 +71,10 @@ install_functional_tests_requirements: install_tests_requirements
 
 install_installation_tests_requirements: install_tests_requirements
 	python -m pip install 'pytest-venv==0.2.1' 'virtualenv==20.11'
+
+
+install_robotframework_tests_requirements: install_tests_requirements
+	python -m pip install 'robotframework-pabot'
 
 
 install_selenium_generated_tests_requirements: install_functional_tests_requirements
@@ -242,11 +246,11 @@ eyes_playwright_functional_tests: install_eyes_playwright install_functional_tes
 	$(PYTEST) -n8 tests/functional/eyes_playwright/
 
 
-eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements
+eyes_robotframework_functional_tests: install_eyes_robotframework install_functional_tests_requirements install_robotframework_tests_requirements
 	$(PYTEST) -n8 -m "not sauce_vm and not sauce_mac_vm" tests/functional/eyes_robotframework
 
 
-eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_functional_tests_requirements
+eyes_robotframework_sauce_functional_tests: install_eyes_robotframework install_functional_tests_requirements install_robotframework_tests_requirements
 	$(PYTEST) -n4 -m "sauce_vm or sauce_mac_vm" --dist loadgroup tests/functional/eyes_robotframework
 
 

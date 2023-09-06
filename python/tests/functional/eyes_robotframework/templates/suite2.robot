@@ -1,9 +1,8 @@
 *** Settings ***
-Resource    shared_variables.robot
 Library     SeleniumLibrary
-Library     EyesLibrary     runner=${RUNNER}      config=../applitools.yaml
+Library     EyesLibrary     runner=${RUNNER}      config=applitools.yaml
 
-Suite Setup    Open Browser                              ${URL}      ${BROWSER}        options=add_argument("--headless")
+Suite Setup       Open Browser  https://applitools.github.io/demo/TestPages/FramesTestPage/  chrome  options=add_argument("--headless")
 Suite Teardown    Close All Browsers
 
 

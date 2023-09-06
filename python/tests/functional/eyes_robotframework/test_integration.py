@@ -1,11 +1,8 @@
 import os
 import subprocess
 import sys
-from os import chdir, getcwd, path
-from typing import TYPE_CHECKING
 
 import pytest
-from robot import run_cli
 from robot.result import ExecutionResult
 
 from EyesLibrary.test_results_manager import (
@@ -13,30 +10,132 @@ from EyesLibrary.test_results_manager import (
     METADATA_PATH_TO_EYES_RESULTS_NAME,
 )
 
-if TYPE_CHECKING:
-    from typing import Generator
 
-    from robot.result import TestCase as RobotTestCase
-    from robot.result import TestSuite as RobotTestSuite
-
-
-def run_robot(*args, output_file_path=None, isolation=True):
-    test_dir = path.join(path.dirname(__file__), "robot_tests")
-    call_args = (
-        "--output={}.xml".format(output_file_path),
-        "--report={}.html".format(output_file_path),
-        "--log={}-log.html".format(output_file_path),
-    ) + args
+def robot(suite, *args, isolation=True):
     if isolation:
         robot = (sys.executable, "-m", "robot")
-        subprocess.run(robot + call_args, cwd=test_dir)
+        return subprocess.run(robot + args, cwd=suite).returncode
     else:
-        dir = getcwd()
-        chdir(test_dir)
+        from robot import run_cli
+
+        dir = os.getcwd()
+        os.chdir(suite)
         try:
-            run_cli(call_args, exit=False)
+            # should explicitly pass outputdir, robot caches cwd during import
+            return run_cli(("--outputdir", suite) + args, exit=False)
         finally:
-            chdir(dir)
+            os.chdir(dir)
+
+
+def pabot(suite, *args, isolation=True):
+    if isolation:
+        pabot = (sys.executable, "-m", "pabot.pabot")
+        return subprocess.run(pabot + args, cwd=suite).returncode
+    else:
+        from pabot.pabot import main_program
+
+        dir = os.getcwd()
+        os.chdir(suite)
+        try:
+            # should explicitly pass outputdir, robot caches cwd during import
+            return main_program(("--outputdir", suite) + args)
+        finally:
+            os.chdir(dir)
+
+
+@pytest.mark.parametrize("tool", [robot, pabot])
+def test_execution_cloud(robot_suite, tool):
+    rc = tool(robot_suite, "execution_cloud.robot")
+    result = ExecutionResult(robot_suite / "output.xml")
+
+    assert [t.status for t in result.suite.tests] == ["PASS"], str(result.errors)
+    assert rc == 0
+
+
+def test_mobile_native__android(robot_suite_maker, sauce_vm):
+    vars = get_variables("mobile_native", "appium", "android")
+    robot_suite = robot_suite_maker.make(**vars)
+    rc = robot(robot_suite, ".", isolation=False)
+    result = ExecutionResult(robot_suite / "output.xml")
+
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert rc == 0
+
+
+def test_mobile_native__ios(robot_suite_maker, sauce_mac_vm):
+    vars = get_variables("mobile_native", "appium", "ios")
+    robot_suite = robot_suite_maker.make(**vars)
+    rc = robot(robot_suite, ".", isolation=False)
+    result = ExecutionResult(robot_suite / "output.xml")
+
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert rc == 0
+
+
+@pytest.mark.templates("web_desktop_only", "web_only", "resources/setup")
+@pytest.mark.parametrize("runner_type", ("web_ufg", "web"))
+def test_web_desktop(robot_suite_maker, runner_type):
+    vars = get_variables(runner_type, "selenium", "desktop")
+    robot_suite = robot_suite_maker.make(**vars)
+    rc = robot(robot_suite, ".")
+    result = ExecutionResult(robot_suite / "output.xml")
+
+    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert rc == 0
+
+
+@pytest.mark.templates("web_only", "resources/setup")
+def test_web_only__ios(sauce_mac_vm, robot_suite_maker):
+    vars = get_variables("web", "appium", "ios")
+    robot_suite = robot_suite_maker.make(**vars)
+    rc = robot(robot_suite, ".")
+    result = ExecutionResult(robot_suite / "output.xml")
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert rc == 0
+
+
+@pytest.mark.templates("web_only", "resources/setup")
+def test_web_only__android(sauce_vm, robot_suite_maker):
+    vars = get_variables("web", "appium", "android")
+    robot_suite = robot_suite_maker.make(**vars)
+    rc = robot(robot_suite, ".")
+    result = ExecutionResult(robot_suite / "output.xml")
+    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert rc == 0
+
+
+@pytest.mark.templates("suite1", "suite2", "suite3")
+@pytest.mark.parametrize("runner_type", ["web", "web_ufg"])
+@pytest.mark.parametrize("propagation", ["manual", "auto"])
+@pytest.mark.parametrize("tool", [robot, pabot])
+def test_suite_dir_with_results_propagation_and_one_diff_in_report(
+    robot_suite, runner_type, propagation, tool, local_chrome_driver
+):
+    if propagation == "auto" and tool is pabot:
+        pytest.skip("Auto propagation doesn't work in pabot yet")
+    if propagation == "manual":
+        args = ["--prerebotmodifier", "EyesLibrary.PropagateEyesTestResults"]
+    else:
+        args = []
+    args.extend(["--variable", "RUNNER:" + runner_type, "."])
+    rc = tool(robot_suite, *args)
+    result = ExecutionResult(robot_suite / "output.xml")
+    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
+    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[0].metadata
+    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[1].metadata
+    assert rc == (0 if tool is robot else 1)
+
+    # check that report html is containing 1 failed test
+    # need browser here to display js based content
+    local_chrome_driver.get("file://" + str(robot_suite / "report.html"))
+    assert METADATA_EYES_TEST_RESULTS_URL_NAME in local_chrome_driver.page_source
+    assert "1 test failed" in local_chrome_driver.page_source
 
 
 def from_suite(suite):
@@ -50,126 +149,82 @@ def from_suite(suite):
             yield t
 
 
-@pytest.mark.parametrize("runner", ["web", "web_ufg"])
-@pytest.mark.parametrize(
-    "with_propagation",
-    [
-        [
-            "--prerebotmodifier",
-            "EyesLibrary.PropagateEyesTestResults",
-        ],
-        [],
-    ],
-    ids=lambda d: "manual propagate" if d else "auto patched",
-)
-def test_suite_dir_with_results_propagation_and_one_diff_in_report(
-    tmp_path, runner, with_propagation, local_chrome_driver
+def get_variables(
+    runner_type,  # Literal["web", "web_ufg", "mobile_native"]
+    backend_library,  # Literal["appium", "selenium"]
+    platform,  # Literal["ios", "android", "desktop"]
 ):
-    output_file_path = os.path.join(tmp_path, "testsuite-dir")
-    args = with_propagation + [
-        "--variable",
-        "RUNNER:{}".format(runner),
-        "test_suite_dir",
-    ]
-    run_robot(*args, output_file_path=output_file_path)
-    result = ExecutionResult(output_file_path + ".xml")
-    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[0].metadata
-    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[1].metadata
+    batch_name = "RobotFramework"
 
-    # check that report html is containing 1 failed test
-    # need browser here to display js based content
-    local_chrome_driver.get("file://" + output_file_path + ".html")
-    assert METADATA_EYES_TEST_RESULTS_URL_NAME in local_chrome_driver.page_source
-    assert "1 test failed" in local_chrome_driver.page_source
+    if platform == "android":
+        batch_name += " | Android"
+        desired_caps = {
+            "platformName": "Android",
+            "platformVersion": "11.0",
+            "deviceName": "Android GoogleAPI Emulator",
+            "deviceOrientation": "portrait",
+        }
+    elif platform == "ios":
+        batch_name += " | IOS"
+        desired_caps = {
+            "platformName": "iOS",
+            "platformVersion": "15.4",
+            "deviceName": "iPhone 13 Simulator",
+            "deviceOrientation": "portrait",
+        }
+    else:
+        desired_caps = {}  # What?
 
+    if backend_library == "appium":
+        backend_library_name = "AppiumLibrary"
 
-def test_web_mobile_android(sauce_vm, tmp_path):
-    output_file_path = os.path.join(tmp_path, "web-appium-android")
-    run_robot(
-        "--variablefile",
-        "variables_test.py:web:appium:android",
-        "web_only.robot",
-        output_file_path=output_file_path,
-    )
-    result = ExecutionResult(output_file_path + ".xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+        if runner_type in ["mobile_native"]:
+            batch_name += " | App"
+            if platform == "android":
+                desired_caps.update(
+                    {
+                        "automationName": "UiAutomator2",
+                        "app": "storage:filename=SimpleRandomStock_nmg.apk",
+                        "clearSystemFiles": True,
+                        "noReset": True,
+                        "appium:autoGrantPermissions": True,
+                    }
+                )
+            elif platform == "ios":
+                desired_caps.update(
+                    {
+                        "app": "storage:filename=awesomeswift_nmg.app.zip",
+                        "clearSystemFiles": True,
+                        "noReset": True,
+                        "automationName": "XCUITest",
+                    }
+                )
+        else:
+            batch_name += " | Web"
+            if platform == "desktop":
+                batch_name += " | Desktop"
+    elif backend_library == "selenium":
+        batch_name += " | Web"
+        backend_library_name = "SeleniumLibrary"
 
+    else:
+        raise ValueError("Invalid backend library", backend_library)
 
-def test_web_mobile_ios(sauce_mac_vm, tmp_path):
-    output_file_path = os.path.join(tmp_path, "web-appium-ios")
-    run_robot(
-        "--variablefile",
-        "variables_test.py:web:appium:ios",
-        "web_only.robot",
-        output_file_path=output_file_path,
-    )
-    result = ExecutionResult(output_file_path + ".xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    if runner_type == "web":
+        if platform == "android":
+            desired_caps.update(
+                {
+                    "browserName": "Chrome",
+                }
+            )
+        elif platform == "ios":
+            desired_caps.update({"browserName": "Safari"})
+    elif runner_type == "web_ufg":
+        batch_name += " | UFG"
 
-
-@pytest.mark.parametrize(
-    "data",
-    [
-        ("web_ufg", "selenium", "desktop"),
-        ("web", "selenium", "desktop"),
-    ],
-    ids=lambda d: str(d),
-)
-def test_web_desktop(data, tmp_path):
-    runner, backend, platform = data
-    output_file_path = os.path.join(
-        tmp_path, "{}-{}-{}".format(runner, backend, platform)
-    )
-    run_robot(
-        "--variablefile",
-        "variables_test.py:{runner}:{backend}:{platform}".format(
-            runner=runner, backend=backend, platform=platform
-        ),
-        "web_desktop_only.robot",
-        "web_only.robot",
-        output_file_path=output_file_path,
-    )
-    result = ExecutionResult(output_file_path + ".xml")
-
-    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-
-
-def test_suite_mobile_native_android(sauce_vm, tmp_path):
-    output_file_path = os.path.join(tmp_path, "mobile_native-appium-android")
-    run_robot(
-        "--variablefile",
-        "variables_test.py:mobile_native:appium:android",
-        "mobile_native.robot",
-        output_file_path=output_file_path,
-    )
-
-    result = ExecutionResult(output_file_path + ".xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-
-
-def test_suite_mobile_native_ios(sauce_mac_vm, tmp_path):
-    output_file_path = os.path.join(tmp_path, "mobile_native-appium-ios")
-    run_robot(
-        "--variablefile",
-        "variables_test.py:mobile_native:appium:ios",
-        "mobile_native.robot",
-        output_file_path=output_file_path,
-    )
-
-    result = ExecutionResult(output_file_path + ".xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-
-
-def test_execution_cloud(tmp_path):
-    output_file_path = os.path.join(tmp_path, "web_ec")
-    run_robot("web_ec.robot", output_file_path=output_file_path, isolation=False)
-
-    result = ExecutionResult(output_file_path + ".xml")
-    assert [t.status for t in result.suite.tests] == ["PASS"], str(result.errors)
+    return {
+        "BATCH_NAME": batch_name,
+        "RUNNER": runner_type,
+        "BACKEND_LIBRARY_NAME": backend_library_name,
+        "DESIRED_CAPS": desired_caps,
+    }

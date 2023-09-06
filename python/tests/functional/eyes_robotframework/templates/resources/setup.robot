@@ -3,6 +3,7 @@ Library  Collections
 Library  String
 
 *** Variables ***
+${REMOTE_URL}  https://%{SAUCE_USERNAME}:%{SAUCE_ACCESS_KEY}@ondemand.us-west-1.saucelabs.com:443/wd/hub
 ${URL}                          https://demo.applitools.com/
 ${BROWSER_NAME}                 Chrome
 ${FORM_XPATH}                   //html/body/div/div/form
