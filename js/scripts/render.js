@@ -476,13 +476,18 @@ function argsToBuildConfig(args) {
 }
 
 function argsToEyesConfig(args) {
+  const browsersInfo = [
+    ...(args.renderBrowsers || []),
+    ...(args.renderEmulations || []),
+    ...(args.renderIosDevices || []),
+  ]
   return {
     sdk: args.sdk,
     vg: args.vg,
     apiKey: args.apiKey,
     serverUrl: args.serverUrl,
     viewportSize: args.viewportSize || (!args.device ? {width: 1024, height: 600} : undefined),
-    browsersInfo: [...(args.renderBrowsers || []), ...(args.renderEmulations || []), ...(args.renderIosDevices || [])],
+    browsersInfo: browsersInfo.length > 0 ? browsersInfo : undefined,
     proxy: args.proxy,
     accessibilityValidation: args.accessibilityValidation,
     matchLevel: args.matchLevel,
