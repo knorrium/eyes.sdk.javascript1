@@ -39,7 +39,7 @@ describe('close', async () => {
     })
 
     await eyes1.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
       settings: {renderers: [{name: 'chrome', width: 100, height: 100}]},
     })
     await eyes1.close()

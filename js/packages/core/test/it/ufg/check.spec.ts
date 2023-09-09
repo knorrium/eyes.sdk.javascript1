@@ -18,7 +18,11 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [
+        {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
+        {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
+        {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
+      ],
       settings: {
         name: 'good',
         renderers: [
@@ -39,7 +43,19 @@ describe('check', () => {
   })
 
   it('renders with correct renderer', async () => {
-    const core = makeCore({base: makeFakeCore(), clients: {ufg: makeFakeClient()}, concurrency: 10})
+    const core = makeCore({
+      base: makeFakeCore(),
+      clients: {
+        ufg: makeFakeClient({
+          hooks: {
+            createRenderTarget(settings) {
+              assert.deepStrictEqual(settings.snapshot, target.snapshot)
+            },
+          },
+        }),
+      },
+      concurrency: 10,
+    })
 
     const eyes = await core.openEyes({
       settings: {
@@ -50,8 +66,9 @@ describe('check', () => {
       },
     })
 
+    const target = {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}}
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target,
       settings: {
         name: 'good',
         region: {x: 3, y: 4, width: 1, height: 2},
@@ -81,7 +98,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [{snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}}],
       settings: {name: 'good', region: 'sel1', renderers: [{width: 100, height: 100}]},
     })
 
@@ -112,7 +129,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [{snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}}],
       settings: {
         name: 'good',
         region: {x: 3, y: 4, width: 1, height: 2},
@@ -235,7 +252,10 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [
+        {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
+        {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
+      ],
       settings: {
         name: 'good',
         renderers: [
@@ -285,7 +305,7 @@ describe('check', () => {
     })
 
     await eyes1.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [{snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}}],
       settings: {renderers: [{name: 'chrome', width: 100, height: 100}]},
     })
     await eyes1.close()
@@ -325,7 +345,7 @@ describe('check', () => {
     })
 
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: [{snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}}],
       settings: {
         renderers: [{width: 320, height: 480}],
         headers: expectedHeaders,

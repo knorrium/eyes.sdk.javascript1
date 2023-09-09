@@ -190,7 +190,7 @@ describe('works', () => {
     })
 
     await eyes.check({
-      target: snapshot,
+      target: {snapshot},
       settings: {
         name: 'first',
         fully: true,
@@ -235,7 +235,7 @@ describe('works', () => {
     })
 
     await eyes.check({
-      target: snapshot,
+      target: {snapshot},
       settings: {
         name: 'first',
         fully: true,

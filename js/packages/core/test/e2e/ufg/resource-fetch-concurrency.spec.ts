@@ -93,14 +93,14 @@ describe('resource fetching with fetchConcurrency', () => {
     checkPromise.push(
       eyes1.check({
         settings: {renderers: [{name: 'chrome', width: 800, height: 600}], disableBrowserFetching: true},
-        target: snapshot1,
+        target: {snapshot: snapshot1},
       }),
     )
 
     checkPromise.push(
       eyes2.check({
         settings: {renderers: [{name: 'chrome', width: 800, height: 600}], disableBrowserFetching: true},
-        target: snapshot2,
+        target: {snapshot: snapshot2},
       }),
     )
 

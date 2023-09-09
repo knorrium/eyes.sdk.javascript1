@@ -1,5 +1,5 @@
 import type {Region} from '@applitools/utils'
-import type {DriverTarget, Target, Eyes, CheckSettings, CloseSettings, Renderer} from './types'
+import type {DriverTarget, Target, Eyes, CheckSettings, CloseSettings, Renderer, SnapshotResult} from './types'
 import {
   type Renderer as UFGRenderer,
   type DomSnapshot,
@@ -21,7 +21,6 @@ import {
 import {takeDomSnapshots} from './utils/take-dom-snapshots'
 import {waitForLazyLoad} from '../automation/utils/wait-for-lazy-load'
 import {toBaseCheckSettings} from '../automation/utils/to-base-check-settings'
-import {generateSafeSelectors} from './utils/generate-safe-selectors'
 import {uniquifyRenderers} from '../automation/utils/uniquify-renderers'
 import {extractRendererKey} from '../automation/utils/extract-renderer-key'
 import {AbortError} from '../errors/abort-error'
@@ -65,7 +64,6 @@ export function makeCheckAndClose<TSpec extends SpecType>({
     const {elementReferencesToCalculate, elementReferenceToTarget, getBaseCheckSettings} = toBaseCheckSettings({
       settings,
     })
-
     const uniqueRenderers = uniquifyRenderers(settings.renderers ?? defaultRenderers)
     const ufgClient = await eyes.core.getUFGClient({
       settings: {
@@ -76,55 +74,22 @@ export function makeCheckAndClose<TSpec extends SpecType>({
       logger,
     })
 
-    let snapshots: DomSnapshot[] | AndroidSnapshot[] | IOSSnapshot[]
+    let snapshotResults: SnapshotResult<DomSnapshot | AndroidSnapshot | IOSSnapshot>[]
     let snapshotUrl: string | undefined
     let snapshotTitle: string | undefined
     let userAgent: string | undefined
-    let regionToTarget: Selector | Region | undefined
-    let scrollRootSelector: Selector | undefined
-    let selectorsToCalculate: {safeSelector: Selector | null; originalSelector: Selector | null}[]
-
     const driver =
       spec && isDriver(target, spec)
         ? await makeDriver({spec, driver: target, reset: target === defaultTarget, logger})
         : null
     if (driver) {
       const environment = await driver.getEnvironment()
-      let cleanupGeneratedSelectors
+      const currentContext = driver.currentContext
+      await currentContext.setScrollingElement(settings.scrollRootElement ?? null)
+
       if (environment.isWeb) {
         userAgent = await driver.getUserAgentLegacy()
-        const generated = await generateSafeSelectors({
-          context: driver.currentContext,
-          elementReferences: [
-            ...(elementReferenceToTarget ? [elementReferenceToTarget] : []),
-            ...(settings.scrollRootElement ? [settings.scrollRootElement] : []),
-            ...elementReferencesToCalculate,
-          ],
-        })
-        cleanupGeneratedSelectors = generated.cleanupGeneratedSelectors
-        selectorsToCalculate = generated.selectors
-        if (elementReferenceToTarget) {
-          if (!selectorsToCalculate[0]?.safeSelector) throw new Error('Target element not found')
-          regionToTarget = selectorsToCalculate[0].safeSelector
-          selectorsToCalculate = selectorsToCalculate.slice(1)
-        }
-        if (settings.scrollRootElement) {
-          scrollRootSelector = selectorsToCalculate[0].safeSelector ?? undefined
-          selectorsToCalculate = selectorsToCalculate.slice(1)
-        }
-      } else {
-        regionToTarget = isSelector(elementReferenceToTarget)
-          ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
-          : undefined
-        scrollRootSelector = isSelector(settings.scrollRootElement)
-          ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
-          : undefined
-      }
-
-      const currentContext = driver.currentContext
-
-      if (environment.isWeb) {
-        snapshots = await takeDomSnapshots({
+        snapshotResults = await takeDomSnapshots({
           driver,
           settings: {
             ...eyes.test.eyesServer,
@@ -133,6 +98,11 @@ export function makeCheckAndClose<TSpec extends SpecType>({
             layoutBreakpoints: settings.layoutBreakpoints,
             renderers: uniqueRenderers as UFGRenderer[],
             skipResources: ufgClient.getCachedResourceUrls(),
+            calculateRegionsOptions: {
+              elementReferencesToCalculate,
+              elementReferenceToTarget,
+              scrollRootElement: settings.scrollRootElement,
+            },
           },
           hooks: {
             async beforeSnapshots() {
@@ -157,7 +127,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           settings: {...eyes.test.eyesServer, renderEnvironmentsUrl: eyes.test.renderEnvironmentsUrl},
           logger,
         })
-        snapshots = (await nmlClient.takeSnapshots({
+        const snapshots = (await nmlClient.takeSnapshots({
           settings: {
             ...eyes.test.eyesServer,
             waitBeforeCapture: settings.waitBeforeCapture,
@@ -165,22 +135,25 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           },
           logger,
         })) as AndroidSnapshot[] | IOSSnapshot[]
+
+        snapshotResults = snapshots.map(snapshot => ({
+          snapshot,
+          regionToTarget: isSelector(elementReferenceToTarget)
+            ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
+            : undefined,
+          scrollRootSelector: isSelector(settings.scrollRootElement)
+            ? spec?.toSimpleCommonSelector?.(settings.scrollRootElement) ?? undefined
+            : undefined,
+        }))
       }
 
       await currentContext.focus()
       snapshotUrl = await driver.getUrl()
       snapshotTitle = await driver.getTitle()
-
-      await cleanupGeneratedSelectors?.()
     } else {
-      snapshots = !utils.types.isArray(target) ? Array(uniqueRenderers.length).fill(target) : target
-      snapshotUrl = utils.types.has(snapshots[0], 'url') ? snapshots[0].url : undefined
+      snapshotResults = !utils.types.isArray(target) ? Array(uniqueRenderers.length).fill(target) : target
+      snapshotUrl = utils.types.has(snapshotResults[0]?.snapshot, 'url') ? snapshotResults[0].snapshot.url : undefined
     }
-    regionToTarget ??= (elementReferenceToTarget as Selector) ?? (settings.region as Region)
-    selectorsToCalculate ??= elementReferencesToCalculate.map(selector => ({
-      originalSelector: selector as Selector,
-      safeSelector: selector as Selector,
-    }))
 
     const promises = uniqueRenderers.map(async (renderer, index) => {
       const rendererLogger = logger.extend({tags: [`renderer-${utils.general.shortid()}`]})
@@ -200,7 +173,23 @@ export function makeCheckAndClose<TSpec extends SpecType>({
           throw new AbortError('Command "check" was aborted before rendering')
         }
 
-        const {cookies, ...snapshot} = snapshots[index] as (typeof snapshots)[number] & {cookies: Cookie[]}
+        const {
+          snapshot: snapshotFromResult,
+          selectorsToCalculate: selectorsToCalculateFromSnapshot,
+          regionToTarget,
+          scrollRootSelector,
+        } = snapshotResults[index]
+        const {cookies, ...snapshot} = snapshotFromResult as (typeof snapshotResults)[number]['snapshot'] & {
+          cookies: Cookie[]
+        }
+
+        const region = regionToTarget ?? (elementReferenceToTarget as Selector) ?? (settings.region as Region)
+        const selectorsToCalculate =
+          selectorsToCalculateFromSnapshot ??
+          elementReferencesToCalculate.map(selector => ({
+            originalSelector: selector as Selector,
+            safeSelector: selector as Selector,
+          }))
 
         if (utils.types.has(ufgRenderer, 'iosDeviceInfo') || utils.types.has(ufgRenderer, 'androidDeviceInfo')) {
           ufgRenderer.type = utils.types.has(snapshot, 'cdt') ? 'web' : 'native'
@@ -254,7 +243,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
             target: renderTarget,
             settings: {
               ...settings,
-              region: regionToTarget,
+              region,
               scrollRootElement: scrollRootSelector,
               selectorsToCalculate: selectorsToCalculate.flatMap(({safeSelector}) => safeSelector ?? []),
               includeFullPageSize: !!settings.pageId,

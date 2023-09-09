@@ -55,7 +55,7 @@ describe('get eyes results', async () => {
   it('should return renderer in result object for ufg eyes', async () => {
     const eyes = await core.openEyes({type: 'ufg', settings: {appName: 'App', testName: 'Test'}})
     await eyes.check({
-      target: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''},
+      target: {snapshot: {cdt: [], resourceContents: {}, resourceUrls: [], url: ''}},
       settings: {
         name: 'good',
         renderers: [{iosDeviceInfo: {deviceName: 'iPhone 14'}}, {iosDeviceInfo: {deviceName: 'iPhone 14 Pro Max'}}],

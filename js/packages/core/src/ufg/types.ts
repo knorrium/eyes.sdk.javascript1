@@ -1,6 +1,6 @@
-import type {MaybeArray} from '@applitools/utils'
+import type {MaybeArray, Region} from '@applitools/utils'
 import type * as AutomationCore from '../automation/types'
-import {type SpecType} from '@applitools/driver'
+import {type Selector, type SpecType} from '@applitools/driver'
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
 import {
@@ -13,8 +13,18 @@ import {
 
 export * from '../automation/types'
 
-export type SnapshotTarget = MaybeArray<DomSnapshot> | MaybeArray<AndroidSnapshot> | MaybeArray<IOSSnapshot>
+export type SnapshotTarget =
+  | MaybeArray<SnapshotResult<DomSnapshot>>
+  | MaybeArray<AndroidSnapshot>
+  | MaybeArray<IOSSnapshot>
 export type Target<TSpec extends SpecType> = SnapshotTarget | AutomationCore.Target<TSpec>
+
+export type SnapshotResult<TSnapshotType extends DomSnapshot | AndroidSnapshot | IOSSnapshot> = {
+  snapshot: TSnapshotType
+  selectorsToCalculate?: {originalSelector: Selector | null; safeSelector: Selector | null}[]
+  regionToTarget?: Selector | Region
+  scrollRootSelector?: Selector
+}
 
 export interface Core<TSpec extends SpecType> extends AutomationCore.Core<TSpec> {
   readonly type: 'ufg'
