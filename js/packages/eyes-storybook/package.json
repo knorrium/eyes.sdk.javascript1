@@ -11,11 +11,7 @@
     "nodejs",
     "javascript"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/eyes-storybook"
-  },
+  "homepage": "https://applitools.com/docs/api-ref/sdk-api/storybook/",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Applitools Team <team@applitools.com>",
   "bin": "./bin/eyes-storybook.js",

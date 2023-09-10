@@ -1,11 +1,7 @@
 {
   "name": "@applitools/eyes-cypress",
   "version": "3.38.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/eyes-cypress"
-  },
+  "homepage": "https://applitools.com/docs/api-ref/sdk-api/cypress/",
   "license": "SEE LICENSE IN LICENSE",
   "main": "./index.js",
   "types": "./types/index.d.ts",

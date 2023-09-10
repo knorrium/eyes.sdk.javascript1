@@ -15,11 +15,7 @@
     "tests",
     "testcafe"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/applitools/eyes.sdk.javascript1.git",
-    "directory": "js/packages/eyes-testcafe"
-  },
+  "homepage": "https://applitools.com",
   "license": "SEE LICENSE IN LICENSE",
   "author": {
     "name": "Applitools Team",
