@@ -1817,6 +1817,11 @@
           "report": {"name": "robotframework", "result-path": "../report.xml"}
         },
         {
+          "python-version": "3.11",
+          "test-type": "eyes_robotframework_functional",
+          "report": {"name": "robotframework", "result-path": "../report.xml"}
+        },
+        {
           "python-version": "3.6",
           "test-type": "eyes_robotframework_sauce_functional",
           "semaphore": "sauce",

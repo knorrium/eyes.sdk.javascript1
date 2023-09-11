@@ -5,10 +5,7 @@ import sys
 import pytest
 from robot.result import ExecutionResult
 
-from EyesLibrary.test_results_manager import (
-    METADATA_EYES_TEST_RESULTS_URL_NAME,
-    METADATA_PATH_TO_EYES_RESULTS_NAME,
-)
+from EyesLibrary.test_results_manager import METADATA_EYES_TEST_RESULTS_URL_NAME
 
 
 def robot(suite, *args, isolation=True):
@@ -48,7 +45,8 @@ def test_execution_cloud(robot_suite, tool):
     rc = tool(robot_suite, "execution_cloud.robot")
     result = ExecutionResult(robot_suite / "output.xml")
 
-    assert [t.status for t in result.suite.tests] == ["PASS"], str(result.errors)
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 1
     assert rc == 0
 
 
@@ -58,19 +56,20 @@ def test_mobile_native__android(robot_suite_maker, sauce_vm):
     rc = robot(robot_suite, ".", isolation=False)
     result = ExecutionResult(robot_suite / "output.xml")
 
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 1
     assert rc == 0
 
 
+@pytest.mark.skip("Mobile app is missing")
 def test_mobile_native__ios(robot_suite_maker, sauce_mac_vm):
     vars = get_variables("mobile_native", "appium", "ios")
     robot_suite = robot_suite_maker.make(**vars)
     rc = robot(robot_suite, ".", isolation=False)
     result = ExecutionResult(robot_suite / "output.xml")
 
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 1
     assert rc == 0
 
 
@@ -82,8 +81,8 @@ def test_web_desktop(robot_suite_maker, runner_type):
     rc = robot(robot_suite, ".")
     result = ExecutionResult(robot_suite / "output.xml")
 
-    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 9
     assert rc == 0
 
 
@@ -93,8 +92,9 @@ def test_web_only__ios(sauce_mac_vm, robot_suite_maker):
     robot_suite = robot_suite_maker.make(**vars)
     rc = robot(robot_suite, ".")
     result = ExecutionResult(robot_suite / "output.xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 3
     assert rc == 0
 
 
@@ -104,8 +104,9 @@ def test_web_only__android(sauce_vm, robot_suite_maker):
     robot_suite = robot_suite_maker.make(**vars)
     rc = robot(robot_suite, ".")
     result = ExecutionResult(robot_suite / "output.xml")
-    not_passed = [t for t in result.suite.tests if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
+
+    assert result.statistics.total.failed == 0
+    assert result.statistics.total.passed == 3
     assert rc == 0
 
 
@@ -116,8 +117,6 @@ def test_web_only__android(sauce_vm, robot_suite_maker):
 def test_suite_dir_with_results_propagation_and_one_diff_in_report(
     robot_suite, runner_type, propagation, tool, local_chrome_driver
 ):
-    if propagation == "auto" and tool is pabot:
-        pytest.skip("Auto propagation doesn't work in pabot yet")
     if propagation == "manual":
         args = ["--prerebotmodifier", "EyesLibrary.PropagateEyesTestResults"]
     else:
@@ -125,17 +124,34 @@ def test_suite_dir_with_results_propagation_and_one_diff_in_report(
     args.extend(["--variable", "RUNNER:" + runner_type, "."])
     rc = tool(robot_suite, *args)
     result = ExecutionResult(robot_suite / "output.xml")
-    not_passed = [t for t in from_suite(result.suite) if t.status != "PASS"]
-    assert not_passed == [], "\n".join(msg.message for msg in result.errors.messages)
-    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[0].metadata
-    assert METADATA_PATH_TO_EYES_RESULTS_NAME in result.suite.suites[1].metadata
+
+    assert result.statistics.total.failed == 1
+    assert result.statistics.total.passed == 3
     assert rc == (0 if tool is robot else 1)
 
     # check that report html is containing 1 failed test
     # need browser here to display js based content
     local_chrome_driver.get("file://" + str(robot_suite / "report.html"))
+    status = local_chrome_driver.find_element(
+        "css selector", "body > table > tbody > tr:nth-child(1) > td"
+    )
+    assert status.text == "1 test failed"
     assert METADATA_EYES_TEST_RESULTS_URL_NAME in local_chrome_driver.page_source
-    assert "1 test failed" in local_chrome_driver.page_source
+
+
+@pytest.mark.templates("suite2")
+@pytest.mark.parametrize("tool", [robot, pabot])
+@pytest.mark.parametrize("switch,exp_fail,exp_pass", [["on", 1, 1], ["off", 0, 2]])
+def test_results_propagation_switch(
+    robot_suite_maker, tool, local_chrome_driver, switch, exp_fail, exp_pass
+):
+    config = {"propagate_eyes_test_results": switch == "on"}
+    robot_suite = robot_suite_maker.make(config=config)
+    tool(robot_suite, "--variable", "RUNNER:web_ufg", ".")
+    result = ExecutionResult(robot_suite / "output.xml")
+
+    assert result.statistics.total.failed == exp_fail
+    assert result.statistics.total.passed == exp_pass
 
 
 def from_suite(suite):

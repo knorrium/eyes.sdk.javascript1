@@ -16,6 +16,7 @@ from applitools.common.test_results import TestResultsStatus
 from .keywords_list import CHECK_KEYWORDS_LIST
 
 if TYPE_CHECKING:
+    from robot.result.executionresult import Result
     from robot.running import TestSuite
 
     from applitools.common import TestResults, TestResultsSummary
@@ -31,6 +32,26 @@ EYES_STATUS_TO_ROBOT_STATUS = {
 METADATA_PATH_TO_EYES_RESULTS_NAME = "Applitools TestResults Path"
 METADATA_EYES_TEST_RESULTS_URL_NAME = "Applitools Test Results Url"
 EYES_TEST_JSON_NAME = "EyesTestResults"
+
+
+def process_results(result):
+    # type: (Result) -> bool
+    try:
+        return propagate_test_results(result.suite)
+    except Exception as e:
+        robot_logger.console("Failed to propagate Eyes check results: {}".format(e))
+        return False
+
+
+def propagate_test_results(suite):
+    # type: (TestSuite) -> bool
+    sub_suite_changed = [propagate_test_results(s) for s in suite.suites]
+    if suite.metadata.get(METADATA_PATH_TO_EYES_RESULTS_NAME):
+        mgr = SuitePostProcessManager(suite)
+        mgr.import_suite_data()
+        mgr.process_suite()
+        return True
+    return any(sub_suite_changed)
 
 
 def save_suites(path_to_test_results, suites):
@@ -56,7 +77,7 @@ class SuitePostProcessManager(object):
 
     def import_suite_data(self):
         # type: () -> None
-        path_to_test_results = self.robot_test_suite.metadata.get(
+        path_to_test_results = self.robot_test_suite.metadata.pop(
             METADATA_PATH_TO_EYES_RESULTS_NAME
         )
         if path_to_test_results is None:
