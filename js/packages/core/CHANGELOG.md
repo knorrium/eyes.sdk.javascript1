@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.2...js/core@3.10.3) (2023-09-11)
+
+
+### Bug Fixes
+
+* suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+
 ## [3.10.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.1...js/core@3.10.2) (2023-09-05)
 
 

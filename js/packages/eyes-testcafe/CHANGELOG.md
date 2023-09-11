@@ -13,6 +13,28 @@
 
 
 
+## [1.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-testcafe-v1.0.1...js/eyes-testcafe@1.1.0) (2023-09-11)
+
+
+### Features
+
+* update testcafe ([#1884](https://github.com/applitools/eyes.sdk.javascript1/issues/1884)) ([104f1b6](https://github.com/applitools/eyes.sdk.javascript1/commit/104f1b6cc0d4f107ba46404383de2fa11fe99dcf))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+* @applitools/eyes bumped to 1.8.3
+
+
 ## 1.0.0 (2023-09-04)
 
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.23.26](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images-v4.23.25...js/eyes-images@4.23.26) (2023-09-11)
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+* @applitools/eyes bumped to 1.8.3
+
+
 ## [4.23.24](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.23...js/eyes-images@4.23.24) (2023-09-04)
 
 

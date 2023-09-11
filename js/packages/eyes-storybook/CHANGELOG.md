@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.41.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.41.0...js/eyes-storybook@3.41.1) (2023-09-11)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+
 ## [3.41.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.40.0...js/eyes-storybook@3.41.0) (2023-09-05)
 
 

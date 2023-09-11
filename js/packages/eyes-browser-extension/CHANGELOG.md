@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-browser-extension-v0.3.9...js/eyes-browser-extension@0.3.10) (2023-09-11)
+
+
+### Bug Fixes
+
+* avoid service worker shutdown ([#1830](https://github.com/applitools/eyes.sdk.javascript1/issues/1830)) ([f552d84](https://github.com/applitools/eyes.sdk.javascript1/commit/f552d8425778f300cad31c0297a04f3f282f34e0))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+* @applitools/eyes bumped to 1.8.3
+
+
 ## [0.3.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-browser-extension@0.3.7...js/eyes-browser-extension@0.3.8) (2023-09-04)
 
 

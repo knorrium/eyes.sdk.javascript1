@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [5.64.6](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-images-java5@5.64.5...java/eyes-images-java5@5.64.6) (2023-09-11)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+* com.applitools:eyes-universal-core bumped to 5.63.12
+
+* com.applitools:eyes-sdk-core-java5 bumped to 5.64.6
+
+
 ## [5.64.5](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-images-java5@5.64.4...java/eyes-images-java5@5.64.5) (2023-09-04)
 
 

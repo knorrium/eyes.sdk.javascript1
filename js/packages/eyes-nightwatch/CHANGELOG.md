@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.17.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch-v1.16.6...js/eyes-nightwatch@1.17.0) (2023-09-11)
+
+
+### Features
+
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+* @applitools/eyes bumped to 1.8.3
+
+
 ## [1.16.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-nightwatch@1.16.4...js/eyes-nightwatch@1.16.5) (2023-09-04)
 
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.8.2...js/eyes@1.8.3) (2023-09-11)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.3
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+
 ## [1.8.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.8.1...js/eyes@1.8.2) (2023-09-05)
 
 
