@@ -168,14 +168,14 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings Ignore(Selector selector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.ignoreRegions_.Add(selector);
+            clone.Ignore_(selector);
             return clone;
         }
 
         private PlaywrightCheckSettings Ignore(Element element)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.ignoreRegions_.Add(element);
+            clone.Ignore_(element);
             return clone;
         }
 
@@ -210,7 +210,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.RegionId = regionId;
-            clone.ignoreRegions_.Add(selector);
+            clone.Ignore_(selector);
             return clone;
         }
 
@@ -218,7 +218,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.RegionId = regionId;
-            clone.ignoreRegions_.Add(element);
+            clone.Ignore_(element);
             return clone;
         }
 
@@ -262,7 +262,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.Padding = padding;
-            clone.ignoreRegions_.Add(selector);
+            clone.Ignore_(selector);
             return clone;
         }
 
@@ -270,7 +270,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.Padding = padding;
-            clone.ignoreRegions_.Add(element);
+            clone.Ignore_(element);
             return clone;
         }
 
@@ -299,7 +299,7 @@ namespace Applitools.Playwright.Fluent
 
         private void Ignore_(Region region)
         {
-            ignoreRegions_.Add(new Applitools.Playwright.Universal.Dto.SimpleRegionByRectangle(region.Rectangle));
+            Ignore_(new Applitools.Playwright.Universal.Dto.SimpleRegionByRectangle(region.Rectangle));
         }
 
         /// <summary>Adds a layout region.</summary>
@@ -329,14 +329,14 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings Layout(Selector selector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.layoutRegions_.Add(selector);
+            clone.Layout_(selector);
             return clone;
         }
 
         private PlaywrightCheckSettings Layout(Element element)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.layoutRegions_.Add(element);
+            clone.Layout_(element);
             return clone;
         }
 
@@ -380,7 +380,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.RegionId = regionId;
-            clone.layoutRegions_.Add(selector);
+            clone.Layout_(selector);
             return clone;
         }
 
@@ -388,7 +388,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.RegionId = regionId;
-            clone.layoutRegions_.Add(element);
+            clone.Layout_(element);
             return clone;
         }
 
@@ -411,7 +411,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.Padding = padding;
-            clone.layoutRegions_.Add(selector);
+            clone.Layout_(selector);
             return clone;
         }
 
@@ -419,7 +419,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.Padding = padding;
-            clone.layoutRegions_.Add(element);
+            clone.Layout_(element);
             return clone;
         }
 
@@ -449,7 +449,7 @@ namespace Applitools.Playwright.Fluent
         private void Layout_(Region region)
         {
             SimpleRegionByRectangle simpleRegionByRectangle = new SimpleRegionByRectangle(region.Rectangle);
-            this.layoutRegions_.Add(simpleRegionByRectangle);
+            Layout_(simpleRegionByRectangle);
         }
 
         public PlaywrightCheckSettings Strict(string selector)
@@ -470,14 +470,14 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings Strict(Selector selector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.strictRegions_.Add(selector);
+            clone.Strict_(selector);
             return clone;
         }
 
         private PlaywrightCheckSettings Strict(Element element)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.strictRegions_.Add(element);
+            clone.Strict_(element);
             return clone;
         }
 
@@ -500,7 +500,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.RegionId = regionId;
-            clone.strictRegions_.Add(selector);
+            clone.Strict_(selector);
             return clone;
         }
 
@@ -509,7 +509,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.RegionId = regionId;
-            clone.strictRegions_.Add(element);
+            clone.Strict_(element);
             return clone;
         }
 
@@ -533,7 +533,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.Padding = padding;
-            clone.strictRegions_.Add(selector);
+            clone.Strict_(selector);
             return clone;
         }
 
@@ -541,7 +541,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.Padding = padding;
-            clone.strictRegions_.Add(element);
+            clone.Strict_(element);
             return clone;
         }
 
@@ -571,7 +571,7 @@ namespace Applitools.Playwright.Fluent
         private void Strict_(Region region)
         {
             SimpleRegionByRectangle simpleRegionByRectangle = new SimpleRegionByRectangle(region.Rectangle);
-            strictRegions_.Add(simpleRegionByRectangle);
+            Strict_(simpleRegionByRectangle);
         }
 
         public new PlaywrightCheckSettings IgnoreColors()
@@ -598,7 +598,7 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings IgnoreColors(Selector selector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.contentRegions_.Add(selector);
+            clone.Content_(selector);
             return clone;
         }
 
@@ -606,7 +606,7 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings IgnoreColors(Element element)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.contentRegions_.Add(element);
+            clone.Content_(element);
             return clone;
         }
 
@@ -630,7 +630,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.RegionId = regionId;
-            clone.contentRegions_.Add(selector);
+            clone.Content_(selector);
             return clone;
         }
 
@@ -639,7 +639,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.RegionId = regionId;
-            clone.contentRegions_.Add(element);
+            clone.Content_(element);
             return clone;
         }
 
@@ -662,7 +662,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             selector.Padding = padding;
-            clone.contentRegions_.Add(selector);
+            clone.Content_(selector);
             return clone;
         }
 
@@ -670,7 +670,7 @@ namespace Applitools.Playwright.Fluent
         {
             PlaywrightCheckSettings clone = Clone_();
             element.Padding = padding;
-            clone.contentRegions_.Add(element);
+            clone.Content_(element);
             return clone;
         }
 
@@ -700,14 +700,14 @@ namespace Applitools.Playwright.Fluent
         private void IgnoreColors_(Region region)
         {
             SimpleRegionByRectangle simpleRegionByRectangle = new SimpleRegionByRectangle(region.Rectangle);
-            contentRegions_.Add(simpleRegionByRectangle);
+            Content_(simpleRegionByRectangle);
         }
 
         public PlaywrightCheckSettings Floating(string selector, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
             int maxRightOffset)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionBySelector(selector, maxUpOffset, maxDownOffset, maxLeftOffset,
+            clone.Floating_(new FloatingRegionBySelector(selector, maxUpOffset, maxDownOffset, maxLeftOffset,
                 maxRightOffset));
             return clone;
         }
@@ -716,7 +716,7 @@ namespace Applitools.Playwright.Fluent
             int maxRightOffset)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionBySelector(locator, maxUpOffset, maxDownOffset, maxLeftOffset,
+            clone.Floating_(new FloatingRegionBySelector(locator, maxUpOffset, maxDownOffset, maxLeftOffset,
                 maxRightOffset));
             return clone;
         }
@@ -725,7 +725,7 @@ namespace Applitools.Playwright.Fluent
             int maxLeftOffset, int maxRightOffset)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionByElement(element, maxUpOffset, maxDownOffset, maxLeftOffset,
+            clone.Floating_(new FloatingRegionByElement(element, maxUpOffset, maxDownOffset, maxLeftOffset,
                 maxRightOffset));
             return clone;
         }
@@ -733,21 +733,21 @@ namespace Applitools.Playwright.Fluent
         public PlaywrightCheckSettings Floating(int maxOffset, string selector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionBySelector(selector, maxOffset));
+            clone.Floating_(new FloatingRegionBySelector(selector, maxOffset));
             return clone;
         }
 
         public PlaywrightCheckSettings Floating(int maxOffset, ILocator locator)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionBySelector(locator, maxOffset));
+            clone.Floating_(new FloatingRegionBySelector(locator, maxOffset));
             return clone;
         }
 
         public PlaywrightCheckSettings Floating(int maxOffset, IElementHandle element)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.floatingRegions_.Add(new FloatingRegionByElement(element, maxOffset));
+            clone.Floating_(new FloatingRegionByElement(element, maxOffset));
             return clone;
         }
 
@@ -774,7 +774,7 @@ namespace Applitools.Playwright.Fluent
         private void Floating_(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
             int maxRightOffset)
         {
-            floatingRegions_.Add(new Applitools.Playwright.Universal.Dto.FloatingRegionByRectangle(region.Rectangle,
+            Floating_(new Applitools.Playwright.Universal.Dto.FloatingRegionByRectangle(region.Rectangle,
                 maxUpOffset,
                 maxDownOffset,
                 maxLeftOffset,
@@ -799,14 +799,14 @@ namespace Applitools.Playwright.Fluent
         private PlaywrightCheckSettings Accessibility(AccessibilityRegionBySelector accessibilityRegionBySelector)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.accessibilityRegions_.Add(accessibilityRegionBySelector);
+            clone.Accessibility_(accessibilityRegionBySelector);
             return clone;
         }
 
         private PlaywrightCheckSettings Accessibility(AccessibilityRegionByElement accessibilityRegionByElement)
         {
             PlaywrightCheckSettings clone = Clone_();
-            clone.accessibilityRegions_.Add(accessibilityRegionByElement);
+            clone.Accessibility_(accessibilityRegionByElement);
             return clone;
         }
 
@@ -819,7 +819,8 @@ namespace Applitools.Playwright.Fluent
 
         private void Accessibility_(Region rect, AccessibilityRegionType regionType)
         {
-            accessibilityRegions_.Add(new AccessibilityRegionByRectangle(rect.Rectangle, regionType));
+            Accessibility_(new AccessibilityRegionByRectangle(rect.Rectangle, regionType));
+            Accessibility_(new AccessibilityRegionByRectangle(rect.Rectangle, regionType));
         }
 
         public PlaywrightCheckSettings ScrollRootElement(string selector)

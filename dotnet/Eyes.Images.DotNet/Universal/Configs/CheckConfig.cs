@@ -62,19 +62,6 @@ namespace Applitools
         public ICollection<RenderBrowserInfo> Renderers { get; set; }
         public Hooks Hooks { get; set; }
         public string UserCommandId { get; set; }
-
-        public CheckConfig()
-        {
-            IgnoreRegions = new List<TRegion>();
-            LayoutRegions = new List<TRegion>();
-            StrictRegions = new List<TRegion>();
-            ContentRegions = new List<TRegion>();
-            FloatingRegions = new List<TFloatingRegion>();
-            AccessibilityRegions = new List<TFloatingRegion>();
-            UfgOptions = new Dictionary<string, object>();
-            LayoutBreakpoints = new LayoutBreakpointsOptions();
-            Renderers = new List<RenderBrowserInfo>();
-        }
     }
 
     public class TimeSpanConverter : JsonConverter
@@ -105,7 +92,7 @@ namespace Applitools
 
             if (reader.TokenType == JsonToken.String)
             {
-                return TimeSpan.Parse(reader.Value?.ToString());
+                return TimeSpan.Parse(reader.Value?.ToString() ?? throw new InvalidOperationException());
             }
 
             if (reader.TokenType == JsonToken.Integer)

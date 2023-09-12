@@ -96,7 +96,7 @@ def update_changelog(changelogs, p, headings, depVersion, dateStr, part):
     if len(unreleasedStripped) > 0:
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"\n## Unreleased\n{unreleased}", f"\n{changes}\n\n")
         changelogs[p]['updated'] = True
-    elif version > prev_ver and (dependency == "js/core" or changelogs[dependency]['updated']):
+    elif version != prev_ver and (dependency == "js/core" or changelogs[dependency]['updated']):
         changelogs[p]["content"] = changelogs[p]["content"].replace(f"# Changelog\n\n", f"# Changelog\n\n{changes}\n\n")
         changelogs[p]['updated'] = True
     else:
@@ -144,7 +144,12 @@ def get_changelog_contents(target_folder):
 def get_release_entries(changelog_contents=None, target_folder='.', version=None):
     if not changelog_contents:
         changelog_contents = get_changelog_contents(target_folder)
-    target_heading = get_release_heading(changelog_contents, version)['heading']
+    print(f"get_release_entries: target_folder={target_folder}")
+    try:
+        release_heading = get_release_heading(changelog_contents, version) 
+        target_heading = release_heading['heading']
+    except KeyError as err:
+        print(f"{err} - release_heading: {release_heading}")
     version = get_version_from_heading(target_heading)
     entries = get_entries_for_heading(changelog_contents, target_heading, False)
     return {"headings": [entry['entry'] for entry in entries], "version": version}
@@ -226,9 +231,6 @@ if __name__ == '__main__':
 
     update_changelogs(changelogs, core_changes, dateStr, sem_ver_part)
 
-    write_new_changelogs(changelogs)
-    write_new_csproj(changelogs)
-
     for (p,v) in changelogs.items():
         if v['updated']:
             new_tags.append('dotnet/' + v['tag'] + "@" + v['version'] + "\n")
@@ -238,7 +240,8 @@ if __name__ == '__main__':
                     {'name':v['name'], 
                     'report':v['report'], 
                     'group':v['group'],
-                    'version':v['version']})
+                    'version':v['version'],
+                    'path':v['path']})
 
     f = open("MATRIX.json", "w")
     f.write(json.dumps(matrixJson))
@@ -251,3 +254,6 @@ if __name__ == '__main__':
     f = open("UPDATED_PROJECTS.txt", "w")
     f.writelines(updated_projects)
     f.close()
+
+    write_new_changelogs(changelogs)
+    write_new_csproj(changelogs)

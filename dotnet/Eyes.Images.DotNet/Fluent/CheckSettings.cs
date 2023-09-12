@@ -14,12 +14,12 @@ namespace Applitools
     /// </summary>
     public class CheckSettings : ICheckSettings, ICheckSettingsInternal
     {
-        protected List<IGetRegions> ignoreRegions_ = new List<IGetRegions>();
-        protected List<IGetRegions> contentRegions_ = new List<IGetRegions>();
-        protected List<IGetRegions> layoutRegions_ = new List<IGetRegions>();
-        protected List<IGetRegions> strictRegions_ = new List<IGetRegions>();
-        protected List<IGetFloatingRegion> floatingRegions_ = new List<IGetFloatingRegion>();
-        protected List<IGetAccessibilityRegion> accessibilityRegions_ = new List<IGetAccessibilityRegion>();
+        protected List<IGetRegions> ignoreRegions_;
+        protected List<IGetRegions> contentRegions_;
+        protected List<IGetRegions> layoutRegions_;
+        protected List<IGetRegions> strictRegions_;
+        protected List<IGetFloatingRegion> floatingRegions_;
+        protected List<IGetAccessibilityRegion> accessibilityRegions_;
         private int timeout_ = -1;
         private int? waitBeforeCapture_;
         private bool? stitchContent_;
@@ -91,32 +91,32 @@ namespace Applitools
 
         IGetRegions[] Fluent.ICheckSettingsInternal.GetIgnoreRegions()
         {
-            return ignoreRegions_.ToArray();
+            return ignoreRegions_?.ToArray() ?? new IGetRegions[0];
         }
 
         IGetRegions[] Fluent.ICheckSettingsInternal.GetStrictRegions()
         {
-            return strictRegions_.ToArray();
+            return strictRegions_?.ToArray() ?? new IGetRegions[0];
         }
 
         IGetRegions[] Fluent.ICheckSettingsInternal.GetContentRegions()
         {
-            return contentRegions_.ToArray();
+            return contentRegions_?.ToArray() ?? new IGetRegions[0];
         }
 
         IGetRegions[] Fluent.ICheckSettingsInternal.GetLayoutRegions()
         {
-            return layoutRegions_.ToArray();
+            return layoutRegions_?.ToArray() ?? new IGetRegions[0];
         }
 
         IGetFloatingRegion[] Fluent.ICheckSettingsInternal.GetFloatingRegions()
         {
-            return floatingRegions_.ToArray();
+            return floatingRegions_?.ToArray() ?? new IGetFloatingRegion[0];
         }
 
         IGetAccessibilityRegion[] ICheckSettingsInternal.GetAccessibilityRegions()
         {
-            return accessibilityRegions_.ToArray();
+            return accessibilityRegions_?.ToArray() ?? new IGetAccessibilityRegion[0];
         }
 
         LazyLoadOptions ICheckSettingsInternal.GetLazyLoad()
@@ -141,9 +141,23 @@ namespace Applitools
 
         #endregion
 
+        private static void EnsureList_<T>(ref List<T> list)
+        {
+            if (list == null)
+            {
+                list = new List<T>();
+            }
+        }
+
+        private static void EnsureListAndAdd_<T>(ref List<T> list, T item)
+        {
+            EnsureList_(ref list);
+            list.Add(item);
+        }
+        
         protected void Floating_(IGetFloatingRegion floatingRegionProvider)
         {
-            floatingRegions_.Add(floatingRegionProvider);
+            EnsureListAndAdd_(ref floatingRegions_, floatingRegionProvider);
         }
 
         protected void Floating_(Rectangle rect, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
@@ -154,7 +168,7 @@ namespace Applitools
 
         protected void Accessibility_(IGetAccessibilityRegion accessibilityRegionProvider)
         {
-            accessibilityRegions_.Add(accessibilityRegionProvider);
+            EnsureListAndAdd_(ref accessibilityRegions_, accessibilityRegionProvider);
         }
 
         protected void Accessibility_(Rectangle rect, AccessibilityRegionType regionType)
@@ -164,22 +178,22 @@ namespace Applitools
 
         protected void Ignore_(IGetRegions regionProvider)
         {
-            ignoreRegions_.Add(regionProvider);
+            EnsureListAndAdd_(ref ignoreRegions_, regionProvider);
         }
 
         protected void Content_(IGetRegions regionProvider)
         {
-            contentRegions_.Add(regionProvider);
+            EnsureListAndAdd_(ref contentRegions_, regionProvider);
         }
 
         protected void Layout_(IGetRegions regionProvider)
         {
-            layoutRegions_.Add(regionProvider);
+            EnsureListAndAdd_(ref layoutRegions_, regionProvider);
         }
 
         protected void Strict_(IGetRegions regionProvider)
         {
-            strictRegions_.Add(regionProvider);
+            EnsureListAndAdd_(ref strictRegions_, regionProvider);
         }
 
         protected StringBuilder fluentCode_ = new StringBuilder();
@@ -305,7 +319,7 @@ namespace Applitools
                 $"{nameof(Floating)}(new {nameof(Rectangle)}({region.X},{region.Y},{region.Width},{region.Height}),{maxUpOffset},{maxDownOffset},{maxLeftOffset},{maxRightOffset})");
             return clone;
         }
-        
+
         /// <summary>
         /// Adds a floating region.
         /// </summary>
@@ -319,7 +333,7 @@ namespace Applitools
         public ICheckSettings Floating(Region region, int maxUpOffset, int maxDownOffset, int maxLeftOffset,
             int maxRightOffset)
         {
-            return Floating(region.ToRectangle(), maxUpOffset, maxDownOffset, maxLeftOffset ,maxRightOffset);
+            return Floating(region.ToRectangle(), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
         }
 
         #endregion
@@ -767,13 +781,12 @@ namespace Applitools
             clone.ignoreDisplacements_ = ignoreDisplacements_;
             clone.waitBeforeCapture_ = waitBeforeCapture_;
 
-            clone.ignoreRegions_.AddRange(ignoreRegions_);
-            clone.contentRegions_.AddRange(contentRegions_);
-            clone.layoutRegions_.AddRange(layoutRegions_);
-            clone.strictRegions_.AddRange(strictRegions_);
-            clone.floatingRegions_.AddRange(floatingRegions_);
-
-            clone.accessibilityRegions_.AddRange(accessibilityRegions_);
+            clone.ignoreRegions_ = CloneListIfNotNull_(ignoreRegions_);
+            clone.contentRegions_ = CloneListIfNotNull_(contentRegions_);
+            clone.layoutRegions_ = CloneListIfNotNull_(layoutRegions_);
+            clone.strictRegions_ = CloneListIfNotNull_(strictRegions_);
+            clone.floatingRegions_ = CloneListIfNotNull_(floatingRegions_);
+            clone.accessibilityRegions_ = CloneListIfNotNull_(accessibilityRegions_);
 
             clone.visualGridOptions_ = (VisualGridOption[])visualGridOptions_?.Clone();
             if (LayoutBreakpointsOptions != null)
@@ -789,6 +802,11 @@ namespace Applitools
             clone.fluentCode_ = fluentCode_;
             clone.variationGroupId_ = variationGroupId_;
             clone.pageId_ = pageId_;
+        }
+
+        private static List<T> CloneListIfNotNull_<T>(List<T> list)
+        {
+            return list == null || list.Count == 0 ? null : new List<T>(list);
         }
 
         protected virtual CheckSettings Clone()

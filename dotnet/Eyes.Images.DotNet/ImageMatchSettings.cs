@@ -105,8 +105,8 @@ namespace Applitools
         /// Whether or not to use the page DOM when computing the layout of the page.
         /// </summary>
         public bool? UseDom { get; set; }
-        public bool? EnablePatterns { get; set; }
-        public bool? IgnoreDisplacements { get; set; }
+        public bool EnablePatterns { get; set; }
+        public bool IgnoreDisplacements { get; set; }
 
         public bool Equals(ImageMatchSettings other)
         {

@@ -219,17 +219,20 @@ namespace Applitools
 
         protected virtual ICollection<CodedRegionReference> CollectRegions(IGetRegions[] regions)
         {
-            return regions.Select(r => r.ToRegion()).ToArray();
+            var arr = regions.Select(r => r.ToRegion()).ToArray();
+            return arr.Length == 0 ? null : arr;
         }
 
         protected virtual ICollection<TFloatingRegion> CollectRegions(IGetFloatingRegion[] regions)
         {
-            return regions.Select(r => r.ToRegion()).ToArray();
+            var arr = regions.Select(r => r.ToRegion()).ToArray();
+            return arr.Length == 0 ? null : arr;
         }
                 
         protected virtual ICollection<TAccessibilityRegion> CollectRegions(IGetAccessibilityRegion[] regions)
         {
-            return regions.Select(r => r.ToRegion()).ToArray();
+            var arr = regions.Select(r => r.ToRegion()).ToArray();
+            return arr.Length == 0 ? null : arr;
         }
 
         protected virtual TRegion GetUniversalRegion(ICheckSettingsInternal checkSettings)

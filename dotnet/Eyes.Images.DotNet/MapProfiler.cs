@@ -23,7 +23,13 @@ namespace Applitools
             CreateMap<Configuration, ScreenshotConfig>()
                 .ForMember(dest => dest.Fully, act => act.MapFrom(src => src.IsForceFullPageScreenshot));
             CreateMap<Configuration, CheckConfig>()
-                .ForMember(dest => dest.Renderers, act => act.MapFrom(src => src.GetBrowsersInfo()))
+                .ForMember(
+                    dest => dest.Renderers, 
+                    act => 
+                    {
+                        act.PreCondition(src => src.GetBrowsersInfo().Count > 0);
+                        act.MapFrom(src => src.GetBrowsersInfo());
+                    })
                 .ForMember(dest => dest.RetryTimeout, act => act.MapFrom(src => src.MatchTimeout))
                 .ForMember(dest => dest.UfgOptions, act =>
                 {

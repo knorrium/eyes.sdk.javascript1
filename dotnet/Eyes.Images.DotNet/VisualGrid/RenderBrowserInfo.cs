@@ -102,6 +102,8 @@ namespace Applitools.VisualGrid
         [JsonIgnore]
         public RectangleSize ViewportSize { get; set; }
         
+        public EnvironmentRenderer Renderer { get; set; }
+        
         [JsonIgnore]
         public string Platform
         {

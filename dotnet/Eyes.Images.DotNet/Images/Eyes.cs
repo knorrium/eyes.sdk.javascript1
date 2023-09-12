@@ -341,7 +341,8 @@ namespace Applitools.Images
                     {
                         ApplitoolsRefId = applitoolsRefId
                     },
-                    Config = ToConfig(Config)
+                    Settings = ToOpenSettings(Config),
+                    Config = ToConfig(Config),
                 }
             };
             //result.Payload.Config.Open.Properties = properties_;

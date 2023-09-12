@@ -363,7 +363,7 @@ namespace Applitools
 
         public IConfiguration SetIgnoreDisplacements(bool? value)
         {
-            DefaultMatchSettings.IgnoreDisplacements = value;
+            DefaultMatchSettings.IgnoreDisplacements = value ?? false;
             return this;
         }
 
@@ -482,7 +482,7 @@ namespace Applitools
 
         public IConfiguration SetEnablePatterns(bool? value)
         {
-            DefaultMatchSettings.EnablePatterns = value;
+            DefaultMatchSettings.EnablePatterns = value ?? false;
             return this;
         }
 

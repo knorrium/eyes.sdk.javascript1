@@ -27,6 +27,14 @@ env:
   NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 jobs:
+  print_latest_core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git --version
+          git ls-remote --tags origin 'js/core@*' | cut -f 2 | sed -e "s/^refs\/tags\///" | sort -V | tail -n 1
+
   update_cores:
     runs-on: ubuntu-latest
     outputs:
@@ -44,8 +52,12 @@ jobs:
         shell: bash
         run: |
           cd dotnet
+
           export CORE_VERSION=$(../scripts/download-core-bin.sh --output version)
           export SEM_VER_PART=${{inputs.sem_ver_part}}
+
+          ls core-*
+          echo $CORE_VERSION
 
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-alpine/native/
           mkdir -p ./Eyes.Image.Core.DotNet/runtimes/linux-x64/native/
@@ -59,14 +71,10 @@ jobs:
           mv core-macos Eyes.Image.Core.DotNet/runtimes/osx-x64/native 
           
           python updateChangelogAndProjectFiles.py
+          
           cat ./MATRIX.json
           echo "packages_matrix=$(cat ./MATRIX.json)" >> $GITHUB_OUTPUT
           echo "core_version=$CORE_VERSION" >> $GITHUB_OUTPUT
-      - name: Set release branch
-        shell: bash
-        run: |
-          RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
-          echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0"
@@ -100,6 +108,19 @@ jobs:
             dotnet/*.json
             dotnet/Eyes.*/CHANGELOG.md
             dotnet/Eyes.*/Eyes.*.csproj
+      - name: Update SCM
+        id: create_release_branch
+        shell: bash
+        run: |
+          cd dotnet
+          RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
+          echo "release_branch=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
+          git config --local user.email "action-queue@applitools.com"
+          git config --local user.name "queue-bot"
+          git checkout -b $RELEASE_BRANCH
+          git add .
+          git commit -m 'Updated changelogs and bumped versions.'
+          git push origin HEAD:$RELEASE_BRANCH
 
   # dummy:
   #   needs: [update_cores]
@@ -145,39 +166,27 @@ jobs:
         with:
           name: PublishingFiles
           path: dotnet
-      - name: Update SCM
-        id: create_release_branch
-        shell: bash
-        run: |
-          cd dotnet
-          RELEASE_BRANCH=PR_RELEASE_$GITHUB_SHA
-          git config --local user.email "action-queue@applitools.com"
-          git config --local user.name "queue-bot"
-          git checkout -b $RELEASE_BRANCH
-          git add .
-          git commit -m 'Updated changelogs and bumped versions.'
-          git push origin HEAD:$RELEASE_BRANCH
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: "6.0"
-      - uses: actions/download-artifact@v3
-        with:
-          name: Nugets
-          path: dotnet/PackagesOutput
-      - name: Upload nugets
-        shell: bash
-        run: |
-          cd dotnet
-          echo "will upload nugets"
-          ls ./PackagesOutput/*.nupkg
-          dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
+       # - uses: actions/setup-dotnet@v2
+      #   with:
+      #     dotnet-version: "6.0"
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: Nugets
+      #     path: dotnet/PackagesOutput
+      # - name: Upload nugets
+      #   shell: bash
+      #   run: |
+      #     cd dotnet
+      #     echo "will upload nugets"
+      #     ls ./PackagesOutput/*.nupkg
+      #     dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
       - name: Create PR
         shell: bash
         run: |
           cd dotnet
           echo "will create PR"
-          hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -F NEW_TAGS.txt
-    
+          hub pull-request -h "PR_RELEASE_$GITHUB_SHA" -m "PR_RELEASE_$GITHUB_SHA"
+
   report_test_results:
     if: |
       !cancelled() &&
@@ -216,6 +225,7 @@ jobs:
   release_report:
     if: |
       !cancelled() &&
+      (needs.release.result == 'success') &&
       (needs.report_test_results.result == 'success' || needs.report_test_results.result == 'skipped')
     needs: [report_test_results, update_cores]
     runs-on: ubuntu-latest
@@ -233,10 +243,11 @@ jobs:
       - name: Sending notification
         uses: ./.github/actions/bongo
         with:
-          working-directory: dotnet
+          working-directory: dotnet/${{ matrix.path }}
           shell: bash
           command: notification
           report-id: dotnet_${{ matrix.name }}_$GITHUB_SHA
           name: dotnet_${{ matrix.name }}
           release-version: ${{ matrix.version }}
+          recipient: itai.barhaim@applitools.com
 
