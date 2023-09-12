@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.3...js/core@3.10.4) (2023-09-12)
+
+
+### Bug Fixes
+
+* update dom-snapshot to support xml pages and parens inside css URLs ([0715d56](https://github.com/applitools/eyes.sdk.javascript1/commit/0715d56c675b23be017c1985cbba3a51aba052b1))
+
 ## [3.10.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.2...js/core@3.10.3) (2023-09-11)
 
 

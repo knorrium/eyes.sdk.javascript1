@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.23.27](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.26...js/eyes-images@4.23.27) (2023-09-12)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.4
+  #### Bug Fixes
+
+  * update dom-snapshot to support xml pages and parens inside css URLs ([0715d56](https://github.com/applitools/eyes.sdk.javascript1/commit/0715d56c675b23be017c1985cbba3a51aba052b1))
+* @applitools/eyes bumped to 1.8.4
+
+
 ## [4.23.26](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images-v4.23.25...js/eyes-images@4.23.26) (2023-09-11)
 
 

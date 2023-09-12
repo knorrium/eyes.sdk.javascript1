@@ -1,6 +1,26 @@
 # Changelog
 
 
+## [5.63.13](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core@5.63.12...java/eyes-universal-core@5.63.13) (2023-09-12)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.4
+  #### Bug Fixes
+
+  * update dom-snapshot to support xml pages and parens inside css URLs ([0715d56](https://github.com/applitools/eyes.sdk.javascript1/commit/0715d56c675b23be017c1985cbba3a51aba052b1))
+
+## [5.63.13](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core@5.63.12...java/eyes-universal-core@5.63.13) (2023-09-12)
+
+
+### Dependencies
+
+* @applitools/core bumped to 3.10.4
+  #### Bug Fixes
+
+  * update dom-snapshot to support xml pages and parens inside css URLs ([0715d56](https://github.com/applitools/eyes.sdk.javascript1/commit/0715d56c675b23be017c1985cbba3a51aba052b1))
+
 ## [5.63.12](https://github.com/applitools/eyes.sdk.javascript1/compare/java/eyes-universal-core@5.63.11...java/eyes-universal-core@5.63.12) (2023-09-11)
 
 
