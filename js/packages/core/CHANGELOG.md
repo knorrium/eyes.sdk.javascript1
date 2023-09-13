@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.4...js/core@3.11.0) (2023-09-13)
+
+
+### Features
+
+* change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
+
+
+### Bug Fixes
+
+* upgrade dom-capture to get font-family in DOM ([f62cee4](https://github.com/applitools/eyes.sdk.javascript1/commit/f62cee495ba3b301dda04160e4e13c7e380ef40b))
+
+
+### Dependencies
+
+* @applitools/ufg-client bumped to 1.9.0
+  #### Features
+
+  * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
+
 ## [3.10.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.3...js/core@3.10.4) (2023-09-12)
 
 

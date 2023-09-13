@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.8.0...js/ufg-client@1.9.0) (2023-09-13)
+
+
+### Features
+
+* change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
+
 ## [1.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.7.2...js/ufg-client@1.8.0) (2023-09-04)
 
 
