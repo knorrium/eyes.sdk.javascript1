@@ -1,4 +1,4 @@
-import type {Renderer} from '../types'
+import type {Renderer, AsyncCache} from '../types'
 import {
   makeResource,
   type UrlResource,
@@ -6,6 +6,7 @@ import {
   type HashedResource,
   type KnownResource,
   type FailedResource,
+  type CacheableKnownResource,
 } from './resource'
 import {type Logger} from '@applitools/logger'
 import {type FetchResource, type FetchResourceSettings} from './fetch-resource'
@@ -15,10 +16,11 @@ import {extractSvgDependencyUrls} from '../utils/extract-svg-dependency-urls'
 import {freezeGif} from '@applitools/image'
 import * as utils from '@applitools/utils'
 
-type Options = {
+export type Options = {
   fetchResource: FetchResource
   uploadResource: UploadResource
   cache?: Map<string, KnownResource & {ready: boolean | Promise<boolean>}>
+  asyncCache?: AsyncCache
   logger: Logger
 }
 
@@ -36,6 +38,7 @@ export function makeProcessResources({
   fetchResource,
   uploadResource,
   cache = new Map(),
+  asyncCache,
   logger: mainLogger,
 }: Options): ProcessResources {
   return async function processResources({
@@ -53,7 +56,14 @@ export function makeProcessResources({
       async (processedResourcesPromise, [url, resource]) => {
         if (utils.types.has(resource, 'value') || utils.types.has(resource, 'errorStatusCode')) {
           // process contentful resource or failed resource
-          const processedResource = await processContentfulResource({resource, logger})
+
+          // In case of async cache, we don't want another process to fetch the resource. So we take ownership of handing it.
+          // If the resource is already in the cache, then we would use the value from the cache rather than the value we have in this memory.
+          // The assumption is that the cache can't hold a different value than what we have now.
+          const processedResource = asyncCache
+            ? await asyncCache.getCachedResource(resource.id, () => processContentfulResource({resource, logger}))
+            : await processContentfulResource({resource, logger})
+
           return Object.assign(await processedResourcesPromise, {[url]: processedResource})
         } else {
           // process url resource with dependencies
@@ -84,7 +94,7 @@ export function makeProcessResources({
   }: {
     resource: ContentfulResource | FailedResource
     logger?: Logger
-  }): Promise<KnownResource> {
+  }) {
     if (utils.types.has(resource, 'value')) {
       if (/image\/gif/.test(resource.contentType)) {
         try {
@@ -107,14 +117,25 @@ export function makeProcessResources({
     settings?: ProcessResourcesSettings
     logger?: Logger
   }): Promise<KnownResource | null> {
-    const cachedResource = cache.get(resource.id)
-    if (cachedResource) {
-      const dependencies = cachedResource.dependencies || []
-      logger.log(
-        `resource retrieved from cache, with dependencies (${dependencies.length}): ${resource.url} with dependencies --> ${dependencies}`,
-      )
-      return cachedResource
-    } else if (/^https?:/i.test(resource.url)) {
+    if (!/^https?:/i.test(resource.url)) {
+      return null
+    }
+    if (asyncCache) {
+      return await asyncCache.getCachedResource(resource.id, fetchAndUpload)
+    } else {
+      const cachedResource = cache.get(resource.id)
+      if (cachedResource) {
+        const dependencies = cachedResource.dependencies || []
+        logger.log(
+          `resource retrieved from cache, with dependencies (${dependencies.length}): ${resource.url} with dependencies --> ${dependencies}`,
+        )
+        return cachedResource
+      }
+
+      return await fetchAndUpload()
+    }
+
+    async function fetchAndUpload(): Promise<CacheableKnownResource | FailedResource> {
       try {
         const fetchedResource = await fetchResource({resource, settings, logger})
         if (utils.types.has(fetchedResource, 'value')) {
@@ -131,8 +152,6 @@ export function makeProcessResources({
         logger.log(`error fetching resource at ${resource.url}, setting errorStatusCode to 504. err=${err}`)
         return makeResource({...resource, errorStatusCode: 504})
       }
-    } else {
-      return null
     }
   }
 
@@ -167,28 +186,36 @@ export function makeProcessResources({
     }
   }
 
-  async function persistResource({
+  function persistResource({
     resource,
     logger = mainLogger,
   }: {
     resource: ContentfulResource | FailedResource
     logger?: Logger
-  }): Promise<KnownResource & {ready: boolean | Promise<boolean>}> {
+  }): CacheableKnownResource & {ready: boolean | Promise<boolean>} {
     const entry = {
       hash: resource.hash,
       dependencies: (resource as ContentfulResource).dependencies,
     } as KnownResource & {ready: boolean | Promise<boolean>}
     if (utils.types.has(resource, 'value')) {
-      entry.ready = uploadResource({resource, logger})
-        .then(() => {
-          const entry = cache.get(resource.id)!
-          cache.set(resource.id, {...entry, ready: true})
-          return true
-        })
-        .catch(err => {
-          cache.delete(resource.id)
-          throw err
-        })
+      if (asyncCache) {
+        entry.ready = asyncCache.isUploadedToUFG(JSON.stringify(resource.hash), () =>
+          uploadResource({resource, logger})
+            .then(() => true)
+            .catch(() => false),
+        )
+      } else {
+        entry.ready = uploadResource({resource, logger})
+          .then(() => {
+            const entry = cache.get(resource.id)!
+            cache.set(resource.id, {...entry, ready: true})
+            return true
+          })
+          .catch(err => {
+            cache.delete(resource.id)
+            throw err
+          })
+      }
     } else {
       entry.ready = true
     }

@@ -70,6 +70,7 @@ export function makeCheckAndClose<TSpec extends SpecType>({
         ...eyes.test.ufgServer,
         eyesServerUrl: eyes.test.eyesServer.eyesServerUrl,
         apiKey: eyes.test.eyesServer.apiKey,
+        asyncCache: settings.asyncCache,
       },
       logger,
     })

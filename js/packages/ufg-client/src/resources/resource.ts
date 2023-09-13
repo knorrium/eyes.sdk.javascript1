@@ -10,6 +10,8 @@ export type KnownResource = {
   dependencies?: string[]
 }
 
+export type CacheableKnownResource = KnownResource & {value?: never}
+
 export type FailedResource = {
   id: string
   errorStatusCode: number

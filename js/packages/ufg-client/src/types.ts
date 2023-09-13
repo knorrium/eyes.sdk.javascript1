@@ -2,7 +2,7 @@ import type {Location, Size, Region} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
 import {type AbortSignal} from 'abort-controller'
-import {type HashedResource} from './resources/resource'
+import type {CacheableKnownResource, FailedResource, HashedResource} from './resources/resource'
 
 export interface UFGClient {
   createRenderTarget(options: {
@@ -32,11 +32,20 @@ export interface UFGServerSettings {
   connectionTimeout?: number
 }
 
+type CacheFunctionWithCallback<TResult> = (key: string, callback: () => Promise<TResult>) => Promise<TResult>
+
+export type AsyncCache = {
+  getCachedResource: CacheFunctionWithCallback<CacheableKnownResource | FailedResource>
+  isUploadedToUFG: CacheFunctionWithCallback<boolean>
+}
+
 export interface UFGClientSettings extends UFGServerSettings {
   tunnelIds?: string
   eyesServerUrl?: string
   apiKey?: string
   fetchConcurrency?: number
+  syncCache?: Map<string, any>
+  asyncCache?: AsyncCache
 }
 
 export interface DesktopBrowserRenderer {

@@ -10,15 +10,8 @@ import {makeUploadResource} from './resources/upload-resource'
 
 export const defaultResourceCache = new Map<string, any>()
 
-export function makeUFGClient({
-  settings,
-  cache = defaultResourceCache,
-  logger,
-}: {
-  settings: UFGClientSettings
-  cache?: Map<string, any>
-  logger?: Logger
-}): UFGClient {
+export function makeUFGClient({settings, logger}: {settings: UFGClientSettings; logger?: Logger}): UFGClient {
+  const cache = !settings.asyncCache ? settings.syncCache ?? defaultResourceCache : undefined
   logger = makeLogger({logger, format: {label: 'ufg-client'}})
 
   const requests = makeUFGRequests({settings, logger})
@@ -31,7 +24,13 @@ export function makeUFGClient({
     logger,
   })
   const uploadResource = makeUploadResource({requests, logger})
-  const processResources = makeProcessResources({fetchResource, uploadResource, cache, logger})
+  const processResources = makeProcessResources({
+    fetchResource,
+    cache,
+    asyncCache: settings.asyncCache,
+    uploadResource,
+    logger,
+  })
 
   return {
     createRenderTarget: makeCreateRenderTarget({processResources, logger}),
@@ -40,6 +39,6 @@ export function makeUFGClient({
     getChromeEmulationDevices: requests.getChromeEmulationDevices,
     getAndroidDevices: requests.getAndroidDevices,
     getIOSDevices: requests.getIOSDevices,
-    getCachedResourceUrls: () => Array.from(cache.keys()),
+    getCachedResourceUrls: () => (cache ? Array.from(cache.keys()) : []),
   }
 }
