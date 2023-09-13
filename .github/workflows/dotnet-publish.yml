@@ -166,20 +166,20 @@ jobs:
         with:
           name: PublishingFiles
           path: dotnet
-       # - uses: actions/setup-dotnet@v2
-      #   with:
-      #     dotnet-version: "6.0"
-      # - uses: actions/download-artifact@v3
-      #   with:
-      #     name: Nugets
-      #     path: dotnet/PackagesOutput
-      # - name: Upload nugets
-      #   shell: bash
-      #   run: |
-      #     cd dotnet
-      #     echo "will upload nugets"
-      #     ls ./PackagesOutput/*.nupkg
-      #     dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "6.0"
+      - uses: actions/download-artifact@v3
+        with:
+          name: Nugets
+          path: dotnet/PackagesOutput
+      - name: Upload nugets
+        shell: bash
+        run: |
+          cd dotnet
+          echo "will upload nugets"
+          ls ./PackagesOutput/*.nupkg
+          dotnet nuget push ./PackagesOutput/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
       - name: Create PR
         shell: bash
         run: |
@@ -249,5 +249,5 @@ jobs:
           report-id: dotnet_${{ matrix.name }}_$GITHUB_SHA
           name: dotnet_${{ matrix.name }}
           release-version: ${{ matrix.version }}
-          recipient: itai.barhaim@applitools.com
+          # recipient: itai.barhaim@applitools.com
 

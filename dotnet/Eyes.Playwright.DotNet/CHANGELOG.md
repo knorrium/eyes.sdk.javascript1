@@ -1,10 +1,27 @@
 # Changelog
 
-## Unreleased
+## [1.20](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/playwright@1.19...dotnet/playwright@1.20) (2023-09-12)
 
 ### Bug Fixes
 
 * Fixed `BatchInfo.AddProperty` ([Trello 3280](https://trello.com/c/Z3RpuEns))
+
+### Dependencies
+
+* Eyes.Images bumped to 3.43
+
+  #### Bug Fixes
+
+  * Fixed `BatchInfo.AddProperty` ([Trello 3280](https://trello.com/c/Z3RpuEns))
+
+* Eyes.Image.Core bumped to 3.10.3
+
+* js/core bumped to 3.10.3
+
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+
 
 ## [1.19](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/playwright@1.18...dotnet/playwright@1.19) (2023-08-27)
 

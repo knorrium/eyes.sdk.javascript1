@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.72](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium4@3.71...dotnet/selenium4@3.72) (2023-09-12)
+
+### Dependencies
+
+* Eyes.Images bumped to 3.43
+
+  #### Bug Fixes
+
+  * Fixed `BatchInfo.AddProperty` ([Trello 3280](https://trello.com/c/Z3RpuEns))
+
+* Eyes.Image.Core bumped to 3.10.3
+
+* js/core bumped to 3.10.3
+
+  #### Bug Fixes
+
+  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+
 ## [3.71](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium4@3.70...dotnet/selenium4@3.71) (2023-08-27)
 
 ### Dependencies
