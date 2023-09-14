@@ -75,4 +75,32 @@ namespace Applitools
             return clone;
         }
     }
+
+    public static class LocatorSettings
+    {
+        public static VisualLocatorSettings Name(string name)
+        {
+            return new VisualLocatorSettings().Name(name);
+        }
+
+        public static VisualLocatorSettings Names(List<string> names)
+        {
+            return new VisualLocatorSettings().Names(names);
+        }
+        
+        public static VisualLocatorSettings Names(params string[] names)
+        {
+            return new VisualLocatorSettings().Names(names);
+        }
+
+        public static VisualLocatorSettings Image(Bitmap image)
+        {
+            return new VisualLocatorSettings().Image(image);
+        }
+
+        public static VisualLocatorSettings Image(string image)
+        {
+            return new VisualLocatorSettings().Image(image);
+        }
+    }
 }

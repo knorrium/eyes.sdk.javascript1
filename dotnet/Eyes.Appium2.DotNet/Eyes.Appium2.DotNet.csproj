@@ -8,28 +8,37 @@ With Applitools Eyes, you can automatically validate the correctness of your app
 To learn more, visit https://applitools.com/ .</Description>
     <PackageProjectUrl>https://applitools.com/</PackageProjectUrl>
     <Copyright>Applitools 2013</Copyright>
-    <Version>5.70-beta04</Version>
+    <Version>5.71-beta04</Version>
     <Authors>Applitools</Authors>
     <Company>Applitools</Company>
     <Product>Eyes SDK</Product>
     <PackageTags>applitools eyes appium</PackageTags>
     <PackageReleaseNotes>### Dependencies
 
-* Eyes.Selenium4 bumped to 3.72
+* Eyes.Selenium4 bumped to 3.73
 
-* Eyes.Images bumped to 3.43
+* Eyes.Images bumped to 3.44
+
+  #### Features
+
+  * Added `LocatorSettings` static class to shorten locator settings creation code.
+
+* Eyes.Image.Core bumped to 3.11.0
+
+* js/core bumped to 3.11.0
+
+  #### Features
+
+  * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
 
   #### Bug Fixes
 
-  * Fixed `BatchInfo.AddProperty` ([Trello 3280](https://trello.com/c/Z3RpuEns))
+  * upgrade dom-capture to get font-family in DOM ([f62cee4](https://github.com/applitools/eyes.sdk.javascript1/commit/f62cee495ba3b301dda04160e4e13c7e380ef40b))
 
-* Eyes.Image.Core bumped to 3.10.3
+* @applitools/ufg-client bumped to 1.9.0
+  #### Features
 
-* js/core bumped to 3.10.3
-
-  #### Bug Fixes
-
-  * suppport coded regions with layoutBreakpoints reload ([7903347](https://github.com/applitools/eyes.sdk.javascript1/commit/79033472b9475992a44cf3828ff334c958ae2066))
+  * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
 
 </PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
