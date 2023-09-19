@@ -27,7 +27,7 @@ export async function makeECClient({
   settings.tunnel.pool.timeout ??= {}
   settings.tunnel.pool.timeout.idle ??= utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_IDLE', 'number') ?? 20 * 60_000
   settings.tunnel.pool.timeout.expiration ??=
-    utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_EXPIRATION', 'number') ?? 30_000
+    utils.general.getEnvValue('TUNNEL_POOL_TIMEOUT_EXPIRATION', 'number') ?? 20 * 60_000
 
   settings.options ??= {}
   settings.options.eyesServerUrl ??=

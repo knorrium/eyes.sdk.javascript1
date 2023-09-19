@@ -2,6 +2,7 @@ import {makeLogger} from '@applitools/logger'
 import {makeTunnelManager} from '../../src/tunnels/manager'
 import nock from 'nock'
 import assert from 'assert'
+import * as utils from '@applitools/utils'
 
 describe('tunnel-manager', () => {
   afterEach(async () => {
@@ -58,5 +59,36 @@ describe('tunnel-manager', () => {
     const reusedTunnels = await manager.acquire({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
 
     assert.deepStrictEqual(reusedTunnels, tunnels)
+  })
+
+  it('does not acquire expired tunnels', async () => {
+    const manager = await makeTunnelManager({
+      settings: {serviceUrl: 'http://eg-tunnel', pool: {timeout: {expiration: 2_000}}},
+      logger: makeLogger(),
+    })
+
+    let tunnelIndex = 0
+    nock('http://eg-tunnel')
+      .persist()
+      .post('/tunnels')
+      .reply(() => [201, `"tunnel-id-${tunnelIndex++}"`])
+    nock('http://eg-tunnel')
+      .persist()
+      .delete(/\/tunnels\/tunnel-id-\d+/)
+      .reply(200)
+
+    const tunnels1 = await manager.acquire({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+    const tunnels2 = await manager.acquire({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+
+    await utils.general.sleep(2_000)
+
+    const tunnels3 = await manager.acquire({eyesServerUrl: 'http://eyes-server', apiKey: 'api-key'})
+
+    await manager.release(tunnels1)
+    await manager.release(tunnels2)
+    await manager.release(tunnels3)
+
+    assert.deepStrictEqual(tunnels1, tunnels2)
+    assert.notDeepStrictEqual(tunnels1, tunnels3)
   })
 })
