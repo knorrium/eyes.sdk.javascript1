@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-v1.8.5...js/eyes@1.9.0) (2023-09-21)
+
+
+### Features
+
+* added more iOS devices ([a84311f](https://github.com/applitools/eyes.sdk.javascript1/commit/a84311f88e6f532268543a96f841ae5ad87d5659))
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/spec-driver-webdriver bumped to 1.0.45
+
+* @applitools/ufg-client bumped to 1.9.1
+  #### Bug Fixes
+
+  * async cache key - avoid undefined keys and ready promise ([#1929](https://github.com/applitools/eyes.sdk.javascript1/issues/1929)) ([8654f99](https://github.com/applitools/eyes.sdk.javascript1/commit/8654f99d92403f1e59bf8e2f6fbc32ba467e3037))
+* @applitools/ec-client bumped to 1.7.9
+  #### Bug Fixes
+
+  * change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+
+* @applitools/spec-driver-selenium bumped to 1.5.59
+
+* @applitools/spec-driver-puppeteer bumped to 1.2.1
+
+* @applitools/driver bumped to 1.14.1
+
+* @applitools/screenshoter bumped to 3.8.11
+
+* @applitools/nml-client bumped to 1.5.11
+
+* @applitools/core bumped to 3.11.1
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+  * async cache key - avoid undefined keys and ready promise ([#1929](https://github.com/applitools/eyes.sdk.javascript1/issues/1929)) ([8654f99](https://github.com/applitools/eyes.sdk.javascript1/commit/8654f99d92403f1e59bf8e2f6fbc32ba467e3037))
+
+
+
+
 ## [1.8.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes@1.8.3...js/eyes@1.8.4) (2023-09-12)
 
 

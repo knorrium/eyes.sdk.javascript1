@@ -1,5 +1,44 @@
 # Changelog
 
+## [3.11.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.0...js/core@3.11.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* async cache key - avoid undefined keys and ready promise ([#1929](https://github.com/applitools/eyes.sdk.javascript1/issues/1929)) ([8654f99](https://github.com/applitools/eyes.sdk.javascript1/commit/8654f99d92403f1e59bf8e2f6fbc32ba467e3037))
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/spec-driver-selenium bumped to 1.5.59
+
+* @applitools/spec-driver-puppeteer bumped to 1.2.1
+
+* @applitools/ufg-client bumped to 1.9.1
+  #### Bug Fixes
+
+  * async cache key - avoid undefined keys and ready promise ([#1929](https://github.com/applitools/eyes.sdk.javascript1/issues/1929)) ([8654f99](https://github.com/applitools/eyes.sdk.javascript1/commit/8654f99d92403f1e59bf8e2f6fbc32ba467e3037))
+* @applitools/spec-driver-webdriver bumped to 1.0.45
+
+* @applitools/screenshoter bumped to 3.8.11
+
+* @applitools/nml-client bumped to 1.5.11
+
+* @applitools/ec-client bumped to 1.7.9
+  #### Bug Fixes
+
+  * change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+
+* @applitools/driver bumped to 1.14.1
+
+
 ## [3.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.10.4...js/core@3.11.0) (2023-09-13)
 
 

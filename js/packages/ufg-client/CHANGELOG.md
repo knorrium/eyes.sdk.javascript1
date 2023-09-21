@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.9.0...js/ufg-client@1.9.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* async cache key - avoid undefined keys and ready promise ([#1929](https://github.com/applitools/eyes.sdk.javascript1/issues/1929)) ([8654f99](https://github.com/applitools/eyes.sdk.javascript1/commit/8654f99d92403f1e59bf8e2f6fbc32ba467e3037))
+
 ## [1.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.8.0...js/ufg-client@1.9.0) (2023-09-13)
 
 

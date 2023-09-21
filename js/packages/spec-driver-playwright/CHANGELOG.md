@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.26](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.25...js/spec-driver-playwright@1.3.26) (2023-09-21)
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/driver bumped to 1.14.1
+
+
 ## [1.3.25](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-playwright@1.3.24...js/spec-driver-playwright@1.3.25) (2023-09-04)
 
 

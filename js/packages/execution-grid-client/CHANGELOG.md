@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.7.9](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.7.8...js/ec-client@1.7.9) (2023-09-21)
+
+
+### Bug Fixes
+
+* change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/spec-driver-webdriver bumped to 1.0.45
+
+* @applitools/driver bumped to 1.14.1
+
+
 ## [1.7.8](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.7.7...js/ec-client@1.7.8) (2023-09-05)
 
 

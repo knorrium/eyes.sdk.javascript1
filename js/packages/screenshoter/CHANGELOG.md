@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.8.11](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.10...js/screenshoter@3.8.11) (2023-09-21)
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/spec-driver-webdriver bumped to 1.0.45
+
+* @applitools/driver bumped to 1.14.1
+
+
 ## [3.8.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/screenshoter@3.8.9...js/screenshoter@3.8.10) (2023-09-04)
 
 

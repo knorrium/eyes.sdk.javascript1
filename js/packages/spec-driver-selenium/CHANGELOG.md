@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.59](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.58...js/spec-driver-selenium@1.5.59) (2023-09-21)
+
+
+### Dependencies
+
+* @applitools/snippets bumped to 2.4.24
+  #### Bug Fixes
+
+  * add support to shadow dom iframe ([#1925](https://github.com/applitools/eyes.sdk.javascript1/issues/1925)) ([a06b955](https://github.com/applitools/eyes.sdk.javascript1/commit/a06b9555a3b37918fe43a90e92c0a94f765151cc))
+* @applitools/driver bumped to 1.14.1
+
+
 ## [1.5.58](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.57...js/spec-driver-selenium@1.5.58) (2023-09-04)
 
 
