@@ -25,7 +25,6 @@
 
   * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
 
-
 ## [3.44](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/images@3.43...dotnet/images@3.44) (2023-09-14)
 
 ### Features

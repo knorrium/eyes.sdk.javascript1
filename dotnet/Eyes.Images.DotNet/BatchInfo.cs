@@ -58,7 +58,11 @@ namespace Applitools
         public DateTimeOffset StartedAt { get; set; }
 
         public string SequenceName { get; set; }
-
+        public string BatchSequenceName
+        {
+            set => SequenceName = value;
+        }
+        
         public bool NotifyOnCompletion { get; set; }
 
         [JsonProperty("IsCompleted")]
