@@ -8,18 +8,18 @@ With Applitools Eyes, you can automatically validate the correctness of your app
 To learn more, visit https://applitools.com/ .</Description>
     <PackageProjectUrl>https://applitools.com/</PackageProjectUrl>
     <Copyright>Applitools 2013</Copyright>
-    <Version>3.73</Version>
+    <Version>3.74</Version>
     <Authors>Applitools</Authors>
     <Company>Applitools</Company>
     <Product>Eyes SDK</Product>
     <PackageTags>applitools eyes selenium</PackageTags>
     <PackageReleaseNotes>### Dependencies
 
-* Eyes.Images bumped to 3.44
+* Eyes.Images bumped to 3.45
 
-  #### Features
+  #### Bug Fixes
 
-  * Added `LocatorSettings` static class to shorten locator settings creation code.
+  * Fixed `BatchInfo.SequenceName` serialization. ([Trello 3284](https://trello.com/c/ClIXAtyv/))
 
 * Eyes.Image.Core bumped to 3.11.0
 

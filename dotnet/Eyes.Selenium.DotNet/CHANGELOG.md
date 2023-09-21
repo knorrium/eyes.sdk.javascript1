@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.74](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.73...dotnet/selenium@3.74) (2023-09-21)
+
+### Dependencies
+
+* Eyes.Images bumped to 3.45
+
+  #### Bug Fixes
+
+  * Fixed `BatchInfo.SequenceName` serialization. ([Trello 3284](https://trello.com/c/ClIXAtyv/))
+
+* Eyes.Image.Core bumped to 3.11.0
+
+* js/core bumped to 3.11.0
+
+  #### Features
+
+  * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
+
+  #### Bug Fixes
+
+  * upgrade dom-capture to get font-family in DOM ([f62cee4](https://github.com/applitools/eyes.sdk.javascript1/commit/f62cee495ba3b301dda04160e4e13c7e380ef40b))
+
+* @applitools/ufg-client bumped to 1.9.0
+  #### Features
+
+  * change cache to support distributed cache ([#1913](https://github.com/applitools/eyes.sdk.javascript1/issues/1913)) ([32cc257](https://github.com/applitools/eyes.sdk.javascript1/commit/32cc2574500ac512167f4199c456d8b0349954f7))
+
 ## [3.73](https://github.com/applitools/eyes.sdk.javascript1/compare/dotnet/selenium@3.72...dotnet/selenium@3.73) (2023-09-14)
 
 ### Dependencies
