@@ -37,7 +37,7 @@ describe('check eyes classic', () => {
     const innerFrame = await driver.executeScript(`return arguments[0].shadowRoot.querySelector("iframe")`, [
       innerContainer,
     ])
-    driver.switchToFrame(innerFrame)
+    await driver.switchToFrame(innerFrame)
     assert.strictEqual(await driver.executeScript('return document.title', []), 'Simple HTML')
 
     await eyes.check({
