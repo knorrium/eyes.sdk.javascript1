@@ -1,5 +1,5 @@
 import type {DriverTarget, Core, TypedCore, Batch, Eyes, Config, OpenSettings} from './types'
-import {type UFGClient} from '@applitools/ufg-client'
+import {type AsyncCache, type UFGClient} from '@applitools/ufg-client'
 import {type NMLClient} from '@applitools/nml-client'
 import {type Logger} from '@applitools/logger'
 import {makeDriver, type SpecType, type SpecDriver} from '@applitools/driver'
@@ -23,6 +23,7 @@ type Options<TSpec extends SpecType, TType extends 'classic' | 'ufg'> = {
   spec?: SpecDriver<TSpec>
   environment?: Record<string, any>
   logger: Logger
+  asyncCache?: AsyncCache
 }
 
 export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'classic' | 'ufg' = 'classic'>({
@@ -35,6 +36,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
   spec,
   environment,
   logger: mainLogger,
+  asyncCache,
 }: Options<TSpec, TDefaultType>) {
   return async function openEyes<TType extends 'classic' | 'ufg' = TDefaultType>({
     type = defaultType as unknown as TType,
@@ -95,7 +97,7 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
       settings: settings as OpenSettings<TType>,
       target: driver,
       cores: cores ?? {
-        ufg: makeUFGCore({spec, clients, base: core.base, concurrency: concurrency ?? 5, logger}),
+        ufg: makeUFGCore({spec, clients, base: core.base, concurrency: concurrency ?? 5, asyncCache, logger}),
         classic: makeClassicCore({spec, clients, base: core.base, logger}),
       },
       logger,

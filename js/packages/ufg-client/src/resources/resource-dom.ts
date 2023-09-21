@@ -7,5 +7,7 @@ export function makeResourceDom({cdt, resources}: Record<string, any>): Contentf
       domNodes: cdt,
     }),
   )
-  return makeResource({value, contentType: 'x-applitools-html/cdt'})
+  const resource = makeResource({value, contentType: 'x-applitools-html/cdt'})
+  resource.id = `dom/${resource.hash.hash}`
+  return resource
 }

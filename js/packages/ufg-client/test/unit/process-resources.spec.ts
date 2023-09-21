@@ -10,7 +10,7 @@ import {makeLogger} from '@applitools/logger'
 import {makeTestServer} from '@applitools/test-server'
 import nock from 'nock'
 import assert from 'assert'
-import {AsyncCache} from '../../src'
+import {type VerifyableAsynCache, makeAsyncCache} from '../utils/fake-async-cache'
 
 describe('processResources', () => {
   let server: any, baseUrl: string
@@ -21,33 +21,6 @@ describe('processResources', () => {
     } as UFGRequests,
     logger: makeLogger(),
   })
-
-  type VerifyableAsynCache = AsyncCache & {
-    getFetchCache: () => Map<string, any>
-    getUploadCache: () => Map<string, any>
-  }
-
-  const makeAsyncCache = (): VerifyableAsynCache => {
-    const wait = (ms: number) => new Promise(r => setTimeout(r, ms))
-    const fetchCache = new Map<string, any>()
-    const uploadCache = new Map<string, any>()
-    return {
-      getCachedResource: cacheFunc(fetchCache),
-      isUploadedToUFG: cacheFunc(uploadCache),
-      getFetchCache: () => fetchCache,
-      getUploadCache: () => uploadCache,
-    }
-
-    function cacheFunc(cache: Map<string, any>) {
-      return async (key: string, callback: () => Promise<unknown>) => {
-        if (!cache.get(key)) {
-          cache.set(key, wait(100).then(callback))
-        }
-        await wait(100)
-        return cache.get(key)
-      }
-    }
-  }
 
   before(async () => {
     server = await makeTestServer()
@@ -513,9 +486,10 @@ describe('processResources', () => {
       const url = 'http://localhost:1234/err/bla.css'
       const resources = await processResources({resources: {[url]: makeResource({url})}})
       assert.deepStrictEqual(resources.mapping, {[url]: makeResource({id: url, errorStatusCode: 504}).hash})
-      assert.strictEqual(
+      // TODO this TS error will be fixed once we upgrade minimal supported Node.js version, so @types/node can be upgraded
+      assert.match(
         output,
-        'error fetching resource at http://localhost:1234/err/bla.css, setting errorStatusCode to 504. err=Error: noop',
+        /error fetching resource at http:\/\/localhost:1234\/err\/bla.css, setting errorStatusCode to 504. err=Error: noop/,
       )
     })
 

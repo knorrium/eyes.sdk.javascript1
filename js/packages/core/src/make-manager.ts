@@ -1,6 +1,6 @@
 import type {Core, EyesManager, Eyes, ManagerSettings} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
-import {type UFGClient} from '@applitools/ufg-client'
+import {type AsyncCache, type UFGClient} from '@applitools/ufg-client'
 import {type NMLClient} from '@applitools/nml-client'
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
@@ -21,6 +21,7 @@ type Options<TSpec extends SpecType> = {
   environment?: Record<string, any>
   cwd?: string
   logger: Logger
+  asyncCache?: AsyncCache
 }
 
 export function makeMakeManager<TSpec extends SpecType>({
@@ -33,6 +34,7 @@ export function makeMakeManager<TSpec extends SpecType>({
   environment,
   cwd = process.cwd(),
   logger: mainLogger,
+  asyncCache,
 }: Options<TSpec>) {
   return async function makeManager<TType extends 'classic' | 'ufg' = 'classic'>({
     type = 'classic' as TType,
@@ -56,13 +58,13 @@ export function makeMakeManager<TSpec extends SpecType>({
 
     base ??= makeBaseCore({agentId: settings.agentId, concurrency: settings.concurrency, cwd, logger})
     const cores = {
-      ufg: makeUFGCore({spec, base, fetchConcurrency: settings.fetchConcurrency, logger}),
+      ufg: makeUFGCore({spec, base, fetchConcurrency: settings.fetchConcurrency, asyncCache, logger}),
       classic: makeClassicCore({spec, base, logger}),
     }
     const storage = [] as Eyes<TSpec, TType>[]
     return {
       openEyes: utils.general.wrap(
-        makeOpenEyes({type, clients, batch: settings.batch, spec, core, cores, environment, logger}),
+        makeOpenEyes({type, clients, batch: settings.batch, spec, core, cores, environment, asyncCache, logger}),
         async (openEyes, options) => {
           const eyes = await openEyes(options)
           storage.push(eyes)

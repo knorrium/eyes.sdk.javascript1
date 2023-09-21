@@ -9,7 +9,6 @@ import {
   type DomSnapshot,
   type AndroidSnapshot,
   type IOSSnapshot,
-  type AsyncCache,
 } from '@applitools/ufg-client'
 
 export * from '../automation/types'
@@ -53,7 +52,6 @@ export type CheckSettings<TSpec extends SpecType> = AutomationCore.CheckSettings
   hooks?: {beforeCaptureScreenshot: string}
   disableBrowserFetching?: boolean
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
-  asyncCache?: AsyncCache
   ufgOptions?: Record<string, any>
   autProxy?: Proxy & {mode?: 'Allow' | 'Block'; domains?: string[]}
   headers?: Record<string, string>

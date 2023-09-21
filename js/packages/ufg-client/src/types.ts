@@ -2,7 +2,7 @@ import type {Location, Size, Region} from '@applitools/utils'
 import {type Logger} from '@applitools/logger'
 import {type Proxy} from '@applitools/req'
 import {type AbortSignal} from 'abort-controller'
-import type {CacheableKnownResource, FailedResource, HashedResource} from './resources/resource'
+import type {HashedResource, KnownResource} from './resources/resource'
 
 export interface UFGClient {
   createRenderTarget(options: {
@@ -35,7 +35,7 @@ export interface UFGServerSettings {
 type CacheFunctionWithCallback<TResult> = (key: string, callback: () => Promise<TResult>) => Promise<TResult>
 
 export type AsyncCache = {
-  getCachedResource: CacheFunctionWithCallback<CacheableKnownResource | FailedResource>
+  getCachedResource: CacheFunctionWithCallback<KnownResource>
   isUploadedToUFG: CacheFunctionWithCallback<boolean>
 }
 

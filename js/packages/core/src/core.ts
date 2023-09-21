@@ -1,6 +1,6 @@
 import type {Core} from './types'
 import type {Core as BaseCore} from '@applitools/core-base'
-import {type UFGClient} from '@applitools/ufg-client'
+import {type AsyncCache, type UFGClient} from '@applitools/ufg-client'
 import {type NMLClient} from '@applitools/nml-client'
 import {type SpecType, type SpecDriver} from '@applitools/driver'
 import {makeLogger, type Logger} from '@applitools/logger'
@@ -29,6 +29,7 @@ type Options<TSpec extends SpecType> = {
   environment?: Record<string, any>
   cwd?: string
   logger?: Logger
+  asyncCache?: AsyncCache
 }
 
 export function makeCore<TSpec extends SpecType>({
@@ -40,6 +41,7 @@ export function makeCore<TSpec extends SpecType>({
   agentId = 'core',
   cwd = process.cwd(),
   logger: defaultLogger,
+  asyncCache,
 }: Options<TSpec> = {}): Core<TSpec, 'classic' | 'ufg'> {
   const logger = makeLogger({logger: defaultLogger, format: {label: 'core'}})
   const environment = extractEnvironment(defaultEnvironment)
@@ -54,11 +56,21 @@ export function makeCore<TSpec extends SpecType>({
       getNMLClient: makeGetNMLClient({client: clients?.nml, logger}),
       getECClient: makeGetECClient({logger}),
       getAccountInfo: makeGetAccountInfo({core, logger}),
-      makeManager: makeMakeManager({spec, clients, concurrency, core, base: defaultBase, agentId, environment, logger}),
+      makeManager: makeMakeManager({
+        spec,
+        clients,
+        concurrency,
+        core,
+        base: defaultBase,
+        agentId,
+        environment,
+        asyncCache,
+        logger,
+      }),
       locate: makeLocate({spec, core, logger}),
       locateText: makeLocateText({spec, core, logger}),
       extractText: makeExtractText({spec, core, logger}),
-      openEyes: makeOpenEyes({spec, clients, core, concurrency, environment, logger}),
+      openEyes: makeOpenEyes({spec, clients, core, concurrency, environment, asyncCache, logger}),
       closeBatch: makeCloseBatch({core, logger}),
       deleteTest: makeDeleteTest({core, logger}),
     }

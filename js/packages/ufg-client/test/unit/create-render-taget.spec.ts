@@ -6,9 +6,11 @@ import {makeProcessResources} from '../../src/resources/process-resources'
 import {makeResourceDom} from '../../src/resources/resource-dom'
 import {testServer} from '@applitools/test-server'
 import {makeLogger} from '@applitools/logger'
+import {makeFixtureResources as makeFixtureCssResources} from '../fixtures/page/test.css.resources'
 import {makeFixtureResource as makeFixtureFrame1Resource} from '../fixtures/page/index.resource'
 import {makeFixtureResource as makeFixtureFrame2Resource} from '../fixtures/page-with-frames/inner/frame.resource'
 import assert from 'assert'
+import {makeAsyncCache} from '../utils/fake-async-cache'
 
 describe('create-render-target', () => {
   let server: any, baseUrl: string
@@ -109,6 +111,84 @@ describe('create-render-target', () => {
         hashFormat: 'sha256',
         hash: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad', // crypto.createHash('sha256').update('abc').digest('hex')
         contentType: 'some/content',
+      },
+    })
+  })
+
+  it('handles async cache', async () => {
+    const asyncCache = makeAsyncCache()
+    const processResources = makeProcessResources({
+      fetchResource: makeFetchResource({logger: makeLogger()}),
+      uploadResource: makeUploadResource({
+        requests: {
+          checkResources: async ({resources}) => Array(resources.length).fill(true),
+        } as UFGRequests,
+        logger: makeLogger(),
+      }),
+      logger: makeLogger(),
+      asyncCache,
+    })
+    const createRenderTarget = makeCreateRenderTarget({processResources, logger: makeLogger()})
+
+    const resourceUrl = `${baseUrl}/page/smurfs1.jpg`
+
+    const snapshot = {
+      url: 'page.url',
+      cdt: [],
+      resourceUrls: [resourceUrl],
+      resourceContents: {
+        'url-1': {
+          value: 'YWJj', //Buffer.from('abc').toString('base64'),
+          type: 'some/content',
+        },
+      },
+    }
+
+    const target = await createRenderTarget({snapshot})
+
+    const expectedUrl1Hash = {
+      hashFormat: 'sha256',
+      hash: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad', // crypto.createHash('sha256').update('abc').digest('hex')
+      contentType: 'some/content',
+    }
+
+    const resourceMapping = makeFixtureCssResources({baseUrl})
+
+    const expectedDomResource = makeResourceDom({
+      cdt: [],
+      resources: {
+        'url-1': expectedUrl1Hash,
+        [resourceUrl]: resourceMapping[resourceUrl],
+      },
+    })
+
+    assert.deepStrictEqual(target.resources, {
+      'url-1': expectedUrl1Hash,
+      [resourceUrl]: resourceMapping[resourceUrl],
+    })
+
+    assert.deepStrictEqual(Object.fromEntries(asyncCache.getUploadCache().entries()), {
+      [`${JSON.stringify(expectedDomResource.hash)}`]: true,
+      [`${JSON.stringify(expectedUrl1Hash)}`]: true,
+      [`${JSON.stringify(resourceMapping[resourceUrl])}`]: true,
+    })
+
+    assert.deepStrictEqual(Object.fromEntries(asyncCache.getFetchCache().entries()), {
+      [`${expectedDomResource.id}`]: {
+        dependencies: undefined,
+        hash: expectedDomResource.hash,
+      },
+      'url-1': {
+        dependencies: undefined,
+        hash: {
+          hashFormat: 'sha256',
+          hash: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+          contentType: 'some/content',
+        },
+      },
+      [resourceUrl]: {
+        dependencies: [],
+        hash: resourceMapping[resourceUrl],
       },
     })
   })

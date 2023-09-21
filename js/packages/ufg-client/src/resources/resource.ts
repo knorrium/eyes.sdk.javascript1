@@ -5,12 +5,13 @@ import * as utils from '@applitools/utils'
 
 const UFG_MAX_RESOURCE_SIZE = 34.5 * 1024 * 1024
 
+// Note: when using async cache, we whitelist the properties of KnownResource in order to not save anything that we don't want in the cache.
+// It's not possible to reference the type in runtime, so please make sure that if properties are added here, they need to be added to the callback
+// of asyncCache.getCachedResource
 export type KnownResource = {
   hash: HashedResource | {errorStatusCode: number}
   dependencies?: string[]
 }
-
-export type CacheableKnownResource = KnownResource & {value?: never}
 
 export type FailedResource = {
   id: string

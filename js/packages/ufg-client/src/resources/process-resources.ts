@@ -6,7 +6,6 @@ import {
   type HashedResource,
   type KnownResource,
   type FailedResource,
-  type CacheableKnownResource,
 } from './resource'
 import {type Logger} from '@applitools/logger'
 import {type FetchResource, type FetchResourceSettings} from './fetch-resource'
@@ -16,10 +15,12 @@ import {extractSvgDependencyUrls} from '../utils/extract-svg-dependency-urls'
 import {freezeGif} from '@applitools/image'
 import * as utils from '@applitools/utils'
 
+type AwaitableKnownResource = KnownResource & {ready: boolean | Promise<boolean>}
+
 export type Options = {
   fetchResource: FetchResource
   uploadResource: UploadResource
-  cache?: Map<string, KnownResource & {ready: boolean | Promise<boolean>}>
+  cache?: Map<string, AwaitableKnownResource>
   asyncCache?: AsyncCache
   logger: Logger
 }
@@ -61,7 +62,7 @@ export function makeProcessResources({
           // If the resource is already in the cache, then we would use the value from the cache rather than the value we have in this memory.
           // The assumption is that the cache can't hold a different value than what we have now.
           const processedResource = asyncCache
-            ? await asyncCache.getCachedResource(resource.id, () => processContentfulResource({resource, logger}))
+            ? await getCachedResource(resource.id, () => processContentfulResource({resource, logger}), logger)
             : await processContentfulResource({resource, logger})
 
           return Object.assign(await processedResourcesPromise, {[url]: processedResource})
@@ -121,7 +122,7 @@ export function makeProcessResources({
       return null
     }
     if (asyncCache) {
-      return await asyncCache.getCachedResource(resource.id, fetchAndUpload)
+      return await getCachedResource(resource.id, fetchAndUpload, logger)
     } else {
       const cachedResource = cache.get(resource.id)
       if (cachedResource) {
@@ -135,7 +136,7 @@ export function makeProcessResources({
       return await fetchAndUpload()
     }
 
-    async function fetchAndUpload(): Promise<CacheableKnownResource | FailedResource> {
+    async function fetchAndUpload(): Promise<KnownResource & {ready?: boolean | Promise<boolean>}> {
       try {
         const fetchedResource = await fetchResource({resource, settings, logger})
         if (utils.types.has(fetchedResource, 'value')) {
@@ -192,11 +193,11 @@ export function makeProcessResources({
   }: {
     resource: ContentfulResource | FailedResource
     logger?: Logger
-  }): CacheableKnownResource & {ready: boolean | Promise<boolean>} {
+  }): AwaitableKnownResource {
     const entry = {
       hash: resource.hash,
       dependencies: (resource as ContentfulResource).dependencies,
-    } as KnownResource & {ready: boolean | Promise<boolean>}
+    } as AwaitableKnownResource
     if (utils.types.has(resource, 'value')) {
       if (asyncCache) {
         entry.ready = asyncCache.isUploadedToUFG(JSON.stringify(resource.hash), () =>
@@ -251,5 +252,40 @@ export function makeProcessResources({
       logger.log(`could not parse ${resource.contentType} ${resource.url}`, e)
       return []
     }
+  }
+
+  // Note: this function is needed since the contract with async cache is to return a serializeable object.
+  // So we need to peel off `ready` which is a promise, but still use it as the return value from the callback.
+  function getCachedResource(
+    key: string,
+    callback: () => Promise<KnownResource & {ready?: boolean | Promise<boolean>}>,
+    logger: Logger,
+  ): Promise<KnownResource> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (!key) {
+          logger.log('key for async cache is falsy, not accessing async cache (this is an error that!)', key)
+          resolve(await callback())
+          return
+        }
+        const resourceFromCache = await asyncCache!.getCachedResource(key, async () => {
+          logger.log(`async cache callback called for ${key}`)
+          const ret = await callback()
+          resolve(ret)
+
+          // We also want to make sure the value of the resource is not included in the cache. So better yet, just whitelist the properties of KnownResource
+          // See note in KnownResource type
+          return {
+            hash: ret.hash,
+            dependencies: ret.dependencies,
+          }
+        })
+        logger.log(`return value from async cache for ${key}:`, resourceFromCache)
+        resolve(resourceFromCache)
+      } catch (err) {
+        logger.log(`error from async cache for ${key}:`, err)
+        reject(err)
+      }
+    })
   }
 }

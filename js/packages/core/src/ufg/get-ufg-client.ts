@@ -1,14 +1,15 @@
 import {type Logger} from '@applitools/logger'
-import {makeUFGClient, type UFGClient, type UFGClientSettings} from '@applitools/ufg-client'
+import {type AsyncCache, makeUFGClient, type UFGClient, type UFGClientSettings} from '@applitools/ufg-client'
 import * as utils from '@applitools/utils'
 
 type Options = {
   client?: UFGClient
   fetchConcurrency?: number
   logger: Logger
+  asyncCache?: AsyncCache
 }
 
-export function makeGetUFGClient({client, fetchConcurrency, logger: mainLogger}: Options) {
+export function makeGetUFGClient({client, fetchConcurrency, logger: mainLogger, asyncCache}: Options) {
   // we are caching by the server config, therefor if the user creates another Runner / manager with the same server config but different
   // fetchConcurrency, it will not take any affect.
   const getUFGClientWithCache = utils.general.cachify(getUFGClient, ([options]) =>
@@ -25,7 +26,7 @@ export function makeGetUFGClient({client, fetchConcurrency, logger: mainLogger}:
       : undefined
 
     return makeUFGClient({
-      settings: {...settings, fetchConcurrency, tunnelIds},
+      settings: {...settings, fetchConcurrency, tunnelIds, asyncCache},
       logger,
     })
   }
