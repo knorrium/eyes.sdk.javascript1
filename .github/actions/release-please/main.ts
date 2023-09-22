@@ -22,6 +22,7 @@ registerPlugin(
       options.github,
       options.targetBranch,
       options.repositoryConfig,
+      {...options, ...(options.type as any)}
     )
 )
 

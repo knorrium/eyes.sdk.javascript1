@@ -4,7 +4,32 @@
   "include-v-in-tag": false,
   "tag-separator": "@",
   "plugins": [
-    "rich-commits",
+    {
+      "type": "rich-commits",
+      "scope-groups": {
+        "js/internal": [
+          "js/utils",
+          "js/logger",
+          "js/socket",
+          "js/req",
+          "js/image",
+          "js/snippets",
+          "js/spec-driver-webdriver",
+          "js/spec-driver-selenium",
+          "js/spec-driver-playwright",
+          "js/spec-driver-puppeteer",
+          "js/spec-driver-browser-extension",
+          "js/driver",
+          "js/screenshoter",
+          "js/nml-client",
+          "js/tunnel-client",
+          "js/ufg-client",
+          "js/ec-client",
+          "js/core-base",
+          "js/core"
+        ]
+      }
+    },
     {
       "type": "rich-workspace",
       "workspaces": ["node", "maven", "python"],

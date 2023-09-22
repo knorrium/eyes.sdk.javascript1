@@ -25,6 +25,7 @@
   "js/packages/eyes-nightwatch": "1.17.2",
   "js/packages/eyes-playwright": "1.19.2",
   "js/packages/eyes-puppeteer": "1.19.2",
+  "js/packages/eyes-testcafe": "1.17.4",
   "js/packages/eyes-browser-extension": "0.3.12",
   "js/packages/eyes-storybook": "3.41.3",
   "js/packages/eyes-cypress": "3.38.1",
@@ -49,6 +50,5 @@
   "python/eyes_images": "5.20.4",
   "python/eyes_playwright": "5.20.4",
   "python/eyes_robotframework": "5.12.5",
-  "python/eyes_selenium": "5.20.4",
-  "js/packages/eyes-testcafe": "1.1.2"
+  "python/eyes_selenium": "5.20.4"
 }
