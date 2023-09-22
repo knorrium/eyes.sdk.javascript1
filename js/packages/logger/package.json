@@ -25,7 +25,7 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "browser": "./dist/index-browser.js",
+      "browser": "./dist/browser.js",
       "default": "./dist/index.js"
     },
     "./dist/*": "./dist/*.js",
@@ -33,7 +33,7 @@
   },
   "main": "./dist/index.js",
   "browser": {
-    ".": "./dist/index-browser.js",
+    ".": "./dist/browser.js",
     "./dist/handler-file.js": false,
     "./dist/handler-rolling-file.js": false,
     "util": false
@@ -54,6 +54,7 @@
     "debug": "4.3.4"
   },
   "devDependencies": {
+    "@applitools/test-utils": "workspace:^",
     "@types/debug": "^4.1.8",
     "@types/node": "^12.20.55"
   },

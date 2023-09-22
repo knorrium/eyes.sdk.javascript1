@@ -22,7 +22,10 @@
     "test": "run --top-level mocha --no-timeouts 'test/**/*.spec.js'"
   },
   "dependencies": {
-    "node-fetch": "2.6.1"
+    "memfs": "^4.3.0",
+    "node-fetch": "2.6.1",
+    "unionfs": "^4.5.1",
+    "webpack": "^5.88.2"
   },
   "engines": {
     "node": ">=12.13.0"

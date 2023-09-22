@@ -4,7 +4,7 @@ import {AbortController} from 'abort-controller'
 import {stop, type Stop} from './stop.js'
 import {makeAgent} from './agent.js'
 import {AbortCode, RequestTimeoutError, ConnectionTimeoutError} from './req-errors.js'
-import globalFetch, {Request, Headers, Response} from 'node-fetch'
+import globalFetch, {Request, Headers, Response} from './fetch.js'
 import * as utils from '@applitools/utils'
 
 export type Req<TOptions extends Options = Options> = (

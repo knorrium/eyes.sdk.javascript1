@@ -1,7 +1,7 @@
 import type {Awaitable} from '@applitools/utils'
-import type {Request, Response, RequestInit, ResponseInit, BodyInit} from 'node-fetch'
+import type {Request, Response, RequestInit, ResponseInit, BodyInit} from './fetch.js'
 import type {Stop} from './stop.js'
-import type fetch from 'node-fetch'
+import type fetch from './fetch.js'
 
 export type Fetch = typeof fetch
 

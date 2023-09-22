@@ -47,6 +47,7 @@
     "test": "run --top-level mocha './test/**/*.spec.ts'"
   },
   "devDependencies": {
+    "@applitools/test-utils": "workspace:^",
     "@types/node": "^12.20.55"
   },
   "engines": {
