@@ -68,24 +68,35 @@ export class RichCommits extends ManifestPlugin {
   }
 
   protected filterRedundantCommits(commits: ConventionalCommit[], component: string): ConventionalCommit[] {
-    // if empty commit has scope it should contain component in order to be attached to the path
+    const matchScope = (scope: string) => {
+      let invert = false
+      if (scope.startsWith('!')) {
+        invert = true
+        scope = scope.slice(1)
+      }
+      let result: boolean
+      if (scope.startsWith('#')) result = this.scopeGroups[scope.slice(1)]?.includes(component)
+      else if (scope.startsWith('*')) result = component.endsWith(scope.slice(1))
+      else if (scope.endsWith('*')) result = component.startsWith(scope.slice(0, -1))
+      else result = component === scope
+      return invert ? !result : result
+    }
+    
+    // if empty commit has scope it should match the component in order to be attached to be applied
     return commits.reduce((commits, commit) => {
       if (commit.scope) {
-        const matches = commit.scope.split(/[,\s]+/g).some(scope => {
-          let invert = false
-          if (scope.startsWith('!')) {
-            invert = true
-            scope = scope.slice(1)
-          }
-          let result: boolean
-          if (scope.startsWith('#')) result = this.scopeGroups[scope.slice(1)]?.includes(component)
-          else if (scope.startsWith('*')) result = component.endsWith(scope.slice(1))
-          else if (scope.endsWith('*')) result = component.startsWith(scope.slice(0, -1))
-          else result = component === scope
-    
-          return invert ? !result : result
-        })
-        if (matches) commits.push({...commit, scope: null})
+        let scopes = commit.scope
+        let operation: 'some' | 'every' = 'some'
+        if (scopes.startsWith('| ')) {
+          operation = 'some'
+          scopes = scopes.slice(2)
+        } else if (scopes.startsWith('& ')) {
+          operation = 'every'
+          scopes = scopes.slice(2)
+        } else if (scopes.startsWith('!')) {
+          operation = 'every'
+        }
+        if (scopes.split(/[,\s]+/g)[operation](matchScope)) commits.push({...commit, scope: null})
       } else {
         commits.push(commit)
       }
