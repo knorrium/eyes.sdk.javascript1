@@ -1,4 +1,4 @@
-import type {ImageRaw} from './types'
+import type {ImageBuffer, ImageRaw} from './types'
 import type {Location, Size, Region} from '@applitools/utils'
 import {isPngBuffer, extractPngSize, fromPngBuffer, toPng} from './formats/png'
 import {isJpegBuffer, extractJpegSize, fromJpegBuffer} from './formats/jpeg'
@@ -22,14 +22,14 @@ export interface Image {
   copy(srcImage: Image, offset: any): Image
   frame(topImage: Image, bottomImage: Image, region: any): Image
   toRaw(): Promise<ImageRaw>
-  toBuffer(): Promise<Buffer>
-  toPng(): Promise<Buffer>
+  toBuffer(): Promise<ImageBuffer>
+  toPng(): Promise<ImageBuffer>
   toFile(path: string): Promise<void>
   toObject(): Promise<ImageRaw>
   debug(debug: any): Promise<void>
 }
 
-type ImageSource = string | Buffer | Image | (Size & {data?: Buffer}) | {auto: true}
+type ImageSource = string | ArrayBuffer | ImageBuffer | Image | (Size & {data?: ImageBuffer}) | {auto: true}
 
 type Transforms = {
   rotate: number
@@ -46,26 +46,27 @@ export function makeImage(data: ImageSource): Image {
   let image: ImageRaw | Promise<ImageRaw>, size: Size
   let transforms: Transforms = {rotate: 0, scale: 1, crop: undefined, modifiers: []}
 
-  if (utils.types.isBase64(data)) {
-    return makeImage(Buffer.from(data, 'base64'))
-  } else if (utils.types.isString(data)) {
-    return makeImage(fs.readFileSync(data))
-  } else if (Buffer.isBuffer(data)) {
-    if (isPngBuffer(data)) {
-      image = fromPngBuffer(data)
-      size = extractPngSize(data)
-    } else if (isJpegBuffer(data)) {
-      image = fromJpegBuffer(data)
-      size = extractJpegSize(data)
-    } else if (isBmpBuffer(data)) {
-      image = fromBmpBuffer(data)
-      size = extractBmpSize(data)
-    } else if (isGifBuffer(data)) {
-      image = fromGifBuffer(data)
-      size = extractGifSize(data)
+  if (utils.types.isUint8Array(data) || utils.types.isAnyArrayBuffer(data)) {
+    const buffer = utils.types.isAnyArrayBuffer(data) ? new Uint8Array(data) : data
+    if (isPngBuffer(buffer)) {
+      image = fromPngBuffer(buffer)
+      size = extractPngSize(buffer)
+    } else if (isJpegBuffer(buffer)) {
+      image = fromJpegBuffer(buffer)
+      size = extractJpegSize(buffer)
+    } else if (isBmpBuffer(buffer)) {
+      image = fromBmpBuffer(buffer)
+      size = extractBmpSize(buffer)
+    } else if (isGifBuffer(buffer)) {
+      image = fromGifBuffer(buffer)
+      size = extractGifSize(buffer)
     } else {
       throw new Error('Unable to create an image abstraction from buffer with unknown data')
     }
+  } else if (utils.types.isBase64(data)) {
+    return makeImage(Buffer.from(data, 'base64'))
+  } else if (utils.types.isString(data)) {
+    return makeImage(fs.readFileSync(data))
   } else if (utils.types.has(data, 'isImage')) {
     transforms = data.transforms
     image = data.toRaw()
@@ -207,7 +208,7 @@ export function makeImage(data: ImageSource): Image {
 }
 
 function fromSize(size: Size): ImageRaw {
-  return {...size, data: Buffer.alloc(4 * size.width * size.height)}
+  return {...size, data: new Uint8Array(4 * size.width * size.height)}
 }
 
 async function toFile(image: ImageRaw, filepath: string): Promise<void> {
@@ -255,11 +256,7 @@ async function scale(image: ImageRaw, scaleRatio: number): Promise<ImageRaw> {
 }
 
 async function resize(image: ImageRaw, size: Size): Promise<ImageRaw> {
-  const dst = {
-    data: Buffer.alloc(size.height * size.width * 4),
-    width: size.width,
-    height: size.height,
-  }
+  const dst = fromSize(size)
 
   if (dst.width > image.width || dst.height > image.height) {
     _doBicubicInterpolation(image, dst)
@@ -306,14 +303,16 @@ async function rotate(image: ImageRaw, degrees: number): Promise<ImageRaw> {
   degrees = (360 + degrees) % 360
 
   const dstImage = fromSize({width: image.width, height: image.height})
+  const srcView = new DataView(image.data.buffer, image.data.byteOffset, image.data.byteLength)
+  const dstView = new DataView(dstImage.data.buffer, dstImage.data.byteOffset, dstImage.data.byteLength)
 
   if (degrees === 90) {
     dstImage.width = image.height
     dstImage.height = image.width
     for (let srcY = 0, dstX = image.height - 1; srcY < image.height; ++srcY, --dstX) {
       for (let srcX = 0, dstY = 0; srcX < image.width; ++srcX, ++dstY) {
-        const pixel = image.data.readUInt32BE((srcY * image.width + srcX) * 4)
-        dstImage.data.writeUInt32BE(pixel, (dstY * dstImage.width + dstX) * 4)
+        const pixel = srcView.getUint32((srcY * image.width + srcX) * 4)
+        dstView.setUint32((dstY * dstImage.width + dstX) * 4, pixel)
       }
     }
   } else if (degrees === 180) {
@@ -321,8 +320,8 @@ async function rotate(image: ImageRaw, degrees: number): Promise<ImageRaw> {
     dstImage.height = image.height
     for (let srcY = 0, dstY = image.height - 1; srcY < image.height; ++srcY, --dstY) {
       for (let srcX = 0, dstX = image.width - 1; srcX < image.width; ++srcX, --dstX) {
-        const pixel = image.data.readUInt32BE((srcY * image.width + srcX) * 4)
-        dstImage.data.writeUInt32BE(pixel, (dstY * dstImage.width + dstX) * 4)
+        const pixel = srcView.getUint32((srcY * image.width + srcX) * 4)
+        dstView.setUint32((dstY * dstImage.width + dstX) * 4, pixel)
       }
     }
   } else if (degrees === 270) {
@@ -330,8 +329,8 @@ async function rotate(image: ImageRaw, degrees: number): Promise<ImageRaw> {
     dstImage.height = image.width
     for (let srcY = 0, dstX = 0; srcY < image.height; ++srcY, ++dstX) {
       for (let srcX = 0, dstY = image.width - 1; srcX < image.width; ++srcX, --dstY) {
-        const pixel = image.data.readUInt32BE((srcY * image.width + srcX) * 4)
-        dstImage.data.writeUInt32BE(pixel, (dstY * dstImage.width + dstX) * 4)
+        const pixel = srcView.getUint32((srcY * image.width + srcX) * 4)
+        dstView.setUint32((dstY * dstImage.width + dstX) * 4, pixel)
       }
     }
   } else {
@@ -475,7 +474,7 @@ function _interpolateCubic(x0: number, x1: number, x2: number, x3: number, t: nu
 }
 
 function _interpolateRows(bufSrc: any, wSrc: any, hSrc: any, wDst: any) {
-  const buf = Buffer.alloc(wDst * hSrc * 4)
+  const buf = new Uint8Array(wDst * hSrc * 4)
   for (let i = 0; i < hSrc; i += 1) {
     for (let j = 0; j < wDst; j += 1) {
       const x = (j * (wSrc - 1)) / wDst
@@ -498,7 +497,7 @@ function _interpolateRows(bufSrc: any, wSrc: any, hSrc: any, wDst: any) {
 }
 
 function _interpolateColumns(bufSrc: any, hSrc: any, wDst: any, hDst: any) {
-  const buf = Buffer.alloc(wDst * hDst * 4)
+  const buf = new Uint8Array(wDst * hDst * 4)
   for (let i = 0; i < hDst; i += 1) {
     for (let j = 0; j < wDst; j += 1) {
       const y = (i * (hSrc - 1)) / hDst
@@ -523,7 +522,7 @@ function _interpolateColumns(bufSrc: any, hSrc: any, wDst: any, hDst: any) {
 }
 
 function _interpolateScale(bufColumns: any, wDst: any, hDst: any, wDst2: any, m: any, wM: any, hM: any) {
-  const buf = Buffer.alloc(wDst * hDst * 4)
+  const buf = new Uint8Array(wDst * hDst * 4)
   for (let i = 0; i < hDst; i += 1) {
     for (let j = 0; j < wDst; j += 1) {
       let r = 0
@@ -632,11 +631,7 @@ function _scaleImageIncrementally(src: any, dst: any) {
     }
 
     // Render the incremental scaled image.
-    const incrementalImage = {
-      data: Buffer.alloc(currentWidth * currentHeight * 4),
-      width: currentWidth,
-      height: currentHeight,
-    }
+    const incrementalImage = fromSize({width: currentWidth, height: currentHeight})
     _doBicubicInterpolation(dst, incrementalImage)
 
     // Now treat our incremental partially scaled image as the src image

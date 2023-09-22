@@ -1,4 +1,5 @@
 import {type Transport} from '../transport'
+import * as utils from '@applitools/utils'
 
 export type Data = string | Uint8Array
 
@@ -31,7 +32,7 @@ export const transport: Transport<WebSocket, Data> = {
     return JSON.stringify(data)
   },
   deserialize(data) {
-    return JSON.parse(Buffer.from(data).toString())
+    return JSON.parse(utils.types.isString(data) ? data : new TextDecoder().decode(data))
   },
 }
 

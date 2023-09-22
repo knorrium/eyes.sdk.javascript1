@@ -7,7 +7,7 @@ import * as utils from '@applitools/utils'
 export async function downloadFixtures(urlOrPath: string): Promise<string> {
   if (!utils.types.isHttpUrl(urlOrPath)) return urlOrPath
 
-  const zipBuffer = await fetch(urlOrPath).then(async response => Buffer.from(await response.arrayBuffer()))
+  const zipBuffer = await fetch(urlOrPath).then(async response => new Uint8Array(await response.arrayBuffer()))
   const content = await zip.loadAsync(zipBuffer, {createFolders: true})
 
   const fixturesPath = path.resolve(os.homedir(), '.applitools', 'fixtures')

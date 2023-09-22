@@ -219,7 +219,7 @@ export async function getUrl(t: Driver): Promise<string> {
 export async function visit(t: Driver, url: string): Promise<void> {
   await t.navigateTo(url)
 }
-export async function takeScreenshot(t: Driver): Promise<Buffer> {
+export async function takeScreenshot(t: Driver): Promise<Uint8Array> {
   // NOTE:
   // Since we are constrained to saving screenshots to disk, we place each screenshot in its own
   // dot-folder which has a GUID prefix (e.g., .applitools-guide/screenshot.png).

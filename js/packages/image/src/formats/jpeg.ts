@@ -1,20 +1,21 @@
-import type {ImageRaw} from '../types'
+import type {ImageBuffer, ImageRaw} from '../types'
 import type {Size} from '@applitools/utils'
 import * as jpeg from 'jpeg-js'
 
-export function isJpegBuffer(buffer: Buffer): boolean {
-  return ['JFIF', 'Exif'].includes(buffer.subarray(6, 10).toString('ascii'))
+export function isJpegBuffer(buffer: ImageBuffer): boolean {
+  return ['JFIF', 'Exif'].includes(new TextDecoder('ascii').decode(buffer.subarray(6, 10)))
 }
 
-export function extractJpegSize(buffer: Buffer): Size {
+export function extractJpegSize(buffer: ImageBuffer): Size {
+  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
   // skip file signature
   let offset = 4
-  while (buffer.length > offset) {
+  while (view.byteLength > offset) {
     // extract length of the block
-    offset += buffer.readUInt16BE(offset)
+    offset += view.getUint16(offset)
     // if next segment is SOF0 or SOF2 extract size
-    if (buffer[offset + 1] === 0xc0 || buffer[offset + 1] === 0xc2) {
-      return {width: buffer.readUInt16BE(offset + 7), height: buffer.readUInt16BE(offset + 5)}
+    if (view.getUint8(offset + 1) === 0xc0 || view.getUint8(offset + 1) === 0xc2) {
+      return {width: view.getUint16(offset + 7), height: view.getUint16(offset + 5)}
     } else {
       // skip block signature
       offset += 2
@@ -23,6 +24,6 @@ export function extractJpegSize(buffer: Buffer): Size {
   return {width: 0, height: 0}
 }
 
-export async function fromJpegBuffer(buffer: Buffer): Promise<ImageRaw> {
+export async function fromJpegBuffer(buffer: ImageBuffer): Promise<ImageRaw> {
   return jpeg.decode(buffer, {tolerantDecoding: true, formatAsRGBA: true})
 }

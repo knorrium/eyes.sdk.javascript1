@@ -59,7 +59,7 @@ export async function* makeGenerator({
             if (message.name === 'TunnelClient.create' || message.name === 'TunnelClient.replace') {
               response = {tunnelId: message.payload.result.tunnelId}
             } else if (message.name === 'TunnelClient.fetch') {
-              response = {resource_content: message.payload.result.toString('base64')}
+              response = {resource_content: message.payload.result}
             }
             return {id: message.key, status: 'SUCCESS', response}
           }

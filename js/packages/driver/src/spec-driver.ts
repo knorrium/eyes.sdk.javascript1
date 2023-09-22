@@ -126,7 +126,7 @@ export interface SpecDriver<T extends SpecType> {
   getUrl?(driver: T['driver']): Promise<string>
   visit?(driver: T['driver'], url: string): Promise<void>
   performAction?(driver: T['driver'], steps: any[]): Promise<void>
-  takeScreenshot(driver: T['driver']): Promise<Buffer | string>
+  takeScreenshot(driver: T['driver']): Promise<Uint8Array | string>
   getCurrentWorld?(driver: T['driver']): Promise<string>
   getWorlds?(driver: T['driver']): Promise<string[]>
   switchWorld?(driver: T['driver'], id: string): Promise<void>

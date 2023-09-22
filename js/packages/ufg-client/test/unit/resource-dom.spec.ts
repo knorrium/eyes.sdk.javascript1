@@ -5,7 +5,7 @@ describe('resource-dom', () => {
   it('sets content', () => {
     const domResource = makeResourceDom({cdt: 'cdt', resources: {'http://resource.com': 'hash'}})
     assert.strictEqual(
-      domResource.value.toString(),
+      new TextDecoder().decode(domResource.value),
       JSON.stringify({resources: {'http://resource.com': 'hash'}, domNodes: 'cdt'}),
     )
   })
@@ -21,7 +21,7 @@ describe('resource-dom', () => {
       },
     })
     assert.strictEqual(
-      domResource1.value.toString(),
+      new TextDecoder().decode(domResource1.value),
       JSON.stringify({
         resources: {
           'http://resource.com/1': 'hash4',

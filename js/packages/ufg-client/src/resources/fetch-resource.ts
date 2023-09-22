@@ -106,7 +106,7 @@ export function makeFetchResource({
         return response.ok
           ? makeResource({
               ...resource,
-              value: Buffer.from(await response.arrayBuffer()),
+              value: new Uint8Array(await response.arrayBuffer()),
               contentType: response.headers.get('Content-Type')!,
             })
           : makeResource({...resource, errorStatusCode: response.status})
@@ -203,17 +203,19 @@ function handleStreaming({timeout, logger}: {timeout: number; logger?: Logger}):
       const contentType = response.headers.get('Content-Type')
       const isProbablyStreaming = response.ok && !contentLength && contentType && /^(audio|video)\//.test(contentType)
       if (!isProbablyStreaming) return
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         const timer = setTimeout(() => {
           controller.abort()
           resolve({status: 599})
           logger?.log(`Resource with url ${response.url} was interrupted, due to it takes too long to download`)
         }, timeout)
-        response
-          .arrayBuffer()
-          .then(body => resolve({response, body: Buffer.from(body)}))
-          .catch(() => resolve({status: 599}))
-          .finally(() => clearTimeout(timer))
+        try {
+          resolve({response, body: Buffer.from(await response.arrayBuffer())})
+        } catch {
+          resolve({status: 599})
+        } finally {
+          clearTimeout(timer)
+        }
       })
     },
   }

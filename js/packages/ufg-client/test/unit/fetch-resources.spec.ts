@@ -9,13 +9,15 @@ describe('fetch-resource', () => {
   const mockResource = makeResource({
     url: 'http://something',
     contentType: 'some/content-type',
-    value: Buffer.from('bla'),
+    value: new TextEncoder().encode('bla'),
   })
   const urlResource = makeResource({url: mockResource.url})
 
   it('fetches with content and content-type', async () => {
     const fetchResource = makeFetchResource({retryLimit: 0, logger: makeLogger()})
-    nock(mockResource.url).get('/').reply(200, mockResource.value, {'content-type': mockResource.contentType})
+    nock(mockResource.url)
+      .get('/')
+      .reply(200, Buffer.from(mockResource.value), {'content-type': mockResource.contentType})
 
     const resource = await fetchResource({resource: urlResource})
     assert.deepStrictEqual(resource, mockResource)
@@ -29,7 +31,7 @@ describe('fetch-resource', () => {
       .reply(() => {
         counter += 1
         if (counter < 3) return null
-        return [200, mockResource.value, {'content-type': mockResource.contentType}]
+        return [200, Buffer.from(mockResource.value), {'content-type': mockResource.contentType}]
       })
 
     const fetchResource = makeFetchResource({retryLimit: 3, logger: makeLogger()})
@@ -63,7 +65,9 @@ describe('fetch-resource', () => {
 
   it('caches requests', async () => {
     const fetchResource = makeFetchResource({retryLimit: 0, logger: makeLogger()})
-    nock(mockResource.url).get('/').once().reply(200, mockResource.value, {'content-type': mockResource.contentType})
+    nock(mockResource.url)
+      .get('/')
+      .reply(200, Buffer.from(mockResource.value), {'content-type': mockResource.contentType})
 
     const [resource1, resource2] = await Promise.all([
       fetchResource({resource: urlResource}),
@@ -108,7 +112,7 @@ describe('fetch-resource', () => {
       .reply(() => {
         return [
           200,
-          mockResource.value,
+          Buffer.from(mockResource.value),
           {
             'Content-Type': 'application/octet-stream',
             'x-is-streaming-content': 'true',
@@ -185,7 +189,7 @@ describe('fetch-resource', () => {
     const mockMediaResource = makeResource({
       url: 'http://something-media',
       contentType: 'audio/content-type',
-      value: Buffer.from('bla'),
+      value: new TextEncoder().encode('bla'),
     })
     const urlMediaResource = makeResource({url: mockMediaResource.url})
 
@@ -193,7 +197,7 @@ describe('fetch-resource', () => {
       nock(mockMediaResource.url)
         .get('/')
         .delayBody(200)
-        .reply(200, mockMediaResource.value, {'content-type': mockMediaResource.contentType})
+        .reply(200, Buffer.from(mockMediaResource.value), {'content-type': mockMediaResource.contentType})
 
       const fetchResource = makeFetchResource({streamingTimeout: 80, logger: makeLogger()})
       const resource = await fetchResource({resource: urlMediaResource})
@@ -204,7 +208,7 @@ describe('fetch-resource', () => {
       nock(mockMediaResource.url)
         .get('/')
         .delay(200)
-        .reply(200, mockMediaResource.value, {'content-type': mockMediaResource.contentType})
+        .reply(200, Buffer.from(mockMediaResource.value), {'content-type': mockMediaResource.contentType})
 
       const fetchResource = makeFetchResource({streamingTimeout: 80, logger: makeLogger()})
       const resource = await fetchResource({resource: urlMediaResource})
@@ -212,7 +216,7 @@ describe('fetch-resource', () => {
     })
 
     it('doesnt apply to requests with content-length', async () => {
-      nock(mockMediaResource.url).get('/').delayBody(200).reply(200, mockMediaResource.value, {
+      nock(mockMediaResource.url).get('/').delayBody(200).reply(200, Buffer.from(mockMediaResource.value), {
         'content-type': mockMediaResource.contentType,
         'content-length': '3',
       })
@@ -226,7 +230,7 @@ describe('fetch-resource', () => {
       nock(mockResource.url)
         .get('/')
         .delayBody(200)
-        .reply(200, mockResource.value, {'content-type': mockResource.contentType})
+        .reply(200, Buffer.from(mockResource.value), {'content-type': mockResource.contentType})
 
       const fetchResource = makeFetchResource({streamingTimeout: 80, logger: makeLogger()})
       const resource = await fetchResource({resource: urlResource})

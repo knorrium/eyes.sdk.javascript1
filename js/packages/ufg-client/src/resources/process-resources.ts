@@ -236,12 +236,12 @@ export function makeProcessResources({
     try {
       let dependencyUrls = [] as string[]
       if (/text\/css/.test(resource.contentType)) {
-        dependencyUrls = extractCssDependencyUrls(resource.value.toString(), {
+        dependencyUrls = extractCssDependencyUrls(new TextDecoder().decode(resource.value), {
           resourceUrl: resource.url,
           sourceUrl: settings?.sourceUrl,
         })
       } else if (/image\/svg/.test(resource.contentType)) {
-        dependencyUrls = extractSvgDependencyUrls(resource.value.toString(), {
+        dependencyUrls = extractSvgDependencyUrls(new TextDecoder().decode(resource.value), {
           resourceUrl: resource.url,
           sourceUrl: settings?.sourceUrl,
         })

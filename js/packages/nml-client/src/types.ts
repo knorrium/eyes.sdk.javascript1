@@ -74,7 +74,7 @@ export type ScreenshotSettings = {
 }
 
 export type Screenshot = {
-  image: Buffer | string
+  image: string
   size?: Size
   name?: string
   source?: string

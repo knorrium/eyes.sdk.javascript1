@@ -301,7 +301,7 @@ export interface RenderResult {
   status: 'rendering' | 'rendered' | 'error'
   error?: any
 
-  image: Buffer | string
+  image: string
   size?: Size
   name?: string
   source?: string

@@ -1,7 +1,7 @@
 import {makeResource, type ContentfulResource} from './resource'
 
 export function makeResourceVhs({vhsHash, resources, vhsType, platformName}: Record<string, any>): ContentfulResource {
-  const value = Buffer.from(
+  const value = new TextEncoder().encode(
     JSON.stringify({
       vhs: vhsHash,
       resources: {...resources, vhs: undefined},

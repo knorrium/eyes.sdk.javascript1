@@ -3,7 +3,7 @@ import {req, type Proxy} from '@applitools/req'
 import {gzipSync} from 'zlib'
 import * as utils from '@applitools/utils'
 
-export type Upload = (options: {name: string; resource: Buffer | URL | string; gzip?: boolean}) => Promise<string>
+export type Upload = (options: {name: string; resource: Uint8Array | URL | string; gzip?: boolean}) => Promise<string>
 
 export function makeUpload({
   settings,
@@ -17,7 +17,7 @@ export function makeUpload({
     if (utils.types.isNull(resource) || utils.types.isHttpUrl(resource)) return resource
     else if (resource instanceof URL) return resource.href
     const url = settings.uploadUrl.replace('__random__', utils.general.guid())
-    const body = gzip ? gzipSync(resource) : Buffer.from(resource)
+    const body = gzip ? gzipSync(resource) : resource
     const response = await req(url, {
       method: 'PUT',
       headers: {

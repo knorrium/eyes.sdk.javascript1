@@ -190,9 +190,9 @@ export async function getUrl(page: Driver): Promise<string> {
 export async function visit(page: Driver, url: string): Promise<void> {
   await page.goto(url)
 }
-export async function takeScreenshot(page: Driver): Promise<Buffer> {
+export async function takeScreenshot(page: Driver): Promise<Uint8Array> {
   const result = await page.screenshot({captureBeyondViewport: false})
-  return result as Buffer
+  return result
 }
 
 const browserNames = ['chrome', 'firefox']

@@ -25,8 +25,8 @@ export function makeFindElement({req}: Options) {
       io: {request, response, handle: false},
       logger,
     })
-    const responseBody = Buffer.from(await proxyResponse.arrayBuffer())
-    const parsed = JSON.parse(responseBody.toString('utf8'))
+    const responseBody = new Uint8Array(await proxyResponse.arrayBuffer())
+    const parsed = JSON.parse(new TextDecoder().decode(responseBody))
     if (parsed?.appliCustomData?.selfHealing?.successfulSelector) {
       logger.log('Self-healed locators detected', parsed.appliCustomData.selfHealing)
       session.metadata ??= []
@@ -34,6 +34,8 @@ export function makeFindElement({req}: Options) {
     } else {
       logger.log('No self-healing metadata found')
     }
-    response.writeHead(proxyResponse.status, Object.fromEntries(proxyResponse.headers.entries())).end(responseBody)
+    response
+      .writeHead(proxyResponse.status, Object.fromEntries(proxyResponse.headers.entries()))
+      .end(Buffer.from(responseBody))
   }
 }

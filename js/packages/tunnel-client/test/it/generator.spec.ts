@@ -180,7 +180,7 @@ describe('generator', () => {
       {
         key: 'task-id-4',
         name: 'TunnelClient.fetch',
-        payload: {result: Buffer.from('content')},
+        payload: {result: Buffer.from('content').toString('base64')},
       },
     ])
     assert.deepStrictEqual(result3, {

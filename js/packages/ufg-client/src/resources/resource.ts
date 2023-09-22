@@ -30,7 +30,7 @@ export type RawContenfulResource = {
 export type ContentfulResource = {
   id: string
   url: string
-  value: Buffer
+  value: Uint8Array
   contentType: string
   hash: HashedResource
   dependencies?: string[]
@@ -121,6 +121,6 @@ function extractRendererName({renderer}: UrlResource) {
   return browserName
 }
 
-function getResourceValue(value: Buffer | string | undefined): Buffer {
-  return value ? (utils.types.isString(value) ? Buffer.from(value, 'base64') : value) : Buffer.alloc(0)
+function getResourceValue(value: Uint8Array | string | undefined): Uint8Array {
+  return value ? (utils.types.isString(value) ? Buffer.from(value, 'base64') : value) : new Uint8Array(0)
 }

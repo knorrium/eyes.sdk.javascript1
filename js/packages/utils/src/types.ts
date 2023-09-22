@@ -44,6 +44,14 @@ export function isInteger(value: any): value is number {
   return isNumber(value) && Number.isInteger(value)
 }
 
+export function isAnyArrayBuffer(value: any): value is ArrayBufferLike {
+  return !!value && (value[Symbol.toStringTag] === 'ArrayBuffer' || value[Symbol.toStringTag] === 'SharedArrayBuffer')
+}
+
+export function isUint8Array(value: any): value is Uint8Array | Uint8ClampedArray {
+  return !!value && value[Symbol.toStringTag] === 'Uint8Array'
+}
+
 export function isArray<T = any>(value: any): value is T[] {
   return Array.isArray(value)
 }

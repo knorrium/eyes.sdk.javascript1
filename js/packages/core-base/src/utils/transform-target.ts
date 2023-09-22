@@ -17,7 +17,7 @@ export async function transformTarget({
     const str = target.image // we need this var because ts-wise all our string formats checkers (isHttpUrl/isBase64) are string type guards
     if (utils.types.isHttpUrl(str)) {
       const response = await req(target.image, {proxy: settings?.autProxy})
-      target.image = Buffer.from(await response.arrayBuffer())
+      target.image = new Uint8Array(await response.arrayBuffer())
     } else if (!utils.types.isBase64(str) /* is file path/file protocol url */) {
       target.image = await fs.readFile(target.image.startsWith('file:') ? new URL(target.image) : target.image)
     }

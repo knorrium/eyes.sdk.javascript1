@@ -7,7 +7,7 @@ import {RENDER_INFO_URL} from './eyes'
 import * as utils from '@applitools/utils'
 import fetch from 'node-fetch'
 
-const value = Buffer.from(JSON.stringify({resources: {}, domNodes: []}))
+const value = new TextEncoder().encode(JSON.stringify({resources: {}, domNodes: []}))
 const hash = createHash('sha256').update(value).digest('hex')
 const contentType = 'x-applitools-html/cdt'
 const resource = {

@@ -1,60 +1,67 @@
+import {promises as fs} from 'fs'
 import assert from 'assert'
-import fs from 'fs'
 import pixelmatch from 'pixelmatch'
 import {makeImage} from '../src/image'
 
 describe('image', () => {
+  it('should work with array buffer', async () => {
+    const buffer = (await fs.readFile('./test/fixtures/house.png')).buffer
+    const image = makeImage(buffer)
+    assert.strictEqual(image.width, 612)
+    assert.strictEqual(image.height, 512)
+  })
+
   it('should provide access to png image width/height before it parsed', async () => {
-    const buffer = fs.readFileSync('./test/fixtures/house.png')
+    const buffer = new Uint8Array(await fs.readFile('./test/fixtures/house.png'))
     const image = makeImage(buffer)
     assert.strictEqual(image.width, 612)
     assert.strictEqual(image.height, 512)
   })
 
   it('should provide access to jpeg image width/height before it parsed', async () => {
-    const buffer = fs.readFileSync('./test/fixtures/house.jpeg')
+    const buffer = new Uint8Array(await fs.readFile('./test/fixtures/house.jpeg'))
     const image = makeImage(buffer)
     assert.strictEqual(image.width, 612)
     assert.strictEqual(image.height, 512)
   })
 
   it('should provide access to progressive jpeg image width/height before it parsed', async () => {
-    const buffer = fs.readFileSync('./test/fixtures/house.progressive.jpeg')
+    const buffer = new Uint8Array(await fs.readFile('./test/fixtures/house.progressive.jpeg'))
     const image = makeImage(buffer)
     assert.strictEqual(image.width, 612)
     assert.strictEqual(image.height, 512)
   })
 
   it('should provide access to bmp image width/height before it parsed', async () => {
-    const buffer = fs.readFileSync('./test/fixtures/house.bmp')
+    const buffer = new Uint8Array(await fs.readFile('./test/fixtures/house.bmp'))
     const image = makeImage(buffer)
     assert.strictEqual(image.width, 612)
     assert.strictEqual(image.height, 512)
   })
 
   it('should provide access to gif image width/height before it parsed', async () => {
-    const buffer = fs.readFileSync('./test/fixtures/house.gif')
+    const buffer = new Uint8Array(await fs.readFile('./test/fixtures/house.gif'))
     const image = makeImage(buffer)
     assert.strictEqual(image.width, 612)
     assert.strictEqual(image.height, 512)
   })
 
-  it('should encode jpeg image as png', async () => {
+  it('should convert jpeg image as png', async () => {
     const actual = await makeImage('./test/fixtures/house.jpeg').toPng()
-    const expected = await makeImage('./test/fixtures/house.converted-jpeg.png').toPng()
-    assert.ok(Buffer.compare(actual, expected) === 0)
+    const expected = await fs.readFile('./test/fixtures/house.converted-jpeg.png')
+    assert.ok(Buffer.compare(new Uint8Array(actual), expected) === 0)
   })
 
-  it('should encode bmp image as png', async () => {
+  it('should convert bmp image as png', async () => {
     const actual = await makeImage('./test/fixtures/house.bmp').toPng()
-    const expected = await makeImage('./test/fixtures/house.converted-bmp.png').toPng()
-    assert.ok(Buffer.compare(actual, expected) === 0)
+    const expected = await fs.readFile('./test/fixtures/house.converted-bmp.png')
+    assert.ok(Buffer.compare(new Uint8Array(actual), expected) === 0)
   })
 
-  it('should encode gif image as png', async () => {
+  it('should convert gif image as png', async () => {
     const actual = await makeImage('./test/fixtures/house.gif').toPng()
-    const expected = await makeImage('./test/fixtures/house.converted-gif.png').toPng()
-    assert.ok(Buffer.compare(actual, expected) === 0)
+    const expected = await fs.readFile('./test/fixtures/house.converted-gif.png')
+    assert.ok(Buffer.compare(new Uint8Array(actual), expected) === 0)
   })
 
   it('should crop by region', async () => {

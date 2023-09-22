@@ -274,7 +274,7 @@ export function makeCoreRequests({
     const account = await getAccountInfoWithCache({settings})
     const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
-    target.image = await upload({name: 'image', resource: target.image as Buffer})
+    target.image = await upload({name: 'image', resource: target.image})
     const response = await req('/api/locators/locate', {
       name: 'locate',
       method: 'POST',
@@ -317,7 +317,7 @@ export function makeCoreRequests({
     const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
     ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
+      upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req('/api/sessions/running/images/textregions', {
@@ -361,7 +361,7 @@ export function makeCoreRequests({
     const upload = makeUpload({settings: {uploadUrl: account.uploadUrl, proxy: settings.proxy}, logger})
 
     ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
+      upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req('/api/sessions/running/images/text', {
@@ -566,7 +566,7 @@ export function makeEyesRequests({
 
     logger.log('Request "check" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
+      upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
@@ -599,7 +599,7 @@ export function makeEyesRequests({
     }
     logger.log('Request "checkAndClose" called for target', target, 'with settings', settings)
     ;[target.image, target.dom] = await Promise.all([
-      upload({name: 'image', resource: target.image as Buffer}),
+      upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
     ])
     const matchOptions = transformCheckOptions({target, settings})

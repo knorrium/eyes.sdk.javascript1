@@ -709,7 +709,7 @@ export class Driver<T extends SpecType> {
     return context.getRegionInViewport(region)
   }
 
-  async takeScreenshot(): Promise<Buffer> {
+  async takeScreenshot(): Promise<Uint8Array> {
     const image = await this._spec.takeScreenshot(this.target)
     if (utils.types.isString(image)) {
       return Buffer.from(image.replace(/[\r\n]+/g, ''), 'base64')
