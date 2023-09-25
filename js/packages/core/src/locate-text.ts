@@ -26,6 +26,7 @@ export function makeLocateText<TSpec extends SpecType>({spec, core, logger: main
 
     settings = {...config?.open, ...config?.screenshot, ...settings}
     settings.eyesServerUrl ??=
+      (settings as any).serverUrl ??
       utils.general.getEnvValue('EYES_SERVER_URL') ??
       utils.general.getEnvValue('SERVER_URL') ??
       'https://eyesapi.applitools.com'
