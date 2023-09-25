@@ -36,7 +36,7 @@ describe('transform-target', () => {
   })
 
   describe('formats', () => {
-    const expected = {png: Buffer.alloc(0), jpeg: Buffer.alloc(0), bmp: Buffer.alloc(0)}
+    const expected = {png: new Uint8Array(0), jpeg: new Uint8Array(0), bmp: new Uint8Array(0)}
     let destroyServer: () => Promise<void>, baseUrl: string
 
     before(async () => {
@@ -74,7 +74,7 @@ describe('transform-target', () => {
 
     it('image file url object in png format', async () => {
       const result = await transformTarget({
-        target: {image: pathToFileURL(resolvePath('./test/fixtures/screenshot.png'))},
+        target: {image: new URL(pathToFileURL(resolvePath('./test/fixtures/screenshot.png')).href)},
       })
       assert(Buffer.compare(result.image as Buffer, expected.png) === 0)
       assert.strict.deepEqual(result.size, {width: 1079, height: 3415})
@@ -122,7 +122,7 @@ describe('transform-target', () => {
 
     it('image file url object in jpeg format', async () => {
       const result = await transformTarget({
-        target: {image: pathToFileURL(resolvePath('./test/fixtures/screenshot.jpeg'))},
+        target: {image: new URL(pathToFileURL(resolvePath('./test/fixtures/screenshot.jpeg')).href)},
       })
       assert(Buffer.compare(result.image as Buffer, expected.jpeg) === 0)
       assert.strict.deepEqual(result.size, {width: 1079, height: 3415})
@@ -228,7 +228,7 @@ describe('transform-target', () => {
 
     it('image file url object in bmp format', async () => {
       const result = await transformTarget({
-        target: {image: pathToFileURL(resolvePath('./test/fixtures/screenshot.bmp'))},
+        target: {image: new URL(pathToFileURL(resolvePath('./test/fixtures/screenshot.bmp')).href)},
       })
       assert(Buffer.compare(result.image as Buffer, expected.bmp) === 0)
       assert.strict.deepEqual(result.size, {width: 1079, height: 3415})

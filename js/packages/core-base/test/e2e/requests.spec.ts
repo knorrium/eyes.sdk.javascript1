@@ -89,4 +89,24 @@ describe('requests', () => {
       ydpi: 700,
     })
   })
+
+  it('opens eyes without viewport size', async () => {
+    const eyes = await core.openEyes({
+      settings: {
+        eyesServerUrl: 'https://eyesapi.applitools.com',
+        apiKey: process.env.APPLITOOLS_API_KEY as string,
+        appName: 'Test App',
+        testName: 'Test',
+        environment: {
+          os: 'Platform',
+          hostingApp: 'TestBrowser',
+          deviceName: 'Machine',
+        },
+      },
+    })
+    await eyes.close()
+    const [result] = await eyes.getResults()
+
+    assert.deepStrictEqual(result.hostDisplaySize, {width: 0, height: 0})
+  })
 })

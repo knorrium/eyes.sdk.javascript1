@@ -128,7 +128,9 @@ export function makeCoreRequests({
               osInfo: settings.environment.osInfo,
               hostingApp: settings.environment.hostingApp,
               hostingAppInfo: settings.environment.hostingAppInfo,
-              displaySize: settings.environment.viewportSize && utils.geometry.round(settings.environment.viewportSize),
+              displaySize: settings.environment.viewportSize
+                ? utils.geometry.round(settings.environment.viewportSize)
+                : {width: 0, height: 0},
               inferred: settings.environment.userAgent && `useragent:${settings.environment.userAgent}`,
             }),
           environmentName: settings.environmentName,

@@ -1,11 +1,10 @@
-import type {Core} from '../../../src/classic/types'
+import type {Core} from '../../src/types'
 import {type SpecType} from '@applitools/driver'
-import {makeCore} from '../../../src/classic/core'
-import * as spec from '@applitools/spec-driver-webdriver'
+import {makeCore} from '../../src/core'
 import assert from 'assert'
+import * as spec from '@applitools/spec-driver-webdriver'
 
-describe('check eyes classic', () => {
-  const name = 'switch to iframe inside shadow dom'
+describe('check', () => {
   let driver: spec.Driver,
     destroyDriver: () => Promise<void>,
     core: Core<SpecType<spec.Driver, spec.Driver, spec.Element, spec.Selector>>
@@ -19,14 +18,16 @@ describe('check eyes classic', () => {
   after(async () => {
     await destroyDriver?.()
   })
-  it(name, async () => {
+
+  it('switch to iframe inside shadow dom with classic eyes', async () => {
     const eyes = await core.openEyes({
+      type: 'classic',
       target: driver,
       settings: {
         eyesServerUrl: 'https://eyesapi.applitools.com',
         apiKey: process.env.APPLITOOLS_API_KEY!,
         appName: 'core classic',
-        testName: name,
+        testName: 'switch to iframe inside shadow dom',
       },
     })
 
@@ -42,7 +43,6 @@ describe('check eyes classic', () => {
 
     await eyes.check({
       settings: {
-        name,
         fully: true,
         ignoreCaret: true,
         matchLevel: 'Strict',

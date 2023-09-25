@@ -19,7 +19,6 @@ export function makeDeleteTest({core, logger: mainLogger}: Options) {
     logger = logger.extend(mainLogger, {tags: [`delete-test-${utils.general.shortid()}`]})
     ;(utils.types.isArray(settings) ? settings : [settings]).forEach(settings => {
       settings.eyesServerUrl ??=
-        (settings as any).serverUrl ??
         utils.general.getEnvValue('EYES_SERVER_URL') ??
         utils.general.getEnvValue('SERVER_URL') ??
         'https://eyesapi.applitools.com'

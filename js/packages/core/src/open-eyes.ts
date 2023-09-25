@@ -56,7 +56,6 @@ export function makeOpenEyes<TSpec extends SpecType, TDefaultType extends 'class
     settings = {...config?.open, ...settings} as Partial<OpenSettings<TDefaultType> & OpenSettings<TType>>
     settings.userTestId ??= `${settings.testName}--${utils.general.guid()}`
     settings.eyesServerUrl ??=
-      ((settings as any).serverUrl as string) ??
       utils.general.getEnvValue('EYES_SERVER_URL') ??
       utils.general.getEnvValue('SERVER_URL') ??
       'https://eyesapi.applitools.com'
