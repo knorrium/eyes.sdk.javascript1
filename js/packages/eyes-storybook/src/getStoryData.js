@@ -87,7 +87,7 @@ function makeGetStoryData({logger, takeDomSnapshots, reloadPagePerStory}) {
 
     async function renderStoryLegacy() {
       logger.log(`getting data from story ${storyUrl}`);
-      const [err] = await presult(page.goto(storyUrl, {timeout: 10000}));
+      const [err] = await presult(page.goto(storyUrl, {timeout: PAGE_EVALUATE_TIMEOUT}));
       if (err) {
         logger.log(`error navigating to story ${storyUrl}`, err);
         throw err;
