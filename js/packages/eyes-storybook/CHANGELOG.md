@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.42.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.42.0...js/eyes-storybook@3.42.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* update timeout when rendering stories with variants and legacy ([00b8499](https://github.com/applitools/eyes.sdk.javascript1/commit/00b8499716827518fe24abe5031ef950f0254119))
+
 ## [3.42.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook-v3.41.3...js/eyes-storybook@3.42.0) (2023-09-25)
 
 
