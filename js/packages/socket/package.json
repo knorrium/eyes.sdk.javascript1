@@ -1,6 +1,6 @@
 {
   "name": "@applitools/socket",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "Applitools implementation for bidi-communication protocol",
   "keywords": [
     "applitools",
