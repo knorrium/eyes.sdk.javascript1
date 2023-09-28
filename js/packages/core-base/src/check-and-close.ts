@@ -3,6 +3,7 @@ import {type Logger} from '@applitools/logger'
 import {type AbortSignal} from 'abort-controller'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
+import {transformDomMapping} from './utils/transform-dom-mapping'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -36,6 +37,7 @@ export function makeCheckAndClose({requests, done, signal, logger: mainLogger}: 
         requests.test.account.maxImageArea,
       ),
     }
+    await transformDomMapping(settings)
     logger.log('Command "checkAndClose" is called with settings', settings)
 
     target = await transformTarget({target, settings})

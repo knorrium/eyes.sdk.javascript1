@@ -11,8 +11,8 @@ const {makeTiming} = require('@applitools/monitoring-commons');
 const logger = require('../util/testLogger');
 const testStream = require('../util/testStream');
 const {performance, timeItAsync} = makeTiming();
-const fetch = require('node-fetch');
 const snap = require('@applitools/snaptdout');
+const {getTestInfo} = require('@applitools/test-utils');
 
 describe('eyes-storybook floating region', () => {
   let closeStorybook, closeTestServer;
@@ -95,7 +95,6 @@ describe('eyes-storybook floating region', () => {
 });
 
 async function getSession(result) {
-  const sessionUrl = `${result.apiUrls.session}?format=json&AccessToken=${result.secretToken}&apiKey=${process.env.APPLITOOLS_API_KEY}`;
-  const session = await fetch(sessionUrl).then(r => r.json());
+  const session = await getTestInfo(result);
   return session.actualAppOutput;
 }

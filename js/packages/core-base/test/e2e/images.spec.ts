@@ -1,6 +1,8 @@
 import {readFileSync} from 'fs'
 import {makeCore, type Core} from '../../src/index'
 import assert from 'assert'
+import {getTestInfo, getTestDom} from '@applitools/test-utils'
+import {testServer} from '@applitools/test-server'
 
 describe('images', () => {
   let core: Core
@@ -165,5 +167,71 @@ describe('images', () => {
     await eyesStep2.close()
     const [result_step_2] = await eyesStep2.getResults()
     assert.strictEqual(result_step_2.accessibilityStatus?.status, 'Passed')
+  })
+
+  describe('domMapping', () => {
+    let destroyServer: () => Promise<void>, baseUrl: string
+    before(async () => {
+      const server = await testServer()
+      destroyServer = () => server.close()
+      baseUrl = `http://localhost:${server.port}`
+    })
+    after(async () => {
+      await destroyServer?.()
+    })
+
+    it('works with domMapping', async () => {
+      const eyes = await core.openEyes({
+        settings: {
+          eyesServerUrl: 'https://eyesapi.applitools.com',
+          apiKey: process.env.APPLITOOLS_API_KEY as string,
+          appName: 'Test App',
+          testName: 'Test DOM mapping',
+          environment: {
+            os: 'Platform',
+            hostingApp: 'TestBrowser',
+            deviceName: 'Machine',
+            viewportSize: {width: 210, height: 700},
+          },
+        },
+      })
+
+      await eyes.check({
+        target: {
+          image: readFileSync('./test/fixtures/screenshot.png'),
+        },
+        settings: {
+          domMapping: './test/fixtures/dom-mapping.json',
+        },
+      })
+
+      await eyes.check({
+        target: {
+          image: readFileSync('./test/fixtures/screenshot.png'),
+        },
+        settings: {
+          domMapping: `${baseUrl}/dom-mapping.json`,
+        },
+      })
+
+      await eyes.check({
+        target: {
+          image: readFileSync('./test/fixtures/screenshot.png'),
+        },
+        settings: {
+          domMapping: readFileSync('./test/fixtures/dom-mapping.json'),
+        },
+      })
+
+      await eyes.close()
+      const [result] = await eyes.getResults()
+
+      const info = await getTestInfo(result)
+      const expectedDomMapping = JSON.parse(readFileSync('./test/fixtures/dom-mapping.json').toString())
+
+      for (const actualAppOutput of info.actualAppOutput) {
+        assert.deepStrictEqual(await getTestDom(result, actualAppOutput.image.domMappingId, false), expectedDomMapping)
+      }
+    })
   })
 })

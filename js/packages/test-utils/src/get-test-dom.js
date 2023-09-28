@@ -1,17 +1,19 @@
 const fetch = require('node-fetch')
 
-async function getTestDom(result, domId) {
+async function getTestDom(result, domId, includeFinder = true) {
   const sessionUrl = new URL(result.appUrls.session)
   const accountId = sessionUrl.searchParams.get('accountId')
   const url = `${sessionUrl.origin}/api/images/dom/${domId}/?accountId=${accountId}&apiKey=${process.env.APPLITOOLS_API_KEY_READ}`
 
-  const response = await fetch(url)
+  const response = await fetch(url, {compress: false})
   const dom = await response.json()
 
-  return {
-    ...dom,
-    getNodesByAttribute: attr => getNodesByAttribute(dom, attr),
-  }
+  return includeFinder
+    ? {
+        ...dom,
+        getNodesByAttribute: attr => getNodesByAttribute(dom, attr),
+      }
+    : dom
 
   function getNodesByAttribute(node, attr) {
     const result = []

@@ -530,6 +530,7 @@ __metadata:
     "@applitools/snaptdout": ^1.0.1
     "@applitools/spec-driver-puppeteer": "workspace:*"
     "@applitools/test-server": "workspace:^"
+    "@applitools/test-utils": "workspace:^"
     "@applitools/ufg-client": "workspace:*"
     "@applitools/utils": "workspace:*"
     "@babel/eslint-parser": ^7.22.9

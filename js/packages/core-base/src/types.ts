@@ -267,6 +267,7 @@ export interface CheckSettings<TRegion = Region> extends ImageSettings<TRegion> 
     xdpi?: number
     ydpi?: number
   }
+  domMapping?: Buffer | URL | string
   pageId?: string
   /** @internal */
   stepIndex?: number

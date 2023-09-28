@@ -565,9 +565,10 @@ export function makeEyesRequests({
     logger = logger.extend(mainLogger, {tags: [`core-request-${utils.general.shortid()}`]})
 
     logger.log('Request "check" called for target', target, 'with settings', settings)
-    ;[target.image, target.dom] = await Promise.all([
+    ;[target.image, target.dom, settings.domMapping] = await Promise.all([
       upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
+      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping as Buffer}),
     ])
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'check',
@@ -598,9 +599,10 @@ export function makeEyesRequests({
       return close({settings, logger})
     }
     logger.log('Request "checkAndClose" called for target', target, 'with settings', settings)
-    ;[target.image, target.dom] = await Promise.all([
+    ;[target.image, target.dom, settings.domMapping] = await Promise.all([
       upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
+      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping as Buffer}),
     ])
     const matchOptions = transformCheckOptions({target, settings})
     resultResponsePromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
@@ -906,6 +908,7 @@ function transformCheckOptions({target, settings}: {target: ImageTarget; setting
       title: target.name,
       screenshotUrl: target.image,
       domUrl: target.dom,
+      domMappingUrl: settings.domMapping,
       location: target.locationInViewport && utils.geometry.round(target.locationInViewport),
       pageCoverageInfo: settings.pageId && {
         pageId: settings.pageId,

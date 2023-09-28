@@ -3,6 +3,7 @@ import {type AbortSignal} from 'abort-controller'
 import {type Logger} from '@applitools/logger'
 import {type EyesRequests} from './server/requests'
 import {transformTarget} from './utils/transform-target'
+import {transformDomMapping} from './utils/transform-dom-mapping'
 import * as utils from '@applitools/utils'
 
 type Options = {
@@ -38,6 +39,7 @@ export function makeCheck({requests, signal, logger: mainLogger}: Options) {
         requests.test.account.maxImageArea,
       ),
     }
+    await transformDomMapping(settings)
     logger.log('Command "check" is called with settings', settings)
 
     queue[settings.stepIndex] ??= utils.promises.makeControlledPromise()

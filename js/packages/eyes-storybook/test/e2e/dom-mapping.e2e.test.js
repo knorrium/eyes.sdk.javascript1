@@ -12,17 +12,16 @@ const {makeTiming} = require('@applitools/monitoring-commons');
 const logger = require('../util/testLogger');
 const testStream = require('../util/testStream');
 const {performance, timeItAsync} = makeTiming();
-const snap = require('@applitools/snaptdout');
-const {getTestInfo} = require('@applitools/test-utils');
+const {getTestInfo, getTestDom} = require('@applitools/test-utils');
 
-describe('eyes-storybook accessibility', () => {
+describe('dom-mapping', () => {
   let closeStorybook, closeTestServer;
   before(async () => {
     const server = await testServerInProcess({port: 7272});
     closeTestServer = server.close;
     closeStorybook = await testStorybook({
       port: 9001,
-      storybookConfigDir: path.resolve(__dirname, '../fixtures/accessibilityStorybook'),
+      storybookConfigDir: path.resolve(__dirname, '../fixtures/dom-mapping'),
     });
   });
 
@@ -31,10 +30,9 @@ describe('eyes-storybook accessibility', () => {
     await closeTestServer();
   });
 
-  it('renders storybook with accessibility validation', async () => {
-    const {stream, getEvents} = testStream();
-    const configPath = path.resolve(__dirname, 'happy-config/accessibility.config.js');
-    const globalConfig = require(configPath);
+  it('works', async () => {
+    const {stream} = testStream();
+    const configPath = path.resolve(__dirname, 'happy-config/dom-mapping.config.js');
     const defaultConfig = {waitBeforeScreenshots: 50};
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
 
@@ -43,7 +41,6 @@ describe('eyes-storybook accessibility', () => {
         storybookUrl: 'http://localhost:9001',
         browser: [{name: 'chrome', width: 800, height: 600}],
         ...config,
-        // puppeteerOptions: {headless: false, devtools: true},
       },
       logger,
       performance,
@@ -51,31 +48,20 @@ describe('eyes-storybook accessibility', () => {
       outputStream: stream,
     });
 
-    const expectedTitles = ['Single category: Story with local accessibility region'];
-    expect(results.results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
     results = results.results.flatMap(r => r.resultsOrErr);
-    expect(results.some(x => x instanceof Error)).to.be.false;
-    expect(results).to.have.length(1);
     for (const testResults of results) {
       const session = await getTestInfo(testResults);
       const [actualAppOutput] = session.actualAppOutput;
-      expect(actualAppOutput.imageMatchSettings.accessibilitySettings).to.eql({
-        level: globalConfig.accessibilityValidation.level,
-        version: globalConfig.accessibilityValidation.guidelinesVersion,
-      });
-      expect(actualAppOutput.imageMatchSettings.accessibility).to.eql([
-        {
-          type: 'LargeText',
-          isDisabled: false,
-          left: 16,
-          top: 16,
-          width: 50,
-          height: 50,
-          regionId: '.accessibility-element',
-        },
-      ]);
+      const expectedDomMapping = require(path.resolve(
+        __dirname,
+        '../fixtures/dom-mapping/dom-mapping.json',
+      ));
+      const actualDomMapping = await getTestDom(
+        testResults,
+        actualAppOutput.image.domMappingId,
+        false,
+      );
+      expect(actualDomMapping).to.eql(expectedDomMapping);
     }
-
-    await snap(getEvents().join(''), 'accessibility validation');
   });
 });

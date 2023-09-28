@@ -52,6 +52,7 @@ function makeRenderStory({
       ignoreCaret,
       matchLevel,
       ignoreBaseline,
+      domMapping,
     } = config;
 
     if (sizeMode) {
@@ -122,6 +123,7 @@ function makeRenderStory({
               : undefined,
           }
         : undefined,
+      domMapping,
     };
 
     return timeItAsync(baselineName, async () => {
