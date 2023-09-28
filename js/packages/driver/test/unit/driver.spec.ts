@@ -473,7 +473,8 @@ describe('driver mobile', () => {
       logger,
       spec,
       driver: new MockDriver({
-        device: {isMobile: true, name: 'iPhone'},
+        browser: {name: 'Safari'},
+        device: {isMobile: true, name: 'iPhone', isNatvie: false},
         ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1',
       }),
     })

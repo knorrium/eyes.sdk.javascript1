@@ -371,4 +371,7 @@ export class MockDriver {
   [inspect.custom]() {
     return '<MockDriver>'
   }
+  async getCurrentWorld() {
+    return this.environment.isNative ? 'NATIVE_APP' : 'WEBVIEW_1'
+  }
 }

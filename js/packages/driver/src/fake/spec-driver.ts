@@ -91,3 +91,7 @@ export async function getTitle(driver: Driver): Promise<string> {
 export async function visit(driver: Driver, url: string): Promise<void> {
   await driver.visit(url)
 }
+
+export async function getCurrentWorld(driver: Driver) {
+  return driver.getCurrentWorld()
+}
