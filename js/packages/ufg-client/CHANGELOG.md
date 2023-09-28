@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.9.2...js/ufg-client@1.9.3) (2023-09-28)
+
+
+### Bug Fixes
+
+* avoid saving data urls in cache (both sync and async) ([#1940](https://github.com/applitools/eyes.sdk.javascript1/issues/1940)) ([170181a](https://github.com/applitools/eyes.sdk.javascript1/commit/170181a3e4918411f3f18bbc4481b0752edf335f))
+
 ## [1.9.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ufg-client@1.9.1...js/ufg-client@1.9.2) (2023-09-25)
 
 

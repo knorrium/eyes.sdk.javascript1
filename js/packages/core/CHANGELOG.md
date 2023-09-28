@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.11.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.2...js/core@3.11.3) (2023-09-28)
+
+
+### Dependencies
+
+* @applitools/ufg-client bumped to 1.9.3
+  #### Bug Fixes
+
+  * avoid saving data urls in cache (both sync and async) ([#1940](https://github.com/applitools/eyes.sdk.javascript1/issues/1940)) ([170181a](https://github.com/applitools/eyes.sdk.javascript1/commit/170181a3e4918411f3f18bbc4481b0752edf335f))
+
 ## [3.11.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.1...js/core@3.11.2) (2023-09-25)
 
 
