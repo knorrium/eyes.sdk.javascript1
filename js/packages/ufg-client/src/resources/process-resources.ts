@@ -105,6 +105,8 @@ export function makeProcessResources({
           logger.warn(`Failed to freeze gif image resource with id ${resource.id} due to an error`, error)
         }
       }
+
+      resource.dependencies = resource.dependencies?.filter(url => /^https?:/.test(url))
     }
     return persistResource({resource, logger})
   }
