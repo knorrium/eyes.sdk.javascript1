@@ -1,6 +1,9 @@
 import {saveCache} from '@actions/cache'
 import * as core from '@actions/core'
 
+// Run in debug mode
+process.env.RUNNER_DEBUG === '1'
+
 main().catch(err => {
   console.error(err)
   core.setFailed(`save cache failed: ${err.message}`)

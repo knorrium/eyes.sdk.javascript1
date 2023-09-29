@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@actions/cache@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@actions/cache/-/cache-3.2.1.tgz#bbd4680aeab811f3e839e58be493ffe7583d0311"
-  integrity sha512-QurbMiY//02+0kN1adJkMHN44RcZ5kAXfhSnKUZmtSmhMTNqLitGArG1xOkt93NNyByTlLGAc5wIOF/dZ2ENOQ==
+"@actions/cache@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@actions/cache/-/cache-3.2.2.tgz#e7bbb5f9b67c613f96f98f91506c69424c9aa288"
+  integrity sha512-6D0Jq5JrLZRQ3VApeQwQkkV20ZZXjXsHNYXd9VjNUdi9E0h93wESpxfMJ2JWLCUCgHNLcfY0v3GjNM+2FdRMlg==
   dependencies:
     "@actions/core" "^1.10.0"
     "@actions/exec" "^1.0.1"
     "@actions/glob" "^0.1.0"
-    "@actions/http-client" "^2.0.1"
+    "@actions/http-client" "^2.1.1"
     "@actions/io" "^1.0.1"
     "@azure/abort-controller" "^1.1.0"
     "@azure/ms-rest-js" "^2.6.0"
@@ -22,6 +22,14 @@
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.10.0.tgz#44551c3c71163949a2f06e94d9ca2157a0cfac4f"
   integrity sha512-2aZDDa3zrrZbP5ZYg159sNoLRb61nQ7awl5pSvIq5Qpj81vwDzdMRKzkWJGJuwVvWpvZKx7vspJALyvaaIQyug==
+  dependencies:
+    "@actions/http-client" "^2.0.1"
+    uuid "^8.3.2"
+
+"@actions/core@^1.10.1":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.10.1.tgz#61108e7ac40acae95ee36da074fa5850ca4ced8a"
+  integrity sha512-3lBR9EDAY+iYIpTnTIXmWcNbX3T2kCkAEQGIQx4NVQ0575nk2k3GRZDTPQG+vVtS2izSLmINlxXf0uLtnrTP+g==
   dependencies:
     "@actions/http-client" "^2.0.1"
     uuid "^8.3.2"
@@ -45,6 +53,13 @@
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-2.1.0.tgz#b6d8c3934727d6a50d10d19f00a711a964599a9f"
   integrity sha512-BonhODnXr3amchh4qkmjPMUO8mFi/zLaaCeCAJZqch8iQqyDnVIkySjB38VHAC8IJ+bnlgfOqlhpyCUZHlQsqw==
+  dependencies:
+    tunnel "^0.0.6"
+
+"@actions/http-client@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-2.1.1.tgz#a8e97699c315bed0ecaeaaeb640948470d4586a0"
+  integrity sha512-qhrkRMB40bbbLo7gF+0vu+X+UawOvQQqNAA/5Unx774RS8poaOhThDOG6BGmxvAnxhQnDp2BG/ZUm65xZILTpw==
   dependencies:
     tunnel "^0.0.6"
 
@@ -187,10 +202,10 @@
   dependencies:
     "@types/node" "*"
 
-"@vercel/ncc@^0.36.1":
-  version "0.36.1"
-  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.36.1.tgz#d4c01fdbbe909d128d1bf11c7f8b5431654c5b95"
-  integrity sha512-S4cL7Taa9yb5qbv+6wLgiKVZ03Qfkc4jGRuiUQMQ8HGBD5pcNRnHeYM33zBvJE4/zJGjJJ8GScB+WmTsn9mORw==
+"@vercel/ncc@^0.38.0":
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.38.0.tgz#5210def0dcf0c79640bfaf16eecce54beed58fa6"
+  integrity sha512-B4YKZMm/EqMptKSFyAq4q2SlgJe+VCmEH6Y8gf/E1pTlWbsUJpuH1ymik2Ex3aYO5mCWwV1kaSYHSQOT8+4vHA==
 
 abort-controller@^3.0.0:
   version "3.0.0"

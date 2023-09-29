@@ -4,6 +4,9 @@ import {setTimeout} from 'node:timers/promises'
 import {restoreCache} from '@actions/cache'
 import * as core from '@actions/core'
 
+// Run in debug mode
+process.env.RUNNER_DEBUG === '1'
+
 if (process.platform === 'linux') {
   if (existsSync('/etc/alpine-release')) {
     core.debug('alpine system is detected, installing necessary dependencies')
