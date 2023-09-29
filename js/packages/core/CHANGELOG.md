@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.11.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.3...js/core@3.11.4) (2023-09-28)
+
+
+### Dependencies
+
+* @applitools/ec-client bumped to 1.7.11
+
+* @applitools/core-base bumped to 1.7.0
+  #### Features
+
+  * add support for passing a DOM mapping file to deobfuscate RCA ([8c99f8d](https://github.com/applitools/eyes.sdk.javascript1/commit/8c99f8da53ded229306fe2f3da89cb3b5691e2c0))
+
 ## [3.11.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.2...js/core@3.11.3) (2023-09-28)
 
 

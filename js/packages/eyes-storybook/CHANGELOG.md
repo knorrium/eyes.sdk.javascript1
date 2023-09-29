@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.43.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook-v3.42.2...js/eyes-storybook@3.43.0) (2023-09-28)
+
+
+### Features
+
+* add support for passing a DOM mapping file to deobfuscate RCA ([8c99f8d](https://github.com/applitools/eyes.sdk.javascript1/commit/8c99f8da53ded229306fe2f3da89cb3b5691e2c0))
+* rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+* show aborted tests in Eyes dashboard ([#1877](https://github.com/applitools/eyes.sdk.javascript1/issues/1877)) ([f9840d4](https://github.com/applitools/eyes.sdk.javascript1/commit/f9840d494222ccc6c6f262896771e28da2565bc6))
+* update puppeteer version and minimum node version ([#1889](https://github.com/applitools/eyes.sdk.javascript1/issues/1889)) ([d449030](https://github.com/applitools/eyes.sdk.javascript1/commit/d449030bed6bf4f4c3e7a0dcb6f3ec78f7623e4c))
+
+
+### Bug Fixes
+
+* update timeout when rendering stories with variants and legacy ([00b8499](https://github.com/applitools/eyes.sdk.javascript1/commit/00b8499716827518fe24abe5031ef950f0254119))
+
+
+### Dependencies
+
+* @applitools/core-base bumped to 1.7.0
+  #### Features
+
+  * add support for passing a DOM mapping file to deobfuscate RCA ([8c99f8d](https://github.com/applitools/eyes.sdk.javascript1/commit/8c99f8da53ded229306fe2f3da89cb3b5691e2c0))
+* @applitools/ec-client bumped to 1.7.11
+
+* @applitools/core bumped to 3.11.4
+
+
 ## [3.42.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.42.0...js/eyes-storybook@3.42.1) (2023-09-26)
 
 

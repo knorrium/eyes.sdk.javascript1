@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.6.1...js/core-base@1.7.0) (2023-09-28)
+
+
+### Features
+
+* add support for passing a DOM mapping file to deobfuscate RCA ([8c99f8d](https://github.com/applitools/eyes.sdk.javascript1/commit/8c99f8da53ded229306fe2f3da89cb3b5691e2c0))
+
 ## [1.6.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.6.0...js/core-base@1.6.1) (2023-09-25)
 
 
