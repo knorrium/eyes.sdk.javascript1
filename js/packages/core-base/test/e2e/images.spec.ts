@@ -183,7 +183,7 @@ describe('images', () => {
     it('works with domMapping', async () => {
       const eyes = await core.openEyes({
         settings: {
-          eyesServerUrl: 'https://eyesapi.applitools.com',
+          eyesServerUrl: process.env.APPLITOOLS_SERVER_URL ?? 'https://eyesapi.applitools.com',
           apiKey: process.env.APPLITOOLS_API_KEY as string,
           appName: 'Test App',
           testName: 'Test DOM mapping',

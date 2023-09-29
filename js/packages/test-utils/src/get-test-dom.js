@@ -5,7 +5,7 @@ async function getTestDom(result, domId, includeFinder = true) {
   const accountId = sessionUrl.searchParams.get('accountId')
   const url = `${sessionUrl.origin}/api/images/dom/${domId}/?accountId=${accountId}&apiKey=${process.env.APPLITOOLS_API_KEY_READ}`
 
-  const response = await fetch(url, {compress: false})
+  const response = await fetch(url)
   const dom = await response.json()
 
   return includeFinder

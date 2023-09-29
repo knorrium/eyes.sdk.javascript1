@@ -568,7 +568,7 @@ export function makeEyesRequests({
     ;[target.image, target.dom, settings.domMapping] = await Promise.all([
       upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
-      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping as Buffer}),
+      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping, gzip: true}),
     ])
     const response = await req(`/api/sessions/running/${encodeURIComponent(test.testId)}`, {
       name: 'check',
@@ -602,7 +602,7 @@ export function makeEyesRequests({
     ;[target.image, target.dom, settings.domMapping] = await Promise.all([
       upload({name: 'image', resource: target.image}),
       target.dom && upload({name: 'dom', resource: target.dom, gzip: true}),
-      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping as Buffer}),
+      settings.domMapping && upload({name: 'domMapping', resource: settings.domMapping, gzip: true}),
     ])
     const matchOptions = transformCheckOptions({target, settings})
     resultResponsePromise = req(`/api/sessions/running/${encodeURIComponent(test.testId)}/matchandend`, {
