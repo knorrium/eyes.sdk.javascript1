@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.7.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client-v1.7.11...js/ec-client@1.7.12) (2023-09-29)
+
+
+### Bug Fixes
+
+* change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+* use Uint8Array instead of Buffer for binary data representation ([#1928](https://github.com/applitools/eyes.sdk.javascript1/issues/1928)) ([d1472ab](https://github.com/applitools/eyes.sdk.javascript1/commit/d1472ab8fd49e9a240e99a44dbf1d180b6c7a54b))
+
+
+### Dependencies
+
+* @applitools/spec-driver-webdriver bumped to 1.0.47
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+* @applitools/core-base bumped to 1.7.1
+  #### Bug Fixes
+
+  * send domMapping payload with correct content encoding ([2bc8e39](https://github.com/applitools/eyes.sdk.javascript1/commit/2bc8e390de1d147d84d1de24df337b8652547b6a))
+
 ## [1.7.10](https://github.com/applitools/eyes.sdk.javascript1/compare/js/ec-client@1.7.9...js/ec-client@1.7.10) (2023-09-25)
 
 

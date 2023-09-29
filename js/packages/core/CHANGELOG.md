@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.11.5](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.4...js/core@3.11.5) (2023-09-29)
+
+
+### Dependencies
+
+* @applitools/spec-driver-webdriver bumped to 1.0.47
+
+* @applitools/spec-driver-selenium bumped to 1.5.61
+
+* @applitools/spec-driver-puppeteer bumped to 1.2.3
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+* @applitools/screenshoter bumped to 3.8.13
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+
+
+
+* @applitools/nml-client bumped to 1.5.13
+
+* @applitools/ec-client bumped to 1.7.12
+  #### Bug Fixes
+
+  * change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+  * use Uint8Array instead of Buffer for binary data representation ([#1928](https://github.com/applitools/eyes.sdk.javascript1/issues/1928)) ([d1472ab](https://github.com/applitools/eyes.sdk.javascript1/commit/d1472ab8fd49e9a240e99a44dbf1d180b6c7a54b))
+
+
+
+* @applitools/core-base bumped to 1.7.1
+  #### Bug Fixes
+
+  * send domMapping payload with correct content encoding ([2bc8e39](https://github.com/applitools/eyes.sdk.javascript1/commit/2bc8e390de1d147d84d1de24df337b8652547b6a))
+
 ## [3.11.4](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core@3.11.3...js/core@3.11.4) (2023-09-28)
 
 

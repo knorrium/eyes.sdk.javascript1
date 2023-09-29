@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.3](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.14.2...js/driver@1.14.3) (2023-09-29)
+
+
+### Bug Fixes
+
+* force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+
 ## [1.14.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/driver@1.14.1...js/driver@1.14.2) (2023-09-25)
 
 

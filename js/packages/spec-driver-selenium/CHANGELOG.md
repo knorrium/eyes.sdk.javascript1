@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.61](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.60...js/spec-driver-selenium@1.5.61) (2023-09-29)
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+
 ## [1.5.60](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-selenium@1.5.59...js/spec-driver-selenium@1.5.60) (2023-09-25)
 
 

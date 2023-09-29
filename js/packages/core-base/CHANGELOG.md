@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.7.0...js/core-base@1.7.1) (2023-09-29)
+
+
+### Bug Fixes
+
+* send domMapping payload with correct content encoding ([2bc8e39](https://github.com/applitools/eyes.sdk.javascript1/commit/2bc8e390de1d147d84d1de24df337b8652547b6a))
+
 ## [1.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/js/core-base@1.6.1...js/core-base@1.7.0) (2023-09-28)
 
 

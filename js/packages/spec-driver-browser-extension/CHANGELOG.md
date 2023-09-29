@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.12...js/spec-driver-browser-extension@1.0.13) (2023-09-29)
+
+
+### Dependencies
+
+* @applitools/spec-driver-playwright bumped to 1.3.28
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+
 ## [1.0.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/spec-driver-browser-extension@1.0.11...js/spec-driver-browser-extension@1.0.12) (2023-09-25)
 
 

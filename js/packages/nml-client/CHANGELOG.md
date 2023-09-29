@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.12...js/nml-client@1.5.13) (2023-09-29)
+
+
+### Dependencies
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+* @applitools/spec-driver-webdriver bumped to 1.0.47
+
+
 ## [1.5.12](https://github.com/applitools/eyes.sdk.javascript1/compare/js/nml-client@1.5.11...js/nml-client@1.5.12) (2023-09-25)
 
 

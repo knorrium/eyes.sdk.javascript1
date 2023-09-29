@@ -1,5 +1,76 @@
 # Changelog
 
+## [0.3.15](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-browser-extension-v0.3.14...js/eyes-browser-extension@0.3.15) (2023-09-29)
+
+
+### Bug Fixes
+
+* avoid service worker shutdown ([#1830](https://github.com/applitools/eyes.sdk.javascript1/issues/1830)) ([f552d84](https://github.com/applitools/eyes.sdk.javascript1/commit/f552d8425778f300cad31c0297a04f3f282f34e0))
+
+
+### Code Refactoring
+
+* refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+### Dependencies
+
+* @applitools/spec-driver-webdriver bumped to 1.0.47
+
+* @applitools/spec-driver-selenium bumped to 1.5.61
+
+* @applitools/spec-driver-puppeteer bumped to 1.2.3
+
+* @applitools/driver bumped to 1.14.3
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+* @applitools/screenshoter bumped to 3.8.13
+  #### Bug Fixes
+
+  * force native on get environment ([#1939](https://github.com/applitools/eyes.sdk.javascript1/issues/1939)) ([f42854e](https://github.com/applitools/eyes.sdk.javascript1/commit/f42854eacc769751447204143cb4d50113edc732))
+
+
+
+* @applitools/nml-client bumped to 1.5.13
+
+* @applitools/ec-client bumped to 1.7.12
+  #### Bug Fixes
+
+  * change expiration time of the tunnel ([c019241](https://github.com/applitools/eyes.sdk.javascript1/commit/c0192411410135b23f3ae47dd62fbef67be66f1a))
+
+
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+  * use Uint8Array instead of Buffer for binary data representation ([#1928](https://github.com/applitools/eyes.sdk.javascript1/issues/1928)) ([d1472ab](https://github.com/applitools/eyes.sdk.javascript1/commit/d1472ab8fd49e9a240e99a44dbf1d180b6c7a54b))
+
+
+
+* @applitools/core-base bumped to 1.7.1
+  #### Bug Fixes
+
+  * send domMapping payload with correct content encoding ([2bc8e39](https://github.com/applitools/eyes.sdk.javascript1/commit/2bc8e390de1d147d84d1de24df337b8652547b6a))
+* @applitools/core bumped to 3.11.5
+
+* @applitools/eyes bumped to 1.10.0
+  #### Features
+
+  * added more iOS devices ([a84311f](https://github.com/applitools/eyes.sdk.javascript1/commit/a84311f88e6f532268543a96f841ae5ad87d5659))
+  * rework log event on opent eyes ([#1842](https://github.com/applitools/eyes.sdk.javascript1/issues/1842)) ([532756b](https://github.com/applitools/eyes.sdk.javascript1/commit/532756b75c1023967c3781316148c890dbcfaac8))
+
+
+  #### Code Refactoring
+
+  * refactored spec driver interface ([#1839](https://github.com/applitools/eyes.sdk.javascript1/issues/1839)) ([aa49ec2](https://github.com/applitools/eyes.sdk.javascript1/commit/aa49ec2a7d14b8529acc3a8a4c2baecfa113d98a))
+
+
+
+* @applitools/spec-driver-playwright bumped to 1.3.28
+
+* @applitools/spec-driver-browser-extension bumped to 1.0.13
+
+
 ## [0.3.13](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-browser-extension-v0.3.12...js/eyes-browser-extension@0.3.13) (2023-09-25)
 
 
