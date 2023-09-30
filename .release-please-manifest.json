@@ -19,7 +19,7 @@
   "js/packages/core-base": "1.7.1",
   "js/packages/core": "3.11.5",
   "js/packages/eyes": "1.10.0",
-  "js/packages/eyes-images": "4.23.31",
+  "js/packages/eyes-images": "4.23.32",
   "js/packages/eyes-webdriverio": "5.48.0",
   "js/packages/eyes-selenium": "4.70.0",
   "js/packages/eyes-nightwatch": "1.19.0",

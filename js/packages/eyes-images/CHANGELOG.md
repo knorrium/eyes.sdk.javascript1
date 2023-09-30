@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.23.32](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images@4.23.31...js/eyes-images@4.23.32) (2023-09-30)
+
+
+### Bug Fixes
+
+* bump ([a4649ed](https://github.com/applitools/eyes.sdk.javascript1/commit/a4649ede687b039c362c6d60282ce8690c581f5f))
+
 ## [4.23.31](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-images-v4.23.30...js/eyes-images@4.23.31) (2023-09-29)
 
 
