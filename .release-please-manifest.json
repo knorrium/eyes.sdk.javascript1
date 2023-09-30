@@ -27,7 +27,7 @@
   "js/packages/eyes-puppeteer": "1.21.0",
   "js/packages/eyes-testcafe": "3.0.0",
   "js/packages/eyes-browser-extension": "0.3.15",
-  "js/packages/eyes-storybook": "3.43.1",
+  "js/packages/eyes-storybook": "3.43.2",
   "js/packages/eyes-cypress": "3.38.1",
   "java/eyes.universal.core/eyes-universal-core": "5.63.13",
   "java/eyes.universal.core/eyes-universal-core-binaries": "5.63.13",

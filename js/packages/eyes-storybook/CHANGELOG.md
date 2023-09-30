@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.43.2](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.43.1...js/eyes-storybook@3.43.2) (2023-09-30)
+
+
+### Bug Fixes
+
+* bump ([756e2d6](https://github.com/applitools/eyes.sdk.javascript1/commit/756e2d6899b58dfa69001d70133230447b4794d3))
+
 ## [3.43.1](https://github.com/applitools/eyes.sdk.javascript1/compare/js/eyes-storybook@3.43.0...js/eyes-storybook@3.43.1) (2023-09-29)
 
 
