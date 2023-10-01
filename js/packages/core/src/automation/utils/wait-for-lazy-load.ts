@@ -1,15 +1,8 @@
 import {type Logger} from '@applitools/logger'
 import {type SpecType, type Context} from '@applitools/driver'
+import {type LazyLoadOptions} from '../types'
 
 const {lazyLoad} = require('@applitools/snippets')
-
-export type LazyLoadSettings = {
-  scrollLength?: number
-  waitingTime?: number
-  maxAmountToScroll?: number
-  executionTimeout?: number
-  pollTimeout?: number
-}
 
 export async function waitForLazyLoad<TSpec extends SpecType>({
   context,
@@ -17,18 +10,26 @@ export async function waitForLazyLoad<TSpec extends SpecType>({
   logger,
 }: {
   context: Context<TSpec>
-  settings: LazyLoadSettings
+  settings: LazyLoadOptions & {
+    pollTimeout?: number
+    waitingTime?: number
+  }
   logger: Logger
 }) {
   logger.log('lazy loading the page before capturing a screenshot')
+  const {
+    scrollLength = 300,
+    waitingTime = 2000,
+    maxAmountToScroll = 15000,
+  } = typeof settings === 'boolean' ? {} : settings
 
   await context.executePoll(lazyLoad, {
     main: [
       await context.getScrollingElement(),
       {
-        scrollLength: settings.scrollLength ?? 300,
-        waitingTime: settings.waitingTime ?? 2000,
-        maxAmountToScroll: settings.maxAmountToScroll ?? 15000,
+        scrollLength: scrollLength,
+        waitingTime: waitingTime,
+        maxAmountToScroll: maxAmountToScroll,
       },
     ],
     poll: [],

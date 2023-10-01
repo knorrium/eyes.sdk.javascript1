@@ -271,6 +271,8 @@ export interface GetBaseEyesSettings {
   renderer: Renderer
 }
 
+export type LazyLoadOptions = {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}
+
 export interface ScreenshotSettings<TSpec extends SpecType>
   extends BaseCore.ImageSettings<Region | ElementReference<TSpec>> {
   webview?: boolean | string
@@ -284,7 +286,7 @@ export interface ScreenshotSettings<TSpec extends SpecType>
   overlap?: {top?: number; bottom?: number}
   waitBeforeCapture?: number
   waitBetweenStitches?: number
-  lazyLoad?: boolean | {scrollLength?: number; waitingTime?: number; maxAmountToScroll?: number}
+  lazyLoad?: boolean | LazyLoadOptions
   sendDom?: boolean
 }
 

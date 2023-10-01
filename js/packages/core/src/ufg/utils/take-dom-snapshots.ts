@@ -7,12 +7,16 @@ import * as utils from '@applitools/utils'
 import chalk from 'chalk'
 import {type CalculateRegionsOptions, calculateRegions} from './calculate-regions'
 import {SnapshotResult} from '../types'
+import {waitForLazyLoad} from '../../automation/utils/wait-for-lazy-load'
+import {type LazyLoadOptions} from '../types'
+
 export * from './take-dom-snapshot'
 export type DomSnapshotsSettings = DomSnapshotSettings & {
   renderers: Renderer[]
   waitBeforeCapture?: number | (() => void)
   layoutBreakpoints?: {breakpoints: number[] | boolean; reload?: boolean}
   calculateRegionsOptions?: CalculateRegionsOptions
+  lazyLoad?: boolean | LazyLoadOptions
 }
 
 export async function takeDomSnapshots<TSpec extends SpecType>({
@@ -24,7 +28,7 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
 }: {
   driver: Driver<TSpec>
   settings: DomSnapshotsSettings
-  hooks?: {beforeSnapshots?(): void | Promise<void>; beforeEachSnapshot?(): void | Promise<void>}
+  hooks?: {beforeEachSnapshot?(): void | Promise<void>}
   provides?: {
     getChromeEmulationDevices(): Promise<Record<string, Record<string, Size>>>
     getIOSDevices(): Promise<Record<string, Record<string, Size>>>
@@ -40,7 +44,13 @@ export async function takeDomSnapshots<TSpec extends SpecType>({
       await utils.general.sleep(settings.waitBeforeCapture)
     }
   }
-  await hooks?.beforeSnapshots?.()
+  if (settings.lazyLoad) {
+    await waitForLazyLoad({
+      context: driver.currentContext,
+      settings: settings.lazyLoad !== true ? settings.lazyLoad : {},
+      logger,
+    })
+  }
   if (!settings.layoutBreakpoints?.reload && settings.calculateRegionsOptions) {
     calculateRegionsResults = await calculateRegions({
       ...settings.calculateRegionsOptions,
