@@ -21,7 +21,7 @@ We detected that you are using TS or ESM syntax. Please configure the plugin as 
 
 ${chalk.green.bold('import eyesPlugin from "@applitools/eyes-cypress"')}
 
-export default ${chalk.green.bold('eyesPlugin(')}definedConfig({
+export default ${chalk.green.bold('eyesPlugin(')}defineConfig({
   //...
 })${chalk.green.bold(')')}
 
